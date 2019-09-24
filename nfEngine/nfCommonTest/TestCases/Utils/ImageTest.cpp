@@ -269,15 +269,13 @@ protected:
                 // Getting vector object and multiplying it by 255, because it's normalised to 1
                 Color texel = img->GetMipmap()->GetTexel(j, i, textureFormat);
                 Color testTexel = imgPtr->GetMipmap()->GetTexel(j, i, imgPtr->GetFormat());
-                texel *= 255.0f;
-                testTexel *= 255.0f;
 
                 uint8 texelUCh[4];
                 uint8 testTexelUCh[4];
 
                 // Store vector in uint8 table and remove compression errors
-                texel.Store4(texelUCh);
-                testTexel.Store4(testTexelUCh);
+                reinterpret_cast<uint32&>(texelUCh) = texel.ToRGBA();
+                reinterpret_cast<uint32&>(testTexelUCh) = testTexel.ToRGBA();
 
                 // Add scoped trace, to give information where exactly the error occured
                 SCOPED_TRACE("X: " + std::to_string(j) + " Y: " + std::to_string(i));
@@ -288,6 +286,12 @@ protected:
                     uint8 diff = (testTexelUCh[m] > texelUCh[m] ?
                                     testTexelUCh[m] - texelUCh[m] :
                                     texelUCh[m] - testTexelUCh[m]);
+
+                    if (diff > COMPRESSION_ARTEFACT_TRESHOLD)
+                    {
+                        NFE_BREAK();
+                    }
+
                     ASSERT_LE(diff, COMPRESSION_ARTEFACT_TRESHOLD);
                 }
             }
@@ -379,12 +383,11 @@ TEST_F(ImageTest, Grayscale)
         {
             // Getting vector object and multiplying it by 255, because it's normalised to 1
             Color texel = mImage->GetMipmap()->GetTexel(j, i, TEST_DATA_FORMAT);
-            texel *= 255.0f;
 
             uint8 texelUCh[4];
             uint8 testTexelUCh[4];
             // Store vector in uint8 table
-            texel.Store4(texelUCh);
+            reinterpret_cast<uint32&>(texelUCh) = texel.ToRGBA();
 
             if (i < 2)
             {

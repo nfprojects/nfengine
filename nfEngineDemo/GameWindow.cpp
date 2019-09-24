@@ -303,7 +303,7 @@ void GameWindow::OnKeyUp(Common::KeyCode key)
     }
 }
 
-void GameWindow::OnMouseDown(UINT button, int x, int y)
+void GameWindow::OnMouseDown(MouseButton button, int x, int y)
 {
     // create input event structure for the engine
     Utils::MouseButtonEvent event;
@@ -314,19 +314,19 @@ void GameWindow::OnMouseDown(UINT button, int x, int y)
     if (mView && mView->OnMouseDown(event))
         return; // mouse event was consumed by the engine
 
-    if (button == 0)
+    if (button == MouseButton::Left)
     {
         const Vector4& forwardVector = mCameraEntity->GetGlobalRotation().GetAxisZ();
-        SpawnTestObject(0, mCameraEntity->GetGlobalPosition() + forwardVector, Vector4());
+        SpawnTestObject(0, mCameraEntity->GetGlobalPosition() + forwardVector, Vector4::Zero());
     }
 
     // TODO temporary
     InputSystem* inputSystem = mScene->GetSystem<InputSystem>();
-    if (button == 0)
+    if (button == MouseButton::Left)
     {
         inputSystem->PushEvent(Input::EventData(Input::EventData::Type::KeyPress, StringView("Shoot")));
     }
-    else if (button == 1)
+    else if (button == MouseButton::Right)
     {
         inputSystem->PushEvent(Input::EventData(Input::EventData::Type::KeyPress, StringView("CameraControl")));
     }
@@ -361,7 +361,7 @@ void GameWindow::OnMouseMove(int x, int y, int deltaX, int deltaY)
     }
 }
 
-void GameWindow::OnMouseUp(UINT button)
+void GameWindow::OnMouseUp(MouseButton button)
 {
     // create input event structure for the engine
     Utils::MouseButtonEvent event;
@@ -375,11 +375,11 @@ void GameWindow::OnMouseUp(UINT button)
 
     // TODO temporary
     InputSystem* inputSystem = mScene->GetSystem<InputSystem>();
-    if (button == 0)
+    if (button == MouseButton::Left)
     {
         inputSystem->PushEvent(Input::EventData(Input::EventData::Type::KeyRelease, StringView("Shoot")));
     }
-    else if (button == 1)
+    else if (button == MouseButton::Right)
     {
         inputSystem->PushEvent(Input::EventData(Input::EventData::Type::KeyRelease, StringView("CameraControl")));
     }

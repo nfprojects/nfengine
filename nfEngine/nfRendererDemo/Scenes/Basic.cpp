@@ -494,7 +494,7 @@ void BasicScene::Draw(float dt)
                 const float angle = mAngle + 5.0f * i + 7.0f * j;
 
                 const Matrix4 rotMatrix = Matrix4::MakeRotationNormal(Vector4(0.0f, 0.0f, 1.0f), angle);
-                const Matrix4 translationMatrix = Matrix4::MakeTranslation3(Vector4(xOffset, yOffset, 0.0f));
+                const Matrix4 translationMatrix = Matrix4::MakeTranslation(Vector4(xOffset, yOffset, 0.0f));
                 const Matrix4 scaleMatrix = Matrix4::MakeScaling(Vector4(scaleCoeff, scaleCoeff, 0.0f));
 
                 VertexCBuffer vertexCBufferData;

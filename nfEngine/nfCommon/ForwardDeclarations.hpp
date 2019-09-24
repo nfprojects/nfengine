@@ -94,9 +94,14 @@ enum class IntersectionResult;
 struct Float2;
 struct Float3;
 struct Float4;
+struct VectorBool4;
+struct VectorBool8;
+struct VectorInt4;
+struct VectorInt8;
 struct Vector4;
-struct Vector4f;
-struct Vector4i;
+struct Vector8;
+class Vector3x8;
+class Vector2x8;
 struct Quaternion;
 class Transform;
 class Triangle;
@@ -109,6 +114,19 @@ class Random;
 class Matrix2;
 class Matrix3;
 class Matrix4;
+class Triangle_Simd8;
+class Ray_Simd8;
+class Box_Simd8;
+class Distribution;
+class Half;
+struct Half2;
+struct Half3;
+struct Half4;
+class PackedUnitVector3;
+class PackedColorRgbHdr;
+class SharedExpFloat3;
+class PackedFloat3;
+struct Packed565;
 
 } // namespace Math
 

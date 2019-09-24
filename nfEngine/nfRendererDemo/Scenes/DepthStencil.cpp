@@ -300,7 +300,7 @@ void DepthStencilScene::Draw(float dt)
                                                 DegToRad(70.0f), 100.0f, 0.1f);
 
     Matrix4 reflectionMatrix = Matrix4::MakeScaling(Vector4(1.0f, -1.0f, 1.0f)) *
-                              Matrix4::MakeTranslation3(Vector4(0.0f, -2.0f, 0.0f));
+                               Matrix4::MakeTranslation(Vector4(0.0f, -2.0f, 0.0f));
 
     mCommandBuffer->Begin();
     mCommandBuffer->SetViewport(0.0f, static_cast<float>(WINDOW_WIDTH), 0.0f,

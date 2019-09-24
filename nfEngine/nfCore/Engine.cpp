@@ -175,7 +175,7 @@ bool Engine::Advance(const Common::ArrayView<Renderer::View*> views, const Commo
 
         // GUI renderer pass
         {
-            GuiRendererContext* guiContext = ctx->guiContext.get();
+            GuiRendererContext* guiContext = ctx->guiContext.Get();
 
             GuiRenderer::Get()->OnEnter(guiContext);
             GuiRenderer::Get()->SetTarget(guiContext, view->GetRenderTarget(true));

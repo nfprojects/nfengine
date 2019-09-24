@@ -28,9 +28,6 @@
     <ClCompile Include="TestCases\Math\MathTransformTest.cpp">
       <Filter>TestCases\Math</Filter>
     </ClCompile>
-    <ClCompile Include="TestCases\Math\MathVectorTest.cpp">
-      <Filter>TestCases\Math</Filter>
-    </ClCompile>
     <ClCompile Include="TestCases\Math\MathGeometryTest.cpp">
       <Filter>TestCases\Math</Filter>
     </ClCompile>
@@ -38,9 +35,6 @@
       <Filter>TestCases\Math</Filter>
     </ClCompile>
     <ClCompile Include="TestCases\Math\MathBoxTest.cpp">
-      <Filter>TestCases\Math</Filter>
-    </ClCompile>
-    <ClCompile Include="TestCases\Math\MathRandomTest.cpp">
       <Filter>TestCases\Math</Filter>
     </ClCompile>
     <ClCompile Include="TestCases\Math\MathConversionsTest.cpp">
@@ -219,6 +213,30 @@
     </ClCompile>
     <ClCompile Include="TestCases\System\ExclusiveLockTest.cpp">
       <Filter>TestCases\System</Filter>
+    </ClCompile>
+    <ClCompile Include="TestCases\Math\RandomTest.cpp">
+      <Filter>TestCases\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="TestCases\Math\MathDistributionTest.cpp">
+      <Filter>TestCases\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="TestCases\Math\MathPackedTest.cpp">
+      <Filter>TestCases\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="TestCases\Math\MathVector4LoadTest.cpp">
+      <Filter>TestCases\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="TestCases\Math\MathVector4Test.cpp">
+      <Filter>TestCases\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="TestCases\Math\MathVector8Test.cpp">
+      <Filter>TestCases\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="TestCases\Math\MathVectorInt4Test.cpp">
+      <Filter>TestCases\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="TestCases\Math\MathVectorInt8Test.cpp">
+      <Filter>TestCases\Math</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

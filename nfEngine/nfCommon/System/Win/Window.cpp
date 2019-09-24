@@ -9,6 +9,7 @@
 #include "Common.hpp"
 #include "Logger/Logger.hpp"
 
+#include <shellapi.h>
 
 namespace NFE {
 namespace Common {
@@ -57,6 +58,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 
 Window::Window()
     : mHandle(0)
+    , mDC(NULL)
     , mInstance(0)
     , mClosed(true)
     , mWidth(200)
@@ -237,6 +239,8 @@ bool Window::Open()
     UpdateWindow(mHandle);
     SetFocus(mHandle);
 
+    mDC = GetDC(mHandle);
+
     mClosed = false;
     return true;
 }
@@ -249,25 +253,52 @@ bool Window::Close()
     if (!mInvisible)
         ShowWindow(mHandle, SW_HIDE);
 
+    if (mDC != NULL)
+    {
+        ReleaseDC(mHandle, mDC);
+    }
+
     DestroyWindow(mHandle);
     mClosed = true;
     return true;
 }
 
+bool Window::DrawPixels(const uint8* data, uint32 width, uint32 height, uint32 stride)
+{
+    BITMAPINFO bmi;
+    ZeroMemory(&bmi, sizeof(bmi));
+    bmi.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
+    bmi.bmiHeader.biWidth = width;
+    bmi.bmiHeader.biHeight = -static_cast<int32>(height); // flip the image
+    bmi.bmiHeader.biPlanes = 1;
+    bmi.bmiHeader.biCompression = BI_RGB;
+    bmi.bmiHeader.biSizeImage = stride * height;
+    bmi.bmiHeader.biXPelsPerMeter = 1;
+    bmi.bmiHeader.biYPelsPerMeter = 1;
+    bmi.bmiHeader.biBitCount = 32; // TODO more formats
 
-void Window::MouseDown(uint32 button, int x, int y)
+    if (0 == SetDIBitsToDevice(mDC, 0, 0, mWidth, mHeight, 0, 0, 0, mHeight, data, &bmi, DIB_RGB_COLORS))
+    {
+        NFE_LOG_ERROR("Paint failed, error code: %u", GetLastError());
+        return false;
+    }
+
+    return true;
+}
+
+void Window::MouseDown(MouseButton button, int x, int y)
 {
     SetCapture(mHandle);
-    mMouseButtons[button] = true;
+    mMouseButtons[static_cast<uint32>(button)] = true;
     mMousePos[0] = x;
     mMousePos[1] = y;
 
     OnMouseDown(button, x, y);
 }
 
-void Window::MouseUp(uint32 button)
+void Window::MouseUp(MouseButton button)
 {
-    mMouseButtons[button] = false;
+    mMouseButtons[static_cast<uint32>(button)] = false;
 
     bool ButtonsReleased = true;
     for (int i = 0; i < 3; i++)
@@ -360,39 +391,39 @@ LRESULT CALLBACK Window::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM 
         // MOUSE
         case WM_LBUTTONDOWN:
         {
-            window->MouseDown(0, GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
+            window->MouseDown(MouseButton::Left, GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
             return 0;
         }
 
         case WM_LBUTTONUP:
         {
-            window->MouseUp(0);
+            window->MouseUp(MouseButton::Left);
             return 0;
         }
 
 
         case WM_MBUTTONDOWN:
         {
-            window->MouseDown(2, GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
+            window->MouseDown(MouseButton::Middle, GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
             return 0;
         }
 
         case WM_MBUTTONUP:
         {
-            window->MouseUp(2);
+            window->MouseUp(MouseButton::Middle);
             return 0;
         }
 
 
         case WM_RBUTTONDOWN:
         {
-            window->MouseDown(1, GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
+            window->MouseDown(MouseButton::Right, GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
             return 0;
         }
 
         case WM_RBUTTONUP:
         {
-            window->MouseUp(1);
+            window->MouseUp(MouseButton::Right);
             return 0;
         }
 
@@ -425,6 +456,29 @@ LRESULT CALLBACK Window::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM 
 
             return 0;
         }
+
+        case WM_DROPFILES:
+        {
+            const uint32 bufferSize = 1024;
+            wchar_t buffer[bufferSize] = { 0 };
+            HDROP hDropInfo = (HDROP)wParam;
+            if (0 != ::DragQueryFile(hDropInfo, 0, buffer, bufferSize))
+            {
+                String filePath;
+                if (UTF16ToUTF8(std::wstring(buffer), filePath))
+                {
+                    NFE_LOG_DEBUG("Window: File dropped: '%s'", filePath.Str());
+                    window->OnFileDrop(filePath);
+                }
+                else
+                {
+                    NFE_LOG_ERROR("Failed to convert UTF-16 file path to UTF-8 string");
+                }
+                return 0;
+            }
+
+            break;
+        }
     }
 
     return DefWindowProc(hWnd, message, wParam, lParam);
@@ -432,9 +486,9 @@ LRESULT CALLBACK Window::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM 
 
 void Window::LostFocus()
 {
-    MouseUp(0);
-    MouseUp(1);
-    MouseUp(2);
+    MouseUp(MouseButton::Left);
+    MouseUp(MouseButton::Middle);
+    MouseUp(MouseButton::Right);
 
     for (int i = 0; i < NFE_WINDOW_KEYS_NUM; i++)
     {
@@ -530,7 +584,7 @@ void Window::OnScroll(int delta)
     NFE_UNUSED(delta);
 }
 
-void Window::OnMouseDown(uint32 button, int x, int y)
+void Window::OnMouseDown(MouseButton button, int x, int y)
 {
     NFE_UNUSED(button);
     NFE_UNUSED(x);
@@ -545,9 +599,14 @@ void Window::OnMouseMove(int x, int y, int deltaX, int deltaY)
     NFE_UNUSED(deltaY);
 }
 
-void Window::OnMouseUp(uint32 button)
+void Window::OnMouseUp(MouseButton button)
 {
     NFE_UNUSED(button);
+}
+
+void Window::OnFileDrop(const String& filePath)
+{
+    NFE_UNUSED(filePath);
 }
 
 } // namespace Common

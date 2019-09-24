@@ -1,20 +1,12 @@
-/**
- * @file
- * @author Witek902 (witek902@gmail.com)
- * @brief  Box class declarations.
- */
-
 #pragma once
 
-#include "Math.hpp"
 #include "Vector4.hpp"
-
 
 namespace NFE {
 namespace Math {
 
 /**
- * Axis aligned 3D box shape.
+ * Axis Aligned Box
  */
 class NFE_ALIGN(16) Box
 {
@@ -22,92 +14,111 @@ public:
     Vector4 min;
     Vector4 max;
 
-    /**
-     * Create default box - (0,0,0) point.
-     */
-    Box() : min(), max() {}
+    NFE_FORCE_INLINE Box() = default;
 
-    explicit Box(const Vector4& min, const Vector4& max) : min(min), max(max) { }
-    explicit Box(const Vector4& minMax) : min(minMax), max(minMax) { }
+    NFE_FORCE_INLINE Box(const Box&) = default;
 
-    /**
-     * Create a box from center point and radius (e.g. bounding box of a sphere).
-     */
-    NFE_INLINE Box(const Vector4& center, float radius);
+    NFE_FORCE_INLINE explicit Box(const Vector4& point)
+        : min(point)
+        , max(point)
+    {}
 
-    /**
-     * Create a box that includes two other boxes.
-     */
-    NFE_INLINE Box(const Box& a, const Box& b);
+    NFE_FORCE_INLINE Box(const Vector4& min, const Vector4& max)
+        : min(min)
+        , max(max)
+    {}
 
-    /**
-     * Offset box using a vector.
-     */
-    NFE_INLINE Box& operator += (const Vector4& offset);
-    NFE_INLINE Box& operator -= (const Vector4& offset);
-    NFE_INLINE Box operator + (const Vector4& offset) const;
-    NFE_INLINE Box operator - (const Vector4& offset) const;
+    NFE_FORCE_INLINE Box(const Vector4& a, const Vector4& b, const Vector4& c)
+        : min(Vector4::Min(a, Vector4::Min(b, c)))
+        , max(Vector4::Max(a, Vector4::Max(b, c)))
+    {}
 
-    /**
-     * Scale the box.
-     */
-    NFE_INLINE Box& operator *= (const Vector4& scale);
-    NFE_INLINE Box& operator *= (const float scale);
-    NFE_INLINE Box operator * (const Vector4& scale) const;
-    NFE_INLINE Box operator * (const float scale) const;
+    NFE_FORCE_INLINE Box(const Vector4& a, const Vector4& b, const Vector4& c, const Vector4& d)
+        : min(Vector4::Min(Vector4::Min(a, b), Vector4::Min(c, d)))
+        , max(Vector4::Max(Vector4::Max(a, b), Vector4::Max(c, d)))
+    {}
 
-    /**
-     * Calculate box center.
-     */
-    NFE_INLINE Vector4 GetCenter() const;
+    NFE_FORCE_INLINE static const Box Empty()
+    {
+        return { VECTOR_MAX, -VECTOR_MAX };
+    }
 
-    /**
-     * Calculate box vertex position.
-     */
-    NFE_INLINE Vector4 GetVertex(int id) const;
+    NFE_FORCE_INLINE static const Box Full()
+    {
+        return { -VECTOR_MAX, VECTOR_MAX };
+    }
 
-    /**
-     * Find a point with maximum scalar projection value along @dir direction.
-     */
-    NFE_INLINE Vector4 SupportVertex(const Vector4& dir) const;
+    // create box from center point and radius (e.g. bounding box of a sphere)
+    NFE_FORCE_INLINE Box(const Vector4& center, float radius)
+        : min(center - Vector4(radius))
+        , max(center + Vector4(radius))
+    {}
 
-    /**
-     * Calculate box surface area.
-     */
-    NFCOMMON_API float SurfaceArea() const;
+    // merge boxes
+    NFE_FORCE_INLINE Box(const Box& a, const Box& b)
+        : min(Vector4::Min(a.min, b.min))
+        , max(Vector4::Max(a.max, b.max))
+    {}
 
-    /**
-     * Calculate box volume.
-     */
-    NFCOMMON_API float Volume() const;
+    NFE_FORCE_INLINE const Box operator + (const Vector4& offset) const
+    {
+        return Box{ min + offset, max + offset };
+    }
 
-    /**
-     * Create empty box.
-     * @notes Empty box means no extents defined (not even a single point).
-     */
-    NFE_INLINE static Box Empty();
+    NFE_FORCE_INLINE const Vector4 GetCenter() const
+    {
+        return (min + max) * 0.5f;
+    }
 
-    NFE_INLINE bool operator == (const Box& rhs) const;
-    NFE_INLINE bool operator != (const Box& rhs) const;
+    NFE_FORCE_INLINE float SurfaceArea() const
+    {
+        Vector4 size = max - min;
+        const float halfArea = size.x * (size.y + size.z) + size.y * size.z;
+        return halfArea + halfArea;
+    }
 
-    /**
-     * Extend this box so that it includes another box.
-     */
-    NFE_INLINE Box& AddBox(const Box& otherBox);
+    NFE_FORCE_INLINE float Volume() const
+    {
+        Vector4 size = max - min;
+        return size.x * size.y * size.z;
+    }
 
-    /**
-     * Extend this box so that it includes a point.
-     */
-    NFE_INLINE Box& AddPoint(const Vector4& point);
+    NFE_FORCE_INLINE Box& AddPoint(const Vector4& point)
+    {
+        min = Vector4::Min(min, point);
+        max = Vector4::Max(max, point);
+        return *this;
+    }
 
-    /**
-     * Check if is empty (has no extents defined, even a single point).
-     */
-    NFE_INLINE bool IsEmpty() const;
+    // point-box intersection test
+    NFE_FORCE_INLINE bool Intersects(const Vector4& point) const
+    {
+        const VectorBool4 mask = (point >= min) & (point <= max);
+        return (mask.GetMask() & 7) == 7;
+    }
+
+    NFE_FORCE_INLINE const Vector4 GetVertex(uint32 index) const
+    {
+        NFE_ASSERT(index < 8);
+        return Vector4
+        {
+            (index & (1 << 0)) ? max.x : min.x,
+            (index & (1 << 1)) ? max.y : min.y,
+            (index & (1 << 2)) ? max.z : min.z
+        };
+    }
+
+    NFE_FORCE_INLINE bool operator == (const Box& rhs) const
+    {
+        return (((min == rhs.min) & (max == rhs.max)).GetMask() & 7) == 7;
+    }
+
+    NFE_FORCE_INLINE bool Box::operator != (const Box& rhs) const
+    {
+        return !operator==(rhs);
+    }
 };
+
 
 } // namespace Math
 } // namespace NFE
-
-
-#include "BoxImpl.hpp"

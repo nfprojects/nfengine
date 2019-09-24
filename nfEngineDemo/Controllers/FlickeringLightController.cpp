@@ -12,9 +12,10 @@ namespace NFE {
 using namespace Scene;
 using namespace Math;
 
+static Math::Random gRandomGenerator;
+
 FlickeringLightController::FlickeringLightController(const Float3& baseColor, float freqency)
-    : mRandomGenerator((uint64)this)
-    , mBaseColor(baseColor)
+    : mBaseColor(baseColor)
     , mFrequency(freqency)
 { }
 
@@ -28,7 +29,7 @@ void FlickeringLightController::OnEvent(const Scene::Event& event)
         LightComponent* light = entity->GetComponent<LightComponent>();
         NFE_ASSERT(light, "Light component not found");
 
-        const float lightValue = mRandomGenerator.GetFloat() < mFrequency ? 0.5f : 1.0f;
+        const float lightValue = gRandomGenerator.GetFloat() < mFrequency ? 0.5f : 1.0f;
         light->SetColor(mBaseColor * lightValue);
     }
 }

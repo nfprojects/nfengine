@@ -17,7 +17,7 @@ TEST(MathTransform, TransformPoint)
 {
     const Transform t(TEST_TRANSLATION, Quaternion::RotationY(Constants::pi<float> / 2.0f));
 
-    EXPECT_TRUE(Vector4::AlmostEqual(Vector4(1.0f, 2.0f, 3.0f), t.TransformPoint(Vector4())));
+    EXPECT_TRUE(Vector4::AlmostEqual(Vector4(1.0f, 2.0f, 3.0f), t.TransformPoint(Vector4::Zero())));
     EXPECT_TRUE(Vector4::AlmostEqual(Vector4(1.0f, 2.0f, 2.0f), t.TransformPoint(Vector4(1.0f, 0.0f, 0.0f))));
     EXPECT_TRUE(Vector4::AlmostEqual(Vector4(1.0f, 2.0f, 4.0f), t.TransformPoint(Vector4(-1.0f, 0.0f, 0.0f))));
     EXPECT_TRUE(Vector4::AlmostEqual(Vector4(1.0f, 3.0f, 3.0f), t.TransformPoint(Vector4(0.0f, 1.0f, 0.0f))));
@@ -30,7 +30,7 @@ TEST(MathTransform, TransformVector)
 {
     const Transform t(TEST_TRANSLATION, Quaternion::RotationY(Constants::pi<float> / 2.0f));
 
-    EXPECT_TRUE(Vector4::AlmostEqual(Vector4(0.0f, 0.0f, 0.0f), t.TransformVector(Vector4())));
+    EXPECT_TRUE(Vector4::AlmostEqual(Vector4(0.0f, 0.0f, 0.0f), t.TransformVector(Vector4::Zero())));
     EXPECT_TRUE(Vector4::AlmostEqual(Vector4(0.0f, 0.0f, -1.0f), t.TransformVector(Vector4(1.0f, 0.0f, 0.0f))));
     EXPECT_TRUE(Vector4::AlmostEqual(Vector4(0.0f, 0.0f, 1.0f), t.TransformVector(Vector4(-1.0f, 0.0f, 0.0f))));
     EXPECT_TRUE(Vector4::AlmostEqual(Vector4(0.0f, 1.0f, 0.0f), t.TransformVector(Vector4(0.0f, 1.0f, 0.0f))));
@@ -48,7 +48,7 @@ TEST(MathTransform, CompoundTransform)
 
     const Vector4 testVectors[5] =
     {
-        Vector4(),
+        Vector4::Zero(),
         Vector4(1.0f, 0.0f, 0.0f),
         Vector4(0.0f, 1.0f, 0.0f),
         Vector4(0.0f, 0.0f, 1.0f),
@@ -74,7 +74,7 @@ TEST(MathTransform, Invert_TranslationOnly)
 
 TEST(MathTransform, Invert_RotationOnly)
 {
-    const Transform t(Vector4(), TEST_ROTATION);
+    const Transform t(Vector4::Zero(), TEST_ROTATION);
     const Transform inverted = t.Inverted();
 
     EXPECT_TRUE(Transform::AlmostEqual(Transform(), t * inverted, 0.00001f));

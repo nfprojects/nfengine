@@ -12,11 +12,11 @@ namespace Math {
 
 Frustum Frustum::ConstructForPerspective(const Matrix4& matrix, float nearDist, float farDist, float cutoff, float aspect)
 {
-    const Vector4 pos = matrix.GetRow(3) & VECTOR_MASK_XYZ;
+    const Vector4 pos = matrix[3] & Vector4::MakeMask<1,1,1,0>();
     const float scale = tanf(cutoff / 2.0f);
-    const Vector4 xAxis = aspect * scale * matrix.GetRow(0);
-    const Vector4 yAxis = scale * matrix.GetRow(1);
-    const Vector4 zAxis = scale * matrix.GetRow(2);
+    const Vector4 xAxis = aspect * scale * matrix[0];
+    const Vector4 yAxis = scale * matrix[1];
+    const Vector4 zAxis = scale * matrix[2];
 
     return ConstructForPerspective(pos, xAxis, yAxis, zAxis, nearDist, farDist);
 }

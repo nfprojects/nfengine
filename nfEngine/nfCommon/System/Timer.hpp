@@ -31,12 +31,14 @@ class NFCOMMON_API Timer
 private:
 #if defined(WIN32)
     LARGE_INTEGER mStart; // start point
-    double mPeriod;
 #elif defined(__LINUX__) | defined(__linux__)
     struct timespec mStart;
 #endif // defined(WIN32)
 
 public:
+
+    static const double gPeriod;
+
     Timer();
 
     /**
@@ -50,7 +52,10 @@ public:
      */
     double Stop();
 
-    //TODO: Pause / Resume
+    /**
+     * Restart measurement and return previous time.
+     */
+    double Restart();
 };
 
 } // namespace Common

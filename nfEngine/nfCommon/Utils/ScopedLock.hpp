@@ -112,8 +112,8 @@ template <typename LockType>
 using ScopedExclusiveLock = ScopedLock<LockType, ExclusiveLockPolicy<LockType>>;
 
 
-#define NFE_SCOPED_LOCK(lock) ScopedExclusiveLock<decltype(lock)> NFE_UNIQUE_NAME(__lockObject)(lock)
-#define NFE_SCOPED_SHARED_LOCK(lock) ScopedSharedLock<decltype(lock)> NFE_UNIQUE_NAME(__lockObject)(lock)
-
 } // namespace Common
 } // namespace NFE
+
+#define NFE_SCOPED_LOCK(lock) NFE::Common::ScopedExclusiveLock<decltype(lock)> NFE_UNIQUE_NAME(__lockObject)(lock)
+#define NFE_SCOPED_SHARED_LOCK(lock) NFE::Common::ScopedSharedLock<decltype(lock)> NFE_UNIQUE_NAME(__lockObject)(lock)

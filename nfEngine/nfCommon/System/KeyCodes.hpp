@@ -16,14 +16,22 @@
 namespace NFE {
 namespace Common {
 
+enum class MouseButton : uint8
+{
+    Left = 0,
+    Middle = 2,
+    Right = 1,
+};
+
 #ifdef WIN32
 
 /**
  * KeyCode enum for Windows. Based on official MSDN reference:
  *   https://msdn.microsoft.com/en-us/library/windows/desktop/dd375731(v=vs.85).aspx
  */
-enum class KeyCode: unsigned int
+enum class KeyCode : uint32
 {
+    Invalid = 0,
     Backspace = VK_BACK,
     Tab = VK_TAB,
     // here 0x0A-0x0B are reserved, 0x0C is unused CLEAR
@@ -155,8 +163,9 @@ enum class KeyCode: unsigned int
  * For verification, it is recommended to launch with following call:
  *   xev | awk -F'[ )]+' '/^KeyPress/ { a[NR+2] } NR in a { printf "%-3s %s\n", $5, $8 }'
  */
-enum class KeyCode: unsigned int
+enum class KeyCode : uint32
 {
+    Invalid = 0,
     Escape = 9,
     Num1,
     Num2,

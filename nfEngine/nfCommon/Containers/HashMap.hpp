@@ -16,7 +16,11 @@ namespace NFE {
 namespace Common {
 
 
-template<typename KeyType, typename ValueType, typename HashPolicy = DefaultHashPolicy<KeyType>>
+template<
+    typename KeyType,
+    typename ValueType,
+    typename HashPolicy = DefaultHashPolicy<KeyType>,
+    typename EqualsPolicy = std::equal_to<KeyType>>
 class HashMap final
 {
 public:
@@ -44,15 +48,27 @@ public:
     };
 
     // hash policy that takes first pair element into account
+    template<typename HashPolicy>
     struct InternalHashPolicy
     {
-        uint32 operator() (const InternalKey& in) const
+        NFE_FORCE_INLINE uint32 operator() (const InternalKey& in) const
         {
-            return GetHash(in.first);
+            HashPolicy hashPolicy;
+            return hashPolicy(in.first);
         }
     };
 
-    using InternalSet = HashSet<InternalKey, InternalHashPolicy>;
+    template<typename EqualsPolicy>
+    struct InternalEqualsPolicy
+    {
+        NFE_FORCE_INLINE bool operator() (const InternalKey& lhs, const InternalKey& rhs) const
+        {
+            EqualsPolicy equalsPolicy;
+            return equalsPolicy(lhs.first, rhs.first);
+        }
+    };
+
+    using InternalSet = HashSet<InternalKey, InternalHashPolicy<HashPolicy>, InternalEqualsPolicy<EqualsPolicy>>;
     using InsertResult = typename InternalSet::InsertResult;
     using ConstIterator = typename InternalSet::ConstIterator;
     using Iterator = typename InternalSet::Iterator;

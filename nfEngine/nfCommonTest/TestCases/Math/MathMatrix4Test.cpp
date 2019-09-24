@@ -36,7 +36,7 @@ TEST(MathMatrix4, Simple)
 
     EXPECT_TRUE(matA[2][2] == -1.0f); // rows access
     EXPECT_FALSE(matA == matB);
-    EXPECT_TRUE(matI == Matrix4());
+    EXPECT_TRUE(matI == Matrix4::Identity());
     EXPECT_TRUE(matTransposeA == matA.Transposed());
 }
 
@@ -46,15 +46,12 @@ TEST(MathMatrix4, Arithmetics)
                                   Vector4(-79.0f,  7.0f,  -35.0f,  -91.0f),
                                   Vector4(-111.0f, 83.0f, -118.0f, -66.0f),
                                   Vector4(95.0f,  -76.0f,  144.0f, -70.0f));
-    const Vector4 vecA = Vector4(1.0f, 2.0f, 3.0f, 4.0f);
-
-    // expected product of matA and vecA
-    const Vector4 matAvecA = Vector4(-20.0f, 39.0f, 35.0f, -8.0f);
-    const Vector4 matAvecAaffine = Vector4(-11.0f, 42.0f, 11.0f, 19.0f);
 
     EXPECT_TRUE(matAB == matA * matB);
-    EXPECT_TRUE(Matrix4::Equal(matI, matA * matA.Inverted(), NFE_MATH_EPSILON));
-    EXPECT_TRUE(Vector4::AlmostEqual(matAvecA, vecA * matA));
-    EXPECT_TRUE(Vector4::Abs(matAvecAaffine - matA.LinearCombination3(vecA)) <
-                Vector4::Splat(NFE_MATH_EPSILON));
+}
+
+TEST(MathMatrix4, Determinant)
+{
+    EXPECT_EQ(1.0f, Matrix4::Identity().Determinant());
+    EXPECT_EQ(-12039.0f, matA.Determinant());
 }

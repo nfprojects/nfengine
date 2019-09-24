@@ -12,6 +12,7 @@
 
 // disable some Visual Studio specific warnings
 #ifdef _MSC_VER
+
 // "class 'type' needs to have dll-interface to be used by clients of class 'type2'"
 #pragma warning(disable: 4251)
 
@@ -23,7 +24,15 @@
 
 // "structure was padded due to alignment specifier"
 #pragma warning(disable: 4324)
+
+// "C++ nonstandard extension: nameless struct"
+#pragma warning(disable : 4201)
+
+#ifndef strdup
+#define strdup _strdup
 #endif
+
+#endif // _MSC_VER
 
 
 // DLL import / export macro
@@ -47,19 +56,31 @@
 #endif // WIN32
 
 
+// force global variable definition to be shared across all compilation units
+#if defined(WIN32)
+#define NFE_GLOBAL_CONST extern const __declspec(selectany)
+#elif defined(__LINUX__) | defined(__linux__)
+#define NFE_GLOBAL_CONST const
+#else
+#error "Target system not supported!"
+#endif // defined(WIN32)
+
+
+#define NFE_INLINE inline
+
 // macro forcing a function to be inlined
 #if defined(__LINUX__) | defined(__linux__)
 #define NFE_INLINE inline __attribute__((always_inline))
 #elif defined(WIN32)
-#define NFE_INLINE __forceinline
+#define NFE_FORCE_INLINE __forceinline
 #endif // defined(__LINUX__) | defined(__linux__)
 
 
 // macro forcing a function not to be inlined
 #ifdef WIN32
-#define NFE_NO_INLINE __declspec(noinline)
+#define NFE_FORCE_NOINLINE __declspec(noinline)
 #elif defined(__LINUX__) || defined(__linux__)
-#define NFE_NO_INLINE __attribute__((noinline))
+#define NFE_FORCE_NOINLINE __attribute__((noinline))
 #endif // WIN32
 
 
@@ -73,16 +94,29 @@
 #endif // defined(WIN32)
 
 
+#define NFE_CACHE_LINE_SIZE 64u
+
+
 // macro for data prefetching from RAM to CPU cache.
 #ifdef WIN32
 #ifdef NFE_USE_SSE
-#define NFE_PREFETCH(addr) _mm_prefetch(reinterpret_cast<const char*>(addr), _MM_HINT_T0)
+#define NFE_PREFETCH_L1(addr) _mm_prefetch(reinterpret_cast<const char*>(addr), _MM_HINT_T0)
 #else
-#define NFE_PREFETCH(addr)
+#define NFE_PREFETCH_L1(addr)
 #endif // NFE_USE_SSE
 #elif defined(__LINUX__) || defined(__linux__)
-#define NFE_PREFETCH(addr) __builtin_prefetch(addr, 0, 3) // prefetch for read to all cache levels
+#define NFE_PREFETCH_L1(addr) __builtin_prefetch(addr, 0, 3) // prefetch for read to all cache levels
 #endif // WIN32
+
+
+// debug break
+#if defined(WIN32)
+#define NFE_BREAK() __debugbreak()
+#elif defined(__LINUX__) | defined(__linux__)
+#define NFE_BREAK() __builtin_trap()
+#else
+#error "Target system not supported!"
+#endif // defined(WIN32)
 
 
 // use this inside a class declaration to make it non-copyable

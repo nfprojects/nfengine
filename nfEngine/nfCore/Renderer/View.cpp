@@ -294,7 +294,7 @@ void View::Postprocess(RenderContext* ctx)
         params.noiseFactor = postProcessParams.noiseFactor;
         params.exposureOffset = postProcessParams.exposureOffset;
 
-        PostProcessRendererContext* postProcessContext = ctx->postProcessContext.get();
+        PostProcessRendererContext* postProcessContext = ctx->postProcessContext.Get();
 
         PostProcessRenderer::Get()->OnEnter(postProcessContext);
         PostProcessRenderer::Get()->ApplyTonemapping(postProcessContext, params,

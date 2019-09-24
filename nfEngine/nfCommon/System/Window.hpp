@@ -31,6 +31,7 @@ private:
 #if defined(WIN32)
     static LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
     HWND mHandle;
+    HDC mDC;
     HINSTANCE mInstance;
     wchar_t mWndClass[48];
 #elif defined(__LINUX__) | defined(__linux__)
@@ -63,8 +64,8 @@ private:
     void* mResizeCallbackUserData;
 
     void LostFocus();
-    void MouseDown(uint32 button, int x, int y);
-    void MouseUp(uint32 button);
+    void MouseDown(MouseButton button, int x, int y);
+    void MouseUp(MouseButton button);
     void MouseMove(int x, int y);
 
     Window(const Window&);
@@ -139,9 +140,9 @@ public:
     /**
      * Check if a mouse button is pressed
      */
-    NFE_INLINE bool IsMouseButtonDown(uint32 button) const
+    NFE_INLINE bool IsMouseButtonDown(MouseButton button) const
     {
-        return mMouseButtons[button];
+        return mMouseButtons[static_cast<uint32>(button)];
     }
 
     /**
@@ -175,6 +176,11 @@ public:
      */
     void SetTitle(const char* title);
 
+    // Display image in the window
+    // Image must be in 32-bit BGRA format
+    // TODO: accept Bitmap instead
+    bool DrawPixels(const uint8* data, uint32 width, uint32 height, uint32 stride);
+
     /**
      * Set callback to be used when Window is resized.
      *
@@ -207,9 +213,10 @@ public:
     virtual void OnKeyUp(KeyCode key);
     virtual void OnCharTyped(const char* charUTF8);
     virtual void OnScroll(int delta);
-    virtual void OnMouseDown(uint32 button, int x, int y);
+    virtual void OnMouseDown(MouseButton button, int x, int y);
     virtual void OnMouseMove(int x, int y, int deltaX, int deltaY);
-    virtual void OnMouseUp(uint32 button);
+    virtual void OnMouseUp(MouseButton button);
+    virtual void OnFileDrop(const String& filePath);
 };
 
 } // namespace Common

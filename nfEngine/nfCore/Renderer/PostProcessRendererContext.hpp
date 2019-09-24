@@ -16,7 +16,7 @@ namespace Renderer {
 /**
  * PostProcess Renderer's per context data
  */
-struct PostProcessRendererContext
+struct NFE_ALIGN(32) PostProcessRendererContext : Common::Aligned<32>
 {
     CommandRecorderPtr commandRecorder;
 

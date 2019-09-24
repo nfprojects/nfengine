@@ -468,6 +468,52 @@ bool DynArray<ElementType>::Resize(uint32 size)
 }
 
 template<typename ElementType>
+bool DynArray<ElementType>::Resize(uint32 size, const ElementType& defaultElement)
+{
+    const uint32 oldSize = this->mSize;
+
+    // call destructors
+    for (uint32 i = size; i < oldSize; ++i)
+    {
+        this->mElements[i].~ElementType();
+    }
+
+    if (!Reserve(size))
+    {
+        return false;
+    }
+
+    // initialize new elements
+    for (uint32 i = oldSize; i < size; ++i)
+    {
+        new (this->mElements + i) ElementType(defaultElement);
+    }
+
+    this->mSize = size;
+    return true;
+}
+
+template<typename ElementType>
+bool DynArray<ElementType>::Resize_SkipConstructor(uint32 size)
+{
+    const uint32 oldSize = this->mSize;
+
+    // call destructors
+    for (uint32 i = size; i < oldSize; ++i)
+    {
+        this->mElements[i].~ElementType();
+    }
+
+    if (!Reserve(size))
+    {
+        return false;
+    }
+
+    this->mSize = size;
+    return true;
+}
+
+template<typename ElementType>
 void DynArray<ElementType>::Swap(DynArray& other)
 {
     std::swap(this->mElements, other->mElements);

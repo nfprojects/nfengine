@@ -17,6 +17,11 @@
 namespace NFE {
 namespace Common {
 
+void HandleFatalAssertion(const char* expressionStr, const char* functionStr, const char* srcFile, int line)
+{
+    HandleFatalAssertion(expressionStr, functionStr, srcFile, line, "<no message>");
+}
+
 void HandleFatalAssertion(const char* expressionStr, const char* functionStr, const char* srcFile, int line, const char* str, ...)
 {
     // keep shorter strings on the stack

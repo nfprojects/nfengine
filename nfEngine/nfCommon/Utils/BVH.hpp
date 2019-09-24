@@ -33,21 +33,13 @@ namespace Common {
 
 struct NFE_ALIGN(16) BVHNode
 {
-    union
-    {
-        Math::Box box;
-
-        struct
-        {
-            float boxMin[3]; // not used directly
-            uint32 child0;   // set to NFE_BVH_NULL_NODE when the node is leaf node
-            float boxMax[3]; // not used directly
-            uint32 child1;
-        };
-    };
+    Math::Float3 boxMin;
+    uint32 child0;   // set to NFE_BVH_NULL_NODE when the node is leaf node
+    Math::Float3 boxMax;
+    uint32 child1;
 
     // TODO: move to separate arrays
-    void* userData;
+    void* userData = nullptr;
     uint32 height; // node height (counting from leaves)
 
     union
@@ -58,21 +50,27 @@ struct NFE_ALIGN(16) BVHNode
 
     BVHNode();
 
-    NFE_INLINE void SetBox(const Math::Box& newBox)
+    NFE_FORCE_INLINE BVHNode(const BVHNode& other) = default;
+
+
+    NFE_FORCE_INLINE const Math::Box GetBox() const
     {
-        uint32 tmp0 = child0;
-        uint32 tmp1 = child1;
-        box = newBox;
-        child0 = tmp0;
-        child1 = tmp1;
+        const Math::Vector4 mask = Math::Vector4::MakeMask<1, 1, 1, 0>();
+        return { Math::Vector4(&boxMin.x) & mask, Math::Vector4(&boxMax.x) & mask };
     }
 
-    NFE_INLINE bool IsValid() const
+    NFE_FORCE_INLINE void SetBox(const Math::Box& newBox)
+    {
+        boxMin = newBox.min.ToFloat3();
+        boxMax = newBox.max.ToFloat3();
+    }
+
+    NFE_FORCE_INLINE bool IsValid() const
     {
         return height != NFE_BVH_NULL_NODE;
     }
 
-    NFE_INLINE bool IsLeaf() const
+    NFE_FORCE_INLINE bool IsLeaf() const
     {
         return child0 == NFE_BVH_NULL_NODE;
     }
@@ -208,7 +206,7 @@ public:
 
 
 template <typename ShapeType>
-NFE_NO_INLINE void BVH::Query(const ShapeType& shape, const QueryCallback& callback) const
+NFE_FORCE_NOINLINE void BVH::Query(const ShapeType& shape, const QueryCallback& callback) const
 {
     using namespace Math;
 
@@ -227,13 +225,15 @@ NFE_NO_INLINE void BVH::Query(const ShapeType& shape, const QueryCallback& callb
         // prefetch children while calculating node box intersection
         if (!node.IsLeaf())
         {
-            NFE_PREFETCH(&mNodes[node.child0]);
-            NFE_PREFETCH(&mNodes[node.child1]);
+            NFE_PREFETCH_L1(&mNodes[node.child0]);
+            NFE_PREFETCH_L1(&mNodes[node.child1]);
         }
 
-        IntersectionResult result = IntersectEx(node.box, shape);
+        IntersectionResult result = IntersectEx(node.GetBox(), shape);
         if (result == IntersectionResult::Inside)
+        {
             QueryAll(nodeID, callback);
+        }
         else if (result == IntersectionResult::Intersect)
         {
             if (node.IsLeaf())

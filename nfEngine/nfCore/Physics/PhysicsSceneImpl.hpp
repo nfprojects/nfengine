@@ -24,8 +24,8 @@ namespace Physics {
 /**
  * Physics Body proxy managed by the physics scene.
  */
-class NFE_ALIGN(16) BodyProxy
-    : public Common::Aligned<16>
+class NFE_ALIGN(32) BodyProxy
+    : public Common::Aligned<32>
 {
     NFE_MAKE_NONCOPYABLE(BodyProxy)
 

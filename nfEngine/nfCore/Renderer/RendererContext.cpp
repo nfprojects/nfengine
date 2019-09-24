@@ -21,6 +21,7 @@
 namespace NFE {
 namespace Renderer {
 
+using namespace Common;
 
 RenderContext::RenderContext()
 {
@@ -32,12 +33,12 @@ RenderContext::RenderContext()
     commandRecorderDebug = renderer->GetDevice()->CreateCommandRecorder();
     commandRecorderOnScreen = renderer->GetDevice()->CreateCommandRecorder();
 
-    geometryContext = std::make_unique<GeometryRendererContext>(commandRecorderGeometry);
-    shadowsContext = std::make_unique<GeometryRendererContext>(commandRecorderShadows);
-    lightsContext = std::make_unique<LightsRendererContext>(commandRecorderLights);
-    debugContext = std::make_unique<DebugRendererContext>(commandRecorderDebug);
-    postProcessContext = std::make_unique<PostProcessRendererContext>(commandRecorderOnScreen);
-    guiContext = std::make_unique<GuiRendererContext>(commandRecorderOnScreen);
+    geometryContext = MakeUniquePtr<GeometryRendererContext>(commandRecorderGeometry);
+    shadowsContext = MakeUniquePtr<GeometryRendererContext>(commandRecorderShadows);
+    lightsContext = MakeUniquePtr<LightsRendererContext>(commandRecorderLights);
+    debugContext = MakeUniquePtr<DebugRendererContext>(commandRecorderDebug);
+    postProcessContext = MakeUniquePtr<PostProcessRendererContext>(commandRecorderOnScreen);
+    guiContext = MakeUniquePtr<GuiRendererContext>(commandRecorderOnScreen);
 }
 
 } // namespace Renderer

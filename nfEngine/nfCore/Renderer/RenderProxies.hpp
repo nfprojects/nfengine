@@ -22,7 +22,7 @@ namespace Renderer {
 /**
  * Mesh Proxy Descriptor
  */
-struct NFE_ALIGN(16) MeshProxyDesc
+struct MeshProxyDesc
 {
     Math::Matrix4 transform;
     Math::Vector4 velocity;
@@ -69,7 +69,7 @@ struct LightProxySpot
 /**
  * Light Proxy Descriptor
  */
-struct NFE_ALIGN(16) LightProxyDesc
+struct LightProxyDesc
 {
     // HDR color value in linear space
     Math::Vector4 color;

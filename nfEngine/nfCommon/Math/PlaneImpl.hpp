@@ -49,12 +49,12 @@ bool Plane::Side(const Vector4& p) const
 
 bool Plane::operator == (const Plane& rhs) const
 {
-    return v == rhs.v;
+    return (v == rhs.v).All();
 }
 
 bool Plane::operator != (const Plane& rhs) const
 {
-    return v != rhs.v;
+    return (v != rhs.v).All();
 }
 
 } // namespace Math

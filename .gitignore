@@ -49,15 +49,8 @@ Makefile
 # Build results on Linux
 /build-*
 
-# Eclipse project files
-.cproject
-.metadata
-.project
-.settings/
-local.properties
-*.bak
-*.tmp
-*.swp
+# Smart Commandline Arguments plugin
+*.args.json
 
 # script outputs
 cppcheck_result.txt

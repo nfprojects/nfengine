@@ -83,46 +83,71 @@
     <ClInclude Include="Logger\LoggerImpl.hpp" />
     <ClInclude Include="Logger\LogGrouper.hpp" />
     <ClInclude Include="Logger\LogScope.hpp" />
-    <ClInclude Include="Math\EquationSolver.hpp" />
     <ClInclude Include="Math\Box.hpp" />
-    <ClInclude Include="Math\BoxImpl.hpp" />
+    <ClInclude Include="Math\Constants.hpp" />
     <ClInclude Include="Math\Conversions.hpp" />
+    <ClInclude Include="Math\Distribution.hpp" />
+    <ClInclude Include="Math\EquationSolver.hpp" />
     <ClInclude Include="Math\Float2.hpp" />
     <ClInclude Include="Math\Float2Impl.hpp" />
     <ClInclude Include="Math\Float3.hpp" />
     <ClInclude Include="Math\Float3Impl.hpp" />
     <ClInclude Include="Math\Float4.hpp" />
     <ClInclude Include="Math\Float4Impl.hpp" />
-    <ClInclude Include="Math\FPU\Matrix4.hpp" />
-    <ClInclude Include="Math\FPU\RayGeometry.hpp" />
-    <ClInclude Include="Math\FPU\Vector4.hpp" />
     <ClInclude Include="Math\Frustum.hpp" />
     <ClInclude Include="Math\Geometry.hpp" />
+    <ClInclude Include="Math\Half.hpp" />
+    <ClInclude Include="Math\HalfImpl.hpp" />
     <ClInclude Include="Math\Math.hpp" />
-    <ClInclude Include="Math\MathImpl.hpp" />
-    <ClInclude Include="Math\Matrix4.hpp" />
     <ClInclude Include="Math\Matrix2.hpp" />
     <ClInclude Include="Math\Matrix2Impl.hpp" />
     <ClInclude Include="Math\Matrix3.hpp" />
     <ClInclude Include="Math\Matrix3Impl.hpp" />
-    <ClInclude Include="Math\Matrix4Impl.hpp" />
+    <ClInclude Include="Math\Matrix4.hpp" />
+    <ClInclude Include="Math\Packed.hpp" />
     <ClInclude Include="Math\Plane.hpp" />
     <ClInclude Include="Math\PlaneImpl.hpp" />
     <ClInclude Include="Math\Quaternion.hpp" />
     <ClInclude Include="Math\QuaternionImpl.hpp" />
     <ClInclude Include="Math\Random.hpp" />
     <ClInclude Include="Math\Ray.hpp" />
-    <ClInclude Include="Math\Rect.hpp" />
+    <ClInclude Include="Math\RayGeometry.hpp" />
+    <ClInclude Include="Math\Rectangle.hpp" />
+    <ClInclude Include="Math\SamplingHelpers.hpp" />
+    <ClInclude Include="Math\Simd8Box.hpp" />
+    <ClInclude Include="Math\Simd8Geometry.hpp" />
+    <ClInclude Include="Math\Simd8Ray.hpp" />
+    <ClInclude Include="Math\Simd8Triangle.hpp" />
     <ClInclude Include="Math\Sphere.hpp" />
-    <ClInclude Include="Math\SSE\Matrix4.hpp" />
-    <ClInclude Include="Math\SSE\RayGeometry.hpp" />
-    <ClInclude Include="Math\SSE\Vector4.hpp" />
+    <ClInclude Include="Math\SphericalQuad.hpp" />
     <ClInclude Include="Math\Transcendental.hpp" />
     <ClInclude Include="Math\TranscendentalImpl.hpp" />
     <ClInclude Include="Math\Transform.hpp" />
     <ClInclude Include="Math\Triangle.hpp" />
+    <ClInclude Include="Math\Utils.hpp" />
+    <ClInclude Include="Math\Vector2x8.hpp" />
+    <ClInclude Include="Math\Vector3x8.hpp" />
     <ClInclude Include="Math\Vector4.hpp" />
-    <ClInclude Include="Math\Vector4Constants.hpp" />
+    <ClInclude Include="Math\Vector4Impl.hpp" />
+    <ClInclude Include="Math\Vector4ImplNaive.hpp" />
+    <ClInclude Include="Math\Vector4ImplSSE.hpp" />
+    <ClInclude Include="Math\Vector4Load.hpp" />
+    <ClInclude Include="Math\Vector8.hpp" />
+    <ClInclude Include="Math\Vector8ImplAVX.hpp" />
+    <ClInclude Include="Math\Vector8ImplCommon.hpp" />
+    <ClInclude Include="Math\Vector8ImplNaive.hpp" />
+    <ClInclude Include="Math\VectorBool4.hpp" />
+    <ClInclude Include="Math\VectorBool4ImplNaive.hpp" />
+    <ClInclude Include="Math\VectorBool4ImplSSE.hpp" />
+    <ClInclude Include="Math\VectorBool8.hpp" />
+    <ClInclude Include="Math\VectorBool8ImplAVX.hpp" />
+    <ClInclude Include="Math\VectorBool8ImplNaive.hpp" />
+    <ClInclude Include="Math\VectorInt4.hpp" />
+    <ClInclude Include="Math\VectorInt4ImplNaive.hpp" />
+    <ClInclude Include="Math\VectorInt4ImplSSE.hpp" />
+    <ClInclude Include="Math\VectorInt8.hpp" />
+    <ClInclude Include="Math\VectorInt8ImplAVX2.hpp" />
+    <ClInclude Include="Math\VectorInt8ImplNaive.hpp" />
     <ClInclude Include="Memory\Aligned.hpp" />
     <ClInclude Include="Memory\Buffer.hpp" />
     <ClInclude Include="Memory\DefaultAllocator.hpp" />
@@ -173,6 +198,7 @@
     <ClInclude Include="Utils\BitUtilsImplCommon.hpp" />
     <ClInclude Include="Utils\BitUtilsImplNative.hpp" />
     <ClInclude Include="Utils\BVH.hpp" />
+    <ClInclude Include="Utils\Entropy.hpp" />
     <ClInclude Include="Utils\EnumIterator.hpp" />
     <ClInclude Include="Utils\InputStream.hpp" />
     <ClInclude Include="Utils\Latch.hpp" />
@@ -213,25 +239,23 @@
     <ClCompile Include="Logger\LoggerImpl.cpp" />
     <ClCompile Include="Logger\LogGrouper.cpp" />
     <ClCompile Include="Logger\LogScope.cpp" />
-    <ClCompile Include="Math\Box.cpp" />
     <ClCompile Include="Math\Conversions.cpp" />
+    <ClCompile Include="Math\Distribution.cpp" />
     <ClCompile Include="Math\EquationSolver.cpp" />
-    <ClCompile Include="Math\FPU\GeometryFPU.cpp" />
-    <ClCompile Include="Math\FPU\MatrixFPU.cpp" />
     <ClCompile Include="Math\Frustum.cpp" />
     <ClCompile Include="Math\Geometry.cpp" />
     <ClCompile Include="Math\Math.cpp" />
-    <ClCompile Include="Math\Matrix4.cpp" />
     <ClCompile Include="Math\Matrix2.cpp" />
     <ClCompile Include="Math\Matrix3.cpp" />
+    <ClCompile Include="Math\Matrix4.cpp" />
+    <ClCompile Include="Math\Packed.cpp" />
     <ClCompile Include="Math\Quaternion.cpp" />
     <ClCompile Include="Math\Random.cpp" />
-    <ClCompile Include="Math\RayGeometry.cpp" />
-    <ClCompile Include="Math\Sphere.cpp" />
-    <ClCompile Include="Math\SSE\GeometrySSE.cpp" />
-    <ClCompile Include="Math\SSE\MatrixSSE.cpp" />
+    <ClCompile Include="Math\SamplingHelpers.cpp" />
     <ClCompile Include="Math\Transcendental.cpp" />
     <ClCompile Include="Math\Transform.cpp" />
+    <ClCompile Include="Math\Utils.cpp" />
+    <ClCompile Include="Math\Vector4.cpp" />
     <ClCompile Include="Memory\Buffer.cpp" />
     <ClCompile Include="Memory\DefaultAllocator.cpp" />
     <ClCompile Include="nfCommon.cpp" />
@@ -262,6 +286,7 @@
     <ClCompile Include="System\Win\Window.cpp" />
     <ClCompile Include="Utils\AsyncThreadPool.cpp" />
     <ClCompile Include="Utils\BVH.cpp" />
+    <ClCompile Include="Utils\Entropy.cpp" />
     <ClCompile Include="Utils\InputStream.cpp" />
     <ClCompile Include="Utils\Latch.cpp" />
     <ClCompile Include="Utils\MD5.cpp" />
@@ -269,37 +294,40 @@
     <ClCompile Include="Utils\StringUtils.cpp" />
     <ClCompile Include="Utils\ThreadPool.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <Natvis Include="Math\Math.natvis" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{3561E54D-E8B0-4C0E-AB84-0E636A5FE43A}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>nfCommon</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.17134.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <WholeProgramOptimization>true</WholeProgramOptimization>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <WholeProgramOptimization>true</WholeProgramOptimization>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />

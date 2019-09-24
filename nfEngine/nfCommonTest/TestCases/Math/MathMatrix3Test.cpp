@@ -52,7 +52,7 @@ TEST(MathMatrix3, MultiplyVector)
 
 TEST(MathMatrix3, MultiplyVector_Affine)
 {
-    const Float3 vecA = Float2(1.0f, 2.0f);
+    const Float3 vecA(1.0f, 2.0f, 0.0f);
 
     // expected product of matA and vecA
     const Float2 matAvecAaffine = Float2(-12.0f, 25.0f);

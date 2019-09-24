@@ -19,14 +19,13 @@ namespace {
 const uint32 bufferSize = 1000;                              //< Size of the test buffer
 const NFE::uint8 operationsUpperLimit = 10;               //< Number of operations to perform on the buffer
 const String testPath("./testFile.buffered");
-
+NFE::Math::Random random;
 } // namespace
 
 class FileBufferedTest : public testing::Test
 {
 public:
     NFE::uint8 mBufferExpected[bufferSize];
-    NFE::Math::Random mRand;
 
     void SetUp()
     {
@@ -103,13 +102,13 @@ TEST_F(FileBufferedTest, ReadSeek)
     for (int i = 0; i < operationsUpperLimit; i++)
     {
         // Roll a random number for Seek
-        float rand = mRand.GetFloat();
+        float rand = random.GetFloat();
 
         // Scale it to range (0; bufferSize/2)
         NFE::int64 randomShift = static_cast<NFE::int64>((rand * bufferSize) / 2);
 
         // Roll a random number for read size
-        rand = mRand.GetFloat();
+        rand = random.GetFloat();
 
         // Scale it to range (0; bufferSize)
         size_t randomSize = static_cast<size_t>((rand * bufferSize));

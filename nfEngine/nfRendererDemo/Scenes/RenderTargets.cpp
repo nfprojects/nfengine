@@ -461,7 +461,7 @@ void RenderTargetsScene::Draw(float dt)
     {
         VertexCBuffer cbuffer;
         cbuffer.viewMatrix = Matrix4::MakeScaling(Vector4(0.5f, 0.5f, 0.5f, 1.0f)) *
-                             Matrix4::MakeTranslation3(Vector4(-0.5f, 0.5f, 0.5f));
+                             Matrix4::MakeTranslation(Vector4(-0.5f, 0.5f, 0.5f));
         mCommandBuffer->WriteBuffer(cb, 0, sizeof(VertexCBuffer), &cbuffer);
 
         mCommandBuffer->DrawIndexed(2 * 3,      // 2 triangles
@@ -474,7 +474,7 @@ void RenderTargetsScene::Draw(float dt)
     {
         VertexCBuffer cbuffer;
         cbuffer.viewMatrix = Matrix4::MakeScaling(Vector4(0.5f, 0.5f, 0.5f, 1.0f)) *
-            Matrix4::MakeTranslation3(Vector4(0.5f, 0.5f, 0.5f));
+                             Matrix4::MakeTranslation(Vector4(0.5f, 0.5f, 0.5f));
         mCommandBuffer->WriteBuffer(cb, 0, sizeof(VertexCBuffer), &cbuffer);
 
         mCommandBuffer->SetPipelineState(mDepthPipelineState);
@@ -489,7 +489,7 @@ void RenderTargetsScene::Draw(float dt)
     {
         VertexCBuffer cbuffer;
         cbuffer.viewMatrix = Matrix4::MakeScaling(Vector4(0.5f, 0.5f, 0.5f, 1.0f)) *
-            Matrix4::MakeTranslation3(Vector4(-0.5f, -0.5f, 0.5f));
+                             Matrix4::MakeTranslation(Vector4(-0.5f, -0.5f, 0.5f));
         mCommandBuffer->WriteBuffer(cb, 0, sizeof(VertexCBuffer), &cbuffer);
 
         mCommandBuffer->SetPipelineState(mSecondTargetPipelineState);

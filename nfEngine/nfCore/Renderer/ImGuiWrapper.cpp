@@ -59,7 +59,7 @@ bool ImGuiWrapper::OnMouseDown(const Utils::MouseButtonEvent& event)
     ImGuiIO& io = ImGui::GetIO();
     io.MousePos.x = static_cast<float>(event.x);
     io.MousePos.y = static_cast<float>(event.y);
-    io.MouseDown[event.mouseButton] = true;
+    io.MouseDown[static_cast<uint32>(event.mouseButton)] = true;
 
     return io.WantCaptureMouse;
 }
@@ -68,7 +68,7 @@ bool ImGuiWrapper::OnMouseUp(const Utils::MouseButtonEvent& event)
 {
     ImGui::SetInternalState(mImGuiState);
     ImGuiIO& io = ImGui::GetIO();
-    io.MouseDown[event.mouseButton] = false;
+    io.MouseDown[static_cast<uint32>(event.mouseButton)] = false;
 
     return io.WantCaptureMouse;
 }
@@ -243,7 +243,7 @@ void ImGuiWrapper::FinishDrawing(RenderContext* context)
 {
     ImGui::SetInternalState(mImGuiState);
 
-    GuiRenderer::Get()->DrawImGui(context->guiContext.get(), mImGuiTextureBinding);
+    GuiRenderer::Get()->DrawImGui(context->guiContext.Get(), mImGuiTextureBinding);
 
     ImGuiIO& io = ImGui::GetIO();
 

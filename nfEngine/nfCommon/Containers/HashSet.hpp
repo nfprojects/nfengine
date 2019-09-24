@@ -27,7 +27,10 @@ struct DefaultHashPolicy
 /**
  * Hashed (unordered) set container (like std::unordered_set).
  */
-template<typename KeyType, typename HashPolicy = DefaultHashPolicy<KeyType>>
+template<
+    typename KeyType,
+    typename HashPolicy = DefaultHashPolicy<KeyType>,
+    typename EqualsPolicy = std::equal_to<KeyType>>
 class HashSet final
 {
 public:

@@ -23,13 +23,13 @@ struct MeshVertex
     char tangent[4];
 };
 
-struct NFE_ALIGN(16) ShadowCameraRenderDesc
+struct NFE_ALIGN(32) ShadowCameraRenderDesc
 {
     Math::Matrix4 viewProjMatrix;
     Math::Vector4 lightPos;
 };
 
-struct NFE_ALIGN(16) CameraRenderDesc
+struct NFE_ALIGN(32) CameraRenderDesc
 {
     Math::Matrix4 matrix;        // global camera matrix (pos + orientation)
     Math::Matrix4 viewMatrix;

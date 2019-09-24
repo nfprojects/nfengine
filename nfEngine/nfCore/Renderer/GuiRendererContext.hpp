@@ -7,7 +7,7 @@
 #pragma once
 
 #include "nfCommon/Math/Math.hpp"
-#include "nfCommon/Math/Rect.hpp"
+#include "nfCommon/Math/Rectangle.hpp"
 
 namespace NFE {
 namespace Renderer {

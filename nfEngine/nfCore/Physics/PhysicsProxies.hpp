@@ -29,7 +29,7 @@ static constexpr ProxyID InvalidPhysicsProxyID = std::numeric_limits<ProxyID>::m
 /**
  * Physics body proxy properties.
  */
-struct NFE_ALIGN(16) BodyProxyInfo
+struct NFE_ALIGN(32) BodyProxyInfo
 {
     // body transformation matrix
     Math::Matrix4 transform;

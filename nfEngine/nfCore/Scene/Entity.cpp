@@ -139,7 +139,7 @@ void Entity::SetGlobalTransform(const Transform& transform)
 
 void Entity::SetGlobalPosition(const Vector4& pos)
 {
-    if (mGlobalTransform.GetTranslation() == pos)
+    if ((mGlobalTransform.GetTranslation() == pos).All())
         return;
 
     mGlobalTransform.SetTranslation(pos);
@@ -170,7 +170,7 @@ void Entity::SetLocalTransform(const Transform& transform)
 
 void Entity::SetLocalPosition(const Vector4& pos)
 {
-    if (mLocalTransform.GetTranslation() == pos)
+    if ((mLocalTransform.GetTranslation() == pos).All())
         return;
 
     mLocalTransform.SetTranslation(pos);

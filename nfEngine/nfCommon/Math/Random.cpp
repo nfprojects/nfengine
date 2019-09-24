@@ -1,209 +1,183 @@
-/**
- * @file
- * @author Witek902 (witek902@gmail.com)
- * @brief  Pseudorandom number generator definitions.
- */
-
 #include "PCH.hpp"
 #include "Random.hpp"
-#include "Float4.hpp"
 #include "Transcendental.hpp"
-
+#include "../Utils/Entropy.hpp"
 
 namespace NFE {
 namespace Math {
 
-Random::Random()
+static NFE_FORCE_INLINE uint64 Rotl64(const uint64 x, const int k)
 {
-    mSeed = static_cast<uint64>(time(0));
+    return (x << k) | (x >> (64 - k));
 }
 
-Random::Random(uint64 seed)
+Random::Random()
 {
-    if (seed == 0)
+    Reset();
+}
+
+void Random::Reset()
+{
+    Common::Entropy entropy;
+    
+    for (uint32 i = 0; i < 2; ++i)
     {
-        mSeed = static_cast<uint64>(time(0));
-    }
-    else
-    {
-        mSeed = seed;
+        mSeed[i] = ((uint64)entropy.GetInt() << 32) | (uint64)entropy.GetInt();
+        mSeedSimd4[i] = VectorInt4(entropy.GetInt(), entropy.GetInt(), entropy.GetInt(), entropy.GetInt());
+#ifdef NFE_USE_AVX2
+        mSeedSimd8[i] = VectorInt8(entropy.GetInt(), entropy.GetInt(), entropy.GetInt(), entropy.GetInt(), entropy.GetInt(), entropy.GetInt(), entropy.GetInt(), entropy.GetInt());
+#endif // NFE_USE_AVX2
     }
 }
 
 uint64 Random::GetLong()
 {
-    Shuffle();
-    return mSeed;
+    // xoroshiro128+ algorithm
+    // http://xoshiro.di.unimi.it/xoroshiro128plus.c
+
+    const uint64 s0 = mSeed[0];
+    uint64 s1 = mSeed[1];
+    const uint64 result = s0 + s1;
+
+    s1 ^= s0;
+    mSeed[0] = Rotl64(s0, 24) ^ s1 ^ (s1 << 16);
+    mSeed[1] = Rotl64(s1, 37);
+
+    return result;
 }
 
-int Random::GetInt()
+uint32 Random::GetInt()
 {
-    Shuffle();
-    return static_cast<int>(mSeed);
+    return static_cast<uint32>(GetLong());
 }
-
 
 float Random::GetFloat()
 {
-    Shuffle();
     Bits32 myrand;
-    myrand.ui = 1 + ((static_cast<int>(mSeed) & 0x007fffff) | 0x3f800000);
+    myrand.ui = (GetInt() & 0x007fffffu) | 0x3f800000u;
     return myrand.f - 1.0f;
-}
-
-float Random::GetFloatBipolar()
-{
-    Shuffle();
-    Bits32 myrand;
-    myrand.ui = 1 + ((static_cast<int>(mSeed) & 0x007fffff) | 0x40000000);
-    return myrand.f - 3.0f;
 }
 
 double Random::GetDouble()
 {
-    Shuffle();
-    Bits64 myrand;
-    myrand.ui = 1L + ((mSeed & 0x000fffffffffffffUL) | 0x3ff0000000000000UL);
-    return myrand.f - 1.0;
+    return static_cast<double>(GetLong()) / static_cast<double>(std::numeric_limits<uint64>::max());
 }
 
-Float2 Random::GetFloat2()
+float Random::GetFloatBipolar()
 {
-    Float2 result;
     Bits32 myrand;
-
-    Shuffle();
-
-    myrand.ui = 1 + ((static_cast<int>(mSeed) & 0x007fffff) | 0x3f800000);
-    result.x = myrand.f - 1.0f;
-    myrand.ui = 1 + ((static_cast<int>(mSeed >> 32) & 0x007fffff) | 0x3f800000);
-    result.y = myrand.f - 1.0f;
-
-    return result;
+    myrand.ui = (GetInt() & 0x007fffff) | 0x40000000;
+    return myrand.f - 3.0f;
 }
 
-Float3 Random::GetFloat3()
+VectorInt4 Random::GetIntVector4()
 {
-    Float3 result;
-    Bits32 myrand;
+    // NOTE: xoroshiro128+ is faster when using general purpose registers, because there's
+    // no rotate left/right instruction in SSE2 (it's only in AVX512)
 
-    Shuffle();
-    myrand.ui = 1 + ((static_cast<int>(mSeed) & 0x007fffff) | 0x3f800000);
-    result.x = myrand.f - 1.0f;
-    myrand.ui = 1 + ((static_cast<int>(mSeed >> 32) & 0x007fffff) | 0x3f800000);
-    result.y = myrand.f - 1.0f;
+    // xorshift128+ algorithm
+    const VectorInt4 s0 = mSeedSimd4[1];
+    VectorInt4 s1 = mSeedSimd4[0];
 
-    Shuffle();
-    myrand.ui = 1 + ((static_cast<int>(mSeed) & 0x007fffff) | 0x3f800000);
-    result.z = myrand.f - 1.0f;
+    // TODO introduce Vector2ul
+#ifdef NFE_USE_SSE
+    VectorInt4 v = _mm_add_epi64(s0, s1);
+    s1 = _mm_slli_epi64(s1, 23);
+    const VectorInt4 t0 = _mm_srli_epi64(s0, 5);
+    const VectorInt4 t1 = _mm_srli_epi64(s1, 18);
+#else
+    VectorInt4 v;
+    v.i64[0] = s0.i64[0] + s1.i64[0];
+    v.i64[1] = s0.i64[1] + s1.i64[1];
+    s1.i64[0] <<= 23;
+    s1.i64[1] <<= 23;
+    VectorInt4 t0, t1;
+    t0.i64[0] = s0.i64[0] >> 5;
+    t0.i64[1] = s0.i64[1] >> 5;
+    t1.i64[0] = s1.i64[0] >> 5;
+    t1.i64[1] = s1.i64[1] >> 5;
+#endif
 
-    return result;
+    mSeedSimd4[0] = s0;
+    mSeedSimd4[1] = (s0 ^ s1) ^ (t0 ^ t1);
+    return v;
 }
 
-Float4 Random::GetFloat4()
+const Vector4 Random::GetVector4()
 {
-    Float4 result;
-    Bits32 myrand;
+    VectorInt4 v = GetIntVector4();
 
-    Shuffle();
-    myrand.ui = 1 + ((static_cast<int>(mSeed) & 0x007fffff) | 0x3f800000);
-    result.x = myrand.f - 1.0f;
-    myrand.ui = 1 + ((static_cast<int>(mSeed >> 32) & 0x007fffff) | 0x3f800000);
-    result.y = myrand.f - 1.0f;
+    // setup float mask
+    v &= VectorInt4(0x007fffffu);
+    v |= VectorInt4(0x3f800000u);
 
-    Shuffle();
-    myrand.ui = 1 + ((static_cast<int>(mSeed) & 0x007fffff) | 0x3f800000);
-    result.z = myrand.f - 1.0f;
-    myrand.ui = 1 + ((static_cast<int>(mSeed >> 32) & 0x007fffff) | 0x3f800000);
-    result.w = myrand.f - 1.0f;
-
-    return result;
+    // convert to float and go from [1, 2) to [0, 1) range
+    return v.CastToFloat() - VECTOR_ONE;
 }
 
-
-float Random::GetFloatNormal()
+const Vector4 Random::GetVector4Bipolar()
 {
-    // Box-Muller method
-    Float2 uv = GetFloat2();
-    return sqrtf(- 2.0f * FastLog(uv.x)) * Cos(2.0f * Constants::pi<float> * uv.y);
+    VectorInt4 v = GetIntVector4();
+
+    // setup float mask
+    v &= VectorInt4(0x007fffffu);
+    v |= VectorInt4(0x40000000u);
+
+    // convert to float and go from [2, 4) to [-1, 1) range
+    return v.CastToFloat() - Vector4(3.0f);
 }
 
-Float2 Random::GetFloatNormal2()
+#ifdef NFE_USE_AVX2
+
+VectorInt8 Random::GetIntVector8()
 {
-    Float2 result;
+    // NOTE: xoroshiro128+ is faster when using general purpose registers, because there's
+    // no rotate left/right instruction in AVX2 (it's only in AVX512)
 
-    // Box-Muller method
-    Float2 uv = GetFloat2();
-    float temp = sqrtf(- 2.0f * FastLog(uv.x));
+    // xorshift128+ algorithm
+    const VectorInt8 s0 = mSeedSimd8[1];
+    VectorInt8 s1 = mSeedSimd8[0];
+    VectorInt8 v = _mm256_add_epi64(s0, s1);
+    s1 = _mm256_slli_epi64(s1, 23);
+    const VectorInt8 t0 = _mm256_srli_epi64(s0, 5);
+    const VectorInt8 t1 = _mm256_srli_epi64(s1, 18);
+    mSeedSimd8[0] = s0;
+    mSeedSimd8[1] = (s0 ^ s1) ^ (t0 ^ t1);
 
-    result.x = temp * Cos(2.0f * Constants::pi<float> * uv.y);
-    result.y = temp * Sin(2.0f * Constants::pi<float> * uv.y);
-    return result;
+    return v;
 }
 
-Float3 Random::GetFloatNormal3()
+#else
+
+VectorInt8 Random::GetIntVector8()
 {
-    Float3 result;
-
-    // Box-Muller method
-    Float2 uv = GetFloat2();
-    float temp = sqrtf(- 2.0f * FastLog(uv.x));
-    result.x = temp * Cos(2.0f * Constants::pi<float> * uv.y);
-    result.y = temp * Sin(2.0f * Constants::pi<float> * uv.y);
-
-    uv = GetFloat2();
-    temp = sqrtf(- 2.0f * FastLog(uv.x));
-    result.z = temp * Cos(2.0f * Constants::pi<float> * uv.y);
-
-    return result;
+    return VectorInt8{ GetIntVector4(), GetIntVector4() };
 }
 
-Float4 Random::GetFloatNormal4()
+#endif // NFE_USE_AVX2
+
+const Vector8 Random::GetVector8()
 {
-    Float4 result;
+    VectorInt8 v = GetIntVector8();
 
-    // Box-Muller method
-    Float2 uv = GetFloat2();
-    float temp = sqrtf(- 2.0f * FastLog(uv.x));
-    result.x = temp * Cos(2.0f * Constants::pi<float> * uv.y);
-    result.y = temp * Sin(2.0f * Constants::pi<float> * uv.y);
+    // setup float mask
+    v &= VectorInt8(0x007fffffu);
+    v |= VectorInt8(0x3f800000u);
 
-    uv = GetFloat2();
-    temp = sqrtf(- 2.0f * FastLog(uv.x));
-    result.z = temp * Cos(2.0f * Constants::pi<float> * uv.y);
-    result.w = temp * Sin(2.0f * Constants::pi<float> * uv.y);
-
-    return result;
+    // convert to float and go from [1, 2) to [0, 1) range
+    return v.CastToFloat() - VECTOR8_ONE;
 }
 
-Float2 Random::GetPointInsideCircle()
+const Vector8 Random::GetVector8Bipolar()
 {
-    const Float3 v = GetFloat3();
+    VectorInt8 v = GetIntVector8();
 
-    // angle (uniform distribution)
-    const float t = 2.0f * Constants::pi<float> * v.x;
+    // setup float mask
+    v &= VectorInt8(0x007fffffu);
+    v |= VectorInt8(0x40000000u);
 
-    // radius (corrected distribution)
-    const float u = v.y + v.z;
-    const float r = (u > 1.0f) ? (2.0f - u) : u;
-
-    return Float2(r * Cos(t), r * Sin(t));
-}
-
-Float3 Random::GetPointOnSphere()
-{
-    const Float2 uv = GetFloat2();
-
-    // latitude (corrected distribution)
-    const float z = 2.0f * uv.x - 1;
-    const float r = sqrtf(1.0f - z * z);
-    const float theta = 2.0f * Constants::pi<float> * uv.y;
-
-    // longitude (uniform)
-    const float x = r * Cos(theta);
-    const float y = r * Sin(theta);
-
-    return Float3(x, z, y);
+    // convert to float and go from [1, 2) to [0, 1) range
+    return v.CastToFloat() - Vector8(3.0f);
 }
 
 } // namespace Math

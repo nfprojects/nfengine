@@ -276,8 +276,8 @@ bool GuiRenderer::PrintText(GuiRendererContext* context, Font* font, const char*
     float texInvWidth = 1.0f / (float)font->mTexWidth;
     float texInvHeight = 1.0f / (float)font->mTexHeight;
 
-    int offsetX = rect.Xmin;
-    int offsetY = rect.Ymin;
+    int offsetX = rect.minX;
+    int offsetY = rect.minY;
 
     int textWidth, textLines;
     font->GetTextSize(text, textWidth, textLines);
@@ -288,13 +288,13 @@ bool GuiRenderer::PrintText(GuiRendererContext* context, Font* font, const char*
     switch (vAlign)
     {
     case VerticalAlignment::Top:
-        offsetY = rect.Ymin;
+        offsetY = rect.minY;
         break;
     case VerticalAlignment::Center:
-        offsetY = rect.Ymin + (rect.Ymax - rect.Ymin - textLines * lineHeight) / 2;
+        offsetY = rect.minY + (rect.maxY - rect.minY - textLines * lineHeight) / 2;
         break;
     case VerticalAlignment::Bottom:
-        offsetY = rect.Ymin + (rect.Ymax - rect.Ymin - textLines * lineHeight);
+        offsetY = rect.minY + (rect.maxY - rect.minY - textLines * lineHeight);
         break;
     default:
         return false;
@@ -323,16 +323,16 @@ bool GuiRenderer::PrintText(GuiRendererContext* context, Font* font, const char*
             continue;
 
         Rectf quadRect;
-        quadRect.Xmin = static_cast<float>(offsetX + charInfo.left);
-        quadRect.Xmax = static_cast<float>(quadRect.Xmin + charInfo.width);
-        quadRect.Ymin = static_cast<float>(offsetY - charInfo.top);
-        quadRect.Ymax = static_cast<float>(quadRect.Ymin + charInfo.height);
+        quadRect.minX = static_cast<float>(offsetX + charInfo.left);
+        quadRect.maxX = static_cast<float>(quadRect.minX + charInfo.width);
+        quadRect.minY = static_cast<float>(offsetY - charInfo.top);
+        quadRect.maxY = static_cast<float>(quadRect.minY + charInfo.height);
 
         Rectf texRect;
-        texRect.Xmin = static_cast<float>(charInfo.u) * texInvWidth;
-        texRect.Ymin = static_cast<float>(charInfo.v) * texInvHeight;
-        texRect.Xmax = static_cast<float>(charInfo.u + charInfo.width) * texInvWidth;
-        texRect.Ymax = static_cast<float>(charInfo.v + charInfo.height) * texInvHeight;
+        texRect.minX = static_cast<float>(charInfo.u) * texInvWidth;
+        texRect.minY = static_cast<float>(charInfo.v) * texInvHeight;
+        texRect.maxX = static_cast<float>(charInfo.u + charInfo.width) * texInvWidth;
+        texRect.maxY = static_cast<float>(charInfo.v + charInfo.height) * texInvHeight;
 
         PushQuad(context, quadData, GuiQuadVertex(quadRect, texRect, color));
         offsetX += charInfo.spacing;
@@ -353,10 +353,10 @@ bool GuiRenderer::PrintTextWithBorder(GuiRendererContext* context, Font* font, c
             if (i == 0 && j == 0)
                 continue;
 
-            tempRect.Ymin = rect.Ymin + j;
-            tempRect.Ymax = rect.Ymax + j;
-            tempRect.Xmin = rect.Xmin + i;
-            tempRect.Xmax = rect.Xmax + i;
+            tempRect.minY = rect.minY + j;
+            tempRect.maxY = rect.maxY + j;
+            tempRect.minX = rect.minX + i;
+            tempRect.maxX = rect.maxX + i;
             PrintText(context, font, text, tempRect, borderColor, vAlign, hAlign);
         }
     }

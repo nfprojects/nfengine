@@ -34,9 +34,9 @@ public:
     // Window virtual methods implementation
     virtual void OnKeyPress(Common::KeyCode key) override;
     virtual void OnKeyUp(Common::KeyCode key) override;
-    virtual void OnMouseDown(UINT button, int x, int y) override;
+    virtual void OnMouseDown(Common::MouseButton button, int x, int y) override;
     virtual void OnMouseMove(int x, int y, int deltaX, int deltaY) override;
-    virtual void OnMouseUp(UINT button) override;
+    virtual void OnMouseUp(Common::MouseButton button) override;
     virtual void OnScroll(int delta) override;
     virtual void OnCharTyped(const char* charUTF8) override;
     virtual void OnResize(uint32 width, uint32 height) override;

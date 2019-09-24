@@ -17,7 +17,7 @@ namespace Renderer {
 
 namespace {
 
-struct NFE_ALIGN(16) LightsGlobalCBuffer
+struct NFE_ALIGN(32) LightsGlobalCBuffer
 {
     Matrix4 cameraMatrix;
     Matrix4 viewMatrix;
@@ -356,8 +356,8 @@ void LightsRenderer::DrawAmbientLight(LightsRendererContext* context, const Vect
     context->commandRecorder->BindVolatileCBuffer(1, mAmbientLightCBuffer);
 
     AmbientLightCBuffer cbuffer;
-    ambientLightColor.Store(&cbuffer.ambientLight);
-    backgroundColor.Store(&cbuffer.backgroundColor);
+    cbuffer.ambientLight = ambientLightColor.ToFloat4();
+    cbuffer.backgroundColor = backgroundColor.ToFloat4();
     context->commandRecorder->WriteBuffer(mAmbientLightCBuffer, 0, sizeof(AmbientLightCBuffer),
                                         &cbuffer);
 
@@ -371,9 +371,9 @@ void LightsRenderer::DrawOmniLight(LightsRendererContext* context, const Vector4
 
     OmniLightCBuffer cbuffer;
     cbuffer.position = pos;
-    cbuffer.radius = Vector4::Splat(radius);
+    cbuffer.radius = Vector4(radius);
     cbuffer.color = color;
-    cbuffer.shadowMapProps = Vector4();
+    cbuffer.shadowMapProps = Vector4::Zero();
 
     int macros[] = { 0, 0 };
     if (shadowMap)

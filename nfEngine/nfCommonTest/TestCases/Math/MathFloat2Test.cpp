@@ -18,7 +18,7 @@ TEST(MathFloat2, Constructors)
     const Float2 f2(1.0f);
     const Float2 f3(1.0f, 2.0f);
 
-    EXPECT_TRUE(Float2(f2) == Float2(1.0f, 0.0f));
+    EXPECT_TRUE(Float2(f2) == Float2(1.0f, 1.0f));
     EXPECT_TRUE(Float2(f3) == Float2(1.0f, 2.0f));
     EXPECT_TRUE(Float2(123.0f, 123.0f) == Float2::Splat(123.0f));
     EXPECT_TRUE(Float2(1.0f, 1.0f) == vecB.SplatX());

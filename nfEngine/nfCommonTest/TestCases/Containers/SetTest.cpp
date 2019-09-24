@@ -526,7 +526,7 @@ TYPED_TEST(SetTest, BigTest)
     TypeParam set;
 
     // insert values in random order
-    Math::Random random(0);
+    Math::Random random;
     random.ShuffleContainer(values.begin(), values.end(), numValues);
     for (int i = 0; i < numValues; ++i)
     {
@@ -569,7 +569,7 @@ TYPED_TEST(SetTest, BigTest)
 
 TYPED_TEST(SetTest, Permutations)
 {
-    Math::Random random(1);
+    Math::Random random;
     std::vector<SetKeyType> values;
 
     // build trees containing from 1 to 6 elements

@@ -269,7 +269,7 @@ void GeometryRenderer::SetMaterial(GeometryRendererContext* context, const Rende
     MaterialCBuffer cbuffer;
     cbuffer.diffuseColor = Vector4(1.0f, 1.0f, 1.0f, 1.0f);
     cbuffer.specularColor = Vector4(1.0f, 1.0f, 1.0f, 1.0f);
-    cbuffer.emissionColor = Vector4();
+    cbuffer.emissionColor = Vector4::Zero();
     context->commandRecorder->WriteBuffer(mMaterialCBuffer, 0, sizeof(MaterialCBuffer),
                                         &cbuffer);
 }
@@ -319,9 +319,9 @@ void GeometryRenderer::Draw(GeometryRendererContext* context, const RenderComman
             for (size_t j = 0; j < instancesToBuffer; j++)
             {
                 const Matrix4 tmpMatrix = buffer.commands[j + i].matrix.Transposed();
-                context->instanceData[j].worldMatrix[0] = tmpMatrix.r[0];
-                context->instanceData[j].worldMatrix[1] = tmpMatrix.r[1];
-                context->instanceData[j].worldMatrix[2] = tmpMatrix.r[2];
+                context->instanceData[j].worldMatrix[0] = tmpMatrix.rows[0];
+                context->instanceData[j].worldMatrix[1] = tmpMatrix.rows[1];
+                context->instanceData[j].worldMatrix[2] = tmpMatrix.rows[2];
                 context->instanceData[j].velocity = buffer.commands[j + i].velocity;
                 context->instanceData[j].angularVelocity = buffer.commands[j + i].angularVelocity;
             }

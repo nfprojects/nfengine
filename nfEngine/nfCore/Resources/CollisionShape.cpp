@@ -55,7 +55,7 @@ void CollisionShape::Free(CollisionShape* ptr)
 CollisionShape::CollisionShape()
 {
     mShape = 0;
-    mLocalInertia = Vector4();
+    mLocalInertia = Vector4::Zero();
 }
 
 CollisionShape::~CollisionShape()
@@ -251,7 +251,7 @@ bool CollisionShape::OnLoad()
 
         if (mShape->isNonMoving())
         {
-            mLocalInertia = Vector4();
+            mLocalInertia = Vector4::Zero();
         }
         else
         {

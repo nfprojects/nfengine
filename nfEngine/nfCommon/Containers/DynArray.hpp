@@ -130,6 +130,19 @@ public:
     bool Resize(uint32 size);
 
     /**
+     * Resize the array and fill with a given template element.
+     * Element type must have default constructor.
+     * @return 'false' if memory allocation failed.
+     */
+    bool Resize(uint32 size, const ElementType& defaultElement);
+
+    /**
+     * Resize the array but do not call constructor for newly created element (risky).
+     * @return 'false' if memory allocation failed.
+     */
+    bool Resize_SkipConstructor(uint32 size);
+
+    /**
      * Replace contents of two arrays.
      * @note Does not call any constructor or destructor, just pointers are swapped.
      */

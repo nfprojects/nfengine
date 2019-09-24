@@ -28,7 +28,7 @@ struct KeyPressedEvent
 // mouse button down/up event
 struct MouseButtonEvent
 {
-    int mouseButton;
+    Common::MouseButton mouseButton;
     int32 x;
     int32 y;
 };

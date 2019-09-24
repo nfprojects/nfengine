@@ -1,6 +1,7 @@
 #include "PCH.hpp"
 #include "nfCommon/FileSystem/FileSystem.hpp"
 #include "nfCommon/Containers/String.hpp"
+#include "nfCommon/Math/Math.hpp"
 
 
 int main(int argc, char* argv[])
@@ -10,6 +11,9 @@ int main(int argc, char* argv[])
     const NFE::Common::String execPath = NFE::Common::FileSystem::GetExecutablePath();
     const NFE::Common::String execDir = NFE::Common::FileSystem::GetParentDir(execPath);
     NFE::Common::FileSystem::ChangeDirectory(execDir + "/../../..");
+
+    NFE::Math::SetFlushDenormalsToZero();
+
     int result = RUN_ALL_TESTS();
 
     // enable memory leak detection at the process exit (Windows only)
@@ -18,6 +22,8 @@ int main(int argc, char* argv[])
 #endif // _CRTDBG_MAP_ALLOC
 
     NFE::Common::ShutdownSubsystems();
+
+    NFE_ASSERT(NFE::Math::GetFlushDenormalsToZero(), "Something disabled flushing denormal float to zero");
 
     return result;
 }

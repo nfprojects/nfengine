@@ -1,41 +1,46 @@
-/**
- * @file
- * @author Witek902 (witek902@gmail.com)
- * @brief  Basic math functions definitions.
- */
-
 #include "PCH.hpp"
 #include "Math.hpp"
 
-
 #ifdef NFE_USE_SSE
-#pragma message("INFO: Compiling nfCommon with SSE instructions")
-#endif // NFE_USE_SSE
-
-#ifdef NFE_USE_SSE4
-#pragma message("INFO: Compiling nfCommon with SSE4.1 instructions")
-#endif // NFE_USE_SSE4
+#pragma message("[rt::math] Compiling with SSE support")
+#endif
 
 #ifdef NFE_USE_AVX
-#pragma message("INFO: Compiling nfCommon with AVX instructions")
-#endif // NFE_USE_AVX
+#pragma message("[rt::math] Compiling with AVX support")
+#endif
 
 #ifdef NFE_USE_AVX2
-#pragma message("INFO: Compiling nfCommon with AVX2 instructions")
-#endif // NFE_USE_AVX2
+#pragma message("[rt::math] Compiling with AVX2 support")
+#endif
+
+#ifdef NFE_USE_FP16C
+#pragma message("[rt::math] Compiling with FP16C support")
+#endif
 
 #ifdef NFE_USE_FMA
-#pragma message("INFO: Compiling nfCommon with FMA instructions")
-#endif // NFE_USE_FMA
-
+#pragma message("[rt::math] Compiling with FMA support")
+#endif
 
 namespace NFE {
 namespace Math {
 
+void SetFlushDenormalsToZero(bool enable)
+{
+    NFE_UNUSED(enable);
+#ifdef NFE_USE_SSE
+    _MM_SET_DENORMALS_ZERO_MODE(enable ? _MM_DENORMALS_ZERO_ON : _MM_DENORMALS_ZERO_OFF);
+    _MM_SET_FLUSH_ZERO_MODE(enable ? _MM_FLUSH_ZERO_ON : _MM_FLUSH_ZERO_OFF);
+#endif // NFE_USE_SSE
+}
 
-static_assert(sizeof(Bits32) == 4, "Invalid size of 'Bits32'");
-static_assert(sizeof(Bits64) == 8, "Invalid size of 'Bits64'");
-
+bool GetFlushDenormalsToZero()
+{
+#ifdef NFE_USE_SSE
+    return _MM_GET_DENORMALS_ZERO_MODE() && _MM_GET_FLUSH_ZERO_MODE();
+#else
+    return true;
+#endif // NFE_USE_SSE
+}
 
 } // namespace Math
 } // namespace NFE

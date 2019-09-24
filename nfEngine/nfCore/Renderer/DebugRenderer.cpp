@@ -29,13 +29,13 @@ std::unique_ptr<DebugRenderer> DebugRenderer::mPtr;
 /**
  * Debug Renderer constant buffer layout for vertex shader.
  */
-struct NFE_ALIGN(16) DebugCBuffer
+struct NFE_ALIGN(32) DebugCBuffer
 {
     Matrix4 viewMatrix;
     Matrix4 projMatrix;
 };
 
-struct NFE_ALIGN(16) DebugPerMeshCBuffer
+struct NFE_ALIGN(32) DebugPerMeshCBuffer
 {
     Matrix4 modelMatrix;
 };
@@ -270,11 +270,11 @@ void DebugRenderer::DrawLine(DebugRendererContext *context, const Vector4& A, co
     DebugVertex vert;
     vert.color = color;
 
-    A.Store(&vert.pos);
+    vert.pos = A.ToFloat3();
     context->indicies[context->queuedIndicies++] = static_cast<DebugIndexType>(context->queuedVertices);
     context->vertices[context->queuedVertices++] = vert;
 
-    B.Store(&vert.pos);
+    vert.pos = B.ToFloat3();
     context->indicies[context->queuedIndicies++] = static_cast<DebugIndexType>(context->queuedVertices);
     context->vertices[context->queuedVertices++] = vert;
 }
@@ -321,7 +321,7 @@ void DebugRenderer::DrawBox(DebugRendererContext *context, const Box& box, const
     for (size_t i = 0; i < vertexRequired; ++i)
     {
         Vector4 v = box.GetVertex(static_cast<int>(i));
-        v.Store(&boxVerticies[i].pos);
+        boxVerticies[i].pos = v.ToFloat3();
         boxVerticies[i].color = color;
     }
 
@@ -356,7 +356,7 @@ void DebugRenderer::DrawFrustum(DebugRendererContext *context, const Frustum& fr
     for (size_t i = 0; i < vertexRequired; ++i)
     {
         Vector4 v = frustum.verticies[i];
-        v.Store(&boxVerticies[i].pos);
+        boxVerticies[i].pos = v.ToFloat3();
         boxVerticies[i].color = color;
     }
 

@@ -130,7 +130,7 @@ bool PhysicsScene::UpdateBodyProxy(const ProxyID proxyID, const BodyProxyInfo& n
     bool requiresActivation = false;
 
     // handle transform change
-    if (!Matrix4::Equal(bodyProxy.info.transform, newInfo.transform, NFE_MATH_EPSILON))
+    if (!(bodyProxy.info.transform == newInfo.transform))
     {
         // update new motion state
         btTransform bodyTransform;

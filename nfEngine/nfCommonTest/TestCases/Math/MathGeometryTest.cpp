@@ -19,7 +19,7 @@ using namespace NFE::Math;
 namespace {
 
 const Frustum TEST_FRUSTUM = Frustum::ConstructForPerspective(
-    /* camera position */ Vector4(),
+    /* camera position */ Vector4::Zero(),
     /* axes */ Vector4(1.0f, 0.0f, 0.0f), Vector4(0.0f, 1.0f, 0.0f), Vector4(0.0f, 0.0f, 1.0f),
     /* near and far plane distances */ 1.0f, 10.0f);
 
@@ -35,27 +35,27 @@ TEST(MathGeometry, ClosestPointOnSegment)
 
     d = ClosestPointOnSegment(Vector4(-1.0f, 0.0f, 0.0f), p1, p2, p);
     EXPECT_FLOAT_EQ(0.0f, d);
-    EXPECT_TRUE(p == Vector4(-1.0f, 0.0f, 0.0f));
+    EXPECT_TRUE((p == Vector4(-1.0f, 0.0f, 0.0f)).All());
 
     d = ClosestPointOnSegment(Vector4(-2.0f, 0.0f, 0.0f), p1, p2, p);
     EXPECT_FLOAT_EQ(1.0f, d);
-    EXPECT_TRUE(p == Vector4(-1.0f, 0.0f, 0.0f));
+    EXPECT_TRUE((p == Vector4(-1.0f, 0.0f, 0.0f)).All());
 
     d = ClosestPointOnSegment(Vector4(1.0f, 0.0f, 0.0f), p1, p2, p);
     EXPECT_FLOAT_EQ(0.0f, d);
-    EXPECT_TRUE(p == Vector4(1.0f, 0.0f, 0.0f));
+    EXPECT_TRUE((p == Vector4(1.0f, 0.0f, 0.0f)).All());
 
     d = ClosestPointOnSegment(Vector4(2.0f, 0.0f, 0.0f), p1, p2, p);
     EXPECT_FLOAT_EQ(1.0f, d);
-    EXPECT_TRUE(p == Vector4(1.0f, 0.0f, 0.0f));
+    EXPECT_TRUE((p == Vector4(1.0f, 0.0f, 0.0f)).All());
 
     d = ClosestPointOnSegment(Vector4(0.5f, -1.0f, 1.0f), p1, p2, p);
     EXPECT_FLOAT_EQ(sqrtf(2.0f), d);
-    EXPECT_TRUE(p == Vector4(0.5f, 0.0f, 0.0f));
+    EXPECT_TRUE((p == Vector4(0.5f, 0.0f, 0.0f)).All());
 
     d = ClosestPointOnSegment(Vector4(-2.0f, 1.0f, 1.0f), p1, p2, p);
     EXPECT_FLOAT_EQ(sqrtf(3.0f), d);
-    EXPECT_TRUE(p == Vector4(-1.0f, 0.0f, 0.0f));
+    EXPECT_TRUE((p == Vector4(-1.0f, 0.0f, 0.0f)).All());
 }
 
 TEST(MathGeometry, BoxBoxIntersection)

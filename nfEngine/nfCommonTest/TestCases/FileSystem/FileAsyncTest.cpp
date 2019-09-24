@@ -35,6 +35,8 @@ const uint32 expectedOperations = 0x3FF;             //< Expected state of read/
 
 const StringView testPath("./testFile.async");
 
+NFE::Math::Random random;
+
 // Callback for read & write operations
 void TestCallback(void* obj, FileAsync* filePtr, size_t bytesProcessed, bool isRead)
 {
@@ -67,8 +69,6 @@ class FileAsyncTest : public testing::Test
 {
 public:
     NFE::uint8 mBufferExpected[bufferSize];
-    NFE::Math::Random mRand;
-
 
     void SetUp()
     {
@@ -80,7 +80,7 @@ public:
 
         // Fill buffer with random data
         for (int i = 0; i < bufferSize; i++)
-            mBufferExpected[i] = static_cast<NFE::uint8>(mRand.GetInt());
+            mBufferExpected[i] = static_cast<NFE::uint8>(random.GetInt());
     }
 
     void TearDown()

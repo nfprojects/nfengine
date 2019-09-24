@@ -81,13 +81,13 @@ void RenderScene::RenderLights(const Common::TaskContext& context, RenderingData
     HighLevelRenderer* renderer = Engine::GetInstance()->GetRenderer();
     RenderContext* renderCtx = renderer->GetDeferredContext(context.threadId);
 
-    LightsRenderer::Get()->OnEnter(renderCtx->lightsContext.get());
-    LightsRenderer::Get()->SetUp(renderCtx->lightsContext.get(),
+    LightsRenderer::Get()->OnEnter(renderCtx->lightsContext.Get());
+    LightsRenderer::Get()->SetUp(renderCtx->lightsContext.Get(),
                                  data.view->GetRenderTarget(),
                                  data.view->GetGeometryBuffer(),
                                  &data.cameraRenderDesc);
 
-    LightsRenderer::Get()->DrawAmbientLight(renderCtx->lightsContext.get(),
+    LightsRenderer::Get()->DrawAmbientLight(renderCtx->lightsContext.Get(),
                                             renderer->GammaFix(mEnvironment.ambientLight),
                                             renderer->GammaFix(mEnvironment.backgroundColor));
 
@@ -95,7 +95,7 @@ void RenderScene::RenderLights(const Common::TaskContext& context, RenderingData
     {
         const Vector4& position = lightProxy->desc.transform[3];
 
-        LightsRenderer::Get()->DrawOmniLight(renderCtx->lightsContext.get(), position,
+        LightsRenderer::Get()->DrawOmniLight(renderCtx->lightsContext.Get(), position,
                                              lightProxy->desc.omni.radius,
                                              lightProxy->desc.color,
                                              lightProxy->shadowMap.Get());
@@ -107,26 +107,26 @@ void RenderScene::RenderLights(const Common::TaskContext& context, RenderingData
 
         SpotLightProperties prop;
         prop.color = desc.color;
-        prop.position = desc.transform.GetRow(3);
-        prop.direction = desc.transform.GetRow(2);
-        prop.farDist.Set(desc.spot.farDistance);
+        prop.position = desc.transform[3];
+        prop.direction = desc.transform[2];
+        prop.farDist = Vector4(desc.spot.farDistance);
         prop.viewProjMatrix = lightProxy->viewMatrix * lightProxy->projMatrix;
         prop.viewProjMatrixInv = prop.viewProjMatrix.Inverted(); // TODO move to SpotLightData?
-        prop.shadowMapProps = Vector4();
+        prop.shadowMapProps = Vector4::Zero();
 
         if (lightProxy->shadowMap)
         {
             prop.shadowMapProps = Vector4(1.0f / lightProxy->shadowMap->GetSize());
         }
 
-        LightsRenderer::Get()->DrawSpotLight(renderCtx->lightsContext.get(), prop, lightProxy->shadowMap.Get(),
+        LightsRenderer::Get()->DrawSpotLight(renderCtx->lightsContext.Get(), prop, lightProxy->shadowMap.Get(),
                                              lightProxy->lightMapBindingInstance);
     }
 
     // TODO: dir light
 
-    LightsRenderer::Get()->DrawFog(renderCtx->lightsContext.get());
-    LightsRenderer::Get()->OnLeave(renderCtx->lightsContext.get());
+    LightsRenderer::Get()->DrawFog(renderCtx->lightsContext.Get());
+    LightsRenderer::Get()->OnLeave(renderCtx->lightsContext.Get());
 }
 
 void RenderScene::RenderLightsDebug(RenderingData& data, Renderer::RenderContext* ctx) const
@@ -136,12 +136,12 @@ void RenderScene::RenderLightsDebug(RenderingData& data, Renderer::RenderContext
     for (const LightProxy* lightProxy : data.visibleOmniLights)
     {
         const Box box(lightProxy->desc.transform.GetRow(3), lightProxy->desc.omni.radius);
-        DebugRenderer::Get()->DrawBox(ctx->debugContext.get(), box, lightDebugColor);
+        DebugRenderer::Get()->DrawBox(ctx->debugContext.Get(), box, lightDebugColor);
     }
 
     for (const LightProxy* lightProxy : data.visibleSpotLights)
     {
-        DebugRenderer::Get()->DrawFrustum(ctx->debugContext.get(), lightProxy->frustum, lightDebugColor);
+        DebugRenderer::Get()->DrawFrustum(ctx->debugContext.Get(), lightProxy->frustum, lightDebugColor);
     }
 
     // TODO: dir light
@@ -195,7 +195,7 @@ void RenderScene::RenderSpotShadowMap(const Common::TaskContext& context, const 
 {
     HighLevelRenderer* renderer = Engine::GetInstance()->GetRenderer();
     RenderContext* renderCtx = renderer->GetDeferredContext(context.threadId);
-    GeometryRendererContext* shadowsContext = renderCtx->shadowsContext.get();
+    GeometryRendererContext* shadowsContext = renderCtx->shadowsContext.Get();
 
     ShadowCameraRenderDesc cameraDesc;
     cameraDesc.viewProjMatrix = lightProxy->viewMatrix * lightProxy->projMatrix;
@@ -266,7 +266,7 @@ void RenderScene::RenderOmniShadowMap(const Common::TaskContext& context, const 
     cameraDesc.lightPos = position;
 
 
-    GeometryRendererContext* shadowsContext = renderCtx->shadowsContext.get();
+    GeometryRendererContext* shadowsContext = renderCtx->shadowsContext.Get();
     GeometryRenderer::Get()->OnEnter(shadowsContext);
     GeometryRenderer::Get()->SetUpForShadowMap(shadowsContext, lightProxy->shadowMap.Get(), &cameraDesc, faceID);
     RenderGeometry(shadowsContext, frustum, position);
@@ -379,7 +379,7 @@ bool RenderScene::Render(const Common::TaskContext& context, const Renderer::Vie
         {
             HighLevelRenderer* renderer = Engine::GetInstance()->GetRenderer();
             RenderContext* renderCtx = renderer->GetDeferredContext(context.threadId);
-            GeometryRendererContext* gbufferContext = renderCtx->geometryContext.get();
+            GeometryRendererContext* gbufferContext = renderCtx->geometryContext.Get();
 
             GeometryRenderer::Get()->OnEnter(gbufferContext);
             GeometryRenderer::Get()->SetUp(gbufferContext,
@@ -417,7 +417,7 @@ void RenderScene::RenderDebugLayer(const Common::TaskContext& context, Rendering
 {
     HighLevelRenderer* renderer = Engine::GetInstance()->GetRenderer();
     RenderContext* renderCtx = renderer->GetDeferredContext(context.threadId);
-    DebugRendererContext* debugContext = renderCtx->debugContext.get();
+    DebugRendererContext* debugContext = renderCtx->debugContext.Get();
 
     DebugRenderer::Get()->OnEnter(debugContext);
     DebugRenderer::Get()->SetCamera(debugContext,
@@ -460,12 +460,6 @@ void RenderScene::FindVisibleLights(const Frustum& frustum, RenderingData& data)
 
     mLightProxies.Iterate([&frustum, &data](LightProxy& proxy)
     {
-        if (Vector4::Less3(proxy.desc.color, VECTOR_EPSILON))
-        {
-            // light is too dim
-            return;
-        }
-
         if (proxy.desc.type == LightProxyType::Omni)
         {
             Sphere lightSphere;
@@ -491,7 +485,7 @@ ProxyID RenderScene::CreateMeshProxy(const MeshProxyDesc& desc)
 {
     MeshProxy proxy;
     proxy.desc = desc;
-    proxy.globalBox = TransformBox(desc.transform, desc.mesh->GetLocalBox());
+    proxy.globalBox = desc.transform.TransformBox(desc.mesh->GetLocalBox());
 
     return mMeshProxies.Add(proxy);
 }
@@ -530,7 +524,7 @@ bool RenderScene::UpdateMeshProxy(const ProxyID proxyID, const MeshProxyDesc& de
 
     MeshProxy& proxy = mMeshProxies[proxyID];
     proxy.desc = desc;
-    proxy.globalBox = TransformBox(desc.transform, desc.mesh->GetLocalBox());
+    proxy.globalBox = desc.transform.TransformBox(desc.mesh->GetLocalBox());
 
     return true;
 }

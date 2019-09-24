@@ -21,12 +21,11 @@ static double GetCounterPeriod()
 namespace NFE {
 namespace Common {
 
+const double Timer::gPeriod = GetCounterPeriod();
+
 Timer::Timer()
 {
-    static double gPeriod = GetCounterPeriod();
-    mPeriod = gPeriod;
-
-    mStart.QuadPart = 0;
+    Start();
 }
 
 void Timer::Start()
@@ -34,12 +33,20 @@ void Timer::Start()
     QueryPerformanceCounter(&mStart);
 }
 
+double Timer::Restart()
+{
+    LARGE_INTEGER previousTime = mStart;
+    QueryPerformanceCounter(&mStart);
+
+    return static_cast<double>(mStart.QuadPart - previousTime.QuadPart) * gPeriod;
+}
+
 double Timer::Stop()
 {
     LARGE_INTEGER stop;
     QueryPerformanceCounter(&stop);
 
-    return static_cast<double>(stop.QuadPart - mStart.QuadPart) * mPeriod;
+    return static_cast<double>(stop.QuadPart - mStart.QuadPart) * gPeriod;
 }
 
 } // namespace Common

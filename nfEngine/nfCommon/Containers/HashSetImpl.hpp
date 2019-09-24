@@ -19,49 +19,49 @@ namespace Common {
 
 // HashSet::ConstIterator /////////////////////////////////////////////////////////////////////////////
 
-template<typename KeyType, typename HashFunction>
-HashSet<KeyType, HashFunction>::ConstIterator::ConstIterator()
+template<typename KeyType, typename HashFunction, typename EqualsPolicy>
+HashSet<KeyType, HashFunction, EqualsPolicy>::ConstIterator::ConstIterator()
     : mSet(nullptr)
     , mBucket(InvalidID)
     , mElement(InvalidID)
 { }
 
-template<typename KeyType, typename HashFunction>
-HashSet<KeyType, HashFunction>::ConstIterator::ConstIterator(const HashSet* set, ElementID bucket, ElementID element)
+template<typename KeyType, typename HashFunction, typename EqualsPolicy>
+HashSet<KeyType, HashFunction, EqualsPolicy>::ConstIterator::ConstIterator(const HashSet* set, ElementID bucket, ElementID element)
     : mSet(set)
     , mBucket(bucket)
     , mElement(element)
 { }
 
-template<typename KeyType, typename HashFunction>
-bool HashSet<KeyType, HashFunction>::ConstIterator::operator == (const ConstIterator& other) const
+template<typename KeyType, typename HashFunction, typename EqualsPolicy>
+bool HashSet<KeyType, HashFunction, EqualsPolicy>::ConstIterator::operator == (const ConstIterator& other) const
 {
     // note: no need to compare bucket ID, because element ID identifies the key uniquely
     return (mSet == other.mSet) && (mElement == other.mElement);
 }
 
-template<typename KeyType, typename HashFunction>
-bool HashSet<KeyType, HashFunction>::ConstIterator::operator != (const ConstIterator& other) const
+template<typename KeyType, typename HashFunction, typename EqualsPolicy>
+bool HashSet<KeyType, HashFunction, EqualsPolicy>::ConstIterator::operator != (const ConstIterator& other) const
 {
     return (mSet != other.mSet) || (mElement != other.mElement);
 }
 
-template<typename KeyType, typename HashFunction>
-const KeyType& HashSet<KeyType, HashFunction>::ConstIterator::operator * () const
+template<typename KeyType, typename HashFunction, typename EqualsPolicy>
+const KeyType& HashSet<KeyType, HashFunction, EqualsPolicy>::ConstIterator::operator * () const
 {
     NFE_ASSERT(mElement != InvalidID, "Trying to dereference 'end' iterator");
     return mSet->mKeys[mElement];
 }
 
-template<typename KeyType, typename HashFunction>
-const KeyType* HashSet<KeyType, HashFunction>::ConstIterator::operator -> () const
+template<typename KeyType, typename HashFunction, typename EqualsPolicy>
+const KeyType* HashSet<KeyType, HashFunction, EqualsPolicy>::ConstIterator::operator -> () const
 {
     NFE_ASSERT(mElement != InvalidID, "Trying to dereference 'end' iterator");
     return mSet->mKeys + mElement;
 }
 
-template<typename KeyType, typename HashFunction>
-typename HashSet<KeyType, HashFunction>::ConstIterator& HashSet<KeyType, HashFunction>::ConstIterator::operator++()
+template<typename KeyType, typename HashFunction, typename EqualsPolicy>
+typename HashSet<KeyType, HashFunction, EqualsPolicy>::ConstIterator& HashSet<KeyType, HashFunction, EqualsPolicy>::ConstIterator::operator++()
 {
     if (mElement != InvalidID) // update only when not pointing to the end
     {
@@ -98,8 +98,8 @@ typename HashSet<KeyType, HashFunction>::ConstIterator& HashSet<KeyType, HashFun
     return *this;
 }
 
-template<typename KeyType, typename HashFunction>
-typename HashSet<KeyType, HashFunction>::ConstIterator HashSet<KeyType, HashFunction>::ConstIterator::operator++(int)
+template<typename KeyType, typename HashFunction, typename EqualsPolicy>
+typename HashSet<KeyType, HashFunction, EqualsPolicy>::ConstIterator HashSet<KeyType, HashFunction, EqualsPolicy>::ConstIterator::operator++(int)
 {
     ConstIterator tmp(*this);
     operator++();
@@ -109,25 +109,25 @@ typename HashSet<KeyType, HashFunction>::ConstIterator HashSet<KeyType, HashFunc
 
 // HashSet::Iterator //////////////////////////////////////////////////////////////////////////////////
 
-template<typename KeyType, typename HashFunction>
-HashSet<KeyType, HashFunction>::Iterator::Iterator()
+template<typename KeyType, typename HashFunction, typename EqualsPolicy>
+HashSet<KeyType, HashFunction, EqualsPolicy>::Iterator::Iterator()
     : ConstIterator()
 { }
 
-template<typename KeyType, typename HashFunction>
-HashSet<KeyType, HashFunction>::Iterator::Iterator(const HashSet* set, ElementID bucket, ElementID element)
+template<typename KeyType, typename HashFunction, typename EqualsPolicy>
+HashSet<KeyType, HashFunction, EqualsPolicy>::Iterator::Iterator(const HashSet* set, ElementID bucket, ElementID element)
     : ConstIterator(set, bucket, element)
 { }
 
-template<typename KeyType, typename HashFunction>
-KeyType& HashSet<KeyType, HashFunction>::Iterator::operator * () const
+template<typename KeyType, typename HashFunction, typename EqualsPolicy>
+KeyType& HashSet<KeyType, HashFunction, EqualsPolicy>::Iterator::operator * () const
 {
     NFE_ASSERT(this->mElement != InvalidID, "Trying to dereference 'end' iterator");
     return this->mSet->mKeys[this->mElement];
 }
 
-template<typename KeyType, typename HashFunction>
-KeyType* HashSet<KeyType, HashFunction>::Iterator::operator -> () const
+template<typename KeyType, typename HashFunction, typename EqualsPolicy>
+KeyType* HashSet<KeyType, HashFunction, EqualsPolicy>::Iterator::operator -> () const
 {
     NFE_ASSERT(this->mElement != InvalidID, "Trying to dereference 'end' iterator");
     return this->mSet->mKeys + this->mElement;
@@ -136,8 +136,8 @@ KeyType* HashSet<KeyType, HashFunction>::Iterator::operator -> () const
 
 // HashSet ////////////////////////////////////////////////////////////////////////////////////////////
 
-template<typename KeyType, typename HashFunction>
-HashSet<KeyType, HashFunction>::HashSet()
+template<typename KeyType, typename HashFunction, typename EqualsPolicy>
+HashSet<KeyType, HashFunction, EqualsPolicy>::HashSet()
     : mKeys(nullptr)
     , mNextElements(nullptr)
     , mBuckets(nullptr)
@@ -148,14 +148,14 @@ HashSet<KeyType, HashFunction>::HashSet()
 {
 }
 
-template<typename KeyType, typename HashFunction>
-HashSet<KeyType, HashFunction>::~HashSet()
+template<typename KeyType, typename HashFunction, typename EqualsPolicy>
+HashSet<KeyType, HashFunction, EqualsPolicy>::~HashSet()
 {
     Clear();
 }
 
-template<typename KeyType, typename HashFunction>
-HashSet<KeyType, HashFunction>::HashSet(const HashSet& other)
+template<typename KeyType, typename HashFunction, typename EqualsPolicy>
+HashSet<KeyType, HashFunction, EqualsPolicy>::HashSet(const HashSet& other)
     : HashSet()
 {
     Reserve(other.Size());
@@ -170,8 +170,8 @@ HashSet<KeyType, HashFunction>::HashSet(const HashSet& other)
     NFE_ASSERT(mNumKeys == other.mNumKeys, "Some elements have been lost when moving from old set");
 }
 
-template<typename KeyType, typename HashFunction>
-HashSet<KeyType, HashFunction>& HashSet<KeyType, HashFunction>::operator = (const HashSet& other)
+template<typename KeyType, typename HashFunction, typename EqualsPolicy>
+HashSet<KeyType, HashFunction, EqualsPolicy>& HashSet<KeyType, HashFunction, EqualsPolicy>::operator = (const HashSet& other)
 {
     Reserve(other.Size());
 
@@ -187,8 +187,8 @@ HashSet<KeyType, HashFunction>& HashSet<KeyType, HashFunction>::operator = (cons
     return *this;
 }
 
-template<typename KeyType, typename HashFunction>
-HashSet<KeyType, HashFunction>::HashSet(HashSet&& other)
+template<typename KeyType, typename HashFunction, typename EqualsPolicy>
+HashSet<KeyType, HashFunction, EqualsPolicy>::HashSet(HashSet&& other)
 {
     mKeys = other.mKeys;
     mNextElements = other.mNextElements;
@@ -207,8 +207,8 @@ HashSet<KeyType, HashFunction>::HashSet(HashSet&& other)
     other.mFirstFreeKey = InvalidID;
 }
 
-template<typename KeyType, typename HashFunction>
-HashSet<KeyType, HashFunction>& HashSet<KeyType, HashFunction>::operator = (HashSet&& other)
+template<typename KeyType, typename HashFunction, typename EqualsPolicy>
+HashSet<KeyType, HashFunction, EqualsPolicy>& HashSet<KeyType, HashFunction, EqualsPolicy>::operator = (HashSet&& other)
 {
     // TODO reuse already allocated memory
     Clear();
@@ -234,20 +234,20 @@ HashSet<KeyType, HashFunction>& HashSet<KeyType, HashFunction>::operator = (Hash
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
-template<typename KeyType, typename HashFunction>
-uint32 HashSet<KeyType, HashFunction>::Size() const
+template<typename KeyType, typename HashFunction, typename EqualsPolicy>
+uint32 HashSet<KeyType, HashFunction, EqualsPolicy>::Size() const
 {
     return mNumKeys;
 }
 
-template<typename KeyType, typename HashFunction>
-bool HashSet<KeyType, HashFunction>::Empty() const
+template<typename KeyType, typename HashFunction, typename EqualsPolicy>
+bool HashSet<KeyType, HashFunction, EqualsPolicy>::Empty() const
 {
     return mNumKeys == 0u;
 }
 
-template<typename KeyType, typename HashFunction>
-uint32 HashSet<KeyType, HashFunction>::GetNumberOfBuckets() const
+template<typename KeyType, typename HashFunction, typename EqualsPolicy>
+uint32 HashSet<KeyType, HashFunction, EqualsPolicy>::GetNumberOfBuckets() const
 {
     // 0 bits   ->  0 buckets
     // 1 bit    ->  2 buckets
@@ -256,14 +256,14 @@ uint32 HashSet<KeyType, HashFunction>::GetNumberOfBuckets() const
     return mHashBits > 0u ? (1u << static_cast<uint32>(mHashBits)) : 0u;
 }
 
-template<typename KeyType, typename HashFunction>
-uint32 HashSet<KeyType, HashFunction>::GetHashMask() const
+template<typename KeyType, typename HashFunction, typename EqualsPolicy>
+uint32 HashSet<KeyType, HashFunction, EqualsPolicy>::GetHashMask() const
 {
     return (1 << static_cast<uint32>(mHashBits)) - 1;
 }
 
-template<typename KeyType, typename HashFunction>
-void HashSet<KeyType, HashFunction>::Clear()
+template<typename KeyType, typename HashFunction, typename EqualsPolicy>
+void HashSet<KeyType, HashFunction, EqualsPolicy>::Clear()
 {
     if (mKeys)
     {
@@ -287,8 +287,8 @@ void HashSet<KeyType, HashFunction>::Clear()
     mFirstFreeElement = InvalidID;
 }
 
-template<typename KeyType, typename HashFunction>
-typename HashSet<KeyType, HashFunction>::ConstIterator HashSet<KeyType, HashFunction>::Begin() const
+template<typename KeyType, typename HashFunction, typename EqualsPolicy>
+typename HashSet<KeyType, HashFunction, EqualsPolicy>::ConstIterator HashSet<KeyType, HashFunction, EqualsPolicy>::Begin() const
 {
     ElementID bucketID = InvalidID;
     ElementID elementID = InvalidID;
@@ -297,8 +297,8 @@ typename HashSet<KeyType, HashFunction>::ConstIterator HashSet<KeyType, HashFunc
     return ConstIterator(this, bucketID, elementID);
 }
 
-template<typename KeyType, typename HashFunction>
-typename HashSet<KeyType, HashFunction>::Iterator HashSet<KeyType, HashFunction>::Begin()
+template<typename KeyType, typename HashFunction, typename EqualsPolicy>
+typename HashSet<KeyType, HashFunction, EqualsPolicy>::Iterator HashSet<KeyType, HashFunction, EqualsPolicy>::Begin()
 {
     ElementID bucketID = InvalidID;
     ElementID elementID = InvalidID;
@@ -307,20 +307,20 @@ typename HashSet<KeyType, HashFunction>::Iterator HashSet<KeyType, HashFunction>
     return Iterator(this, bucketID, elementID);
 }
 
-template<typename KeyType, typename HashFunction>
-typename HashSet<KeyType, HashFunction>::ConstIterator HashSet<KeyType, HashFunction>::End() const
+template<typename KeyType, typename HashFunction, typename EqualsPolicy>
+typename HashSet<KeyType, HashFunction, EqualsPolicy>::ConstIterator HashSet<KeyType, HashFunction, EqualsPolicy>::End() const
 {
     return ConstIterator(this, InvalidID, InvalidID);
 }
 
-template<typename KeyType, typename HashFunction>
-typename HashSet<KeyType, HashFunction>::Iterator HashSet<KeyType, HashFunction>::End()
+template<typename KeyType, typename HashFunction, typename EqualsPolicy>
+typename HashSet<KeyType, HashFunction, EqualsPolicy>::Iterator HashSet<KeyType, HashFunction, EqualsPolicy>::End()
 {
     return Iterator(this, InvalidID, InvalidID);
 }
 
-template<typename KeyType, typename HashFunction>
-typename HashSet<KeyType, HashFunction>::ConstIterator HashSet<KeyType, HashFunction>::Find(const KeyType& key) const
+template<typename KeyType, typename HashFunction, typename EqualsPolicy>
+typename HashSet<KeyType, HashFunction, EqualsPolicy>::ConstIterator HashSet<KeyType, HashFunction, EqualsPolicy>::Find(const KeyType& key) const
 {
     ElementID bucketID = InvalidID;
     ElementID elementID = InvalidID;
@@ -329,8 +329,8 @@ typename HashSet<KeyType, HashFunction>::ConstIterator HashSet<KeyType, HashFunc
     return ConstIterator(this, bucketID, elementID);
 }
 
-template<typename KeyType, typename HashFunction>
-typename HashSet<KeyType, HashFunction>::Iterator HashSet<KeyType, HashFunction>::Find(const KeyType& key)
+template<typename KeyType, typename HashFunction, typename EqualsPolicy>
+typename HashSet<KeyType, HashFunction, EqualsPolicy>::Iterator HashSet<KeyType, HashFunction, EqualsPolicy>::Find(const KeyType& key)
 {
     ElementID bucketID = InvalidID;
     ElementID elementID = InvalidID;
@@ -339,16 +339,16 @@ typename HashSet<KeyType, HashFunction>::Iterator HashSet<KeyType, HashFunction>
     return Iterator(this, bucketID, elementID);
 }
 
-template<typename KeyType, typename HashFunction>
-bool HashSet<KeyType, HashFunction>::Exists(const KeyType& key) const
+template<typename KeyType, typename HashFunction, typename EqualsPolicy>
+bool HashSet<KeyType, HashFunction, EqualsPolicy>::Exists(const KeyType& key) const
 {
     ElementID bucketID;
     ElementID elementID;
     return FindKeyInternal(key, bucketID, elementID);
 }
 
-template<typename KeyType, typename HashFunction>
-typename HashSet<KeyType, HashFunction>::InsertResult HashSet<KeyType, HashFunction>::InsertOrReplace(const KeyType& key)
+template<typename KeyType, typename HashFunction, typename EqualsPolicy>
+typename HashSet<KeyType, HashFunction, EqualsPolicy>::InsertResult HashSet<KeyType, HashFunction, EqualsPolicy>::InsertOrReplace(const KeyType& key)
 {
     // TODO not needed if replacing, will require refactoring InsertOrReplace_Internal
     if (!Reserve(mNumKeys + 1))
@@ -368,8 +368,8 @@ typename HashSet<KeyType, HashFunction>::InsertResult HashSet<KeyType, HashFunct
     return result;
 }
 
-template<typename KeyType, typename HashFunction>
-typename HashSet<KeyType, HashFunction>::InsertResult HashSet<KeyType, HashFunction>::InsertOrReplace(KeyType&& key)
+template<typename KeyType, typename HashFunction, typename EqualsPolicy>
+typename HashSet<KeyType, HashFunction, EqualsPolicy>::InsertResult HashSet<KeyType, HashFunction, EqualsPolicy>::InsertOrReplace(KeyType&& key)
 {
     // TODO not needed if replacing, will require refactoring InsertOrReplace_Internal
     if (!Reserve(mNumKeys + 1))
@@ -389,8 +389,8 @@ typename HashSet<KeyType, HashFunction>::InsertResult HashSet<KeyType, HashFunct
     return result;
 }
 
-template<typename KeyType, typename HashFunction>
-typename HashSet<KeyType, HashFunction>::InsertResult HashSet<KeyType, HashFunction>::Insert(const KeyType& key)
+template<typename KeyType, typename HashFunction, typename EqualsPolicy>
+typename HashSet<KeyType, HashFunction, EqualsPolicy>::InsertResult HashSet<KeyType, HashFunction, EqualsPolicy>::Insert(const KeyType& key)
 {
     // TODO not needed if replacing, will require refactoring InsertOrReplace_Internal
     if (!Reserve(mNumKeys + 1))
@@ -410,8 +410,8 @@ typename HashSet<KeyType, HashFunction>::InsertResult HashSet<KeyType, HashFunct
     return result;
 }
 
-template<typename KeyType, typename HashFunction>
-typename HashSet<KeyType, HashFunction>::InsertResult HashSet<KeyType, HashFunction>::Insert(KeyType&& key)
+template<typename KeyType, typename HashFunction, typename EqualsPolicy>
+typename HashSet<KeyType, HashFunction, EqualsPolicy>::InsertResult HashSet<KeyType, HashFunction, EqualsPolicy>::Insert(KeyType&& key)
 {
     // TODO not needed if replacing, will require refactoring InsertOrReplace_Internal
     if (!Reserve(mNumKeys + 1))
@@ -431,14 +431,14 @@ typename HashSet<KeyType, HashFunction>::InsertResult HashSet<KeyType, HashFunct
     return result;
 }
 
-template<typename KeyType, typename HashFunction>
-bool HashSet<KeyType, HashFunction>::Erase(const KeyType& key)
+template<typename KeyType, typename HashFunction, typename EqualsPolicy>
+bool HashSet<KeyType, HashFunction, EqualsPolicy>::Erase(const KeyType& key)
 {
     return Erase(Find(key));
 }
 
-template<typename KeyType, typename HashFunction>
-bool HashSet<KeyType, HashFunction>::Erase(const ConstIterator& iterator)
+template<typename KeyType, typename HashFunction, typename EqualsPolicy>
+bool HashSet<KeyType, HashFunction, EqualsPolicy>::Erase(const ConstIterator& iterator)
 {
     NFE_ASSERT(iterator.mSet == this, "Trying to use iterator from another HashSet");
 
@@ -482,8 +482,8 @@ bool HashSet<KeyType, HashFunction>::Erase(const ConstIterator& iterator)
     return true;
 }
 
-template<typename KeyType, typename HashFunction>
-bool HashSet<KeyType, HashFunction>::Reserve(uint32 size)
+template<typename KeyType, typename HashFunction, typename EqualsPolicy>
+bool HashSet<KeyType, HashFunction, EqualsPolicy>::Reserve(uint32 size)
 {
     const uint32 currentCapacity = GetNumberOfBuckets();
     size *= RehashThresholdDenominator;
@@ -568,8 +568,8 @@ bool HashSet<KeyType, HashFunction>::Reserve(uint32 size)
     return true;
 }
 
-template<typename KeyType, typename HashFunction>
-bool HashSet<KeyType, HashFunction>::FindFirstElement(ElementID& outBucketId, ElementID& outElementId) const
+template<typename KeyType, typename HashFunction, typename EqualsPolicy>
+bool HashSet<KeyType, HashFunction, EqualsPolicy>::FindFirstElement(ElementID& outBucketId, ElementID& outElementId) const
 {
     if (mNumKeys == 0)
     {
@@ -590,8 +590,8 @@ bool HashSet<KeyType, HashFunction>::FindFirstElement(ElementID& outBucketId, El
     return false;
 }
 
-template<typename KeyType, typename HashFunction>
-bool HashSet<KeyType, HashFunction>::FindKeyInternal(const KeyType& key, ElementID& outBucketId, ElementID& outElementId) const
+template<typename KeyType, typename HashFunction, typename EqualsPolicy>
+bool HashSet<KeyType, HashFunction, EqualsPolicy>::FindKeyInternal(const KeyType& key, ElementID& outBucketId, ElementID& outElementId) const
 {
     const uint32 numberOfBuckets = GetNumberOfBuckets();
     if (numberOfBuckets == 0)
@@ -600,6 +600,7 @@ bool HashSet<KeyType, HashFunction>::FindKeyInternal(const KeyType& key, Element
     }
 
     HashFunction hashFunction;
+    EqualsPolicy equalsPolicy;
 
     // calculate masked hash value (equals to bucket ID)
     const uint32 hashValue = hashFunction(key) & GetHashMask();
@@ -611,7 +612,7 @@ bool HashSet<KeyType, HashFunction>::FindKeyInternal(const KeyType& key, Element
     {
         NFE_ASSERT(currentElement < numberOfBuckets, "Bucket's linked list is currupted");
 
-        if (mKeys[currentElement] == key)
+        if (equalsPolicy(mKeys[currentElement], key))
         {
             // key found
             outBucketId = hashValue;
@@ -626,10 +627,11 @@ bool HashSet<KeyType, HashFunction>::FindKeyInternal(const KeyType& key, Element
     return false;
 }
 
-template<typename KeyType, typename HashFunction>
-typename HashSet<KeyType, HashFunction>::InsertResult HashSet<KeyType, HashFunction>::InsertOrReplace_Internal(const KeyType& key)
+template<typename KeyType, typename HashFunction, typename EqualsPolicy>
+typename HashSet<KeyType, HashFunction, EqualsPolicy>::InsertResult HashSet<KeyType, HashFunction, EqualsPolicy>::InsertOrReplace_Internal(const KeyType& key)
 {
     HashFunction hashFunction;
+    EqualsPolicy equalsPolicy;
 
     const uint32 numberOfBuckets = GetNumberOfBuckets();
     const uint32 hashValue = hashFunction(key) & GetHashMask();
@@ -642,7 +644,7 @@ typename HashSet<KeyType, HashFunction>::InsertResult HashSet<KeyType, HashFunct
         {
             NFE_ASSERT(currentElement < numberOfBuckets, "Bucket's linked list is currupted");
 
-            if (mKeys[currentElement] == key)
+            if (equalsPolicy(mKeys[currentElement], key))
             {
                 return InsertResult(Iterator(this, hashValue, currentElement), /* replaced */ true);
             }
@@ -664,8 +666,8 @@ typename HashSet<KeyType, HashFunction>::InsertResult HashSet<KeyType, HashFunct
     return InsertResult(Iterator(this, hashValue, newElementID));
 }
 
-template<typename KeyType, typename HashFunction>
-typename HashSet<KeyType, HashFunction>::ElementID HashSet<KeyType, HashFunction>::AllocateElement()
+template<typename KeyType, typename HashFunction, typename EqualsPolicy>
+typename HashSet<KeyType, HashFunction, EqualsPolicy>::ElementID HashSet<KeyType, HashFunction, EqualsPolicy>::AllocateElement()
 {
     NFE_ASSERT(mFirstFreeElement != InvalidID, "Expected valid next free element. Linked list is corrupted");
 
@@ -674,8 +676,8 @@ typename HashSet<KeyType, HashFunction>::ElementID HashSet<KeyType, HashFunction
     return result;
 }
 
-template<typename KeyType, typename HashFunction>
-void HashSet<KeyType, HashFunction>::FreeElement(ElementID element)
+template<typename KeyType, typename HashFunction, typename EqualsPolicy>
+void HashSet<KeyType, HashFunction, EqualsPolicy>::FreeElement(ElementID element)
 {
     NFE_ASSERT(element != InvalidID, "Expected valid element. Linked list would be corrupted");
 
@@ -685,8 +687,8 @@ void HashSet<KeyType, HashFunction>::FreeElement(ElementID element)
 
 //////////////////////////////////////////////////////////////////////////
 
-template<typename KeyType, typename HashFunction>
-uint32 HashSet<KeyType, HashFunction>::CalculateHashCollisions() const
+template<typename KeyType, typename HashFunction, typename EqualsPolicy>
+uint32 HashSet<KeyType, HashFunction, EqualsPolicy>::CalculateHashCollisions() const
 {
     uint32 numCollisions = 0;
 
@@ -712,8 +714,8 @@ uint32 HashSet<KeyType, HashFunction>::CalculateHashCollisions() const
     return numCollisions;
 }
 
-template<typename KeyType, typename HashFunction>
-bool HashSet<KeyType, HashFunction>::Verify() const
+template<typename KeyType, typename HashFunction, typename EqualsPolicy>
+bool HashSet<KeyType, HashFunction, EqualsPolicy>::Verify() const
 {
     const uint32 numAllocatedElements = GetNumberOfBuckets();
 

@@ -28,7 +28,7 @@ TEST(Set, Basic)
     for (int i = 0; i < MAX_NUM_VALUES; ++i)
         values.push_back(i);
 
-    Math::Random random(0);
+    Math::Random random;
     random.ShuffleContainer(values.begin(), values.end(), MAX_NUM_VALUES);
 
 

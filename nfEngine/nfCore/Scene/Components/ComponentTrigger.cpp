@@ -91,12 +91,6 @@ void TriggerComponent::OnUpdate()
 
 void TriggerComponent::SetSize(const Math::Vector4& newSize)
 {
-    if (mSize == newSize)
-    {
-        // nothing to do
-        return;
-    }
-
     // TODO update proxy
 
     mSize = newSize;
@@ -104,12 +98,6 @@ void TriggerComponent::SetSize(const Math::Vector4& newSize)
 
 void TriggerComponent::SetType(TriggerType newType)
 {
-    if (mType == newType)
-    {
-        // nothing to do
-        return;
-    }
-
     // TODO destroy & create proxy
 
     mType = newType;

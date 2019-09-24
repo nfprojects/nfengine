@@ -1,15 +1,8 @@
-/**
- * @file
- * @author Witek902 (witek902@gmail.com)
- * @brief  Geometry function definitions.
- */
-
 #include "PCH.hpp"
 #include "Geometry.hpp"
 #include "Sphere.hpp"
 #include "Frustum.hpp"
-#include "Transform.hpp"
-
+#include "Transcendental.hpp"
 
 namespace NFE {
 namespace Math {
@@ -33,6 +26,34 @@ float ClosestPointOnSegment(const Vector4& p, const Vector4& p1, const Vector4& 
     return (result - p).Length3();
 }
 
+// Box-box intersection test
+template<> NFCOMMON_API
+bool Intersect(const Box& box1, const Box& box2)
+{
+    return (((box1.min < box2.max) & (box2.min < box1.max)).GetMask() & 7) == 7;
+}
+
+template<> NFCOMMON_API
+IntersectionResult IntersectEx(const Box& box1, const Box& box2)
+{
+    if ((box1.min > box2.max).GetMask() & 0x7)
+    {
+        return IntersectionResult::Outside;
+    }
+
+    if ((box2.min > box1.max).GetMask() & 0x7)
+    {
+        return IntersectionResult::Outside;
+    }
+
+    if ((((box1.min > box2.min) & (box2.max > box1.max)).GetMask() & 7) == 7)
+    {
+        return IntersectionResult::Inside;
+    }
+
+    return IntersectionResult::Intersect;
+}
+
 // Box-frustum intersection test
 template<> NFCOMMON_API
 bool Intersect(const Box& box, const Frustum& frustum)
@@ -42,8 +63,8 @@ bool Intersect(const Box& box, const Frustum& frustum)
     int minMask = 0x7;
     for (int i = 0; i < 8; i++)
     {
-        maxMask &= Vector4::GreaterMask(frustum.verticies[i], box.max);
-        minMask &= Vector4::LessMask(frustum.verticies[i], box.min);
+        maxMask &= (frustum.verticies[i] > box.max).GetMask();
+        minMask &= (frustum.verticies[i] < box.min).GetMask();
     }
 
     if (maxMask | minMask)
@@ -53,7 +74,7 @@ bool Intersect(const Box& box, const Frustum& frustum)
     for (int i = 0; i < 6; i++)
     {
         const Plane& plane = frustum.planes[i];
-        const Vector4 vmax = Vector4::SelectBySign(box.max, box.min, plane.v);
+        const Vector4 vmax = Vector4::Select(box.max, box.min, plane.v < Vector4::Zero());
         if (!plane.Side(vmax))
         {
             return false;
@@ -79,8 +100,8 @@ IntersectionResult IntersectEx(const Box& box, const Frustum& frustum)
     int minMask = 0x7;
     for (int i = 0; i < 8; i++)
     {
-        maxMask &= Vector4::GreaterMask(frustum.verticies[i], box.max);
-        minMask &= Vector4::LessMask(frustum.verticies[i], box.min);
+        maxMask &= (frustum.verticies[i] > box.max).GetMask();
+        minMask &= (frustum.verticies[i] < box.min).GetMask();
     }
 
     if (maxMask | minMask)
@@ -90,8 +111,8 @@ IntersectionResult IntersectEx(const Box& box, const Frustum& frustum)
     for (int i = 0; i < 6; i++)
     {
         const Plane& plane = frustum.planes[i];
-        const Vector4 vmax = Vector4::SelectBySign(box.max, box.min, plane.v);
-        const Vector4 vmin = Vector4::SelectBySign(box.min, box.max, plane.v);
+        const Vector4 vmax = Vector4::Select(box.max, box.min, plane.v < Vector4::Zero());
+        const Vector4 vmin = Vector4::Select(box.min, box.max, plane.v < Vector4::Zero());
 
         if (!plane.Side(vmax))
             return IntersectionResult::Outside;
@@ -213,7 +234,7 @@ bool Intersect(const Sphere& sphere1, const Sphere& sphere2)
 template<> NFCOMMON_API
 bool Intersect(const Box& box, const Sphere& sphere)
 {
-    auto check = [&](const float pn, const float bmin, const float bmax)
+    auto check = [&] (const float pn, const float bmin, const float bmax)
     {
         float out = 0.0f;
         float v = pn;
@@ -235,8 +256,8 @@ bool Intersect(const Box& box, const Sphere& sphere)
 
     // squared distance
     float sqrDist = check(sphere.origin[0], box.min[0], box.max[0]) +
-                    check(sphere.origin[1], box.min[1], box.max[1]) +
-                    check(sphere.origin[2], box.min[2], box.max[2]);
+        check(sphere.origin[1], box.min[1], box.max[1]) +
+        check(sphere.origin[2], box.min[2], box.max[2]);
 
     return sqrDist <= sphere.r * sphere.r;
 }
@@ -259,12 +280,12 @@ bool Intersect(const Frustum& frustum, const Sphere& sphere)
     Vector4 nearest;
     float dist = std::numeric_limits<float>::max();
 
-    auto check = [&](const int i, const int j)
+    auto check = [&] (const int i, const int j)
     {
         Vector4 tmpNearest;
         float tmpDist;
         tmpDist = ClosestPointOnSegment(sphere.origin, frustum.verticies[i], frustum.verticies[j],
-                                        tmpNearest);
+            tmpNearest);
         if (tmpDist < dist)
         {
             dist = tmpDist;
@@ -307,60 +328,30 @@ bool Intersect(const Frustum& frustum, const Sphere& sphere)
     return false;
 }
 
-Box TransformBox(const Matrix4& matrix, const Box& localBox)
+const Vector4 CartesianToSphericalCoordinates(const Vector4& input)
 {
-    // based on:
-    // http://dev.theomader.com/transform-bounding-boxes/
-
-    const Vector4 xa = matrix.GetRow(0) * localBox.min.x;
-    const Vector4 xb = matrix.GetRow(0) * localBox.max.x;
-    const Vector4 ya = matrix.GetRow(1) * localBox.min.y;
-    const Vector4 yb = matrix.GetRow(1) * localBox.max.y;
-    const Vector4 za = matrix.GetRow(2) * localBox.min.z;
-    const Vector4 zb = matrix.GetRow(2) * localBox.max.z;
-
-    return Box(
-        Vector4::Min(xa, xb) + Vector4::Min(ya, yb) + Vector4::Min(za, zb) + matrix.GetRow(3),
-        Vector4::Max(xa, xb) + Vector4::Max(ya, yb) + Vector4::Max(za, zb) + matrix.GetRow(3)
-    );
+    const float theta = FastACos(Clamp(input.y, -1.0f, 1.0f));
+    const float phi = Abs(input.x) > FLT_EPSILON ? FastATan2(input.z, input.x) : 0.0f;
+    return Vector4(phi / (2.0f * NFE_MATH_PI) + 0.5f, theta / NFE_MATH_PI, 0.0f, 0.0f);
 }
 
-Box TransformBox(const Quaternion& quat, const Box& localBox)
+void BuildOrthonormalBasis(const Vector4& n, Vector4& u, Vector4& v)
 {
-    // based on:
-    // http://dev.theomader.com/transform-bounding-boxes/
+    // algorithm based on "Building an Orthonormal Basis, Revisited" (2017) paper
+    // by T. Duff, J. Burgess, P. Christensen, C. Hery, A. Kensler, M. Liani, and R. Villemin
 
-    const Vector4 xa = quat.GetAxisX() * localBox.min.x;
-    const Vector4 xb = quat.GetAxisX() * localBox.max.x;
-    const Vector4 ya = quat.GetAxisY() * localBox.min.y;
-    const Vector4 yb = quat.GetAxisY() * localBox.max.y;
-    const Vector4 za = quat.GetAxisZ() * localBox.min.z;
-    const Vector4 zb = quat.GetAxisZ() * localBox.max.z;
+    const float sign = CopySign(1.0f, n.z);
+    const float a = -1.0f / (sign + n.z);
 
-    return Box(
-        Vector4::Min(xa, xb) + Vector4::Min(ya, yb) + Vector4::Min(za, zb),
-        Vector4::Max(xa, xb) + Vector4::Max(ya, yb) + Vector4::Max(za, zb)
-    );
-}
+    u = Vector4(
+        1.0f + sign * n.x * n.x * a,
+        sign * n.x * n.y * a,
+        -sign * n.x);
 
-Box TransformBox(const Transform& transform, const Box& localBox)
-{
-    // based on:
-    // http://dev.theomader.com/transform-bounding-boxes/
-
-    const Quaternion& quat = transform.GetRotation();
-
-    const Vector4 xa = quat.GetAxisX() * localBox.min.x;
-    const Vector4 xb = quat.GetAxisX() * localBox.max.x;
-    const Vector4 ya = quat.GetAxisY() * localBox.min.y;
-    const Vector4 yb = quat.GetAxisY() * localBox.max.y;
-    const Vector4 za = quat.GetAxisZ() * localBox.min.z;
-    const Vector4 zb = quat.GetAxisZ() * localBox.max.z;
-
-    return Box(
-        Vector4::Min(xa, xb) + Vector4::Min(ya, yb) + Vector4::Min(za, zb) + transform.GetTranslation(),
-        Vector4::Max(xa, xb) + Vector4::Max(ya, yb) + Vector4::Max(za, zb) + transform.GetTranslation()
-    );
+    v = Vector4(
+        n.x * n.y * a,
+        sign + n.y * n.y * a,
+        -n.y);
 }
 
 } // namespace Math

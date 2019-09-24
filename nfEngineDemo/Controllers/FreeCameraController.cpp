@@ -72,7 +72,7 @@ void FreeCameraController::ProcessTickEvent(const Event_Tick& tickEvent)
     if (mCameraYaw < -Constants::pi<float>)  mCameraYaw += 2.0f * Constants::pi<float>;
 
     // calculate desired orientation
-    const Quaternion targetOrientation = Quaternion::FromAngles(mCameraPitch, mCameraYaw, 0.0f);
+    const Quaternion targetOrientation = Quaternion::FromEulerAngles(mCameraPitch, mCameraYaw, 0.0f);
 
     // low pass filter - for smooth camera rotation
     const Quaternion prevOrientation = entity->GetGlobalRotation();
@@ -88,7 +88,7 @@ void FreeCameraController::ProcessTickEvent(const Event_Tick& tickEvent)
     entity->SetGlobalOrientation(targetOrientation);
 
     Vector4 movementDirection = mMovementDirection;
-    if (!Vector4::AlmostEqual(movementDirection, Vector4()))
+    if (!Vector4::AlmostEqual(movementDirection, Vector4::Zero()))
     {
         movementDirection.Normalize3();
     }

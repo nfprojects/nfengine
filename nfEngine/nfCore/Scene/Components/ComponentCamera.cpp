@@ -60,13 +60,13 @@ void CameraComponent::OnUpdate()
     const Matrix4& matrix = GetEntity()->GetGlobalTransform().ToMatrix();
 
     // TODO get velocity from body component
-    Update(matrix, Vector4(), Vector4());
+    Update(matrix, Vector4::Zero(), Vector4::Zero());
 }
 
 void CameraComponent::Update(const Matrix4& matrix, const Vector4& velocity, const Vector4& angularVelocity)
 {
     // calculate view matrix
-    mViewMatrix = Matrix4::MakeLookTo(matrix.r[3], matrix.r[2], matrix.r[1]);
+    mViewMatrix = Matrix4::MakeLookTo(matrix.rows[3], matrix.rows[2], matrix.rows[1]);
     mViewMatrixInv = mViewMatrix.Inverted();
 
     // calculate projection matrix
@@ -86,13 +86,13 @@ void CameraComponent::Update(const Matrix4& matrix, const Vector4& velocity, con
     //calculate secondary view matrix for motion blur
     Matrix4 rotMatrix = Matrix4::MakeRotationNormal(angularVelocity, 0.01f);
     Matrix4 secondaryCameraMatrix;
-    secondaryCameraMatrix.r[0] = rotMatrix.LinearCombination3(matrix.r[0]);
-    secondaryCameraMatrix.r[1] = rotMatrix.LinearCombination3(matrix.r[1]);
-    secondaryCameraMatrix.r[2] = rotMatrix.LinearCombination3(matrix.r[2]);
-    secondaryCameraMatrix.r[3] = (Vector4)matrix.r[3] + velocity * 0.01f;
-    Matrix4 secondaryViewMatrix = Matrix4::MakeLookTo(secondaryCameraMatrix.r[3],
-                                                    secondaryCameraMatrix.r[2],
-                                                    secondaryCameraMatrix.r[1]);
+    secondaryCameraMatrix[0] = rotMatrix.TransformPoint(matrix.rows[0]);
+    secondaryCameraMatrix[1] = rotMatrix.TransformPoint(matrix.rows[1]);
+    secondaryCameraMatrix[2] = rotMatrix.TransformPoint(matrix.rows[2]);
+    secondaryCameraMatrix[3] = (Vector4)matrix.rows[3] + velocity * 0.01f;
+    Matrix4 secondaryViewMatrix = Matrix4::MakeLookTo(secondaryCameraMatrix.rows[3],
+                                                      secondaryCameraMatrix.rows[2],
+                                                      secondaryCameraMatrix.rows[1]);
     mSecondaryProjViewMatrix = secondaryViewMatrix * mProjMatrix;
 
     Vector4 xAxis, yAxis, zAxis;

@@ -172,7 +172,7 @@ TEST(HashSet, Basic)
     {
         values.reserve(maxValues);
 
-        Math::Random random(0);
+        Math::Random random;
         for (size_t i = 0; i < maxValues; ++i)
         {
             values.push_back(random.GetInt());

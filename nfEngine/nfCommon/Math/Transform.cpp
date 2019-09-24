@@ -1,9 +1,3 @@
-/**
- * @file
- * @author Witek902 (witek902@gmail.com)
- * @brief  Transform function definitions.
- */
-
 #include "PCH.hpp"
 #include "Transform.hpp"
 
@@ -20,10 +14,10 @@ Transform Transform::operator * (const Transform& other) const
     return result;
 }
 
-Transform Transform::Inverted() const
+const Transform Transform::Inverted() const
 {
     Transform result;
-    result.mRotation = mRotation.Inverted().Normalized();
+    result.mRotation = mRotation.Conjugate();
     result.mTranslation = result.mRotation.TransformVector(-mTranslation);
     return result;
 }
@@ -34,30 +28,57 @@ Transform& Transform::Invert()
     return *this;
 }
 
-Vector4 Transform::TransformPoint(const Vector4& p) const
+const Vector4 Transform::TransformPoint(const Vector4& p) const
 {
     return mRotation.TransformVector(p) + mTranslation;
 }
 
-Vector4 Transform::TransformVector(const Vector4& v) const
+const Vector3x8 Transform::TransformPoint(const Vector3x8& p) const
+{
+    return mRotation.TransformVector(p) + Vector3x8(mTranslation);
+}
+
+const Vector4 Transform::TransformVector(const Vector4& v) const
 {
     return mRotation.TransformVector(v);
 }
 
-Matrix4 Transform::ToMatrix() const
+const Vector3x8 Transform::TransformVector(const Vector3x8& v) const
 {
-    Matrix4 result = mRotation.ToMatrix4();
-    result.r[3] = mTranslation;
-    result.r[3][3] = 1.0f;
-    return result;
+    return mRotation.TransformVector(v);
 }
 
-Transform Transform::FromMatrix(const Matrix4& matrix)
+const Box Transform::TransformBox(const Box& box) const
 {
-    return Transform(matrix.GetRow(3) & VECTOR_MASK_XYZ, Quaternion::FromMatrix(matrix));
+    // based on:
+    // http://dev.theomader.com/transform-bounding-boxes/
+
+    const Vector4 xa = mRotation.GetAxisX() * box.min.x;
+    const Vector4 xb = mRotation.GetAxisX() * box.max.x;
+    const Vector4 ya = mRotation.GetAxisY() * box.min.y;
+    const Vector4 yb = mRotation.GetAxisY() * box.max.y;
+    const Vector4 za = mRotation.GetAxisZ() * box.min.z;
+    const Vector4 zb = mRotation.GetAxisZ() * box.max.z;
+
+    return Box(
+        Vector4::Min(xa, xb) + Vector4::Min(ya, yb) + Vector4::Min(za, zb) + mTranslation,
+        Vector4::Max(xa, xb) + Vector4::Max(ya, yb) + Vector4::Max(za, zb) + mTranslation
+    );
 }
 
-Transform Transform::Interpolate(const Transform& t0, const Transform& t1, float t)
+const Ray Transform::TransformRay(const Ray& ray) const
+{
+    const Vector4 origin = TransformPoint(ray.origin);
+    const Vector4 dir = TransformVector(ray.dir);
+    return Ray(origin, dir);
+}
+
+const Transform Transform::FromMatrix(const Matrix4& matrix)
+{
+    return Transform(matrix.GetRow(3) & Vector4::MakeMask<1,1,1,0>(), Quaternion::FromMatrix(matrix));
+}
+
+const Transform Transform::Interpolate(const Transform& t0, const Transform& t1, float t)
 {
     return Transform(Vector4::Lerp(t0.mTranslation, t1.mTranslation, t), Quaternion::Interpolate(t0.mRotation, t1.mRotation, t));
 }
@@ -68,6 +89,13 @@ bool Transform::AlmostEqual(const Transform& a, const Transform& b, float epsilo
         return false;
 
     return Quaternion::AlmostEqual(a.mRotation, b.mRotation, epsilon);
+}
+
+const Matrix4 Transform::ToMatrix() const
+{
+    Matrix4 result = mRotation.ToMatrix();
+    result.rows[3] = Vector4(mTranslation.x, mTranslation.y, mTranslation.z, 1.0f);
+    return result;
 }
 
 } // namespace Math

@@ -22,33 +22,31 @@
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>nfCommonTest</RootNamespace>
     <ProjectGuid>{1EEE1F90-5261-43E9-A133-FFBCD7DA4077}</ProjectGuid>
-    <WindowsTargetPlatformVersion>10.0.17134.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v141</PlatformToolset>
-    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <PlatformToolset>v142</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v141</PlatformToolset>
-    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <PlatformToolset>v142</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
@@ -187,6 +185,7 @@
     <ClCompile Include="TestCases\Logger\LogGrouperTest.cpp" />
     <ClCompile Include="TestCases\Logger\LogScopeTest.cpp" />
     <ClCompile Include="TestCases\Math\MathBoxTest.cpp" />
+    <ClCompile Include="TestCases\Math\MathDistributionTest.cpp" />
     <ClCompile Include="TestCases\Math\MathEquationSolverTest.cpp" />
     <ClCompile Include="TestCases\Math\MathFloat2Test.cpp" />
     <ClCompile Include="TestCases\Math\MathFloat3Test.cpp" />
@@ -195,14 +194,19 @@
     <ClCompile Include="TestCases\Math\MathMatrix2Test.cpp" />
     <ClCompile Include="TestCases\Math\MathMatrix3Test.cpp" />
     <ClCompile Include="TestCases\Math\MathMatrix4Test.cpp" />
+    <ClCompile Include="TestCases\Math\MathPackedTest.cpp" />
     <ClCompile Include="TestCases\Math\MathQuaternionTest.cpp" />
-    <ClCompile Include="TestCases\Math\MathRandomTest.cpp" />
     <ClCompile Include="TestCases\Math\MathConversionsTest.cpp" />
     <ClCompile Include="TestCases\Math\MathRayGeometryTest.cpp" />
     <ClCompile Include="TestCases\Math\MathTest.cpp" />
     <ClCompile Include="TestCases\Math\MathTranscendental.cpp" />
     <ClCompile Include="TestCases\Math\MathTransformTest.cpp" />
-    <ClCompile Include="TestCases\Math\MathVectorTest.cpp" />
+    <ClCompile Include="TestCases\Math\MathVector4LoadTest.cpp" />
+    <ClCompile Include="TestCases\Math\MathVector4Test.cpp" />
+    <ClCompile Include="TestCases\Math\MathVector8Test.cpp" />
+    <ClCompile Include="TestCases\Math\MathVectorInt4Test.cpp" />
+    <ClCompile Include="TestCases\Math\MathVectorInt8Test.cpp" />
+    <ClCompile Include="TestCases\Math\RandomTest.cpp" />
     <ClCompile Include="TestCases\Memory\AlignedTest.cpp" />
     <ClCompile Include="TestCases\Memory\MemoryTest.cpp" />
     <ClCompile Include="TestCases\Reflection\ReflectionClassTest.cpp">

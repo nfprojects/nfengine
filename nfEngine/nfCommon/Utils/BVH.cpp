@@ -87,7 +87,7 @@ void BVH::FreeNode(uint32 nodeID)
 uint32 BVH::Insert(const Box& aabb, void* userData)
 {
     uint32 leaf = AllocNode();
-    mNodes[leaf].SetBox(Box(aabb, aabb)); // make sure that (min <= max)
+    mNodes[leaf].SetBox(aabb);
     mNodes[leaf].userData = userData;
     mNodes[leaf].child0 = NFE_BVH_NULL_NODE;
     mNodes[leaf].child1 = NFE_BVH_NULL_NODE;
@@ -130,16 +130,16 @@ void BVH::InsertLeaf(uint32 leaf)
         return;
     }
 
-    const Box& leafBox = mNodes[leaf].box;
+    const Box leafBox = mNodes[leaf].GetBox();
     uint32 index = mRoot;
     while (!mNodes[index].IsLeaf())
     {
         uint32 child0 = mNodes[index].child0;
         uint32 child1 = mNodes[index].child1;
 
-        const Box& currentBox = mNodes[index].box;
-        const Box& childBox0 = mNodes[child0].box;
-        const Box& childBox1 = mNodes[child1].box;
+        const Box currentBox = mNodes[index].GetBox();
+        const Box childBox0 = mNodes[child0].GetBox();
+        const Box childBox1 = mNodes[child1].GetBox();
 
         float cost = 2.0f * currentBox.Volume();
         float cost0, cost1;
@@ -172,7 +172,7 @@ void BVH::InsertLeaf(uint32 leaf)
     uint32 newParent = AllocNode();
     uint32 oldParent = mNodes[index].parent;
     mNodes[newParent].parent = oldParent;
-    mNodes[newParent].SetBox(Box(mNodes[leaf].box, mNodes[index].box));
+    mNodes[newParent].SetBox(Box(mNodes[leaf].GetBox(), mNodes[index].GetBox()));
     mNodes[newParent].height = 1 + mNodes[index].height;
 
     if (oldParent != NFE_BVH_NULL_NODE)
@@ -200,7 +200,7 @@ void BVH::InsertLeaf(uint32 leaf)
         uint32 child1 = mNodes[index].child1;
 
         mNodes[index].height = 1 + Max(mNodes[child0].height, mNodes[child1].height);
-        mNodes[index].SetBox(Box(mNodes[child0].box, mNodes[child1].box));
+        mNodes[index].SetBox(Box(mNodes[child0].GetBox(), mNodes[child1].GetBox()));
         index = mNodes[index].parent;
     }
 }
@@ -242,7 +242,7 @@ void BVH::RemoveLeaf(uint32 leaf)
             uint32 child1 = mNodes[index].child1;
 
             mNodes[index].height = 1 + Max(mNodes[child0].height, mNodes[child1].height);
-            mNodes[index].SetBox(Box(mNodes[child0].box, mNodes[child1].box));
+            mNodes[index].SetBox(Box(mNodes[child0].GetBox(), mNodes[child1].GetBox()));
             index = mNodes[index].parent;
         }
     }
@@ -300,8 +300,8 @@ int32 BVH::Rebalance(int32 node)
             C.child1 = iF;
             A.child1 = iG;
             G.parent = iA;
-            A.SetBox(Box(B.box, G.box));
-            C.SetBox(Box(A.box, F.box));
+            A.SetBox(Box(B.GetBox(), G.GetBox()));
+            C.SetBox(Box(A.GetBox(), F.GetBox()));
 
             A.height = 1 + Max(B.height, G.height);
             C.height = 1 + Max(A.height, F.height);
@@ -311,8 +311,8 @@ int32 BVH::Rebalance(int32 node)
             C.child1 = iG;
             A.child1 = iF;
             F.parent = iA;
-            A.SetBox(Box(B.box, F.box));
-            C.SetBox(Box(A.box, G.box));
+            A.SetBox(Box(B.GetBox(), F.GetBox()));
+            C.SetBox(Box(A.GetBox(), G.GetBox()));
 
             A.height = 1 + Max(B.height, F.height);
             C.height = 1 + Max(A.height, G.height);
@@ -349,8 +349,8 @@ int32 BVH::Rebalance(int32 node)
             B.child1 = iD;
             A.child0 = iE;
             E.parent = iA;
-            A.SetBox(Box(C.box, E.box));
-            B.SetBox(Box(A.box, D.box));
+            A.SetBox(Box(C.GetBox(), E.GetBox()));
+            B.SetBox(Box(A.GetBox(), D.GetBox()));
 
             A.height = 1 + Max(C.height, E.height);
             B.height = 1 + Max(A.height, D.height);
@@ -360,8 +360,8 @@ int32 BVH::Rebalance(int32 node)
             B.child1 = iE;
             A.child0 = iD;
             D.parent = iA;
-            A.SetBox(Box(C.box, D.box));
-            B.SetBox(Box(A.box, E.box));
+            A.SetBox(Box(C.GetBox(), D.GetBox()));
+            B.SetBox(Box(A.GetBox(), E.GetBox()));
 
             A.height = 1 + Max(C.height, D.height);
             B.height = 1 + Max(A.height, E.height);
@@ -380,8 +380,8 @@ void BVH::GetNodeStats(uint32 nodeID, BVHStats& stats) const
 
     // Internal and leaves' boxes can have very different sizes, so caclulate
     // the sums in double precission to avoid numeric precission problems.
-    stats.totalArea += static_cast<double>(mNodes[nodeID].box.SurfaceArea());
-    stats.totalVolume += static_cast<double>(mNodes[nodeID].box.Volume());
+    stats.totalArea += static_cast<double>(mNodes[nodeID].GetBox().SurfaceArea());
+    stats.totalVolume += static_cast<double>(mNodes[nodeID].GetBox().Volume());
 
     GetNodeStats(mNodes[nodeID].child0, stats);
     GetNodeStats(mNodes[nodeID].child1, stats);

@@ -21,7 +21,6 @@ public:
     virtual void OnEvent(const Scene::Event& event) override;
 
 private:
-    Math::Random mRandomGenerator;
     Math::Float3 mBaseColor;
 
     // 0.0f - no flicker, 1.0f - no light all the time

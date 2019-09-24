@@ -7,7 +7,8 @@
 #include "PCH.hpp"
 #include "Mipmap.hpp"
 #include "Logger/Logger.hpp"
-
+#include "Math/Float4.hpp"
+#include "Math/Vector4Load.hpp"
 
 namespace NFE {
 namespace Common {
@@ -179,7 +180,7 @@ Color Mipmap::GetTexel(uint32 x, uint32 y, ImageFormat fmt) const
         {
             uint8* data = static_cast<uint8*>(mData.GetData());
             data += 4 * (y * mWidth + x);
-            return Vector4::Load4(data) * VECTOR_INV_255;
+            return Vector4_Load_4xUint8(data) * VECTOR_INV_255;
         }
 
         case ImageFormat::R_Float:
@@ -238,7 +239,7 @@ void Mipmap::SetTexel(const Color& v, uint32 x, uint32 y, ImageFormat fmt)
         {
             uint8* data = static_cast<uint8*>(mData.GetData());
             data += 4 * (y * mWidth + x);
-            (v * 255.0f).Store4(data);
+            *reinterpret_cast<uint32*>(data) = (v * 255.0f).ToBGR();
             break;
         }
 
@@ -253,7 +254,7 @@ void Mipmap::SetTexel(const Color& v, uint32 x, uint32 y, ImageFormat fmt)
         {
             Float4* data = static_cast<Float4*>(mData.GetData());
             data += (y * mWidth + x);
-            v.Store(data);
+            *data = v.ToFloat4();
             break;
         }
 

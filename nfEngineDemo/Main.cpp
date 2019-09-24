@@ -53,22 +53,22 @@ bool OnLoadCustomShapeResource(ResourceBase* res, void* data)
     else if (strcmp(shape->GetName(), "shape_frame") == 0)
     {
         // Z axis
-        shape->AddBox(Vector4(0.025f, 0.025f, 0.45f), Matrix4::MakeTranslation3(Vector4(-0.475f, -0.475f, 0.0f)));
-        shape->AddBox(Vector4(0.025f, 0.025f, 0.45f), Matrix4::MakeTranslation3(Vector4(-0.475f, 0.475f, 0.0f)));
-        shape->AddBox(Vector4(0.025f, 0.025f, 0.45f), Matrix4::MakeTranslation3(Vector4(0.475f, -0.475f, 0.0f)));
-        shape->AddBox(Vector4(0.025f, 0.025f, 0.45f), Matrix4::MakeTranslation3(Vector4(0.475f, 0.475f, 0.0f)));
+        shape->AddBox(Vector4(0.025f, 0.025f, 0.45f), Matrix4::MakeTranslation(Vector4(-0.475f, -0.475f, 0.0f)));
+        shape->AddBox(Vector4(0.025f, 0.025f, 0.45f), Matrix4::MakeTranslation(Vector4(-0.475f, 0.475f, 0.0f)));
+        shape->AddBox(Vector4(0.025f, 0.025f, 0.45f), Matrix4::MakeTranslation(Vector4(0.475f, -0.475f, 0.0f)));
+        shape->AddBox(Vector4(0.025f, 0.025f, 0.45f), Matrix4::MakeTranslation(Vector4(0.475f, 0.475f, 0.0f)));
 
         // Y axis
-        shape->AddBox(Vector4(0.025f, 0.5f, 0.025f), Matrix4::MakeTranslation3(Vector4(-0.475f, 0.0f, -0.475f)));
-        shape->AddBox(Vector4(0.025f, 0.5f, 0.025f), Matrix4::MakeTranslation3(Vector4(-0.475f, 0.0f, 0.475f)));
-        shape->AddBox(Vector4(0.025f, 0.5f, 0.025f), Matrix4::MakeTranslation3(Vector4(0.475f, 0.0f, -0.475f)));
-        shape->AddBox(Vector4(0.025f, 0.5f, 0.025f), Matrix4::MakeTranslation3(Vector4(0.475f, 0.0f, 0.475f)));
+        shape->AddBox(Vector4(0.025f, 0.5f, 0.025f), Matrix4::MakeTranslation(Vector4(-0.475f, 0.0f, -0.475f)));
+        shape->AddBox(Vector4(0.025f, 0.5f, 0.025f), Matrix4::MakeTranslation(Vector4(-0.475f, 0.0f, 0.475f)));
+        shape->AddBox(Vector4(0.025f, 0.5f, 0.025f), Matrix4::MakeTranslation(Vector4(0.475f, 0.0f, -0.475f)));
+        shape->AddBox(Vector4(0.025f, 0.5f, 0.025f), Matrix4::MakeTranslation(Vector4(0.475f, 0.0f, 0.475f)));
 
         // X axis
-        shape->AddBox(Vector4(0.5f, 0.025f, 0.025f), Matrix4::MakeTranslation3(Vector4(0.0f, -0.475f, -0.475f)));
-        shape->AddBox(Vector4(0.5f, 0.025f, 0.025f), Matrix4::MakeTranslation3(Vector4(0.0f, -0.475f, 0.475f)));
-        shape->AddBox(Vector4(0.5f, 0.025f, 0.025f), Matrix4::MakeTranslation3(Vector4(0.0f, 0.475f, -0.475f)));
-        shape->AddBox(Vector4(0.5f, 0.025f, 0.025f), Matrix4::MakeTranslation3(Vector4(0.0f, 0.475f, 0.475f)));
+        shape->AddBox(Vector4(0.5f, 0.025f, 0.025f), Matrix4::MakeTranslation(Vector4(0.0f, -0.475f, -0.475f)));
+        shape->AddBox(Vector4(0.5f, 0.025f, 0.025f), Matrix4::MakeTranslation(Vector4(0.0f, -0.475f, 0.475f)));
+        shape->AddBox(Vector4(0.5f, 0.025f, 0.025f), Matrix4::MakeTranslation(Vector4(0.0f, 0.475f, -0.475f)));
+        shape->AddBox(Vector4(0.5f, 0.025f, 0.025f), Matrix4::MakeTranslation(Vector4(0.0f, 0.475f, 0.475f)));
     }
     else if (strcmp(shape->GetName(), "shape_barrel") == 0)
     {

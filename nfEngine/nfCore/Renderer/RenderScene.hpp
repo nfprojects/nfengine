@@ -47,7 +47,7 @@ public:
 /**
  * Mesh Proxy - descriptor plus additional internal data
  */
-struct NFE_ALIGN(16) MeshProxy
+struct NFE_ALIGN(32) MeshProxy
 {
     MeshProxyDesc desc;
 
@@ -58,7 +58,7 @@ struct NFE_ALIGN(16) MeshProxy
 /**
  * Light Proxy - descriptor plus additional internal data
  */
-struct NFE_ALIGN(16) LightProxy
+struct NFE_ALIGN(32) LightProxy
 {
     LightProxyDesc desc;
 
@@ -103,8 +103,7 @@ struct GeometryRenderingContext
  * Temporary data used during single View rendering.
  */
 // TODO there are "false sharing" problems here
-struct NFE_ALIGN(16) RenderingData
-    : public Common::Aligned<16>
+struct NFE_ALIGN(32) RenderingData : public Common::Aligned<32>
 {
     const Renderer::View* view; // TODO remove
     Renderer::CameraRenderDesc cameraRenderDesc;

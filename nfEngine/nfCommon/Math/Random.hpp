@@ -1,73 +1,65 @@
-/**
- * @file
- * @author Witek902 (witek902@gmail.com)
- * @brief  Pseudorandom number generator declaration.
- */
-
 #pragma once
 
 #include "../nfCommon.hpp"
-#include "Math.hpp"
 
-#include <iterator>
-
+#include "Float2.hpp"
+#include "Float3.hpp"
+#include "Vector4.hpp"
+#include "Vector2x8.hpp"
+#include "VectorInt4.hpp"
+#include "VectorInt8.hpp"
 
 namespace NFE {
 namespace Math {
 
-/**
- * Pseudorandom number generator
- */
-class NFCOMMON_API Random
+// Pseudorandom number generator
+class NFE_ALIGN(32) NFCOMMON_API Random
 {
-private:
-    uint64 mSeed;
-
-    // XOR-shift algorithm
-    NFE_INLINE void Shuffle()
-    {
-        mSeed ^= (mSeed << 21);
-        mSeed ^= (mSeed >> 35);
-        mSeed ^= (mSeed << 4);
-    }
-
 public:
     Random();
-    Random(uint64 seed);
+
+    // initialize seeds with new values, very slow
+    void Reset();
 
     uint64 GetLong();
-    int GetInt();
+    uint32 GetInt();
 
-    // Generate random float with uniform distribution from range (0.0f, 1.0f]
+    // Generate random float with uniform distribution from range [0.0f, 1.0f)
     float GetFloat();
     double GetDouble();
+
+    NFE_FORCE_INLINE const Float2 GetFloat2()
+    {
+        return GetVector4().ToFloat2();
+    }
+
+    NFE_FORCE_INLINE const Float3 GetFloat3()
+    {
+        return GetVector4().ToFloat3();
+    }
+
+    NFE_FORCE_INLINE const Float3 GetFloat4()
+    {
+        return GetVector4().ToFloat4();
+    }
 
     // Generate random float with uniform distribution from range [-1.0f, 1.0f)
     // faster than "GetFloat()*2.0f-1.0f"
     float GetFloatBipolar();
 
-    // generate uniformly distributed float vectors
-    Float2 GetFloat2();
-    Float3 GetFloat3();
-    Float4 GetFloat4();
+    // generate random vector of 4 elements from range [0.0f, 1.0f)
+    // this is much faster that using GetFloat() 4 times
+    const Vector4 GetVector4();
 
-    // Generate random float (vector) with Gaussian distribution. (SLOW)
-    float GetFloatNormal();
-    Float2 GetFloatNormal2();
-    Float3 GetFloatNormal3();
-    Float4 GetFloatNormal4();
+    // generate random vector of 4 elements from range [-1.0f, 1.0f)
+    const Vector4 GetVector4Bipolar();
 
-    /**
-     * Generate random point on a circle (uniform distribution).
-     * @note This is slow.
-     */
-    Float2 GetPointInsideCircle();
+    // generate random vector of 8 elements from range [0.0f, 1.0f)
+    // this is much faster that using GetFloat() 8 times
+    const Vector8 GetVector8();
 
-    /**
-     * Generate random point on a sphere (uniform distribution).
-     * @note This is slow.
-     */
-    Float3 GetPointOnSphere();
+    // generate random vector of 8 elements from range [-1.0f, 1.0f)
+    const Vector8 GetVector8Bipolar();
 
     /**
      * Fisher-Yates shuffle algorithm.
@@ -89,7 +81,9 @@ public:
         size_t left = std::distance(begin, end);
 
         if (n > left)
+        {
             n = left;
+        }
 
         while (n--)
         {
@@ -101,6 +95,17 @@ public:
         }
     }
 
+private:
+    NFE_FORCE_INLINE VectorInt8 GetIntVector8();
+    NFE_FORCE_INLINE VectorInt4 GetIntVector4();
+
+#ifdef NFE_USE_AVX2
+    VectorInt8 mSeedSimd8[2];
+#endif // NFE_USE_AVX2
+
+    VectorInt4 mSeedSimd4[2];
+
+    uint64 mSeed[2];
 };
 
 } // namespace Math
