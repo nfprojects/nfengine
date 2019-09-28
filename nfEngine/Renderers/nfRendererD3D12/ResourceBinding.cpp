@@ -259,11 +259,18 @@ bool ResourceBindingInstance::WriteTextureView(uint32 slot, const TexturePtr& te
         srvDesc.Texture1D.ResourceMinLODClamp = 0.0f;
         break;
     case TextureType::Texture2D:
-        srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
-        srvDesc.Texture2D.MipLevels = tex->mMipmapsNum;
-        srvDesc.Texture2D.MostDetailedMip = 0;
-        srvDesc.Texture2D.ResourceMinLODClamp = 0.0f;
-        srvDesc.Texture2D.PlaneSlice = 0;
+        if (tex->mSamplesNum > 1)
+        {
+            srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2DMS;
+        }
+        else
+        {
+            srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
+            srvDesc.Texture2D.MipLevels = tex->mMipmapsNum;
+            srvDesc.Texture2D.MostDetailedMip = 0;
+            srvDesc.Texture2D.ResourceMinLODClamp = 0.0f;
+            srvDesc.Texture2D.PlaneSlice = 0;
+        }
         break;
     case TextureType::TextureCube:
         srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURECUBE;

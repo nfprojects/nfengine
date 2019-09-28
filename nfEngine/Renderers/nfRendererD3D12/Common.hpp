@@ -8,7 +8,7 @@
 
 #include "nfCommon/nfCommon.hpp"
 #include "nfCommon/System/Win/Common.hpp"
-#include "../D3DCommon/D3DPtr.hpp"
+#include "D3DPtr.hpp"
 
 
 namespace NFE {

@@ -117,14 +117,14 @@ public:
         // TODO: move scene registration to their source files
         // TODO: switching to arbitrary scene (e.g. omitting a single scene should be
         //       possible, when a feature is not implemented in renderer
-        //mScenes.push_back(NFE::Common::MakeUniquePtr<BasicScene>());
-        mScenes.push_back(NFE::Common::MakeUniquePtr<MultisampleScene>());
-        //mScenes.push_back(NFE::Common::MakeUniquePtr<DepthStencilScene>());
-        //mScenes.push_back(NFE::Common::MakeUniquePtr<RenderTargetsScene>());
-        //mScenes.push_back(NFE::Common::MakeUniquePtr<VertexBuffersScene>());
-        //mScenes.push_back(NFE::Common::MakeUniquePtr<TessellationScene>());
-        //mScenes.push_back(NFE::Common::MakeUniquePtr<ComputeScene>());
-        //mScenes.push_back(NFE::Common::MakeUniquePtr<MultithreadedScene>());
+        mScenes.push_back(NFE::Common::MakeUniquePtr<BasicScene>());
+        // mScenes.push_back(NFE::Common::MakeUniquePtr<MultisampleScene>()); // WIP
+        mScenes.push_back(NFE::Common::MakeUniquePtr<DepthStencilScene>());
+        mScenes.push_back(NFE::Common::MakeUniquePtr<RenderTargetsScene>());
+        mScenes.push_back(NFE::Common::MakeUniquePtr<VertexBuffersScene>());
+        mScenes.push_back(NFE::Common::MakeUniquePtr<TessellationScene>());
+        mScenes.push_back(NFE::Common::MakeUniquePtr<ComputeScene>());
+        mScenes.push_back(NFE::Common::MakeUniquePtr<MultithreadedScene>());
     }
 
     /**
@@ -369,11 +369,6 @@ int InnerMain(int argc, char* argv[])
         selectedBackend = defBackend[0];
         gShaderPathPrefix = defBackend[1];
         gShaderPathExt = defBackend[2];
-    }
-    else if (D3D11_BACKEND == selectedBackend)
-    {
-        gShaderPathPrefix = HLSL5_SHADER_PATH_PREFIX;
-        gShaderPathExt = HLSL5_SHADER_EXTENSION;
     }
     else if (D3D12_BACKEND == selectedBackend)
     {

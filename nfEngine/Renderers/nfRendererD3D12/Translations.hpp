@@ -7,7 +7,7 @@
 #pragma once
 
 #include "../RendererInterface/Types.hpp"
-#include "../D3DCommon/Format.hpp"
+#include "Format.hpp"
 #include "nfCommon/nfCommon.hpp"
 
 

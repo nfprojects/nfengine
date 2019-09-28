@@ -75,11 +75,6 @@ int main(int argc, char* argv[])
         gShaderPathPrefix = defBackend[1];
         gShaderPathExt = defBackend[2];
     }
-    else if (D3D11_BACKEND == gBackend)
-    {
-        gShaderPathPrefix = HLSL5_SHADER_PATH_PREFIX;
-        gShaderPathExt = HLSL5_SHADER_EXTENSION;
-    }
     else if (D3D12_BACKEND == gBackend)
     {
         gShaderPathPrefix = HLSL5_SHADER_PATH_PREFIX;

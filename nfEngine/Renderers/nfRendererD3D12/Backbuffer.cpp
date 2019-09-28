@@ -97,7 +97,7 @@ bool Backbuffer::Init(const BackbufferDesc& desc)
 
 bool Backbuffer::Present()
 {
-    const DWORD result = WaitForSingleObjectEx(mWaitableObject, 0u, TRUE);
+    const DWORD result = WaitForSingleObjectEx(mWaitableObject, INFINITE, TRUE);
     if (result == WAIT_TIMEOUT)
     {
         NFE_LOG_ERROR("Waiting for swapchain waitable object failed");

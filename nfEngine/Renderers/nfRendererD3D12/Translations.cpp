@@ -6,8 +6,7 @@
 
 #include "PCH.hpp"
 #include "Translations.hpp"
-
-#include "../D3DCommon/Format.hpp"
+#include "Format.hpp"
 
 
 namespace NFE {

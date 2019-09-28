@@ -40,8 +40,8 @@ RenderTargetsScene::RenderTargetsScene()
                      "Single target with depth buffer");
     RegisterSubScene(std::bind(&RenderTargetsScene::CreateSubSceneMRT, this),
                      "Two targets with depth buffer");
-    RegisterSubScene(std::bind(&RenderTargetsScene::CreateSubSceneMRTandMSAA, this),
-                     "Two targets with depth buffer (with MSAA)");
+    //RegisterSubScene(std::bind(&RenderTargetsScene::CreateSubSceneMRTandMSAA, this),
+    //                 "Two targets with depth buffer (with MSAA)");
 }
 
 RenderTargetsScene::~RenderTargetsScene()
