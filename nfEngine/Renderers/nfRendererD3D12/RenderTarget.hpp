@@ -27,7 +27,7 @@ class RenderTarget : public IRenderTarget
 
     // TODO: temporary
     Common::DynArray<Target> mTargets;
-    Common::DynArray<uint32> mRTVs[2];
+    Common::DynArray<uint32> mRTVs;
 
     InternalTexturePtr mDepthTexture;
     uint32 mDepthTextureSubresource;
@@ -62,8 +62,7 @@ public:
     // get RTV for given target ID
     NFE_INLINE uint32 GetRTV(uint32 targetID) const
     {
-        const InternalTexturePtr& tex = GetTexture(targetID);
-        return mRTVs[tex->GetCurrentBuffer()][targetID];
+        return mRTVs[targetID];
     }
 
     // get depth texture pointer

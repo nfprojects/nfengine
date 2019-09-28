@@ -15,15 +15,12 @@ namespace NFE {
 namespace Renderer {
 
 Texture::Texture()
-    : mBuffersNum(1)
-    , mCurrentBuffer(0)
-    , mTargetState(D3D12_RESOURCE_STATE_COMMON)
+    : Resource(D3D12_RESOURCE_STATE_GENERIC_READ)
 {
 }
 
 Texture::~Texture()
 {
-    gDevice->WaitForGPU();
 }
 
 bool Texture::UploadData(const TextureDesc& desc)
@@ -40,7 +37,7 @@ bool Texture::UploadData(const TextureDesc& desc)
     HRESULT hr;
     D3DPtr<ID3D12Resource> uploadBuffer;
     UINT64 requiredSize = 0;
-    D3D12_RESOURCE_DESC d3dResDesc = mBuffers[0]->GetDesc();
+    D3D12_RESOURCE_DESC d3dResDesc = mResource->GetDesc();
 
     D3D12_PLACED_SUBRESOURCE_FOOTPRINT layouts[D3D12_REQ_MIP_LEVELS];
     UINT64 rowSizesInBytes[D3D12_REQ_MIP_LEVELS];
@@ -140,7 +137,7 @@ bool Texture::UploadData(const TextureDesc& desc)
             src.Type = D3D12_TEXTURE_COPY_TYPE_PLACED_FOOTPRINT;
 
             D3D12_TEXTURE_COPY_LOCATION dest;
-            dest.pResource = mBuffers[0].Get();
+            dest.pResource = mResource.Get();
             dest.SubresourceIndex = i;
             dest.Type = D3D12_TEXTURE_COPY_TYPE_SUBRESOURCE_INDEX;
 
@@ -151,7 +148,7 @@ bool Texture::UploadData(const TextureDesc& desc)
         D3D12_RESOURCE_BARRIER resBarrier;
         resBarrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
         resBarrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
-        resBarrier.Transition.pResource = mBuffers[0].Get();
+        resBarrier.Transition.pResource = mResource.Get();
         resBarrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
         resBarrier.Transition.StateBefore = D3D12_RESOURCE_STATE_COPY_DEST;
         resBarrier.Transition.StateAfter = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE | D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE;
@@ -179,12 +176,6 @@ bool Texture::Init(const TextureDesc& desc)
     if (desc.mode == BufferMode::Dynamic || desc.mode == BufferMode::Volatile)
     {
         NFE_LOG_ERROR("Selected buffer mode is not supported yet");
-        return false;
-    }
-
-    if (desc.samplesNum > 1)
-    {
-        NFE_LOG_ERROR("Multisampled textures are not supported yet");
         return false;
     }
 
@@ -234,7 +225,7 @@ bool Texture::Init(const TextureDesc& desc)
     resourceDesc.Alignment = 0;
     resourceDesc.MipLevels = static_cast<UINT16>(desc.mipmaps);
     resourceDesc.Format = TranslateElementFormat(desc.format);
-    resourceDesc.SampleDesc.Count = 1;
+    resourceDesc.SampleDesc.Count = desc.samplesNum;
     resourceDesc.SampleDesc.Quality = 0;
     resourceDesc.Layout = D3D12_TEXTURE_LAYOUT_UNKNOWN;
     resourceDesc.Flags = D3D12_RESOURCE_FLAG_NONE;
@@ -298,19 +289,19 @@ bool Texture::Init(const TextureDesc& desc)
         resourceDesc.DepthOrArraySize = 1;
         resourceDesc.MipLevels = 1;
         resourceDesc.Format = DXGI_FORMAT_UNKNOWN;
-        resourceDesc.SampleDesc.Count = 1;
+        resourceDesc.SampleDesc.Count = desc.samplesNum;
         resourceDesc.SampleDesc.Quality = 0;
         resourceDesc.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
         resourceDesc.Flags = D3D12_RESOURCE_FLAG_NONE;
 
-        mTargetState = D3D12_RESOURCE_STATE_COPY_DEST;
+        mDefaultState = D3D12_RESOURCE_STATE_COPY_DEST;
 
         hr = D3D_CALL_CHECK(gDevice->GetDevice()->CreateCommittedResource(&heapProperties,
                                                                           D3D12_HEAP_FLAG_NONE,
                                                                           &resourceDesc,
                                                                           initialState,
                                                                           nullptr,
-                                                                          IID_PPV_ARGS(mBuffers[0].GetPtr())));
+                                                                          IID_PPV_ARGS(mResource.GetPtr())));
         if (FAILED(hr))
         {
             NFE_LOG_ERROR("Failed to create readback buffer");
@@ -338,10 +329,10 @@ bool Texture::Init(const TextureDesc& desc)
             }
 
             clearValue.Format = mSrvFormat;
-            clearValue.Color[0] = 0.0f;
-            clearValue.Color[1] = 0.0f;
-            clearValue.Color[2] = 0.0f;
-            clearValue.Color[3] = 1.0f;
+            clearValue.Color[0] = desc.defaultColorClearValue.f[0];
+            clearValue.Color[1] = desc.defaultColorClearValue.f[1];
+            clearValue.Color[2] = desc.defaultColorClearValue.f[2];
+            clearValue.Color[3] = desc.defaultColorClearValue.f[3];
             passClearValue = true;
 
             resourceDesc.Flags |= D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET;
@@ -370,8 +361,8 @@ bool Texture::Init(const TextureDesc& desc)
             resourceDesc.Flags |= D3D12_RESOURCE_FLAG_ALLOW_DEPTH_STENCIL;
 
             clearValue.Format = mDsvFormat;
-            clearValue.DepthStencil.Depth = 1.0f;
-            clearValue.DepthStencil.Stencil = 0;
+            clearValue.DepthStencil.Depth = desc.defaultDepthClearValue;
+            clearValue.DepthStencil.Stencil = desc.defaultStencilClearValue;
             passClearValue = true;
 
             initialState = D3D12_RESOURCE_STATE_DEPTH_WRITE;
@@ -387,22 +378,23 @@ bool Texture::Init(const TextureDesc& desc)
             }
         }
 
+        UINT64 requiredSize = 0;
+        gDevice->GetDevice()->GetCopyableFootprints(&resourceDesc, 0, 1, 0, nullptr, nullptr, nullptr, &requiredSize);
+        NFE_LOG_DEBUG("Allocating texture '%s' requires %llu bytes", desc.debugName, requiredSize);
+
         // create the texture resource
         hr = D3D_CALL_CHECK(gDevice->GetDevice()->CreateCommittedResource(&heapProperties, D3D12_HEAP_FLAG_NONE,
                                                                           &resourceDesc, initialState,
                                                                           passClearValue ? &clearValue : nullptr,
-                                                                          IID_PPV_ARGS(mBuffers[0].GetPtr())));
+                                                                          IID_PPV_ARGS(mResource.GetPtr())));
         if (FAILED(hr))
         {
             NFE_LOG_ERROR("Failed to create texture resource");
             return false;
         }
 
-
-        if (desc.binding & NFE_RENDERER_TEXTURE_BIND_SHADER)
-            mTargetState = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE | D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE;
-        else
-            mTargetState = initialState;
+        // TODO reduce state range
+        mDefaultState = initialState;
 
         if (desc.mode == BufferMode::Static)
         {
@@ -416,24 +408,19 @@ bool Texture::Init(const TextureDesc& desc)
         }
     }
 
-    if (desc.debugName && !SetDebugName(mBuffers[0].Get(), Common::StringView(desc.debugName)))
+    if (desc.debugName && !SetDebugName(mResource.Get(), Common::StringView(desc.debugName)))
     {
         NFE_LOG_WARNING("Failed to set debug name");
     }
 
-
-    mBuffersNum = 1;
-    mCurrentBuffer = 0;
     mType = desc.type;
     mFormat = desc.format;
     mWidth = static_cast<uint16>(desc.width);
     mHeight = static_cast<uint16>(desc.height);
     mLayers = static_cast<uint16>(desc.layers);
-    mMipmapsNum = static_cast<uint16>(desc.mipmaps);
+    mMipmapsNum = static_cast<uint8>(desc.mipmaps);
+    mSamplesNum = static_cast<uint8>(desc.samplesNum);
     mMode = desc.mode;
-
-    for (uint32 subresource = 0; subresource < desc.layers * desc.mipmaps; ++subresource)
-        mSubresourceStates.PushBack(initialState);
 
     return true;
 }

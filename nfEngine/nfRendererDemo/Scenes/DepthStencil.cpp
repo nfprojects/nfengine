@@ -48,7 +48,7 @@ bool DepthStencilScene::CreateBasicResources(bool withDepth, bool withStencil)
 {
     // create rendertarget that will render to the window's backbuffer
     RenderTargetElement rtTarget;
-    rtTarget.texture = mWindowBackbuffer;
+    rtTarget.texture = mWindowRenderTargetTexture;
     RenderTargetDesc rtDesc;
     rtDesc.numTargets = 1;
     rtDesc.targets = &rtTarget;
@@ -265,16 +265,19 @@ bool DepthStencilScene::CreateSubSceneDepthStencilBuffer()
 
 bool DepthStencilScene::OnInit(void* winHandle)
 {
-    // create backbuffer connected with the window
-    BackbufferDesc bbDesc;
-    bbDesc.width = WINDOW_WIDTH;
-    bbDesc.height = WINDOW_HEIGHT;
-    bbDesc.format = mBackbufferFormat;
-    bbDesc.windowHandle = winHandle;
-    bbDesc.vSync = false;
-    bbDesc.debugName = "DepthStencilScene::mWindowBackbuffer";
-    mWindowBackbuffer = mRendererDevice->CreateBackbuffer(bbDesc);
-    if (!mWindowBackbuffer)
+    if (!Scene::OnInit(winHandle))
+    {
+        return false;
+    }
+
+    // create rendertarget that will render to the window's backbuffer
+    RenderTargetElement rtTarget;
+    rtTarget.texture = mWindowRenderTargetTexture;
+    RenderTargetDesc rtDesc;
+    rtDesc.numTargets = 1;
+    rtDesc.targets = &rtTarget;
+    mWindowRenderTarget = mRendererDevice->CreateRenderTarget(rtDesc);
+    if (!mWindowRenderTarget)
         return false;
 
     return true;
@@ -361,6 +364,8 @@ void DepthStencilScene::Draw(float dt)
     mCommandBuffer->SetPipelineState(mCubePipelineState);
     mCommandBuffer->DrawIndexed(2 * 6 * 3);
 
+    mCommandBuffer->CopyTexture(mWindowRenderTargetTexture, mWindowBackbuffer);
+
     CommandListID commandList = mCommandBuffer->Finish();
     mRendererDevice->Execute(commandList);
     mWindowBackbuffer->Present();
@@ -369,6 +374,8 @@ void DepthStencilScene::Draw(float dt)
 
 void DepthStencilScene::ReleaseSubsceneResources()
 {
+    Scene::ReleaseSubsceneResources();
+
     mWindowRenderTarget.Reset();
     mDepthBuffer.Reset();
     mVertexShader.Reset();

@@ -23,7 +23,10 @@ namespace {
 
 int gInstancesNumber = 200;
 
+static uint32 gFrameIndex = 0;
+
 } // namespace
+
 
 
 bool VertexBuffersScene::LoadShaders(bool useInstancing)
@@ -183,6 +186,8 @@ bool VertexBuffersScene::CreateBuffers(bool withInstanceBuffer, BufferMode verte
 
 bool VertexBuffersScene::CreateSubSceneSimple()
 {
+    gFrameIndex = 0;
+
     if (!LoadShaders(false))
         return false;
 
@@ -194,6 +199,8 @@ bool VertexBuffersScene::CreateSubSceneSimple()
 
 bool VertexBuffersScene::CreateSubSceneInstancing(BufferMode vertexBufferMode)
 {
+    gFrameIndex = 0;
+
     if (!LoadShaders(true))
         return false;
 
@@ -227,6 +234,8 @@ VertexBuffersScene::~VertexBuffersScene()
 
 void VertexBuffersScene::ReleaseSubsceneResources()
 {
+    Scene::ReleaseSubsceneResources();
+
     // clear resources
 
     mPositionsVertexBuffer.Reset();
@@ -243,20 +252,14 @@ void VertexBuffersScene::ReleaseSubsceneResources()
 
 bool VertexBuffersScene::OnInit(void* winHandle)
 {
-    // create backbuffer connected with the window
-    BackbufferDesc bbDesc;
-    bbDesc.width = WINDOW_WIDTH;
-    bbDesc.height = WINDOW_HEIGHT;
-    bbDesc.format = mBackbufferFormat;
-    bbDesc.windowHandle = winHandle;
-    bbDesc.vSync = false;
-    mWindowBackbuffer = mRendererDevice->CreateBackbuffer(bbDesc);
-    if (!mWindowBackbuffer)
+    if (!Scene::OnInit(winHandle))
+    {
         return false;
+    }
 
     // create rendertarget that will render to the window's backbuffer
     RenderTargetElement rtTarget;
-    rtTarget.texture = mWindowBackbuffer;
+    rtTarget.texture = mWindowRenderTargetTexture;
     RenderTargetDesc rtDesc;
     rtDesc.numTargets = 1;
     rtDesc.targets = &rtTarget;
@@ -269,9 +272,6 @@ bool VertexBuffersScene::OnInit(void* winHandle)
 
 void VertexBuffersScene::Draw(float dt)
 {
-    // not used - the scene is static
-    NFE_UNUSED(dt);
-
     // reset bound resources and set them once again
     mCommandBuffer->Begin();
     mCommandBuffer->SetViewport(0.0f, static_cast<float>(WINDOW_WIDTH), 0.0f,
@@ -317,10 +317,12 @@ void VertexBuffersScene::Draw(float dt)
         mCommandBuffer->SetVertexBuffers(2, vertexBuffers, strides, offsets);
     }
 
-
-    // clear target
-    const Float4 color(0.0f, 0.0f, 0.0f, 1.0f);
-    mCommandBuffer->Clear(ClearFlagsColor, 1, nullptr, &color);
+    if (gFrameIndex == 0)
+    {
+        // clear target
+        const Float4 color(0.0f, 0.0f, 0.0f, 1.0f);
+        mCommandBuffer->Clear(ClearFlagsColor, 1, nullptr, &color);
+    }
 
     // draw
     if (mInstanceBuffer)
@@ -328,10 +330,14 @@ void VertexBuffersScene::Draw(float dt)
     else
         mCommandBuffer->DrawIndexed(6);
 
+    mCommandBuffer->CopyTexture(mWindowRenderTargetTexture, mWindowBackbuffer);
+
     CommandListID commandList = mCommandBuffer->Finish();
     mRendererDevice->Execute(commandList);
     mWindowBackbuffer->Present();
     mRendererDevice->FinishFrame();
+
+    gFrameIndex++;
 }
 
 void VertexBuffersScene::Release()

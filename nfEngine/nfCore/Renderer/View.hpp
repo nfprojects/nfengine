@@ -42,6 +42,8 @@ class CORE_API View : public Utils::SimpleInputListener
     // not NULL when rendering to a off-screen render target
     Resource::Texture* mTexture;
 
+    TexturePtr mBackbufferTexture;
+
     // not NULL when rendering to a window
     BackbufferPtr mWindowBackbuffer;
     Common::Window* mWindow;

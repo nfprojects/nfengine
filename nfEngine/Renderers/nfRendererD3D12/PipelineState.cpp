@@ -174,7 +174,7 @@ bool PipelineState::Init(const PipelineStateDesc& desc)
         psd.RTVFormats[i] = DXGI_FORMAT_UNKNOWN;
     psd.DSVFormat = TranslateDepthFormat(desc.depthFormat);
 
-    psd.SampleDesc.Count = 1;
+    psd.SampleDesc.Count = desc.numSamples;
     psd.SampleDesc.Quality = 0;
     psd.NodeMask = 1;
     psd.Flags = D3D12_PIPELINE_STATE_FLAG_NONE;

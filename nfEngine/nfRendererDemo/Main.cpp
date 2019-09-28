@@ -15,6 +15,7 @@
 #include "Scenes/Tessellation.hpp"
 #include "Scenes/Compute.hpp"
 #include "Scenes/Multithreaded.hpp"
+#include "Scenes/Multisample.hpp"
 
 #include "../Renderers/RendererInterface/Device.hpp"
 
@@ -56,6 +57,8 @@ class DemoWindow : public NFE::Common::Window
             return;
 
         mScenes[mCurrentScene]->Release();
+
+        mRendererDevice->WaitForGPU();
 
         if (mScenes[scene]->Init(mRendererDevice, GetHandle()))
         {
@@ -114,13 +117,14 @@ public:
         // TODO: move scene registration to their source files
         // TODO: switching to arbitrary scene (e.g. omitting a single scene should be
         //       possible, when a feature is not implemented in renderer
-        mScenes.push_back(NFE::Common::MakeUniquePtr<BasicScene>());
-        mScenes.push_back(NFE::Common::MakeUniquePtr<DepthStencilScene>());
-        mScenes.push_back(NFE::Common::MakeUniquePtr<RenderTargetsScene>());
-        mScenes.push_back(NFE::Common::MakeUniquePtr<VertexBuffersScene>());
-        mScenes.push_back(NFE::Common::MakeUniquePtr<TessellationScene>());
-        mScenes.push_back(NFE::Common::MakeUniquePtr<ComputeScene>());
-        mScenes.push_back(NFE::Common::MakeUniquePtr<MultithreadedScene>());
+        //mScenes.push_back(NFE::Common::MakeUniquePtr<BasicScene>());
+        mScenes.push_back(NFE::Common::MakeUniquePtr<MultisampleScene>());
+        //mScenes.push_back(NFE::Common::MakeUniquePtr<DepthStencilScene>());
+        //mScenes.push_back(NFE::Common::MakeUniquePtr<RenderTargetsScene>());
+        //mScenes.push_back(NFE::Common::MakeUniquePtr<VertexBuffersScene>());
+        //mScenes.push_back(NFE::Common::MakeUniquePtr<TessellationScene>());
+        //mScenes.push_back(NFE::Common::MakeUniquePtr<ComputeScene>());
+        //mScenes.push_back(NFE::Common::MakeUniquePtr<MultithreadedScene>());
     }
 
     /**
@@ -245,33 +249,38 @@ public:
         size_t newSceneId = mCurrentScene;
         size_t newSubSceneId = mScenes[mCurrentScene]->GetCurrentSubSceneNumber();
 
+        size_t numScenes = mScenes[mCurrentScene]->GetAvailableSubSceneCount();
+
         switch (key)
         {
         case NFE::Common::KeyCode::Right:
             if (newSceneId >= mScenes.size() - 1)
-                return;
-            newSceneId++;
+                newSceneId = 0;
+            else
+                newSceneId++;
             SwitchScene(newSceneId);
             break;
 
         case NFE::Common::KeyCode::Left:
             if (newSceneId == 0)
-                return;
-            newSceneId--;
+                newSceneId = mScenes.size() - 1;
+            else
+                newSceneId--;
             SwitchScene(newSceneId);
             break;
 
         case NFE::Common::KeyCode::Up:
-            if (newSubSceneId >= mScenes[mCurrentScene]->GetAvailableSubSceneCount())
-                return;
             newSubSceneId++;
+            if (newSubSceneId > numScenes)
+                newSubSceneId = 0;
             SwitchSubScene(newSubSceneId);
             break;
 
         case NFE::Common::KeyCode::Down:
             if (newSubSceneId == 0)
-                return;
-            newSubSceneId--;
+                newSubSceneId = numScenes;
+            else
+                newSubSceneId--;
             SwitchSubScene(newSubSceneId);
             break;
 

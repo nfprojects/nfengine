@@ -393,6 +393,8 @@ BasicScene::~BasicScene()
 
 void BasicScene::ReleaseSubsceneResources()
 {
+    Scene::ReleaseSubsceneResources();
+
     // clear resources
     mTexture.Reset();
     mSampler.Reset();
@@ -413,20 +415,14 @@ void BasicScene::ReleaseSubsceneResources()
 
 bool BasicScene::OnInit(void* winHandle)
 {
-    // create backbuffer connected with the window
-    BackbufferDesc bbDesc;
-    bbDesc.width = WINDOW_WIDTH;
-    bbDesc.height = WINDOW_HEIGHT;
-    bbDesc.format = mBackbufferFormat;
-    bbDesc.windowHandle = winHandle;
-    bbDesc.vSync = false;
-    mWindowBackbuffer = mRendererDevice->CreateBackbuffer(bbDesc);
-    if (!mWindowBackbuffer)
+    if (!Scene::OnInit(winHandle))
+    {
         return false;
+    }
 
     // create rendertarget that will render to the window's backbuffer
     RenderTargetElement rtTarget;
-    rtTarget.texture = mWindowBackbuffer;
+    rtTarget.texture = mWindowRenderTargetTexture;
     RenderTargetDesc rtDesc;
     rtDesc.numTargets = 1;
     rtDesc.targets = &rtTarget;
@@ -509,6 +505,8 @@ void BasicScene::Draw(float dt)
                 mCommandBuffer->Draw(6, 1);
         }
     }
+
+    mCommandBuffer->CopyTexture(mWindowRenderTargetTexture, mWindowBackbuffer);
 
     CommandListID commandList = mCommandBuffer->Finish();
     mRendererDevice->Execute(commandList);

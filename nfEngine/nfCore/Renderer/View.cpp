@@ -158,6 +158,21 @@ bool View::SetWindow(Common::Window* window)
 
     HighLevelRenderer* renderer = Engine::GetInstance()->GetRenderer();
 
+    // create backbuffer texture
+    TextureDesc texDesc;
+    texDesc.width = width;
+    texDesc.height = height;
+    texDesc.type = TextureType::Texture2D;
+    texDesc.mode = BufferMode::GPUOnly;
+    texDesc.format = renderer->GetBackbufferFormat();
+    texDesc.binding = NFE_RENDERER_TEXTURE_BIND_RENDERTARGET;
+    texDesc.debugName = "View::mWindowBackbuffer";
+    mBackbufferTexture = renderer->GetDevice()->CreateTexture(texDesc);
+    if (!mBackbufferTexture)
+    {
+        NFE_LOG_ERROR("Failed to create backbuffer texture");
+        return false;
+    }
 
     // create backbuffer connected with the window
     BackbufferDesc bbDesc;
@@ -166,16 +181,18 @@ bool View::SetWindow(Common::Window* window)
     bbDesc.format = renderer->GetBackbufferFormat();
     bbDesc.windowHandle = static_cast<void*>(window->GetHandle());
     bbDesc.vSync = false;
-    bbDesc.format = ElementFormat::R8G8B8A8_U_Norm_sRGB;
+    bbDesc.debugName = "View::mWindowBackbuffer";
     mWindowBackbuffer = renderer->GetDevice()->CreateBackbuffer(bbDesc);
     if (mWindowBackbuffer == nullptr)
     {
+        mBackbufferTexture.Reset();
         NFE_LOG_ERROR("Failed to create backbuffer");
         return false;
     }
 
-    if (!InitRenderTarget(mWindowBackbuffer, width, height))
+    if (!InitRenderTarget(mBackbufferTexture, width, height))
     {
+        mBackbufferTexture.Reset();
         mWindowBackbuffer.Reset();
         return false;
     }
@@ -198,7 +215,7 @@ void View::OnWindowResize(void* userData)
         view->mWindow->GetSize(width, height);
         view->mWindowBackbuffer->Resize(width, height);
 
-        if (!view->InitRenderTarget(view->mWindowBackbuffer, width, height))
+        if (!view->InitRenderTarget(view->mBackbufferTexture, width, height))
         {
             view->mWindowBackbuffer.Reset();
         }
@@ -301,6 +318,8 @@ void View::Postprocess(RenderContext* ctx)
                                                      mTemporaryBufferPostprocessBinding,
                                                      mRenderTarget);
         PostProcessRenderer::Get()->OnLeave(postProcessContext);
+
+        postProcessContext->commandRecorder->CopyTexture(mBackbufferTexture, mWindowBackbuffer);
     }
 }
 

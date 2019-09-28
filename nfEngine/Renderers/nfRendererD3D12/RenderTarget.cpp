@@ -25,17 +25,14 @@ RenderTarget::~RenderTarget()
 {
     HeapAllocator& allocator = gDevice->GetRtvHeapAllocator();
 
-    for (uint32 i = 0; i < 2; ++i)
+    for (uint32 offset : mRTVs)
     {
-        for (uint32 offset : mRTVs[i])
-            allocator.Free(offset, 1);
+        allocator.Free(offset, 1);
     }
 
     HeapAllocator& dsvAllocator = gDevice->GetDsvHeapAllocator();
     if (mDSV != -1)
         dsvAllocator.Free(mDSV, 1);
-
-    gDevice->WaitForGPU();
 }
 
 void RenderTarget::GetDimensions(int& width, int& height)
@@ -47,6 +44,8 @@ void RenderTarget::GetDimensions(int& width, int& height)
 bool RenderTarget::Init(const RenderTargetDesc& desc)
 {
     HeapAllocator& rtvAllocator = gDevice->GetRtvHeapAllocator();
+
+    mRTVs.Reserve(desc.numTargets);
 
     for (uint32 i = 0; i < desc.numTargets; ++i)
     {
@@ -78,37 +77,57 @@ bool RenderTarget::Init(const RenderTargetDesc& desc)
             break;
         case TextureType::Texture2D:
         case TextureType::TextureCube:
-            if (tex->mLayers == 1)
+            if (tex->mSamplesNum == 1)
             {
-                rtvDesc.ViewDimension = D3D12_RTV_DIMENSION_TEXTURE2D;
-                rtvDesc.Texture2D.MipSlice = 0;
-                rtvDesc.Texture2D.PlaneSlice = 0;
+                if (tex->mLayers == 1)
+                {
+                    rtvDesc.ViewDimension = D3D12_RTV_DIMENSION_TEXTURE2D;
+                    rtvDesc.Texture2D.MipSlice = 0;
+                    rtvDesc.Texture2D.PlaneSlice = 0;
+                }
+                else if (tex->mLayers > 1)
+                {
+                    rtvDesc.ViewDimension = D3D12_RTV_DIMENSION_TEXTURE2DARRAY;
+                    rtvDesc.Texture2DArray.MipSlice = desc.targets[i].level;
+                    rtvDesc.Texture2DArray.FirstArraySlice = desc.targets[i].layer;
+                    rtvDesc.Texture2DArray.ArraySize = 1;
+                    rtvDesc.Texture2DArray.PlaneSlice = 0;
+                }
+                else
+                {
+                    NFE_LOG_ERROR("Unsupported texture type");
+                    return false;
+                }
             }
-            else if (tex->mLayers > 1)
+            else if (tex->mSamplesNum > 1 )
             {
-                rtvDesc.ViewDimension = D3D12_RTV_DIMENSION_TEXTURE2DARRAY;
-                rtvDesc.Texture2DArray.MipSlice = desc.targets[i].level;
-                rtvDesc.Texture2DArray.FirstArraySlice = desc.targets[i].layer;
-                rtvDesc.Texture2DArray.ArraySize = 1;
-                rtvDesc.Texture2DArray.PlaneSlice = 0;
-            }
-            else
-            {
-                NFE_LOG_ERROR("Unsupported texture type");
-                return false;
+                if (tex->mLayers == 1)
+                {
+                    rtvDesc.ViewDimension = D3D12_RTV_DIMENSION_TEXTURE2DMS;
+                }
+                else if (tex->mLayers > 1)
+                {
+                    NFE_ASSERT(desc.targets[i].level == 0, "Mipmapping for multisampled, multilayered texture are not supported");
+                    rtvDesc.ViewDimension = D3D12_RTV_DIMENSION_TEXTURE2DMSARRAY;
+                    rtvDesc.Texture2DMSArray.FirstArraySlice = desc.targets[i].layer;
+                    rtvDesc.Texture2DMSArray.ArraySize = 1;
+                }
+                else
+                {
+                    NFE_LOG_ERROR("Unsupported texture type");
+                    return false;
+                }
             }
 
             break;
             // TODO TextureType::Texture3D
-            // TODO multisampled textures
 
         default:
             NFE_LOG_ERROR("Unsupported texture type for render target");
             return false;
         }
 
-        // Create a RTV for each frame
-        for (UINT n = 0; n < tex->mBuffersNum; n++)
+        // Create a RTV
         {
             uint32 offset = rtvAllocator.Allocate(1);
             if (offset == UINT32_MAX)
@@ -116,8 +135,8 @@ bool RenderTarget::Init(const RenderTargetDesc& desc)
 
             D3D12_CPU_DESCRIPTOR_HANDLE handle = rtvAllocator.GetCpuHandle();
             handle.ptr += rtvAllocator.GetDescriptorSize() * offset;
-            gDevice->mDevice->CreateRenderTargetView(tex->mBuffers[n].Get(), &rtvDesc, handle);
-            mRTVs[n].PushBack(offset);
+            gDevice->mDevice->CreateRenderTargetView(tex->mResource.Get(), &rtvDesc, handle);
+            mRTVs.PushBack(offset);
         }
 
         Target targetInfo;
@@ -163,7 +182,7 @@ bool RenderTarget::Init(const RenderTargetDesc& desc)
 
         D3D12_CPU_DESCRIPTOR_HANDLE handle = allocator.GetCpuHandle();
         handle.ptr += allocator.GetDescriptorSize() * mDSV;
-        gDevice->mDevice->CreateDepthStencilView(tex->mBuffers[0].Get(), &dsvDesc, handle);
+        gDevice->mDevice->CreateDepthStencilView(tex->mResource.Get(), &dsvDesc, handle);
 
         mDepthTexture = Common::DynamicCast<Texture>(desc.depthBuffer);
         mDepthTextureSubresource = 0; // TODO: selectable mipmap and texture layer in the interface

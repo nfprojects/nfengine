@@ -8,38 +8,32 @@
 
 #include "../RendererInterface/Texture.hpp"
 #include "Common.hpp"
-#include "nfCommon/Containers/DynArray.hpp"
-
+#include "Resource.hpp"
 
 namespace NFE {
 namespace Renderer {
 
-class Texture : virtual public ITexture
+class Texture : public Resource, public ITexture
 {
     friend class RenderTarget;
     friend class ResourceBindingInstance;
 
 protected:
 
-    // TODO this array is needed only for backbuffers
-    D3DPtr<ID3D12Resource> mBuffers[2];
+    D3DPtr<ID3D12Resource> mResource;
+
+    DXGI_FORMAT mSrvFormat;
+    DXGI_FORMAT mDsvFormat;
 
     uint32 mRowPitch;
     uint16 mWidth;
     uint16 mLayers;
     uint16 mHeight;
-    uint16 mMipmapsNum;
+    uint8 mMipmapsNum;
+    uint8 mSamplesNum;
     TextureType mType;
     BufferMode mMode;
     ElementFormat mFormat;
-    DXGI_FORMAT mSrvFormat;
-    DXGI_FORMAT mDsvFormat;
-
-    uint32 mBuffersNum;
-    uint32 mCurrentBuffer;
-
-    D3D12_RESOURCE_STATES mTargetState; // TODO
-    Common::DynArray<D3D12_RESOURCE_STATES> mSubresourceStates;
 
     // upload initial data
     bool UploadData(const TextureDesc& desc);
@@ -70,46 +64,14 @@ public:
         return mLayers;
     }
 
-    NFE_INLINE uint16 GetMipmapsNum() const
+    NFE_INLINE uint8 GetMipmapsNum() const
     {
         return mMipmapsNum;
     }
 
-    NFE_INLINE D3D12_RESOURCE_STATES GetState(uint32 subresource) const
-    {
-        return mSubresourceStates[subresource];
-    }
-
-    NFE_INLINE D3D12_RESOURCE_STATES GetTargetState() const
-    {
-        return mTargetState;
-    }
-
-    NFE_INLINE void SetState(uint32 subresource, D3D12_RESOURCE_STATES newState)
-    {
-        mSubresourceStates[subresource] = newState;
-    }
-
-    uint32 GetCurrentBuffer() const
-    {
-        return mCurrentBuffer;
-    }
-
     NFE_INLINE ID3D12Resource* GetResource() const
     {
-        if (mBuffersNum == 1)
-        {
-            return mBuffers[0].Get();
-        }
-        else
-        {
-            return mBuffers[mCurrentBuffer].Get();
-        }
-    }
-
-    NFE_INLINE bool IsBackbuffer() const
-    {
-        return mBuffersNum > 1;
+        return mResource.Get();
     }
 
     NFE_INLINE BufferMode GetMode() const
@@ -120,6 +82,11 @@ public:
     NFE_INLINE ElementFormat GetFormat() const
     {
         return mFormat;
+    }
+
+    NFE_INLINE uint8 GetSamplesNum() const
+    {
+        return mSamplesNum;
     }
 };
 
