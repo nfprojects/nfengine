@@ -17,6 +17,7 @@ public:
     static constexpr uint32 MaxTasks = 128;
 
     TaskBuilder(const TaskID parentTask = InvalidTaskID);
+    explicit TaskBuilder(const TaskContext& taskContext);
     explicit TaskBuilder(Waitable& waitable);
     ~TaskBuilder();
 

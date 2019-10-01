@@ -7,6 +7,10 @@
 #include "nfCommon/Utils/ThreadPoolTask.hpp"
 #include "nfCommon/Utils/Latch.hpp"
 #include "nfCommon/Utils/Waitable.hpp"
+#include "nfCommon/Utils/TaskBuilder.hpp"
+#include "nfCommon/Utils/ParallelAlgorithms.hpp"
+#include "nfCommon/System/Timer.hpp"
+#include "nfCommon/Math/Random.hpp"
 
 using namespace NFE;
 using namespace NFE::Common;
@@ -316,4 +320,46 @@ TEST(ThreadPoolSimple, EnqueueChildRecursive)
 
     waitable.Wait();
     EXPECT_EQ((1u << (maxDepth + 1)) - 1u, count.load());
+}
+
+// Spawn 2 child tasks inside another recursively (binary-tree-like structure is created)
+TEST(ThreadPoolSimple, ParallelSort)
+{
+    uint32 numElements = 1000000;
+
+    DynArray<uint32> array;
+    array.Resize(numElements);
+
+    Math::Random random;
+    for (uint32 i = 0; i < numElements; ++i)
+    {
+        array[i] = random.GetInt();
+    }
+
+    DynArray<uint32> reference = array;
+
+    double regularSortTime = 0.0;
+    {
+        Timer timer;
+        std::sort(reference.Begin(), reference.End());
+        regularSortTime = timer.Stop();
+        NFE_LOG_INFO("std::sort: %.3f ms", 1000.0 * regularSortTime);
+    }
+
+    {
+        Timer timer;
+        Waitable waitable;
+        {
+            TaskBuilder builder(waitable);
+            ParallelSort(array.Begin(), array.End(), builder);
+        }
+        waitable.Wait();
+        double parallelSortTime = timer.Stop();
+        NFE_LOG_INFO("ParallelSort: %.3f ms (%.2fx)", 1000.0 * parallelSortTime, regularSortTime/parallelSortTime);
+    }
+
+    for (uint32 i = 0; i < numElements; ++i)
+    {
+        ASSERT_EQ(reference[i], array[i]) << "i=" << std::to_string(i);
+    }
 }

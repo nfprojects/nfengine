@@ -200,6 +200,7 @@
     <ClInclude Include="System\Win\Console.hpp" />
     <ClInclude Include="System\Win\MutexImpl.hpp" />
     <ClInclude Include="System\Win\RWLockImpl.hpp" />
+    <ClInclude Include="Utils\ParallelAlgorithms.hpp" />
     <ClInclude Include="Utils\BitUtils.hpp" />
     <ClInclude Include="Utils\BitUtilsImplWindowsAVX.hpp" />
     <ClInclude Include="Utils\BitUtilsImplCommon.hpp" />

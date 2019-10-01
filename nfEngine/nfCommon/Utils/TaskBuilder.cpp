@@ -12,6 +12,11 @@ TaskBuilder::TaskBuilder(const TaskID parentTask)
 {
 }
 
+TaskBuilder::TaskBuilder(const TaskContext& taskContext)
+    : mParentTask(taskContext.taskId)
+{
+}
+
 TaskBuilder::TaskBuilder(Waitable& waitable)
     : mWaitable(&waitable)
 {
