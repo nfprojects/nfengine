@@ -28,7 +28,7 @@ class CORE_API EntitySystem final
 public:
     static const int ID = 0;
 
-    explicit EntitySystem(SceneManager& scene);
+    explicit EntitySystem(Scene& scene);
 
     // get all the owned entities
     const Common::DynArray<EntityPtr>& GetAllEntities() const { return mAllEntities; }

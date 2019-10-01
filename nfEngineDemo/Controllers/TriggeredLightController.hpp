@@ -1,6 +1,5 @@
 #pragma once
 
-#include "nfCore/Engine.hpp"
 #include "nfCore/Scene/EntityController.hpp"
 #include "nfCore/Scene/Events/Event.hpp"
 

@@ -13,7 +13,7 @@ NFE_END_DEFINE_CLASS()
 namespace NFE {
 namespace Scene {
 
-ISystem::ISystem(SceneManager& scene)
+ISystem::ISystem(Scene& scene)
     : mScene(scene)
 { }
 

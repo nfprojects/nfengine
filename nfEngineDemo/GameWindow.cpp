@@ -1,16 +1,15 @@
 #include "PCH.hpp"
 #include "GameWindow.hpp"
-#include "Scenes.hpp"
 #include "Main.hpp"
 #include "Controllers/FreeCameraController.hpp"
 
 #include "nfCore/Scene/Systems/InputSystem.hpp"
-#include "nfCore/Scene/Components/ComponentBody.hpp"
 #include "nfCore/Scene/Components/ComponentLight.hpp"
 #include "nfCore/Scene/Components/ComponentMesh.hpp"
 #include "nfCore/Scene/Components/ComponentCamera.hpp"
 #include "nfCore/Scene/Components/ComponentController.hpp"
 #include "nfCore/Scene/Components/ComponentTrigger.hpp"
+#include "nfCore/Utils/SimpleInput.hpp"
 
 #include "nfCommon/System/Window.hpp"
 #include "nfCommon/System/Assertion.hpp"
@@ -21,58 +20,9 @@
 namespace NFE {
 
 using namespace Common;
-using namespace Renderer;
 using namespace Math;
-using namespace Scene;
 using namespace Resource;
 
-
-MainCameraView::MainCameraView()
-    : Renderer::View(/* useImGui = */ true)
-    , showViewProperties(false)
-{
-}
-
-void MainCameraView::OnDrawImGui(void* state)
-{
-    ImGui::SetInternalState(state);
-
-    // Main menu bar
-    if (ImGui::BeginMainMenuBar())
-    {
-        // TODO: switching default scenes, loading/saving, entity editor, etc.
-
-        if (ImGui::BeginMenu("Tools"))
-        {
-            ImGui::MenuItem("Entity Editor", nullptr, false, false);
-            ImGui::MenuItem("View properties", nullptr, &showViewProperties);
-            ImGui::EndMenu();
-        }
-
-        ImGui::EndMainMenuBar();
-    }
-
-    if (showViewProperties)
-        DrawViewPropertiesGui();
-}
-
-void MainCameraView::OnPostRender(GuiRendererContext* ctx)
-{
-    uint32 viewWidth, viewHeight;
-    this->GetSize(viewWidth, viewHeight);
-
-    // print time delta
-    static float avgDeltaTime = 0.0f;
-    avgDeltaTime = Lerp(avgDeltaTime, gDeltaTime, 0.1f);
-    char text[128];
-    sprintf(text, "dt = %.2fms", 1000.0f * avgDeltaTime);
-    GuiRenderer::Get()->PrintTextWithBorder(ctx, gFont.Get(), text,
-                                            Recti(8, 20, viewWidth, viewHeight - 8),
-                                            0xFFFFFFFF, 0xFF000000,
-                                            VerticalAlignment::Bottom);
-}
-
-//////////////////////////////////////////////////////////////////////////
 
 GameWindow::GameWindow()
     : mCameraEntity(nullptr)
@@ -86,59 +36,53 @@ void GameWindow::InitCamera()
     // TODO remove
     // camera entity must be created from a resource
     {
-        mCameraEntity = mScene->GetSystem<EntitySystem>()->CreateEntity();
+        mCameraEntity = mScene->GetSystem<Scene::EntitySystem>()->CreateEntity();
         mCameraEntity->SetGlobalPosition(Vector4(0.0, 1.75f, -4.0f));
 
         uint32 width, height;
         GetSize(width, height);
 
-        PerspectiveProjectionDesc perspective;
+        Scene::PerspectiveProjectionDesc perspective;
         perspective.aspectRatio = (float)width / (float)height;
         perspective.farDist = 200.0f;
         perspective.nearDist = 0.05f;
         perspective.FoV = DegToRad(60.0f);
 
-        auto camera = MakeUniquePtr<CameraComponent>();
+        auto camera = MakeUniquePtr<Scene::CameraComponent>();
         camera->SetPerspective(&perspective);
         mCameraEntity->AddComponent(std::move(camera));
 
-        auto body = MakeUniquePtr<BodyComponent>();
-        // TODO add some spherical shape so the camera can collide with the scene
-        body->SetMass(0.0f);
-        mCameraEntity->AddComponent(std::move(body));
-
-        auto trigger = MakeUniquePtr<TriggerComponent>();
+        auto trigger = MakeUniquePtr<Scene::TriggerComponent>();
         trigger->SetSize(Vector4(0.1f, 0.1f, 0.1f));
-        trigger->SetType(TriggerType::Source);
+        trigger->SetType(Scene::TriggerType::Source);
         mCameraEntity->AddComponent(trigger);
 
-        auto controller = MakeUniquePtr<ControllerComponent>();
-        EntityControllerPtr controllerObject = StaticCast<IEntityController>(MakeUniquePtr<FreeCameraController>()); // TODO
+        auto controller = MakeUniquePtr<Scene::ControllerComponent>();
+        Scene::EntityControllerPtr controllerObject = StaticCast<Scene::IEntityController>(MakeUniquePtr<FreeCameraController>()); // TODO
         controller->SetController(std::move(controllerObject));
         mCameraEntity->AddComponent(std::move(controller));
     }
-
-    if (!mView)
-    {
-        mView = Common::MakeUniquePtr<MainCameraView>();
-        mView->SetWindow(this);
-    }
-    mView->SetCamera(mCameraEntity);
 }
 
-void GameWindow::SetUpScene(int sceneId, GameWindow* parent)
+void GameWindow::SetUpScene(GameWindow* parent)
 {
     if (parent == nullptr) // init a new scene
     {
-        SceneManagerPtr newScene = InitScene(sceneId);
+        Scene::ScenePtr newScene = MakeUniquePtr<Scene::Scene>();
         if (newScene == nullptr)
         {
             return;
         }
 
+        if (!newScene->InitializeSystems())
+        {
+            NFE_LOG_ERROR("Failed to initialize scene's systems");
+            return;
+        }
+
         // setup input system
         // TODO this should be in global "input manager"
-        InputSystem* inputSystem = newScene->GetSystem<InputSystem>();
+        Scene::InputSystem* inputSystem = newScene->GetSystem<Scene::InputSystem>();
         if (inputSystem)
         {
             inputSystem->RegisterAxis("MoveForwardBackward", -1.0f, 1.0f, false);
@@ -175,18 +119,18 @@ void GameWindow::SpawnTestObject(uint32 objectType, const Vector4& position, con
         return;
     }
 
-    Entity* boxEntity = mScene->GetSystem<EntitySystem>()->CreateEntity();
+    Scene::Entity* boxEntity = mScene->GetSystem<Scene::EntitySystem>()->CreateEntity();
     boxEntity->SetGlobalPosition(position);
 
-    auto mesh = Common::MakeUniquePtr<MeshComponent>();
-    mesh->SetMeshResource("cube.nfm");
+    auto mesh = Common::MakeUniquePtr<Scene::MeshComponent>();
+    //mesh->SetMeshResource("cube.nfm");
     boxEntity->AddComponent(std::move(mesh));
 
-    auto body = Common::MakeUniquePtr<BodyComponent>();
-    body->SetCollisionShape(ENGINE_GET_COLLISION_SHAPE(collisionResourceName));
-    body->SetVelocity(velocity);
-    body->SetMass(10.0f);
-    boxEntity->AddComponent(std::move(body));
+    //auto body = Common::MakeUniquePtr<Scene::BodyComponent>();
+    //body->SetCollisionShape(ENGINE_GET_COLLISION_SHAPE(collisionResourceName));
+    //body->SetVelocity(velocity);
+    //body->SetMass(10.0f);
+    //boxEntity->AddComponent(std::move(body));
 }
 
 void GameWindow::OnKeyPress(Common::KeyCode key)
@@ -198,17 +142,12 @@ void GameWindow::OnKeyPress(Common::KeyCode key)
     event.isCtrlPressed = IsKeyPressed(Common::KeyCode::ControlLeft);
     event.isShiftPressed = IsKeyPressed(Common::KeyCode::ShiftLeft);
 
-    if (mView && mView->OnKeyPressed(event))
-    {
-        return; // key press event was consumed by the engine
-    }
-
     // TODO this is TEMPORARY !!!
     // there should be some mappings done in the global input manager, like:
     // "W pressed" -> MoveForwardBackward == 1.0f, "S pressed" -> MoveForwardBackward == -1.0f,
     // etc.
 
-    InputSystem* inputSystem = mScene->GetSystem<InputSystem>();
+    Scene::InputSystem* inputSystem = mScene->GetSystem<Scene::InputSystem>();
 
     if (key == Common::KeyCode::F1)
     {
@@ -219,11 +158,6 @@ void GameWindow::OnKeyPress(Common::KeyCode key)
     {
         // spawn a new window
         AddWindow(this);
-    }
-    else if (key >= Common::KeyCode::Num0 && key <= Common::KeyCode::Num9)
-    {
-        const uint32 sceneNum = static_cast<uint32>(key) - static_cast<uint32>(Common::KeyCode::Num0);
-        SetUpScene(sceneNum);
     }
     else if (key == Common::KeyCode::E)
     {
@@ -267,7 +201,7 @@ void GameWindow::OnKeyUp(Common::KeyCode key)
 {
     // TODO this is TEMPORARY !!!
 
-    InputSystem* inputSystem = mScene->GetSystem<InputSystem>();
+    Scene::InputSystem* inputSystem = mScene->GetSystem<Scene::InputSystem>();
 
     if (key == Common::KeyCode::W)
     {
@@ -311,9 +245,6 @@ void GameWindow::OnMouseDown(MouseButton button, int x, int y)
     event.x = x;
     event.y = y;
 
-    if (mView && mView->OnMouseDown(event))
-        return; // mouse event was consumed by the engine
-
     if (button == MouseButton::Left)
     {
         const Vector4& forwardVector = mCameraEntity->GetGlobalRotation().GetAxisZ();
@@ -321,7 +252,7 @@ void GameWindow::OnMouseDown(MouseButton button, int x, int y)
     }
 
     // TODO temporary
-    InputSystem* inputSystem = mScene->GetSystem<InputSystem>();
+    Scene::InputSystem* inputSystem = mScene->GetSystem<Scene::InputSystem>();
     if (button == MouseButton::Left)
     {
         inputSystem->PushEvent(Input::EventData(Input::EventData::Type::KeyPress, StringView("Shoot")));
@@ -339,16 +270,10 @@ void GameWindow::OnMouseMove(int x, int y, int deltaX, int deltaY)
     event.x = x;
     event.y = y;
 
-    if (mView && mView->OnMouseMove(event))
-    {
-        // mouse event was consumed by the engine's viewport
-        return;
-    }
-
     const float sensitivity = 0.005f;
 
     // TODO temporary
-    InputSystem* inputSystem = mScene->GetSystem<InputSystem>();
+    Scene::InputSystem* inputSystem = mScene->GetSystem<Scene::InputSystem>();
     if (deltaX != 0)
     {
         const float value = sensitivity * static_cast<float>(deltaX);
@@ -368,13 +293,8 @@ void GameWindow::OnMouseUp(MouseButton button)
     event.mouseButton = button;
     GetMousePosition(event.x, event.y);
 
-    if (mView && mView->OnMouseUp(event))
-    {
-        return; // mouse event was consumed by the engine
-    }
-
     // TODO temporary
-    InputSystem* inputSystem = mScene->GetSystem<InputSystem>();
+    Scene::InputSystem* inputSystem = mScene->GetSystem<Scene::InputSystem>();
     if (button == MouseButton::Left)
     {
         inputSystem->PushEvent(Input::EventData(Input::EventData::Type::KeyRelease, StringView("Shoot")));
@@ -387,18 +307,12 @@ void GameWindow::OnMouseUp(MouseButton button)
 
 void GameWindow::OnScroll(int delta)
 {
-    if (mView && mView->OnMouseScroll(delta))
-    {
-        return; // mouse event was consumed by the engine
-    }
+
 }
 
 void GameWindow::OnCharTyped(const char* charUTF8)
 {
-    if (mView && mView->OnCharTyped(charUTF8))
-    {
-        return; // mouse event was consumed by the engine
-    }
+
 }
 
 // window resized
@@ -414,10 +328,10 @@ void GameWindow::OnResize(uint32 width, uint32 height)
         return;
     }
 
-    CameraComponent* cameraComponent = mCameraEntity->GetComponent<CameraComponent>();
+    Scene::CameraComponent* cameraComponent = mCameraEntity->GetComponent<Scene::CameraComponent>();
     NFE_ASSERT(cameraComponent, "Invalid camera component");
 
-    PerspectiveProjectionDesc perspective;
+    Scene::PerspectiveProjectionDesc perspective;
     cameraComponent->GetPerspective(&perspective);
     perspective.aspectRatio = static_cast<float>(width) / static_cast<float>(height);
     cameraComponent->SetPerspective(&perspective);

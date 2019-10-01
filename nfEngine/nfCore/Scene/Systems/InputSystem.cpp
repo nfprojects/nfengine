@@ -8,7 +8,7 @@
 #include "InputSystem.hpp"
 #include "EventSystem.hpp"
 #include "../Events/Event_Input.hpp"
-#include "../SceneManager.hpp"
+#include "../Scene.hpp"
 
 
 
@@ -37,7 +37,7 @@ void InputSystem::InputAxis::ClampToRange()
 }
 
 
-InputSystem::InputSystem(SceneManager& scene)
+InputSystem::InputSystem(Scene& scene)
     : ISystem(scene)
 {
 }

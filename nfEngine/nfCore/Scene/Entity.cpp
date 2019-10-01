@@ -7,7 +7,7 @@
 #include "PCH.hpp"
 #include "Entity.hpp"
 #include "EntityController.hpp"
-#include "SceneManager.hpp"
+#include "Scene.hpp"
 #include "Components/Component.hpp"
 #include "Systems/EntitySystem.hpp"
 #include "Systems/EventSystem.hpp"
@@ -20,11 +20,7 @@ namespace Scene {
 
 using namespace Math;
 
-
-
-
-
-Entity::Entity(EntityID id, SceneManager& parentScene, Entity* parentEntity)
+Entity::Entity(EntityID id, Scene& parentScene, Entity* parentEntity)
     : mParent(parentEntity)
     , mScene(parentScene)
     , mID(id)

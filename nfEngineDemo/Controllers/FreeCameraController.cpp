@@ -5,7 +5,6 @@
 #include "nfCore/Scene/Entity.hpp"
 #include "nfCore/Scene/Events/Event_Input.hpp"
 #include "nfCore/Scene/Events/Event_Tick.hpp"
-#include "nfCore/Scene/Components/ComponentBody.hpp"
 
 #include "nfCommon/System/Assertion.hpp"
 
@@ -13,7 +12,6 @@
 namespace NFE {
 
 using namespace Math;
-using namespace Scene;
 using namespace Resource;
 
 namespace {
@@ -51,14 +49,10 @@ void FreeCameraController::OnEvent(const Scene::Event& event)
     }
 }
 
-void FreeCameraController::ProcessTickEvent(const Event_Tick& tickEvent)
+void FreeCameraController::ProcessTickEvent(const Scene::Event_Tick& tickEvent)
 {
-    Entity* entity = GetEntity();
+    Scene::Entity* entity = GetEntity();
     NFE_ASSERT(entity, "Invalid entity");
-
-    BodyComponent* body = entity->GetComponent<BodyComponent>();
-    NFE_ASSERT(body, "Body component not found");
-
 
     // time delta
     const float dt = tickEvent.GetTimeDelta();
@@ -82,7 +76,6 @@ void FreeCameraController::ProcessTickEvent(const Event_Tick& tickEvent)
         Vector4 axis;
         float angle;
         rotation.ToAxis(axis, angle);
-        body->SetAngularVelocity(-axis / dt);
     }
 
     entity->SetGlobalOrientation(targetOrientation);
@@ -99,17 +92,8 @@ void FreeCameraController::ProcessTickEvent(const Event_Tick& tickEvent)
     else if (mMovementSpeed < 0.0f)
         movementDirection *= (1.0f / MOVEMENT_SPEED_MULTIPLIER);
 
-    const Vector4 destVelocity = targetOrientation.TransformVector(movementDirection);
-    const Vector4 prevVelocity =  body->GetVelocity();
-
-    // low pass filter - for smooth camera movement
-    const float translationFactor = dt / (CAMERA_TRANSLATION_SMOOTHING + dt);
-    const Vector4 newVelocity = Vector4::Lerp(prevVelocity, destVelocity, translationFactor);
-
-    body->SetVelocity(newVelocity);
-
     // update position manually - body is static
-    const Vector4 newPosition = entity->GetGlobalPosition() + newVelocity * dt;
+    const Vector4 newPosition = entity->GetGlobalPosition() + targetOrientation.TransformVector(movementDirection) * dt;
     entity->SetGlobalPosition(newPosition);
 }
 

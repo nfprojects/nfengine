@@ -42,7 +42,7 @@ class CORE_API NFE_ALIGN(16) Entity final
 
 public:
     // this will be called only by the Entity System
-    explicit Entity(EntityID id, SceneManager& parentScene, Entity* parentEntity = nullptr);
+    explicit Entity(EntityID id, Scene& parentScene, Entity* parentEntity = nullptr);
     ~Entity();
 
     // Getters
@@ -50,7 +50,7 @@ public:
     size_t GetChildrenNum() const { return mChildren.Size(); }
     Entity* GetChild(uint32 index) const { return mChildren[index]; }
     Entity* GetParent() const { return mParent; }
-    SceneManager& GetScene() const { return mScene; }
+    Scene& GetScene() const { return mScene; }
 
     // Flag checks
     bool HasMovedLocally() const { return (mFlags & NFE_ENTITY_FLAG_MOVED_LOCAL) == NFE_ENTITY_FLAG_MOVED_LOCAL; }
@@ -152,7 +152,7 @@ private:
     Entity* mParent;
 
     // parent scene
-    SceneManager& mScene;
+    Scene& mScene;
 
     // child entities
     Common::DynArray<Entity*> mChildren;

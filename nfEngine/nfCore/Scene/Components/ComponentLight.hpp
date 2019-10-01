@@ -7,8 +7,6 @@
 #pragma once
 
 #include "Component.hpp"
-#include "../../Resources/Texture.hpp"
-#include "../../Renderer/RenderProxies.hpp"
 
 #include "nfCommon/Memory/Aligned.hpp"
 #include "nfCommon/Math/Vector4.hpp"
@@ -94,11 +92,6 @@ class NFE_ALIGN(16) CORE_API LightComponent
 private:
     Math::Vector4 mColor;
 
-    // TODO resource hash
-    Resource::Texture* mLightMap;
-
-    Renderer::ProxyID mRenderingProxy;
-
     LightType mLightType;
 
     uint16 mShadowMapResolution;
@@ -128,19 +121,6 @@ public:
     void SetOmniLight(const OmniLightDesc& desc);
     void SetSpotLight(const SpotLightDesc& desc);
     void SetDirLight(const DirLightDesc& desc);
-
-    /**
-     * Set light map texture.
-     * TODO: use pointer to a texture instead of name
-     */
-    void SetLightMap(const char* name);
-
-    /**
-     * Set shadow map resolution.
-     * @param resolution Shadow map dimensions in pixels.
-     * @return "true" on success
-     */
-    bool SetShadowMap(uint16 resolution);
 };
 
 } // namespace Scene

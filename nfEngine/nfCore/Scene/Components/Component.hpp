@@ -39,7 +39,7 @@ public:
     /**
      * Get parent Scene.
      */
-    SceneManager& GetScene() const;
+    Scene& GetScene() const;
 
     /**
      * Get bounding box in entity space. May return empty box.

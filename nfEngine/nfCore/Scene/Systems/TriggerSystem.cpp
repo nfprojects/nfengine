@@ -7,7 +7,7 @@
 #include "PCH.hpp"
 #include "TriggerSystem.hpp"
 #include "EventSystem.hpp"
-#include "../SceneManager.hpp"
+#include "../Scene.hpp"
 #include "../Events/Event_Trigger.hpp"
 
 namespace NFE {
@@ -16,7 +16,7 @@ namespace Scene {
 using namespace Math;
 
 
-TriggerSystem::TriggerSystem(SceneManager& scene)
+TriggerSystem::TriggerSystem(Scene& scene)
     : ISystem(scene)
     , mTriggerID(0)
 { }

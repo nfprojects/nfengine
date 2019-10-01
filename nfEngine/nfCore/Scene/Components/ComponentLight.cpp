@@ -7,10 +7,8 @@
 #include "PCH.hpp"
 #include "ComponentLight.hpp"
 #include "../Entity.hpp"
-#include "../SceneManager.hpp"
+#include "../Scene.hpp"
 #include "../Systems/RendererSystem.hpp"
-#include "Engine.hpp"
-#include "Renderer/RenderScene.hpp"
 
 
 NFE_BEGIN_DEFINE_POLYMORPHIC_CLASS(NFE::Scene::LightComponent)
@@ -23,14 +21,11 @@ namespace Scene {
 
 using namespace Math;
 using namespace Resource;
-using namespace Renderer;
 
 LightComponent::LightComponent()
     : mColor(Vector4(1.0f, 1.0f, 1.0f, 1.0f))
-    , mLightMap(nullptr)
     , mLightType(LightType::Omni)
     , mShadowMapResolution(0)
-    , mRenderingProxy(INVALID_RENDER_PROXY)
 {
 }
 
@@ -52,12 +47,12 @@ void LightComponent::OnAttach()
 
 void LightComponent::OnDetach()
 {
-    if (mRenderingProxy != INVALID_RENDER_PROXY)
-    {
-        RenderScene* renderScene = GetScene().GetSystem<RendererSystem>()->GetRenderScene();
-        renderScene->DeleteLightProxy(mRenderingProxy);
-        mRenderingProxy = INVALID_RENDER_PROXY;
-    }
+    //if (mRenderingProxy != INVALID_RENDER_PROXY)
+    //{
+    //    RenderScene* renderScene = GetScene().GetSystem<RendererSystem>()->GetRenderScene();
+    //    renderScene->DeleteLightProxy(mRenderingProxy);
+    //    mRenderingProxy = INVALID_RENDER_PROXY;
+    //}
 }
 
 void LightComponent::OnUpdate()
@@ -77,11 +72,6 @@ void LightComponent::SetColor(const Float3& color)
 
 void LightComponent::Release()
 {
-    if (mLightMap)
-    {
-        mLightMap->DelRef();
-        mLightMap = nullptr;
-    }
 }
 
 void LightComponent::SetOmniLight(const OmniLightDesc& desc)
@@ -117,119 +107,46 @@ void LightComponent::SetDirLight(const DirLightDesc& desc)
     }
 }
 
-bool LightComponent::SetShadowMap(uint16 resolution)
-{
-    /*
-    if (mShadowMapResolution != resolution)
-    {
-        mShadowMapResolution = resolution;
-
-        // update proxy
-        CreateRenderingProxy(true);
-    }
-    */
-
-    return true;
-}
-
-void LightComponent::OnLightMapTextureLoaded()
-{
-    // TODO update rendering proxy
-
-    // TODO move this stuff to renderer
-    /*
-    HighLevelRenderer* renderer = Engine::GetInstance()->GetRenderer();
-
-    std::recursive_mutex& renderingMutex = Engine::GetInstance()->GetRenderingMutex();
-    std::unique_lock<std::recursive_mutex> lock(renderingMutex);
-
-    mLightMapBindingInstance = renderer->GetDevice()->CreateResourceBindingInstance(
-        LightsRenderer::Get()->GetLightMapBindingSet());
-    if (!mLightMapBindingInstance)
-    {
-        NFE_LOG_ERROR("Failed to create light map's binding instance");
-        return;
-    }
-
-    if (!mLightMapBindingInstance->WriteTextureView(0, mLightMap->GetRendererTexture()))
-    {
-        NFE_LOG_ERROR("Failed to write light map's binding instance");
-        return;
-    }
-    */
-}
-
-void LightComponent::SetLightMap(const char* name)
-{
-    if (!name || (strnlen_s(name, RES_NAME_MAX_LENGTH) == 0))
-    {
-        if (mLightMap)
-        {
-            mLightMap->DelRef();
-            mLightMap = 0;
-        }
-        return;
-    }
-
-    ResManager* rm = Engine::GetInstance()->GetResManager();
-    Texture* newTexture = static_cast<Texture*>(rm->GetResource(name, ResourceType::Texture));
-
-    if (newTexture != mLightMap)
-    {
-        if (mLightMap)
-        {
-            mLightMap->DelRef();
-        }
-
-        mLightMap = newTexture;
-        if (mLightMap)
-        {
-            mLightMap->AddPostLoadCallback(std::bind(&LightComponent::OnLightMapTextureLoaded, this));
-            mLightMap->AddRef();
-        }
-    }
-}
-
 void LightComponent::CreateRenderingProxy(bool update)
 {
-    Entity* entity = GetEntity();
-    if (!GetEntity())
-        return;
+    //Entity* entity = GetEntity();
+    //if (!GetEntity())
+    //    return;
 
-    SceneManager& scene = entity->GetScene();
+    //Scene& scene = entity->GetScene();
 
-    // create the new proxy
-    LightProxyDesc proxy;
-    proxy.transform = GetEntity()->GetGlobalTransform().ToMatrix();
-    proxy.color = mColor;
-    proxy.shadowMapSize = mShadowMapResolution;
+    //// create the new proxy
+    //LightProxyDesc proxy;
+    //proxy.transform = GetEntity()->GetGlobalTransform().ToMatrix();
+    //proxy.color = mColor;
+    //proxy.shadowMapSize = mShadowMapResolution;
 
-    if (mLightType == LightType::Omni)
-    {
-        proxy.type = LightProxyType::Omni;
-        proxy.omni.radius = mOmniLight.radius;
-    }
-    else if (mLightType == LightType::Spot)
-    {
-        proxy.type = LightProxyType::Spot;
-        proxy.spot.nearDistance = mSpotLight.nearDist;
-        proxy.spot.farDistance = mSpotLight.farDist;
-        proxy.spot.cutoffAngle = mSpotLight.cutoff;
-    }
+    //if (mLightType == LightType::Omni)
+    //{
+    //    proxy.type = LightProxyType::Omni;
+    //    proxy.omni.radius = mOmniLight.radius;
+    //}
+    //else if (mLightType == LightType::Spot)
+    //{
+    //    proxy.type = LightProxyType::Spot;
+    //    proxy.spot.nearDistance = mSpotLight.nearDist;
+    //    proxy.spot.farDistance = mSpotLight.farDist;
+    //    proxy.spot.cutoffAngle = mSpotLight.cutoff;
+    //}
 
 
-    RenderScene* renderScene = scene.GetSystem<RendererSystem>()->GetRenderScene();
+    //RenderScene* renderScene = scene.GetSystem<RendererSystem>()->GetRenderScene();
 
-    if (update)
-    {
-        NFE_ASSERT(mRenderingProxy != INVALID_RENDER_PROXY, "Trying to update invalid light render proxy");
+    //if (update)
+    //{
+    //    NFE_ASSERT(mRenderingProxy != INVALID_RENDER_PROXY, "Trying to update invalid light render proxy");
 
-        renderScene->UpdateLightProxy(mRenderingProxy, proxy);
-    }
-    else
-    {
-        mRenderingProxy = renderScene->CreateLightProxy(proxy);
-    }
+    //    renderScene->UpdateLightProxy(mRenderingProxy, proxy);
+    //}
+    //else
+    //{
+    //    mRenderingProxy = renderScene->CreateLightProxy(proxy);
+    //}
 }
 
 } // namespace Scene

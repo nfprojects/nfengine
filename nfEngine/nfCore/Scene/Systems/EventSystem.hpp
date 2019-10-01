@@ -28,7 +28,7 @@ class CORE_API EventSystem final
 public:
     static const int ID = 1;
 
-    explicit EventSystem(SceneManager& scene);
+    explicit EventSystem(Scene& scene);
     ~EventSystem();
 
     /**

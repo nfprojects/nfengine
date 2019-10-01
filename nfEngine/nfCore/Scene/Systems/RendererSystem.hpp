@@ -7,7 +7,6 @@
 #pragma once
 
 #include "../../Core.hpp"
-#include "../../Renderer/View.hpp"
 #include "System.hpp"
 
 #include "nfCommon/Utils/ThreadPool.hpp"
@@ -29,17 +28,17 @@ class RendererSystem : public ISystem
 public:
     static const int ID = 3;
 
-    explicit RendererSystem(SceneManager& scene);
+    explicit RendererSystem(Scene& scene);
 
     /**
      * Get rendering scene.
      */
-    Renderer::RenderScene* GetRenderScene() const { return mRenderScene.Get(); }
+    //Renderer::RenderScene* GetRenderScene() const { return mRenderScene.Get(); }
 
     void Update(const SystemUpdateContext& context) override;
 
 private:
-    Common::UniquePtr<Renderer::RenderScene> mRenderScene;
+    //Common::UniquePtr<Renderer::RenderScene> mRenderScene;
 };
 
 } // namespace Scene

@@ -28,7 +28,7 @@ class CORE_API InputSystem final
 public:
     static const int ID = 2;
 
-    explicit InputSystem(SceneManager& scene);
+    explicit InputSystem(Scene& scene);
     ~InputSystem();
 
     /**

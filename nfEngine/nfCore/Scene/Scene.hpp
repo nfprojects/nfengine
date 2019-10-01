@@ -1,7 +1,7 @@
 /**
  * @file
  * @author Witek902 (witek902@gmail.com)
- * @brief  Declaration of SceneManager class.
+ * @brief  Declaration of Scene class.
  */
 
 #pragma once
@@ -30,16 +30,16 @@ struct SceneUpdateInfo
 /**
  * Scene - class responsible for managing and updating scene systems.
  */
-class CORE_API SceneManager final
+class CORE_API Scene final
 {
-    NFE_MAKE_NONCOPYABLE(SceneManager);
-    NFE_MAKE_NONMOVEABLE(SceneManager);
+    NFE_MAKE_NONCOPYABLE(Scene);
+    NFE_MAKE_NONMOVEABLE(Scene);
 
 public:
     static constexpr int MaxSystems = 8;
 
-    explicit SceneManager(const Common::String& name = "unnamed_scene");
-    ~SceneManager();
+    explicit Scene(const Common::String& name = "unnamed_scene");
+    ~Scene();
 
     /**
      * Initialize scene systems.
@@ -63,21 +63,7 @@ public:
         return static_cast<SystemType*>(mSystems[typename SystemType::ID].Get());
     }
 
-    /**
-     * Launch scene update task. Internal systems will be updated asynchronously.
-     * @param deltaTime     Delta time used for physics simulations.
-     * @return              Scene update task.
-     */
-    Common::TaskID BeginUpdate(const SceneUpdateInfo& info);
-
-    /**
-     * Launch rendering task.
-     */
-    // TODO
-    // Consider merging the separate "rendering task" with the renderer system update procedure.
-    // This will require refactoring the whole Engine::Advance, because the renderer systems will have to
-    // know in advance which views they should render to. However, this will make everything more consistent.
-    Common::TaskID BeginRendering(const Renderer::View* view);
+    void Update(const SceneUpdateInfo& info);
 
 private:
     Common::String mName;

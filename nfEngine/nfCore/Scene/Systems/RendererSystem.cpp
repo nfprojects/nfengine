@@ -6,7 +6,6 @@
 
 #include "PCH.hpp"
 #include "RendererSystem.hpp"
-#include "Renderer/RenderScene.hpp"
 
 
 NFE_BEGIN_DEFINE_POLYMORPHIC_CLASS(NFE::Scene::RendererSystem)
@@ -20,18 +19,18 @@ namespace Scene {
 using namespace Common;
 using namespace Math;
 
-RendererSystem::RendererSystem(SceneManager& scene)
+RendererSystem::RendererSystem(Scene& scene)
     : ISystem(scene)
 {
-    mRenderScene = MakeUniquePtr<Renderer::RenderScene>();
+    //mRenderScene = MakeUniquePtr<Renderer::RenderScene>();
 }
 
 void RendererSystem::Update(const SystemUpdateContext& context)
 {
-    if (!mRenderScene)
-        return;
+    //if (!mRenderScene)
+    //    return;
 
-    mRenderScene->Update(context.timeDelta);
+    //mRenderScene->Update(context.timeDelta);
 }
 
 } // namespace Scene

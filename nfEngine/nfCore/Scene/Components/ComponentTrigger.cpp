@@ -7,7 +7,7 @@
 #include "PCH.hpp"
 #include "ComponentTrigger.hpp"
 #include "../Entity.hpp"
-#include "../SceneManager.hpp"
+#include "../Scene.hpp"
 #include "../Systems/TriggerSystem.hpp"
 
 

@@ -35,17 +35,17 @@ class CORE_API ISystem
     NFE_MAKE_NONCOPYABLE(ISystem)
 
 public:
-    ISystem(SceneManager& scene);
+    ISystem(Scene& scene);
     virtual ~ISystem() { }
 
     // get parent scene
-    SceneManager& GetScene() const { return mScene; }
+    Scene& GetScene() const { return mScene; }
 
     // system update method
     virtual void Update(const SystemUpdateContext& context) = 0;
 
 private:
-    SceneManager& mScene;
+    Scene& mScene;
 };
 
 } // namespace Scene

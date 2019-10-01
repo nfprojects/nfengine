@@ -26,13 +26,9 @@ namespace NFE {
     } // namespace Common
 
     namespace Resource {
-        class ResManager;
-        class ResourceBase;
         class Material;
         class Mesh;
         class Texture;
-        class CollisionShape;
-        class SoundSample;
     } // namespace Resource
 
     namespace Scene {
@@ -47,7 +43,7 @@ namespace NFE {
         class ControllerComponent;
         class TriggerComponent;
 
-        class SceneManager;
+        class Scene;
         class RendererSystem;
         class InputSystem;
         class EntitySystem;
@@ -64,40 +60,8 @@ namespace NFE {
         using EntityPtr = Common::UniquePtr<Entity>;
         using ComponentPtr = Common::UniquePtr<IComponent>;
         using EntityControllerPtr = Common::UniquePtr<IEntityController>;
-        using SceneManagerPtr = Common::UniquePtr<SceneManager>;
+        using ScenePtr = Common::UniquePtr<Scene>;
 
     } // namespace Scene
-
-    namespace Physics {
-        struct BodyProxyInfo;
-        class IPhysicsScene;
-    } // namespace Physics
-
-    namespace Renderer {
-        class RenderScene;
-
-        class HighLevelRenderer;
-        class DebugRenderer;
-        class GeometryRenderer;
-        class GuiRenderer;
-        class LightsRenderer;
-        class PostProcessRenderer;
-
-        struct GeometryRendererContext;
-        struct LightsRendererContext;
-        struct PostProcessRendererContext;
-        struct GuiRendererContext;
-        struct DebugRendererContext;
-
-        class RenderContext;
-        class RenderTarget;
-        class ShadowMap;
-
-        /// Structures passed to renderer modules
-        struct RendererMaterial;
-        struct CameraRenderDesc;
-        class View;
-        class Font;
-    } // namespace Renderer
 
 } // namespace NFE

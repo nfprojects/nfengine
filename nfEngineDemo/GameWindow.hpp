@@ -1,23 +1,12 @@
 #pragma once
 
-#include "nfCore/Renderer/View.hpp"
-
+#include "nfCore/Scene/Scene.hpp"
 #include "nfCommon/System/Window.hpp"
 #include "nfCommon/Containers/UniquePtr.hpp"
 #include "nfCommon/Containers/SharedPtr.hpp"
 
 
 namespace NFE {
-
-class MainCameraView : public Renderer::View
-{
-public:
-    bool showViewProperties;
-
-    MainCameraView();
-    virtual void OnDrawImGui(void* state) override;
-    virtual void OnPostRender(Renderer::GuiRendererContext* ctx) override;
-};
 
 /**
  * Test game window.
@@ -28,8 +17,7 @@ class GameWindow : public Common::Window
 public:
     GameWindow();
 
-    Scene::SceneManager* GetScene() const { return mScene.Get(); }
-    Renderer::View* GetView() const { return mView.Get(); }
+    Scene::Scene* GetScene() const { return mScene.Get(); }
 
     // Window virtual methods implementation
     virtual void OnKeyPress(Common::KeyCode key) override;
@@ -46,15 +34,14 @@ public:
 
     // Initialize with a new scene
     // TODO pass scene as resource path
-    void SetUpScene(int sceneId = 0, GameWindow* parent = nullptr);
+    void SetUpScene(GameWindow* parent = nullptr);
 
     // TODO temporary - remove
     // spawn test object (cube, barrel, etc.)
     void SpawnTestObject(uint32 objectType, const Math::Vector4& position, const Math::Vector4& velocity);
 
 private:
-    Common::UniquePtr<MainCameraView> mView;
-    Common::SharedPtr<Scene::SceneManager> mScene;
+    Common::SharedPtr<Scene::Scene> mScene;
 
     // TODO remove
     Scene::Entity* mCameraEntity;

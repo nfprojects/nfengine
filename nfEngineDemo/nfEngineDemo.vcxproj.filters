@@ -3,7 +3,6 @@
   <ItemGroup>
     <ClInclude Include="GameWindow.hpp" />
     <ClInclude Include="Main.hpp" />
-    <ClInclude Include="Scenes.hpp" />
     <ClInclude Include="PCH.hpp" />
     <ClInclude Include="Controllers\FreeCameraController.hpp">
       <Filter>Controllers</Filter>
@@ -18,7 +17,6 @@
   <ItemGroup>
     <ClCompile Include="GameWindow.cpp" />
     <ClCompile Include="Main.cpp" />
-    <ClCompile Include="Scenes.cpp" />
     <ClCompile Include="PCH.cpp" />
     <ClCompile Include="Controllers\FreeCameraController.cpp">
       <Filter>Controllers</Filter>

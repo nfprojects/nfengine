@@ -177,128 +177,8 @@
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Engine.cpp" />
-    <ClCompile Include="Globals.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Input\InputEvent.cpp" />
-    <ClCompile Include="Physics\PhysicsSceneImpl.cpp" />
-    <ClCompile Include="Renderer\DebugRenderer.cpp">
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">PCH.hpp</PrecompiledHeaderFile>
-    </ClCompile>
-    <ClCompile Include="Renderer\Font.cpp">
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">PCH.hpp</PrecompiledHeaderFile>
-    </ClCompile>
-    <ClCompile Include="Renderer\GeometryRenderer.cpp">
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">PCH.hpp</PrecompiledHeaderFile>
-    </ClCompile>
-    <ClCompile Include="Renderer\GuiRenderer.cpp">
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">PCH.hpp</PrecompiledHeaderFile>
-    </ClCompile>
-    <ClCompile Include="Renderer\HighLevelRenderer.cpp">
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">PCH.hpp</PrecompiledHeaderFile>
-    </ClCompile>
-    <ClCompile Include="Renderer\ImGuiWrapper.cpp">
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">../PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">../PCH.hpp</PrecompiledHeaderFile>
-    </ClCompile>
-    <ClCompile Include="Renderer\LightsRenderer.cpp">
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">PCH.hpp</PrecompiledHeaderFile>
-    </ClCompile>
-    <ClCompile Include="Renderer\PostProcessRenderer.cpp">
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">PCH.hpp</PrecompiledHeaderFile>
-    </ClCompile>
-    <ClCompile Include="Renderer\RenderCommand.cpp">
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">PCH.hpp</PrecompiledHeaderFile>
-    </ClCompile>
-    <ClCompile Include="Renderer\RendererContext.cpp">
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">PCH.hpp</PrecompiledHeaderFile>
-    </ClCompile>
-    <ClCompile Include="Renderer\RendererResources.cpp">
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">PCH.hpp</PrecompiledHeaderFile>
-    </ClCompile>
-    <ClCompile Include="Renderer\RenderScene.cpp" />
-    <ClCompile Include="Renderer\View.cpp">
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">PCH.hpp</PrecompiledHeaderFile>
-    </ClCompile>
-    <ClCompile Include="Resources\CollisionShape.cpp">
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">PCH.hpp</PrecompiledHeaderFile>
-    </ClCompile>
-    <ClCompile Include="Resources\Material.cpp">
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">PCH.hpp</PrecompiledHeaderFile>
-    </ClCompile>
-    <ClCompile Include="Resources\Mesh.cpp">
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">PCH.hpp</PrecompiledHeaderFile>
-    </ClCompile>
-    <ClCompile Include="Resources\Multishader.cpp" />
-    <ClCompile Include="Resources\MultiPipelineState.cpp" />
-    <ClCompile Include="Resources\Resource.cpp">
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">PCH.hpp</PrecompiledHeaderFile>
-    </ClCompile>
-    <ClCompile Include="Resources\ResourcesManager.cpp">
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">PCH.hpp</PrecompiledHeaderFile>
-    </ClCompile>
-    <ClCompile Include="Resources\SoundSample.cpp">
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">PCH.hpp</PrecompiledHeaderFile>
-    </ClCompile>
-    <ClCompile Include="Resources\Texture.cpp">
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">PCH.hpp</PrecompiledHeaderFile>
-    </ClCompile>
     <ClCompile Include="PCH.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
@@ -306,7 +186,6 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="Scene\Components\Component.cpp" />
-    <ClCompile Include="Scene\Components\ComponentBody.cpp" />
     <ClCompile Include="Scene\Components\ComponentCamera.cpp" />
     <ClCompile Include="Scene\Components\ComponentController.cpp" />
     <ClCompile Include="Scene\Components\ComponentLight.cpp" />
@@ -318,11 +197,10 @@
     <ClCompile Include="Scene\Events\Event_Input.cpp" />
     <ClCompile Include="Scene\Events\Event_Tick.cpp" />
     <ClCompile Include="Scene\Events\Event_Trigger.cpp" />
-    <ClCompile Include="Scene\SceneManager.cpp" />
+    <ClCompile Include="Scene\Scene.cpp" />
     <ClCompile Include="Scene\Systems\EntitySystem.cpp" />
     <ClCompile Include="Scene\Systems\EventSystem.cpp" />
     <ClCompile Include="Scene\Systems\InputSystem.cpp" />
-    <ClCompile Include="Scene\Systems\PhysicsSystem.cpp" />
     <ClCompile Include="Scene\Systems\RendererSystem.cpp" />
     <ClCompile Include="Scene\Systems\System.cpp" />
     <ClCompile Include="Scene\Systems\TriggerSystem.cpp" />
@@ -341,46 +219,11 @@
     <ClCompile Include="Utils\Profiler.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Globals.hpp" />
     <ClInclude Include="ForwardDeclarations.hpp" />
     <ClInclude Include="Input\InputEvent.hpp" />
-    <ClInclude Include="Engine.hpp" />
     <ClInclude Include="Core.hpp" />
-    <ClInclude Include="Physics\PhysicsProxies.hpp" />
-    <ClInclude Include="Physics\PhysicsScene.hpp" />
-    <ClInclude Include="Physics\PhysicsSceneImpl.hpp" />
-    <ClInclude Include="Renderer\DebugRenderer.hpp" />
-    <ClInclude Include="Renderer\DebugRendererContext.hpp" />
-    <ClInclude Include="Renderer\Font.hpp" />
-    <ClInclude Include="Renderer\GeometryRenderer.hpp" />
-    <ClInclude Include="Renderer\GeometryRendererContext.hpp" />
-    <ClInclude Include="Renderer\GuiRenderer.hpp" />
-    <ClInclude Include="Renderer\GuiRendererContext.hpp" />
-    <ClInclude Include="Renderer\HighLevelRenderer.hpp" />
-    <ClInclude Include="Renderer\ImGuiWrapper.hpp" />
-    <ClInclude Include="Renderer\LightsRenderer.hpp" />
-    <ClInclude Include="Renderer\LightsRendererContext.hpp" />
-    <ClInclude Include="Renderer\PostProcessRenderer.hpp" />
-    <ClInclude Include="Renderer\PostProcessRendererContext.hpp" />
-    <ClInclude Include="Renderer\RenderCommand.hpp" />
-    <ClInclude Include="Renderer\RendererContext.hpp" />
-    <ClInclude Include="Renderer\RendererModule.hpp" />
-    <ClInclude Include="Renderer\RendererResources.hpp" />
-    <ClInclude Include="Renderer\RenderProxies.hpp" />
-    <ClInclude Include="Renderer\RenderScene.hpp" />
-    <ClInclude Include="Renderer\View.hpp" />
-    <ClInclude Include="Resources\CollisionShape.hpp" />
-    <ClInclude Include="Resources\Material.hpp" />
-    <ClInclude Include="Resources\Mesh.hpp" />
-    <ClInclude Include="Resources\Multishader.hpp" />
-    <ClInclude Include="Resources\MultiPipelineState.hpp" />
-    <ClInclude Include="Resources\Resource.hpp" />
-    <ClInclude Include="Resources\ResourcesManager.hpp" />
-    <ClInclude Include="Resources\SoundSample.hpp" />
-    <ClInclude Include="Resources\Texture.hpp" />
     <ClInclude Include="PCH.hpp" />
     <ClInclude Include="Scene\Components\Component.hpp" />
-    <ClInclude Include="Scene\Components\ComponentBody.hpp" />
     <ClInclude Include="Scene\Components\ComponentCamera.hpp" />
     <ClInclude Include="Scene\Components\ComponentController.hpp" />
     <ClInclude Include="Scene\Components\ComponentLight.hpp" />
@@ -392,11 +235,10 @@
     <ClInclude Include="Scene\Events\Event_Input.hpp" />
     <ClInclude Include="Scene\Events\Event_Tick.hpp" />
     <ClInclude Include="Scene\Events\Event_Trigger.hpp" />
-    <ClInclude Include="Scene\SceneManager.hpp" />
+    <ClInclude Include="Scene\Scene.hpp" />
     <ClInclude Include="Scene\Systems\EntitySystem.hpp" />
     <ClInclude Include="Scene\Systems\EventSystem.hpp" />
     <ClInclude Include="Scene\Systems\InputSystem.hpp" />
-    <ClInclude Include="Scene\Systems\PhysicsSystem.hpp" />
     <ClInclude Include="Scene\Systems\RendererSystem.hpp" />
     <ClInclude Include="Scene\Systems\System.hpp" />
     <ClInclude Include="Scene\Systems\TriggerSystem.hpp" />

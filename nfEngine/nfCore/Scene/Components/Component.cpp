@@ -26,7 +26,7 @@ IComponent::~IComponent()
     NFE_ASSERT(mEntity == nullptr, "Component must be detached before being destroyed");
 }
 
-SceneManager& IComponent::GetScene() const
+Scene& IComponent::GetScene() const
 {
     NFE_ASSERT(mEntity, "Component is not attached to an entity");
     return mEntity->GetScene();

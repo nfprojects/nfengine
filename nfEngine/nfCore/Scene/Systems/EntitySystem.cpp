@@ -6,7 +6,7 @@
 
 #include "PCH.hpp"
 #include "EntitySystem.hpp"
-#include "../SceneManager.hpp"
+#include "../Scene.hpp"
 #include "../Systems/EventSystem.hpp"
 #include "../Events/Event_Tick.hpp"
 
@@ -23,7 +23,7 @@ namespace Scene {
 using namespace Common;
 using namespace Math;
 
-EntitySystem::EntitySystem(SceneManager& scene)
+EntitySystem::EntitySystem(Scene& scene)
     : ISystem(scene)
     , mFrameNumber(0)
 {

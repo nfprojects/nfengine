@@ -8,7 +8,7 @@
 #include "ComponentController.hpp"
 #include "../Entity.hpp"
 #include "../EntityController.hpp"
-#include "../SceneManager.hpp"
+#include "../Scene.hpp"
 #include "../Systems/EventSystem.hpp"
 
 

@@ -71,7 +71,7 @@ class CORE_API NFE_ALIGN(16) TriggerSystem final
 public:
     static const int ID = 5;
 
-    explicit TriggerSystem(SceneManager& scene);
+    explicit TriggerSystem(Scene& scene);
     ~TriggerSystem();
 
     /**

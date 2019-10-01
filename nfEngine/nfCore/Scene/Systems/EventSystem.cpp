@@ -22,7 +22,7 @@ namespace Scene {
 
 using namespace Common;
 
-EventSystem::EventSystem(SceneManager& scene)
+EventSystem::EventSystem(Scene& scene)
     : ISystem(scene)
 {
 }

@@ -1,11 +1,12 @@
 #pragma once
 
-#include "nfCore/Engine.hpp"
+#include "nfCore/Scene/Scene.hpp"
 #include "nfCore/Scene/EntityController.hpp"
 #include "nfCore/Scene/Events/Event.hpp"
 #include "nfCore/Input/InputEvent.hpp"
 
 #include "nfCommon/Math/Quaternion.hpp"
+#include "nfCommon/Memory/Aligned.hpp"
 
 namespace NFE {
 

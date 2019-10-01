@@ -172,7 +172,6 @@ popd</Command>
     <ClInclude Include="Controllers\FreeCameraController.hpp" />
     <ClInclude Include="Controllers\TriggeredLightController.hpp" />
     <ClInclude Include="GameWindow.hpp" />
-    <ClInclude Include="Scenes.hpp" />
     <ClInclude Include="PCH.hpp" />
     <ClInclude Include="Main.hpp" />
   </ItemGroup>
@@ -181,7 +180,6 @@ popd</Command>
     <ClCompile Include="Controllers\FreeCameraController.cpp" />
     <ClCompile Include="Controllers\TriggeredLightController.cpp" />
     <ClCompile Include="GameWindow.cpp" />
-    <ClCompile Include="Scenes.cpp" />
     <ClCompile Include="PCH.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>

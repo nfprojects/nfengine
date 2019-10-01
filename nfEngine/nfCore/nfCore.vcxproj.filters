@@ -19,21 +19,6 @@
     <Filter Include="Utils">
       <UniqueIdentifier>{40738d35-8dbb-4074-bc98-84d31ffc6382}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Renderer\Debug">
-      <UniqueIdentifier>{9c414e4c-1656-4f0c-82e7-d33257871c07}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Renderer\Lights">
-      <UniqueIdentifier>{58f8222d-f2e8-4b54-87cb-d697f8349267}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Renderer\PostProcess">
-      <UniqueIdentifier>{220fd366-57ad-43ca-b9e2-1e6540a3a03d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Renderer\Gui">
-      <UniqueIdentifier>{28d3ab9f-6b3b-46c9-b407-65e6fa56d611}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Renderer\Geometry">
-      <UniqueIdentifier>{84cf2ca8-6d90-470b-8366-e93886ee9bc1}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Input">
       <UniqueIdentifier>{0cff49de-7eaf-4b44-a05c-bb6f1d68fb38}</UniqueIdentifier>
     </Filter>
@@ -46,94 +31,19 @@
     <Filter Include="Scene\Events">
       <UniqueIdentifier>{68441a56-0282-43db-a9c8-b8dbe98eeef9}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Physics">
-      <UniqueIdentifier>{03c9279b-fee1-42fc-859c-041152280aa3}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Renderer\Scene">
-      <UniqueIdentifier>{727a9d5b-adf4-4f6e-86af-132eaa992566}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="PCH.cpp">
       <Filter>PCH</Filter>
     </ClCompile>
-    <ClCompile Include="Engine.cpp">
-      <Filter>Base</Filter>
-    </ClCompile>
-    <ClCompile Include="Globals.cpp">
-      <Filter>Base</Filter>
-    </ClCompile>
-    <ClCompile Include="Renderer\RenderCommand.cpp">
-      <Filter>Renderer</Filter>
-    </ClCompile>
-    <ClCompile Include="Renderer\RendererContext.cpp">
-      <Filter>Renderer</Filter>
-    </ClCompile>
-    <ClCompile Include="Renderer\View.cpp">
-      <Filter>Renderer</Filter>
-    </ClCompile>
-    <ClCompile Include="Renderer\RendererResources.cpp">
-      <Filter>Renderer</Filter>
-    </ClCompile>
-    <ClCompile Include="Renderer\HighLevelRenderer.cpp">
-      <Filter>Renderer</Filter>
-    </ClCompile>
-    <ClCompile Include="Renderer\Font.cpp">
-      <Filter>Renderer</Filter>
-    </ClCompile>
-    <ClCompile Include="Resources\CollisionShape.cpp">
-      <Filter>Resources</Filter>
-    </ClCompile>
-    <ClCompile Include="Resources\Material.cpp">
-      <Filter>Resources</Filter>
-    </ClCompile>
-    <ClCompile Include="Resources\Mesh.cpp">
-      <Filter>Resources</Filter>
-    </ClCompile>
-    <ClCompile Include="Resources\Resource.cpp">
-      <Filter>Resources</Filter>
-    </ClCompile>
-    <ClCompile Include="Resources\ResourcesManager.cpp">
-      <Filter>Resources</Filter>
-    </ClCompile>
-    <ClCompile Include="Resources\SoundSample.cpp">
-      <Filter>Resources</Filter>
-    </ClCompile>
-    <ClCompile Include="Resources\Texture.cpp">
-      <Filter>Resources</Filter>
-    </ClCompile>
-    <ClCompile Include="Resources\Multishader.cpp">
-      <Filter>Resources</Filter>
-    </ClCompile>
     <ClCompile Include="Utils\Profiler.cpp">
       <Filter>Utils</Filter>
-    </ClCompile>
-    <ClCompile Include="Resources\MultiPipelineState.cpp">
-      <Filter>Resources</Filter>
-    </ClCompile>
-    <ClCompile Include="Renderer\DebugRenderer.cpp">
-      <Filter>Renderer\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="Renderer\LightsRenderer.cpp">
-      <Filter>Renderer\Lights</Filter>
-    </ClCompile>
-    <ClCompile Include="Renderer\PostProcessRenderer.cpp">
-      <Filter>Renderer\PostProcess</Filter>
-    </ClCompile>
-    <ClCompile Include="Renderer\GuiRenderer.cpp">
-      <Filter>Renderer\Gui</Filter>
-    </ClCompile>
-    <ClCompile Include="Renderer\GeometryRenderer.cpp">
-      <Filter>Renderer\Geometry</Filter>
     </ClCompile>
     <ClCompile Include="Utils\ConfigVariable.cpp">
       <Filter>Utils</Filter>
     </ClCompile>
     <ClCompile Include="Utils\ConfigManager.cpp">
       <Filter>Utils</Filter>
-    </ClCompile>
-    <ClCompile Include="Renderer\ImGuiWrapper.cpp">
-      <Filter>Renderer</Filter>
     </ClCompile>
     <ClCompile Include="Main.cpp">
       <Filter>Base</Filter>
@@ -145,9 +55,6 @@
       <Filter>Input</Filter>
     </ClCompile>
     <ClCompile Include="Scene\Components\Component.cpp">
-      <Filter>Scene\Components</Filter>
-    </ClCompile>
-    <ClCompile Include="Scene\Components\ComponentBody.cpp">
       <Filter>Scene\Components</Filter>
     </ClCompile>
     <ClCompile Include="Scene\Components\ComponentCamera.cpp">
@@ -180,9 +87,6 @@
     <ClCompile Include="Scene\Events\Event_Tick.cpp">
       <Filter>Scene\Events</Filter>
     </ClCompile>
-    <ClCompile Include="Scene\SceneManager.cpp">
-      <Filter>Scene</Filter>
-    </ClCompile>
     <ClCompile Include="Scene\Systems\EventSystem.cpp">
       <Filter>Scene\Systems</Filter>
     </ClCompile>
@@ -191,15 +95,6 @@
     </ClCompile>
     <ClCompile Include="Scene\Systems\RendererSystem.cpp">
       <Filter>Scene\Systems</Filter>
-    </ClCompile>
-    <ClCompile Include="Physics\PhysicsSceneImpl.cpp">
-      <Filter>Physics</Filter>
-    </ClCompile>
-    <ClCompile Include="Scene\Systems\PhysicsSystem.cpp">
-      <Filter>Scene\Systems</Filter>
-    </ClCompile>
-    <ClCompile Include="Renderer\RenderScene.cpp">
-      <Filter>Renderer\Scene</Filter>
     </ClCompile>
     <ClCompile Include="Scene\Events\Event_Trigger.cpp">
       <Filter>Scene\Events</Filter>
@@ -210,100 +105,19 @@
     <ClCompile Include="Scene\Components\ComponentTrigger.cpp">
       <Filter>Scene\Components</Filter>
     </ClCompile>
+    <ClCompile Include="Scene\Scene.cpp">
+      <Filter>Scene</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Engine.hpp">
-      <Filter>Base</Filter>
-    </ClInclude>
     <ClInclude Include="PCH.hpp">
       <Filter>PCH</Filter>
-    </ClInclude>
-    <ClInclude Include="Globals.hpp">
-      <Filter>Base</Filter>
-    </ClInclude>
-    <ClInclude Include="Renderer\RenderCommand.hpp">
-      <Filter>Renderer</Filter>
-    </ClInclude>
-    <ClInclude Include="Renderer\RendererContext.hpp">
-      <Filter>Renderer</Filter>
-    </ClInclude>
-    <ClInclude Include="Renderer\RendererResources.hpp">
-      <Filter>Renderer</Filter>
-    </ClInclude>
-    <ClInclude Include="Renderer\View.hpp">
-      <Filter>Renderer</Filter>
-    </ClInclude>
-    <ClInclude Include="Renderer\HighLevelRenderer.hpp">
-      <Filter>Renderer</Filter>
-    </ClInclude>
-    <ClInclude Include="Renderer\RendererModule.hpp">
-      <Filter>Renderer</Filter>
-    </ClInclude>
-    <ClInclude Include="Renderer\Font.hpp">
-      <Filter>Renderer</Filter>
-    </ClInclude>
-    <ClInclude Include="Resources\CollisionShape.hpp">
-      <Filter>Resources</Filter>
-    </ClInclude>
-    <ClInclude Include="Resources\Material.hpp">
-      <Filter>Resources</Filter>
-    </ClInclude>
-    <ClInclude Include="Resources\Mesh.hpp">
-      <Filter>Resources</Filter>
-    </ClInclude>
-    <ClInclude Include="Resources\Resource.hpp">
-      <Filter>Resources</Filter>
-    </ClInclude>
-    <ClInclude Include="Resources\ResourcesManager.hpp">
-      <Filter>Resources</Filter>
-    </ClInclude>
-    <ClInclude Include="Resources\SoundSample.hpp">
-      <Filter>Resources</Filter>
-    </ClInclude>
-    <ClInclude Include="Resources\Texture.hpp">
-      <Filter>Resources</Filter>
-    </ClInclude>
-    <ClInclude Include="Resources\Multishader.hpp">
-      <Filter>Resources</Filter>
     </ClInclude>
     <ClInclude Include="Utils\Profiler.hpp">
       <Filter>Utils</Filter>
     </ClInclude>
     <ClInclude Include="ShaderCommon.hpp">
       <Filter>Renderer</Filter>
-    </ClInclude>
-    <ClInclude Include="Resources\MultiPipelineState.hpp">
-      <Filter>Resources</Filter>
-    </ClInclude>
-    <ClInclude Include="Renderer\DebugRenderer.hpp">
-      <Filter>Renderer\Debug</Filter>
-    </ClInclude>
-    <ClInclude Include="Renderer\DebugRendererContext.hpp">
-      <Filter>Renderer\Debug</Filter>
-    </ClInclude>
-    <ClInclude Include="Renderer\LightsRendererContext.hpp">
-      <Filter>Renderer\Lights</Filter>
-    </ClInclude>
-    <ClInclude Include="Renderer\LightsRenderer.hpp">
-      <Filter>Renderer\Lights</Filter>
-    </ClInclude>
-    <ClInclude Include="Renderer\PostProcessRenderer.hpp">
-      <Filter>Renderer\PostProcess</Filter>
-    </ClInclude>
-    <ClInclude Include="Renderer\PostProcessRendererContext.hpp">
-      <Filter>Renderer\PostProcess</Filter>
-    </ClInclude>
-    <ClInclude Include="Renderer\GuiRenderer.hpp">
-      <Filter>Renderer\Gui</Filter>
-    </ClInclude>
-    <ClInclude Include="Renderer\GuiRendererContext.hpp">
-      <Filter>Renderer\Gui</Filter>
-    </ClInclude>
-    <ClInclude Include="Renderer\GeometryRenderer.hpp">
-      <Filter>Renderer\Geometry</Filter>
-    </ClInclude>
-    <ClInclude Include="Renderer\GeometryRendererContext.hpp">
-      <Filter>Renderer\Geometry</Filter>
     </ClInclude>
     <ClInclude Include="Utils\ConfigVariable.hpp">
       <Filter>Utils</Filter>
@@ -313,9 +127,6 @@
     </ClInclude>
     <ClInclude Include="Utils\SimpleInput.hpp">
       <Filter>Utils</Filter>
-    </ClInclude>
-    <ClInclude Include="Renderer\ImGuiWrapper.hpp">
-      <Filter>Renderer</Filter>
     </ClInclude>
     <ClInclude Include="ForwardDeclarations.hpp">
       <Filter>Base</Filter>
@@ -332,9 +143,6 @@
     <ClInclude Include="Scene\Components\Component.hpp">
       <Filter>Scene\Components</Filter>
     </ClInclude>
-    <ClInclude Include="Scene\Components\ComponentBody.hpp">
-      <Filter>Scene\Components</Filter>
-    </ClInclude>
     <ClInclude Include="Scene\Components\ComponentCamera.hpp">
       <Filter>Scene\Components</Filter>
     </ClInclude>
@@ -345,9 +153,6 @@
       <Filter>Scene\Components</Filter>
     </ClInclude>
     <ClInclude Include="Scene\Systems\EntitySystem.hpp">
-      <Filter>Scene\Systems</Filter>
-    </ClInclude>
-    <ClInclude Include="Scene\Systems\PhysicsSystem.hpp">
       <Filter>Scene\Systems</Filter>
     </ClInclude>
     <ClInclude Include="Scene\Systems\RendererSystem.hpp">
@@ -371,29 +176,11 @@
     <ClInclude Include="Scene\Events\Event_Tick.hpp">
       <Filter>Scene\Events</Filter>
     </ClInclude>
-    <ClInclude Include="Scene\SceneManager.hpp">
-      <Filter>Scene</Filter>
-    </ClInclude>
     <ClInclude Include="Scene\Systems\EventSystem.hpp">
       <Filter>Scene\Systems</Filter>
     </ClInclude>
     <ClInclude Include="Scene\Components\ComponentController.hpp">
       <Filter>Scene\Components</Filter>
-    </ClInclude>
-    <ClInclude Include="Physics\PhysicsProxies.hpp">
-      <Filter>Physics</Filter>
-    </ClInclude>
-    <ClInclude Include="Physics\PhysicsSceneImpl.hpp">
-      <Filter>Physics</Filter>
-    </ClInclude>
-    <ClInclude Include="Physics\PhysicsScene.hpp">
-      <Filter>Physics</Filter>
-    </ClInclude>
-    <ClInclude Include="Renderer\RenderProxies.hpp">
-      <Filter>Renderer\Scene</Filter>
-    </ClInclude>
-    <ClInclude Include="Renderer\RenderScene.hpp">
-      <Filter>Renderer\Scene</Filter>
     </ClInclude>
     <ClInclude Include="Scene\Events\Event_Trigger.hpp">
       <Filter>Scene\Events</Filter>
@@ -403,6 +190,9 @@
     </ClInclude>
     <ClInclude Include="Scene\Components\ComponentTrigger.hpp">
       <Filter>Scene\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene\Scene.hpp">
+      <Filter>Scene</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
