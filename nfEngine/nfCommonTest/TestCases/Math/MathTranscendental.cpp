@@ -69,6 +69,20 @@ TEST(Math, Sin)
     TestTranscendental("Sin", range, Math::Sin, sinf, 1.0e-06f, 1.0f);
 }
 
+TEST(MathTest, Sin_4)
+{
+    const auto func = [] (float x) { return Math::Sin(Math::Vector4(x)).x; };
+    const TestRange range(-10.0f, 10.0f, 0.01f, TestRange::StepType::Increment);
+    TestTranscendental("Sin_4", range, func, sinf, 2.0e-06f, 1.0f);
+}
+
+TEST(MathTest, Sin_8)
+{
+    const auto func = [] (float x) { return Math::Sin(Math::Vector8(x))[0]; };
+    const TestRange range(-10.0f, 10.0f, 0.01f, TestRange::StepType::Increment);
+    TestTranscendental("Sin_8", range, func, sinf, 2.0e-06f, 1.0f);
+}
+
 TEST(Math, Cos)
 {
     TestRange range(-10.0f, 10.0f, 0.01f, TestRange::StepType::Increment);
@@ -87,6 +101,12 @@ TEST(Math, ACos)
     TestTranscendental("ACos", range, Math::ACos, acosf, 3.0e-07f, 1.0f);
 }
 
+TEST(MathTest, FastACos)
+{
+    const TestRange range(-1.0f, 1.0f, 0.01f, TestRange::StepType::Increment);
+    TestTranscendental("ACos", range, Math::FastACos, acosf, 7.0e-5f, 1.0f);
+}
+
 TEST(Math, ATan)
 {
     TestRange range(-5.0f, 5.0f, 0.01f, TestRange::StepType::Increment);
@@ -99,6 +119,13 @@ TEST(Math, FastExp)
     TestTranscendental("FastExp", range, Math::FastExp, expf, 1.0f, 2.0e-2f);
 }
 
+TEST(MathTest, FastExp_4)
+{
+    const auto func = [] (float x) { return Math::FastExp(Math::Vector4(x)).x; };
+    const TestRange range(-40.0f, 5.0f, 0.01f, TestRange::StepType::Increment);
+    TestTranscendental("FastExp_4", range, func, expf, 1.0f, 2.0e-2f);
+}
+
 TEST(Math, Log)
 {
     TestRange range(0.0001f, 1.0e+30f, 1.5f, TestRange::StepType::Multiply);
@@ -109,4 +136,11 @@ TEST(Math, FastLog)
 {
     TestRange range(0.0001f, 1.0e+30f, 1.5f, TestRange::StepType::Multiply);
     TestTranscendental("FastLog", range, Math::FastLog, logf, 1.0f, 1.0e-4f);
+}
+
+TEST(Math, FastLog_4)
+{
+    const auto func = [] (float x) { return Math::FastLog(Math::Vector4(x)).x; };
+    TestRange range(0.0001f, 1.0e+30f, 1.5f, TestRange::StepType::Multiply);
+    TestTranscendental("FastLog_4", range, func, logf, 1.0f, 1.0e-4f);
 }

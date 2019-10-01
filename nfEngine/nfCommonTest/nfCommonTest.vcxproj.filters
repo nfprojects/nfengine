@@ -166,9 +166,6 @@
     <ClCompile Include="TestCases\System\ConditionVariableTest.cpp">
       <Filter>TestCases\System</Filter>
     </ClCompile>
-    <ClCompile Include="TestCases\System\LibraryTest.cpp">
-      <Filter>TestCases\System</Filter>
-    </ClCompile>
     <ClCompile Include="TestCases\Utils\ImageTest.cpp">
       <Filter>TestCases\Utils</Filter>
     </ClCompile>

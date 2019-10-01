@@ -232,7 +232,6 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="TestCases\System\ConditionVariableTest.cpp" />
-    <ClCompile Include="TestCases\System\LibraryTest.cpp" />
     <ClCompile Include="TestCases\System\SharedLockTest.cpp" />
     <ClCompile Include="TestCases\System\ExclusiveLockTest.cpp" />
     <ClCompile Include="TestCases\System\SystemInfoTest.cpp" />
