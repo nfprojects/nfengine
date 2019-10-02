@@ -2,6 +2,7 @@
 #include "nfCommon/Containers/SharedPtr.hpp"
 #include "nfCommon/Containers/WeakPtr.hpp"
 
+using namespace NFE;
 using namespace NFE::Common;
 
 namespace {
@@ -160,6 +161,50 @@ TEST(WeakPtr, SharedPointerFromValidWeakPointer)
     EXPECT_EQ(sharedPtr2, weakPtr);
     EXPECT_EQ(weakPtr, sharedPtr2);
 }
+
+//TEST(SharedPtr, SharedPointerFromWeakPointer_MultiThreaded)
+//{
+//    uint32 numObjects = 10000;
+//
+//    std::vector<SharedPtr<uint32>> pointers;
+//    std::vector<SharedPtr<uint32>> weakPointers;
+//    pointers.reserve(numObjects);
+//    weakPointers.reserve(numObjects);
+//
+//    for (uint32 i = 0; i < numObjects; ++i)
+//    {
+//        pointers.push_back(MakeSharedPtr<uint32>(0));
+//        weakPointers.push_back = pointers.back();
+//    }
+//
+//    const auto accessWeakPointersFunc = [&] ()
+//    {
+//        for (uint32 i = 0; i < 1000000; ++i)
+//        {
+//
+//        }
+//    };
+//
+//    const auto deletePointersFunc = [&] ()
+//    {
+//        while (!finish)
+//        {
+//            PtrType localPointer(globalPointer);
+//            localPointer->payload++;
+//        }
+//    };
+//
+//    std::thread threadA(func);
+//    std::thread threadB(func);
+//
+//    std::this_thread::sleep_for(std::chrono::milliseconds(400));
+//    finish = true;
+//
+//    threadA.join();
+//    threadB.join();
+//
+//    ASSERT_EQ(0, counter);
+//}
 
 TEST(WeakPtr, SharedPointerFromExpiredWeakPointer)
 {

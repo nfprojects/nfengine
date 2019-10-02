@@ -23,50 +23,19 @@ namespace Common {
 class SharedPtrDataBase
 {
 public:
-    SharedPtrDataBase()
+    NFE_FORCE_INLINE SharedPtrDataBase()
         : mStrongRefs(1)
         , mWeakRefs(1)
     { }
 
-    virtual ~SharedPtrDataBase()
+    NFE_FORCE_INLINE virtual ~SharedPtrDataBase()
     {
         NFE_ASSERT(mStrongRefs == 0, "Strong references counter expected to be equal to zero");
         NFE_ASSERT(mWeakRefs == 0, "Weak references counter expected to be equal to zero");
     }
 
-    void AddStrongRef()
-    {
-        mStrongRefs++;
-    }
-
-    void AddWeakRef()
-    {
-        mWeakRefs++;
-    }
-
-    bool DelStrongRef()
-    {
-        return (mStrongRefs--) == 1;
-    }
-
-    bool DelWeakRef()
-    {
-        return (mWeakRefs--) == 1;
-    }
-
-    uint32 GetNumStrongRefs() const
-    {
-        return mStrongRefs;
-    }
-
-    uint32 GetNumWeakRefs() const
-    {
-        return mWeakRefs;
-    }
-
-protected:
-    std::atomic<uint32> mStrongRefs;
-    std::atomic<uint32> mWeakRefs;
+    std::atomic<int32> mStrongRefs;
+    std::atomic<int32> mWeakRefs;
 };
 
 /**
@@ -78,17 +47,17 @@ class SharedPtrData final : public SharedPtrDataBase
 public:
     using DeleterFunc = std::function<void(T*)>;
 
-    explicit SharedPtrData(T* pointer, const DeleterFunc& deleter)
+    NFE_FORCE_INLINE explicit SharedPtrData(T* pointer, const DeleterFunc& deleter)
         : mPointer(pointer)
         , mDeleter(deleter)
     { }
 
-    T* GetPointer() const
+    NFE_FORCE_INLINE T* GetPointer() const
     {
         return mPointer;
     }
 
-    const DeleterFunc& GetDeleter() const
+    NFE_FORCE_INLINE const DeleterFunc& GetDeleter() const
     {
         return mDeleter;
     }

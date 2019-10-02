@@ -29,8 +29,8 @@ SharedPtr<T>::SharedPtr(const SharedPtr& rhs)
 {
     if (this->mData)
     {
-        this->mData->AddWeakRef();
-        this->mData->AddStrongRef();
+        this->mData->mWeakRefs++;
+        this->mData->mStrongRefs++;
     }
 }
 
@@ -56,8 +56,8 @@ SharedPtr<T>::SharedPtr(const SharedPtr<SourceType>& rhs)
 {
     if (this->mData)
     {
-        this->mData->AddWeakRef();
-        this->mData->AddStrongRef();
+        this->mData->mWeakRefs++;
+        this->mData->mStrongRefs++;
     }
 }
 
@@ -79,8 +79,8 @@ SharedPtr<T>& SharedPtr<T>::operator = (const SharedPtr& rhs)
 
         if (this->mData)
         {
-            this->mData->AddStrongRef();
-            this->mData->AddWeakRef();
+            this->mData->mStrongRefs++;
+            this->mData->mWeakRefs++;
         }
     }
 
@@ -127,13 +127,19 @@ void SharedPtr<T>::Reset(T* newPtr, const DeleterFunc& deleter)
         this->mData = nullptr;
         this->mPointer = nullptr;
 
-        if (data->DelStrongRef())
+        const int32 strongRefsBefore = data->mStrongRefs--;
+        const int32 weakRefsBefore = data->mWeakRefs--;
+
+        NFE_ASSERT(strongRefsBefore > 0, "Strong references counter underflow");
+        NFE_ASSERT(weakRefsBefore > 0, "Weak references counter underflow");
+
+        if (strongRefsBefore == 1)
         {
             const auto& oldObjectDeleter = data->GetDeleter();
             oldObjectDeleter(ptr);
         }
 
-        if (data->DelWeakRef())
+        if (weakRefsBefore == 1)
         {
             delete data;
         }
@@ -229,8 +235,8 @@ SharedPtr<TargetType> StaticCast(const SharedPtr<SourceType>& source)
 
     if (result.mData)
     {
-        result.mData->AddWeakRef();
-        result.mData->AddStrongRef();
+        result.mData->mWeakRefs++;
+        result.mData->mStrongRefs++;
     }
 
     return result;
@@ -245,8 +251,8 @@ SharedPtr<TargetType> DynamicCast(const SharedPtr<SourceType>& source)
 
     if (result.mData)
     {
-        result.mData->AddWeakRef();
-        result.mData->AddStrongRef();
+        result.mData->mWeakRefs++;
+        result.mData->mStrongRefs++;
     }
 
     return result;

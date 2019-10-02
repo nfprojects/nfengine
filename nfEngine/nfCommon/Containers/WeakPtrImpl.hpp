@@ -30,7 +30,7 @@ WeakPtr<T>::WeakPtr(const WeakPtr<T>& rhs)
 {
     if (this->mData)
     {
-        this->mData->AddWeakRef();
+        this->mData->mWeakRefs++;
     }
 }
 
@@ -40,7 +40,7 @@ WeakPtr<T>::WeakPtr(const SharedPtr<T>& rhs)
 {
     if (this->mData)
     {
-        this->mData->AddWeakRef();
+        this->mData->mWeakRefs++;
     }
 }
 
@@ -75,7 +75,7 @@ WeakPtr<T>& WeakPtr<T>::operator = (const SharedPtr<T>& rhs)
         if (this->mData)
         {
             this->mPointer = rhs.mPointer;
-            this->mData->AddWeakRef();
+            this->mData->mWeakRefs++;
         }
     }
 
@@ -93,7 +93,7 @@ WeakPtr<T>& WeakPtr<T>::operator = (const WeakPtr<T>& rhs)
         if (this->mData)
         {
             this->mPointer = rhs.mPointer;
-            this->mData->AddWeakRef();
+            this->mData->mWeakRefs++;
         }
     }
 
@@ -107,7 +107,7 @@ WeakPtr<T>::WeakPtr(const WeakPtr<SourceType>& rhs)
 {
     if (this->mData)
     {
-        this->mData->AddWeakRef();
+        this->mData->mWeakRefs++;
     }
 }
 
@@ -118,7 +118,10 @@ void WeakPtr<T>::Reset()
 {
     if (this->mData)
     {
-        if (this->mData->DelWeakRef())
+        const int32 weakRefsBefore = this->mData->mWeakRefs--;
+        NFE_ASSERT(weakRefsBefore > 0, "Weak references counter underflow");
+
+        if (weakRefsBefore == 1)
         {
             delete this->mData;
         }
@@ -132,14 +135,24 @@ SharedPtr<T> WeakPtr<T>::Lock() const
 {
     SharedPtr<T> result;
 
-    // TODO there's race condition here
-    if (this->mData && this->mData->GetNumStrongRefs() > 0)
+    if (this->mData)
     {
-        this->mData->AddStrongRef();
-        this->mData->AddWeakRef();
+        // increment strong ref count only if it was greater than zero
+        int32 prevRefCount, desiredRefCount;
+        do
+        {
+            prevRefCount = this->mData->mStrongRefs;
+            desiredRefCount = prevRefCount > 0 ? (prevRefCount + 1) : 0;
+        } while (!this->mData->mStrongRefs.compare_exchange_weak(prevRefCount, desiredRefCount));
 
-        result.mData = this->mData;
-        result.mPointer = this->mPointer;
+        // if strong ref count was incremented successfully, update weak ref count and return the shared pointer
+        if (desiredRefCount > prevRefCount)
+        {
+            this->mData->mWeakRefs++;
+
+            result.mData = this->mData;
+            result.mPointer = this->mPointer;
+        }
     }
 
     return result;
@@ -186,7 +199,7 @@ bool WeakPtr<T>::Valid() const
 {
     if (this->mData)
     {
-        return this->mData->GetNumStrongRefs() > 0;
+        return this->mData->mStrongRefs > 0;
     }
 
     return false;

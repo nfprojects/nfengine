@@ -24,12 +24,12 @@ template<typename T>
 class SharedPtrBase
 {
 public:
-    SharedPtrBase()
+    NFE_FORCE_INLINE SharedPtrBase()
         : mPointer(nullptr)
         , mData(nullptr)
     { }
 
-    explicit SharedPtrBase(T* pointer, SharedPtrDataBase* data)
+    NFE_FORCE_INLINE explicit SharedPtrBase(T* pointer, SharedPtrDataBase* data)
         : mPointer(pointer)
         , mData(data)
     { }
@@ -61,7 +61,9 @@ uint32 SharedPtrBase<T>::RefCount() const
 {
     if (mData)
     {
-        return mData->GetNumStrongRefs();
+        const uint32 numRefs = mData->mStrongRefs;
+        NFE_ASSERT(numRefs >= 0, "Invalid ref count");
+        return static_cast<uint32>(numRefs);
     }
 
     return 0;
@@ -72,7 +74,9 @@ uint32 SharedPtrBase<T>::WeakRefCount() const
 {
     if (mData)
     {
-        return mData->GetNumWeakRefs();
+        const uint32 numRefs = mData->mWeakRefs;
+        NFE_ASSERT(numRefs > 0, "Invalid ref count");
+        return static_cast<uint32>(numRefs);
     }
 
     return 0;

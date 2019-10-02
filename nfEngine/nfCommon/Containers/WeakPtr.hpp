@@ -20,8 +20,8 @@ public:
     using DeleterFunc = typename SharedPtrData<T>::DeleterFunc;
     using SharedBlockType = SharedPtrData<T>;
 
-    WeakPtr() { }
-    WeakPtr(std::nullptr_t) : WeakPtr() { }
+    NFE_FORCE_INLINE WeakPtr() = default;
+    NFE_FORCE_INLINE WeakPtr(std::nullptr_t) : WeakPtr() { }
 
     WeakPtr(const SharedPtr<T>& rhs);
     WeakPtr(const WeakPtr& rhs);
@@ -88,7 +88,7 @@ SharedPtr<TargetType> Cast(const SharedPtr<SourceType>& source);
  * Calculate hash of a weak pointer.
  */
 template<typename T>
-NFE_INLINE uint32 GetHash(const WeakPtr<T>& x);
+NFE_FORCE_INLINE uint32 GetHash(const WeakPtr<T>& x);
 
 
 } // namespace Common
