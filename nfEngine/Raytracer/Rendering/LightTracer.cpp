@@ -9,26 +9,24 @@
 #include "Material/Material.h"
 #include "Traversal/TraversalContext.h"
 
+NFE_BEGIN_DEFINE_POLYMORPHIC_CLASS(NFE::RT::LightTracer)
+    NFE_CLASS_PARENT(NFE::RT::IRenderer)
+NFE_END_DEFINE_CLASS()
+
 namespace NFE {
 namespace RT {
 
 using namespace Math;
 
-LightTracer::LightTracer(const Scene& scene)
-    : IRenderer(scene)
+LightTracer::LightTracer()
 {
-}
-
-const char* LightTracer::GetName() const
-{
-    return "Light Tracer";
 }
 
 const RayColor LightTracer::RenderPixel(const Ray&, const RenderParam& param, RenderingContext& ctx) const
 {
     uint32 depth = 0;
 
-    const auto& allLocalLights = mScene.GetLights();
+    const auto& allLocalLights = param.scene.GetLights();
     if (allLocalLights.Empty())
     {
         // no lights on the scene
@@ -74,7 +72,7 @@ const RayColor LightTracer::RenderPixel(const Ray&, const RenderParam& param, Re
     {
         hitPoint.objectId = NFE_INVALID_OBJECT;
         hitPoint.distance = HitPoint::DefaultDistance;
-        mScene.Traverse({ ray, hitPoint, ctx });
+        param.scene.Traverse({ ray, hitPoint, ctx });
 
         if (hitPoint.distance == HitPoint::DefaultDistance)
         {
@@ -89,7 +87,7 @@ const RayColor LightTracer::RenderPixel(const Ray&, const RenderParam& param, Re
         // fill up structure with shading data
         if (hitPoint.distance < FLT_MAX)
         {
-            mScene.EvaluateIntersection(ray, hitPoint, ctx.time, shadingData.intersection);
+            param.scene.EvaluateIntersection(ray, hitPoint, ctx.time, shadingData.intersection);
             shadingData.outgoingDirWorldSpace = -ray.dir;
 
             NFE_ASSERT(shadingData.intersection.material != nullptr);
@@ -147,7 +145,7 @@ const RayColor LightTracer::RenderPixel(const Ray&, const RenderParam& param, Re
 
                     const Ray shadowRay(samplePos + shadingData.intersection.frame[2] * 0.0001f, dirToCamera);
 
-                    if (!mScene.Traverse_Shadow({ shadowRay, shadowHitPoint, ctx }))
+                    if (!param.scene.Traverse_Shadow({ shadowRay, shadowHitPoint, ctx }))
                     {
                         const float cameraPdfA = param.camera.PdfW(-dirToCamera) / cameraDistanceSqr;
                         const RayColor contribution = (cameraFactor * throughput) * cameraPdfA;

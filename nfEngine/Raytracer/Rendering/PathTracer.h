@@ -10,10 +10,11 @@ namespace RT {
 // Note: this renderer is unable to sample "delta" lights (point and directional lights) 
 class PathTracer : public IRenderer
 {
-public:
-    PathTracer(const Scene& scene);
+    NFE_DECLARE_POLYMORPHIC_CLASS(PathTracer);
 
-    virtual const char* GetName() const override;
+public:
+    PathTracer();
+
     virtual const RayColor RenderPixel(const Math::Ray& ray, const RenderParam& param, RenderingContext& ctx) const override;
 
 private:
@@ -22,7 +23,7 @@ private:
     const RayColor EvaluateLight(const LightSceneObject* lightObject, const Math::Ray& ray, const IntersectionData& intersection, RenderingContext& context) const;
 
     // compute radiance from global lights
-    const RayColor EvaluateGlobalLights(const Math::Ray& ray, RenderingContext& context) const;
+    const RayColor EvaluateGlobalLights(const Scene& scene, const Math::Ray& ray, RenderingContext& context) const;
 };
 
 } // namespace RT

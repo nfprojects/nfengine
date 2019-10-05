@@ -46,7 +46,7 @@ public:
     /**
      * Enumerate all subtypes of this type (including self).
      */
-    void ListSubtypes(Children& outTypes) const;
+    void ListSubtypes(Children& outTypes, bool skipAbstractTypes = false) const;
 
     /**
      * Get number of member (including members that come from parent type).

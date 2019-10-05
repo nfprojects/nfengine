@@ -9,19 +9,17 @@
 #include "Traversal/TraversalContext.h"
 #include "Sampling/GenericSampler.h"
 
+NFE_BEGIN_DEFINE_POLYMORPHIC_CLASS(NFE::RT::PathTracer)
+    NFE_CLASS_PARENT(NFE::RT::IRenderer)
+NFE_END_DEFINE_CLASS()
+
 namespace NFE {
 namespace RT {
 
 using namespace Math;
 
-PathTracer::PathTracer(const Scene& scene)
-    : IRenderer(scene)
+PathTracer::PathTracer()
 {
-}
-
-const char* PathTracer::GetName() const
-{
-    return "Path Tracer";
 }
 
 const RayColor PathTracer::EvaluateLight(const LightSceneObject* lightObject, const Math::Ray& ray, const IntersectionData& intersection, RenderingContext& context) const
@@ -45,11 +43,11 @@ const RayColor PathTracer::EvaluateLight(const LightSceneObject* lightObject, co
     return light.GetRadiance(param);
 }
 
-const RayColor PathTracer::EvaluateGlobalLights(const Ray& ray, RenderingContext& context) const
+const RayColor PathTracer::EvaluateGlobalLights(const Scene& scene, const Ray& ray, RenderingContext& context) const
 {
     RayColor result = RayColor::Zero();
 
-    for (const LightSceneObject* globalLightObject : mScene.GetGlobalLights())
+    for (const LightSceneObject* globalLightObject : scene.GetGlobalLights())
     {
         const Matrix4 worldToLight = globalLightObject->GetInverseTransform(context.time);
         const Ray lightSpaceRay = worldToLight.TransformRay_Unsafe(ray);
@@ -72,7 +70,7 @@ const RayColor PathTracer::EvaluateGlobalLights(const Ray& ray, RenderingContext
     return result;
 }
 
-const RayColor PathTracer::RenderPixel(const Math::Ray& primaryRay, const RenderParam&, RenderingContext& context) const
+const RayColor PathTracer::RenderPixel(const Math::Ray& primaryRay, const RenderParam& param, RenderingContext& context) const
 {
     HitPoint hitPoint;
     Ray ray = primaryRay;
@@ -87,23 +85,23 @@ const RayColor PathTracer::RenderPixel(const Math::Ray& primaryRay, const Render
     for (;;)
     {
         hitPoint.distance = HitPoint::DefaultDistance;
-        mScene.Traverse({ ray, hitPoint, context });
+        param.scene.Traverse({ ray, hitPoint, context });
 
         // ray missed - return background light color
         if (hitPoint.distance == HitPoint::DefaultDistance)
         {
-            resultColor.MulAndAccumulate(throughput, EvaluateGlobalLights(ray, context));
+            resultColor.MulAndAccumulate(throughput, EvaluateGlobalLights(param.scene, ray, context));
             break;
         }
 
         // fill up structure with shading data
-        mScene.EvaluateIntersection(ray, hitPoint, context.time, shadingData.intersection);
+        param.scene.EvaluateIntersection(ray, hitPoint, context.time, shadingData.intersection);
         shadingData.outgoingDirWorldSpace = -ray.dir;
 
         // we hit a light directly
         if (hitPoint.subObjectId == NFE_LIGHT_OBJECT)
         {
-            const ISceneObject* sceneObject = mScene.GetHitObject(hitPoint.objectId);
+            const ISceneObject* sceneObject = param.scene.GetHitObject(hitPoint.objectId);
             NFE_ASSERT(sceneObject->GetType() == ISceneObject::Type::Light);
             const LightSceneObject* lightObject = static_cast<const LightSceneObject*>(sceneObject);
 
@@ -114,7 +112,7 @@ const RayColor PathTracer::RenderPixel(const Math::Ray& primaryRay, const Render
             break;
         }
 
-        mScene.EvaluateShadingData(shadingData, context);
+        param.scene.EvaluateShadingData(shadingData, context);
 
         // accumulate emission color
         NFE_ASSERT(shadingData.materialParams.emissionColor.IsValid());

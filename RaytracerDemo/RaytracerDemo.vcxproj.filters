@@ -38,10 +38,10 @@
     <ClCompile Include="..\nfEngineDeps\imgui\imgui_draw.cpp">
       <Filter>External</Filter>
     </ClCompile>
-    <ClCompile Include="..\nfEngineDeps\imgui\imgui_widgets.cpp">
+    <ClCompile Include="..\nfEngineDeps\imgui\imgui_sw.cpp">
       <Filter>External</Filter>
     </ClCompile>
-    <ClCompile Include="..\nfEngineDeps\imgui\imgui_sw.cpp">
+    <ClCompile Include="..\nfEngineDeps\imgui\imgui_widgets.cpp">
       <Filter>External</Filter>
     </ClCompile>
   </ItemGroup>

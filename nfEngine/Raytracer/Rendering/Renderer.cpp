@@ -1,20 +1,15 @@
 #include "PCH.h"
+#include "Renderer.h"
 
-#include "PathTracer.h"
-#include "PathTracerMIS.h"
-#include "LightTracer.h"
-#include "VertexConnectionAndMerging.h"
-#include "DebugRenderer.h"
+NFE_BEGIN_DEFINE_POLYMORPHIC_CLASS(NFE::RT::IRenderer)
+NFE_END_DEFINE_CLASS()
 
 namespace NFE {
 namespace RT {
 
 using namespace Common;
 
-IRenderer::IRenderer(const Scene& scene)
-    : mScene(scene)
-{
-}
+IRenderer::IRenderer() = default;
 
 IRenderer::~IRenderer() = default;
 
@@ -30,32 +25,20 @@ void IRenderer::PreRender(Common::TaskBuilder& builder, const RenderParam& rende
     NFE_UNUSED(contexts);
 }
 
-void IRenderer::Raytrace_Packet(RayPacket&, const Camera&, Film&, RenderingContext&) const
+void IRenderer::Raytrace_Packet(RayPacket&, const RenderParam&, RenderingContext&) const
 {
 }
 
-// TODO use reflection
-RendererPtr CreateRenderer(const StringView name, const Scene& scene)
+RendererPtr CreateRenderer(const StringView name, const Scene&)
 {
-    if (name == StringView("Path Tracer"))
+    DynArray<const RTTI::ClassType*> types;
+    RTTI::GetType<IRenderer>()->ListSubtypes(types);
+    for (const RTTI::ClassType* type : types)
     {
-        return MakeSharedPtr<PathTracer>(scene);
-    }
-    else if (name == StringView("Path Tracer MIS"))
-    {
-        return MakeSharedPtr<PathTracerMIS>(scene);
-    }
-    else if (name == StringView("Light Tracer"))
-    {
-        return MakeSharedPtr<LightTracer>(scene);
-    }
-    else if (name == StringView("Debug"))
-    {
-        return MakeSharedPtr<DebugRenderer>(scene);
-    }
-    else if (name == StringView("VCM"))
-    {
-        return MakeSharedPtr<VertexConnectionAndMerging>(scene);
+        if (type->IsConstructible() && type->GetName() == name)
+        {
+            return RendererPtr(type->CreateObject<IRenderer>());
+        }
     }
 
     return nullptr;

@@ -26,11 +26,12 @@ namespace RT {
 //
 class VertexConnectionAndMerging : public IRenderer
 {
+    NFE_DECLARE_POLYMORPHIC_CLASS(VertexConnectionAndMerging);
+
 public:
-    VertexConnectionAndMerging(const Scene& scene);
+    VertexConnectionAndMerging();
     ~VertexConnectionAndMerging();
 
-    virtual const char* GetName() const override;
     virtual RendererContextPtr CreateContext() const;
 
     virtual void PreRender(Common::TaskBuilder& builder, const RenderParam& renderParams, Common::ArrayView<RenderingContext> contexts) override;
@@ -107,35 +108,35 @@ private:
     };
 
     // importance sample light sources
-    const RayColor SampleLights(const ShadingData& shadingData, const PathState& pathState, RenderingContext& ctx) const;
+    const RayColor SampleLights(const Scene& scene, const ShadingData& shadingData, const PathState& pathState, RenderingContext& ctx) const;
 
     // importance sample single light source
-    const RayColor SampleLight(const LightSceneObject* lightObject, const ShadingData& shadingData, const PathState& pathState, RenderingContext& ctx) const;
+    const RayColor SampleLight(const Scene& scene, const LightSceneObject* lightObject, const ShadingData& shadingData, const PathState& pathState, RenderingContext& ctx) const;
 
     // compute radiance from a hit local lights
     const RayColor EvaluateLight(uint32 iteration, const LightSceneObject* lightObject, const IntersectionData* intersection, const PathState& pathState, RenderingContext& ctx) const;
 
     // compute radiance from global lights
-    const RayColor EvaluateGlobalLights(uint32 iteration, const PathState& pathState, RenderingContext& ctx) const;
+    const RayColor EvaluateGlobalLights(const Scene& scene, uint32 iteration, const PathState& pathState, RenderingContext& ctx) const;
 
     // generate initial camera ray
     bool GenerateCameraPath(PathState& path, RenderingContext& ctx) const;
 
     // generate initial light ray
-    bool GenerateLightSample(PathState& pathState, RenderingContext& ctx) const;
-    void TraceLightPath(const Camera& camera, Film& film, RenderingContext& ctx) const;
+    bool GenerateLightSample(const Scene& scene, PathState& pathState, RenderingContext& ctx) const;
+    void TraceLightPath(const RenderParam& param, RenderingContext& ctx) const;
 
     // evaluate BSDF at ray's intersection and generate scattered ray
     bool AdvancePath(PathState& path, const ShadingData& shadingData, RenderingContext& ctx, PathType pathType) const;
 
     // connect a camera path end to a light path end and return contribution
-    const RayColor ConnectVertices(PathState& cameraPathState, const ShadingData& shadingData, const LightVertex& lightVertex, RenderingContext& ctx) const;
+    const RayColor ConnectVertices(const Scene& scene, PathState& cameraPathState, const ShadingData& shadingData, const LightVertex& lightVertex, RenderingContext& ctx) const;
 
     // merge a camera path vertex to light vertices nearby and return contribution
     const RayColor MergeVertices(PathState& cameraPathState, const ShadingData& shadingData, RenderingContext& ctx) const;
 
     // connect a light path to camera directly and splat the contribution onto film
-    void ConnectToCamera(const Camera& camera, Film& film, const LightVertex& lightVertex, RenderingContext& ctx) const;
+    void ConnectToCamera(const RenderParam& renderParams, const LightVertex& lightVertex, RenderingContext& ctx) const;
 
     uint32 mLightPathsCount;
 

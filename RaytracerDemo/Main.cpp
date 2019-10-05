@@ -85,6 +85,8 @@ int main(int argc, char* argv[])
 
     NFE_LOG_INFO("Closing.");
 
+    NFE::Common::ShutdownSubsystems();
+
     NFE_ASSERT(Math::GetFlushDenormalsToZero(), "Something disabled flushing denormal float to zero");
 
 #if defined(_DEBUG) && defined(WIN32)

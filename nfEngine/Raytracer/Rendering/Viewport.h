@@ -42,7 +42,7 @@ public:
     NFE_RAYTRACER_API bool SetRenderingParams(const RenderingParams& params);
     NFE_RAYTRACER_API bool SetRenderer(const RendererPtr& renderer);
     NFE_RAYTRACER_API bool SetPostprocessParams(const PostprocessParams& params);
-    NFE_RAYTRACER_API bool Render(const Camera& camera);
+    NFE_RAYTRACER_API bool Render(const Scene& scene, const Camera& camera);
     NFE_RAYTRACER_API void Reset();
 
     NFE_RAYTRACER_API void SetPixelBreakpoint(uint32 x, uint32 y);

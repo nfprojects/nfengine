@@ -9,6 +9,10 @@
 #include "Traversal/TraversalContext.h"
 #include "Sampling/GenericSampler.h"
 
+NFE_BEGIN_DEFINE_POLYMORPHIC_CLASS(NFE::RT::PathTracerMIS)
+    NFE_CLASS_PARENT(NFE::RT::IRenderer)
+NFE_END_DEFINE_CLASS()
+
 namespace NFE {
 namespace RT {
 
@@ -29,19 +33,13 @@ NFE_FORCE_INLINE static float PdfAtoW(const float pdfA, const float distance, co
     return FastDivide(pdfA * Sqr(distance), Abs(cosThere));
 }
 
-PathTracerMIS::PathTracerMIS(const Scene& scene)
-    : IRenderer(scene)
+PathTracerMIS::PathTracerMIS()
 {
     mLightSamplingWeight = Vector4(1.0f);
     mBSDFSamplingWeight = Vector4(1.0f);
 }
 
-const char* PathTracerMIS::GetName() const
-{
-    return "Path Tracer MIS";
-}
-
-const RayColor PathTracerMIS::SampleLight(const LightSceneObject* lightObject, const ShadingData& shadingData, const PathState& pathState, RenderingContext& context, const float lightPickProbability) const
+const RayColor PathTracerMIS::SampleLight(const Scene& scene, const LightSceneObject* lightObject, const ShadingData& shadingData, const PathState& pathState, RenderingContext& context, const float lightPickProbability) const
 {
     const ILight& light = lightObject->GetLight();
 
@@ -90,7 +88,7 @@ const RayColor PathTracerMIS::SampleLight(const LightSceneObject* lightObject, c
         shadowRay.origin += shadowRay.dir * 0.0001f;
 
         context.counters.numShadowRays++;
-        if (mScene.Traverse_Shadow({ shadowRay, hitPoint, context }))
+        if (scene.Traverse_Shadow({ shadowRay, hitPoint, context }))
         {
             // shadow ray missed the light - light is occluded
             return RayColor::Zero();
@@ -123,11 +121,11 @@ const RayColor PathTracerMIS::SampleLight(const LightSceneObject* lightObject, c
     return result;
 }
 
-const RayColor PathTracerMIS::SampleLights(const ShadingData& shadingData, const PathState& pathState, RenderingContext& context, const float lightPickProbability) const
+const RayColor PathTracerMIS::SampleLights(const Scene& scene, const ShadingData& shadingData, const PathState& pathState, RenderingContext& context, const float lightPickProbability) const
 {
     RayColor accumulatedColor = RayColor::Zero();
 
-    const auto& lights = mScene.GetLights();
+    const auto& lights = scene.GetLights();
     if (!lights.Empty())
     {
         switch (context.params->lightSamplingStrategy)
@@ -135,7 +133,7 @@ const RayColor PathTracerMIS::SampleLights(const ShadingData& shadingData, const
             case LightSamplingStrategy::Single:
             {
                 const uint32 lightIndex = context.randomGenerator.GetInt() % lights.Size();
-                accumulatedColor = SampleLight(lights[lightIndex], shadingData, pathState, context, lightPickProbability);
+                accumulatedColor = SampleLight(scene, lights[lightIndex], shadingData, pathState, context, lightPickProbability);
                 break;
             }
 
@@ -143,7 +141,7 @@ const RayColor PathTracerMIS::SampleLights(const ShadingData& shadingData, const
             {
                 for (const LightSceneObject* lightObject : lights)
                 {
-                    accumulatedColor += SampleLight(lightObject, shadingData, pathState, context, lightPickProbability);
+                    accumulatedColor += SampleLight(scene, lightObject, shadingData, pathState, context, lightPickProbability);
                 }
                 break;
             }
@@ -155,12 +153,12 @@ const RayColor PathTracerMIS::SampleLights(const ShadingData& shadingData, const
     return accumulatedColor;
 }
 
-float PathTracerMIS::GetLightPickingProbability(RenderingContext& context) const
+float PathTracerMIS::GetLightPickingProbability(const Scene& scene, RenderingContext& context) const
 {
     switch (context.params->lightSamplingStrategy)
     {
     case LightSamplingStrategy::Single:
-        return 1.0f / (float)mScene.GetLights().Size();
+        return 1.0f / (float)scene.GetLights().Size();
 
     case LightSamplingStrategy::All:
         return 1.0f;
@@ -212,11 +210,11 @@ const RayColor PathTracerMIS::EvaluateLight(const LightSceneObject* lightObject,
     return lightContribution * misWeight;
 }
 
-const RayColor PathTracerMIS::EvaluateGlobalLights(const Ray& ray, const PathState& pathState, RenderingContext& context, const float lightPickProbability) const
+const RayColor PathTracerMIS::EvaluateGlobalLights(const Scene& scene, const Ray& ray, const PathState& pathState, RenderingContext& context, const float lightPickProbability) const
 {
     RayColor result = RayColor::Zero();
 
-    for (const LightSceneObject* globalLightObject : mScene.GetGlobalLights())
+    for (const LightSceneObject* globalLightObject : scene.GetGlobalLights())
     {
         const Matrix4 worldToLight = globalLightObject->GetInverseTransform(context.time);
         const Ray lightSpaceRay = worldToLight.TransformRay_Unsafe(ray);
@@ -252,7 +250,7 @@ const RayColor PathTracerMIS::EvaluateGlobalLights(const Ray& ray, const PathSta
     return result;
 }
 
-const RayColor PathTracerMIS::RenderPixel(const Math::Ray& primaryRay, const RenderParam&, RenderingContext& context) const
+const RayColor PathTracerMIS::RenderPixel(const Math::Ray& primaryRay, const RenderParam& param, RenderingContext& context) const
 {
     HitPoint hitPoint;
     Ray ray = primaryRay;
@@ -266,31 +264,31 @@ const RayColor PathTracerMIS::RenderPixel(const Math::Ray& primaryRay, const Ren
 
     PathState pathState;
 
-    const float lightPickProbability = GetLightPickingProbability(context);
+    const float lightPickProbability = GetLightPickingProbability(param.scene, context);
 
     for (;;)
     {
         hitPoint.objectId = NFE_INVALID_OBJECT;
         hitPoint.distance = HitPoint::DefaultDistance;
-        mScene.Traverse({ ray, hitPoint, context });
+        param.scene.Traverse({ ray, hitPoint, context });
 
         // ray missed - return background light color
         if (hitPoint.objectId == NFE_INVALID_OBJECT)
         {
-            resultColor.MulAndAccumulate(throughput, EvaluateGlobalLights(ray, pathState, context, lightPickProbability));
+            resultColor.MulAndAccumulate(throughput, EvaluateGlobalLights(param.scene, ray, pathState, context, lightPickProbability));
             pathTerminationReason = PathTerminationReason::HitBackground;
             break;
         }
 
         if (hitPoint.distance < FLT_MAX)
         {
-            mScene.EvaluateIntersection(ray, hitPoint, context.time, shadingData.intersection);
+            param.scene.EvaluateIntersection(ray, hitPoint, context.time, shadingData.intersection);
         }
 
         // we hit a light directly
         if (hitPoint.subObjectId == NFE_LIGHT_OBJECT)
         {
-            const ISceneObject* sceneObject = mScene.GetHitObject(hitPoint.objectId);
+            const ISceneObject* sceneObject = param.scene.GetHitObject(hitPoint.objectId);
             NFE_ASSERT(sceneObject->GetType() == ISceneObject::Type::Light);
             const LightSceneObject* lightObject = static_cast<const LightSceneObject*>(sceneObject);
             
@@ -304,7 +302,7 @@ const RayColor PathTracerMIS::RenderPixel(const Math::Ray& primaryRay, const Ren
 
         // fill up structure with shading data
         shadingData.outgoingDirWorldSpace = -ray.dir;
-        mScene.EvaluateShadingData(shadingData, context);
+        param.scene.EvaluateShadingData(shadingData, context);
 
         // accumulate emission color
         {
@@ -318,7 +316,7 @@ const RayColor PathTracerMIS::RenderPixel(const Math::Ray& primaryRay, const Ren
         }
 
         // sample lights directly (a.k.a. next event estimation)
-        resultColor.MulAndAccumulate(throughput, SampleLights(shadingData, pathState, context, lightPickProbability));
+        resultColor.MulAndAccumulate(throughput, SampleLights(param.scene, shadingData, pathState, context, lightPickProbability));
 
         // check if the ray depth won't be exeeded in the next iteration
         if (pathState.depth >= context.params->maxRayDepth)

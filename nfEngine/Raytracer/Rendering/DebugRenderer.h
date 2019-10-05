@@ -38,12 +38,14 @@ enum class DebugRenderingMode : uint8
 // Debug renderer for visualizing normals, tangents, base color, etc.
 class DebugRenderer : public IRenderer
 {
+    NFE_DECLARE_POLYMORPHIC_CLASS(DebugRenderer);
+
 public:
-    DebugRenderer(const Scene& scene);
+    DebugRenderer();
 
     virtual const char* GetName() const;
     virtual const RayColor RenderPixel(const Math::Ray& ray, const RenderParam& param, RenderingContext& ctx) const override;
-    virtual void Raytrace_Packet(RayPacket& packet, const Camera& camera, Film& film, RenderingContext& context) const override;
+    virtual void Raytrace_Packet(RayPacket& packet, const RenderParam& param, RenderingContext& context) const override;
 
     DebugRenderingMode mRenderingMode;
 };

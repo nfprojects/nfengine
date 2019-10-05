@@ -189,7 +189,7 @@ void Viewport::ComputeError()
     mProgress.averageError = ComputeBlockError(fullImageBlock);
 }
 
-bool Viewport::Render(const Camera& camera)
+bool Viewport::Render(const Scene& scene, const Camera& camera)
 {
     const uint32 width = GetWidth();
     const uint32 height = GetHeight();
@@ -212,7 +212,7 @@ bool Viewport::Render(const Camera& camera)
     }
 
     Film film(mSum, mProgress.passesFinished % 2 == 0 ? &mSecondarySum : nullptr);
-    const IRenderer::RenderParam renderParam = { mProgress.passesFinished, camera, film };
+    const IRenderer::RenderParam renderParam = { scene, camera, mProgress.passesFinished, film };
 
     Waitable waitable;
     {
@@ -422,7 +422,7 @@ void Viewport::RenderTile(const TileRenderingContext& tileContext, RenderingCont
         }
 
         ctx.localCounters.Reset();
-        tileContext.renderer.Raytrace_Packet(primaryPacket, tileContext.renderParam.camera, tileContext.renderParam.film, ctx);
+        tileContext.renderer.Raytrace_Packet(primaryPacket, tileContext.renderParam, ctx);
         ctx.counters.Append(ctx.localCounters);
     }
 

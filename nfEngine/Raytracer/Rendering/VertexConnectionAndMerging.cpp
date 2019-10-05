@@ -14,6 +14,10 @@
 #include "../../nfCommon/Memory/MemoryHelpers.hpp"
 #include "../../nfCommon/Utils/TaskBuilder.hpp"
 
+NFE_BEGIN_DEFINE_POLYMORPHIC_CLASS(NFE::RT::VertexConnectionAndMerging)
+    NFE_CLASS_PARENT(NFE::RT::IRenderer)
+NFE_END_DEFINE_CLASS()
+
 namespace NFE {
 namespace RT {
 
@@ -52,9 +56,8 @@ public:
 
 static_assert(sizeof(VertexConnectionAndMerging::Photon) == 32, "Invalid photon size");
 
-VertexConnectionAndMerging::VertexConnectionAndMerging(const Scene& scene)
-    : IRenderer(scene)
-    , mLightPathsCount(0)
+VertexConnectionAndMerging::VertexConnectionAndMerging()
+    : mLightPathsCount(0)
 {
     mBSDFSamplingWeight = Vector4(1.0f);
     mLightSamplingWeight = Vector4(1.0f);
@@ -72,11 +75,6 @@ VertexConnectionAndMerging::VertexConnectionAndMerging(const Scene& scene)
 }
 
 VertexConnectionAndMerging::~VertexConnectionAndMerging() = default;
-
-const char* VertexConnectionAndMerging::GetName() const
-{
-    return "VCM";
-}
 
 RendererContextPtr VertexConnectionAndMerging::CreateContext() const
 {
@@ -275,7 +273,7 @@ const RayColor VertexConnectionAndMerging::RenderPixel(const Math::Ray& ray, con
 {
     // step 1: trace light paths & record photons
 
-    TraceLightPath(param.camera, param.film, ctx);
+    TraceLightPath(param, ctx);
 
 
     // step 2: trace camera paths:
@@ -304,17 +302,17 @@ const RayColor VertexConnectionAndMerging::RenderPixel(const Math::Ray& ray, con
 
         hitPoint.objectId = NFE_INVALID_OBJECT;
         hitPoint.distance = HitPoint::DefaultDistance;
-        mScene.Traverse({ pathState.ray, hitPoint, ctx });
+        param.scene.Traverse({ pathState.ray, hitPoint, ctx });
 
         // ray missed - return background light color
         if (hitPoint.distance == HitPoint::DefaultDistance)
         {
-            resultColor.MulAndAccumulate(pathState.throughput, EvaluateGlobalLights(param.iteration, pathState, ctx));
+            resultColor.MulAndAccumulate(pathState.throughput, EvaluateGlobalLights(param.scene, param.iteration, pathState, ctx));
             break;
         }
 
         // fill up structure with shading data
-        mScene.EvaluateIntersection(pathState.ray, hitPoint, ctx.time, shadingData.intersection);
+        param.scene.EvaluateIntersection(pathState.ray, hitPoint, ctx.time, shadingData.intersection);
 
         // update MIS quantities
         {
@@ -329,7 +327,7 @@ const RayColor VertexConnectionAndMerging::RenderPixel(const Math::Ray& ray, con
         // we hit a light directly
         if (hitPoint.subObjectId == NFE_LIGHT_OBJECT)
         {
-            const ISceneObject* sceneObject = mScene.GetHitObject(hitPoint.objectId);
+            const ISceneObject* sceneObject = param.scene.GetHitObject(hitPoint.objectId);
             NFE_ASSERT(sceneObject->GetType() == ISceneObject::Type::Light);
             const LightSceneObject* lightObject = static_cast<const LightSceneObject*>(sceneObject);
 
@@ -363,7 +361,7 @@ const RayColor VertexConnectionAndMerging::RenderPixel(const Math::Ray& ray, con
         // Vertex Connection -sample lights directly (a.k.a. next event estimation)
         if (!isDeltaBsdf && mUseVertexConnection)
         {
-            const RayColor lightColor = SampleLights(shadingData, pathState, ctx);
+            const RayColor lightColor = SampleLights(param.scene, shadingData, pathState, ctx);
             NFE_ASSERT(lightColor.IsValid());
             resultColor.MulAndAccumulate(pathState.throughput, lightColor);
         }
@@ -385,7 +383,7 @@ const RayColor VertexConnectionAndMerging::RenderPixel(const Math::Ray& ray, con
                     break;
                 }
 
-                vertexConnectionColor.MulAndAccumulate(lightVertex.throughput, ConnectVertices(pathState, shadingData, lightVertex, ctx));
+                vertexConnectionColor.MulAndAccumulate(lightVertex.throughput, ConnectVertices(param.scene, pathState, shadingData, lightVertex, ctx));
             }
 
             vertexConnectionColor *= RayColor::Resolve(ctx.wavelength, Spectrum(mVertexConnectingWeight));
@@ -419,7 +417,7 @@ const RayColor VertexConnectionAndMerging::RenderPixel(const Math::Ray& ray, con
     return resultColor;
 }
 
-void VertexConnectionAndMerging::TraceLightPath(const Camera& camera, Film& film, RenderingContext& ctx) const
+void VertexConnectionAndMerging::TraceLightPath(const RenderParam& param, RenderingContext& ctx) const
 {
     NFE_ASSERT(ctx.rendererContext);
     VertexConnectionAndMergingContext& rendererContext = *static_cast<VertexConnectionAndMergingContext*>(ctx.rendererContext.Get());
@@ -428,7 +426,7 @@ void VertexConnectionAndMerging::TraceLightPath(const Camera& camera, Film& film
 
     PathState pathState;
 
-    if (!GenerateLightSample(pathState, ctx))
+    if (!GenerateLightSample(param.scene, pathState, ctx))
     {
         // failed to generate initial ray - return empty path
         return;
@@ -442,7 +440,7 @@ void VertexConnectionAndMerging::TraceLightPath(const Camera& camera, Film& film
 
         hitPoint.objectId = NFE_INVALID_OBJECT;
         hitPoint.distance = HitPoint::DefaultDistance;
-        mScene.Traverse({ pathState.ray, hitPoint, ctx });
+        param.scene.Traverse({ pathState.ray, hitPoint, ctx });
 
         if (hitPoint.distance == HitPoint::DefaultDistance)
         {
@@ -460,7 +458,7 @@ void VertexConnectionAndMerging::TraceLightPath(const Camera& camera, Film& film
         // fill up structure with shading data
         ShadingData& shadingData = vertex.shadingData;
         {
-            mScene.EvaluateIntersection(pathState.ray, hitPoint, ctx.time, shadingData.intersection);
+            param.scene.EvaluateIntersection(pathState.ray, hitPoint, ctx.time, shadingData.intersection);
 
             shadingData.outgoingDirWorldSpace = -pathState.ray.dir;
             NFE_ASSERT(shadingData.intersection.material != nullptr);
@@ -496,7 +494,7 @@ void VertexConnectionAndMerging::TraceLightPath(const Camera& camera, Film& film
                 vertex.dVCM = pathState.dVCM;
 
                 // connect vertex to camera directly
-                ConnectToCamera(camera, film, vertex, ctx);
+                ConnectToCamera(param, vertex, ctx);
             }
 
             // store simplified light vertex (photon) for merging
@@ -526,9 +524,9 @@ void VertexConnectionAndMerging::TraceLightPath(const Camera& camera, Film& film
     }
 }
 
-bool VertexConnectionAndMerging::GenerateLightSample(PathState& outPath, RenderingContext& ctx) const
+bool VertexConnectionAndMerging::GenerateLightSample(const Scene& scene, PathState& outPath, RenderingContext& ctx) const
 {
-    const auto& allLocalLights = mScene.GetLights();
+    const auto& allLocalLights = scene.GetLights();
     if (allLocalLights.Empty())
     {
         // no lights on the scene
@@ -737,7 +735,7 @@ const RayColor VertexConnectionAndMerging::EvaluateLight(uint32 iteration, const
     return lightContribution;
 }
 
-const RayColor VertexConnectionAndMerging::SampleLight(const LightSceneObject* lightObject, const ShadingData& shadingData, const PathState& pathState, RenderingContext& ctx) const
+const RayColor VertexConnectionAndMerging::SampleLight(const Scene& scene, const LightSceneObject* lightObject, const ShadingData& shadingData, const PathState& pathState, RenderingContext& ctx) const
 {
     const ILight& light = lightObject->GetLight();
 
@@ -785,7 +783,7 @@ const RayColor VertexConnectionAndMerging::SampleLight(const LightSceneObject* l
         Ray shadowRay(shadingData.intersection.frame.GetTranslation(), illuminateResult.directionToLight);
         shadowRay.origin += shadowRay.dir * 0.0001f;
 
-        if (mScene.Traverse_Shadow({ shadowRay, hitPoint, ctx }))
+        if (scene.Traverse_Shadow({ shadowRay, hitPoint, ctx }))
         {
             // shadow ray missed the light - light is occluded
             return RayColor::Zero();
@@ -817,15 +815,15 @@ const RayColor VertexConnectionAndMerging::SampleLight(const LightSceneObject* l
     return (radiance * bsdfFactor) * (misWeight / (lightPickProbability * illuminateResult.directPdfW));
 }
 
-const RayColor VertexConnectionAndMerging::SampleLights(const ShadingData& shadingData, const PathState& pathState, RenderingContext& ctx) const
+const RayColor VertexConnectionAndMerging::SampleLights(const Scene& scene, const ShadingData& shadingData, const PathState& pathState, RenderingContext& ctx) const
 {
     RayColor accumulatedColor = RayColor::Zero();
 
     // TODO check only one (or few) lights per sample instead all of them
     // TODO check only nearest lights
-    for (const LightSceneObject* lightObject : mScene.GetLights())
+    for (const LightSceneObject* lightObject : scene.GetLights())
     {
-        accumulatedColor += SampleLight(lightObject, shadingData, pathState, ctx);
+        accumulatedColor += SampleLight(scene, lightObject, shadingData, pathState, ctx);
     }
 
     accumulatedColor *= RayColor::Resolve(ctx.wavelength, Spectrum(mLightSamplingWeight));
@@ -833,11 +831,11 @@ const RayColor VertexConnectionAndMerging::SampleLights(const ShadingData& shadi
     return accumulatedColor;
 }
 
-const RayColor VertexConnectionAndMerging::EvaluateGlobalLights(uint32 iteration, const PathState& pathState, RenderingContext& ctx) const
+const RayColor VertexConnectionAndMerging::EvaluateGlobalLights(const Scene& scene, uint32 iteration, const PathState& pathState, RenderingContext& ctx) const
 {
     RayColor result = RayColor::Zero();
 
-    for (const LightSceneObject* globalLightObject : mScene.GetGlobalLights())
+    for (const LightSceneObject* globalLightObject : scene.GetGlobalLights())
     {
         result += EvaluateLight(iteration, globalLightObject, nullptr, pathState, ctx);
     }
@@ -845,7 +843,7 @@ const RayColor VertexConnectionAndMerging::EvaluateGlobalLights(uint32 iteration
     return result;
 }
 
-const RayColor VertexConnectionAndMerging::ConnectVertices(PathState& cameraPathState, const ShadingData& shadingData, const LightVertex& lightVertex, RenderingContext& ctx) const
+const RayColor VertexConnectionAndMerging::ConnectVertices(const Scene& scene, PathState& cameraPathState, const ShadingData& shadingData, const LightVertex& lightVertex, RenderingContext& ctx) const
 {
     // compute connection direction (from camera vertex to light vertex)
     Vector4 lightDir = lightVertex.shadingData.intersection.frame.GetTranslation() - shadingData.intersection.frame.GetTranslation();
@@ -891,7 +889,7 @@ const RayColor VertexConnectionAndMerging::ConnectVertices(PathState& cameraPath
         Ray shadowRay(shadingData.intersection.frame.GetTranslation(), lightDir);
         shadowRay.origin += shadowRay.dir * 0.0001f;
 
-        if (mScene.Traverse_Shadow({ shadowRay, hitPoint, ctx }))
+        if (scene.Traverse_Shadow({ shadowRay, hitPoint, ctx }))
         {
             // line between vertices is occluded by other geometry
             return RayColor::Zero();
@@ -1007,9 +1005,9 @@ const RayColor VertexConnectionAndMerging::MergeVertices(PathState& cameraPathSt
     return query.GetContribution();
 }
 
-void VertexConnectionAndMerging::ConnectToCamera(const Camera& camera, Film& film, const LightVertex& lightVertex, RenderingContext& ctx) const
+void VertexConnectionAndMerging::ConnectToCamera(const RenderParam& renderParams, const LightVertex& lightVertex, RenderingContext& ctx) const
 {
-    const Vector4 cameraPos = camera.GetTransform().GetTranslation();
+    const Vector4 cameraPos = renderParams.camera.GetTransform().GetTranslation();
     const Vector4 samplePos = lightVertex.shadingData.intersection.frame.GetTranslation();
 
     Vector4 dirToCamera = cameraPos - samplePos;
@@ -1030,7 +1028,7 @@ void VertexConnectionAndMerging::ConnectToCamera(const Camera& camera, Film& fil
     }
 
     Vector4 filmPos;
-    if (!camera.WorldToFilm(samplePos, filmPos))
+    if (!renderParams.camera.WorldToFilm(samplePos, filmPos))
     {
         // vertex is not visible in the viewport
         return;
@@ -1042,7 +1040,7 @@ void VertexConnectionAndMerging::ConnectToCamera(const Camera& camera, Film& fil
     Ray shadowRay(samplePos, dirToCamera);
     shadowRay.origin += shadowRay.dir * 0.0001f;
 
-    if (mScene.Traverse_Shadow({ shadowRay, shadowHitPoint, ctx }))
+    if (renderParams.scene.Traverse_Shadow({ shadowRay, shadowHitPoint, ctx }))
     {
         // vertex is occluded
         return;
@@ -1054,7 +1052,7 @@ void VertexConnectionAndMerging::ConnectToCamera(const Camera& camera, Film& fil
         return;
     }
 
-    const float cameraPdfW = camera.PdfW(-dirToCamera);
+    const float cameraPdfW = renderParams.camera.PdfW(-dirToCamera);
     const float cameraPdfA = cameraPdfW * cosToCamera / cameraDistanceSqr;
 
     // compute MIS weight
@@ -1066,7 +1064,7 @@ void VertexConnectionAndMerging::ConnectToCamera(const Camera& camera, Film& fil
     contribution *= RayColor::Resolve(ctx.wavelength, Spectrum(mCameraConnectingWeight));
 
     const Vector4 value = contribution.ConvertToTristimulus(ctx.wavelength);
-    film.AccumulateColor(filmPos, value, ctx.randomGenerator);
+    renderParams.film.AccumulateColor(filmPos, value, ctx.randomGenerator);
 }
 
 } // namespace RT

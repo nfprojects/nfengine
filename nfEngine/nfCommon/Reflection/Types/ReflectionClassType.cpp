@@ -83,9 +83,12 @@ bool ClassType::IsA(const Type* baseType) const
     return false;
 }
 
-void ClassType::ListSubtypes(Children& outTypes) const
+void ClassType::ListSubtypes(Children& outTypes, bool skipAbstractTypes) const
 {
-    outTypes.PushBack(this);
+    if (GetKind() != TypeKind::AbstractClass || !skipAbstractTypes)
+    {
+        outTypes.PushBack(this);
+    }
 
     for (const ClassType* childType : mChildTypes)
     {

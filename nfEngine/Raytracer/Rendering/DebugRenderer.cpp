@@ -8,14 +8,17 @@
 #include "Rendering/Film.h"
 #include "Rendering/Context.h"
 
+NFE_BEGIN_DEFINE_POLYMORPHIC_CLASS(NFE::RT::DebugRenderer)
+    NFE_CLASS_PARENT(NFE::RT::IRenderer)
+NFE_END_DEFINE_CLASS()
+
 namespace NFE {
 namespace RT {
 
 using namespace Math;
 
-DebugRenderer::DebugRenderer(const Scene& scene)
-    : IRenderer(scene)
-    , mRenderingMode(DebugRenderingMode::TriangleID)
+DebugRenderer::DebugRenderer()
+    : mRenderingMode(DebugRenderingMode::TriangleID)
 {
 }
 
@@ -24,10 +27,10 @@ const char* DebugRenderer::GetName() const
     return "Debug";
 }
 
-const RayColor DebugRenderer::RenderPixel(const Math::Ray& ray, const RenderParam&, RenderingContext& ctx) const
+const RayColor DebugRenderer::RenderPixel(const Math::Ray& ray, const RenderParam& param, RenderingContext& ctx) const
 {
     HitPoint hitPoint;
-    mScene.Traverse({ ray, hitPoint, ctx });
+    param.scene.Traverse({ ray, hitPoint, ctx });
 
     // traversal tatistics
 #ifdef NFE_ENABLE_INTERSECTION_COUNTERS
@@ -75,9 +78,9 @@ const RayColor DebugRenderer::RenderPixel(const Math::Ray& ray, const RenderPara
     {
         if (hitPoint.distance < FLT_MAX)
         {
-            mScene.EvaluateIntersection(ray, hitPoint, ctx.time, shadingData.intersection);
+            param.scene.EvaluateIntersection(ray, hitPoint, ctx.time, shadingData.intersection);
         }
-        mScene.EvaluateShadingData(shadingData, ctx);
+        param.scene.EvaluateShadingData(shadingData, ctx);
     }
 
     RayColor resultColor;
@@ -178,9 +181,9 @@ const RayColor DebugRenderer::RenderPixel(const Math::Ray& ray, const RenderPara
     return resultColor;
 }
 
-void DebugRenderer::Raytrace_Packet(RayPacket& packet, const Camera&, Film& film, RenderingContext& context) const
+void DebugRenderer::Raytrace_Packet(RayPacket& packet, const RenderParam& param, RenderingContext& context) const
 {
-    mScene.Traverse({ packet, context });
+    param.scene.Traverse({ packet, context });
 
     ShadingData shadingData;
 
@@ -205,7 +208,7 @@ void DebugRenderer::Raytrace_Packet(RayPacket& packet, const Camera&, Film& film
             {
                 if (mRenderingMode != DebugRenderingMode::TriangleID && mRenderingMode != DebugRenderingMode::Depth)
                 {
-                    mScene.EvaluateIntersection(Ray(rayOrigins[j], rayDirs[j]), hitPoint, context.time, shadingData.intersection);
+                    param.scene.EvaluateIntersection(Ray(rayOrigins[j], rayDirs[j]), hitPoint, context.time, shadingData.intersection);
                 }
 
                 switch (mRenderingMode)
@@ -263,7 +266,7 @@ void DebugRenderer::Raytrace_Packet(RayPacket& packet, const Camera&, Film& film
             color = Vector4::Max(Vector4::Zero(), color);
 
             const ImageLocationInfo& imageLocation = packet.imageLocations[RayPacket::RaysPerGroup * i + j];
-            film.AccumulateColor(imageLocation.x, imageLocation.y, color);
+            param.film.AccumulateColor(imageLocation.x, imageLocation.y, color);
         }
     }
 }

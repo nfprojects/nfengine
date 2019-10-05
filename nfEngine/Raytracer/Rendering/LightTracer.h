@@ -12,13 +12,12 @@ namespace RT {
 // Note: This renderer is unable to render specular materials viewed by the camera directly
 class LightTracer : public IRenderer
 {
+    NFE_DECLARE_POLYMORPHIC_CLASS(LightTracer);
+
 public:
-    LightTracer(const Scene& scene);
+    LightTracer();
 
-    virtual const char* GetName() const override;
     virtual const RayColor RenderPixel(const Math::Ray& ray, const RenderParam& param, RenderingContext& ctx) const override;
-
-private:
 
 };
 

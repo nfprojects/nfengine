@@ -9,6 +9,8 @@
 #include "../../nfCommon/Containers/StringView.hpp"
 #include "../../nfCommon/Containers/ArrayView.hpp"
 #include "../../nfCommon/Memory/Aligned.hpp"
+#include "../../nfCommon/Memory/Aligned.hpp"
+#include "../../nfCommon/Reflection/ReflectionClassMacros.hpp"
 
 namespace NFE {
 namespace RT {
@@ -16,22 +18,23 @@ namespace RT {
 // abstract scene rendering interface
 class NFE_ALIGN(16) IRenderer : public Common::Aligned<16>
 {
+    NFE_DECLARE_POLYMORPHIC_CLASS(IRenderer);
+
 public:
     struct RenderParam
     {
-        uint32 iteration;
+        const Scene& scene;
         const Camera& camera;
+        uint32 iteration;
         Film& film;
     };
 
-    IRenderer(const Scene& scene);
+    IRenderer();
 
     NFE_RAYTRACER_API virtual ~IRenderer();
 
     // TODO batch & multisample rendering
     // TODO cancelation of ongoing rendering
-
-    virtual const char* GetName() const = 0;
 
     // create per-thread context
     virtual RendererContextPtr CreateContext() const;
@@ -44,11 +47,7 @@ public:
     // Note: this will be called from multiple threads, each thread provides own RenderingContext
     virtual const RayColor RenderPixel(const Math::Ray& ray, const RenderParam& param, RenderingContext& ctx) const = 0;
 
-
-    virtual void Raytrace_Packet(RayPacket& packet, const Camera& camera, Film& film, RenderingContext& context) const;
-
-protected:
-    const Scene& mScene;
+    virtual void Raytrace_Packet(RayPacket& packet, const RenderParam& param, RenderingContext& context) const;
 
 private:
     IRenderer(const IRenderer&) = delete;

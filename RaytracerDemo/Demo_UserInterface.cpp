@@ -413,27 +413,26 @@ bool DemoWindow::RenderUI_Settings_Rendering()
 
     // renderer selection
     {
-        // TODO use reflection
-        const char* rendererNames[] =
+        DynArray<const RTTI::ClassType*> rendererTypes;
+        RTTI::GetType<IRenderer>()->ListSubtypes(rendererTypes, /*skipAbstract*/ true);
+
+        DynArray<const char*> rendererNames;
+        for (const RTTI::ClassType* type : rendererTypes)
         {
-            "Debug",
-            "Path Tracer",
-            "Path Tracer MIS",
-            "Light Tracer",
-            "VCM",
-        };
+            rendererNames.PushBack(type->GetName());
+        }
 
         int currentRendererIndex = 0;
-        for (size_t i = 0; i < ArraySize(rendererNames); ++i)
+        for (uint32 i = 0; i < rendererTypes.Size(); ++i)
         {
-            if (0 == strcmp(rendererNames[i], mRenderer->GetName()))
+            if (0 == strcmp(rendererTypes[i]->GetName(), mRenderer->GetDynamicType()->GetName()))
             {
                 currentRendererIndex = (int)i;
                 break;
             }
         }
 
-        if (ImGui::Combo("Renderer", &currentRendererIndex, rendererNames, (int)ArraySize(rendererNames)))
+        if (ImGui::Combo("Renderer", &currentRendererIndex, rendererNames.Data(), rendererNames.Size()))
         {
             mRendererName = rendererNames[currentRendererIndex];
             mRenderer = CreateRenderer(mRendererName, *mScene);

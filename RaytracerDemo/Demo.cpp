@@ -439,7 +439,7 @@ bool DemoWindow::Loop()
 
         //// render
         localTimer.Start();
-        mViewport->Render(mCamera);
+        mViewport->Render(*mScene, mCamera);
         mRenderDeltaTime = localTimer.Stop();
 
         {
