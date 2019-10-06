@@ -1,6 +1,7 @@
 #include "PCH.h"
 #include "PathTracer.h"
-#include "Context.h"
+#include "RenderingContext.h"
+#include "RenderingParams.h"
 #include "Scene/Scene.h"
 #include "Scene/Light/Light.h"
 #include "Scene/Object/SceneObject.h"

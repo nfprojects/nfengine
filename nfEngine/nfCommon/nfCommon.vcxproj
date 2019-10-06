@@ -98,6 +98,8 @@
     <ClInclude Include="Math\Geometry.hpp" />
     <ClInclude Include="Math\Half.hpp" />
     <ClInclude Include="Math\HalfImpl.hpp" />
+    <ClInclude Include="Math\HdrColor.hpp" />
+    <ClInclude Include="Math\LdrColor.hpp" />
     <ClInclude Include="Math\Math.hpp" />
     <ClInclude Include="Math\Matrix2.hpp" />
     <ClInclude Include="Math\Matrix2Impl.hpp" />
@@ -154,9 +156,11 @@
     <ClInclude Include="Memory\MemoryHelpers.hpp" />
     <ClInclude Include="nfCommon.hpp" />
     <ClInclude Include="PCH.hpp" />
+    <ClInclude Include="Reflection\Object.hpp" />
     <ClInclude Include="Reflection\ReflectionClassMacros.hpp" />
     <ClInclude Include="Reflection\ReflectionEnumMacros.hpp" />
     <ClInclude Include="Reflection\ReflectionMember.hpp" />
+    <ClInclude Include="Reflection\ReflectionMemberMetadataBuilder.hpp" />
     <ClInclude Include="Reflection\ReflectionTypeRegistry.hpp" />
     <ClInclude Include="Reflection\ReflectionUtils.hpp" />
     <ClInclude Include="Reflection\Test\ReflectionTestTypes.hpp" />
@@ -199,6 +203,7 @@
     <ClInclude Include="Utils\BVH.hpp" />
     <ClInclude Include="Utils\Entropy.hpp" />
     <ClInclude Include="Utils\EnumIterator.hpp" />
+    <ClInclude Include="Utils\FundamentalTypesUnion.hpp" />
     <ClInclude Include="Utils\InputStream.hpp" />
     <ClInclude Include="Utils\Latch.hpp" />
     <ClInclude Include="Utils\MD5.hpp" />
@@ -246,6 +251,8 @@
     <ClCompile Include="Math\EquationSolver.cpp" />
     <ClCompile Include="Math\Frustum.cpp" />
     <ClCompile Include="Math\Geometry.cpp" />
+    <ClCompile Include="Math\HdrColor.cpp" />
+    <ClCompile Include="Math\LdrColor.cpp" />
     <ClCompile Include="Math\Math.cpp" />
     <ClCompile Include="Math\Matrix2.cpp" />
     <ClCompile Include="Math\Matrix3.cpp" />
@@ -268,12 +275,16 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="Reflection\ReflectionMember.cpp" />
+    <ClCompile Include="Reflection\ReflectionMemberMetadataBuilder.cpp" />
     <ClCompile Include="Reflection\ReflectionTypeRegistry.cpp" />
     <ClCompile Include="Reflection\Test\ReflectionTestTypes.cpp" />
     <ClCompile Include="Reflection\Types\ReflectionClassType.cpp" />
+    <ClCompile Include="Reflection\Types\ReflectionDynArrayType.cpp" />
     <ClCompile Include="Reflection\Types\ReflectionEnumType.cpp" />
+    <ClCompile Include="Reflection\Types\ReflectionNativeArrayType.cpp" />
     <ClCompile Include="Reflection\Types\ReflectionStringType.cpp" />
     <ClCompile Include="Reflection\Types\ReflectionType.cpp" />
+    <ClCompile Include="Reflection\Types\ReflectionUniquePtrType.cpp" />
     <ClCompile Include="System\Assertion.cpp" />
     <ClCompile Include="System\SystemInfo.cpp" />
     <ClCompile Include="System\Win\AsyncQueueManager.cpp" />

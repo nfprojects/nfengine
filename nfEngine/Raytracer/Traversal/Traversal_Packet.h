@@ -6,7 +6,7 @@
 #include "BVH/BVH.h"
 #include "Utils/iacaMarks.h"
 #include "Rendering/Counters.h"
-#include "Rendering/Context.h"
+#include "Rendering/RenderingContext.h"
 #include "../../nfCommon/Math/Ray.hpp"
 #include "../../nfCommon/Math/Geometry.hpp"
 #include "../../nfCommon/Math/Simd8Geometry.hpp"

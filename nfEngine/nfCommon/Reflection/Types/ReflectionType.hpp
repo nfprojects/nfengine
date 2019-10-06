@@ -20,6 +20,7 @@ namespace RTTI {
 
 /**
  * Type of type.
+ * Named "type kind" to make it less confiusing.
  */
 enum class TypeKind : uint8
 {
@@ -27,6 +28,7 @@ enum class TypeKind : uint8
     Fundamental,        // fundamental type (int, float, bool, etc.)
     Enumeration,        // enum / enum class
     NativeArray,        // T[N] types
+    String,
     DynArray,           // DynArray<T> types
     UniquePtr,          // UniquePtr<T> types
     SharedPtr,          // SharedPtr<T> types
@@ -80,27 +82,27 @@ public:
      * Get type name.
      * @note This includes namespaces also.
      */
-    const char* GetName() const { return mName.Str(); }
+    NFE_FORCE_INLINE const char* GetName() const { return mName.Str(); }
 
     /**
      * Get type size (in bytes).
      */
-    size_t GetSize() const { return static_cast<size_t>(mSize); }
+    NFE_FORCE_INLINE size_t GetSize() const { return static_cast<size_t>(mSize); }
 
     /**
      * Get type alignment (in bytes).
      */
-    size_t GetAlignment() const { return static_cast<size_t>(mAlignment); }
+    NFE_FORCE_INLINE size_t GetAlignment() const { return static_cast<size_t>(mAlignment); }
 
     /**
      * Get type kind.
      */
-    TypeKind GetKind() const { return mKind; }
+    NFE_FORCE_INLINE TypeKind GetKind() const { return mKind; }
 
     /**
      * Can be constructed (without arguments)?
      */
-    bool IsConstructible() const { return mConstructor != nullptr; }
+    NFE_FORCE_INLINE bool IsConstructible() const { return mConstructor != nullptr; }
 
     /**
      * Check if this type is compatible with another type.
@@ -118,7 +120,7 @@ public:
     virtual void PrintInfo() const;
 
     template<typename T>
-    T* CreateObject() const
+    NFE_FORCE_INLINE T* CreateObject() const
     {
         NFE_ASSERT(mConstructor, "Cannot create an object of type '%s'", GetName());
         return reinterpret_cast<T*>(CreateRawObject());
@@ -144,7 +146,13 @@ public:
      */
     virtual bool Deserialize(void* outObject, const Common::Config& config, const Common::ConfigValue& value) const = 0;
 
+    /**
+     * Deep compare two objects. Returns true if objecs are the same.
+     */
+    virtual bool Compare(const void* objectA, const void* objectB) const = 0;
+
 protected:
+
     // allocate and construct object of this type
     void* CreateRawObject() const;
 

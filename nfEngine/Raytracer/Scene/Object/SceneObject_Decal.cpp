@@ -1,7 +1,7 @@
 #include "PCH.h"
 #include "SceneObject_Decal.h"
 #include "../../Rendering/ShadingData.h"
-#include "../../Rendering/Context.h"
+#include "../../Rendering/RenderingContext.h"
 
 namespace NFE {
 namespace RT {

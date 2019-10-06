@@ -23,7 +23,6 @@
     <ClInclude Include="Material\Material.h" />
     <ClInclude Include="Mesh\Mesh.h" />
     <ClInclude Include="PCH.h" />
-    <ClInclude Include="Rendering\Context.h" />
     <ClInclude Include="Rendering\Counters.h" />
     <ClInclude Include="Rendering\DebugRenderer.h" />
     <ClInclude Include="Rendering\Film.h" />
@@ -86,6 +85,8 @@
     <ClInclude Include="Raytracer.h" />
     <ClInclude Include="ForwardDeclarations.hpp" />
     <ClInclude Include="..\..\nfEngineDeps\tinyexr\tinyexr.h" />
+    <ClInclude Include="Rendering\RenderingContext.h" />
+    <ClInclude Include="Rendering\RenderingParams.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BVH\BVH.cpp" />
@@ -104,7 +105,6 @@
     <ClCompile Include="Material\BSDF\RoughPlasticBSDF.cpp" />
     <ClCompile Include="Material\Material.cpp" />
     <ClCompile Include="PCH.cpp" />
-    <ClCompile Include="Rendering\Context.cpp" />
     <ClCompile Include="Rendering\DebugRenderer.cpp" />
     <ClCompile Include="Rendering\Film.cpp" />
     <ClCompile Include="Rendering\LightTracer.cpp" />
@@ -155,6 +155,8 @@
     <ClCompile Include="Scene\Object\SceneObject_Decal.cpp" />
     <ClCompile Include="Utils\Profiler.cpp" />
     <ClCompile Include="..\..\nfEngineDeps\tinyexr\tinyexr.cc" />
+    <ClCompile Include="Rendering\RenderingParams.cpp" />
+    <ClCompile Include="Rendering\RenderingContext.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Math">

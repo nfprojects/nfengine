@@ -1,6 +1,6 @@
 #include "PCH.h"
 #include "Camera.h"
-#include "Rendering/Context.h"
+#include "Rendering/RenderingContext.h"
 #include "Sampling/GenericSampler.h"
 #include "Textures/Texture.h"
 #include "../nfCommon/Math/SamplingHelpers.hpp"

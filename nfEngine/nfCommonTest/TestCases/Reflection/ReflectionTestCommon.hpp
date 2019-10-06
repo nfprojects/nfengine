@@ -82,7 +82,7 @@ public:
 //////////////////////////////////////////////////////////////////////////
 
 
-class TestAbstractClass
+class TestAbstractClass : public NFE::IObject
 {
     NFE_DECLARE_POLYMORPHIC_CLASS(TestAbstractClass)
 
@@ -94,7 +94,7 @@ public:
 };
 
 
-class TestBaseClass
+class TestBaseClass : public NFE::IObject
 {
     NFE_DECLARE_POLYMORPHIC_CLASS(TestBaseClass)
 

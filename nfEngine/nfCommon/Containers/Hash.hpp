@@ -80,17 +80,17 @@ uint32 constexpr GetHash(T* x)
 template<>
 NFE_INLINE uint32 GetHash<float>(const float& x)
 {
-    Math::Bits32 bits;
+    Common::FundamentalTypesUnion bits;
     bits.f = x;
-    return bits.ui;
+    return bits.u32;
 }
 
 template<>
 NFE_INLINE uint32 GetHash<double>(const double& x)
 {
-    Math::Bits64 bits;
-    bits.f = x;
-    return GetHash(bits.ui);
+    Common::FundamentalTypesUnion bits;
+    bits.d = x;
+    return GetHash(bits.u64);
 }
 
 

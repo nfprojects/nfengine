@@ -17,23 +17,88 @@ namespace RTTI {
 /**
  * Type information for UniquePtr<T> types.
  */
-template<typename T>
-class UniquePtrType : public Type
+class NFCOMMON_API UniquePtrType : public Type
 {
     NFE_MAKE_NONCOPYABLE(UniquePtrType)
 
 public:
-    UniquePtrType(const TypeInfo& info)
-        : Type(info)
+    NFE_FORCE_INLINE const Type* GetPointedType() const { return mPointedType; }
+
+    // get data pointed by the unique pointer
+    virtual void* GetPointedData(const void* uniquePtrObject) const = 0;
+
+    // get object type under the pointer
+    virtual const Type* GetPointedType(const void* uniquePtrObject) const = 0;
+
+    // set object under the pointer
+    virtual void Reset(void* uniquePtrObject, const Type* newDataType = nullptr) const = 0;
+
+    virtual bool Compare(const void* objectA, const void* objectB) const override;
+
+protected:
+    NFE_FORCE_INLINE UniquePtrType(const TypeInfo& info) : Type(info) { }
+
+    const Type* mPointedType;
+};
+
+template<typename T>
+class UniquePtrTypeImpl final : public UniquePtrType
+{
+public:
+    using ObjectType = Common::UniquePtr<T>;
+
+    NFE_FORCE_INLINE UniquePtrTypeImpl(const TypeInfo& info)
+        : UniquePtrType(info)
     {
         mPointedType = GetType<T>();
         NFE_ASSERT(mPointedType, "Invalid pointed type");
     }
 
+    virtual void* GetPointedData(const void* uniquePtrObject) const override
+    {
+        NFE_ASSERT(uniquePtrObject, "Trying to access nullptr");
+        const ObjectType& typedObject = *static_cast<const ObjectType*>(uniquePtrObject);
+        return typedObject.Get();
+    }
+
+    virtual const Type* GetPointedType(const void* uniquePtrObject) const override
+    {
+        NFE_ASSERT(uniquePtrObject, "Trying to access nullptr");
+        const ObjectType& typedObject = *static_cast<const ObjectType*>(uniquePtrObject);
+
+        if (typedObject)
+        {
+            if (mPointedType->GetKind() == TypeKind::AbstractClass || mPointedType->GetKind() == TypeKind::PolymorphicClass)
+            {
+                return reinterpret_cast<const IObject*>(typedObject.Get())->GetDynamicType();
+            }
+            else
+            {
+                return mPointedType;
+            }
+        }
+
+        return nullptr;
+    }
+
+    virtual void Reset(void* uniquePtrObject, const Type* newDataType) const override
+    {
+        NFE_ASSERT(uniquePtrObject, "Trying to access nullptr");
+        ObjectType& typedObject = *static_cast<ObjectType*>(uniquePtrObject);
+        if (newDataType)
+        {
+            typedObject.Reset(newDataType->CreateObject<T>());
+        }
+        else
+        {
+            typedObject.Reset();
+        }
+    }
+
     bool Serialize(const void* object, Common::Config& config, Common::ConfigValue& outValue) const override
     {
         NFE_ASSERT(object, "Trying to serialize nullptr");
-        const Common::UniquePtr<T>& typedObject = *static_cast<const Common::UniquePtr<T>*>(object);
+        const ObjectType& typedObject = *static_cast<const ObjectType*>(object);
 
         if (typedObject)
         {
@@ -50,7 +115,7 @@ public:
     bool Deserialize(void* outObject, const Common::Config& config, const Common::ConfigValue& value) const override
     {
         NFE_ASSERT(outObject, "Trying to deserialize to nullptr");
-        Common::UniquePtr<T>& typedObject = *static_cast<Common::UniquePtr<T>*>(outObject);
+        ObjectType& typedObject = *static_cast<ObjectType*>(outObject);
 
         if (value.Is<int32>()) // nullptr
         {
@@ -138,9 +203,6 @@ public:
         NFE_LOG_ERROR("Expected zero (nullptr) or an object");
         return false;
     }
-
-private:
-    const Type* mPointedType;
 };
 
 
@@ -151,7 +213,8 @@ template<typename T>
 class TypeCreator<Common::UniquePtr<T>>
 {
 public:
-    using TypeClass = UniquePtrType<T>;
+    using TypeClass = UniquePtrTypeImpl<T>;
+    using ObjectType = Common::UniquePtr<T>;
 
     static TypePtr CreateType()
     {
@@ -161,13 +224,13 @@ public:
 
         TypeInfo typeInfo;
         typeInfo.kind = TypeKind::UniquePtr;
-        typeInfo.size = sizeof(Common::UniquePtr<T>);
-        typeInfo.alignment = alignof(Common::UniquePtr<T>);
+        typeInfo.size = sizeof(ObjectType);
+        typeInfo.alignment = alignof(ObjectType);
         typeInfo.name = typeName.Str();
-        typeInfo.constructor = []() { return new Common::UniquePtr<T>; };
-        typeInfo.arrayConstructor = [](uint32 num) { return new Common::UniquePtr<T>[num]; };
+        typeInfo.constructor = []() { return new ObjectType; };
+        typeInfo.arrayConstructor = [](uint32 num) { return new ObjectType[num]; };
 
-        return TypePtr(new UniquePtrType<T>(typeInfo));
+        return TypePtr(new UniquePtrTypeImpl<T>(typeInfo));
     }
 };
 

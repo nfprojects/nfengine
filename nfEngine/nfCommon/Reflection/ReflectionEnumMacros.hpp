@@ -18,7 +18,7 @@
  * @note    Must be used outside any namespace.
  */
 #define NFE_BEGIN_DEFINE_ENUM(T)                                                                        \
-    static_assert(std::is_enum<T>::value, "Given type '" #T "' is not an enum");                        \
+    static_assert(std::is_enum_v<T>, "Given type '" #T "' is not an enum");                             \
     namespace NFE { namespace RTTI {                                                                    \
         namespace { const Type* NFE_UNIQUE_NAME(gForceResolvedType) = GetType<T>(); }                   \
         void TypeCreator<T>::FinishInitialization(EnumTypeInfo& typeInfo)                               \

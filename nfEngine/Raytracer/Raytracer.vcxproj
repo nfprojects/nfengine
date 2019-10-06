@@ -352,9 +352,10 @@
     <ClInclude Include="Mesh\Mesh.h" />
     <ClInclude Include="PCH.h" />
     <ClInclude Include="Raytracer.h" />
+    <ClInclude Include="Rendering\RenderingContext.h" />
+    <ClInclude Include="Rendering\RenderingParams.h" />
     <ClInclude Include="Rendering\VertexConnectionAndMerging.h" />
     <ClInclude Include="Rendering\Counters.h" />
-    <ClInclude Include="Rendering\Context.h" />
     <ClInclude Include="Rendering\DebugRenderer.h" />
     <ClInclude Include="Rendering\Film.h" />
     <ClInclude Include="Rendering\LightTracer.h" />
@@ -444,7 +445,8 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Final|x64'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="Rendering\Context.cpp" />
+    <ClCompile Include="Rendering\RenderingContext.cpp" />
+    <ClCompile Include="Rendering\RenderingParams.cpp" />
     <ClCompile Include="Rendering\VertexConnectionAndMerging.cpp" />
     <ClCompile Include="Rendering\DebugRenderer.cpp" />
     <ClCompile Include="Rendering\Film.cpp" />

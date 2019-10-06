@@ -17,7 +17,7 @@ namespace Scene {
 /**
  * Base class for all event types.
  */
-class CORE_API Event
+class CORE_API Event : public IObject
 {
     NFE_DECLARE_POLYMORPHIC_CLASS(Event)
 

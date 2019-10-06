@@ -60,7 +60,7 @@ private:
 
 
 template <typename T>
-typename std::enable_if<!std::is_constructible<T>::value, ConstructorFunc>::type GetObjectConstructor()
+typename std::enable_if<!std::is_constructible_v<T>, ConstructorFunc>::type GetObjectConstructor()
 {
     // abstract object can't be constructed
     return ConstructorFunc();
@@ -70,13 +70,13 @@ typename std::enable_if<!std::is_constructible<T>::value, ConstructorFunc>::type
  * Get object constructor for non-abstract type.
  */
 template <typename T>
-typename std::enable_if<std::is_constructible<T>::value, ConstructorFunc>::type GetObjectConstructor()
+typename std::enable_if<std::is_constructible_v<T>, ConstructorFunc>::type GetObjectConstructor()
 {
     return []() { return new T; };
 }
 
 template <typename T>
-typename std::enable_if<!std::is_constructible<T>::value, ArrayConstructorFunc>::type GetArrayConstructor()
+typename std::enable_if<!std::is_constructible_v<T>, ArrayConstructorFunc>::type GetArrayConstructor()
 {
     // array of abstract objects can't be constructed
     return ArrayConstructorFunc();
@@ -86,7 +86,7 @@ typename std::enable_if<!std::is_constructible<T>::value, ArrayConstructorFunc>:
  * Get array constructor for non-abstract type.
  */
 template <typename T>
-typename std::enable_if<std::is_constructible<T>::value, ArrayConstructorFunc>::type GetArrayConstructor()
+typename std::enable_if<std::is_constructible_v<T>, ArrayConstructorFunc>::type GetArrayConstructor()
 {
     return [](uint32 arraySize) { return new T[arraySize]; };
 }
@@ -108,7 +108,7 @@ public:
         ClassTypeInfo typeInfo;
         typeInfo.kind = TypeKind::SimpleClass; // can be overridden in FinishInitialization
         typeInfo.size = sizeof(T);
-        typeInfo.alignment = std::alignment_of<T>::value;
+        typeInfo.alignment = std::alignment_of_v<T>;
         typeInfo.constructor = GetObjectConstructor<T>();
         typeInfo.arrayConstructor = GetArrayConstructor<T>();
 
@@ -127,7 +127,7 @@ public:
 template<typename T>
 const Type* ResolveType()
 {
-    static_assert(!std::is_const<T>::value && !std::is_volatile<T>::value, "Resolved type must be without any decorators");
+    static_assert(!std::is_const_v<T> && !std::is_volatile_v<T>, "Resolved type must be without any decorators");
 
     const size_t hash = typeid(T).hash_code();
     const Type* existingType = TypeRegistry::GetInstance().GetExistingType(hash);

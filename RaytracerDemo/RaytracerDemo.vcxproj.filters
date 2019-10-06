@@ -44,6 +44,9 @@
     <ClCompile Include="..\nfEngineDeps\imgui\imgui_widgets.cpp">
       <Filter>External</Filter>
     </ClCompile>
+    <ClCompile Include="ObjectEditor.cpp">
+      <Filter>Utils</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="PCH.h" />
@@ -54,6 +57,9 @@
       <Filter>Utils</Filter>
     </ClInclude>
     <ClInclude Include="SceneLoader.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="ObjectEditor.h">
       <Filter>Utils</Filter>
     </ClInclude>
   </ItemGroup>

@@ -1,14 +1,16 @@
 #include "PCH.h"
 #include "Demo.h"
+#include "ObjectEditor.h"
 
 #include "../nfEngine/Raytracer/Material/Material.h"
 #include "../nfEngine/Raytracer/Scene/Object/SceneObject.h"
 #include "../nfEngine/Raytracer/Scene/Light/BackgroundLight.h"
-#include "../nfEngine/Raytracer/Rendering/PathTracerMIS.h"
-#include "../nfEngine/Raytracer/Rendering/VertexConnectionAndMerging.h"
-#include "../nfEngine/Raytracer/Rendering/DebugRenderer.h"
+#include "../nfEngine/Raytracer/Rendering/Renderer.h"
 #include "../nfEngine/Raytracer/Color/ColorHelpers.h"
 #include "../nfEngine/Raytracer/Utils/Profiler.h"
+
+#include "../nfEngine/nfCommon/Reflection/Test/ReflectionTestTypes.hpp"
+#include "../nfEngine/nfCommon/Reflection/Types/ReflectionUniquePtrType.hpp"
 
 #include "../nfEngineDeps/imgui/imgui.h"
 
@@ -330,22 +332,21 @@ bool DemoWindow::RenderUI_Settings()
 {
     bool resetFrame = false;
 
-    if (ImGui::TreeNode("Rendering"))
+    //if (ImGui::TreeNode("Renderer"))
+    //{
+    //    resetFrame |= RenderUI_Settings_Rendering();
+    //    ImGui::TreePop();
+    //}
+
+    if (EditObject("Renderer", mRenderer))
     {
-        resetFrame |= RenderUI_Settings_Rendering();
-        ImGui::TreePop();
+        mViewport->SetRenderer(mRenderer.Get());
+        resetFrame = true;
     }
 
-    if (ImGui::TreeNode("Sampling"))
+    if (EditObject("Rendering Params", mRenderingParams))
     {
-        resetFrame |= RenderUI_Settings_Sampling();
-        ImGui::TreePop();
-    }
-
-    if (ImGui::TreeNode("Adaptive Rendering"))
-    {
-        resetFrame |= RenderUI_Settings_AdaptiveRendering();
-        ImGui::TreePop();
+        resetFrame = true;
     }
 
     if (ImGui::TreeNode("Camera"))
@@ -354,10 +355,9 @@ bool DemoWindow::RenderUI_Settings()
         ImGui::TreePop();
     }
 
-    if (ImGui::TreeNode("Postprocess"))
+    if (EditObject("Postprocess Params", mPostprocessParams))
     {
-        resetFrame |= RenderUI_Settings_PostProcess();
-        ImGui::TreePop();
+        mViewport->SetPostprocessParams(mPostprocessParams);
     }
 
     if (mSelectedObject)
@@ -403,142 +403,6 @@ bool DemoWindow::RenderUI_Settings()
             mViewport->GetSumBuffer().SaveEXR("screenshot.exr", colorScale);
         }
     }
-
-    return resetFrame;
-}
-
-bool DemoWindow::RenderUI_Settings_Rendering()
-{
-    bool resetFrame = false;
-
-    // renderer selection
-    {
-        DynArray<const RTTI::ClassType*> rendererTypes;
-        RTTI::GetType<IRenderer>()->ListSubtypes(rendererTypes, /*skipAbstract*/ true);
-
-        DynArray<const char*> rendererNames;
-        for (const RTTI::ClassType* type : rendererTypes)
-        {
-            rendererNames.PushBack(type->GetName());
-        }
-
-        int currentRendererIndex = 0;
-        for (uint32 i = 0; i < rendererTypes.Size(); ++i)
-        {
-            if (0 == strcmp(rendererTypes[i]->GetName(), mRenderer->GetDynamicType()->GetName()))
-            {
-                currentRendererIndex = (int)i;
-                break;
-            }
-        }
-
-        if (ImGui::Combo("Renderer", &currentRendererIndex, rendererNames.Data(), rendererNames.Size()))
-        {
-            mRendererName = rendererNames[currentRendererIndex];
-            mRenderer = CreateRenderer(mRendererName, *mScene);
-            mViewport->SetRenderer(mRenderer);
-            resetFrame = true;
-        }
-    }
-
-    if (mRendererName == "Debug")
-    {
-        RT::DebugRenderer* debugRenderer = (DebugRenderer*)mRenderer.Get();
-        int debugRenderingModeIndex = static_cast<int>(debugRenderer->mRenderingMode);
-
-        const char* renderingModeItems[] =
-        {
-            "CameraLight",
-            "TriangleID", "Depth", "Position", "Normals", "Tangents", "Bitangents", "TexCoords",
-            "Material Base Color",
-            "Material Emission Color",
-            "Material Roughness",
-            "Material Metalness",
-            "Material Index of Refraction",
-#ifdef RT_ENABLE_INTERSECTION_COUNTERS
-            "RayBoxIntersection", "RayBoxIntersectionPassed", "RayTriIntersection", "RayTriIntersectionPassed",
-#endif // RT_ENABLE_INTERSECTION_COUNTERS
-        };
-        resetFrame |= ImGui::Combo("Rendering mode", &debugRenderingModeIndex, renderingModeItems, (int)ArraySize(renderingModeItems));
-        debugRenderer->mRenderingMode = static_cast<DebugRenderingMode>(debugRenderingModeIndex);
-    }
-    else if (mRendererName == "Path Tracer MIS")
-    {
-        RT::PathTracerMIS* renderer = (PathTracerMIS*)mRenderer.Get();
-        resetFrame |= ImGui::ColorEdit3("Light sampling weight", &renderer->mLightSamplingWeight.x, ImGuiColorEditFlags_Float | ImGuiColorEditFlags_HDR);
-        resetFrame |= ImGui::ColorEdit3("BSDF sampling weight", &renderer->mBSDFSamplingWeight.x, ImGuiColorEditFlags_Float | ImGuiColorEditFlags_HDR);
-    }
-    else if (mRendererName == "VCM")
-    {
-        RT::VertexConnectionAndMerging* renderer = (VertexConnectionAndMerging*)mRenderer.Get();
-        resetFrame |= ImGui::Checkbox("Vertex connection", &renderer->mUseVertexConnection);
-        ImGui::SameLine();
-        resetFrame |= ImGui::Checkbox("Vertex merging", &renderer->mUseVertexMerging);
-        resetFrame |= ImGui::SliderInt("Max path length", (int32*)& renderer->mMaxPathLength, 1, 20);
-        resetFrame |= ImGui::SliderFloat("Initial merging radius", &renderer->mInitialMergingRadius, renderer->mMinMergingRadius, 10.0f, "%.4f", 10.0f);
-        resetFrame |= ImGui::SliderFloat("Min merging radius", &renderer->mMinMergingRadius, 0.0001f, renderer->mInitialMergingRadius, "%.4f", 10.0f);
-        resetFrame |= ImGui::SliderFloat("Merging radius multiplier", &renderer->mMergingRadiusMultiplier, 0.5f, 0.9999f);
-
-        if (ImGui::TreeNode("Debug coloring"))
-        {
-            resetFrame |= ImGui::ColorEdit3("Light sampling weight", &renderer->mLightSamplingWeight.x, ImGuiColorEditFlags_Float | ImGuiColorEditFlags_HDR);
-            resetFrame |= ImGui::ColorEdit3("BSDF sampling weight", &renderer->mBSDFSamplingWeight.x, ImGuiColorEditFlags_Float | ImGuiColorEditFlags_HDR);
-            resetFrame |= ImGui::ColorEdit3("Vertex connecting weight", &renderer->mVertexConnectingWeight.x, ImGuiColorEditFlags_Float | ImGuiColorEditFlags_HDR);
-            resetFrame |= ImGui::ColorEdit3("Vertex merging weight", &renderer->mVertexMergingWeight.x, ImGuiColorEditFlags_Float | ImGuiColorEditFlags_HDR);
-            resetFrame |= ImGui::ColorEdit3("Camera connecting weight", &renderer->mCameraConnectingWeight.x, ImGuiColorEditFlags_Float | ImGuiColorEditFlags_HDR);
-            ImGui::TreePop(); // Transform
-        }
-    }
-
-    int traversalModeIndex = static_cast<int>(mRenderingParams.traversalMode);
-    int lightSamplingStrategyIndex = static_cast<int>(mRenderingParams.lightSamplingStrategy);
-    int tileSize = static_cast<int>(mRenderingParams.tileSize);
-
-    const char* traversalModeItems[] = { "Single", "Packet" };
-    resetFrame |= ImGui::Combo("Traversal mode", &traversalModeIndex, traversalModeItems, (int)ArraySize(traversalModeItems));
-
-    const char* lightSamplingStrategyItems[] = { "Single", "All" };
-    resetFrame |= ImGui::Combo("Light sampling strategy", &lightSamplingStrategyIndex, lightSamplingStrategyItems, (int)ArraySize(lightSamplingStrategyItems));
-
-    ImGui::SliderInt("Tile size", (int*)& tileSize, 2, 256);
-
-    resetFrame |= ImGui::SliderInt("Max ray depth", (int*)& mRenderingParams.maxRayDepth, 0, 200);
-    resetFrame |= ImGui::Checkbox("Visualize time per pixel", &mRenderingParams.visualizeTimePerPixel);
-    resetFrame |= ImGui::SliderInt("Russian roulette depth", (int*)& mRenderingParams.minRussianRouletteDepth, 1, 64);
-    resetFrame |= ImGui::SliderFloat("Antialiasing spread", &mRenderingParams.antiAliasingSpread, 0.0f, 3.0f);
-    resetFrame |= ImGui::SliderFloat("Motion blur strength", &mRenderingParams.motionBlurStrength, 0.0f, 1.0f);
-
-    mRenderingParams.traversalMode = static_cast<TraversalMode>(traversalModeIndex);
-    mRenderingParams.lightSamplingStrategy = static_cast<LightSamplingStrategy>(lightSamplingStrategyIndex);
-    mRenderingParams.tileSize = static_cast<uint16>(tileSize);
-
-    return resetFrame;
-}
-
-bool DemoWindow::RenderUI_Settings_Sampling()
-{
-    bool resetFrame = false;
-
-    resetFrame |= ImGui::SliderInt("Sample dimensions", (int*)& mRenderingParams.samplingParams.dimensions, 0, 256);
-    resetFrame |= ImGui::Checkbox("Blue noise dithering", &mRenderingParams.samplingParams.useBlueNoiseDithering);
-
-    return resetFrame;
-}
-
-bool DemoWindow::RenderUI_Settings_AdaptiveRendering()
-{
-    bool resetFrame = false;
-
-    AdaptiveRenderingSettings& settings = mRenderingParams.adaptiveSettings;
-
-    resetFrame |= ImGui::Checkbox("Enable", &settings.enable);
-    resetFrame |= ImGui::SliderInt("Num initial passes", (int*)& settings.numInitialPasses, 1, 100);
-    resetFrame |= ImGui::SliderInt("Max block size", (int*)& settings.maxBlockSize, settings.minBlockSize, 1024);
-    resetFrame |= ImGui::SliderInt("Min block size", (int*)& settings.minBlockSize, 1, settings.maxBlockSize);
-    resetFrame |= ImGui::SliderFloat("Convergence treshold", &settings.convergenceTreshold, 1.0e-8f, settings.subdivisionTreshold, "%.2e", 10.0f);
-    resetFrame |= ImGui::SliderFloat("Subdivision treshold", &settings.subdivisionTreshold, settings.convergenceTreshold, 1.0f, "%.2e", 10.0f);
-
-    ImGui::Checkbox("(Debug) Visualize", &mVisualizeAdaptiveRenderingBlocks);
 
     return resetFrame;
 }
@@ -594,39 +458,6 @@ bool DemoWindow::RenderUI_Settings_Camera()
     }
 
     return resetFrame;
-}
-
-bool DemoWindow::RenderUI_Settings_PostProcess()
-{
-    bool changed = false;
-
-    changed |= ImGui::SliderFloat("Exposure", &mPostprocessParams.exposure, -8.0f, 8.0f, "%+.3f EV");
-    changed |= ImGui::SliderFloat("Saturation", &mPostprocessParams.saturation, 0.0f, 2.0f);
-    changed |= ImGui::SliderFloat("Contrast", &mPostprocessParams.contrast, 0.125f, 4.0f, "%.2f", 2.0f);
-    changed |= ImGui::SliderFloat("Bloom factor", &mPostprocessParams.bloomFactor, 0.0f, 1.0f);
-    changed |= ImGui::SliderFloat("Dithering", &mPostprocessParams.ditheringStrength, 0.0f, 0.1f);
-    changed |= ImGui::ColorEdit3("Color filter", &mPostprocessParams.colorFilter.x, ImGuiColorEditFlags_Float | ImGuiColorEditFlags_HDR);
-
-    int tonemapperIndex = static_cast<int>(mPostprocessParams.tonemapper);
-    const char* tonemapperNames[] =
-    {
-        "Clamped",
-        "Reinhard",
-        "Jim Hejland and Richard Burgess Dawson",
-        "ACES (approx)",
-    };
-    if (ImGui::Combo("Tonemapper", &tonemapperIndex, tonemapperNames, (int)ArraySize(tonemapperNames)))
-    {
-        changed = true;
-        mPostprocessParams.tonemapper = static_cast<Tonemapper>(tonemapperIndex);
-    }
-
-    if (changed)
-    {
-        mViewport->SetPostprocessParams(mPostprocessParams);
-    }
-
-    return false;
 }
 
 bool DemoWindow::RenderUI_Settings_Light()
@@ -855,4 +686,4 @@ bool DemoWindow::RenderUI()
     return resetFrame;
 }
 
-} // namesapce RT
+} // namesapce NFE

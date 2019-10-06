@@ -29,7 +29,7 @@ struct SystemUpdateContext
 /**
  * Base scene system class.
  */
-class CORE_API ISystem
+class CORE_API ISystem : public IObject
 {
     NFE_DECLARE_POLYMORPHIC_CLASS(ISystem)
     NFE_MAKE_NONCOPYABLE(ISystem)

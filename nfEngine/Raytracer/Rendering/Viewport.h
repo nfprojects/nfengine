@@ -2,7 +2,8 @@
 
 #include "../Raytracer.h"
 
-#include "Context.h"
+#include "RenderingParams.h"
+#include "RenderingContext.h"
 #include "Counters.h"
 #include "PostProcess.h"
 #include "Renderer.h"
@@ -18,7 +19,7 @@
 namespace NFE {
 namespace RT {
 
-using RendererPtr = Common::SharedPtr<IRenderer>;
+using RendererPtr = Common::UniquePtr<IRenderer>;
 
 struct RenderingProgress
 {
@@ -40,7 +41,7 @@ public:
 
     NFE_RAYTRACER_API bool Resize(uint32 width, uint32 height);
     NFE_RAYTRACER_API bool SetRenderingParams(const RenderingParams& params);
-    NFE_RAYTRACER_API bool SetRenderer(const RendererPtr& renderer);
+    NFE_RAYTRACER_API bool SetRenderer(IRenderer* renderer);
     NFE_RAYTRACER_API bool SetPostprocessParams(const PostprocessParams& params);
     NFE_RAYTRACER_API bool Render(const Scene& scene, const Camera& camera);
     NFE_RAYTRACER_API void Reset();
@@ -100,7 +101,7 @@ private:
     // generate "front buffer" image from "sum" image
     void PostProcessTile(const Block& tile, uint32 threadID);
 
-    RendererPtr mRenderer;
+    IRenderer* mRenderer;
 
     Math::Random mRandomGenerator;
     HaltonSequence mHaltonSequence;

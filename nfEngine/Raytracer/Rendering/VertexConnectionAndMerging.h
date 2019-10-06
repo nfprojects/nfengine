@@ -38,11 +38,11 @@ public:
     virtual const RayColor RenderPixel(const Math::Ray& ray, const RenderParam& param, RenderingContext& ctx) const override;
 
     // for debugging
-    Math::Vector4 mBSDFSamplingWeight;
-    Math::Vector4 mLightSamplingWeight;
-    Math::Vector4 mVertexConnectingWeight;
-    Math::Vector4 mVertexMergingWeight;
-    Math::Vector4 mCameraConnectingWeight;
+    Math::LdrColorRGB mBSDFSamplingWeight;
+    Math::LdrColorRGB mLightSamplingWeight;
+    Math::LdrColorRGB mVertexConnectingWeight;
+    Math::LdrColorRGB mVertexMergingWeight;
+    Math::LdrColorRGB mCameraConnectingWeight;
 
     uint32 mMaxPathLength;
     float mInitialMergingRadius;

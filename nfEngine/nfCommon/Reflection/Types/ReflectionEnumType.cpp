@@ -152,5 +152,109 @@ bool EnumType::Deserialize(void* outObject, const Common::Config& config, const 
     return false;
 }
 
+bool EnumType::Compare(const void* objectA, const void* objectB) const
+{
+    switch (GetSize())
+    {
+    case 1: return *static_cast<const uint8*>(objectA) == *static_cast<const uint8*>(objectB);
+    case 2: return *static_cast<const uint16*>(objectA) == *static_cast<const uint16*>(objectB);
+    case 4: return *static_cast<const uint32*>(objectA) == *static_cast<const uint32*>(objectB);
+    case 8: return *static_cast<const uint64*>(objectA) == *static_cast<const uint64*>(objectB);
+    default:
+        NFE_ASSERT(false, "Invalid enum type size");
+        return false;
+    }
+}
+
+const char* EnumType::FindOptionByValue(uint64 value) const
+{
+    for (const EnumOption& option : mOptions)
+    {
+        if (option.value == value)
+        {
+            return option.name;
+        }
+    }
+
+    return nullptr;
+}
+
+bool EnumType::WriteValue(void* object, uint32 enumOptionIndex) const
+{
+    NFE_ASSERT(object);
+    NFE_ASSERT(enumOptionIndex < mOptions.Size(), "Invalid enum option index");
+
+    const size_t size = GetSize();
+    if (size == 1u)
+    {
+        uint8* typedObject = reinterpret_cast<uint8*>(object);
+        *typedObject = static_cast<uint8>(mOptions[enumOptionIndex].value);
+    }
+    else if (size == 2u)
+    {
+        uint16* typedObject = reinterpret_cast<uint16*>(object);
+        *typedObject = static_cast<uint16>(mOptions[enumOptionIndex].value);
+    }
+    else if (size == 4u)
+    {
+        uint32* typedObject = reinterpret_cast<uint32*>(object);
+        *typedObject = static_cast<uint32>(mOptions[enumOptionIndex].value);
+    }
+    else if (size == 8u)
+    {
+        uint64* typedObject = reinterpret_cast<uint64*>(object);
+        *typedObject = static_cast<uint64>(mOptions[enumOptionIndex].value);
+    }
+    else
+    {
+        NFE_FATAL("Invalid enum type size: %zu", size);
+        return false;
+    }
+
+    return true;
+}
+
+bool EnumType::ReadValue(const void* object, uint32& outEnumOptionIndex) const
+{
+    NFE_ASSERT(object);
+
+    uint64 value = 0;
+
+    const size_t size = GetSize();
+    if (size == 1u)
+    {
+        value = *reinterpret_cast<const uint8*>(object);
+    }
+    else if (size == 2u)
+    {
+        value = *reinterpret_cast<const uint16*>(object);
+    }
+    else if (size == 4u)
+    {
+        value = *reinterpret_cast<const uint32*>(object);
+    }
+    else if (size == 8u)
+    {
+        value = *reinterpret_cast<const uint64*>(object);
+    }
+    else
+    {
+        NFE_FATAL("Invalid enum type size: %zu", size);
+        return false;
+    }
+
+    for (uint32 i = 0; i < mOptions.Size(); ++i)
+    {
+        if (mOptions[i].value == value)
+        {
+            outEnumOptionIndex = i;
+            return true;
+        }
+    }
+
+    // enum option not found
+    return false;
+}
+
 } // namespace RTTI
 } // namespace NFE

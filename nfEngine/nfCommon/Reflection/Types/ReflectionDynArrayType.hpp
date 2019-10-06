@@ -18,18 +18,55 @@ namespace RTTI {
 /**
  * Type information for DynArray<T> types.
  */
-template<typename T>
-class DynArrayType : public Type
+class NFCOMMON_API DynArrayType : public Type
 {
     NFE_MAKE_NONCOPYABLE(DynArrayType)
 
 public:
-    DynArrayType(const TypeInfo& info)
-        : Type(info)
-    { }
+    NFE_FORCE_INLINE DynArrayType(const TypeInfo& info) : Type(info) { }
 
-    DynArrayType(DynArrayType&&) = default;
-    DynArrayType& operator=(DynArrayType&&) = default;
+    // get number of array elements
+    uint32 GetArraySize(const void* arrayObject) const;
+
+    // get type of the array element
+    virtual const Type* GetUnderlyingType() const = 0;
+
+    virtual void PrintInfo() const override;
+
+    bool Compare(const void* objectA, const void* objectB) const override;
+
+    // access element data
+    virtual void* GetElementPointer(void* arrayObject, uint32 index) const = 0;
+    virtual const void* GetElementPointer(const void* arrayObject, uint32 index) const = 0;
+};
+
+/**
+ * Specialized type information for DynArray<T> types.
+ */
+template<typename T>
+class DynArrayTypeImpl final : public DynArrayType
+{
+    NFE_MAKE_NONCOPYABLE(DynArrayTypeImpl)
+
+public:
+    NFE_FORCE_INLINE DynArrayTypeImpl(const TypeInfo& info) : DynArrayType(info) { }
+
+    virtual const Type* GetUnderlyingType() const override
+    {
+        return GetType<T>();
+    }
+
+    virtual void* GetElementPointer(void* arrayData, uint32 index) const override
+    {
+        DynArray<T>& typedObject = *static_cast<DynArray<T>*>(arrayData);
+        return &typedObject[index];
+    }
+
+    virtual const void* GetElementPointer(const void* arrayData, uint32 index) const override
+    {
+        const DynArray<T>& typedObject = *static_cast<const DynArray<T>*>(arrayData);
+        return &typedObject[index];
+    }
 
     bool Serialize(const void* object, Common::Config& config, Common::ConfigValue& outValue) const override
     {
@@ -107,7 +144,7 @@ template<typename T>
 class TypeCreator<Common::DynArray<T>>
 {
 public:
-    using TypeClass = DynArrayType<T>;
+    using TypeClass = DynArrayTypeImpl<T>;
     using TypeInfoClass = TypeInfo;
 
     static TypePtr CreateType()
@@ -124,7 +161,7 @@ public:
         typeInfo.constructor = []() { return new Common::DynArray<T>; };
         typeInfo.arrayConstructor = [](uint32 num) { return new Common::DynArray<T>[num]; };
 
-        return TypePtr(new DynArrayType<T>(typeInfo));
+        return TypePtr(new DynArrayTypeImpl<T>(typeInfo));
     }
 };
 

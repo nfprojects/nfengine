@@ -1,6 +1,5 @@
 #include "PCH.h"
-#include "Context.h"
-#include "RendererContext.h"
+#include "RenderingContext.h"
 
 namespace NFE {
 namespace RT {

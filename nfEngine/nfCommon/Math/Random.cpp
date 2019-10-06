@@ -53,8 +53,8 @@ uint32 Random::GetInt()
 
 float Random::GetFloat()
 {
-    Bits32 myrand;
-    myrand.ui = (GetInt() & 0x007fffffu) | 0x3f800000u;
+    Common::FundamentalTypesUnion myrand;
+    myrand.u32 = (GetInt() & 0x007fffffu) | 0x3f800000u;
     return myrand.f - 1.0f;
 }
 
@@ -65,8 +65,8 @@ double Random::GetDouble()
 
 float Random::GetFloatBipolar()
 {
-    Bits32 myrand;
-    myrand.ui = (GetInt() & 0x007fffff) | 0x40000000;
+    Common::FundamentalTypesUnion myrand;
+    myrand.u32 = (GetInt() & 0x007fffff) | 0x40000000;
     return myrand.f - 3.0f;
 }
 

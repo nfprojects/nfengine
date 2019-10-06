@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Renderer.h"
+#include "../../nfCommon/Reflection/ReflectionEnumMacros.hpp"
 
 namespace NFE {
 namespace RT {
@@ -32,6 +33,8 @@ enum class DebugRenderingMode : uint8
     RayTriIntersection,         // visualize number of performed ray-triangle intersections
     RayTriIntersectionPassed,   // visualize number of passed ray-triangle intersections
 #endif // NFE_ENABLE_INTERSECTION_COUNTERS
+
+    MAX
 };
 
 
@@ -47,8 +50,11 @@ public:
     virtual const RayColor RenderPixel(const Math::Ray& ray, const RenderParam& param, RenderingContext& ctx) const override;
     virtual void Raytrace_Packet(RayPacket& packet, const RenderParam& param, RenderingContext& context) const override;
 
-    DebugRenderingMode mRenderingMode;
+private:
+    DebugRenderingMode renderingMode;
 };
 
 } // namespace RT
 } // namespace NFE
+
+NFE_DECLARE_ENUM_TYPE(NFE::RT::DebugRenderingMode);

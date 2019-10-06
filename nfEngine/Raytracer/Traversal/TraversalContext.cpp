@@ -1,6 +1,6 @@
 #include "PCH.h"
 #include "TraversalContext.h"
-#include "Rendering/Context.h"
+#include "Rendering/RenderingContext.h"
 
 namespace NFE {
 namespace RT {

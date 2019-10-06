@@ -3,7 +3,7 @@
 #include "MeshShape.h"
 #include "BVH/BVHBuilder.h"
 
-#include "Rendering/Context.h"
+#include "Rendering/RenderingContext.h"
 #include "Rendering/ShadingData.h"
 #include "Traversal/TraversalContext.h"
 #include "Traversal/Traversal_Single.h"

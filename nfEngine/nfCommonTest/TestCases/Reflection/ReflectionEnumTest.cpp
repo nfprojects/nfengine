@@ -30,6 +30,36 @@ TEST(ReflectionEnumTest, TestEnum_Verify)
     EXPECT_EQ(123, options[2].value);
 }
 
+TEST(ReflectionEnumTest, TestEnum_ReadValue)
+{
+    TestEnum value = TestEnum::OptionB;
+
+    uint32 index;
+
+    const auto* type = GetType<TestEnum>();
+    ASSERT_TRUE(type->ReadValue(&value, index));
+    EXPECT_EQ(1u, index);
+}
+
+TEST(ReflectionEnumTest, TestEnum_ReadValue_Invalid)
+{
+    TestEnum value = (TestEnum)77;
+
+    uint32 index;
+
+    const auto* type = GetType<TestEnum>();
+    EXPECT_FALSE(type->ReadValue(&value, index));
+}
+
+TEST(ReflectionEnumTest, TestEnum_WriteValue)
+{
+    TestEnum value = TestEnum::OptionA;
+
+    const auto* type = GetType<TestEnum>();
+    ASSERT_TRUE(type->WriteValue(&value, 2));
+    EXPECT_EQ(TestEnum::OptionC, value);
+}
+
 TEST(ReflectionEnumTest, Deserialize_Valid)
 {
     const auto* type = GetType<TestEnum>();

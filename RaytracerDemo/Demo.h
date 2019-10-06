@@ -5,7 +5,7 @@
 #include "../nfEngine/Raytracer/Scene/Camera.h"
 #include "../nfEngine/Raytracer/Rendering/Viewport.h"
 #include "../nfEngine/Raytracer/Utils/Bitmap.h"
-#include "../nfEngine/Raytracer/Rendering/Context.h"
+#include "../nfEngine/Raytracer/Rendering/RenderingContext.h"
 #include "../nfEngine/Raytracer/Rendering/PathDebugging.h"
 
 namespace NFE {
@@ -77,7 +77,6 @@ private:
     Common::String mSceneFileName;
     time_t mSceneFileModificationTime;
 
-    Common::String mRendererName;
     RT::RendererPtr mRenderer;
 
     bool mEnableUI = true;
@@ -105,9 +104,6 @@ private:
     void RenderUI_Debugging_Color();
 
     bool RenderUI_Settings();
-    bool RenderUI_Settings_Rendering();
-    bool RenderUI_Settings_Sampling();
-    bool RenderUI_Settings_AdaptiveRendering();
     bool RenderUI_Settings_Camera();
     bool RenderUI_Settings_PostProcess();
     bool RenderUI_Settings_Object();

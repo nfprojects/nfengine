@@ -1,6 +1,7 @@
 #include "PCH.h"
 #include "PathTracerMIS.h"
-#include "Context.h"
+#include "RenderingContext.h"
+#include "RenderingParams.h"
 #include "PathDebugging.h"
 #include "Scene/Scene.h"
 #include "Scene/Light/Light.h"
@@ -10,7 +11,11 @@
 #include "Sampling/GenericSampler.h"
 
 NFE_BEGIN_DEFINE_POLYMORPHIC_CLASS(NFE::RT::PathTracerMIS)
-    NFE_CLASS_PARENT(NFE::RT::IRenderer)
+{
+    NFE_CLASS_PARENT(NFE::RT::IRenderer);
+    NFE_CLASS_MEMBER(lightSamplingWeight);
+    NFE_CLASS_MEMBER(BSDFSamplingWeight);
+}
 NFE_END_DEFINE_CLASS()
 
 namespace NFE {
@@ -34,9 +39,10 @@ NFE_FORCE_INLINE static float PdfAtoW(const float pdfA, const float distance, co
 }
 
 PathTracerMIS::PathTracerMIS()
+    : lightSamplingWeight(LdrColorRGB::White())
+    , BSDFSamplingWeight(LdrColorRGB::White())
 {
-    mLightSamplingWeight = Vector4(1.0f);
-    mBSDFSamplingWeight = Vector4(1.0f);
+
 }
 
 const RayColor PathTracerMIS::SampleLight(const Scene& scene, const LightSceneObject* lightObject, const ShadingData& shadingData, const PathState& pathState, RenderingContext& context, const float lightPickProbability) const
@@ -147,7 +153,7 @@ const RayColor PathTracerMIS::SampleLights(const Scene& scene, const ShadingData
             }
         };
 
-        accumulatedColor *= RayColor::Resolve(context.wavelength, Spectrum(mLightSamplingWeight));
+        accumulatedColor *= RayColor::Resolve(context.wavelength, Spectrum(lightSamplingWeight));
     }
 
     return accumulatedColor;
@@ -205,7 +211,7 @@ const RayColor PathTracerMIS::EvaluateLight(const LightSceneObject* lightObject,
         misWeight = CombineMis(pathState.lastPdfW, directPdfW * lightPickProbability);
     }
 
-    lightContribution *= RayColor::Resolve(context.wavelength, Spectrum(mBSDFSamplingWeight));
+    lightContribution *= RayColor::Resolve(context.wavelength, Spectrum(BSDFSamplingWeight));
 
     return lightContribution * misWeight;
 }
@@ -245,7 +251,7 @@ const RayColor PathTracerMIS::EvaluateGlobalLights(const Scene& scene, const Ray
         }
     }
 
-    result *= RayColor::Resolve(context.wavelength, Spectrum(mBSDFSamplingWeight));
+    result *= RayColor::Resolve(context.wavelength, Spectrum(BSDFSamplingWeight));
 
     return result;
 }
@@ -309,7 +315,7 @@ const RayColor PathTracerMIS::RenderPixel(const Math::Ray& primaryRay, const Ren
             RayColor emissionColor = shadingData.materialParams.emissionColor;
             NFE_ASSERT(emissionColor.IsValid());
 
-            emissionColor *= RayColor::Resolve(context.wavelength, Spectrum(mBSDFSamplingWeight));
+            emissionColor *= RayColor::Resolve(context.wavelength, Spectrum(BSDFSamplingWeight));
 
             resultColor.MulAndAccumulate(throughput, emissionColor);
             NFE_ASSERT(resultColor.IsValid());

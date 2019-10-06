@@ -19,7 +19,7 @@ namespace RTTI {
  * Fundamental C++ types (bool, integers, floating point).
  */
 template<typename T>
-class FundamentalType : public Type
+class FundamentalType final : public Type
 {
     NFE_MAKE_NONCOPYABLE(FundamentalType)
 
@@ -27,9 +27,6 @@ public:
     FundamentalType(const TypeInfo& info)
         : Type(info)
     { }
-
-    FundamentalType(FundamentalType&&) = default;
-    FundamentalType& operator=(FundamentalType&&) = default;
 
     bool Serialize(const void* object, Common::Config& config, Common::ConfigValue& outValue) const override
     {
@@ -55,6 +52,13 @@ public:
 
         return false;
     }
+
+    bool Compare(const void* objectA, const void* objectB) const override
+    {
+        const T* typedObjectA = static_cast<const T*>(objectA);
+        const T* typedObjectB = static_cast<const T*>(objectB);
+        return (*typedObjectA) == (*typedObjectB);
+    }
 };
 
 
@@ -68,26 +72,27 @@ public:
 /**
  * Declare a type. This must be placed OUTSIDE namespace.
  */
-#define NFE_DECLARE_FUNDAMENTAL_TYPE(T)                                                     \
-    namespace NFE { namespace RTTI {                                                        \
-        template <>                                                                         \
-        class TypeCreator<T>                                                                \
-        {                                                                                   \
-        public:                                                                             \
-            using TypeClass = FundamentalType<T>;                                           \
-            using TypeInfoClass = TypeInfo;                                                 \
-            static TypePtr CreateType()                                                     \
-            {                                                                               \
-                TypeInfo typeInfo;                                                          \
-                typeInfo.kind = TypeKind::Fundamental;                                      \
-                typeInfo.name = #T;                                                         \
-                typeInfo.size = sizeof(T);                                                  \
-                typeInfo.alignment = alignof(T);                                            \
-                typeInfo.constructor = []() { return new T; };                     \
-                typeInfo.arrayConstructor = [](uint32 num) { return new T[num]; }; \
-                return TypePtr(new FundamentalType<T>(typeInfo));                           \
-            }                                                                               \
-        };                                                                                  \
+#define NFE_DECLARE_FUNDAMENTAL_TYPE(T)                                             \
+    static_assert(std::is_fundamental_v<T>, "Given type is not fundamental");       \
+    namespace NFE { namespace RTTI {                                                \
+        template <>                                                                 \
+        class TypeCreator<T>                                                        \
+        {                                                                           \
+        public:                                                                     \
+            using TypeClass = FundamentalType<T>;                                   \
+            using TypeInfoClass = TypeInfo;                                         \
+            static TypePtr CreateType()                                             \
+            {                                                                       \
+                TypeInfo typeInfo;                                                  \
+                typeInfo.kind = TypeKind::Fundamental;                              \
+                typeInfo.name = #T;                                                 \
+                typeInfo.size = sizeof(T);                                          \
+                typeInfo.alignment = alignof(T);                                    \
+                typeInfo.constructor = []() { return new T; };                      \
+                typeInfo.arrayConstructor = [](uint32 num) { return new T[num]; };  \
+                return TypePtr(new FundamentalType<T>(typeInfo));                   \
+            }                                                                       \
+        };                                                                          \
     } } /* namespace NFE::RTTI */
 
 

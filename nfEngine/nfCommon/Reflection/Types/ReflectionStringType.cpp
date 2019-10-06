@@ -43,6 +43,12 @@ bool StringType::Deserialize(void* outObject, const Common::Config& config, cons
     return false;
 }
 
+bool StringType::Compare(const void* objectA, const void* objectB) const
+{
+    const Common::String& typedObjectA = *static_cast<const Common::String*>(objectA);
+    const Common::String& typedObjectB = *static_cast<const Common::String*>(objectB);
+    return typedObjectA == typedObjectB;
+}
 
 } // namespace RTTI
 } // namespace NFE

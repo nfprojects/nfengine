@@ -1,7 +1,7 @@
 #include "PCH.h"
 #include "VertexConnectionAndMerging.h"
 #include "RendererContext.h"
-#include "Context.h"
+#include "RenderingContext.h"
 #include "Film.h"
 #include "Scene/Scene.h"
 #include "Scene/Camera.h"
@@ -15,7 +15,20 @@
 #include "../../nfCommon/Utils/TaskBuilder.hpp"
 
 NFE_BEGIN_DEFINE_POLYMORPHIC_CLASS(NFE::RT::VertexConnectionAndMerging)
-    NFE_CLASS_PARENT(NFE::RT::IRenderer)
+{
+    NFE_CLASS_PARENT(NFE::RT::IRenderer);
+    NFE_CLASS_MEMBER(mBSDFSamplingWeight);
+    NFE_CLASS_MEMBER(mLightSamplingWeight);
+    NFE_CLASS_MEMBER(mVertexConnectingWeight);
+    NFE_CLASS_MEMBER(mVertexMergingWeight);
+    NFE_CLASS_MEMBER(mCameraConnectingWeight);
+    NFE_CLASS_MEMBER(mMaxPathLength);
+    NFE_CLASS_MEMBER(mInitialMergingRadius);
+    NFE_CLASS_MEMBER(mMinMergingRadius);
+    NFE_CLASS_MEMBER(mMergingRadiusMultiplier).Min(0.0f).Max(0.0f);
+    NFE_CLASS_MEMBER(mUseVertexConnection);
+    NFE_CLASS_MEMBER(mUseVertexMerging);
+}
 NFE_END_DEFINE_CLASS()
 
 namespace NFE {
@@ -58,13 +71,12 @@ static_assert(sizeof(VertexConnectionAndMerging::Photon) == 32, "Invalid photon 
 
 VertexConnectionAndMerging::VertexConnectionAndMerging()
     : mLightPathsCount(0)
+    , mBSDFSamplingWeight(LdrColorRGB::White())
+    , mLightSamplingWeight(LdrColorRGB::White())
+    , mVertexConnectingWeight(LdrColorRGB::White())
+    , mCameraConnectingWeight(LdrColorRGB::White())
+    , mVertexMergingWeight(LdrColorRGB::White())
 {
-    mBSDFSamplingWeight = Vector4(1.0f);
-    mLightSamplingWeight = Vector4(1.0f);
-    mVertexConnectingWeight = Vector4(1.0f);
-    mCameraConnectingWeight = Vector4(1.0f);
-    mVertexMergingWeight = Vector4(1.0f);
-
     mUseVertexConnection = true;
     mUseVertexMerging = true;
     mMaxPathLength = 10;

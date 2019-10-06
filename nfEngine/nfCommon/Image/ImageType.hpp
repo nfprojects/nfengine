@@ -20,7 +20,7 @@ namespace Common {
 using ImageTypePtr = UniquePtr<ImageType>;
 using ImageTypeMap = HashMap<StringView, ImageTypePtr>;
 
-class NFCOMMON_API ImageType
+class NFCOMMON_API ImageType : public IObject
 {
     NFE_DECLARE_POLYMORPHIC_CLASS(ImageType)
 

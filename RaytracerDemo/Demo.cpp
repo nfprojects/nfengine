@@ -68,7 +68,6 @@ bool DemoWindow::Initialize()
 
     InitializeUI();
 
-    mRendererName = gOptions.rendererName;
     mRenderingParams.traversalMode = gOptions.enablePacketTracing ? TraversalMode::Packet : TraversalMode::Single;
 
     mViewport = MakeUniquePtr<Viewport>();
@@ -203,8 +202,8 @@ void DemoWindow::SwitchScene(const String& sceneName)
     mSelectedObject = nullptr;
     mSelectedLight = nullptr;
 
-    mRenderer = CreateRenderer(mRendererName, *mScene);
-    mViewport->SetRenderer(mRenderer);
+    mRenderer = CreateRenderer(gOptions.rendererName, *mScene);
+    mViewport->SetRenderer(mRenderer.Get());
 }
 
 void DemoWindow::ResetFrame()

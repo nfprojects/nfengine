@@ -1,7 +1,7 @@
 #include "PCH.h"
 #include "DirectionalLight.h"
 #include "../Camera.h"
-#include "../../Rendering/Context.h"
+#include "../../Rendering/RenderingContext.h"
 #include "../../Rendering/ShadingData.h"
 #include "../../../nfCommon/Math/Geometry.hpp"
 #include "../../../nfCommon/Math/SamplingHelpers.hpp"

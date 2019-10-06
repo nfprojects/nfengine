@@ -13,10 +13,6 @@
 namespace NFE {
 namespace Math {
 
-using HalfFloat = uint16;
-
-NFCOMMON_API HalfFloat ToHalfFloat(float value);
-NFCOMMON_API float ToFloat(HalfFloat value);
 NFCOMMON_API uint8 ToUint8(float x);
 NFCOMMON_API uint8 ToNormUint8(float x);
 NFCOMMON_API int8 ToInt8(float x);

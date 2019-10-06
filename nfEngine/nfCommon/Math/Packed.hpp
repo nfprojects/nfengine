@@ -125,8 +125,8 @@ public:
 
     const Vector4 ToVector() const
     {
-        Bits32 fi;
-        fi.ui = 0x33800000 + (e << 23);
+        Common::FundamentalTypesUnion fi;
+        fi.u32 = 0x33800000 + (e << 23);
         return fi.f * VectorInt4(x, y, z, 0).ConvertToFloat();
     }
 

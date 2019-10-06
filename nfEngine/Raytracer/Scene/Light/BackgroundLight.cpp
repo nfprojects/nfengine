@@ -1,6 +1,6 @@
 #include "PCH.h"
 #include "BackgroundLight.h"
-#include "../../Rendering/Context.h"
+#include "../../Rendering/RenderingContext.h"
 #include "../../Rendering/ShadingData.h"
 #include "../../Textures/Texture.h"
 #include "../Camera.h"

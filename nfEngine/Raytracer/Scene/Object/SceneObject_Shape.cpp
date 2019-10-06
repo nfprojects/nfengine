@@ -2,7 +2,7 @@
 #include "SceneObject_Shape.h"
 #include "Shapes/Shape.h"
 #include "Rendering/ShadingData.h"
-#include "Rendering/Context.h"
+#include "Rendering/RenderingContext.h"
 #include "Traversal/TraversalContext.h"
 #include "Material/Material.h"
 #include "../nfCommon/Math/Simd8Geometry.hpp"

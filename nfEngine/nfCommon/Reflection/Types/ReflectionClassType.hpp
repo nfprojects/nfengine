@@ -47,6 +47,7 @@ public:
      * Enumerate all subtypes of this type (including self).
      */
     void ListSubtypes(Children& outTypes, bool skipAbstractTypes = false) const;
+    void ListSubtypes(const std::function<void(const ClassType*)>& func, bool skipAbstractTypes = false) const;
 
     /**
      * Get number of member (including members that come from parent type).
@@ -69,6 +70,7 @@ public:
     bool IsA(const Type* baseType) const override;
     bool Serialize(const void* object, Common::Config& config, Common::ConfigValue& outValue) const override;
     bool Deserialize(void* outObject, const Common::Config& config, const Common::ConfigValue& value) const override;
+    bool Compare(const void* objectA, const void* objectB) const override;
 
 private:
     // parent class type

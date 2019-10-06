@@ -5,12 +5,12 @@
 #include "RendererContext.h"
 #include "Scene/Camera.h"
 #include "Textures/Texture.h"
-#include "Color/LdrColor.h"
 #include "Color/ColorHelpers.h"
 #include "../nfCommon/System/Timer.hpp"
 #include "../nfCommon/Math/SamplingHelpers.hpp"
 #include "../nfCommon/Math/Vector4Load.hpp"
 #include "../nfCommon/Math/Transcendental.hpp"
+#include "../nfCommon/Math/LdrColor.hpp"
 #include "../nfCommon/Logger/Logger.hpp"
 #include "../nfCommon/Utils/ThreadPool.hpp"
 #include "../nfCommon/Utils/Waitable.hpp"
@@ -24,6 +24,7 @@ using namespace Math;
 static const uint32 MAX_IMAGE_SZIE = 1 << 16;
 
 Viewport::Viewport()
+    : mRenderer(nullptr)
 {
     NFE_LOG_INFO("Viewport::Viewport %p", this);
 
@@ -150,7 +151,7 @@ void Viewport::Reset()
     BuildInitialBlocksList();
 }
 
-bool Viewport::SetRenderer(const RendererPtr& renderer)
+bool Viewport::SetRenderer(IRenderer* renderer)
 {
     mRenderer = renderer;
 
@@ -172,7 +173,7 @@ bool Viewport::SetRenderingParams(const RenderingParams& params)
 
 bool Viewport::SetPostprocessParams(const PostprocessParams& params)
 {
-    if (mPostprocessParams.params != params)
+    if (!RTTI::GetType<PostprocessParams>()->Compare(&mPostprocessParams.params, &params))
     {
         mPostprocessParams.params = params;
         mPostprocessParams.fullUpdateRequired = true;
@@ -450,7 +451,7 @@ void Viewport::PerformPostProcess(TaskBuilder& taskBuilder)
         NFE_LOG_INFO("Bluring took %.3f ms (min: %.3f ms)", curTime * 1000.0, minTime * 1000.0);
     }
 
-    mPostprocessParams.colorScale = mPostprocessParams.params.colorFilter * powf(2.0f, mPostprocessParams.params.exposure);
+    mPostprocessParams.colorScale = mPostprocessParams.params.colorFilter.ToVector4() * powf(2.0f, mPostprocessParams.params.exposure);
 
     if (mPostprocessParams.fullUpdateRequired)
     {
@@ -733,7 +734,7 @@ void Viewport::UpdateBlocksList()
 
 void Viewport::VisualizeActiveBlocks(Bitmap& bitmap) const
 {
-    const LdrColor color(255, 0, 0);
+    const LdrColorRGBA color = LdrColorRGBA::Red();
     const uint8 alpha = 64;
 
     for (const Block& block : mBlocks)
@@ -742,29 +743,29 @@ void Viewport::VisualizeActiveBlocks(Bitmap& bitmap) const
         {
             for (uint32 x = block.minX; x < block.maxX; ++x)
             {
-                LdrColor& pixel = bitmap.GetPixelRef<LdrColor>(x, y);
+                LdrColorRGB& pixel = bitmap.GetPixelRef<LdrColorRGBA>(x, y);
                 pixel = Lerp(pixel, color, alpha);
             }
         }
 
         for (uint32 y = block.minY; y < block.maxY; ++y)
         {
-            bitmap.GetPixelRef<LdrColor>(block.minX, y) = color;
+            bitmap.GetPixelRef<LdrColorRGB>(block.minX, y) = color;
         }
 
         for (uint32 y = block.minY; y < block.maxY; ++y)
         {
-            bitmap.GetPixelRef<LdrColor>(block.maxX - 1, y) = color;
+            bitmap.GetPixelRef<LdrColorRGB>(block.maxX - 1, y) = color;
         }
 
         for (uint32 x = block.minX; x < block.maxX; ++x)
         {
-            bitmap.GetPixelRef<LdrColor>(x, block.minY) = color;
+            bitmap.GetPixelRef<LdrColorRGB>(x, block.minY) = color;
         }
 
         for (uint32 x = block.minX; x < block.maxX; ++x)
         {
-            bitmap.GetPixelRef<LdrColor>(x, block.maxY - 1) = color;
+            bitmap.GetPixelRef<LdrColorRGB>(x, block.maxY - 1) = color;
         }
     }
 }

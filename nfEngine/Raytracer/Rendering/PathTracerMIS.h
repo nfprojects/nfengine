@@ -2,6 +2,7 @@
 
 #include "Renderer.h"
 #include "../Material/BSDF/BSDF.h"
+#include "../../nfCommon/Math/LdrColor.hpp"
 
 namespace NFE {
 namespace RT {
@@ -17,10 +18,6 @@ public:
     PathTracerMIS();
 
     virtual const RayColor RenderPixel(const Math::Ray& ray, const RenderParam& param, RenderingContext& ctx) const override;
-
-    // for debugging
-    Math::Vector4 mLightSamplingWeight;
-    Math::Vector4 mBSDFSamplingWeight;
 
 private:
 
@@ -44,6 +41,10 @@ private:
 
     // compute radiance from global lights
     const RayColor EvaluateGlobalLights(const Scene& scene, const Math::Ray& ray, const PathState& pathState, RenderingContext& context, const float lightPickProbability) const;
+
+    // for debugging
+    Math::LdrColorRGB lightSamplingWeight;
+    Math::LdrColorRGB BSDFSamplingWeight;
 };
 
 } // namespace RT

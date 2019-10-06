@@ -18,7 +18,7 @@ namespace Scene {
 /**
  * Base class for all component types.
  */
-class CORE_API IComponent
+class CORE_API IComponent : public IObject
 {
     NFE_DECLARE_POLYMORPHIC_CLASS(IComponent)
 

@@ -17,8 +17,21 @@ Member::Member(const char* name, size_t offset, const Type* type)
     : mType(type)
     , mName(name)
 {
-    NFE_ASSERT(offset < std::numeric_limits<uint32>::max(), "Member offset is too big");
-    mOffset = static_cast<uint32>(offset);
+    // validate name
+    {
+        const size_t len = strlen(name);
+        NFE_ASSERT(len > 0);
+
+        NFE_ASSERT(isalpha(name[0]), "Invalid member name: '%s'. Must start with a letter", name);
+
+        for (size_t i = 0; i < len; ++i)
+        {
+            NFE_ASSERT(isalnum(name[i]) || name[i] == '_', "Invalid member name: '%s'", name);
+        }
+    }
+
+    NFE_ASSERT(offset < std::numeric_limits<uint32>::max(), "Member '%s' offset is too big (%zu bytes)", name, offset);
+    mOffset = static_cast<uint32>(offset);  
 }
 
 

@@ -1,6 +1,6 @@
 #include "PCH.h"
 #include "SpotLight.h"
-#include "../../Rendering/Context.h"
+#include "../../Rendering/RenderingContext.h"
 #include "../../Rendering/ShadingData.h"
 #include "../../../nfCommon/Math/Geometry.hpp"
 #include "../../../nfCommon/Math/Transcendental.hpp"

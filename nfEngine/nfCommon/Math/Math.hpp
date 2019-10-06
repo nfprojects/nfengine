@@ -2,6 +2,7 @@
 
 #include "../nfCommon.hpp"
 #include "../System/Assertion.hpp"
+#include "../Utils/FundamentalTypesUnion.hpp"
 
 #include <math.h>
 
@@ -39,22 +40,6 @@ constexpr T e = T(2.71828182845904523536);
 NFCOMMON_API void SetFlushDenormalsToZero(bool enable = true);
 NFCOMMON_API bool GetFlushDenormalsToZero();
 
-
-// Union providing easy manipulations on 32-bit values
-union Bits32
-{
-    float f;
-    uint32 ui;
-    int32 si;
-};
-
-// Union providing easy manipulations on 64-bit values
-union Bits64
-{
-    double f;
-    uint64 ui;
-    int64 si;
-};
 
 // convert degrees to radians
 NFE_FORCE_INLINE constexpr float DegToRad(const float x)
@@ -156,10 +141,10 @@ NFE_FORCE_INLINE float Sqrt(const float x)
 // Returns x with sign of y
 NFE_FORCE_INLINE float CopySign(const float x, const float y)
 {
-    Bits32 xInt, yInt;
+    Common::FundamentalTypesUnion xInt, yInt;
     xInt.f = x;
     yInt.f = y;
-    xInt.ui = (0x7fffffff & xInt.ui) | (0x80000000 & yInt.ui);
+    xInt.u32 = (0x7fffffff & xInt.u32) | (0x80000000 & yInt.u32);
     return xInt.f;
 }
 
@@ -221,25 +206,41 @@ NFE_FORCE_INLINE constexpr const T Lerp(const T a, const T b, const T w)
 // Check if a given number is NaN (not a number), according to IEEE 754 standard.
 NFE_FORCE_INLINE bool IsNaN(float x)
 {
-    Bits32 num;
+    Common::FundamentalTypesUnion num;
     num.f = x;
-    return ((num.ui & 0x7F800000) == 0x7F800000) && ((num.ui & 0x7FFFFF) != 0);
+    return ((num.u32 & 0x7F800000) == 0x7F800000) && ((num.u32 & 0x7FFFFF) != 0);
 }
 
 // Check if a given number is infinity (positive or negative), according to IEEE 754 standard.
 NFE_FORCE_INLINE bool IsInfinity(float x)
 {
-    Bits32 num;
+    Common::FundamentalTypesUnion num;
     num.f = x;
-    return (num.ui & 0x7FFFFFFF) == 0x7F800000;
+    return (num.u32 & 0x7FFFFFFF) == 0x7F800000;
+}
+
+// Check if a given number is infinity (positive or negative), according to IEEE 754 standard.
+NFE_FORCE_INLINE bool IsInfinity(double x)
+{
+    Common::FundamentalTypesUnion num;
+    num.d = x;
+    return (num.u64 & 0x7FFFFFFFFFFFFFFFull) == 0x7FF0000000000000ull;
 }
 
 // Check if a given number is not NaN nor infinity
 NFE_FORCE_INLINE bool IsValid(float x)
 {
-    Bits32 num;
+    Common::FundamentalTypesUnion num;
     num.f = x;
-    return (num.ui & 0x7F800000) != 0x7F800000;
+    return (num.u32 & 0x7F800000) != 0x7F800000;
+}
+
+// Check if a given number is not NaN nor infinity
+NFE_FORCE_INLINE bool IsValid(double x)
+{
+    Common::FundamentalTypesUnion num;
+    num.d = x;
+    return (num.u64 & 0x7FF0000000000000ull) != 0x7FF0000000000000ull;
 }
 
 // Check if a number is power of two.

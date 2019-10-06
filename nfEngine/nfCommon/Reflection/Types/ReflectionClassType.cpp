@@ -30,11 +30,6 @@ ClassType::ClassType(const ClassTypeInfo& info)
         NFE_ASSERT(member.GetName() != TYPE_MARKER, "Name reserved");
     }
 
-    for (uint32 i = 1; i < mMembers.Size(); ++i)
-    {
-        NFE_ASSERT(mMembers[i - 1].GetOffset() < mMembers[i].GetOffset(), "Class members declared in wrong order");
-    }
-
     if (mParent)
     {
         // HACK
@@ -85,14 +80,22 @@ bool ClassType::IsA(const Type* baseType) const
 
 void ClassType::ListSubtypes(Children& outTypes, bool skipAbstractTypes) const
 {
+    ListSubtypes([&outTypes] (const ClassType* type)
+    {
+        outTypes.PushBack(type);
+    }, skipAbstractTypes);
+}
+
+void ClassType::ListSubtypes(const std::function<void(const ClassType*)>& func, bool skipAbstractTypes) const
+{
     if (GetKind() != TypeKind::AbstractClass || !skipAbstractTypes)
     {
-        outTypes.PushBack(this);
+        func(this);
     }
 
     for (const ClassType* childType : mChildTypes)
     {
-        childType->ListSubtypes(outTypes);
+        childType->ListSubtypes(func, skipAbstractTypes);
     }
 }
 
@@ -265,6 +268,32 @@ bool ClassType::Deserialize(void* outObject, const Config& config, const ConfigV
 
     config.Iterate(configIteratorCallback, value.GetObj());
     return success;
+}
+
+bool ClassType::Compare(const void* objectA, const void* objectB) const
+{
+    if (mParent)
+    {
+        if (!mParent->Compare(objectA, objectB))
+        {
+            return false;
+        }
+    }
+
+    // compare members
+    for (const Member& member : mMembers)
+    {
+        const Type* memberType = member.GetType();
+        const char* memberPtrA = static_cast<const char*>(objectA) + member.GetOffset();
+        const char* memberPtrB = static_cast<const char*>(objectB) + member.GetOffset();
+
+        if (!memberType->Compare(memberPtrA, memberPtrB))
+        {
+            return false;
+        }
+    }
+
+    return true;
 }
 
 } // namespace RTTI

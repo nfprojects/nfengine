@@ -163,6 +163,30 @@ NFE_FORCE_INLINE const Vector4 Vector4_Load_4xUint16(const uint16* src)
 }
 
 // Convert 3 uint8 to a Vector4 and scale to 0...1 range
+NFE_FORCE_INLINE const Vector4 Vector4_LoadRGB_UNorm(const uint8* src)
+{
+#ifdef NFE_USE_SSE
+    const Vector4 mask{ 0xFFu, 0xFF00u, 0xFF0000u, 0x0u };
+    const Vector4 scale{ 1.0f / 255.0f, 1.0f / 256.0f / 255.0f, 1.0f / 65536.0f / 255.0f, 0.0f };
+
+    __m128 vTemp = _mm_load_ps1((const float*)src);
+    vTemp = _mm_and_ps(vTemp, mask.v);
+
+    // convert to float
+    vTemp = _mm_cvtepi32_ps(_mm_castps_si128(vTemp));
+    return _mm_mul_ps(vTemp, scale);
+#else
+    return Vector4
+    {
+        static_cast<float>(src[0]) / 255.0f,
+        static_cast<float>(src[1]) / 255.0f,
+        static_cast<float>(src[2]) / 255.0f,
+        1.0f,
+    };
+#endif // NFE_USE_SSE
+}
+
+// Convert 3 uint8 to a Vector4 and scale to 0...1 range
 NFE_FORCE_INLINE const Vector4 Vector4_LoadBGR_UNorm(const uint8* src)
 {
 #ifdef NFE_USE_SSE
@@ -181,6 +205,7 @@ NFE_FORCE_INLINE const Vector4 Vector4_LoadBGR_UNorm(const uint8* src)
         static_cast<float>(src[2]) / 255.0f,
         static_cast<float>(src[1]) / 255.0f,
         static_cast<float>(src[0]) / 255.0f,
+        1.0f,
     };
 #endif // NFE_USE_SSE
 }

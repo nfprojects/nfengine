@@ -12,6 +12,7 @@ struct IntersectionData;
 struct SingleTraversalContext;
 struct PacketTraversalContext;
 struct RenderingContext;
+struct RenderingParams;
 struct ShadingData;
 struct PathDebugData;
 class Film;

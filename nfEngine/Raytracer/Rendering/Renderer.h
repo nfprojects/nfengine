@@ -16,7 +16,9 @@ namespace NFE {
 namespace RT {
 
 // abstract scene rendering interface
-class NFE_ALIGN(16) IRenderer : public Common::Aligned<16>
+class NFE_ALIGN(16) IRenderer
+    : public Common::Aligned<16>
+    , public IObject
 {
     NFE_DECLARE_POLYMORPHIC_CLASS(IRenderer);
 
@@ -56,7 +58,7 @@ private:
     IRenderer& operator = (IRenderer&&) = delete;
 };
 
-using RendererPtr = Common::SharedPtr<IRenderer>;
+using RendererPtr = Common::UniquePtr<IRenderer>;
 
 NFE_RAYTRACER_API RendererPtr CreateRenderer(const Common::StringView name, const Scene& scene);
 

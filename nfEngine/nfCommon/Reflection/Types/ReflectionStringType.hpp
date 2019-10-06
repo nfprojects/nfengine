@@ -18,7 +18,7 @@ namespace RTTI {
 /**
  * Type information for NFE::Common::String type
  */
-class NFCOMMON_API StringType : public Type
+class NFCOMMON_API StringType final : public Type
 {
     NFE_MAKE_NONCOPYABLE(StringType)
 
@@ -28,6 +28,7 @@ public:
 
     bool Serialize(const void* object, Common::Config& config, Common::ConfigValue& outValue) const override;
     bool Deserialize(void* outObject, const Common::Config& config, const Common::ConfigValue& value) const override;
+    bool Compare(const void* objectA, const void* objectB) const override;
 };
 
 
@@ -43,7 +44,7 @@ public:
     static TypePtr CreateType()
     {
         TypeInfo typeInfo;
-        typeInfo.kind = TypeKind::Fundamental;
+        typeInfo.kind = TypeKind::String;
         typeInfo.size = sizeof(Common::String);
         typeInfo.alignment = alignof(Common::String);
         typeInfo.name = "NFE::Common::String";

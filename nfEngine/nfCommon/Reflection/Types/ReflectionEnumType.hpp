@@ -42,7 +42,7 @@ struct EnumTypeInfo : public TypeInfo
 /**
  * C++ enum type.
  */
-class NFCOMMON_API EnumType : public Type
+class NFCOMMON_API EnumType final : public Type
 {
     NFE_MAKE_NONCOPYABLE(EnumType)
 
@@ -53,9 +53,14 @@ public:
     // list all the enum options
     const EnumOptions& GetOptions() const;
 
+    const char* FindOptionByValue(uint64 value) const;
+    bool WriteValue(void* object, uint32 enumOptionIndex) const;
+    bool ReadValue(const void* object, uint32& outEnumOptionIndex) const;
+
     void PrintInfo() const override;
     bool Serialize(const void* object, Common::Config& config, Common::ConfigValue& outValue) const override;
     bool Deserialize(void* outObject, const Common::Config& config, const Common::ConfigValue& value) const override;
+    bool Compare(const void* objectA, const void* objectB) const override;
 
 private:
     EnumOptions mOptions;
@@ -73,7 +78,7 @@ private:
  * Declare an enum type. This must be placed OUTSIDE namespace.
  */
 #define NFE_DECLARE_ENUM_TYPE(T)                                                    \
-    static_assert(std::is_enum<T>::value, "Given type is not enum type");           \
+    static_assert(std::is_enum_v<T>, "Given type is not enum type");                \
     namespace NFE { namespace RTTI {                                                \
         template <>                                                                 \
         class TypeCreator<T>                                                        \

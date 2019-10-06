@@ -41,45 +41,6 @@ const int32 HALF_MIN_DENORM = HALF_MIN_NORM - FLOAT_MAX_SUBNORM_AS_16 - 1;
 } // namespace anonymous
 
 
-// float <-> half float conversions taken from: http://stackoverflow.com/a/3542975
-
-HalfFloat ToHalfFloat(float value)
-{
-    Bits32 v, s;
-    v.f = value;
-    uint32 sign = v.si & FLOAT_SIGN_BIT;
-    v.si ^= sign;
-    sign >>= HALF_SHIFT_SIGN; // logical HALF_SHIFT
-    s.si = 0x52000000; // (1 << 23) / HALF_MIN_NORM_AS_32
-    s.si = static_cast<int32>(s.f * v.f); // correct subnormals
-    v.si ^= (s.si ^ v.si) & -(HALF_MIN_NORM_AS_32 > v.si);
-    v.si ^= (FLOAT_POS_INF ^ v.si) & -((FLOAT_POS_INF > v.si) & (v.si > HALF_MAX_NORM_AS_32));
-    v.si ^= (HALF_MIN_NAN_AS_32 ^ v.si) & -((HALF_MIN_NAN_AS_32 > v.si) & (v.si > FLOAT_POS_INF));
-    v.ui >>= HALF_SHIFT; // logical HALF_SHIFT
-    v.si ^= ((v.si - HALF_MAX_DENORM) ^ v.si) & -(v.si > HALF_MAX_NORM);
-    v.si ^= ((v.si - HALF_MIN_DENORM) ^ v.si) & -(v.si > FLOAT_MAX_SUBNORM_AS_16);
-    return static_cast<HalfFloat>(v.ui | sign);
-}
-
-float ToFloat(HalfFloat value)
-{
-    Bits32 v, s;
-    v.ui = value;
-    int32_t sign = v.si & HALF_SIGN_BIT;
-    v.si ^= sign;
-    sign <<= HALF_SHIFT_SIGN;
-    v.si ^= ((v.si + HALF_MIN_DENORM) ^ v.si) & -(v.si > FLOAT_MAX_SUBNORM_AS_16);
-    v.si ^= ((v.si + HALF_MAX_DENORM) ^ v.si) & -(v.si > HALF_MAX_NORM);
-    s.si = 0x33800000; // HALF_MIN_NORM_AS_32 / (1 << (23 - HALF_SHIFT))
-    s.f *= v.si;
-    int32_t mask = -(FLOAT_MIN_NORM_AS_16 > v.si);
-    v.si <<= HALF_SHIFT;
-    v.si ^= (s.si ^ v.si) & mask;
-    v.si |= sign;
-    return v.f;
-}
-
-
 uint8 ToUint8(float x)
 {
     return static_cast<uint8>(Math::Clamp(x, 0.0f, UINT8_MAX_FLOAT));

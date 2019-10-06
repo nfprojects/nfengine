@@ -605,6 +605,11 @@
     </ClInclude>
     <ClInclude Include="Utils\TaskBuilder.hpp" />
     <ClInclude Include="Utils\Waitable.hpp" />
+    <ClInclude Include="Reflection\Object.hpp" />
+    <ClInclude Include="Math\LdrColor.hpp" />
+    <ClInclude Include="Math\HdrColor.hpp" />
+    <ClInclude Include="Reflection\ReflectionMemberMetadataBuilder.hpp" />
+    <ClInclude Include="Utils\FundamentalTypesUnion.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="PCH.cpp" />
@@ -842,6 +847,12 @@
     </ClCompile>
     <ClCompile Include="Utils\TaskBuilder.cpp" />
     <ClCompile Include="Utils\Waitable.cpp" />
+    <ClCompile Include="Reflection\Types\ReflectionNativeArrayType.cpp" />
+    <ClCompile Include="Math\LdrColor.cpp" />
+    <ClCompile Include="Math\HdrColor.cpp" />
+    <ClCompile Include="Reflection\Types\ReflectionDynArrayType.cpp" />
+    <ClCompile Include="Reflection\Types\ReflectionUniquePtrType.cpp" />
+    <ClCompile Include="Reflection\ReflectionMemberMetadataBuilder.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Natvis Include="Math\Math.natvis">

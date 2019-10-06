@@ -20,8 +20,8 @@ namespace RTTI {
 template<typename TargetType, typename SourceType>
 TargetType* Cast(SourceType* source)
 {
-    static_assert(std::is_class<SourceType>::value, "Source type is not class type");
-    static_assert(std::is_class<TargetType>::value, "Target type is not class type");
+    static_assert(std::is_class_v<SourceType>, "Source type is not class type");
+    static_assert(std::is_class_v<TargetType>, "Target type is not class type");
 
     if (source)
     {
@@ -46,8 +46,8 @@ TargetType* Cast(SourceType* source)
 template<typename TargetType, typename SourceType>
 const TargetType* Cast(const SourceType* source)
 {
-    static_assert(std::is_class<SourceType>::value, "Source type is not class type");
-    static_assert(std::is_class<TargetType>::value, "Target type is not class type");
+    static_assert(std::is_class_v<SourceType>, "Source type is not class type");
+    static_assert(std::is_class_v<TargetType>, "Target type is not class type");
 
     if (source)
     {

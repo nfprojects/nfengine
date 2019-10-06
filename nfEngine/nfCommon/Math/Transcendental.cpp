@@ -9,15 +9,15 @@ namespace {
 
 NFE_FORCE_INLINE int32 FloatAsInt(const float f)
 {
-    Bits32 bits;
+    Common::FundamentalTypesUnion bits;
     bits.f = f;
-    return bits.si;
+    return bits.i32;
 }
 
 NFE_FORCE_INLINE float IntAsFloat(const int32 i)
 {
-    Bits32 bits;
-    bits.si = i;
+    Common::FundamentalTypesUnion bits;
+    bits.i32 = i;
     return bits.f;
 }
 
@@ -218,9 +218,9 @@ float FastExp(float x)
     const int32 i = (int32)fi;
     const float f = t - fi;
 
-    Bits32 bits;
+    Common::FundamentalTypesUnion bits;
     bits.f = (0.3371894346f * f + 0.657636276f) * f + 1.00172476f;
-    bits.si += (i << 23);
+    bits.i32 += (i << 23);
     return bits.f;
 }
 

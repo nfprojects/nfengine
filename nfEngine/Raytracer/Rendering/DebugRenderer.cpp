@@ -6,11 +6,36 @@
 #include "Color/Spectrum.h"
 #include "Traversal/TraversalContext.h"
 #include "Rendering/Film.h"
-#include "Rendering/Context.h"
+#include "Rendering/RenderingContext.h"
 
 NFE_BEGIN_DEFINE_POLYMORPHIC_CLASS(NFE::RT::DebugRenderer)
-    NFE_CLASS_PARENT(NFE::RT::IRenderer)
+{
+    NFE_CLASS_PARENT(NFE::RT::IRenderer);
+    NFE_CLASS_MEMBER(renderingMode);
+}
 NFE_END_DEFINE_CLASS()
+
+NFE_BEGIN_DEFINE_ENUM(NFE::RT::DebugRenderingMode)
+    NFE_ENUM_OPTION(CameraLight)
+    NFE_ENUM_OPTION(TriangleID)
+    NFE_ENUM_OPTION(Depth)
+    NFE_ENUM_OPTION(Position)
+    NFE_ENUM_OPTION(Normals)
+    NFE_ENUM_OPTION(Tangents)
+    NFE_ENUM_OPTION(Bitangents)
+    NFE_ENUM_OPTION(TexCoords)
+    NFE_ENUM_OPTION(BaseColor)
+    NFE_ENUM_OPTION(Emission)
+    NFE_ENUM_OPTION(Roughness)
+    NFE_ENUM_OPTION(Metalness)
+    NFE_ENUM_OPTION(IoR)
+#ifdef NFE_ENABLE_INTERSECTION_COUNTERS
+    NFE_ENUM_OPTION(RayBoxIntersection)
+    NFE_ENUM_OPTION(RayBoxIntersectionPassed)
+    NFE_ENUM_OPTION(RayTriIntersection)
+    NFE_ENUM_OPTION(RayTriIntersectionPassed)
+#endif // NFE_ENABLE_INTERSECTION_COUNTERS
+NFE_END_DEFINE_ENUM()
 
 namespace NFE {
 namespace RT {
@@ -18,7 +43,7 @@ namespace RT {
 using namespace Math;
 
 DebugRenderer::DebugRenderer()
-    : mRenderingMode(DebugRenderingMode::TriangleID)
+    : renderingMode(DebugRenderingMode::TriangleID)
 {
 }
 
@@ -34,25 +59,25 @@ const RayColor DebugRenderer::RenderPixel(const Math::Ray& ray, const RenderPara
 
     // traversal tatistics
 #ifdef NFE_ENABLE_INTERSECTION_COUNTERS
-    if (mRenderingMode == DebugRenderingMode::RayBoxIntersection)
+    if (renderingMode == DebugRenderingMode::RayBoxIntersection)
     {
         const float num = static_cast<float>(ctx.localCounters.numRayBoxTests);
         const Vector4 resultColor = Vector4(num * 0.01f, num * 0.004f, num * 0.001f, 0.0f);
         return RayColor::Resolve(ctx.wavelength, Spectrum(resultColor));
     }
-    else if (mRenderingMode == DebugRenderingMode::RayBoxIntersectionPassed)
+    else if (renderingMode == DebugRenderingMode::RayBoxIntersectionPassed)
     {
         const float num = static_cast<float>(ctx.localCounters.numPassedRayBoxTests);
         const Vector4 resultColor = Vector4(num * 0.01f, num * 0.005f, num * 0.001f, 0.0f);
         return RayColor::Resolve(ctx.wavelength, Spectrum(resultColor));
     }
-    else if (mRenderingMode == DebugRenderingMode::RayTriIntersection)
+    else if (renderingMode == DebugRenderingMode::RayTriIntersection)
     {
         const float num = static_cast<float>(ctx.localCounters.numRayTriangleTests);
         const Vector4 resultColor = Vector4(num * 0.01f, num * 0.004f, num * 0.001f, 0.0f);
         return RayColor::Resolve(ctx.wavelength, Spectrum(resultColor));
     }
-    else if (mRenderingMode == DebugRenderingMode::RayTriIntersectionPassed)
+    else if (renderingMode == DebugRenderingMode::RayTriIntersectionPassed)
     {
         const float num = static_cast<float>(ctx.localCounters.numPassedRayTriangleTests);
         const Vector4 resultColor = Vector4(num * 0.01f, num * 0.004f, num * 0.001f, 0.0f);
@@ -74,7 +99,7 @@ const RayColor DebugRenderer::RenderPixel(const Math::Ray& ray, const RenderPara
     }
 
     ShadingData shadingData;
-    if (mRenderingMode != DebugRenderingMode::TriangleID && mRenderingMode != DebugRenderingMode::Depth)
+    if (renderingMode != DebugRenderingMode::TriangleID && renderingMode != DebugRenderingMode::Depth)
     {
         if (hitPoint.distance < FLT_MAX)
         {
@@ -85,7 +110,7 @@ const RayColor DebugRenderer::RenderPixel(const Math::Ray& ray, const RenderPara
 
     RayColor resultColor;
 
-    switch (mRenderingMode)
+    switch (renderingMode)
     {
         case DebugRenderingMode::CameraLight:
         {
@@ -206,12 +231,12 @@ void DebugRenderer::Raytrace_Packet(RayPacket& packet, const RenderParam& param,
 
             if (hitPoint.distance != FLT_MAX)
             {
-                if (mRenderingMode != DebugRenderingMode::TriangleID && mRenderingMode != DebugRenderingMode::Depth)
+                if (renderingMode != DebugRenderingMode::TriangleID && renderingMode != DebugRenderingMode::Depth)
                 {
                     param.scene.EvaluateIntersection(Ray(rayOrigins[j], rayDirs[j]), hitPoint, context.time, shadingData.intersection);
                 }
 
-                switch (mRenderingMode)
+                switch (renderingMode)
                 {
                     case DebugRenderingMode::CameraLight:
                     {

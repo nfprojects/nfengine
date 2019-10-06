@@ -17,21 +17,49 @@ namespace RTTI {
 /**
  * Type information for T[N] types.
  */
-template<typename T>
-class NativeArrayType : public Type
+class NFCOMMON_API NativeArrayType : public Type
 {
     NFE_MAKE_NONCOPYABLE(NativeArrayType)
 
 public:
-    NativeArrayType(const TypeInfo& info, uint32 arraySize)
+    NFE_FORCE_INLINE NativeArrayType(const TypeInfo& info, uint32 arraySize)
         : Type(info)
         , mArraySize(arraySize)
     { }
 
-    void PrintInfo() const override
+    // get number of array elements
+    NFE_FORCE_INLINE uint32 GetArraySize() const { return mArraySize; }
+
+    // get type of the array element
+    virtual const Type* GetUnderlyingType() const = 0;
+
+    virtual void PrintInfo() const override;
+
+    bool Compare(const void* objectA, const void* objectB) const override;
+
+    // access element data
+    void* GetElementPointer(void* arrayData, uint32 index) const;
+    const void* GetElementPointer(const void* arrayData, uint32 index) const;
+
+protected:
+    // array size (in elements)
+    uint32 mArraySize;
+};
+
+/**
+ * Specialized type information for T[N] types.
+ */
+template<typename T>
+class NativeArrayTypeImpl final : public NativeArrayType
+{
+public:
+    NativeArrayTypeImpl(const TypeInfo& info, uint32 arraySize)
+        : NativeArrayType(info, arraySize)
+    { }
+
+    virtual const Type* GetUnderlyingType() const override
     {
-        Type::PrintInfo();
-        NFE_LOG_DEBUG("  array size = %u", mArraySize);
+        return GetType<T>();
     }
 
     bool Serialize(const void* object, Common::Config& config, Common::ConfigValue& outValue) const override
@@ -114,10 +142,6 @@ public:
 
         return true;
     }
-
-private:
-    // array size (in elements)
-    uint32 mArraySize;
 };
 
 
@@ -130,7 +154,7 @@ class TypeCreator<T[N]>
     static_assert(N > 0, "Array size must be non-zero");
 
 public:
-    using TypeClass = DynArrayType<T>;
+    using TypeClass = NativeArrayTypeImpl<T>;
 
     static TypePtr CreateType()
     {
@@ -145,7 +169,7 @@ public:
         typeInfo.constructor = []() { return new T[N]; };
         //typeInfo.arrayConstructor = [](uint32 num) { return new T[N][num]; };
 
-        return TypePtr(new NativeArrayType<T>(typeInfo, N));
+        return TypePtr(new TypeClass(typeInfo, N));
     }
 
     void FinishInitialization(TypeInfo& typeInfo)
