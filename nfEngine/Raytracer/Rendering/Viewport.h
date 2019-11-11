@@ -96,6 +96,7 @@ private:
     // raytrace single image tile (will be called from multiple threads)
     void RenderTile(const TileRenderingContext& tileContext, RenderingContext& renderingContext, const Block& tile);
 
+    bool InitBluredImages();
     void PerformPostProcess(Common::TaskBuilder& taskBuilder);
 
     // generate "front buffer" image from "sum" image

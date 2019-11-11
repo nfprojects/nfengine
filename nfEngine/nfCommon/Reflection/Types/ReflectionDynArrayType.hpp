@@ -58,13 +58,13 @@ public:
 
     virtual void* GetElementPointer(void* arrayData, uint32 index) const override
     {
-        DynArray<T>& typedObject = *static_cast<DynArray<T>*>(arrayData);
+        Common::DynArray<T>& typedObject = *static_cast<Common::DynArray<T>*>(arrayData);
         return &typedObject[index];
     }
 
     virtual const void* GetElementPointer(const void* arrayData, uint32 index) const override
     {
-        const DynArray<T>& typedObject = *static_cast<const DynArray<T>*>(arrayData);
+        const Common::DynArray<T>& typedObject = *static_cast<const Common::DynArray<T>*>(arrayData);
         return &typedObject[index];
     }
 

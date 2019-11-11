@@ -72,7 +72,7 @@ bool DemoWindow::Initialize()
 
     mViewport = MakeUniquePtr<Viewport>();
 
-    //mViewport->Resize(gOptions.windowWidth, gOptions.windowHeight);
+    mViewport->Resize(gOptions.windowWidth, gOptions.windowHeight);
 
     NFE_LOG_INFO("%p", &mViewport->GetFrontBuffer());
 

@@ -87,6 +87,7 @@
     <ClInclude Include="..\..\nfEngineDeps\tinyexr\tinyexr.h" />
     <ClInclude Include="Rendering\RenderingContext.h" />
     <ClInclude Include="Rendering\RenderingParams.h" />
+    <ClInclude Include="Utils\BitmapUtils.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BVH\BVH.cpp" />
@@ -157,6 +158,7 @@
     <ClCompile Include="..\..\nfEngineDeps\tinyexr\tinyexr.cc" />
     <ClCompile Include="Rendering\RenderingParams.cpp" />
     <ClCompile Include="Rendering\RenderingContext.cpp" />
+    <ClCompile Include="Utils\BitmapUtils.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Math">

@@ -143,6 +143,7 @@ public:
 private:
 
     friend class BitmapTexture;
+    friend class BitmapUtils;
 
     bool LoadBMP(FILE* file, const char* path);
     bool LoadDDS(FILE* file, const char* path);

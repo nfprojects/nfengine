@@ -6,6 +6,7 @@
 #include "../../nfCommon/Math/HdrColor.hpp"
 #include "../../nfCommon/Reflection/ReflectionClassMacros.hpp"
 #include "../../nfCommon/Reflection/ReflectionEnumMacros.hpp"
+#include "../../nfCommon/Reflection/Types/ReflectionDynArrayType.hpp"
 
 namespace NFE {
 namespace RT {
@@ -18,10 +19,30 @@ enum class Tonemapper : uint8
     ACES
 };
 
+class NFE_ALIGN(16) BloomElement
+{
+    NFE_DECLARE_CLASS(BloomElement);
+public:
+
+    float weight = 0.0f;
+    float sigma = 5.0f;
+    uint32 numBlurPasses = 8;
+};
+
+class NFE_ALIGN(16) BloomParams
+{
+    NFE_DECLARE_CLASS(BloomParams);
+public:
+
+    float factor; // bloom multiplier
+    Common::DynArray<BloomElement> elements;
+
+    NFE_RAYTRACER_API BloomParams();
+};
+
 class NFE_ALIGN(16) PostprocessParams
 {
     NFE_DECLARE_CLASS(PostprocessParams);
-
 public:
 
     Math::HdrColorRGB colorFilter;
@@ -30,7 +51,7 @@ public:
     float contrast;
     float saturation;
     float ditheringStrength;    // applied after tonemapping
-    float bloomFactor;          // bloom multiplier
+    BloomParams bloom;
 
     Tonemapper tonemapper;      // tonemapping curve
 

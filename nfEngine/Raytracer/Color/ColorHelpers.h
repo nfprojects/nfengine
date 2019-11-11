@@ -7,7 +7,7 @@
 namespace NFE {
 namespace RT {
 
-NFE_GLOBAL_CONST Math::Vector4 c_rgbIntensityWeights = { 0.21f, 0.72f, 0.07f, 0.0f };
+NFE_GLOBAL_CONST Math::Vector4 c_rgbIntensityWeights = { 0.2126f, 0.7152f, 0.0722f, 0.0f };
 
 NFE_GLOBAL_CONST Math::Vector4 XYZtoRGB_r = {  3.240479f, -1.537150f, -0.498535f, 0.0f };
 NFE_GLOBAL_CONST Math::Vector4 XYZtoRGB_g = { -0.969256f,  1.875991f,  0.041556f, 0.0f };

@@ -6,6 +6,7 @@
 #include "Scene/Camera.h"
 #include "Textures/Texture.h"
 #include "Color/ColorHelpers.h"
+#include "Utils/BitmapUtils.h"
 #include "../nfCommon/System/Timer.hpp"
 #include "../nfCommon/Math/SamplingHelpers.hpp"
 #include "../nfCommon/Math/Vector4Load.hpp"
@@ -26,16 +27,9 @@ static const uint32 MAX_IMAGE_SZIE = 1 << 16;
 Viewport::Viewport()
     : mRenderer(nullptr)
 {
-    NFE_LOG_INFO("Viewport::Viewport %p", this);
-
     InitThreadData();
 
-    mBlurredImages.Resize(5);
-
-    Resize(1280, 720);
-
-    NFE_ASSERT(mFrontBuffer.GetWidth() == 1280);
-    NFE_LOG_INFO("%p", &mFrontBuffer);
+    mBlurredImages.Resize(mPostprocessParams.params.bloom.elements.Size());
 }
 
 Viewport::~Viewport() = default;
@@ -60,6 +54,25 @@ void Viewport::InitThreadData()
             ctx.rendererContext = mRenderer->CreateContext();
         }
     }
+}
+
+bool Viewport::InitBluredImages()
+{
+    Bitmap::InitData initData;
+    initData.linearSpace = true;
+    initData.width = GetWidth();
+    initData.height = GetHeight();
+    initData.format = Bitmap::Format::R32G32B32_Float;
+
+    for (Bitmap& blurredImage : mBlurredImages)
+    {
+        if (!blurredImage.Init(initData))
+        {
+            return false;
+        }
+    }
+
+    return true;
 }
 
 bool Viewport::Resize(uint32 width, uint32 height)
@@ -91,13 +104,7 @@ bool Viewport::Resize(uint32 width, uint32 height)
         return false;
     }
 
-    for (Bitmap& blurredImage : mBlurredImages)
-    {
-        if (!blurredImage.Init(initData))
-        {
-            return false;
-        }
-    }
+    InitBluredImages();
 
     initData.linearSpace = false;
     initData.format = Bitmap::Format::B8G8R8A8_UNorm;
@@ -141,10 +148,6 @@ void Viewport::Reset()
 
     mSum.Clear();
     mSecondarySum.Clear();
-    for (Bitmap& blurredImage : mBlurredImages)
-    {
-        blurredImage.Clear();
-    }
 
     memset(mPassesPerPixel.Data(), 0, sizeof(uint32) * GetWidth() * GetHeight());
 
@@ -173,6 +176,12 @@ bool Viewport::SetRenderingParams(const RenderingParams& params)
 
 bool Viewport::SetPostprocessParams(const PostprocessParams& params)
 {
+    if (mBlurredImages.Size() != params.bloom.elements.Size())
+    {
+        mBlurredImages.Resize(params.bloom.elements.Size());
+        InitBluredImages();
+    }
+
     if (!RTTI::GetType<PostprocessParams>()->Compare(&mPostprocessParams.params, &params))
     {
         mPostprocessParams.params = params;
@@ -432,23 +441,19 @@ void Viewport::RenderTile(const TileRenderingContext& tileContext, RenderingCont
 
 void Viewport::PerformPostProcess(TaskBuilder& taskBuilder)
 {
-    if (!mBlurredImages.Empty() && mPostprocessParams.params.bloomFactor > 0.0f)
+    if (!mBlurredImages.Empty() && mPostprocessParams.params.bloom.factor > 0.0f)
     {
-        Timer timer;
-
-        float blurSigma = 2.0f;
         for (uint32 i = 0; i < mBlurredImages.Size(); ++i)
         {
-            Bitmap::Copy(mBlurredImages[i], i == 0 ? mSum : mBlurredImages[i - 1]);
-            mBlurredImages[i].GaussianBlur(blurSigma, 8);
-            blurSigma *= 2.5f;
+            const Bitmap& sourceBitmap = i == 0 ? mSum : mBlurredImages[i - 1];
+
+            BitmapUtils::GaussianBlurParams blurParams;
+            blurParams.numPasses = mPostprocessParams.params.bloom.elements[i].numBlurPasses;
+            blurParams.sigma = mPostprocessParams.params.bloom.elements[i].sigma;     
+            BitmapUtils::GaussianBlur(mBlurredImages[i], sourceBitmap, blurParams, taskBuilder);
+
+            taskBuilder.Fence();
         }
-
-        float curTime = (float)timer.Stop();
-        static float minTime = FLT_MAX;
-        minTime = Min(curTime, minTime);
-
-        NFE_LOG_INFO("Bluring took %.3f ms (min: %.3f ms)", curTime * 1000.0, minTime * 1000.0);
     }
 
     mPostprocessParams.colorScale = mPostprocessParams.params.colorFilter.ToVector4() * powf(2.0f, mPostprocessParams.params.exposure);
@@ -494,8 +499,8 @@ void Viewport::PostProcessTile(const Block& block, uint32 threadID)
 {
     Random& randomGenerator = mThreadData[threadID].randomGenerator;
 
-    const bool useBloom = mPostprocessParams.params.bloomFactor > 0.0f && !mBlurredImages.Empty();
-    const float bloomWeights[] = { 0.35f, 0.25f, 0.15f, 0.15f, 0.1f };
+    const PostprocessParams& params = mPostprocessParams.params;
+    const bool useBloom = params.bloom.factor > 0.0f && !mBlurredImages.Empty();
 
     const float pixelScaling = 1.0f / (float)(1u + mProgress.passesFinished);
   
@@ -513,15 +518,16 @@ void Viewport::PostProcessTile(const Block& block, uint32 threadID)
             // add bloom
             if (useBloom)
             {
-                rgbColor *= 1.0f - mPostprocessParams.params.bloomFactor;
+                const float bloomFactor = params.bloom.factor;
+                rgbColor *= 1.0f - bloomFactor;
 
                 Vector4 bloomColor = Vector4::Zero();
                 for (uint32 i = 0; i < mBlurredImages.Size(); ++i)
                 {
                     const Vector4 blurredColor = Vector4_Load_Float3_Unsafe(mBlurredImages[i].GetPixelRef<Float3>(x, y));
-                    bloomColor = Vector4::MulAndAdd(blurredColor, bloomWeights[i], bloomColor);
+                    bloomColor = Vector4::MulAndAdd(blurredColor, params.bloom.elements[i].weight, bloomColor);
                 }
-                rgbColor = Vector4::MulAndAdd(bloomColor, mPostprocessParams.params.bloomFactor, rgbColor);
+                rgbColor = Vector4::MulAndAdd(bloomColor, bloomFactor, rgbColor);
             }
 
             // scale down by number of rendering passes finished
@@ -529,21 +535,21 @@ void Viewport::PostProcessTile(const Block& block, uint32 threadID)
             rgbColor *= pixelScaling;
 
             // apply saturation
-            const float grayscale = Vector4::Dot3(rgbColor, Vector4(0.2126f, 0.7152f, 0.0722f));
-            rgbColor = Vector4::Max(Vector4::Zero(), Vector4::Lerp(Vector4(grayscale), rgbColor, mPostprocessParams.params.saturation));
+            const float grayscale = Vector4::Dot3(rgbColor, c_rgbIntensityWeights);
+            rgbColor = Vector4::Max(Vector4::Zero(), Vector4::Lerp(Vector4(grayscale), rgbColor, params.saturation));
 
             // apply contrast
-            rgbColor = FastExp(FastLog(rgbColor) * mPostprocessParams.params.contrast);
+            rgbColor = FastExp(FastLog(rgbColor) * params.contrast);
 
             // apply exposure
             rgbColor *= mPostprocessParams.colorScale;
 
             // apply tonemapping
-            const Vector4 toneMapped = ToneMap(rgbColor, mPostprocessParams.params.tonemapper);
+            const Vector4 toneMapped = ToneMap(rgbColor, params.tonemapper);
 
             // add dither
             // TODO blue noise dithering
-            const Vector4 dithered = Vector4::MulAndAdd(randomGenerator.GetVector4Bipolar(), mPostprocessParams.params.ditheringStrength, toneMapped);
+            const Vector4 dithered = Vector4::MulAndAdd(randomGenerator.GetVector4Bipolar(), params.ditheringStrength, toneMapped);
 
             mFrontBuffer.GetPixelRef<uint32>(x, y) = dithered.ToBGR();
         }

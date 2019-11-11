@@ -403,6 +403,7 @@
     <ClInclude Include="Traversal\Traversal_Packet.h" />
     <ClInclude Include="Traversal\Traversal_Simd.h" />
     <ClInclude Include="Traversal\Traversal_Single.h" />
+    <ClInclude Include="Utils\BitmapUtils.h" />
     <ClInclude Include="Utils\Memory.h" />
     <ClInclude Include="Utils\Bitmap.h" />
     <ClInclude Include="Utils\BlockCompression.h" />
@@ -492,6 +493,7 @@
     <ClCompile Include="Utils\BitmapBMP.cpp" />
     <ClCompile Include="Utils\BitmapDDS.cpp" />
     <ClCompile Include="Utils\BitmapEXR.cpp" />
+    <ClCompile Include="Utils\BitmapUtils.cpp" />
     <ClCompile Include="Utils\BlockCompression.cpp" />
     <ClCompile Include="Utils\KdTree.cpp" />
     <ClCompile Include="Utils\Memory.cpp" />

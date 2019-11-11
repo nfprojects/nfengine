@@ -3,6 +3,7 @@
 #include "../nfEngine/nfCommon/Reflection/ReflectionEnumMacros.hpp"
 #include "../nfEngine/nfCommon/Reflection/Types/ReflectionUniquePtrType.hpp"
 #include "../nfEngine/nfCommon/Reflection/Types/ReflectionNativeArrayType.hpp"
+#include "../nfEngine/nfCommon/Reflection/Types/ReflectionDynArrayType.hpp"
 #include "../nfEngine/nfCommon/Math/LdrColor.hpp"
 #include "../nfEngine/nfCommon/Math/HdrColor.hpp"
 
@@ -345,6 +346,8 @@ static bool EditObject_Internal_UniquePtr(const EditPropertyContext& ctx)
 
 static bool EditObject_Internal_NativeArray(const EditPropertyContext& ctx)
 {
+    bool changed = false;
+
     const NativeArrayType* type = static_cast<const NativeArrayType*>(ctx.type);
 
     ImGui::AlignTextToFramePadding();
@@ -374,15 +377,57 @@ static bool EditObject_Internal_NativeArray(const EditPropertyContext& ctx)
             };
 
             ImGui::PushID(i);
-            EditObject_Internal(propertyContext);
+            changed |= EditObject_Internal(propertyContext);
             ImGui::PopID();
         }
-
 
         ImGui::TreePop();
     }
 
-    return false;
+    return changed;
+}
+
+static bool EditObject_Internal_DynArray(const EditPropertyContext& ctx)
+{
+    bool changed = false;
+
+    const DynArrayType* type = static_cast<const DynArrayType*>(ctx.type);
+
+    ImGui::AlignTextToFramePadding();
+    bool isOpen = ImGui::TreeNode(ctx.name, ctx.name);
+    ImGui::NextColumn();
+
+    const uint32 arraySize = type->GetArraySize(ctx.data);
+
+    // class type name on right column
+    ImGui::TextDisabled("%u-element array", arraySize);
+    ImGui::NextColumn();
+
+    if (isOpen)
+    {
+        for (uint32 i = 0; i < arraySize; ++i)
+        {
+            void* elementData = type->GetElementPointer(ctx.data, i);
+
+            char elementIndexStr[16];
+            sprintf(elementIndexStr, "[%u]", i);
+
+            struct EditPropertyContext propertyContext =
+            {
+                elementIndexStr,
+                type->GetUnderlyingType(),
+                elementData,
+            };
+
+            ImGui::PushID(i);
+            changed |= EditObject_Internal(propertyContext);
+            ImGui::PopID();
+        }
+
+        ImGui::TreePop();
+    }
+
+    return changed;
 }
 
 static bool EditObject_Internal(const EditPropertyContext& ctx)
@@ -416,6 +461,9 @@ static bool EditObject_Internal(const EditPropertyContext& ctx)
             break;
         case TypeKind::NativeArray:
             changed = EditObject_Internal_NativeArray(ctx);
+            break;
+        case TypeKind::DynArray:
+            changed = EditObject_Internal_DynArray(ctx);
             break;
 
             // TODO DynArray
