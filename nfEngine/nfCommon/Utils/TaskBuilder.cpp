@@ -105,11 +105,31 @@ void TaskBuilder::ParallelFor(const char* debugName, uint32 arraySize, const Par
 
     uint32 numTasksToSpawn = Math::Min(arraySize, tp.GetNumThreads());
 
-    // loop index counter
+    struct NFE_ALIGN(64) ThreadData
+    {
+        uint32 elementOffset = 0;; // base element
+        uint32 numElements = 0;
+        std::atomic<int32> counter = 0;
+        uint32 threadDataIndex = 0;
+    };
+
     // TODO get rid of dynamic allocation, e.g. by using some kind of pool
     using Counter = std::atomic<uint32>;
-    using CounterPtr = SharedPtr<Counter>;
-    CounterPtr counterPtr = MakeSharedPtr<Counter>(0);
+    using ThreadDataPtr = SharedPtr<DynArray<ThreadData>>;
+    ThreadDataPtr threadDataPtr = MakeSharedPtr<DynArray<ThreadData>>();
+    threadDataPtr->Resize(tp.GetNumThreads());
+
+    // subdivide work
+    {
+        uint32 totalElements = 0;
+        for (uint32 i = 0; i < numTasksToSpawn; ++i)
+        {
+            ThreadData& threadData = (*threadDataPtr)[i];
+            threadData.numElements = (arraySize / numTasksToSpawn) + ((arraySize % numTasksToSpawn > i) ? 1 : 0);
+            threadData.elementOffset = totalElements;
+            totalElements += threadData.numElements;
+        }
+    }
 
     for (uint32 i = 0; i < numTasksToSpawn; ++i)
     {
@@ -117,14 +137,24 @@ void TaskBuilder::ParallelFor(const char* debugName, uint32 arraySize, const Par
         subTaskDesc.debugName = debugName;
         subTaskDesc.parent = parallelForTask;
         subTaskDesc.dependency = mDependencyTask;
-        subTaskDesc.function = [func, counterPtr, arraySize] (const TaskContext& context)
+        subTaskDesc.function = [func, threadDataPtr, numTasksToSpawn] (const TaskContext& context)
         {
-            Counter& counter = *counterPtr;
-
-            uint32 index;
-            while ((index = counter++) < arraySize)
+            // consume elements assigned to each thread (starting from self)
+            for (uint32 threadDataOffset = 0; threadDataOffset < numTasksToSpawn; ++threadDataOffset)
             {
-                func(context, index);
+                uint32 threadDataIndex = context.threadId + threadDataOffset;
+                if (threadDataIndex >= numTasksToSpawn)
+                {
+                    threadDataIndex -= numTasksToSpawn;
+                }
+
+                ThreadData& threadData = threadDataPtr->Data()[threadDataIndex];
+
+                uint32 index;
+                while ((index = threadData.counter++) < threadData.numElements)
+                {
+                    func(context, static_cast<uint32>(threadData.elementOffset + index));
+                }
             }
         };
 

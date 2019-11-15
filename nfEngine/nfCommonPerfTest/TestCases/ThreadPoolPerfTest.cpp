@@ -6,6 +6,7 @@
 
 #include "PCH.hpp"
 #include "nfCommon/Utils/ThreadPool.hpp"
+#include "nfCommon/Utils/TaskBuilder.hpp"
 #include "nfCommon/Utils/Waitable.hpp"
 #include "nfCommon/Utils/Latch.hpp"
 #include "nfCommon/System/Timer.hpp"
@@ -70,4 +71,62 @@ TEST(ThreadPool, SpawnTasks)
                   << std::setw(12) << enqueueTime << " | "
                   << waitTime << std::endl;
     }
+}
+
+NFE_FORCE_INLINE static uint32 XorShift(uint32 x)
+{
+    x ^= x << 13u;
+    x ^= x >> 17u;
+    x ^= x << 5u;
+    return x;
+}
+
+TEST(ThreadPool, ParallelFor)
+{
+    ThreadPool& tp = ThreadPool::GetInstance();
+
+    const uint32 numElements = 16 * 1024 * 1024;
+
+    Common::DynArray<uint32> elements;
+    elements.Resize(numElements);
+
+    // fill up the array and compute reference hash
+    uint32 refHash = 0;
+    uint32 seed = 12345;
+    for (uint32 i = 0; i < numElements; ++i)
+    {
+        elements[i] = seed;
+        seed = XorShift(seed);
+        refHash ^= elements[i];
+    }
+
+    struct NFE_ALIGN(64) ThreadData
+    {
+        uint32 hash = 0;
+    };
+    Common::DynArray<ThreadData> threadData;
+    threadData.Resize(tp.GetNumThreads());
+
+    Timer timer;
+    Waitable waitable;
+    timer.Start();
+    {
+        TaskBuilder taskBuilder(waitable);
+        taskBuilder.ParallelFor("ParallelFor", numElements, [&] (const TaskContext& ctx, const uint32 i)
+        {
+            threadData[ctx.threadId].hash ^= elements[i];
+        });
+    }
+    waitable.Wait();
+    double waitTime = 1000.0 * timer.Stop();
+
+    uint32 hash = 0;
+    for (uint32 i = 0; i < tp.GetNumThreads(); ++i)
+    {
+        hash ^= threadData[i].hash;
+    }
+
+    NFE_LOG_INFO("Ref hash:      %x", refHash);
+    NFE_LOG_INFO("Computed hash: %x", hash);
+    NFE_LOG_INFO("Parallel for: %.3f ms", waitTime);
 }
