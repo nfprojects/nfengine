@@ -138,8 +138,6 @@ public:
     // scale pixels by a given value
     NFE_RAYTRACER_API bool Scale(const Math::Vector4& factor);
     
-    bool GaussianBlur(const float sigma, const uint32 n);
-
 private:
 
     friend class BitmapTexture;
