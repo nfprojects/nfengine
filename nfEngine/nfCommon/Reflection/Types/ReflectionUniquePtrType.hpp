@@ -164,7 +164,7 @@ public:
 
                 if (!targetType->IsA(mPointedType))
                 {
-                    NFE_LOG_ERROR("Target type '%s' is not related with pointed type '%s'", typeName, mPointedType->GetName());
+                    NFE_LOG_ERROR("Target type '%s' is not related with pointed type '%s'", typeName, mPointedType->GetName().Str());
                     return false;
                 }
             }

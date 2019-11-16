@@ -108,7 +108,6 @@ private:
     bool RenderUI_Settings_PostProcess();
     bool RenderUI_Settings_Object();
     bool RenderUI_Settings_Light();
-    bool RenderUI_Settings_Material();
 
 
     virtual void OnMouseDown(Common::MouseButton button, int x, int y) override;

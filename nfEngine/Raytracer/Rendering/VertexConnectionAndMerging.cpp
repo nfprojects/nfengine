@@ -368,7 +368,8 @@ const RayColor VertexConnectionAndMerging::RenderPixel(const Math::Ray& ray, con
             break;
         }
 
-        const bool isDeltaBsdf = shadingData.intersection.material->GetBSDF()->IsDelta();
+        const BSDF* bsdf = shadingData.intersection.material->GetBSDF();
+        const bool isDeltaBsdf = bsdf && bsdf->IsDelta();
 
         // Vertex Connection -sample lights directly (a.k.a. next event estimation)
         if (!isDeltaBsdf && mUseVertexConnection)
@@ -492,7 +493,8 @@ void VertexConnectionAndMerging::TraceLightPath(const RenderParam& param, Render
         }
 
         // record the vertex for non-specular materials
-        if (!shadingData.intersection.material->GetBSDF()->IsDelta())
+        const BSDF* bsdf = shadingData.intersection.material->GetBSDF();
+        if (bsdf && !bsdf->IsDelta())
         {
             // store light vertex for connection
             if (mUseVertexConnection)

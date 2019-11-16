@@ -8,8 +8,10 @@ namespace RT {
 // simplest Lambertian diffuse
 class DiffuseBSDF : public BSDF
 {
+    NFE_DECLARE_POLYMORPHIC_CLASS(DiffuseBSDF);
+
 public:
-    virtual const char* GetName() const override;
+    virtual const char* GetShortName() const override { return "diffuse"; }
     virtual bool IsDelta() const override { return false; }
     virtual bool Sample(SamplingContext& ctx) const override;
     virtual const RayColor Evaluate(const EvaluationContext& ctx, float* outDirectPdfW = nullptr, float* outReversePdfW = nullptr) const override;

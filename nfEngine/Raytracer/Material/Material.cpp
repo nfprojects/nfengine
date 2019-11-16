@@ -1,19 +1,32 @@
 #include "PCH.h"
 #include "Material.h"
-
-#include "BSDF/NullBSDF.h"
-#include "BSDF/DiffuseBSDF.h"
-#include "BSDF/RoughDiffuseBSDF.h"
-#include "BSDF/DielectricBSDF.h"
-#include "BSDF/RoughDielectricBSDF.h"
-#include "BSDF/MetalBSDF.h"
-#include "BSDF/RoughMetalBSDF.h"
-#include "BSDF/PlasticBSDF.h"
-#include "BSDF/RoughPlasticBSDF.h"
-
+#include "BSDF/BSDF.h"
 #include "Color/Spectrum.h"
-
 #include "../nfCommon/Logger/Logger.hpp"
+
+
+NFE_BEGIN_DEFINE_CLASS(NFE::RT::DispersionParams)
+{
+    NFE_CLASS_MEMBER(enable);
+    NFE_CLASS_MEMBER(C);
+    NFE_CLASS_MEMBER(D);
+}
+NFE_END_DEFINE_CLASS()
+
+NFE_BEGIN_DEFINE_CLASS(NFE::RT::Material)
+{
+    NFE_CLASS_MEMBER(mBSDF).Name("BSDF").NonNull();
+    NFE_CLASS_MEMBER(emission);
+    NFE_CLASS_MEMBER(baseColor);
+    NFE_CLASS_MEMBER(roughness);
+    NFE_CLASS_MEMBER(metalness);
+    NFE_CLASS_MEMBER(IoR).Name("Index of Refraction").Min(0.0f).Max(4.0f);
+    NFE_CLASS_MEMBER(K).Name("Extinction coefficient").Min(0.0f).Max(10.0f);
+    NFE_CLASS_MEMBER(normalMapStrength).Min(0.0f).Max(5.0f);
+    NFE_CLASS_MEMBER(dispersion);
+}
+NFE_END_DEFINE_CLASS()
+
 
 namespace NFE {
 namespace RT {
@@ -25,6 +38,7 @@ const char* Material::DefaultBsdfName = "diffuse";
 
 DispersionParams::DispersionParams()
 {
+    enable = false;
     // BK7 glass
     C = 0.00420f;
     D = 0.0f;
@@ -42,47 +56,23 @@ MaterialPtr Material::Create()
 
 void Material::SetBsdf(const String& bsdfName)
 {
-    // TODO use some kind of reflection for this
-    if (bsdfName == "null")
+    DynArray<const RTTI::ClassType*> types;
+    RTTI::GetType<BSDF>()->ListSubtypes(types);
+
+    for (const RTTI::ClassType* type : types)
     {
-        mBSDF = MakeUniquePtr<NullBSDF>();
+        const BSDF* defaultObject = type->GetDefaultObject<BSDF>();
+        if (type->IsConstructible())
+        {
+            if ((type->GetName() == bsdfName) || (defaultObject && (defaultObject->GetShortName() == bsdfName)))
+            {
+                mBSDF = UniquePtr<BSDF>(type->CreateObject<BSDF>());
+                return;
+            }
+        }
     }
-    else if (bsdfName == "diffuse")
-    {
-        mBSDF = MakeUniquePtr<DiffuseBSDF>();
-    }
-    else if (bsdfName == "roughDiffuse")
-    {
-        mBSDF = MakeUniquePtr<RoughDiffuseBSDF>();
-    }
-    else if (bsdfName == "dielectric")
-    {
-        mBSDF = MakeUniquePtr<DielectricBSDF>();
-    }
-    else if (bsdfName == "roughDielectric")
-    {
-        mBSDF = MakeUniquePtr<RoughDielectricBSDF>();
-    }
-    else if (bsdfName == "metal")
-    {
-        mBSDF = MakeUniquePtr<MetalBSDF>();
-    }
-    else if (bsdfName == "roughMetal")
-    {
-        mBSDF = MakeUniquePtr<RoughMetalBSDF>();
-    }
-    else if (bsdfName == "plastic")
-    {
-        mBSDF = MakeUniquePtr<PlasticBSDF>();
-    }
-    else if (bsdfName == "roughPlastic")
-    {
-        mBSDF = MakeUniquePtr<RoughPlasticBSDF>();
-    }
-    else
-    {
-        NFE_LOG_ERROR("Unknown BSDF name: '%s'", bsdfName.Str());
-    }
+
+    NFE_LOG_ERROR("Unknown BSDF name: '%s'", bsdfName.Str());
 }
 
 static UniquePtr<Material> CreateDefaultMaterial()
@@ -99,9 +89,7 @@ const MaterialPtr& Material::GetDefaultMaterial()
     return sDefaultMaterial;
 }
 
-Material::~Material()
-{
-}
+Material::~Material() = default;
 
 Material::Material(Material&&) = default;
 Material& Material::operator = (Material&&) = default;
@@ -115,14 +103,13 @@ void Material::Compile()
     NFE_ASSERT(IsValid(normalMapStrength) && normalMapStrength >= 0.0f);
     NFE_ASSERT(IsValid(IoR) && IoR >= 0.0f);
     NFE_ASSERT(IsValid(K) && K >= 0.0f);
-
-    emission.baseValue = Vector4::Max(Vector4::Zero(), emission.baseValue);
-    baseColor.baseValue = Vector4::Max(Vector4::Zero(), Vector4::Min(VECTOR_ONE, baseColor.baseValue));
 }
 
 const Vector4 Material::GetNormalVector(const Vector4& uv) const
 {
-    Vector4 normal(0.0f, 0.0f, 1.0f, 0.0f);
+    const Vector4 z = VECTOR_Z;
+
+    Vector4 normal = z;
 
     if (normalMap)
     {
@@ -134,7 +121,7 @@ const Vector4 Material::GetNormalVector(const Vector4& uv) const
         // reconstruct Z
         normal.z = Sqrt(Max(0.0f, 1.0f - normal.SqrLength2()));
 
-        normal = Vector4::Lerp(VECTOR_Z, normal, normalMapStrength);
+        normal = Vector4::Lerp(z, normal, normalMapStrength);
     }
 
     return normal;
@@ -166,8 +153,12 @@ const RayColor Material::Evaluate(
     const Vector4& incomingDirWorldSpace,
     float* outPdfW, float* outReversePdfW) const
 {
-    NFE_ASSERT(mBSDF, "Material must have a BSDF assigned");
+    if (!mBSDF)
+    {
+        return RayColor::Zero();
+    }
 
+    const Vector4 outgoingDirLocalSpace = shadingData.intersection.WorldToLocal(shadingData.outgoingDirWorldSpace);
     const Vector4 incomingDirLocalSpace = shadingData.intersection.WorldToLocal(incomingDirWorldSpace);
 
     const BSDF::EvaluationContext evalContext =
@@ -175,7 +166,7 @@ const RayColor Material::Evaluate(
         *this,
         shadingData.materialParams,
         wavelength,
-        shadingData.intersection.WorldToLocal(shadingData.outgoingDirWorldSpace),
+        outgoingDirLocalSpace,
         incomingDirLocalSpace
     };
 
@@ -190,8 +181,6 @@ const RayColor Material::Sample(
     float* outPdfW,
     BSDF::EventType* outSampledEvent) const
 {
-    NFE_ASSERT(mBSDF, "Material must have a BSDF assigned");
-
     BSDF::SamplingContext samplingContext =
     {
         *this,
@@ -203,7 +192,7 @@ const RayColor Material::Sample(
 
     // BSDF sampling (in local space)
     // TODO don't compute PDF if not requested
-    if (!mBSDF->Sample(samplingContext))
+    if (!mBSDF || !mBSDF->Sample(samplingContext))
     {
         if (outSampledEvent)
         {
@@ -233,8 +222,6 @@ const RayColor Material::Sample(
 
     return samplingContext.outColor;
 }
-
-///
 
 
 } // namespace RT

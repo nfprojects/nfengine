@@ -72,27 +72,27 @@ public:
 /**
  * Declare a type. This must be placed OUTSIDE namespace.
  */
-#define NFE_DECLARE_FUNDAMENTAL_TYPE(T)                                             \
-    static_assert(std::is_fundamental_v<T>, "Given type is not fundamental");       \
-    namespace NFE { namespace RTTI {                                                \
-        template <>                                                                 \
-        class TypeCreator<T>                                                        \
-        {                                                                           \
-        public:                                                                     \
-            using TypeClass = FundamentalType<T>;                                   \
-            using TypeInfoClass = TypeInfo;                                         \
-            static TypePtr CreateType()                                             \
-            {                                                                       \
-                TypeInfo typeInfo;                                                  \
-                typeInfo.kind = TypeKind::Fundamental;                              \
-                typeInfo.name = #T;                                                 \
-                typeInfo.size = sizeof(T);                                          \
-                typeInfo.alignment = alignof(T);                                    \
-                typeInfo.constructor = []() { return new T; };                      \
-                typeInfo.arrayConstructor = [](uint32 num) { return new T[num]; };  \
-                return TypePtr(new FundamentalType<T>(typeInfo));                   \
-            }                                                                       \
-        };                                                                          \
+#define NFE_DECLARE_FUNDAMENTAL_TYPE(T)                                                 \
+    static_assert(std::is_fundamental_v<T>, "Given type is not fundamental");           \
+    namespace NFE { namespace RTTI {                                                    \
+        template <>                                                                     \
+        class TypeCreator<T>                                                            \
+        {                                                                               \
+        public:                                                                         \
+            using TypeClass = FundamentalType<T>;                                       \
+            using TypeInfoClass = TypeInfo;                                             \
+            static TypePtr CreateType()                                                 \
+            {                                                                           \
+                TypeInfo typeInfo;                                                      \
+                typeInfo.kind = TypeKind::Fundamental;                                  \
+                typeInfo.name = #T;                                                     \
+                typeInfo.size = sizeof(T);                                              \
+                typeInfo.alignment = alignof(T);                                        \
+                typeInfo.constructor = []() { return new T(); };                        \
+                typeInfo.arrayConstructor = [](uint32 num) { return new T[num](); };    \
+                return TypePtr(new FundamentalType<T>(typeInfo));                       \
+            }                                                                           \
+        };                                                                              \
     } } /* namespace NFE::RTTI */
 
 

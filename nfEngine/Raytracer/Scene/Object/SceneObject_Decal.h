@@ -23,8 +23,8 @@ public:
 
     void Apply(ShadingData& shadingData, RenderingContext& context) const;
 
-    MaterialParameter<Math::Vector4> baseColor;
-    MaterialParameter<float> roughness;
+    ColorMaterialParameter baseColor;
+    MaterialParameter roughness;
 
     float alphaMin = 0.0f;
     float alphaMax = 1.0f;

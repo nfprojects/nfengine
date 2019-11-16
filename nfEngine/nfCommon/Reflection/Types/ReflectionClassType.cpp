@@ -46,12 +46,12 @@ void ClassType::PrintInfo() const
     {
         if (mParent)
         {
-            NFE_LOG_DEBUG("    - Parent type: %s", mParent->GetName());
+            NFE_LOG_DEBUG("    - Parent type: %s", mParent->GetName().Str());
         }
 
         for (const Member& member : mMembers)
         {
-            NFE_LOG_DEBUG("    - Member '%s': type=%s, offset=%u", member.GetName(), member.GetType()->GetName(), member.GetOffset());
+            NFE_LOG_DEBUG("    - Member '%s': type=%s, offset=%u", member.GetName(), member.GetType()->GetName().Str(), member.GetOffset());
         }
     }
 #endif // _DEBUG
@@ -147,7 +147,7 @@ bool ClassType::SerializeDirectly(const void* object, Common::Config& config, Co
         ConfigValue memberValue;
         if (!memberType->Serialize(memberPtr, config, memberValue))
         {
-            NFE_LOG_ERROR("Failed to serialize member '%s' in object of type '%s'", member.GetName(), GetName());
+            NFE_LOG_ERROR("Failed to serialize member '%s' in object of type '%s'", member.GetName(), GetName().Str());
             return false;
         }
 
@@ -162,7 +162,7 @@ bool ClassType::Serialize(const void* object, Config& config, ConfigValue& outVa
 {
     if (GetKind() == TypeKind::AbstractClass)
     {
-        NFE_LOG_ERROR("Trying to serialize abstract type '%s'", GetName());
+        NFE_LOG_ERROR("Trying to serialize abstract type '%s'", GetName().Str());
         return false;
     }
 
@@ -171,7 +171,7 @@ bool ClassType::Serialize(const void* object, Config& config, ConfigValue& outVa
     // attach type marker
     if (GetKind() == TypeKind::PolymorphicClass)
     {
-        ConfigValue marker(GetName());
+        ConfigValue marker(GetName().Str());
         config.AddValue(root, TYPE_MARKER, marker);
     }
 
@@ -180,7 +180,7 @@ bool ClassType::Serialize(const void* object, Config& config, ConfigValue& outVa
     {
         if (!mParent->SerializeDirectly(object, config, root))
         {
-            NFE_LOG_ERROR("Failed to serialize parent class '%s' of object of type '%s'", mParent->GetName(), GetName());
+            NFE_LOG_ERROR("Failed to serialize parent class '%s' of object of type '%s'", mParent->GetName().Str(), GetName().Str());
             return false;
         }
     }
@@ -223,7 +223,7 @@ bool ClassType::Deserialize(void* outObject, const Config& config, const ConfigV
 {
     if (GetKind() == TypeKind::AbstractClass)
     {
-        NFE_LOG_ERROR("Trying to deserialize abstract type '%s'", GetName());
+        NFE_LOG_ERROR("Trying to deserialize abstract type '%s'", GetName().Str());
         return false;
     }
 
@@ -247,9 +247,9 @@ bool ClassType::Deserialize(void* outObject, const Config& config, const ConfigV
             }
 
             const char* typeName = value.Get<const char*>();
-            if (strcmp(typeName, GetName()) != 0)
+            if (typeName != GetName())
             {
-                NFE_LOG_ERROR("Invalid polymorphic type in marker: found '%s', expected '%s'", typeName, GetName());
+                NFE_LOG_ERROR("Invalid polymorphic type in marker: found '%s', expected '%s'", typeName, GetName().Str());
                 success = false;
                 return false;
             }

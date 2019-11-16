@@ -16,9 +16,6 @@
     <ClCompile Include="TestCases\Reflection\ReflectionClassTest.cpp">
       <Filter>TestCases\Reflection</Filter>
     </ClCompile>
-    <ClCompile Include="TestCases\Reflection\ReflectionInterLibraryTest.cpp">
-      <Filter>TestCases\Reflection</Filter>
-    </ClCompile>
     <ClCompile Include="TestCases\Reflection\ReflectionPointersTest.cpp">
       <Filter>TestCases\Reflection</Filter>
     </ClCompile>

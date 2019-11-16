@@ -163,7 +163,6 @@
     <ClInclude Include="Reflection\ReflectionMemberMetadataBuilder.hpp" />
     <ClInclude Include="Reflection\ReflectionTypeRegistry.hpp" />
     <ClInclude Include="Reflection\ReflectionUtils.hpp" />
-    <ClInclude Include="Reflection\Test\ReflectionTestTypes.hpp" />
     <ClInclude Include="Reflection\Types\ReflectionClassType.hpp" />
     <ClInclude Include="Reflection\Types\ReflectionEnumType.hpp" />
     <ClInclude Include="Reflection\Types\ReflectionFundamentalType.hpp" />
@@ -277,7 +276,6 @@
     <ClCompile Include="Reflection\ReflectionMember.cpp" />
     <ClCompile Include="Reflection\ReflectionMemberMetadataBuilder.cpp" />
     <ClCompile Include="Reflection\ReflectionTypeRegistry.cpp" />
-    <ClCompile Include="Reflection\Test\ReflectionTestTypes.cpp" />
     <ClCompile Include="Reflection\Types\ReflectionClassType.cpp" />
     <ClCompile Include="Reflection\Types\ReflectionDynArrayType.cpp" />
     <ClCompile Include="Reflection\Types\ReflectionEnumType.cpp" />

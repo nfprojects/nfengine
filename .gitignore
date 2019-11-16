@@ -55,3 +55,6 @@ Makefile
 # script outputs
 cppcheck_result.txt
 clean_errors.txt
+
+# ImGui config files
+imgui.ini

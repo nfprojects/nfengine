@@ -1,35 +1,62 @@
 #pragma once
 
 #include "../Textures/Texture.h"
+#include "../../nfCommon/Math/HdrColor.hpp"
 
 namespace NFE {
 namespace RT {
 
-template<typename T>
-struct MaterialParameter
+class MaterialParameter
 {
-    T baseValue = T(1.0f);
+    NFE_DECLARE_CLASS(MaterialParameter);
+
+public:
+
+    float baseValue = 0.0f;
     TexturePtr texture = nullptr;
 
     MaterialParameter() = default;
 
-    NFE_FORCE_INLINE MaterialParameter(const T baseValue)
-        : baseValue(baseValue)
-    {}
+    NFE_FORCE_INLINE MaterialParameter(const float baseValue) : baseValue(baseValue) {}
 
-    NFE_FORCE_INLINE const T Evaluate(const Math::Vector4& uv) const
+    NFE_FORCE_INLINE float Evaluate(const Math::Vector4& uv) const
     {
-        T value = baseValue;
+        float value = baseValue;
 
         if (texture)
         {
-            value = static_cast<T>(value * texture->Evaluate(uv));
+            value = static_cast<float>(value * texture->Evaluate(uv));
         }
 
         return value;
     };
 };
 
+class ColorMaterialParameter
+{
+    NFE_DECLARE_CLASS(ColorMaterialParameter);
+
+public:
+
+    Math::HdrColorRGB baseValue;
+    TexturePtr texture = nullptr;
+
+    ColorMaterialParameter() = default;
+
+    NFE_FORCE_INLINE ColorMaterialParameter(const Math::HdrColorRGB baseValue) : baseValue(baseValue) {}
+
+    NFE_FORCE_INLINE const Math::Vector4 Evaluate(const Math::Vector4& uv) const
+    {
+        Math::Vector4 value = baseValue.ToVector4();
+
+        if (texture)
+        {
+            value *= texture->Evaluate(uv);
+        }
+
+        return value;
+    };
+};
 
 } // namespace RT
 } // namespace NFE

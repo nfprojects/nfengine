@@ -9,13 +9,19 @@
 #include "../../nfCommon/Containers/String.hpp"
 #include "../../nfCommon/Containers/SharedPtr.hpp"
 #include "../../nfCommon/Memory/Aligned.hpp"
+#include "../../nfCommon/Reflection/ReflectionClassMacros.hpp"
+#include "../../nfCommon/Reflection/Types/ReflectionUniquePtrType.hpp"
 
 namespace NFE {
 namespace RT {
 
 // coefficients of Sellmeier dispersion equation
-struct NFE_RAYTRACER_API DispersionParams
+class NFE_RAYTRACER_API DispersionParams
 {
+    NFE_DECLARE_CLASS(DispersionParams);
+
+public:
+    bool enable;
     float C;
     float D;
 
@@ -27,6 +33,8 @@ using MaterialPtr = Common::SharedPtr<Material>;
 // simple PBR material
 class NFE_ALIGN(16) Material : public Common::Aligned<16>
 {
+    NFE_DECLARE_CLASS(Material);
+
 public:
     NFE_RAYTRACER_API Material(const char* debugName = "<unnamed>");
     NFE_RAYTRACER_API ~Material();
@@ -43,20 +51,20 @@ public:
 
     // light emitted by the material itself
     // useful for lamps, etc
-    MaterialParameter<Math::Vector4> emission = Math::Vector4::Zero();
+    ColorMaterialParameter emission;
 
     // a.k.a. albedo
     // for metals this is specular/reflection color
     // for dielectrics this is diffuse color
-    MaterialParameter<Math::Vector4> baseColor = Math::Vector4(0.7f, 0.7f, 0.7f, 0.0f);
+    ColorMaterialParameter baseColor = Math::HdrColorRGB(0.7f, 0.7f, 0.7f);
 
     // 0.0 - smooth, perfect mirror
     // 1.0 - rough, maximum diffusion
-    MaterialParameter<float> roughness = 0.1f;
+    MaterialParameter roughness = 0.1f;
 
     // TODO move to "Principled BSDF"
     // blends between dielectric/metal models
-    MaterialParameter<float> metalness = 0.0f;
+    MaterialParameter metalness = 0.0f;
 
     // normal map lerp value
     float normalMapStrength = 1.0f;
@@ -65,11 +73,8 @@ public:
     float IoR = 1.5f; // NOTE: not used when material is dispersive
     float K = 4.0f;
 
-    // chromatic dispersion parameters (used only if 'isDispersive' is enabled)
-    DispersionParams dispersionParams;
-
-    // When enabled, index of refraction depends on wavelength according to Sellmeier equation
-    bool isDispersive = false;
+    // chromatic dispersion parameters
+    DispersionParams dispersion;
 
     // textures
     TexturePtr maskMap = nullptr;

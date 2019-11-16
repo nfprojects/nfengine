@@ -19,7 +19,7 @@ TEST(ReflectionClassTest, UniquePtr_Verify)
     const auto* type = GetType<TestUniquePtr>();
     ASSERT_NE(nullptr, type);
 
-    EXPECT_STREQ("NFE::Common::UniquePtr<TestBaseClass>", type->GetName());
+    EXPECT_EQ("NFE::Common::UniquePtr<TestBaseClass>", type->GetName());
     EXPECT_EQ(TypeKind::UniquePtr, type->GetKind());
     EXPECT_EQ(sizeof(TestUniquePtr), type->GetSize());
     EXPECT_EQ(alignof(TestUniquePtr), type->GetAlignment());

@@ -3,15 +3,14 @@
 #include "../../../nfCommon/Math/SamplingHelpers.hpp"
 #include "../../../nfCommon/Math/Utils.hpp"
 
+NFE_BEGIN_DEFINE_POLYMORPHIC_CLASS(NFE::RT::PlasticBSDF)
+NFE_CLASS_PARENT(NFE::RT::BSDF);
+NFE_END_DEFINE_CLASS()
+
 namespace NFE {
 namespace RT {
 
 using namespace Math;
-
-const char* PlasticBSDF::GetName() const
-{
-    return "plastic";
-}
 
 bool PlasticBSDF::Sample(SamplingContext& ctx) const
 {

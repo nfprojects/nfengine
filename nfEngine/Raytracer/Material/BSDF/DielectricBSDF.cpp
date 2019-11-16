@@ -3,15 +3,14 @@
 #include "../Material.h"
 #include "../../../nfCommon/Math/Utils.hpp"
 
+NFE_BEGIN_DEFINE_POLYMORPHIC_CLASS(NFE::RT::DielectricBSDF)
+NFE_CLASS_PARENT(NFE::RT::BSDF);
+NFE_END_DEFINE_CLASS()
+
 namespace NFE {
 namespace RT {
 
 using namespace Math;
-
-const char* DielectricBSDF::GetName() const
-{
-    return "dielectric";
-}
 
 bool DielectricBSDF::Sample(SamplingContext& ctx) const
 {
@@ -27,14 +26,14 @@ bool DielectricBSDF::Sample(SamplingContext& ctx) const
 
     // handle dispersion
 #ifdef NFE_ENABLE_SPECTRAL_RENDERING
-    if (ctx.material.isDispersive)
+    if (ctx.material.dispersion.enable)
     {
         const float lambda = 1.0e+6f * (Wavelength::Lower + ctx.wavelength.GetBase() * (Wavelength::Higher - Wavelength::Lower));
         // Cauchy's equation for light dispersion
         const float lambda2 = lambda * lambda;
         const float lambda4 = lambda2 * lambda2;
-        ior += ctx.material.dispersionParams.C / lambda2;
-        ior += ctx.material.dispersionParams.D / lambda4;
+        ior += ctx.material.dispersion.C / lambda2;
+        ior += ctx.material.dispersion.D / lambda4;
         if (!ctx.wavelength.isSingle)
         {
             fallbackToSingleWavelength = true;

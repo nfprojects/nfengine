@@ -82,7 +82,7 @@ public:
      * Get type name.
      * @note This includes namespaces also.
      */
-    NFE_FORCE_INLINE const char* GetName() const { return mName.Str(); }
+    NFE_FORCE_INLINE const Common::String& GetName() const { return mName; }
 
     /**
      * Get type size (in bytes).
@@ -122,8 +122,14 @@ public:
     template<typename T>
     NFE_FORCE_INLINE T* CreateObject() const
     {
-        NFE_ASSERT(mConstructor, "Cannot create an object of type '%s'", GetName());
-        return reinterpret_cast<T*>(CreateRawObject());
+        NFE_ASSERT(mConstructor, "Cannot create an object of type '%s'", GetName().Str());
+        return static_cast<T*>(CreateRawObject());
+    }
+
+    template<typename T>
+    NFE_FORCE_INLINE const T* GetDefaultObject() const
+    {
+        return static_cast<const T*>(mDefaultObject);
     }
 
     // TODO binary serialization
@@ -166,6 +172,8 @@ protected:
     ArrayConstructorFunc mArrayConstructor;
 
     TypeKind mKind;
+
+    const void* mDefaultObject;
 };
 
 using TypePtr = Common::UniquePtr<Type>;

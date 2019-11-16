@@ -1,13 +1,12 @@
 #include "PCH.h"
 #include "NullBSDF.h"
 
+NFE_BEGIN_DEFINE_POLYMORPHIC_CLASS(NFE::RT::NullBSDF)
+NFE_CLASS_PARENT(NFE::RT::BSDF);
+NFE_END_DEFINE_CLASS()
+
 namespace NFE {
 namespace RT {
-
-const char* NullBSDF::GetName() const
-{
-    return "null";
-}
 
 bool NullBSDF::Sample(SamplingContext& ctx) const
 {

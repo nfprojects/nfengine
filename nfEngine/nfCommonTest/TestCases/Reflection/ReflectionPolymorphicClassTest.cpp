@@ -15,7 +15,7 @@ TEST(ReflectionClassTest, BaseClass_Verify)
     ASSERT_NE(nullptr, type);
 
     // check class type properties
-    EXPECT_STREQ("TestBaseClass", type->GetName());
+    EXPECT_EQ("TestBaseClass", type->GetName());
     EXPECT_EQ(TypeKind::PolymorphicClass, type->GetKind());
     EXPECT_LE(minSize, type->GetSize());
     EXPECT_LE(sizeof(size_t), type->GetAlignment());
@@ -96,7 +96,7 @@ TEST(ReflectionClassTest, ChildClass_Verify)
     ASSERT_NE(nullptr, type);
 
     // check class type properties
-    EXPECT_STREQ("TestChildClassA", type->GetName());
+    EXPECT_EQ("TestChildClassA", type->GetName());
     EXPECT_EQ(TypeKind::PolymorphicClass, type->GetKind());
     EXPECT_LE(minSize, type->GetSize());
     EXPECT_LE(sizeof(size_t), type->GetAlignment());
@@ -181,7 +181,7 @@ TEST(ReflectionClassTest, AbstractClass_Verify)
     ASSERT_NE(nullptr, type);
 
     // check class type properties
-    EXPECT_STREQ("TestAbstractClass", type->GetName());
+    EXPECT_EQ("TestAbstractClass", type->GetName());
     EXPECT_EQ(TypeKind::AbstractClass, type->GetKind());
     EXPECT_LE(minSize, type->GetSize());
     EXPECT_LE(sizeof(size_t), type->GetAlignment());

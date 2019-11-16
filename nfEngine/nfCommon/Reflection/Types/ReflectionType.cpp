@@ -35,6 +35,7 @@ const char* Type::TypeKindToString(const TypeKind kind)
 Type::~Type() = default;
 
 Type::Type(const TypeInfo& info)
+    : mDefaultObject(nullptr)
 {
     if (info.name)
     {
@@ -56,11 +57,16 @@ Type::Type(const TypeInfo& info)
 
     mConstructor = info.constructor;
     mArrayConstructor = info.arrayConstructor;
+
+    if (mConstructor)
+    {
+        mDefaultObject = CreateRawObject();
+    }
 }
 
 void Type::PrintInfo() const
 {
-    NFE_LOG_DEBUG("%s (%s): size=%u, alignment=%u", GetName(), TypeKindToString(GetKind()), GetSize(), GetAlignment());
+    NFE_LOG_DEBUG("%s (%s): size=%u, alignment=%u", GetName().Str(), TypeKindToString(GetKind()), GetSize(), GetAlignment());
 }
 
 bool Type::IsA(const Type* baseType) const

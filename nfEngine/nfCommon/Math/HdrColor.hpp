@@ -22,6 +22,12 @@ public:
     {
         return Vector4(r, g, b, 1.0f);
     }
+
+    NFE_FORCE_INLINE bool IsValid() const
+    {
+        return r >= 0.0f && g >= 0.0f && b >= 0.0f &&
+            Math::IsValid(r) && Math::IsValid(g) && Math::IsValid(b);
+    }
 };
 
 } // namespace Math

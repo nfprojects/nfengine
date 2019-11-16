@@ -34,6 +34,8 @@ struct MemberMetadata
 
     float logScalePower = 1.0f;
 
+    bool nonNull = false;
+
     bool HasMinRange() const { return (flags & MemberMetadata_HasMinRange) != 0; }
     bool HasMaxRange() const { return (flags & MemberMetadata_HasMaxRange) != 0; }
     bool HasNoSlider() const { return (flags & MemberMetadata_NoSlider) != 0; }

@@ -8,8 +8,10 @@ namespace RT {
 // Rough plastic-like BSDF
 class RoughPlasticBSDF : public BSDF
 {
+    NFE_DECLARE_POLYMORPHIC_CLASS(RoughPlasticBSDF);
+
 public:
-    virtual const char* GetName() const override;
+    virtual const char* GetShortName() const override { return "roughPlastic"; }
     virtual bool IsDelta() const override { return false; }
     virtual bool Sample(SamplingContext& ctx) const override;
     virtual const RayColor Evaluate(const EvaluationContext& ctx, float* outDirectPdfW = nullptr, float* outReversePdfW = nullptr) const override;

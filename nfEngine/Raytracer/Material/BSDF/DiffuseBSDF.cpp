@@ -2,15 +2,14 @@
 #include "DiffuseBSDF.h"
 #include "../../../nfCommon/Math/SamplingHelpers.hpp"
 
+NFE_BEGIN_DEFINE_POLYMORPHIC_CLASS(NFE::RT::DiffuseBSDF)
+NFE_CLASS_PARENT(NFE::RT::BSDF);
+NFE_END_DEFINE_CLASS()
+
 namespace NFE {
 namespace RT {
 
 using namespace Math;
-
-const char* DiffuseBSDF::GetName() const
-{
-    return "diffuse";
-}
 
 bool DiffuseBSDF::Sample(SamplingContext& ctx) const
 {

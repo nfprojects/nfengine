@@ -26,11 +26,11 @@ EnumType::EnumType(const EnumTypeInfo& info)
         {
             NFE_ASSERT(strcmp(mOptions[i].name, mOptions[j].name) != 0,
                        "Duplicated '%s' enum option in type '%s'. Fix enum type definition macros.",
-                       mOptions[i].name, GetName());
+                       mOptions[i].name, GetName().Str());
 
             NFE_ASSERT(mOptions[i].value != mOptions[j].value,
                        "'%s' and '%s' enum options in type '%s' have the same value. This is not supported by the reflection system.",
-                       mOptions[i].name, mOptions[j].name, GetName());
+                       mOptions[i].name, mOptions[j].name, GetName().Str());
         }
     }
 }
@@ -96,7 +96,7 @@ bool EnumType::Serialize(const void* object, Common::Config& config, Common::Con
         return true;
     }
 
-    NFE_LOG_ERROR("Could not find enum option for type '%s', value=%llu", GetName(), integerValue);
+    NFE_LOG_ERROR("Could not find enum option for type '%s', value=%llu", GetName().Str(), integerValue);
     return false;
 }
 
@@ -122,7 +122,7 @@ bool EnumType::Deserialize(void* outObject, const Common::Config& config, const 
 
         if (!enumOptionFound)
         {
-            NFE_LOG_ERROR("Could not find enum option for type '%s', name=%llu", GetName(), optionName);
+            NFE_LOG_ERROR("Could not find enum option for type '%s', name=%llu", GetName().Str(), optionName);
             return false;
         }
 

@@ -13,7 +13,7 @@ TEST(ReflectionClassTest, TestClassWithFundamentalMembers_Verify)
     ASSERT_NE(nullptr, type);
 
     // check class type properties
-    EXPECT_STREQ("TestClassWithFundamentalMembers", type->GetName());
+    EXPECT_EQ("TestClassWithFundamentalMembers", type->GetName());
     EXPECT_EQ(TypeKind::SimpleClass, type->GetKind());
     EXPECT_EQ(sizeof(TestClassWithFundamentalMembers), type->GetSize());
     EXPECT_EQ(alignof(TestClassWithFundamentalMembers), type->GetAlignment());
@@ -96,7 +96,7 @@ TEST(ReflectionClassTest, TestClassWithNestedType_Verify)
     ASSERT_NE(nullptr, type);
 
     // check class type properties
-    EXPECT_STREQ("TestClassWithNestedType", type->GetName());
+    EXPECT_EQ("TestClassWithNestedType", type->GetName());
     EXPECT_EQ(TypeKind::SimpleClass, type->GetKind());
     EXPECT_EQ(sizeof(TestClassWithNestedType), type->GetSize());
     EXPECT_EQ(alignof(TestClassWithNestedType), type->GetAlignment());
@@ -165,7 +165,7 @@ TEST(ReflectionClassTest, TestClassWithArrayType_Verify)
     ASSERT_NE(nullptr, type);
 
     // check class type properties
-    EXPECT_STREQ("TestClassWithArrayType", type->GetName());
+    EXPECT_EQ("TestClassWithArrayType", type->GetName());
     EXPECT_EQ(TypeKind::SimpleClass, type->GetKind());
     EXPECT_EQ(sizeof(TestClassWithArrayType), type->GetSize());
     EXPECT_EQ(4u, type->GetAlignment());
@@ -271,7 +271,7 @@ TEST(ReflectionClassTest, TestClassWithDynArrayType_Verify)
     ASSERT_NE(nullptr, type);
 
     // check class type properties
-    EXPECT_STREQ("TestClassWithDynArrayType", type->GetName());
+    EXPECT_EQ("TestClassWithDynArrayType", type->GetName());
     EXPECT_EQ(TypeKind::SimpleClass, type->GetKind());
     EXPECT_EQ(sizeof(TestClassWithDynArrayType), type->GetSize());
     EXPECT_EQ(sizeof(size_t), type->GetAlignment()); // alignment of DynArray depends on pointer size
@@ -373,7 +373,7 @@ TEST(ReflectionClassTest, TestClassWithUniquePtrType_Verify)
     ASSERT_NE(nullptr, type);
 
     // check class type properties
-    EXPECT_STREQ("TestClassWithUniquePtrType", type->GetName());
+    EXPECT_EQ("TestClassWithUniquePtrType", type->GetName());
     EXPECT_EQ(TypeKind::SimpleClass, type->GetKind());
     EXPECT_EQ(sizeof(TestClassWithUniquePtrType), type->GetSize());
     EXPECT_EQ(sizeof(size_t), type->GetAlignment()); // alignment of DynArray depends on pointer size

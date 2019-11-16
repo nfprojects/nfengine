@@ -86,8 +86,8 @@ MaterialPtr LoadMaterial(const String& baseDir, const tinyobj::material_t& sourc
 
     material->SetBsdf("diffuse"); // TODO
     material->debugName = sourceMaterial.name.c_str();
-    material->baseColor = Vector4(sourceMaterial.diffuse[0], sourceMaterial.diffuse[1], sourceMaterial.diffuse[2], 0.0f);
-    material->emission.baseValue = Vector4(sourceMaterial.emission[0], sourceMaterial.emission[1], sourceMaterial.emission[2], 0.0f);
+    material->baseColor = HdrColorRGB(sourceMaterial.diffuse[0], sourceMaterial.diffuse[1], sourceMaterial.diffuse[2]);
+    material->emission = HdrColorRGB(sourceMaterial.emission[0], sourceMaterial.emission[1], sourceMaterial.emission[2]);
     material->baseColor.texture = LoadTexture(baseDir, sourceMaterial.diffuse_texname.c_str());
     material->normalMap = LoadTexture(baseDir, sourceMaterial.normal_texname.c_str());
     material->maskMap = LoadTexture(baseDir, sourceMaterial.alpha_texname.c_str());
@@ -102,8 +102,8 @@ MaterialPtr CreateDefaultMaterial(MaterialsMap& outMaterials)
 {
     auto material = MaterialPtr(new Material);
     material->debugName = "default";
-    material->baseColor = Vector4(0.8f, 0.8f, 0.8f, 0.0f);
-    material->emission.baseValue = Vector4(0.0f, 0.0f, 0.0f, 0.0f);
+    material->baseColor = HdrColorRGB(0.8f, 0.8f, 0.8f);
+    material->emission = HdrColorRGB(0.0f, 0.0f, 0.0f);
     material->roughness = 0.75f;
     material->SetBsdf(Material::DefaultBsdfName);
     material->Compile();

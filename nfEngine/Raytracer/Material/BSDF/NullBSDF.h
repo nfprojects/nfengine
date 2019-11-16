@@ -8,8 +8,10 @@ namespace RT {
 // BSDF that absorbs all the light
 class NullBSDF : public BSDF
 {
+    NFE_DECLARE_POLYMORPHIC_CLASS(NullBSDF);
+
 public:
-    virtual const char* GetName() const override;
+    virtual const char* GetShortName() const override { return "null"; }
     virtual bool IsDelta() const override { return false; }
     virtual bool Sample(SamplingContext& ctx) const override;
     virtual const RayColor Evaluate(const EvaluationContext& ctx, float* outDirectPdfW = nullptr, float* outReversePdfW = nullptr) const override;

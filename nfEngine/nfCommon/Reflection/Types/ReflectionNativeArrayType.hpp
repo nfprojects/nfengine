@@ -155,6 +155,7 @@ class TypeCreator<T[N]>
 
 public:
     using TypeClass = NativeArrayTypeImpl<T>;
+    using ObjectType = T[N];
 
     static TypePtr CreateType()
     {
@@ -163,11 +164,11 @@ public:
 
         TypeInfo typeInfo;
         typeInfo.kind = TypeKind::NativeArray;
-        typeInfo.size = sizeof(T[N]);
-        typeInfo.alignment = alignof(T[N]);
+        typeInfo.size = sizeof(ObjectType);
+        typeInfo.alignment = alignof(ObjectType);
         typeInfo.name = typeName.Str();
-        typeInfo.constructor = []() { return new T[N]; };
-        //typeInfo.arrayConstructor = [](uint32 num) { return new T[N][num]; };
+        typeInfo.constructor = []() { return new ObjectType; };
+        typeInfo.arrayConstructor = [](uint32 num) { return new ObjectType[num]; };
 
         return TypePtr(new TypeClass(typeInfo, N));
     }

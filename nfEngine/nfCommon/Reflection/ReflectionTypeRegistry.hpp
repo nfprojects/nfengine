@@ -131,13 +131,11 @@ const Type* ResolveType()
 
     const size_t hash = typeid(T).hash_code();
     const Type* existingType = TypeRegistry::GetInstance().GetExistingType(hash);
-    if (existingType)
+    if (!existingType)
     {
-        return existingType;
+        TypePtr newType = TypeCreator<T>::CreateType();
+        existingType = TypeRegistry::GetInstance().RegisterType(hash, std::move(newType));
     }
-
-    TypePtr newType = TypeCreator<T>::CreateType();
-    existingType = TypeRegistry::GetInstance().RegisterType(hash, std::move(newType));
 
     return existingType;
 }
@@ -154,6 +152,24 @@ const typename TypeCreator<T>::TypeClass* GetType()
 
     // TODO this cast could be done in TypeCreator already
     return static_cast<const typename TypeCreator<T>::TypeClass*>(type);
+}
+
+
+/**
+ * Get default object for a given C++ type.
+ * Note: returns nullptr if the type is not default-constructible.
+ */
+template<typename T>
+const T* GetDefaultObject()
+{
+    static_assert(std::is_default_constructible_v<T>, "Given type is not default-constructible");
+
+    if (const auto* type = GetType<T>())
+    {
+        return type->GetDefaultObject<T>();
+    }
+
+    return nullptr;
 }
 
 

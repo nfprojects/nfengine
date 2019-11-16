@@ -6,15 +6,14 @@
 #include "../../../nfCommon/Math/Utils.hpp"
 #include "../../../nfCommon/Math/SamplingHelpers.hpp"
 
+NFE_BEGIN_DEFINE_POLYMORPHIC_CLASS(NFE::RT::RoughPlasticBSDF)
+NFE_CLASS_PARENT(NFE::RT::BSDF);
+NFE_END_DEFINE_CLASS()
+
 namespace NFE {
 namespace RT {
 
 using namespace Math;
-
-const char* RoughPlasticBSDF::GetName() const
-{
-    return "roughPlastic";
-}
 
 bool RoughPlasticBSDF::Sample(SamplingContext& ctx) const
 {

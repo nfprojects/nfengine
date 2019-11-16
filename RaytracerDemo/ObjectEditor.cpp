@@ -243,7 +243,7 @@ static bool EditObject_Internal_Class(const EditPropertyContext& ctx)
     ImGui::NextColumn();
 
     // class type name on right column
-    ImGui::TextDisabled("(%s)", type->GetName());
+    ImGui::TextDisabled("(%s)", type->GetName().Str());
     ImGui::NextColumn();
 
     if (isOpen)
@@ -261,7 +261,7 @@ static bool EditObject_TypeGetter(void* data, int idx, const char** outText)
     if (outText)
     {
         const Type* type = types[idx];
-        *outText = type ? types[idx]->GetName() : "<Empty>";
+        *outText = type ? types[idx]->GetName().Str() : "<Empty>";
     }
     return true;
 }
@@ -282,7 +282,12 @@ static bool EditObject_Internal_UniquePtr(const EditPropertyContext& ctx)
 
     // fill up the list of types that can be set by this unique ptr
     Common::DynArray<const Type*> typesList;
-    typesList.PushBack(nullptr); // TODO empty pointer should be optional (property metadata)
+
+    bool nonNull = ctx.metadata && ctx.metadata->nonNull;
+    if (!nonNull)
+    {
+        typesList.PushBack(nullptr);
+    }
 
     const Type* pointedType = type->GetPointedType();
     if (pointedType->GetKind() == TypeKind::AbstractClass || pointedType->GetKind() == TypeKind::PolymorphicClass)
@@ -297,7 +302,7 @@ static bool EditObject_Internal_UniquePtr(const EditPropertyContext& ctx)
         typesList.PushBack(pointedType);
     }
 
-    int32 currentItem = 0;
+    int32 currentItem = -1;
     for (uint32 i = 0; i < typesList.Size(); ++i)
     {
         if (typesList[i] == type->GetPointedType(ctx.data))
@@ -308,11 +313,11 @@ static bool EditObject_Internal_UniquePtr(const EditPropertyContext& ctx)
 
     changed = ImGui::Combo("##value", &currentItem, EditObject_TypeGetter, typesList.Data(), typesList.Size());
 
-    const Type* currentType = typesList[currentItem];
+    const Type* currentType = currentItem >= 0 ? typesList[currentItem] : nullptr;
 
     if (changed)
     {
-        type->Reset(ctx.data, typesList[currentItem]);
+        type->Reset(ctx.data, currentType);
     }
 
     ImGui::NextColumn();

@@ -37,7 +37,7 @@ bool LoadCustomScene(Scene& scene, Camera& camera)
         auto material = Material::Create();
         material->debugName = "floor";
         material->SetBsdf(String("diffuse"));
-        material->baseColor = Math::Vector4(0.3f, 0.3f, 0.3f);
+        material->baseColor = Math::HdrColorRGB(0.3f, 0.3f, 0.3f);
         material->baseColor.texture = bitmapTextureA;
         //material->emission = Math::Vector4(4.0f, 4.0f, 4.0f);
         //material->emission.texture = emissionTexture;

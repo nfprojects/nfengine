@@ -12,10 +12,14 @@ TEST(ReflectionFundamentalTypeTest, VerifyBool)
     const auto* type = GetType<bool>();
 
     ASSERT_NE(nullptr, type);
-    EXPECT_STREQ("bool", type->GetName());
+    EXPECT_EQ("bool", type->GetName());
     EXPECT_EQ(TypeKind::Fundamental, type->GetKind());
     EXPECT_EQ(1u, type->GetSize());
     EXPECT_EQ(1u, type->GetAlignment());
+
+    const bool* defaultObject = GetDefaultObject<bool>();
+    ASSERT_NE(nullptr, defaultObject);
+    EXPECT_EQ(false, *defaultObject);
 }
 
 TEST(ReflectionFundamentalTypeTest, VerifyInt8)
@@ -23,10 +27,14 @@ TEST(ReflectionFundamentalTypeTest, VerifyInt8)
     const auto* type = GetType<int8>();
 
     ASSERT_NE(nullptr, type);
-    EXPECT_STREQ("NFE::int8", type->GetName());
+    EXPECT_EQ("NFE::int8", type->GetName());
     EXPECT_EQ(TypeKind::Fundamental, type->GetKind());
     EXPECT_EQ(1u, type->GetSize());
     EXPECT_EQ(1u, type->GetAlignment());
+
+    const int8* defaultObject = GetDefaultObject<int8>();
+    ASSERT_NE(nullptr, defaultObject);
+    EXPECT_EQ(0, *defaultObject);
 }
 
 TEST(ReflectionFundamentalTypeTest, VerifyInt16)
@@ -34,10 +42,14 @@ TEST(ReflectionFundamentalTypeTest, VerifyInt16)
     const auto* type = GetType<int16>();
 
     ASSERT_NE(nullptr, type);
-    EXPECT_STREQ("NFE::int16", type->GetName());
+    EXPECT_EQ("NFE::int16", type->GetName());
     EXPECT_EQ(TypeKind::Fundamental, type->GetKind());
     EXPECT_EQ(2u, type->GetSize());
     EXPECT_EQ(2u, type->GetAlignment());
+
+    const int16* defaultObject = GetDefaultObject<int16>();
+    ASSERT_NE(nullptr, defaultObject);
+    EXPECT_EQ(0, *defaultObject);
 }
 
 TEST(ReflectionFundamentalTypeTest, VerifyInt32)
@@ -45,10 +57,14 @@ TEST(ReflectionFundamentalTypeTest, VerifyInt32)
     const auto* type = GetType<int32>();
 
     ASSERT_NE(nullptr, type);
-    EXPECT_STREQ("NFE::int32", type->GetName());
+    EXPECT_EQ("NFE::int32", type->GetName());
     EXPECT_EQ(TypeKind::Fundamental, type->GetKind());
     EXPECT_EQ(4u, type->GetSize());
     EXPECT_EQ(4u, type->GetAlignment());
+
+    const int32* defaultObject = GetDefaultObject<int32>();
+    ASSERT_NE(nullptr, defaultObject);
+    EXPECT_EQ(0, *defaultObject);
 }
 
 TEST(ReflectionFundamentalTypeTest, VerifyInt64)
@@ -56,10 +72,14 @@ TEST(ReflectionFundamentalTypeTest, VerifyInt64)
     const auto* type = GetType<int64>();
 
     ASSERT_NE(nullptr, type);
-    EXPECT_STREQ("NFE::int64", type->GetName());
+    EXPECT_EQ("NFE::int64", type->GetName());
     EXPECT_EQ(TypeKind::Fundamental, type->GetKind());
     EXPECT_EQ(8u, type->GetSize());
     EXPECT_EQ(8u, type->GetAlignment());
+
+    const int64* defaultObject = GetDefaultObject<int64>();
+    ASSERT_NE(nullptr, defaultObject);
+    EXPECT_EQ(0, *defaultObject);
 }
 
 
@@ -68,10 +88,14 @@ TEST(ReflectionFundamentalTypeTest, VerifyUInt8)
     const auto* type = GetType<uint8>();
 
     ASSERT_NE(nullptr, type);
-    EXPECT_STREQ("NFE::uint8", type->GetName());
+    EXPECT_EQ("NFE::uint8", type->GetName());
     EXPECT_EQ(TypeKind::Fundamental, type->GetKind());
     EXPECT_EQ(1u, type->GetSize());
     EXPECT_EQ(1u, type->GetAlignment());
+
+    const uint8* defaultObject = GetDefaultObject<uint8>();
+    ASSERT_NE(nullptr, defaultObject);
+    EXPECT_EQ(0u, *defaultObject);
 }
 
 TEST(ReflectionFundamentalTypeTest, VerifyUInt16)
@@ -79,10 +103,14 @@ TEST(ReflectionFundamentalTypeTest, VerifyUInt16)
     const auto* type = GetType<uint16>();
 
     ASSERT_NE(nullptr, type);
-    EXPECT_STREQ("NFE::uint16", type->GetName());
+    EXPECT_EQ("NFE::uint16", type->GetName());
     EXPECT_EQ(TypeKind::Fundamental, type->GetKind());
     EXPECT_EQ(2u, type->GetSize());
     EXPECT_EQ(2u, type->GetAlignment());
+
+    const uint16* defaultObject = GetDefaultObject<uint16>();
+    ASSERT_NE(nullptr, defaultObject);
+    EXPECT_EQ(0u, *defaultObject);
 }
 
 TEST(ReflectionFundamentalTypeTest, VerifyUInt32)
@@ -90,10 +118,14 @@ TEST(ReflectionFundamentalTypeTest, VerifyUInt32)
     const auto* type = GetType<uint32>();
 
     ASSERT_NE(nullptr, type);
-    EXPECT_STREQ("NFE::uint32", type->GetName());
+    EXPECT_EQ("NFE::uint32", type->GetName());
     EXPECT_EQ(TypeKind::Fundamental, type->GetKind());
     EXPECT_EQ(4u, type->GetSize());
     EXPECT_EQ(4u, type->GetAlignment());
+
+    const uint32* defaultObject = GetDefaultObject<uint32>();
+    ASSERT_NE(nullptr, defaultObject);
+    EXPECT_EQ(0u, *defaultObject);
 }
 
 TEST(ReflectionFundamentalTypeTest, VerifyUInt64)
@@ -101,10 +133,14 @@ TEST(ReflectionFundamentalTypeTest, VerifyUInt64)
     const auto* type = GetType<uint64>();
 
     ASSERT_NE(nullptr, type);
-    EXPECT_STREQ("NFE::uint64", type->GetName());
+    EXPECT_EQ("NFE::uint64", type->GetName());
     EXPECT_EQ(TypeKind::Fundamental, type->GetKind());
     EXPECT_EQ(8u, type->GetSize());
     EXPECT_EQ(8u, type->GetAlignment());
+
+    const uint64* defaultObject = GetDefaultObject<uint64>();
+    ASSERT_NE(nullptr, defaultObject);
+    EXPECT_EQ(0u, *defaultObject);
 }
 
 
@@ -113,10 +149,14 @@ TEST(ReflectionFundamentalTypeTest, VerifyFloat)
     const auto* type = GetType<float>();
 
     ASSERT_NE(nullptr, type);
-    EXPECT_STREQ("float", type->GetName());
+    EXPECT_EQ("float", type->GetName());
     EXPECT_EQ(TypeKind::Fundamental, type->GetKind());
     EXPECT_EQ(4u, type->GetSize());
     EXPECT_EQ(4u, type->GetAlignment());
+
+    const float* defaultObject = GetDefaultObject<float>();
+    ASSERT_NE(nullptr, defaultObject);
+    EXPECT_EQ(0.0f, *defaultObject);
 }
 
 TEST(ReflectionFundamentalTypeTest, VerifyDouble)
@@ -124,10 +164,14 @@ TEST(ReflectionFundamentalTypeTest, VerifyDouble)
     const auto* type = GetType<double>();
 
     ASSERT_NE(nullptr, type);
-    EXPECT_STREQ("double", type->GetName());
+    EXPECT_EQ("double", type->GetName());
     EXPECT_EQ(TypeKind::Fundamental, type->GetKind());
     EXPECT_EQ(8u, type->GetSize());
     EXPECT_EQ(8u, type->GetAlignment());
+
+    const double* defaultObject = GetDefaultObject<double>();
+    ASSERT_NE(nullptr, defaultObject);
+    EXPECT_EQ(0.0, *defaultObject);
 }
 
 TEST(ReflectionFundamentalTypeTest, VerifyString)
@@ -135,10 +179,14 @@ TEST(ReflectionFundamentalTypeTest, VerifyString)
     const auto* type = GetType<String>();
 
     ASSERT_NE(nullptr, type);
-    EXPECT_STREQ("NFE::Common::String", type->GetName());
-    EXPECT_EQ(TypeKind::Fundamental, type->GetKind());
+    EXPECT_EQ("NFE::Common::String", type->GetName());
+    EXPECT_EQ(TypeKind::String, type->GetKind());
     EXPECT_EQ(sizeof(NFE::Common::String), type->GetSize());
     EXPECT_EQ(alignof(NFE::Common::String), type->GetAlignment());
+
+    const String* defaultObject = GetDefaultObject<String>();
+    ASSERT_NE(nullptr, defaultObject);
+    EXPECT_EQ(String(), *defaultObject);
 }
 
 //////////////////////////////////////////////////////////////////////////

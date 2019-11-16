@@ -7,6 +7,7 @@
 #include "../../../nfCommon/Math/Ray.hpp"
 #include "../../../nfCommon/Math/Float3.hpp"
 #include "../../../nfCommon/Memory/Aligned.hpp"
+#include "../../../nfCommon/Reflection/Object.hpp"
 
 namespace NFE {
 namespace RT {
@@ -15,8 +16,10 @@ namespace RT {
 // Handles both reflection and transmission
 // NOTE: all the calculations are performed in local-space of the hit point on a surface: X is tangent, Z is normal
 // NOTE: it's not called "BRDF", because it handles transmission as well
-class BSDF : public Common::Aligned<16>
+class BSDF : public Common::Aligned<16>, public IObject
 {
+    NFE_DECLARE_POLYMORPHIC_CLASS(BSDF);
+
 public:
     enum EventType : uint8
     {
@@ -80,7 +83,7 @@ public:
     };
 
     // get debug name
-    virtual const char* GetName() const = 0;
+    virtual const char* GetShortName() const = 0;
 
     // Check if the distribution is Dirac delta
     // In other words it means that sampling the BSDF generates only specular events and evaluation returns zero.

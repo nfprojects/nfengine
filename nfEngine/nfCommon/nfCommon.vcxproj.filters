@@ -276,9 +276,6 @@
     <ClInclude Include="Reflection\Types\ReflectionFundamentalType.hpp">
       <Filter>Reflection\Types</Filter>
     </ClInclude>
-    <ClInclude Include="Reflection\Test\ReflectionTestTypes.hpp">
-      <Filter>Reflection\Test</Filter>
-    </ClInclude>
     <ClInclude Include="Reflection\Types\ReflectionDynArrayType.hpp">
       <Filter>Reflection\Types</Filter>
     </ClInclude>
@@ -768,9 +765,6 @@
     </ClCompile>
     <ClCompile Include="Reflection\Types\ReflectionClassType.cpp">
       <Filter>Reflection\Types</Filter>
-    </ClCompile>
-    <ClCompile Include="Reflection\Test\ReflectionTestTypes.cpp">
-      <Filter>Reflection\Test</Filter>
     </ClCompile>
     <ClCompile Include="Reflection\Types\ReflectionStringType.cpp">
       <Filter>Reflection\Types</Filter>

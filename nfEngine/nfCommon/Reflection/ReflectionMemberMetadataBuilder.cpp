@@ -59,7 +59,7 @@ MemberMetadataBuilder::~MemberMetadataBuilder()
 
 MemberMetadataBuilder& MemberMetadataBuilder::Name(const char* name)
 {
-    NFE_ASSERT(!mMember.mMetadata.descriptiveName.Empty(), "Descriptive name is already set");
+    NFE_ASSERT(mMember.mMetadata.descriptiveName.Empty(), "Descriptive name is already set");
     mMember.mMetadata.descriptiveName = name;
 
     return *this;
@@ -159,6 +159,18 @@ MemberMetadataBuilder& MemberMetadataBuilder::LogScale(float power)
     }
 
     mMember.mMetadata.logScalePower = power;
+
+    return *this;
+}
+
+MemberMetadataBuilder& MemberMetadataBuilder::NonNull()
+{
+    mMember.mMetadata.nonNull = true;
+
+    if (mMember.mType->GetKind() != TypeKind::UniquePtr && mMember.mType->GetKind() != TypeKind::SharedPtr)
+    {
+        NFE_FATAL("Given property is not pointer type");
+    }
 
     return *this;
 }

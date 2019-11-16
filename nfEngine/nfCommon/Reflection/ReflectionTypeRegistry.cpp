@@ -49,7 +49,7 @@ const Type* TypeRegistry::RegisterType(size_t hash, TypePtr&& type)
     NFE_ASSERT(type, "Invalid type pointer");
 
     const auto iter = mTypesByHash.Find(hash);
-    NFE_ASSERT(iter == mTypesByHash.End(), "Type with given hash already exists (%s)", iter->second->GetName());
+    NFE_ASSERT(iter == mTypesByHash.End(), "Type with given hash already exists (%s)", iter->second->GetName().Str());
 
     const Type* typePtr = type.Get();
     mTypesByHash.Insert(hash, std::move(type));

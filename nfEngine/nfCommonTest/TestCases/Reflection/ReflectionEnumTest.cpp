@@ -13,7 +13,7 @@ TEST(ReflectionEnumTest, TestEnum_Verify)
     ASSERT_NE(nullptr, type);
 
     // check class type properties
-    EXPECT_STREQ("TestEnum", type->GetName());
+    EXPECT_EQ("TestEnum", type->GetName());
     EXPECT_EQ(TypeKind::Enumeration, type->GetKind());
     EXPECT_EQ(sizeof(TestEnum), type->GetSize());
     EXPECT_EQ(alignof(TestEnum), type->GetAlignment());

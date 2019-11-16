@@ -2,15 +2,14 @@
 #include "RoughDiffuseBSDF.h"
 #include "../../../nfCommon/Math/SamplingHelpers.hpp"
 
+NFE_BEGIN_DEFINE_POLYMORPHIC_CLASS(NFE::RT::RoughDiffuseBSDF)
+NFE_CLASS_PARENT(NFE::RT::BSDF);
+NFE_END_DEFINE_CLASS()
+
 namespace NFE {
 namespace RT {
 
 using namespace Math;
-
-const char* RoughDiffuseBSDF::GetName() const
-{
-    return "roughDiffuse";
-}
 
 float RoughDiffuseBSDF::Evaluate_Internal(const float NdotL, const float NdotV, const float LdotV, const float roughness)
 {

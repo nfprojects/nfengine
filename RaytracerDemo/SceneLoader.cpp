@@ -78,6 +78,29 @@ static bool ParseVector3(const rapidjson::Value& value, Vector4& outVector)
     return true;
 }
 
+static bool ParseHdrColorRGB(const rapidjson::Value& value, HdrColorRGB& outColor)
+{
+    if (!value.IsArray())
+    {
+        NFE_LOG_ERROR("RGB color description must be an array");
+        return false;
+    }
+
+    if (value.Size() != 3)
+    {
+        NFE_LOG_ERROR("Invalid array size for RGB color");
+        return false;
+    }
+
+    const float r = static_cast<float>(value[0u].GetDouble());
+    const float g = static_cast<float>(value[1u].GetDouble());
+    const float b = static_cast<float>(value[2u].GetDouble());
+
+    outColor = HdrColorRGB(r, g, b);
+
+    return true;
+}
+
 static bool TryParseBool(const rapidjson::Value& value, const char* name, bool optional, bool& outValue)
 {
     if (!value.HasMember(name))
@@ -187,6 +210,24 @@ static bool TryParseVector3(const rapidjson::Value& value, const char* name, boo
     }
 
     return ParseVector3(value[name], outValue);
+}
+
+static bool TryParseHdrColorRGB(const rapidjson::Value& value, const char* name, bool optional, HdrColorRGB& outColor)
+{
+    if (!value.HasMember(name))
+    {
+        if (optional)
+        {
+            return true;
+        }
+        else
+        {
+            NFE_LOG_ERROR("Missing '%hs' property", name);
+            return false;
+        }
+    }
+
+    return ParseHdrColorRGB(value[name], outColor);
 }
 
 static bool TryParseTransform(const rapidjson::Value& parentValue, const char* name, Transform& outValue)
@@ -395,10 +436,10 @@ static MaterialPtr ParseMaterial(const rapidjson::Value& value, const TexturesMa
     material->debugName = std::move(name);
     material->SetBsdf(bsdfName);
 
-    if (!TryParseBool(value, "dispersive", true, material->isDispersive)) return nullptr;
+    if (!TryParseBool(value, "dispersive", true, material->dispersion.enable)) return nullptr;
 
-    if (!TryParseVector3(value, "baseColor", true, material->baseColor.baseValue)) return nullptr;
-    if (!TryParseVector3(value, "emissionColor", true, material->emission.baseValue)) return nullptr;
+    if (!TryParseHdrColorRGB(value, "baseColor", true, material->baseColor.baseValue)) return nullptr;
+    if (!TryParseHdrColorRGB(value, "emissionColor", true, material->emission.baseValue)) return nullptr;
     if (!TryParseFloat(value, "roughness", true, material->roughness.baseValue)) return nullptr;
     if (!TryParseFloat(value, "metalness", true, material->metalness.baseValue)) return nullptr;
 

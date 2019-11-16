@@ -21,6 +21,9 @@ public:
     // set custom debug name
     MemberMetadataBuilder& Name(const char* name);
 
+    // force non-null pointer
+    MemberMetadataBuilder& NonNull();
+
 private:
     MemberMetadataBuilder(Member& member) : mMember(member) { }
 

@@ -7,8 +7,10 @@ namespace RT {
 
 class RoughDiffuseBSDF : public BSDF
 {
+    NFE_DECLARE_POLYMORPHIC_CLASS(RoughDiffuseBSDF);
+
 public:
-    virtual const char* GetName() const override;
+    virtual const char* GetShortName() const override { return "roughDiffuse"; }
     virtual bool IsDelta() const override { return false; }
     virtual bool Sample(SamplingContext& ctx) const override;
     virtual const RayColor Evaluate(const EvaluationContext& ctx, float* outDirectPdfW = nullptr, float* outReversePdfW = nullptr) const override;

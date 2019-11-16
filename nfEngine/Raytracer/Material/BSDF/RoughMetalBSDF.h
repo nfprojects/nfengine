@@ -8,8 +8,10 @@ namespace RT {
 // Rough metal (conductor) BRDF.
 class RoughMetalBSDF : public BSDF
 {
+    NFE_DECLARE_POLYMORPHIC_CLASS(RoughMetalBSDF);
+
 public:
-    virtual const char* GetName() const override;
+    virtual const char* GetShortName() const override { return "roughMetal"; }
     virtual bool IsDelta() const override { return false; } // TODO depends on material
     virtual bool Sample(SamplingContext& ctx) const override;
     virtual const RayColor Evaluate(const EvaluationContext& ctx, float* outDirectPdfW = nullptr, float* outReversePdfW = nullptr) const override;

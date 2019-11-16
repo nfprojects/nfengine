@@ -9,7 +9,6 @@
 #include "../nfEngine/Raytracer/Color/ColorHelpers.h"
 #include "../nfEngine/Raytracer/Utils/Profiler.h"
 
-#include "../nfEngine/nfCommon/Reflection/Test/ReflectionTestTypes.hpp"
 #include "../nfEngine/nfCommon/Reflection/Types/ReflectionUniquePtrType.hpp"
 
 #include "../nfEngineDeps/imgui/imgui.h"
@@ -380,11 +379,16 @@ bool DemoWindow::RenderUI_Settings()
 
     if (mSelectedMaterial)
     {
-        if (ImGui::TreeNode("Material", "Material (%s)", mSelectedMaterial->debugName.Str()))
+        if (EditObject("Material", *mSelectedMaterial))
         {
-            resetFrame |= RenderUI_Settings_Material();
-            ImGui::TreePop();
+            resetFrame = true;
         }
+
+        //if (ImGui::TreeNode("Material", "Material (%s)", mSelectedMaterial->debugName.Str()))
+        //{
+        //    resetFrame |= RenderUI_Settings_Material();
+        //    ImGui::TreePop();
+        //}
     }
 
     // screenshot saving
@@ -530,71 +534,6 @@ bool DemoWindow::RenderUI_Settings_Object()
     if (changed)
     {
         mScene->BuildBVH();
-    }
-
-    return changed;
-}
-
-bool DemoWindow::RenderUI_Settings_Material()
-{
-    bool changed = false;
-
-    const char* bsdfs[] =
-    {
-        "diffuse",
-        "roughDiffuse",
-        "dielectric",
-        "roughDielectric",
-        "metal",
-        "roughMetal",
-        "plastic",
-        "roughPlastic",
-    };
-
-    const int numBsdfs = 8;
-    int currentBsdfIndex = 0;
-    for (int i = 0; i < numBsdfs; ++i)
-    {
-        if (0 == strcmp(bsdfs[i], mSelectedMaterial->GetBSDF()->GetName()))
-        {
-            currentBsdfIndex = i;
-            break;
-        }
-    }
-
-    if (ImGui::Combo("BSDF", &currentBsdfIndex, bsdfs, numBsdfs))
-    {
-        mSelectedMaterial->SetBsdf(bsdfs[currentBsdfIndex]);
-        changed = true;
-    }
-
-    changed |= ImGui::ColorEdit3("Emission color", &mSelectedMaterial->emission.baseValue.x, ImGuiColorEditFlags_Float | ImGuiColorEditFlags_HDR);
-    changed |= ImGui::ColorEdit3("Base color", &mSelectedMaterial->baseColor.baseValue.x, ImGuiColorEditFlags_Float);
-    changed |= ImGui::SliderFloat("Roughness", &mSelectedMaterial->roughness.baseValue, 0.0f, 1.0f);
-    changed |= ImGui::SliderFloat("Metalness", &mSelectedMaterial->metalness.baseValue, 0.0f, 1.0f);
-    changed |= ImGui::Checkbox("Dispersive", &mSelectedMaterial->isDispersive);
-
-    if (mSelectedMaterial->isDispersive)
-    {
-        changed |= ImGui::SliderFloat("C", &mSelectedMaterial->dispersionParams.C, 0.0f, 1.0f);
-        changed |= ImGui::SliderFloat("D", &mSelectedMaterial->dispersionParams.D, 0.0f, 10.0f);
-    }
-
-    {
-        const float iorRange = 5.0f;
-        changed |= ImGui::SliderFloat("Refractive index", &mSelectedMaterial->IoR, 1.0f / iorRange, iorRange);
-    }
-
-    changed |= ImGui::SliderFloat("Extinction coeff. (K)", &mSelectedMaterial->K, 0.0f, 10.0f);
-
-    if (mSelectedMaterial->normalMap)
-    {
-        changed |= ImGui::SliderFloat("Normal map strength", &mSelectedMaterial->normalMapStrength, 0.0f, 5.0f);
-    }
-
-    if (changed)
-    {
-        mSelectedMaterial->Compile();
     }
 
     return changed;

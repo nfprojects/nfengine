@@ -34,6 +34,7 @@ class IRenderer;
 
 class IRendererContext;
 
+class BSDF;
 class Material;
 
 class ITexture;
