@@ -278,6 +278,50 @@ TEST(SharedPtr, Assignment)
     ASSERT_TRUE(pointerA == pointerB);
 }
 
+TEST(SharedPtr, CopyConstructor_Nullptr)
+{
+    SharedPtr<TestClass> pointerA;
+    SharedPtr<TestClass> pointerB(pointerA);
+
+    pointerB = pointerA;
+
+    EXPECT_EQ(0u, pointerA.RefCount());
+    EXPECT_EQ(0u, pointerB.RefCount());
+}
+
+TEST(SharedPtr, MoveConstructor_Nullptr)
+{
+    SharedPtr<TestClass> pointerA;
+    SharedPtr<TestClass> pointerB(std::move(pointerA));
+
+    pointerB = std::move(pointerA);
+
+    EXPECT_EQ(0u, pointerA.RefCount());
+    EXPECT_EQ(0u, pointerB.RefCount());
+}
+
+TEST(SharedPtr, Assignment_Nullptr)
+{
+    SharedPtr<TestClass> pointerA;
+    SharedPtr<TestClass> pointerB;
+
+    pointerB = pointerA;
+
+    EXPECT_EQ(0u, pointerA.RefCount());
+    EXPECT_EQ(0u, pointerB.RefCount());
+}
+
+TEST(SharedPtr, MoveAssignment_Nullptr)
+{
+    SharedPtr<TestClass> pointerA;
+    SharedPtr<TestClass> pointerB;
+
+    pointerB = std::move(pointerA);
+
+    EXPECT_EQ(0u, pointerA.RefCount());
+    EXPECT_EQ(0u, pointerB.RefCount());
+}
+
 TEST(SharedPtr, CopyConstructor_MultiThreaded)
 {
     using PtrType = SharedPtr<TestClass>;

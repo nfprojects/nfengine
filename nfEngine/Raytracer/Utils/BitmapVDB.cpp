@@ -3,12 +3,16 @@
 #include "../nfCommon/Logger/Logger.hpp"
 #include "../nfCommon/Containers/DynArray.hpp"
 
+#ifdef USE_OPENVDB
 #include <openvdb/openvdb.h>
+#endif // USE_OPENVDB
 
 namespace NFE {
 namespace RT {
 
 using namespace Math;
+
+#ifdef USE_OPENVDB
 
 static bool InitializeOpenVDB()
 {
@@ -18,8 +22,11 @@ static bool InitializeOpenVDB()
 
 NFE_RAYTRACER_API const bool g_openVdbInitialized = InitializeOpenVDB();
 
+#endif // USE_OPENVDB
+
 bool Bitmap::LoadVDB(FILE*, const char* path)
 {
+#ifdef USE_OPENVDB
     openvdb::GridBase::Ptr baseGrid;
     openvdb::CoordBBox box;
 
@@ -81,6 +88,14 @@ bool Bitmap::LoadVDB(FILE*, const char* path)
     }
 
     return true;
+
+#else
+
+    NFE_UNUSED(path);
+
+    return false;
+
+#endif // USE_OPENVDB
 }
 
 } // namespace RT

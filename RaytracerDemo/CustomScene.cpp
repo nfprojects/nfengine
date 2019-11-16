@@ -344,7 +344,7 @@ bool LoadCustomScene(Scene& scene, Camera& camera)
     //}
 
     {
-        Transform transform(Vector4(-14.4f, -4.9, 3.1f), Quaternion::FromEulerAngles(Float3(DegToRad(-17.9f), DegToRad(101.0f), 0.0f)));
+        Transform transform(Vector4(-14.4f, -4.9f, 3.1f), Quaternion::FromEulerAngles(Float3(DegToRad(-17.9f), DegToRad(101.0f), 0.0f)));
         camera.SetTransform(transform);
         camera.SetPerspective(1.0f, DegToRad(8.0f));
     }

@@ -2,6 +2,9 @@
 #include "BVHBuilder.h"
 #include "../nfCommon/System/Timer.hpp"
 #include "../nfCommon/Logger/Logger.hpp"
+#include "../nfCommon/Utils/TaskBuilder.hpp"
+#include "../nfCommon/Utils/Waitable.hpp"
+#include "../nfCommon/Utils/ThreadPool.hpp"
 
 
 namespace NFE {
@@ -10,15 +13,10 @@ namespace RT {
 using namespace Common;
 using namespace Math;
 
-BVHBuilder::Context::Context(uint32 numLeaves)
+void BVHBuilder::ThreadData::Init(uint32 numLeaves)
 {
     mLeftBoxesCache.Resize_SkipConstructor(numLeaves);
     mRightBoxesCache.Resize_SkipConstructor(numLeaves);
-
-    for (uint32 i = 0; i < NumAxes; ++i)
-    {
-        mSortedLeavesIndicesCache[i].Resize_SkipConstructor(numLeaves);
-    }
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -38,17 +36,17 @@ BVHBuilder::~BVHBuilder()
 
 bool BVHBuilder::Build(const Box* data, const uint32 numLeaves,
                        const BvhBuildingParams& params,
-                       Common::DynArray<uint32>& outLeavesOrder)
+                       DynArray<uint32>& outLeavesOrder)
 {
     mLeafBoxes = data;
     mNumLeaves = numLeaves;
     mParams = params;
-    mTarget.AllocateNodes(2 * mNumLeaves); // TODO this is too big, reallocate at the end
+    mTarget.AllocateNodes(2 * mNumLeaves);
 
     mNumGeneratedNodes = 0;
     mNumGeneratedLeaves = 0;
     mLeavesOrder.Clear();
-    mLeavesOrder.Reserve(mNumLeaves);
+    mLeavesOrder.Resize(mNumLeaves);
 
     if (mNumLeaves == 0)
     {
@@ -68,25 +66,38 @@ bool BVHBuilder::Build(const Box* data, const uint32 numLeaves,
                 overallBox.min.f[0], overallBox.min.f[1], overallBox.min.f[2],
                 overallBox.max.f[0], overallBox.max.f[1], overallBox.max.f[2]);
 
-    WorkSet rootWorkSet;
-    rootWorkSet.box = overallBox;
-    rootWorkSet.numLeaves = mNumLeaves;
-    rootWorkSet.leafIndices.Reserve(mNumLeaves);
+    WorkSetPtr rootWorkSet = MakeSharedPtr<WorkSet>();
+    rootWorkSet->box = overallBox;
+    rootWorkSet->numLeaves = mNumLeaves;
+    rootWorkSet->leafIndices.Reserve(mNumLeaves);
     for (uint32 i = 0; i < mNumLeaves; ++i)
     {
-        rootWorkSet.leafIndices.PushBack(i);
+        rootWorkSet->leafIndices.PushBack(i);
     }
 
     Timer timer;
     timer.Start();
 
+    uint32 numThreads = ThreadPool::GetInstance().GetNumThreads();
+    mThreadData.Resize(numThreads);
+    for (uint32 i = 0; i < numThreads; ++i)
     {
-        Context context(mNumLeaves);
+        mThreadData[i].Init(mNumLeaves);
+    }
 
+    Waitable waitable;
+    {
         BVH::Node& rootNode = mTarget.mNodes.Front();
         mNumGeneratedNodes += 2;
-        BuildNode(rootWorkSet, context, rootNode);
+
+        TaskBuilder taskBuilder(waitable);
+        taskBuilder.Task("BVHBuilder::Build", [this, rootWorkSet, &rootNode] (const TaskContext& taskContext)
+        {
+            TaskBuilder childTaskBuilder(taskContext.taskId);
+            BuildNode_Threaded(rootWorkSet, rootNode, taskContext, childTaskBuilder);
+        });
     }
+    waitable.Wait();
 
     NFE_ASSERT(mNumGeneratedLeaves == mNumLeaves); // Number of generated leaves is invalid
     NFE_ASSERT(mNumGeneratedNodes <= 2 * mNumLeaves); // Number of generated nodes is invalid
@@ -97,7 +108,7 @@ bool BVHBuilder::Build(const Box* data, const uint32 numLeaves,
     // mTarget.mNodes.shrink_to_fit(); // TODO
 
     const float millisecondsElapsed = (float)(1000.0 * timer.Stop());
-    NFE_LOG_INFO("Finished BVH generation in %.9g ms (num nodes = %u)", millisecondsElapsed, mNumGeneratedNodes);
+    NFE_LOG_INFO("Finished BVH generation in %.9g ms (num nodes = %u)", millisecondsElapsed, mNumGeneratedNodes.load());
 
     outLeavesOrder = mLeavesOrder;
     return true;
@@ -106,43 +117,30 @@ bool BVHBuilder::Build(const Box* data, const uint32 numLeaves,
 void BVHBuilder::GenerateLeaf(const WorkSet& workSet, BVH::Node& targetNode)
 {
     targetNode.numLeaves = workSet.numLeaves;
-    targetNode.childIndex = mNumGeneratedLeaves;
+    targetNode.childIndex = mNumGeneratedLeaves.fetch_add(workSet.numLeaves);
 
     for (uint32 i = 0; i < workSet.numLeaves; ++i)
     {
-        mLeavesOrder.PushBack(workSet.leafIndices[i]);
+        //mLeavesOrder.PushBack(workSet.leafIndices[i]);
+        mLeavesOrder[targetNode.childIndex + i] = workSet.leafIndices[i];
     }
-
-    mNumGeneratedLeaves += workSet.numLeaves;
 }
 
-void BVHBuilder::BuildNode(const WorkSet& workSet, Context& context, BVH::Node& targetNode)
+void BVHBuilder::SubdivideNode(ThreadData& threadData, const WorkSet& workSet,
+    uint32& outAxis, uint32& outSplitPos, Math::Box& outLeftBox, Math::Box& outRightBox) const
 {
-    NFE_ASSERT(workSet.numLeaves <= mNumLeaves);
-    NFE_ASSERT(workSet.numLeaves > 0);
-    NFE_ASSERT(workSet.depth < mNumLeaves);
-    NFE_ASSERT(workSet.depth <= BVH::MaxDepth);
-
-    targetNode.min = workSet.box.min.ToFloat3();
-    targetNode.max = workSet.box.max.ToFloat3();
-
-    if (workSet.numLeaves <= mParams.maxLeafNodeSize)
-    {
-        GenerateLeaf(workSet, targetNode);
-        return;
-    }
-
     uint32 bestAxis = 0;
     uint32 bestSplitPos = 0;
     float bestCost = FLT_MAX;
     Box bestLeftBox = Box::Empty();
     Box bestRightBox = Box::Empty();
 
-    SortLeaves(workSet, context);
-
+    // TODO could be parallelized (only nodes near root)
     for (uint32 axis = 0; axis < NumAxes; ++axis)
     {
-        const Indices& sortedIndices = context.mSortedLeavesIndicesCache[axis];
+        NFE_ASSERT(workSet.sortedLeavesIndicesCache[axis].Size() == workSet.numLeaves);
+
+        const uint32* sortedIndices = workSet.sortedLeavesIndicesCache[axis].Data();
 
         // calculate left child node AABB for each possible split position
         {
@@ -150,7 +148,7 @@ void BVHBuilder::BuildNode(const WorkSet& workSet, Context& context, BVH::Node& 
             for (uint32 i = 0; i < workSet.numLeaves; ++i)
             {
                 accumulatedBox = Box(accumulatedBox, mLeafBoxes[sortedIndices[i]]);
-                context.mLeftBoxesCache[i] = accumulatedBox;
+                threadData.mLeftBoxesCache[i] = accumulatedBox;
             }
         }
 
@@ -160,15 +158,15 @@ void BVHBuilder::BuildNode(const WorkSet& workSet, Context& context, BVH::Node& 
             for (uint32 i = workSet.numLeaves; i-- > 0; )
             {
                 accumulatedBox = Box(accumulatedBox, mLeafBoxes[sortedIndices[i]]);
-                context.mRightBoxesCache[i] = accumulatedBox;
+                threadData.mRightBoxesCache[i] = accumulatedBox;
             }
         }
 
         // find optimal split position (surface area heuristics)
         for (uint32 splitPos = 0; splitPos < workSet.numLeaves - 1; ++splitPos)
         {
-            const Box& leftBox = context.mLeftBoxesCache[splitPos];
-            const Box& rightBox = context.mRightBoxesCache[splitPos + 1];
+            const Box& leftBox = threadData.mLeftBoxesCache[splitPos];
+            const Box& rightBox = threadData.mRightBoxesCache[splitPos + 1];
 
             float leftCost = 0.0f, rightCost = 0.0f;
             if (mParams.heuristics == BvhBuildingParams::Heuristics::SurfaceArea)
@@ -201,27 +199,56 @@ void BVHBuilder::BuildNode(const WorkSet& workSet, Context& context, BVH::Node& 
         }
     }
 
+    outAxis = bestAxis;
+    outSplitPos = bestSplitPos;
+    outLeftBox = bestLeftBox;
+    outRightBox = bestRightBox;
+}
+
+void BVHBuilder::BuildNode(ThreadData& threadData, WorkSet& workSet, BVH::Node& targetNode)
+{
+    NFE_ASSERT(workSet.numLeaves <= mNumLeaves);
+    NFE_ASSERT(workSet.numLeaves > 0);
+    NFE_ASSERT(workSet.depth < mNumLeaves);
+    NFE_ASSERT(workSet.depth <= BVH::MaxDepth);
+
+    targetNode.min = workSet.box.min.ToFloat3();
+    targetNode.max = workSet.box.max.ToFloat3();
+
+    if (workSet.numLeaves <= mParams.maxLeafNodeSize)
+    {
+        GenerateLeaf(workSet, targetNode);
+        return;
+    }
+
+    SortLeaves(workSet);
+
+    uint32 bestAxis = 0;
+    uint32 bestSplitPos = 0;
+    Box bestLeftBox = Box::Empty();
+    Box bestRightBox = Box::Empty();
+    SubdivideNode(threadData, workSet, bestAxis, bestSplitPos, bestLeftBox, bestRightBox);
+
     const uint32 leftCount = bestSplitPos + 1;
     const uint32 rightCount = workSet.numLeaves - leftCount;
 
-    const uint32 leftNodeIndex = mNumGeneratedNodes;
-    mNumGeneratedNodes += 2;
+    const uint32 leftNodeIndex = mNumGeneratedNodes.fetch_add(2);
 
     targetNode.childIndex = leftNodeIndex;
     targetNode.numLeaves = 0;
     targetNode.splitAxis = bestAxis;
 
-    WorkSet childWorkSet;
-    childWorkSet.sortedBy = bestAxis;
-    childWorkSet.depth = workSet.depth + 1;
-
-    const Indices& sortedIndices = context.mSortedLeavesIndicesCache[bestAxis];
+    const Indices& sortedIndices = workSet.sortedLeavesIndicesCache[bestAxis];
 
     Indices leftIndices, rightIndices;
     leftIndices.Resize_SkipConstructor(leftCount);
     rightIndices.Resize_SkipConstructor(rightCount);
     memcpy(leftIndices.Data(), sortedIndices.Data(), sizeof(uint32) * leftCount);
     memcpy(rightIndices.Data(), sortedIndices.Data() + leftCount, sizeof(uint32) * rightCount);
+
+    WorkSet childWorkSet;
+    childWorkSet.sortedBy = bestAxis;
+    childWorkSet.depth = workSet.depth + 1;
 
     // generate left node
     {
@@ -230,7 +257,7 @@ void BVHBuilder::BuildNode(const WorkSet& workSet, Context& context, BVH::Node& 
         childWorkSet.box = bestLeftBox;
         childWorkSet.numLeaves = leftCount;
         childWorkSet.leafIndices = std::move(leftIndices);
-        BuildNode(childWorkSet, context, childNode);
+        BuildNode(threadData, childWorkSet, childNode);
     }
 
     // generate right node
@@ -240,41 +267,164 @@ void BVHBuilder::BuildNode(const WorkSet& workSet, Context& context, BVH::Node& 
         childWorkSet.box = bestRightBox;
         childWorkSet.numLeaves = rightCount;
         childWorkSet.leafIndices = std::move(rightIndices);
-        BuildNode(childWorkSet, context, childNode);
+        BuildNode(threadData, childWorkSet, childNode);
     }
 }
 
-void BVHBuilder::SortLeaves(const WorkSet& workSet, Context& context) const
+void BVHBuilder::BuildNode_Threaded(const WorkSetPtr& workSet, BVH::Node& targetNode, const TaskContext& taskContext, TaskBuilder& taskBuilder)
 {
+    if (workSet->numLeaves < 2000)
+    {
+        ThreadData& threadData = mThreadData[taskContext.threadId];
+        BuildNode(threadData , *workSet, targetNode);
+        return;
+    }
+
+    NFE_ASSERT(workSet->numLeaves <= mNumLeaves);
+    NFE_ASSERT(workSet->numLeaves > 0);
+    NFE_ASSERT(workSet->depth < mNumLeaves);
+    NFE_ASSERT(workSet->depth <= BVH::MaxDepth);
+
+    targetNode.min = workSet->box.min.ToFloat3();
+    targetNode.max = workSet->box.max.ToFloat3();
+
+    if (workSet->numLeaves <= mParams.maxLeafNodeSize)
+    {
+        GenerateLeaf(*workSet, targetNode);
+        return;
+    }
+
+    SortLeaves_Threaded(workSet, taskBuilder);
+
+    taskBuilder.Fence();
+
+    taskBuilder.Task("BVHBuilder::BuildNode", [this, workSet, &targetNode] (const TaskContext& taskContext)
+    {
+        ThreadData& threadData = mThreadData[taskContext.threadId];
+
+        uint32 bestAxis = 0;
+        uint32 bestSplitPos = 0;
+        Box bestLeftBox = Box::Empty();
+        Box bestRightBox = Box::Empty();
+        SubdivideNode(threadData, *workSet, bestAxis, bestSplitPos, bestLeftBox, bestRightBox);
+
+        const uint32 leftCount = bestSplitPos + 1;
+        const uint32 rightCount = workSet->numLeaves - leftCount;
+
+        const uint32 leftNodeIndex = mNumGeneratedNodes.fetch_add(2);
+
+        targetNode.childIndex = leftNodeIndex;
+        targetNode.numLeaves = 0;
+        targetNode.splitAxis = bestAxis;
+
+        const Indices& sortedIndices = workSet->sortedLeavesIndicesCache[bestAxis];
+
+        Indices leftIndices, rightIndices;
+        leftIndices.Resize_SkipConstructor(leftCount);
+        rightIndices.Resize_SkipConstructor(rightCount);
+        memcpy(leftIndices.Data(), sortedIndices.Data(), sizeof(uint32) * leftCount);
+        memcpy(rightIndices.Data(), sortedIndices.Data() + leftCount, sizeof(uint32) * rightCount);
+
+        // generate left node
+        {
+            TaskBuilder taskBuilder(taskContext.taskId);
+
+            BVH::Node& childNode = mTarget.mNodes[leftNodeIndex];
+
+            WorkSetPtr childWorkSet = MakeSharedPtr<WorkSet>();
+            childWorkSet->sortedBy = bestAxis;
+            childWorkSet->depth = workSet->depth + 1;
+            childWorkSet->box = bestLeftBox;
+            childWorkSet->numLeaves = leftCount;
+            childWorkSet->leafIndices = std::move(leftIndices);
+            BuildNode_Threaded(childWorkSet, childNode, taskContext, taskBuilder);
+        }
+
+        // generate right node
+        {
+            TaskBuilder taskBuilder(taskContext.taskId);
+
+            BVH::Node& childNode = mTarget.mNodes[leftNodeIndex + 1];
+
+            WorkSetPtr childWorkSet = MakeSharedPtr<WorkSet>();
+            childWorkSet->sortedBy = bestAxis;
+            childWorkSet->depth = workSet->depth + 1;
+            childWorkSet->box = bestRightBox;
+            childWorkSet->numLeaves = rightCount;
+            childWorkSet->leafIndices = std::move(rightIndices);
+            BuildNode_Threaded(childWorkSet, childNode, taskContext, taskBuilder);
+        }
+    });
+}
+
+void BVHBuilder::SortLeavesInAxis(Indices& indicesToSort, uint32 axis) const
+{
+    const auto comparator = [this, axis] (const uint32 a, const uint32 b)
+    {
+        const Box& leafA = mLeafBoxes[a];
+        const Box& leafB = mLeafBoxes[b];
+        const Vector4 centerA = leafA.max + leafA.min;
+        const Vector4 centerB = leafB.max + leafB.min;
+        return centerA[axis] < centerB[axis];
+    };
+
+    std::sort(indicesToSort.begin(), indicesToSort.end(), comparator);
+}
+
+void BVHBuilder::SortLeaves(WorkSet& workSet) const
+{
+    NFE_ASSERT(workSet.leafIndices.Size() == workSet.numLeaves);
+
     for (uint32 axis = 0; axis < NumAxes; ++axis)
     {
-        Indices& indicesToSort = context.mSortedLeavesIndicesCache[axis];
+        Indices& indicesToSort = workSet.sortedLeavesIndicesCache[axis];
 
         if (workSet.sortedBy != axis) // sort only what needs to be sorted
         {
+            // copy from unsorted
             indicesToSort = workSet.leafIndices;
 
-            const auto comparator = [this, axis](const uint32 a, const uint32 b)
-            {
-                NFE_ASSERT(a < mNumLeaves);
-                NFE_ASSERT(b < mNumLeaves);
-
-                const Box& leafA = mLeafBoxes[a];
-                const Box& leafB = mLeafBoxes[b];
-
-                // TODO use precalculated triangle center (experiment)
-                const Vector4 centerA = leafA.max + leafA.min;
-                const Vector4 centerB = leafB.max + leafB.min;
-                return centerA[axis] < centerB[axis];
-            };
-
-            std::sort(indicesToSort.begin(), indicesToSort.end(), comparator);
+            SortLeavesInAxis(indicesToSort, axis);
         }
     }
 
     if (workSet.sortedBy < NumAxes)
     {
-        context.mSortedLeavesIndicesCache[workSet.sortedBy] = std::move(workSet.leafIndices);
+        workSet.sortedLeavesIndicesCache[workSet.sortedBy] = std::move(workSet.leafIndices);
+    }
+}
+
+void BVHBuilder::SortLeaves_Threaded(const WorkSetPtr& workSet, TaskBuilder& taskBuilder) const
+{
+    NFE_ASSERT(workSet->leafIndices.Size() == workSet->numLeaves);
+
+    for (uint32 axis = 0; axis < NumAxes; ++axis)
+    {
+        Indices& indicesToSort = workSet->sortedLeavesIndicesCache[axis];
+
+        if (workSet->sortedBy != axis) // sort only what needs to be sorted
+        {
+            // copy from unsorted
+            indicesToSort = workSet->leafIndices;
+
+            if (indicesToSort.Size() > 10000)
+            {
+                taskBuilder.Task("BVHBuilder::SortLeaves/Axis", [axis, workSet, this] (const TaskContext&)
+                {
+                    Indices& indicesToSort = workSet->sortedLeavesIndicesCache[axis];
+                    SortLeavesInAxis(indicesToSort, axis);
+                });
+            }
+            else
+            {
+                SortLeavesInAxis(indicesToSort, axis);
+            }
+        }
+    }
+
+    if (workSet->sortedBy < NumAxes)
+    {
+        workSet->sortedLeavesIndicesCache[workSet->sortedBy] = std::move(workSet->leafIndices);
     }
 }
 
