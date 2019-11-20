@@ -349,6 +349,8 @@
     <ClInclude Include="Material\BSDF\RoughPlasticBSDF.h" />
     <ClInclude Include="Material\Material.h" />
     <ClInclude Include="Material\MaterialParameter.h" />
+    <ClInclude Include="Medium\Medium.h" />
+    <ClInclude Include="Medium\PhaseFunction.h" />
     <ClInclude Include="Mesh\Mesh.h" />
     <ClInclude Include="PCH.h" />
     <ClInclude Include="Raytracer.h" />
@@ -390,10 +392,13 @@
     <ClInclude Include="Shapes\Shape.h" />
     <ClInclude Include="Shapes\SphereShape.h" />
     <ClInclude Include="Textures\BitmapTexture.h" />
+    <ClInclude Include="Textures\BitmapTexture3D.h" />
     <ClInclude Include="Textures\CheckerboardTexture.h" />
     <ClInclude Include="Textures\ConstTexture.h" />
+    <ClInclude Include="Textures\GradientTexture.h" />
     <ClInclude Include="Textures\MixTexture.h" />
     <ClInclude Include="Textures\NoiseTexture.h" />
+    <ClInclude Include="Textures\NoiseTexture3D.h" />
     <ClInclude Include="Textures\Texture.h" />
     <ClInclude Include="Traversal\HitPoint.h" />
     <ClInclude Include="Traversal\Intersection.h" />
@@ -453,6 +458,8 @@
     <ClCompile Include="Material\BSDF\RoughPlasticBSDF.cpp" />
     <ClCompile Include="Material\Material.cpp" />
     <ClCompile Include="Material\MaterialParameter.cpp" />
+    <ClCompile Include="Medium\Medium.cpp" />
+    <ClCompile Include="Medium\PhaseFunction.cpp" />
     <ClCompile Include="PCH.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
@@ -495,10 +502,13 @@
     <ClCompile Include="Shapes\Shape.cpp" />
     <ClCompile Include="Shapes\SphereShape.cpp" />
     <ClCompile Include="Textures\BitmapTexture.cpp" />
+    <ClCompile Include="Textures\BitmapTexture3D.cpp" />
     <ClCompile Include="Textures\CheckerboardTexture.cpp" />
     <ClCompile Include="Textures\ConstTexture.cpp" />
+    <ClCompile Include="Textures\GradientTexture.cpp" />
     <ClCompile Include="Textures\MixTexture.cpp" />
     <ClCompile Include="Textures\NoiseTexture.cpp" />
+    <ClCompile Include="Textures\NoiseTexture3D.cpp" />
     <ClCompile Include="Textures\Texture.cpp" />
     <ClCompile Include="Traversal\RayPacket.cpp" />
     <ClCompile Include="Traversal\RayStream.cpp" />
@@ -509,6 +519,14 @@
     <ClCompile Include="Utils\BitmapDDS.cpp" />
     <ClCompile Include="Utils\BitmapEXR.cpp" />
     <ClCompile Include="Utils\BitmapUtils.cpp" />
+    <ClCompile Include="Utils\BitmapVDB.cpp">
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">4211;4244;4146;4275;4530;4541</DisableSpecificWarnings>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Final|Win32'">4211;4244;4146;4275;4530;4541</DisableSpecificWarnings>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">4211;4244;4146;4275;4530;4541</DisableSpecificWarnings>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">4211;4244;4146;4275;4530;4541</DisableSpecificWarnings>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Final|x64'">4211;4244;4146;4275;4530;4541</DisableSpecificWarnings>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Release|x64'">4211;4244;4146;4275;4530;4541</DisableSpecificWarnings>
+    </ClCompile>
     <ClCompile Include="Utils\BlockCompression.cpp" />
     <ClCompile Include="Utils\KdTree.cpp" />
     <ClCompile Include="Utils\Memory.cpp" />

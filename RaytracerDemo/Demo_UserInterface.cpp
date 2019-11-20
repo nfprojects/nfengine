@@ -6,7 +6,6 @@
 #include "../nfEngine/Raytracer/Scene/Object/SceneObject.h"
 #include "../nfEngine/Raytracer/Scene/Light/BackgroundLight.h"
 #include "../nfEngine/Raytracer/Rendering/Renderer.h"
-#include "../nfEngine/Raytracer/Color/ColorHelpers.h"
 #include "../nfEngine/Raytracer/Utils/Profiler.h"
 
 #include "../nfEngine/nfCommon/Reflection/Types/ReflectionUniquePtrType.hpp"
@@ -320,8 +319,8 @@ void DemoWindow::RenderUI_Debugging_Color()
     {
         // TODO this is incorrect, each pixel can have different number of samples
         const uint32 numSamples = mViewport->GetProgress().passesFinished;
-        hdrColor = mViewport->GetSumBuffer().GetPixel(x, y, true) / static_cast<float>(numSamples);
-        ldrColor = mViewport->GetFrontBuffer().GetPixel(x, y, true);
+        hdrColor = mViewport->GetSumBuffer().GetPixel(x, y) / static_cast<float>(numSamples);
+        ldrColor = mViewport->GetFrontBuffer().GetPixel(x, y);
     }
 
     ImGui::Text("HDR color:");
@@ -491,7 +490,7 @@ bool DemoWindow::RenderUI()
     ImGui::NewFrame();
     {
         static bool showStats = true;
-        static bool showProfiler = true;
+        static bool showProfiler = false;
         static bool showDebugging = false;
         static bool showRenderSettings = true;
 

@@ -2,12 +2,12 @@
 #include "DebugRenderer.h"
 #include "Scene/Scene.h"
 #include "Material/Material.h"
-#include "Color/ColorHelpers.h"
 #include "Color/Spectrum.h"
 #include "Traversal/TraversalContext.h"
 #include "Rendering/Film.h"
 #include "Rendering/RenderingContext.h"
 #include "../nfCommon/Reflection/ReflectionClassDefine.hpp"
+#include "../nfCommon/Math/ColorHelpers.hpp"
 
 NFE_DEFINE_POLYMORPHIC_CLASS(NFE::RT::DebugRenderer)
 {

@@ -77,6 +77,21 @@ bool VectorBool4::Any() const
     return _mm_movemask_ps(v) != 0;
 }
 
+bool VectorBool4::All3() const
+{
+    return (_mm_movemask_ps(v) & 0x7) == 0x7;
+}
+
+bool VectorBool4::None3() const
+{
+    return (_mm_movemask_ps(v) & 0x7) == 0;
+}
+
+bool VectorBool4::Any3() const
+{
+    return (_mm_movemask_ps(v) & 0x7) != 0;
+}
+
 const VectorBool4 VectorBool4::operator & (const VectorBool4 rhs) const
 {
     return _mm_and_ps(v, rhs.v);

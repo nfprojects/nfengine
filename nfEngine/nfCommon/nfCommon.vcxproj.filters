@@ -609,6 +609,7 @@
     <ClInclude Include="Reflection\ReflectionClassDeclare.hpp" />
     <ClInclude Include="Reflection\ReflectionClassDefine.hpp" />
     <ClInclude Include="Reflection\ReflectionTypeResolver.hpp" />
+    <ClInclude Include="Math\ColorHelpers.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="PCH.cpp" />

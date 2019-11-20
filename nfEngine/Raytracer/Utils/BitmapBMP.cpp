@@ -136,7 +136,19 @@ bool Bitmap::LoadBMP(FILE* file, const char* path)
 
 bool Bitmap::SaveBMP(const char* path, bool flipVertically) const
 {
-    uint32 dataSize = 3 * mWidth * mHeight;
+    if (GetDepth() > 1)
+    {
+        NFE_LOG_ERROR("Bitmap::SaveBMP: Cannot save 3D texture as BMP file");
+        return false;
+    }
+
+    if (GetWidth() == 0 || GetHeight() == 0)
+    {
+        NFE_LOG_ERROR("Bitmap::SaveBMP: Cannot save empty texture");
+        return false;
+    }
+
+    uint32 dataSize = 3 * GetWidth() * GetHeight();
 
     Common::DynArray<uint8> tmpData(dataSize);
     const uint8* dataPtr = nullptr;
@@ -146,12 +158,12 @@ bool Bitmap::SaveBMP(const char* path, bool flipVertically) const
         const uint8* rawData = reinterpret_cast<const uint8*>(mData);
 
         uint32 i = 0;
-        for (uint32 y = 0; y < (uint32)mHeight; ++y)
+        for (uint32 y = 0; y < (uint32)GetHeight(); ++y)
         {
-            const uint32 realY = flipVertically ? mHeight - 1 - y : y;
-            for (uint32 x = 0; x < (uint32)mWidth; ++x)
+            const uint32 realY = flipVertically ? GetHeight() - 1 - y : y;
+            for (uint32 x = 0; x < (uint32)GetWidth(); ++x)
             {
-                const uint32 p = mWidth * realY + x;
+                const uint32 p = GetWidth() * realY + x;
                 tmpData[i++] = rawData[4 * p];
                 tmpData[i++] = rawData[4 * p + 1];
                 tmpData[i++] = rawData[4 * p + 2];
@@ -166,7 +178,7 @@ bool Bitmap::SaveBMP(const char* path, bool flipVertically) const
     }
     else
     {
-        NFE_LOG_ERROR("Bitmap::SaveBMP: Unsupported format");
+        NFE_LOG_ERROR("Bitmap::SaveBMP: Unsupported format: %s", FormatToString(mFormat));
         return false;
     }
 
@@ -184,8 +196,8 @@ bool Bitmap::SaveBMP(const char* path, bool flipVertically) const
         // BitmapInfoHeader
         {
             sizeof(BitmapInfoHeader),
-            mWidth,
-            mHeight,
+            GetWidth(),
+            GetHeight(),
             1,
             24,
             0, // BI_RGB

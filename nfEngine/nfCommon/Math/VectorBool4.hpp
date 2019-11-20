@@ -28,6 +28,10 @@ struct NFE_ALIGN(16) VectorBool4
     NFE_FORCE_INLINE bool None() const;
     NFE_FORCE_INLINE bool Any() const;
 
+    NFE_FORCE_INLINE bool All3() const;
+    NFE_FORCE_INLINE bool None3() const;
+    NFE_FORCE_INLINE bool Any3() const;
+
     NFE_FORCE_INLINE const VectorBool4 operator & (const VectorBool4 rhs) const;
     NFE_FORCE_INLINE const VectorBool4 operator | (const VectorBool4 rhs) const;
     NFE_FORCE_INLINE const VectorBool4 operator ^ (const VectorBool4 rhs) const;

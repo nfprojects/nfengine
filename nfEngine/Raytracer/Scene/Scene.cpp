@@ -1,13 +1,17 @@
 #include "PCH.h"
 #include "Scene.h"
+#include "Medium/Medium.h"
 #include "Light/BackgroundLight.h"
 #include "Object/SceneObject_Shape.h"
 #include "Object/SceneObject_Light.h"
 #include "Object/SceneObject_Decal.h"
+#include "Object/SceneObject_Shape.h"
 #include "Rendering/ShadingData.h"
 #include "BVH/BVHBuilder.h"
 #include "Material/Material.h"
 #include "Utils/Profiler.h"
+#include "Shapes/Shape.h"
+
 #include "Traversal/Traversal_Single.h"
 #include "Traversal/Traversal_Packet.h"
 #include "../nfCommon/Reflection/ReflectionUtils.hpp"
@@ -64,9 +68,14 @@ bool Scene::BuildBVH()
         else if (const ShapeSceneObject* shapeObject = RTTI::Cast<ShapeSceneObject>(object.Get()))
         {
             mTraceableObjects.PushBack(shapeObject);
+
+            if (shapeObject->GetMedium())
+            {
+                mMediumObjects.PushBack(shapeObject);
+			}
         }
-        else if (const DecalSceneObject* decalObject = RTTI::Cast<DecalSceneObject>(object.Get()))
-        {
+		else if (const DecalSceneObject* decalObject = RTTI::Cast<DecalSceneObject>(object.Get()))
+		{
             mDecals.PushBack(decalObject);
         }
     }
@@ -368,10 +377,12 @@ void Scene::EvaluateIntersection(const Ray& ray, const HitPoint& hitPoint, const
 
 void Scene::EvaluateShadingData(ShadingData& shadingData, RenderingContext& context) const
 {
-    NFE_ASSERT(shadingData.intersection.material != nullptr);
+    if (shadingData.intersection.material)
+    {
     shadingData.intersection.material->EvaluateShadingData(context.wavelength, shadingData);
 
     EvaluateDecals(shadingData, context);
+}
 }
 
 void Scene::EvaluateDecals(ShadingData& shadingData, RenderingContext& context) const
@@ -462,6 +473,64 @@ void Scene::EvaluateDecals(ShadingData& shadingData, RenderingContext& context) 
             decals[i]->Apply(shadingData, context);
         }
     }
+}
+
+const IMedium* Scene::GetMediumAtPoint(const RenderingContext& context, const Math::Vector4& p) const
+{
+    // TODO what in case of overlapping media?
+
+    for (const ShapeSceneObject* object : mMediumObjects)
+    {
+        const IMedium* medium = object->GetMedium();
+        NFE_ASSERT(medium);
+
+        // transform point to local-space
+        const Matrix4 invTransform = object->GetInverseTransform(context.time);
+        const Vector4 localPoint = invTransform.TransformPoint(p);
+
+        if (object->GetShape()->Intersect(p))
+        {
+            return medium;
+        }
+    }
+
+    return nullptr;
+}
+
+const IMedium* Scene::GetMedium(RenderingContext& context, const Ray& ray, float solidGeometryDistance, float& outMinDistance, float& outMaxDistance) const
+{
+    // TODO proper BVH for volumes set
+    // TODO handling overlapping volumes
+
+    /*
+    for (const MediumSceneObject* object : mMediumObjects)
+    {
+        // transform ray to local-space
+        const Matrix4 invTransform = object->GetInverseTransform(context.time);
+        const Ray transformedRay = invTransform.TransformRay_Unsafe(ray);
+
+        ShapeIntersection shapeIntersection;
+        if (object->GetShape()->Intersect(transformedRay, shapeIntersection))
+        {
+            if (shapeIntersection.farDist > 0.0f && shapeIntersection.nearDist < solidGeometryDistance)
+            {
+                // clamp to ray origin and solid geometry
+                outMinDistance = Max(shapeIntersection.nearDist, 0.0f);
+                outMaxDistance = Min(shapeIntersection.farDist, solidGeometryDistance);
+
+                return object->GetMedium();
+            }
+        }
+    }
+    */
+
+    (void)context;
+    (void)ray;
+    (void)solidGeometryDistance;
+    (void)outMinDistance;
+    (void)outMaxDistance;
+
+    return nullptr;
 }
 
 } // namespace RT

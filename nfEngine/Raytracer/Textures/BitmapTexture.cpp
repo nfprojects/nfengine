@@ -17,8 +17,7 @@ BitmapTexture::~BitmapTexture() = default;
 
 BitmapTexture::BitmapTexture(const BitmapPtr& bitmap)
     : mBitmap(bitmap)
-    , mFilter(BitmapTextureFilter::Bilinear_SmoothStep)
-    , mForceLinearSpace(false)
+    , mFilter(BitmapTextureFilter::Linear_SmoothStep)
 {}
 
 const char* BitmapTexture::GetName() const
@@ -41,13 +40,13 @@ const Vector4 BitmapTexture::Evaluate(const Vector4& coords) const
     }
 
     // bitmap size
-    const VectorInt4 size = VectorInt4(bitmapPtr->mWidth, bitmapPtr->mHeight, 0, 0).Swizzle<0,1,0,1>();
+    const VectorInt4 size = bitmapPtr->GetSize().Swizzle<0,1,0,1>();
 
     // wrap to 0..1 range
     const Vector4 warpedCoords = Vector4::Mod1(coords);
 
     // compute texel coordinates
-    const Vector4 scaledCoords = warpedCoords * bitmapPtr->mFloatSize;
+    const Vector4 scaledCoords = warpedCoords * bitmapPtr->mFloatSize.Swizzle<0,1,0,1>();
     const VectorInt4 intCoords = VectorInt4::Convert(Vector4::Floor(scaledCoords));
 
     VectorInt4 texelCoords = intCoords;
@@ -58,9 +57,9 @@ const Vector4 BitmapTexture::Evaluate(const Vector4& coords) const
 
     if (mFilter == BitmapTextureFilter::NearestNeighbor)
     {
-        result = bitmapPtr->GetPixel(texelCoords.x, texelCoords.y, mForceLinearSpace);
+        result = bitmapPtr->GetPixel(texelCoords.x, texelCoords.y);
     }
-    else if (mFilter == BitmapTextureFilter::Bilinear || mFilter == BitmapTextureFilter::Bilinear_SmoothStep)
+    else if (mFilter == BitmapTextureFilter::Linear || mFilter == BitmapTextureFilter::Linear_SmoothStep)
     {
         texelCoords = texelCoords.Swizzle<0, 1, 0, 1>();
         texelCoords += VectorInt4(0, 0, 1, 1);
@@ -69,12 +68,12 @@ const Vector4 BitmapTexture::Evaluate(const Vector4& coords) const
         texelCoords -= VectorInt4::AndNot(texelCoords < size, size);
 
         Vector4 colors[4];
-        bitmapPtr->GetPixelBlock(texelCoords, colors, mForceLinearSpace);
+        bitmapPtr->GetPixelBlock(texelCoords, colors);
 
         // bilinear interpolation
         Vector4 weights = scaledCoords - intCoords.ConvertToFloat();
 
-        if (mFilter == BitmapTextureFilter::Bilinear_SmoothStep)
+        if (mFilter == BitmapTextureFilter::Linear_SmoothStep)
         {
             weights = SmoothStep(weights);
         }

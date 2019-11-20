@@ -55,6 +55,9 @@ public:
     // TODO return array of all hit points along the ray
     virtual bool Intersect(const Math::Ray& ray, ShapeIntersection& outResult) const;
 
+    // check intersection with a point
+    virtual bool Intersect(const Math::Vector4& point) const;
+
     // generate random point on the shape's surface
     // optionaly returns normal vector and sampling probability (with respect to area on the surface)
     virtual const Math::Vector4 Sample(const Math::Float3& u, Math::Vector4* outNormal = nullptr, float* outPdf = nullptr) const = 0;

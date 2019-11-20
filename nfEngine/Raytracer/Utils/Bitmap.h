@@ -50,6 +50,7 @@ public:
     {
         uint32 width = 0;
         uint32 height = 0;
+        uint32 depth = 1;
         Format format = Format::Unknown;
         const void* data = nullptr;
         uint32 stride = 0;
@@ -70,7 +71,7 @@ public:
     template<typename T>
     NFE_FORCE_INLINE T& GetPixelRef(uint32 x, uint32 y)
     {
-        NFE_ASSERT(x < mWidth && y < mHeight);
+        NFE_ASSERT(x < GetWidth() && y < GetHeight());
         NFE_ASSERT(BitsPerPixel(mFormat) / 8 == sizeof(T));
 
         const size_t rowOffset = static_cast<size_t>(mStride) * static_cast<size_t>(y);
@@ -78,9 +79,20 @@ public:
     }
 
     template<typename T>
+    NFE_FORCE_INLINE T& GetPixelRef(uint32 x, uint32 y, uint32 z)
+    {
+        NFE_ASSERT(x < GetWidth() && y < GetHeight() && z < GetDepth());
+        NFE_ASSERT(BitsPerPixel(mFormat) / 8 == sizeof(T));
+
+        const size_t row = y + static_cast<size_t>(GetHeight()) * static_cast<size_t>(z);
+        const size_t rowOffset = mStride * row;
+        return *reinterpret_cast<T*>(mData + rowOffset + sizeof(T) * x);
+    }
+
+    template<typename T>
     NFE_FORCE_INLINE const T& GetPixelRef(uint32 x, uint32 y) const
     {
-        NFE_ASSERT(x < mWidth && y < mHeight);
+        NFE_ASSERT(x < GetWidth() && y < GetHeight());
         NFE_ASSERT(BitsPerPixel(mFormat) / 8 == sizeof(T));
 
         const size_t rowOffset = static_cast<size_t>(mStride) * static_cast<size_t>(y);
@@ -89,13 +101,20 @@ public:
 
     NFE_FORCE_INLINE uint8* GetData() { return mData; }
     NFE_FORCE_INLINE const uint8* GetData() const { return mData; }
-    NFE_FORCE_INLINE uint32 GetWidth() const { return mWidth; }
+
+
+    NFE_FORCE_INLINE Math::VectorInt4 GetSize() const { return mSize; }
+    NFE_FORCE_INLINE uint32 GetWidth() const { return mSize.x; }
+    NFE_FORCE_INLINE uint32 GetHeight() const { return mSize.y; }
+    NFE_FORCE_INLINE uint32 GetDepth() const { return mSize.z; }
+
+    // get number of bytes between rows
     NFE_FORCE_INLINE uint32 GetStride() const { return mStride; }
-    NFE_FORCE_INLINE uint32 GetHeight() const { return mHeight; }
+
     NFE_FORCE_INLINE Format GetFormat() const { return mFormat; }
 
     // get allocated size
-    NFE_FORCE_INLINE size_t GetDataSize() const { return (size_t)mStride * (size_t)mHeight; }
+    NFE_FORCE_INLINE size_t GetDataSize() const { return (size_t)mStride * (size_t)GetHeight() * (size_t)GetDepth(); }
 
     static size_t ComputeDataSize(const InitData& initData);
     static uint32 ComputeDataStride(uint32 width, Format format);
@@ -127,10 +146,14 @@ public:
     static const char* FormatToString(Format format);
 
     // get single pixel
-    NFE_RAYTRACER_API const Math::Vector4 GetPixel(uint32 x, uint32 y, const bool forceLinearSpace = false) const;
+    NFE_RAYTRACER_API const Math::Vector4 GetPixel(uint32 x, uint32 y) const;
+    NFE_RAYTRACER_API const Math::Vector4 GetPixel3D(uint32 x, uint32 y, uint32 z) const;
 
     // get 2x2 pixel block
-    NFE_RAYTRACER_API void GetPixelBlock(const Math::VectorInt4 coords, Math::Vector4* outColors, const bool forceLinearSpace = false) const;
+    NFE_RAYTRACER_API void GetPixelBlock(const Math::VectorInt4 coords, Math::Vector4* outColors) const;
+
+    // get 2x2x2 pixel block
+    NFE_RAYTRACER_API void GetPixelBlock3D(const Math::VectorInt4 coordsA, const Math::VectorInt4 coordsB, Math::Vector4* outColors) const;
 
     // fill with zeros
     NFE_RAYTRACER_API void Clear();
@@ -141,17 +164,18 @@ public:
 private:
 
     friend class BitmapTexture;
+    friend class BitmapTexture3D;
     friend class BitmapUtils;
 
     bool LoadBMP(FILE* file, const char* path);
     bool LoadDDS(FILE* file, const char* path);
     bool LoadEXR(FILE* file, const char* path);
+    bool LoadVDB(FILE* file, const char* path);
 
+    Math::VectorInt4 mSize = Math::VectorInt4::Zero();
     Math::Vector4 mFloatSize = Math::Vector4::Zero();
     uint8* mData;
     uint8* mPalette;
-    uint32 mWidth;          // number of pixels in a row
-    uint32 mHeight;         // number of rows
     uint32 mStride;         // number of bytes between rows
     uint32 mPaletteSize;    // number of colors in the palette
     Format mFormat;

@@ -149,6 +149,12 @@ bool BoxShape::Intersect(const Math::Ray& ray, ShapeIntersection& outResult) con
     return Intersect_BoxRay_TwoSided(ray, box, outResult.nearDist, outResult.farDist);
 }
 
+bool BoxShape::Intersect(const Math::Vector4& point) const
+{
+    const Box box(-mSize, mSize);
+    return box.Intersects(point);
+}
+
 const Vector4 BoxShape::Sample(const Float3& u, Math::Vector4* outNormal, float* outPdf) const
 {
     float v = u.z;

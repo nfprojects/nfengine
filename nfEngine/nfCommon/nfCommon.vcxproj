@@ -84,6 +84,7 @@
     <ClInclude Include="Logger\LogGrouper.hpp" />
     <ClInclude Include="Logger\LogScope.hpp" />
     <ClInclude Include="Math\Box.hpp" />
+    <ClInclude Include="Math\ColorHelpers.hpp" />
     <ClInclude Include="Math\Constants.hpp" />
     <ClInclude Include="Math\Conversions.hpp" />
     <ClInclude Include="Math\Distribution.hpp" />

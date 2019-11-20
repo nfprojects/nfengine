@@ -165,16 +165,34 @@ NFE_FORCE_INLINE const T Signum(const T x)
     }
 }
 
-// Clamp to range.
+// Clamp to a given range
 template<typename T>
 NFE_FORCE_INLINE constexpr const T Clamp(const T x, const T min, const T max)
 {
     if (x > max)
+    {
         return max;
+    }
     else if (x < min)
+    {
         return min;
-    else
-        return x;
+    }
+    return x;
+}
+
+// Clamp to 0...1 range
+template<typename T>
+NFE_FORCE_INLINE constexpr const T Saturate(const T x)
+{
+    if (x > T(1))
+    {
+        return T(1);
+    }
+    else if (x < T(0))
+    {
+        return T(0);
+    }
+    return x;
 }
 
 template<typename T>

@@ -23,11 +23,12 @@ class Scene;
 
 class IShape;
 class ILight;
+class IMedium;
 
 class ISceneObject;
 class ITraceableSceneObject;
-class LightSceneObject;
 class ShapeSceneObject;
+class LightSceneObject;
 class DecalSceneObject;
 
 class IRenderer;

@@ -88,6 +88,11 @@
     <ClInclude Include="Rendering\RenderingContext.h" />
     <ClInclude Include="Rendering\RenderingParams.h" />
     <ClInclude Include="Utils\BitmapUtils.h" />
+    <ClInclude Include="Textures\NoiseTexture3D.h" />
+    <ClInclude Include="Medium\PhaseFunction.h" />
+    <ClInclude Include="Medium\Medium.h" />
+    <ClInclude Include="Textures\GradientTexture.h" />
+    <ClInclude Include="Textures\BitmapTexture3D.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BVH\BVH.cpp" />
@@ -160,7 +165,13 @@
     <ClCompile Include="Rendering\RenderingContext.cpp" />
     <ClCompile Include="Utils\BitmapUtils.cpp" />
     <ClCompile Include="Material\MaterialParameter.cpp" />
+    <ClCompile Include="Textures\NoiseTexture3D.cpp" />
+    <ClCompile Include="Medium\PhaseFunction.cpp" />
+    <ClCompile Include="Medium\Medium.cpp" />
+    <ClCompile Include="Textures\GradientTexture.cpp" />
     <ClCompile Include="..\..\nfEngineDeps\tracy\TracyClientDLL.cpp" />
+    <ClCompile Include="Textures\BitmapTexture3D.cpp" />
+    <ClCompile Include="Utils\BitmapVDB.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Math">

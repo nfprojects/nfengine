@@ -5,7 +5,6 @@
 #include "RendererContext.h"
 #include "Scene/Camera.h"
 #include "Textures/Texture.h"
-#include "Color/ColorHelpers.h"
 #include "Utils/BitmapUtils.h"
 #include "Utils/Profiler.h"
 #include "../nfCommon/System/Timer.hpp"
@@ -13,6 +12,7 @@
 #include "../nfCommon/Math/Vector4Load.hpp"
 #include "../nfCommon/Math/Transcendental.hpp"
 #include "../nfCommon/Math/LdrColor.hpp"
+#include "../nfCommon/Math/ColorHelpers.hpp"
 #include "../nfCommon/Logger/Logger.hpp"
 #include "../nfCommon/Utils/ThreadPool.hpp"
 #include "../nfCommon/Utils/Waitable.hpp"
@@ -167,7 +167,6 @@ bool Viewport::SetRenderer(IRenderer* renderer)
 
 bool Viewport::SetRenderingParams(const RenderingParams& params)
 {
-    NFE_ASSERT(params.maxRayDepth < 255u);
     NFE_ASSERT(params.antiAliasingSpread >= 0.0f);
     NFE_ASSERT(params.motionBlurStrength >= 0.0f && params.motionBlurStrength <= 1.0f);
 
@@ -620,7 +619,9 @@ float Viewport::ComputeBlockError(const Block& block) const
             const Vector4 a = imageScalingFactor * Vector4_Load_Float3_Unsafe(mSum.GetPixelRef<Float3>(x, y));
             const Vector4 b = (2.0f * imageScalingFactor) * Vector4_Load_Float3_Unsafe(mSecondarySum.GetPixelRef<Float3>(x, y));
             const Vector4 diff = Vector4::Abs(a - b);
-            const float error = (diff.x + 2.0f * diff.y + diff.z) / Sqrt(NFE_MATH_EPSILON + a.x + 2.0f * a.y + a.z);
+            const float aLuminance = Vector4::Dot3(c_rgbIntensityWeights, a);
+            const float diffLuminance = Vector4::Dot3(c_rgbIntensityWeights, diff);
+            const float error = diffLuminance / Sqrt(NFE_MATH_EPSILON + aLuminance);
             rowError += error;
         }
         totalError += rowError;

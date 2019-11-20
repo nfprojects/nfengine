@@ -70,6 +70,12 @@ bool IShape::Intersect(const Ray&, ShapeIntersection&) const
     return false;
 }
 
+bool IShape::Intersect(const Math::Vector4&) const
+{
+    NFE_FATAL("This shape has no volume");
+    return false;
+}
+
 bool IShape::Sample(const Vector4& ref, const Float3& u, ShapeSampleResult& result) const
 {
     result.position = Sample(u, &result.normal);

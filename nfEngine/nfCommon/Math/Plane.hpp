@@ -19,7 +19,8 @@ class NFE_ALIGN(16) Plane
 {
 public:
     Plane() = default;
-    NFE_INLINE explicit Plane(const Vector4& coeffs);
+
+    NFE_INLINE explicit Plane(const Vector4& coeffs) : v(coeffs) { }
 
     // create plane with given normal and distance from origin
     NFE_INLINE Plane(const Vector4& normal, const float distance);
@@ -29,6 +30,36 @@ public:
 
     // create plane with given normal and crossing point
     NFE_INLINE Plane(const Vector4& normal, const Vector4& point);
+
+    NFE_FORCE_INLINE static const Plane PositiveX()
+    {
+        return Plane(Vector4(1.0f, 0.0f, 0.0f, 0.0f));
+    }
+
+    NFE_FORCE_INLINE static const Plane PositiveY()
+    {
+        return Plane(Vector4(0.0f, 1.0f, 0.0f, 0.0f));
+    }
+
+    NFE_FORCE_INLINE static const Plane PositiveZ()
+    {
+        return Plane(Vector4(0.0f, 0.0f, 1.0f, 0.0f));
+    }
+
+    NFE_FORCE_INLINE static const Plane NegativeX()
+    {
+        return Plane(Vector4(-1.0f, 0.0f, 0.0f, 0.0f));
+    }
+
+    NFE_FORCE_INLINE static const Plane NegativeY()
+    {
+        return Plane(Vector4(0.0f, -1.0f, 0.0f, 0.0f));
+    }
+
+    NFE_FORCE_INLINE static const Plane NegativeZ()
+    {
+        return Plane(Vector4(0.0f, 0.0f, -1.0f, 0.0f));
+    }
 
     /*
      * Calculate signed distance to a given point.
@@ -44,6 +75,11 @@ public:
 
     NFE_INLINE bool operator == (const Plane& rhs) const;
     NFE_INLINE bool operator != (const Plane& rhs) const;
+
+    NFE_FORCE_INLINE bool IsValid() const
+    {
+        return v.IsValid();
+    }
 
     // internal vector
     Vector4 v;

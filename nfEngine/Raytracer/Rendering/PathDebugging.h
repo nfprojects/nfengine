@@ -14,6 +14,7 @@ enum class PathTerminationReason
     HitLight,
     Depth,
     Throughput,
+    AttenuatedInMedium,
     NoSampledEvent,
     RussianRoulette,
 };
@@ -35,6 +36,8 @@ struct PathDebugData
 
         HitPoint hitPoint;
 
+        const IMedium* medium = nullptr;
+
         const ISceneObject* objectHit = nullptr;
 
         // evaluated world-space shading data
@@ -48,7 +51,7 @@ struct PathDebugData
 
         RaySource raySource;
 
-        BSDF::EventType bsdfEvent;
+        BSDF::EventType bsdfEvent = BSDF::NullEvent;
     };
 
     PathTerminationReason terminationReason = PathTerminationReason::None;

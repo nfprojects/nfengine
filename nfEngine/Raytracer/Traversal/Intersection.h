@@ -14,6 +14,7 @@ struct IntersectionData
     Math::Matrix4 frame;
     Math::Vector4 texCoord;
     const Material* material = nullptr;
+    const IMedium* medium = nullptr;
 
     NFE_FORCE_INLINE const Math::Vector4 LocalToWorld(const Math::Vector4& localCoords) const
     {

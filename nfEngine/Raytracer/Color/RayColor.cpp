@@ -14,9 +14,9 @@ namespace RT {
 
 using namespace Math;
 
-static_assert(sizeof(RayColor) == sizeof(float) * Wavelength::NumComponents, "Invalid number of color components");
-
 #ifdef NFE_ENABLE_SPECTRAL_RENDERING
+
+static_assert(sizeof(RayColor) == sizeof(float) * Wavelength::NumComponents, "Invalid number of color components");
 
 static constexpr uint32 NumBins = 69;
 

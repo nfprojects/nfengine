@@ -116,7 +116,7 @@ const Vector4 SamplingHelpers::GetSphere(const Float2 u)
     // TODO 'u' should be already bipolar
     const Vector4 v = Vector4::MulAndSub(Vector4(u), 2.0f, VECTOR_ONE);
 
-    const float t = sqrtf(1.0f - v.y * v.y);
+    const float t = sqrtf(Max(0.0f, 1.0f - v.y * v.y));
     const float theta = NFE_MATH_PI * v.x;
     Vector4 result = t * SinCos(theta); // xy
     result.z = v.y;

@@ -19,12 +19,21 @@ struct Wavelength
     static constexpr float Higher = 0.720e-6f;
 
 #ifdef NFE_ENABLE_SPECTRAL_RENDERING
+
+#ifdef NFE_USE_AVX
     static constexpr uint32 NumComponents = 8;
     using ValueType = Math::Vector8;
 #else
     static constexpr uint32 NumComponents = 4;
     using ValueType = Math::Vector4;
-#endif
+#endif // NFE_USE_AVX
+
+#else // !defined(NFE_ENABLE_SPECTRAL_RENDERING)
+
+    static constexpr uint32 NumComponents = 3;
+    using ValueType = Math::Vector4;
+
+#endif // NFE_ENABLE_SPECTRAL_RENDERING
 
     ValueType value;
 

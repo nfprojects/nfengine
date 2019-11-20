@@ -71,6 +71,11 @@ bool SphereShape::Intersect(const Math::Ray& ray, ShapeIntersection& outResult) 
     return outResult.farDist > outResult.nearDist;
 }
 
+bool SphereShape::Intersect(const Math::Vector4& point) const
+{
+    return point.SqrLength3() <= mRadius * mRadius;
+}
+
 const Vector4 SphereShape::Sample(const Float3& u, Math::Vector4* outNormal, float* outPdf) const
 {
     if (outPdf)

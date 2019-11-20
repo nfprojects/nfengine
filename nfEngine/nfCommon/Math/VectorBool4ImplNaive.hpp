@@ -55,6 +55,21 @@ bool VectorBool4::Any() const
     return b[0] || b[1] || b[2] || b[3];
 }
 
+bool VectorBool4::All3() const
+{
+    return b[0] && b[1] && b[2];
+}
+
+bool VectorBool4::None3() const
+{
+    return (!b[0]) && (!b[1]) && (!b[2]);
+}
+
+bool VectorBool4::Any3() const
+{
+    return b[0] || b[1] || b[2];
+}
+
 const VectorBool4 VectorBool4::operator & (const VectorBool4 rhs) const
 {
     return VectorBool4{ b[0] && rhs.b[0], b[1] && rhs.b[1], b[2] && rhs.b[2], b[3] && rhs.b[3] };

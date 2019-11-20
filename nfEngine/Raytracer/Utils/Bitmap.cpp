@@ -15,8 +15,6 @@ namespace RT {
 using namespace Common;
 using namespace Math;
 
-static_assert(sizeof(Bitmap) <= 64, "Bitmap class is too big");
-
 uint8 Bitmap::BitsPerPixel(Format format)
 {
     switch (format)
@@ -87,7 +85,7 @@ const char* Bitmap::FormatToString(Format format)
 size_t Bitmap::ComputeDataSize(const InitData& initData)
 {
     const uint32 stride = Max(initData.stride, ComputeDataStride(initData.width, initData.format));
-    const uint64 dataSize = (uint64)initData.height * (uint64)stride;
+    const uint64 dataSize = (uint64)initData.depth * (uint64)initData.height * (uint64)stride;
 
     if (dataSize >= (uint64)std::numeric_limits<size_t>::max())
     {
@@ -105,8 +103,6 @@ uint32 Bitmap::ComputeDataStride(uint32 width, Format format)
 Bitmap::Bitmap(const char* debugName)
     : mData(nullptr)
     , mPalette(nullptr)
-    , mWidth(0)
-    , mHeight(0)
     , mStride(0)
     , mPaletteSize(0)
     , mFormat(Format::Unknown)
@@ -128,8 +124,9 @@ Bitmap::Bitmap(const Bitmap& other)
 {
     InitData data;
     data.data = other.mData;
-    data.width = other.mWidth;
-    data.height = other.mHeight;
+    data.width = other.GetWidth();
+    data.height = other.GetHeight();
+    data.depth = other.GetDepth();
     data.stride = other.mStride;
     data.format = other.mFormat;
     data.paletteSize = other.mPaletteSize;
@@ -143,8 +140,9 @@ Bitmap& Bitmap::operator = (const Bitmap& other)
 
     InitData data;
     data.data = other.mData;
-    data.width = other.mWidth;
-    data.height = other.mHeight;
+    data.width = other.GetWidth();
+    data.height = other.GetHeight();
+    data.depth = other.GetDepth();
     data.stride = other.mStride;
     data.format = other.mFormat;
     data.paletteSize = other.mPaletteSize;
@@ -181,8 +179,7 @@ void Bitmap::Release()
     }
 
     mStride = 0;
-    mWidth = 0;
-    mHeight = 0;
+    mSize = VectorInt4::Zero();
     mPaletteSize = 0;
     mFormat = Format::Unknown;
 }
@@ -228,9 +225,10 @@ bool Bitmap::Init(const InitData& initData)
     memset(mData + dataSize, 0, marigin);
 
     mStride = Max(initData.stride, ComputeDataStride(initData.width, initData.format));
-    mWidth = initData.width;
-    mHeight = initData.height;
-    mFloatSize = Vector4::FromIntegers(initData.width, initData.height, initData.width, initData.height);
+    mSize.x = initData.width;
+    mSize.y = initData.height;
+    mSize.z = initData.depth;
+    mFloatSize = Vector4::FromIntegers(initData.width, initData.height, initData.depth, 0);
     mFormat = initData.format;
     mLinearSpace = initData.linearSpace;
     mPaletteSize = initData.paletteSize;
@@ -240,7 +238,7 @@ bool Bitmap::Init(const InitData& initData)
 
 bool Bitmap::Copy(Bitmap& target, const Bitmap& source)
 {
-    if (target.mWidth != source.mWidth || target.mHeight != source.mHeight)
+    if ((target.GetSize() != target.GetSize()).Any3())
     {
         NFE_LOG_ERROR("Bitmap copy failed: bitmaps have different dimensions");
         return false;
@@ -265,8 +263,9 @@ bool Bitmap::Copy(Bitmap& target, const Bitmap& source)
     }
     else
     {
-        uint32 rowSize = ComputeDataStride(source.mWidth, source.mFormat);
-        for (size_t i = 0; i < source.mHeight; ++i)
+        uint32 rowSize = ComputeDataStride(source.GetWidth(), source.mFormat);
+        size_t numRows = (size_t)source.GetHeight() * (size_t)source.GetDepth();
+        for (size_t i = 0; i < numRows; ++i)
         {
             memcpy(target.GetData() + size_t(target.mStride) * i, source.GetData() + size_t(source.mStride) * i, rowSize);
         }
@@ -301,9 +300,12 @@ bool Bitmap::Load(const char* path)
 
             if (!LoadEXR(file, path))
             {
-                NFE_LOG_ERROR("Failed to load '%hs' - unknown format", path);
-                fclose(file);
-                return false;
+                if (!LoadVDB(file, path))
+                {
+                    NFE_LOG_ERROR("Failed to load '%hs' - unknown format", path);
+                    fclose(file);
+                    return false;
+                }
             }
         }
     }
@@ -311,16 +313,15 @@ bool Bitmap::Load(const char* path)
     fclose(file);
 
     const float elapsedTime = static_cast<float>(1000.0 * timer.Stop());
-    NFE_LOG_INFO("Bitmap '%hs' loaded in %.3fms: width=%u, height=%u, format=%s, %s",
-        path, elapsedTime, mWidth, mHeight, FormatToString(mFormat),
+    NFE_LOG_INFO("Bitmap '%hs' loaded in %.3fms: width=%u, height=%u, depth=%u, format=%s, %s",
+        path, elapsedTime, GetWidth(), GetHeight(), GetDepth(), FormatToString(mFormat),
         mLinearSpace ? "linear-space" : "gamma-space");
     return true;
 }
 
-const Vector4 Bitmap::GetPixel(uint32 x, uint32 y, const bool forceLinearSpace) const
+const Vector4 Bitmap::GetPixel(uint32 x, uint32 y) const
 {
-    NFE_ASSERT(x < mWidth);
-    NFE_ASSERT(y < mHeight);
+    NFE_ASSERT((x < GetWidth()) && (y < GetHeight()));
 
     const size_t rowOffset = static_cast<size_t>(mStride) * static_cast<size_t>(y);
     const uint8* rowData = mData + rowOffset;
@@ -470,31 +471,28 @@ const Vector4 Bitmap::GetPixel(uint32 x, uint32 y, const bool forceLinearSpace) 
 
     case Format::BC1:
     {
-        color = DecodeBC1(reinterpret_cast<const uint8*>(mData), x, y, mWidth);
+        color = DecodeBC1(reinterpret_cast<const uint8*>(mData), x, y, GetWidth());
         break;
     }
 
     case Format::BC4:
     {
-        color = DecodeBC4(reinterpret_cast<const uint8*>(mData), x, y, mWidth);
+        color = DecodeBC4(reinterpret_cast<const uint8*>(mData), x, y, GetWidth());
         break;
     }
 
     case Format::BC5:
     {
-        color = DecodeBC5(reinterpret_cast<const uint8*>(mData), x, y, mWidth);
+        color = DecodeBC5(reinterpret_cast<const uint8*>(mData), x, y, GetWidth());
         break;
     }
 
     default:
-    {
         NFE_FATAL("Unsupported bitmap format");
         color = Vector4::Zero();
     }
-    }
 
-    (void)forceLinearSpace;
-    if (!mLinearSpace /*&& !forceLinearSpace*/)
+    if (!mLinearSpace)
     {
         color = Convert_sRGB_To_Linear(color);
     }
@@ -502,12 +500,10 @@ const Vector4 Bitmap::GetPixel(uint32 x, uint32 y, const bool forceLinearSpace) 
     return color;
 }
 
-void Bitmap::GetPixelBlock(const VectorInt4 coords, Vector4* outColors, const bool forceLinearSpace) const
+void Bitmap::GetPixelBlock(const VectorInt4 coords, Vector4* outColors) const
 {
-    NFE_ASSERT(coords.x >= 0 && coords.x < (int32)mWidth);
-    NFE_ASSERT(coords.y >= 0 && coords.y < (int32)mHeight);
-    NFE_ASSERT(coords.z >= 0 && coords.z < (int32)mWidth);
-    NFE_ASSERT(coords.w >= 0 && coords.w < (int32)mHeight);
+    const VectorInt4 size2D = mSize.Swizzle<0,1,0,1>();
+    NFE_ASSERT(((coords >= VectorInt4::Zero()) & (coords < size2D)).All());
 
     const uint8* rowData0 = mData + mStride * static_cast<size_t>(coords.y);
     const uint8* rowData1 = mData + mStride * static_cast<size_t>(coords.w);
@@ -783,39 +779,36 @@ void Bitmap::GetPixelBlock(const VectorInt4 coords, Vector4* outColors, const bo
 
     case Format::BC1:
     {
-        color[0] = DecodeBC1(mData, coords.x, coords.y, mWidth);
-        color[1] = DecodeBC1(mData, coords.z, coords.y, mWidth);
-        color[2] = DecodeBC1(mData, coords.x, coords.w, mWidth);
-        color[3] = DecodeBC1(mData, coords.z, coords.w, mWidth);
+        color[0] = DecodeBC1(mData, coords.x, coords.y, GetWidth());
+        color[1] = DecodeBC1(mData, coords.z, coords.y, GetWidth());
+        color[2] = DecodeBC1(mData, coords.x, coords.w, GetWidth());
+        color[3] = DecodeBC1(mData, coords.z, coords.w, GetWidth());
         break;
     }
 
     case Format::BC4:
     {
-        color[0] = DecodeBC4(mData, coords.x, coords.y, mWidth);
-        color[1] = DecodeBC4(mData, coords.z, coords.y, mWidth);
-        color[2] = DecodeBC4(mData, coords.x, coords.w, mWidth);
-        color[3] = DecodeBC4(mData, coords.z, coords.w, mWidth);
+        color[0] = DecodeBC4(mData, coords.x, coords.y, GetWidth());
+        color[1] = DecodeBC4(mData, coords.z, coords.y, GetWidth());
+        color[2] = DecodeBC4(mData, coords.x, coords.w, GetWidth());
+        color[3] = DecodeBC4(mData, coords.z, coords.w, GetWidth());
         break;
     }
 
     case Format::BC5:
     {
-        color[0] = DecodeBC5(mData, coords.x, coords.y, mWidth);
-        color[1] = DecodeBC5(mData, coords.z, coords.y, mWidth);
-        color[2] = DecodeBC5(mData, coords.x, coords.w, mWidth);
-        color[3] = DecodeBC5(mData, coords.z, coords.w, mWidth);
+        color[0] = DecodeBC5(mData, coords.x, coords.y, GetWidth());
+        color[1] = DecodeBC5(mData, coords.z, coords.y, GetWidth());
+        color[2] = DecodeBC5(mData, coords.x, coords.w, GetWidth());
+        color[3] = DecodeBC5(mData, coords.z, coords.w, GetWidth());
         break;
     }
 
     default:
-    {
         NFE_FATAL("Unsupported bitmap format");
     }
-    }
 
-    (void)forceLinearSpace;
-    if (!mLinearSpace /*&& !forceLinearSpace*/)
+    if (!mLinearSpace)
     {
         color[0] = Convert_sRGB_To_Linear(color[0]);
         color[1] = Convert_sRGB_To_Linear(color[1]);
@@ -829,13 +822,132 @@ void Bitmap::GetPixelBlock(const VectorInt4 coords, Vector4* outColors, const bo
     outColors[3] = color[3];
 }
 
+const Vector4 Bitmap::GetPixel3D(uint32 x, uint32 y, uint32 z) const
+{
+    NFE_ASSERT(x < GetWidth());
+    NFE_ASSERT(y < GetHeight());
+    NFE_ASSERT(z < GetDepth());
+
+    const size_t row = y + static_cast<size_t>(GetHeight()) * static_cast<size_t>(z);
+    const uint8* rowData = mData + mStride * row;
+
+    Vector4 color;
+    switch (mFormat)
+    {
+    case Format::R8_UNorm:
+    {
+        const uint32 value = rowData[x];
+        color = Vector4::FromInteger(value) * (1.0f / 255.0f);
+        break;
+    }
+    case Format::R32_Float:
+    {
+        const float* source = reinterpret_cast<const float*>(rowData) + (size_t)x;
+        color = Vector4(*source);
+        break;
+    }
+
+    // TODO more formats
+
+    default:
+        NFE_FATAL("Unsupported bitmap format");
+        color = Vector4::Zero();
+    }
+
+    if (!mLinearSpace)
+    {
+        color = Convert_sRGB_To_Linear(color);
+    }
+
+    return color;
+}
+
+void Bitmap::GetPixelBlock3D(const VectorInt4 coordsA, const VectorInt4 coordsB, Vector4* outColors) const
+{
+    NFE_ASSERT(((coordsA >= VectorInt4::Zero()) & (coordsA < mSize)).All3());
+    NFE_ASSERT(((coordsB >= VectorInt4::Zero()) & (coordsB < mSize)).All3());
+
+    const size_t row0 = coordsA.y + static_cast<size_t>(GetHeight()) * static_cast<size_t>(coordsA.z);
+    const size_t row1 = coordsB.y + static_cast<size_t>(GetHeight()) * static_cast<size_t>(coordsA.z);
+    const size_t row2 = coordsA.y + static_cast<size_t>(GetHeight()) * static_cast<size_t>(coordsB.z);
+    const size_t row3 = coordsB.y + static_cast<size_t>(GetHeight()) * static_cast<size_t>(coordsB.z);
+
+    const uint8* rowData0 = mData + mStride * row0;
+    const uint8* rowData1 = mData + mStride * row1;
+    const uint8* rowData2 = mData + mStride * row2;
+    const uint8* rowData3 = mData + mStride * row3;
+
+    Vector4 color[8];
+
+    switch (mFormat)
+    {
+    case Format::R8_UNorm:
+    {
+        color[0] = Vector4::FromInteger(static_cast<uint32>(rowData0[coordsA.x]));
+        color[1] = Vector4::FromInteger(static_cast<uint32>(rowData0[coordsB.x]));
+        color[2] = Vector4::FromInteger(static_cast<uint32>(rowData1[coordsA.x]));
+        color[3] = Vector4::FromInteger(static_cast<uint32>(rowData1[coordsB.x]));
+        color[4] = Vector4::FromInteger(static_cast<uint32>(rowData2[coordsA.x]));
+        color[5] = Vector4::FromInteger(static_cast<uint32>(rowData2[coordsB.x]));
+        color[6] = Vector4::FromInteger(static_cast<uint32>(rowData3[coordsA.x]));
+        color[7] = Vector4::FromInteger(static_cast<uint32>(rowData3[coordsB.x]));
+        break;
+    }
+    case Format::R16_UNorm:
+    {
+        const Vector4 scale(1.0f / 65535.0f);
+        color[0] = Vector4::FromInteger(reinterpret_cast<const uint16*>(rowData0)[coordsA.x]);
+        color[1] = Vector4::FromInteger(reinterpret_cast<const uint16*>(rowData0)[coordsB.x]);
+        color[2] = Vector4::FromInteger(reinterpret_cast<const uint16*>(rowData1)[coordsA.x]);
+        color[3] = Vector4::FromInteger(reinterpret_cast<const uint16*>(rowData1)[coordsB.x]);
+        color[4] = Vector4::FromInteger(reinterpret_cast<const uint16*>(rowData2)[coordsA.x]);
+        color[5] = Vector4::FromInteger(reinterpret_cast<const uint16*>(rowData2)[coordsB.x]);
+        color[6] = Vector4::FromInteger(reinterpret_cast<const uint16*>(rowData3)[coordsA.x]);
+        color[7] = Vector4::FromInteger(reinterpret_cast<const uint16*>(rowData3)[coordsB.x]);
+        break;
+    }
+    case Format::R32_Float:
+    {
+        color[0] = Vector4(reinterpret_cast<const float*>(rowData0)[coordsA.x]);
+        color[1] = Vector4(reinterpret_cast<const float*>(rowData0)[coordsB.x]);
+        color[2] = Vector4(reinterpret_cast<const float*>(rowData1)[coordsA.x]);
+        color[3] = Vector4(reinterpret_cast<const float*>(rowData1)[coordsB.x]);
+        color[4] = Vector4(reinterpret_cast<const float*>(rowData2)[coordsA.x]);
+        color[5] = Vector4(reinterpret_cast<const float*>(rowData2)[coordsB.x]);
+        color[6] = Vector4(reinterpret_cast<const float*>(rowData3)[coordsA.x]);
+        color[7] = Vector4(reinterpret_cast<const float*>(rowData3)[coordsB.x]);
+        break;
+    }
+    // TODO more formats
+
+    default:
+        NFE_FATAL("Unsupported bitmap format");
+    }
+
+    if (!mLinearSpace)
+    {
+        for (size_t i = 0; i < 8u; ++i)
+        {
+            color[i] = Convert_sRGB_To_Linear(color[i]);
+        }
+    }
+
+    for (size_t i = 0; i < 8u; ++i)
+    {
+        outColors[i] = color[i];
+    }
+}
+
 bool Bitmap::Scale(const Math::Vector4& factor)
 {
+    const uint32 width = GetWidth();
+    const uint32 height = GetHeight();
+
     if (mFormat == Format::R32G32B32_Float)
     {
-        for (uint32 y = 0; y < mHeight; ++y)
+        for (uint32 y = 0; y < height; ++y)
         {
-            for (uint32 x = 0; x < mWidth; ++x)
+            for (uint32 x = 0; x < width; ++x)
             {
                 Float3& pixelPtr = GetPixelRef<Float3>(x, y);
                 pixelPtr.x *= factor.x;
@@ -847,9 +959,9 @@ bool Bitmap::Scale(const Math::Vector4& factor)
     }
     else if (mFormat == Format::R32G32B32A32_Float)
     {
-        for (uint32 y = 0; y < mHeight; ++y)
+        for (uint32 y = 0; y < height; ++y)
         {
-            for (uint32 x = 0; x < mWidth; ++x)
+            for (uint32 x = 0; x < width; ++x)
             {
                 Vector4& pixelPtr = GetPixelRef<Vector4>(x, y);
                 pixelPtr *= factor;

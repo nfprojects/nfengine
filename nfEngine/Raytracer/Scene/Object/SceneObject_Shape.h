@@ -9,6 +9,7 @@ namespace RT {
 
 using ShapePtr = Common::SharedPtr<IShape>;
 using MaterialPtr = Common::SharedPtr<Material>;
+using MediumPtr = Common::SharedPtr<IMedium>;
 
 class ShapeSceneObject : public ITraceableSceneObject
 {
@@ -17,7 +18,12 @@ class ShapeSceneObject : public ITraceableSceneObject
 public:
     NFE_RAYTRACER_API ShapeSceneObject(const ShapePtr& shape);
 
-    NFE_RAYTRACER_API void SetDefaultMaterial(const MaterialPtr& material);
+    const IShape* GetShape() const { return mShape.Get(); }
+    const Material* GetMaterial() const { return mMaterial.Get(); }
+    const IMedium* GetMedium() const { return mMedium.Get(); }
+
+    NFE_RAYTRACER_API void BindMaterial(const MaterialPtr& material);
+    NFE_RAYTRACER_API void BindMedium(const MediumPtr& medium);
 
 private:
     virtual Math::Box GetBoundingBox() const override;
@@ -30,8 +36,8 @@ private:
     virtual void EvaluateIntersection(const HitPoint& hitPoint, IntersectionData& outIntersectionData) const override;
 
     ShapePtr mShape;
-
-    MaterialPtr mDefaultMaterial;
+    MaterialPtr mMaterial;
+    MediumPtr mMedium;
 };
 
 using ShapeSceneObjectPtr = Common::UniquePtr<ShapeSceneObject>;

@@ -11,8 +11,6 @@
 
 #include "../nfEngineDeps/imgui/imgui.h"
 
-#pragma optimize("",off)
-
 namespace NFE {
 
 using namespace NFE::RTTI;
@@ -67,7 +65,10 @@ static bool EditObject_Internal_HdrColorRGB(const char* name, Math::HdrColorRGB*
     // property value
     ImGui::SetNextItemWidth(-1);
 
-    bool changed = ImGui::ColorEdit3("", &(color->r), ImGuiColorEditFlags_Float | ImGuiColorEditFlags_HDR);
+	bool changed = ImGui::ColorEdit3("", &(color->r), ImGuiColorEditFlags_Float | ImGuiColorEditFlags_HDR);
+    color->r = Math::Max(0.0f, color->r);
+    color->g = Math::Max(0.0f, color->g);
+    color->b = Math::Max(0.0f, color->b);
 
     ImGui::NextColumn();
 

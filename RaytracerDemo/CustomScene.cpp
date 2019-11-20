@@ -3,8 +3,11 @@
 #include "MeshLoader.h"
 
 #include "../nfEngine/Raytracer/Textures/NoiseTexture.h"
+#include "../nfEngine/Raytracer/Textures/NoiseTexture3D.h"
 #include "../nfEngine/Raytracer/Textures/CheckerboardTexture.h"
+#include "../nfEngine/Raytracer/Textures/GradientTexture.h"
 #include "../nfEngine/Raytracer/Textures/MixTexture.h"
+#include "../nfEngine/Raytracer/Textures/BitmapTexture3D.h"
 
 #include "../nfEngine/Raytracer/Scene/Light/DirectionalLight.h"
 #include "../nfEngine/Raytracer/Scene/Light/BackgroundLight.h"
@@ -13,9 +16,12 @@
 #include "../nfEngine/Raytracer/Scene/Object/SceneObject_Shape.h"
 #include "../nfEngine/Raytracer/Scene/Object/SceneObject_Light.h"
 #include "../nfEngine/Raytracer/Scene/Object/SceneObject_Decal.h"
+
 #include "../nfEngine/Raytracer/Shapes/RectShape.h"
 #include "../nfEngine/Raytracer/Shapes/BoxShape.h"
 #include "../nfEngine/Raytracer/Shapes/SphereShape.h"
+
+#include "../nfEngine/Raytracer/Medium/Medium.h"
 
 namespace NFE {
 namespace helpers {
@@ -33,11 +39,12 @@ bool LoadCustomScene(Scene& scene, Camera& camera)
     //auto texture = std::shared_ptr<ITexture>(new MixTexture(bitmapTextureA, bitmapTextureB, noiseTexture));
 
     // floor
+    /*
     {
         auto material = Material::Create();
         material->debugName = "floor";
         material->SetBsdf(String("diffuse"));
-        material->baseColor = Math::HdrColorRGB(0.3f, 0.3f, 0.3f);
+        material->baseColor = Math::HdrColorRGB(0.9f, 0.9f, 0.9f);
         material->baseColor.texture = bitmapTextureA;
         //material->emission = Math::Vector4(4.0f, 4.0f, 4.0f);
         //material->emission.texture = emissionTexture;
@@ -46,13 +53,14 @@ bool LoadCustomScene(Scene& scene, Camera& camera)
         material->Compile();
 
         const Float2 size(1000.0f, 1000.0f);
-        const Float2 texScale(0.6f, 0.6f);
+        const Float2 texScale(0.2f, 0.2f);
         auto rect = MakeSharedPtr<RectShape>(size, texScale);
         UniquePtr<ShapeSceneObject> instance = MakeUniquePtr<ShapeSceneObject>(std::move(rect));
-        instance->SetDefaultMaterial(material);
-        instance->SetTransform(Quaternion::FromEulerAngles(Float3(-NFE_MATH_PI / 2.0f, 0.0f, 0.0f)).ToMatrix());
+        instance->BindMaterial(material);
+        instance->SetTransform(Quaternion::FromEulerAngles(Float3(-NFE_MATH_PI / 2.0f, -0.01f, 0.0f)).ToMatrix());
         scene.AddObject(std::move(instance));
     }
+    */
 
     /*
     Random random;
@@ -73,26 +81,165 @@ bool LoadCustomScene(Scene& scene, Camera& camera)
         const Matrix4 rotationMatrix = Quaternion::RotationY(pos.z * RT_2PI).ToMatrix();
 
         SceneObjectPtr instance = MakeUniquePtr<BoxSceneObject>(size);
-        instance->SetDefaultMaterial(material);
+        instance->BindMaterial(material);
         instance->SetTransform(rotationMatrix * translationMatrix);
         scene.AddObject(std::move(instance));
     }
     */
 
-    //{
-    //    auto material = Material::Create();
-    //    material->debugName = "default";
-    //    material->SetBsdf("diffuse");
-    //    material->baseColor = Vector4::Zero();
-    //    material->emission.baseValue = Vector4(4.0f, 0.0f, 0.0f);
-    //    material->Compile();
+    // emissive box
+    /*
+    {
+        auto material = Material::Create();
+        material->debugName = "default";
+        material->SetBsdf("diffuse");
+        material->baseColor.baseValue = HdrColorRGB();
+        material->emission.baseValue = HdrColorRGB(1.0f, 1.0f, 1.0f);
+        material->Compile();
 
-    //    ShapePtr shape = MakeUniquePtr<BoxShape>(Vector4(1.0f));
-    //    ShapeSceneObjectPtr instance = MakeUniquePtr<ShapeSceneObject>(std::move(shape));
-    //    instance->SetDefaultMaterial(material);
-    //    instance->SetTransform(Matrix4::MakeTranslation(Vector4(0.0f, 1.0f, 0.0f)));
-    //    scene.AddObject(std::move(instance));
-    //}
+        ShapePtr shape = MakeUniquePtr<BoxShape>(Vector4(0.2f, 5.0f, 5.0f));
+        ShapeSceneObjectPtr instance = MakeUniquePtr<ShapeSceneObject>(std::move(shape));
+        instance->BindMaterial(material);
+        instance->SetTransform(Matrix4::MakeTranslation(Vector4(10.0f, 5.0, 0.0f)));
+        scene.AddObject(std::move(instance));
+    }
+    */
+
+    /*
+    // homogenous scattering medium
+    {
+        const float density = 0.5f;
+        const Vector4 scattering = Vector4(0.25f, 0.5f, 1.0f) * density;
+        const Vector4 attenuation = Vector4(0.0f, 0.0f, 0.0f) * density;
+
+        const Vector4 extintion = attenuation + scattering;
+        const Vector4 scatteringAlbedo = scattering / extintion;
+
+        ShapePtr shape = MakeUniquePtr<BoxShape>(Vector4(5.0f, 5.0f, 5.0f));
+        MediumPtr medium = MakeUniquePtr<HomogenousScatteringMedium>(extintion, scatteringAlbedo);
+
+        auto object = MakeUniquePtr<ShapeSceneObject>(std::move(shape));
+        object->BindMedium(medium);
+        object->SetTransform(Matrix4::MakeTranslation(Vector4(0.0f, 5.001f, 0.0f)));
+        scene.AddObject(std::move(object));
+    }
+
+    // homogenous absorption medium
+    {
+        const float density = 1.0f;
+        const Vector4 attenuation = Vector4(0.25f, 0.5f, 1.0f) * density;
+
+        ShapePtr shape = MakeUniquePtr<BoxShape>(Vector4(5.0f, 5.0f, 5.0f));
+        MediumPtr medium = MakeUniquePtr<HomogenousAbsorptiveMedium>(attenuation);
+
+        auto object = MakeUniquePtr<ShapeSceneObject>(std::move(shape));
+        object->BindMedium(medium);
+        object->SetTransform(Matrix4::MakeTranslation(Vector4(-12.0f, 5.001f, 0.0f)));
+        scene.AddObject(std::move(object));
+    }
+
+    // homogenous emissive medium
+    {
+        ShapePtr shape = MakeUniquePtr<BoxShape>(Vector4(5.0f, 5.0f, 5.0f));
+        MediumPtr medium = MakeUniquePtr<HomogenousEmissiveMedium>(Vector4(0.125f, 0.25f, 0.5f));
+
+        auto object = MakeUniquePtr<ShapeSceneObject>(std::move(shape));
+        object->BindMedium(medium);
+        object->SetTransform(Matrix4::MakeTranslation(Vector4(12.0f, 5.001f, 0.0f)));
+        scene.AddObject(std::move(object));
+    }
+
+
+    // homogenous scattering medium
+    {
+        const float density = 4.0f;
+        const Vector4 scattering = Vector4(0.25f, 0.5f, 1.0f) * density;
+        const Vector4 attenuation = Vector4(0.0f, 0.0f, 0.0f) * density;
+
+        const Vector4 extintion = attenuation + scattering;
+        const Vector4 scatteringAlbedo = scattering / extintion;
+
+        ShapePtr shape = MakeUniquePtr<BoxShape>(Vector4(5.0f, 5.0f, 5.0f));
+        MediumPtr medium = MakeUniquePtr<HomogenousScatteringMedium>(extintion, scatteringAlbedo);
+
+        auto object = MakeUniquePtr<ShapeSceneObject>(std::move(shape));
+        object->BindMedium(medium);
+        object->SetTransform(Matrix4::MakeTranslation(Vector4(0.0f, 5.001f, 15.0f)));
+        scene.AddObject(std::move(object));
+    }
+
+    // homogenous absorption medium
+    {
+        const float density = 1.0f;
+        const Vector4 attenuation = Vector4(1.0f, 0.5f, 0.25f) * density;
+
+        ShapePtr shape = MakeUniquePtr<BoxShape>(Vector4(5.0f, 5.0f, 5.0f));
+        MediumPtr medium = MakeUniquePtr<HomogenousAbsorptiveMedium>(attenuation);
+
+        auto object = MakeUniquePtr<ShapeSceneObject>(std::move(shape));
+        object->BindMedium(medium);
+        object->SetTransform(Matrix4::MakeTranslation(Vector4(12.0f, 5.001f, 15.0f)));
+        scene.AddObject(std::move(object));
+    }
+
+    // homogenous emissive medium
+    {
+        ShapePtr shape = MakeUniquePtr<BoxShape>(Vector4(5.0f, 5.0f, 5.0f));
+        MediumPtr medium = MakeUniquePtr<HomogenousEmissiveMedium>(Vector4(0.5f, 0.25f, 0.125f));
+
+        auto object = MakeUniquePtr<ShapeSceneObject>(std::move(shape));
+        object->BindMedium(medium);
+        object->SetTransform(Matrix4::MakeTranslation(Vector4(-12.0f, 5.001f, 15.0f)));
+        scene.AddObject(std::move(object));
+    }
+    */
+
+    // heterogenous absorption medium
+    {
+        auto densityBitmap = helpers::LoadBitmapObject(gOptions.dataPath, "TEXTURES/Volume/Clouds/wdas_cloud_half.vdb");
+        //auto densityBitmap = helpers::LoadBitmapObject(gOptions.dataPath, "TEXTURES/Volume/sphere.vdb");
+
+        const float density = 20.0f;
+        const Vector4 scattering = Vector4(1.0f, 1.0f, 1.0f) * density;
+        const Vector4 attenuation = Vector4(0.0f, 0.0f, 0.0f) * density;
+
+        const Vector4 extintion = attenuation + scattering;
+        const Vector4 scatteringAlbedo(0.65f, 0.53f, 0.351f);
+
+        const Plane plane(Vector4(0.0f, 1.0f, 0.0f), Vector4(0.0f, 0.0f, 0.0f));
+        TexturePtr texture = MakeSharedPtr<BitmapTexture3D>(densityBitmap);
+        //TexturePtr texture = MakeSharedPtr<NoiseTexture3D>(Vector4(0.0f, 0.0f, 0.0f), Vector4(1.0f, 1.0f, 1.0f), 5);
+        //TexturePtr texture = MakeSharedPtr<CheckerboardTexture>(Vector4(0.0f, 0.0f, 0.0f), Vector4(1.0f, 1.0f, 1.0f));
+        //TexturePtr texture = MakeSharedPtr<GradientTexture>(Vector4(0.1f, 0.2, 0.3f), Vector4(0.0f), plane, 11.0f);
+        ShapePtr shape = MakeUniquePtr<BoxShape>(Vector4(1.25f, 0.85f, 1.53f));
+
+        //MediumPtr medium = MakeUniquePtr<HeterogeneousAbsorptiveMedium>(texture, extintion);
+        //MediumPtr medium = MakeUniquePtr<HomogenousAbsorptiveMedium>(Vector4(1.0f, 0.5f, 0.25f));
+        MediumPtr medium = MakeUniquePtr<HeterogeneousScatteringMedium>(texture, extintion, scatteringAlbedo);
+
+        auto object = MakeUniquePtr<ShapeSceneObject>(std::move(shape));
+        object->BindMedium(medium);
+        object->SetTransform(Matrix4::MakeTranslation(Vector4(0.0f, 0.0f, 0.0f)));
+        scene.AddObject(std::move(object));
+    }
+
+    /*
+    // emissive sphere
+    {
+        auto material = Material::Create();
+        material->debugName = "default";
+        material->SetBsdf("diffuse");
+        material->baseColor.baseValue = HdrColorRGB();
+        material->emission.baseValue = HdrColorRGB(10.0f, 10.0f, 10.0f);
+        material->Compile();
+
+        ShapePtr shape = MakeUniquePtr<SphereShape>(1.0f);
+        ShapeSceneObjectPtr instance = MakeUniquePtr<ShapeSceneObject>(std::move(shape));
+        instance->BindMaterial(material);
+        instance->SetTransform(Matrix4::MakeTranslation(Vector4(6.0f, 5.0f, 0.0f)));
+        scene.AddObject(std::move(instance));
+    }
+    */
 
     //{
     //    auto material = Material::Create();
@@ -104,7 +251,7 @@ bool LoadCustomScene(Scene& scene, Camera& camera)
 
     //    ShapePtr shape = MakeUniquePtr<BoxShape>(Vector4(1.0f));
     //    ShapeSceneObjectPtr instance = MakeUniquePtr<ShapeSceneObject>(std::move(shape));
-    //    instance->SetDefaultMaterial(material);
+    //    instance->BindMaterial(material);
     //    instance->SetTransform(Matrix4::MakeTranslation(Vector4(-2.4f, 1.0f, 0.0f)));
     //    scene.AddObject(std::move(instance));
     //}
@@ -119,7 +266,7 @@ bool LoadCustomScene(Scene& scene, Camera& camera)
 
     //    ShapePtr shape = MakeUniquePtr<BoxShape>(Vector4(1.0f));
     //    ShapeSceneObjectPtr instance = MakeUniquePtr<ShapeSceneObject>(std::move(shape));
-    //    instance->SetDefaultMaterial(material);
+    //    instance->BindMaterial(material);
     //    instance->SetTransform(Matrix4::MakeTranslation(Vector4(2.4f, 1.0f, 0.0f)));
     //    scene.AddObject(std::move(instance));
     //}
@@ -134,7 +281,7 @@ bool LoadCustomScene(Scene& scene, Camera& camera)
 
     //    ShapePtr shape = MakeUniquePtr<BoxShape>(Vector4(1.0f));
     //    ShapeSceneObjectPtr instance = MakeUniquePtr<ShapeSceneObject>(std::move(shape));
-    //    instance->SetDefaultMaterial(material);
+    //    instance->BindMaterial(material);
     //    instance->SetTransform(Matrix4::MakeTranslation(Vector4(0.0f, 3.5f, 0.0f)));
     //    scene.AddObject(std::move(instance));
     //}
@@ -147,6 +294,7 @@ bool LoadCustomScene(Scene& scene, Camera& camera)
     //    scene.AddObject(std::move(lightObject));
     //}
 
+    /*
     // test decal A
     {
         UniquePtr<DecalSceneObject> decal = MakeUniquePtr<DecalSceneObject>();
@@ -158,7 +306,6 @@ bool LoadCustomScene(Scene& scene, Camera& camera)
         scene.AddObject(std::move(decal));
     }
 
-    /*
     // test decal B
     for (uint32 i = 0; i < 10; ++i)
     {
@@ -182,13 +329,12 @@ bool LoadCustomScene(Scene& scene, Camera& camera)
     */
 
     {
-        const HdrColorRGB lightColor(100.0f, 100.0f, 100.0f);
-        auto background = MakeUniquePtr<PointLight>(lightColor);
+        const HdrColorRGB lightColor(1.0f, 0.7f, 0.5f);
+        auto background = MakeUniquePtr<BackgroundLight>(lightColor);
+        background->mTexture = backgroundTexture;
         auto lightObject = MakeUniquePtr<LightSceneObject>(std::move(background));
-        lightObject->SetTransform(Matrix4::MakeTranslation(Vector4(5.0f, 5.0f, 5.0f)));
         scene.AddObject(std::move(lightObject));
     }
-
     //{
     //    const HdrColorRGB lightColor(2.0f, 2.0f, 2.0f);
     //    auto background = MakeUniquePtr<BackgroundLight>(lightColor);
@@ -198,8 +344,9 @@ bool LoadCustomScene(Scene& scene, Camera& camera)
     //}
 
     {
-        Transform transform(Vector4(2.0f, 3.0f, -5.0f), Quaternion::FromEulerAngles(Float3(0.588f, -0.75f, 0.0f)));
+        Transform transform(Vector4(-14.4f, -4.9, 3.1f), Quaternion::FromEulerAngles(Float3(DegToRad(-17.9f), DegToRad(101.0f), 0.0f)));
         camera.SetTransform(transform);
+        camera.SetPerspective(1.0f, DegToRad(8.0f));
     }
 
     return true;

@@ -14,8 +14,8 @@ using BitmapPtr = Common::SharedPtr<Bitmap>;
 enum class BitmapTextureFilter : uint8
 {
     NearestNeighbor = 0,
-    Bilinear = 1,
-    Bilinear_SmoothStep = 2,
+    Linear = 1,
+    Linear_SmoothStep = 2,
 };
 
 // texture wrapper for Bitmap class
@@ -37,7 +37,6 @@ private:
     BitmapPtr mBitmap;
     Common::UniquePtr<Math::Distribution> mImportanceMap;
     BitmapTextureFilter mFilter;
-    bool mForceLinearSpace;
 };
 
 } // namespace RT

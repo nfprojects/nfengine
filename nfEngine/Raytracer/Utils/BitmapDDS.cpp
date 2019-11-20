@@ -295,9 +295,13 @@ bool Bitmap::LoadDDS(FILE* file, const char* path)
     initData.linearSpace = true;
     initData.width = header.width;
     initData.height = header.height;
-    if (initData.width < 1 || initData.height < 1 || initData.width >= std::numeric_limits<uint16>::max() || initData.height >= std::numeric_limits<uint16>::max())
+    initData.depth = header.depth;
+    if (initData.width < 1 || initData.height < 1 || initData.depth < 1 ||
+        initData.width >= std::numeric_limits<uint16>::max() ||
+        initData.height >= std::numeric_limits<uint16>::max() ||
+        initData.depth >= std::numeric_limits<uint16>::max())
     {
-        NFE_LOG_ERROR("Unsupported DDS format in file '%hs': dimensions are out of bounds (%ux%u)", path, initData.width, initData.height);
+        NFE_LOG_ERROR("Unsupported DDS format in file '%hs': dimensions are out of bounds (%ux%ux%u)", path, initData.width, initData.height, initData.depth);
         return false;
     }
 
@@ -496,12 +500,10 @@ bool Bitmap::LoadDDS(FILE* file, const char* path)
             if (pf.rBitMask == 0xFF && pf.gBitMask == 0x0 && pf.bBitMask == 0x0 && pf.aBitMask == 0x0)
             {
                 initData.format = Format::R8_UNorm; // D3DX10/11 writes this out as DX10 extension
-                initData.linearSpace = false;
             }
             else if (pf.rBitMask == 0xFF && pf.gBitMask == 0x0 && pf.bBitMask == 0x0 && pf.aBitMask == 0xFF00)
             {
                 initData.format = Format::R8G8_UNorm; // Some DDS writers assume the bitcount should be 8 instead of 16
-                initData.linearSpace = false;
             }
         }
         else if (pf.rgbBitCount == 16)
@@ -513,7 +515,6 @@ bool Bitmap::LoadDDS(FILE* file, const char* path)
             else if (pf.rBitMask == 0xFF && pf.gBitMask == 0 && pf.bBitMask == 0 && pf.aBitMask == 0xFF00)
             {
                 initData.format = Format::R8G8_UNorm; // Some DDS writers assume the bitcount should be 8 instead of 16
-                initData.linearSpace = false;
             }
         }
     }

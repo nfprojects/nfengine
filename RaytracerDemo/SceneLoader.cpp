@@ -682,7 +682,7 @@ static bool ParseObject(const rapidjson::Value& value, Scene& scene, MaterialsMa
     MaterialPtr material;
     if (!TryParseMaterialName(materials, value, "material", material))
         return false;
-    sceneObject->SetDefaultMaterial(material);
+    sceneObject->BindMaterial(material);
 
     Transform transform;
     if (!TryParseTransform(value, "transform", transform))

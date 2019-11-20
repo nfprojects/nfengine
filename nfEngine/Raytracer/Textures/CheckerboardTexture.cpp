@@ -7,7 +7,7 @@ namespace RT {
 
 using namespace Math;
 
-CheckerboardTexture::CheckerboardTexture(const Math::Vector4& colorA, Math::Vector4& colorB)
+CheckerboardTexture::CheckerboardTexture(const Math::Vector4& colorA, const Math::Vector4& colorB)
     : mColorA(colorA)
     , mColorB(colorB)
     , mPdf(0.5f)
@@ -34,10 +34,9 @@ const Vector4 CheckerboardTexture::Evaluate(const Vector4& coords) const
     // wrap to 0..1 range
     const Vector4 warpedCoords = Vector4::Mod1(coords);
 
-    VectorBool4 conditionVec = warpedCoords > VECTOR_HALVES;
-    conditionVec = conditionVec ^ conditionVec.Swizzle<1,1,3,3>();
+    const VectorBool4 conditionVec = warpedCoords > VECTOR_HALVES;
 
-    return conditionVec.Get<0>() ? mColorA : mColorB;
+    return (conditionVec.Get<0>() ^ conditionVec.Get<1>() ^ conditionVec.Get<2>()) ? mColorA : mColorB;
 }
 
 const Vector4 CheckerboardTexture::Sample(const Float2 u, Vector4& outCoords, float* outPdf) const

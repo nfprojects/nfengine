@@ -2,10 +2,13 @@
 #include "PathTracer.h"
 #include "RenderingContext.h"
 #include "RenderingParams.h"
+#include "PathDebugging.h"
 #include "Scene/Scene.h"
 #include "Scene/Light/Light.h"
 #include "Scene/Object/SceneObject.h"
 #include "Scene/Object/SceneObject_Light.h"
+#include "Scene/Object/SceneObject_Shape.h"
+#include "Medium/Medium.h"
 #include "Material/Material.h"
 #include "Traversal/TraversalContext.h"
 #include "Sampling/GenericSampler.h"
@@ -85,26 +88,109 @@ const RayColor PathTracer::RenderPixel(const Math::Ray& primaryRay, const Render
 
     uint32 depth = 0;
 
+    PathTerminationReason pathTerminationReason = PathTerminationReason::None;
+
+    const ISceneObject* objectHit = nullptr;
+
+    const IMedium* currentMedium = param.scene.GetMediumAtPoint(context, primaryRay.origin);
+
     for (;;)
     {
         hitPoint.distance = HitPoint::DefaultDistance;
         param.scene.Traverse({ ray, hitPoint, context });
 
+        // sample medium first
+        if (currentMedium)
+        {
+            MediumScatteringEvent event;
+            const RayColor mediumWeight = currentMedium->Sample(ray, 0.0f, hitPoint.distance, event, context);
+            NFE_ASSERT(mediumWeight.IsValid());
+
+            // HACK
+            if (event.radiance.IsValid())
+            {
+                // medium emission
+                resultColor += event.radiance * throughput * mediumWeight;
+            }
+
+            // attenuate by the medium
+            throughput *= mediumWeight;
+
+            if (throughput.AlmostZero())
+            {
+                pathTerminationReason = PathTerminationReason::AttenuatedInMedium;
+                break;
+            }
+
+            if (event.distance < FLT_MAX)
+            {
+#ifndef NFE_CONFIGURATION_FINAL
+                if (context.pathDebugData)
+                {
+                    PathDebugData::HitPointData data;
+                    data.rayOrigin = ray.origin;
+                    data.rayDir = ray.dir;
+                    data.hitPoint = hitPoint;
+                    data.objectHit = objectHit;
+                    data.shadingData = shadingData;
+                    data.throughput = throughput;
+                    data.medium = currentMedium;
+                    context.pathDebugData->data.PushBack(data);
+                }
+#endif // NFE_CONFIGURATION_FINAL
+
+                // generate secondary ray
+                const Vector4 scatterPosition = ray.GetAtDistance(event.distance);
+                ray = Ray(scatterPosition, event.direction);
+                depth++;
+                continue;
+            }
+        }
+
         // ray missed - return background light color
         if (hitPoint.distance == HitPoint::DefaultDistance)
         {
             resultColor.MulAndAccumulate(throughput, EvaluateGlobalLights(param.scene, ray, context));
+            pathTerminationReason = PathTerminationReason::HitBackground;
             break;
         }
+
+        const ISceneObject* sceneObject = param.scene.GetHitObject(hitPoint.objectId);
+        NFE_ASSERT(sceneObject);
 
         // fill up structure with shading data
         param.scene.EvaluateIntersection(ray, hitPoint, context.time, shadingData.intersection);
         shadingData.outgoingDirWorldSpace = -ray.dir;
 
+        // handle medium transition
+        if (const ShapeSceneObject* shapeObject = RTTI::Cast<ShapeSceneObject>(sceneObject))
+        {
+            const IMedium* newMedium = shapeObject->GetMedium();
+            
+            if (!shapeObject->GetMaterial())
+            {
+                const bool enter = Vector4::Dot3(ray.dir, shadingData.intersection.frame[2]) < 0.0f;
+
+                if (enter)
+                {
+                    currentMedium = newMedium;
+
+                }
+                else
+                {
+                    // TODO pop medium from stack
+                    currentMedium = nullptr;
+                }
+
+                ray.origin = ray.GetAtDistance(hitPoint.distance + 0.001f);
+                depth++;
+                continue;
+            }
+        }
+
         // we hit a light directly
         if (hitPoint.subObjectId == NFE_LIGHT_OBJECT)
         {
-            const ISceneObject* sceneObject = param.scene.GetHitObject(hitPoint.objectId);
             const LightSceneObject* lightObject = RTTI::Cast<LightSceneObject>(sceneObject);
             NFE_ASSERT(lightObject);
 
@@ -112,6 +198,7 @@ const RayColor PathTracer::RenderPixel(const Math::Ray& primaryRay, const Render
             NFE_ASSERT(lightColor.IsValid());
             resultColor.MulAndAccumulate(throughput, lightColor);
 
+            pathTerminationReason = PathTerminationReason::HitLight;
             break;
         }
 
@@ -125,6 +212,7 @@ const RayColor PathTracer::RenderPixel(const Math::Ray& primaryRay, const Render
         // check if the ray depth won't be exeeded in the next iteration
         if (depth >= context.params->maxRayDepth)
         {
+            pathTerminationReason = PathTerminationReason::Depth;
             break;
         }
 
@@ -141,6 +229,7 @@ const RayColor PathTracer::RenderPixel(const Math::Ray& primaryRay, const Render
 #endif
             if (context.sampler.GetFloat() > threshold)
             {
+                pathTerminationReason = PathTerminationReason::RussianRoulette;
                 break;
             }
 
@@ -150,7 +239,14 @@ const RayColor PathTracer::RenderPixel(const Math::Ray& primaryRay, const Render
 
         // sample BSDF
         Vector4 incomingDirWorldSpace;
-        const RayColor bsdfValue = shadingData.intersection.material->Sample(context.wavelength, incomingDirWorldSpace, shadingData, context.sampler.GetFloat3());
+        BSDF::EventType lastSampledBsdfEvent = BSDF::NullEvent;
+        const RayColor bsdfValue = shadingData.intersection.material->Sample(context.wavelength, incomingDirWorldSpace, shadingData, context.sampler.GetFloat3(), nullptr, &lastSampledBsdfEvent);
+
+        if (lastSampledBsdfEvent == BSDF::NullEvent)
+        {
+            pathTerminationReason = PathTerminationReason::NoSampledEvent;
+            break;
+        }
 
         NFE_ASSERT(bsdfValue.IsValid());
         throughput *= bsdfValue;
@@ -158,8 +254,24 @@ const RayColor PathTracer::RenderPixel(const Math::Ray& primaryRay, const Render
         // ray is not visible anymore
         if (throughput.AlmostZero())
         {
+            pathTerminationReason = PathTerminationReason::Throughput;
             break;
         }
+
+#ifndef NFE_CONFIGURATION_FINAL
+        if (context.pathDebugData)
+        {
+            PathDebugData::HitPointData data;
+            data.rayOrigin = ray.origin;
+            data.rayDir = ray.dir;
+            data.hitPoint = hitPoint;
+            data.objectHit = objectHit;
+            data.shadingData = shadingData;
+            data.throughput = throughput;
+            data.bsdfEvent = lastSampledBsdfEvent;
+            context.pathDebugData->data.PushBack(data);
+        }
+#endif // NFE_CONFIGURATION_FINAL
 
         // generate secondary ray
         ray = Ray(shadingData.intersection.frame.GetTranslation(), incomingDirWorldSpace);
@@ -167,6 +279,21 @@ const RayColor PathTracer::RenderPixel(const Math::Ray& primaryRay, const Render
 
         depth++;
     }
+
+#ifndef NFE_CONFIGURATION_FINAL
+    if (context.pathDebugData)
+    {
+        PathDebugData::HitPointData data;
+        data.rayOrigin = ray.origin;
+        data.rayDir = ray.dir;
+        data.hitPoint = hitPoint;
+        data.objectHit = objectHit;
+        data.shadingData = shadingData;
+        data.throughput = throughput;
+        context.pathDebugData->data.PushBack(data);
+        context.pathDebugData->terminationReason = pathTerminationReason;
+    }
+#endif // NFE_CONFIGURATION_FINAL
 
     context.counters.numRays += (uint64)depth + 1;
 

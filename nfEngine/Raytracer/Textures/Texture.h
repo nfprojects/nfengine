@@ -23,7 +23,7 @@ public:
     virtual const Math::Vector4 Evaluate(const Math::Vector4& coords) const = 0;
 
     // generate random sample on the texture
-    virtual const Math::Vector4 Sample(const Math::Float2 u, Math::Vector4& outCoords, float* outPdf = nullptr) const = 0;
+    virtual const Math::Vector4 Sample(const Math::Float2 u, Math::Vector4& outCoords, float* outPdf = nullptr) const;
 
     // must be called before using Sample() method
     virtual bool MakeSamplable();

@@ -98,6 +98,12 @@ struct RayColor
         return *this;
     }
 
+    NFE_FORCE_INLINE float operator[](const uint32 index) const
+    {
+        NFE_ASSERT(index < Wavelength::NumComponents);
+        return value[index];
+    }
+
     NFE_FORCE_INLINE bool AlmostZero() const
     {
         return Wavelength::ValueType::AlmostEqual(value, Wavelength::ValueType::Zero());
@@ -110,6 +116,16 @@ struct RayColor
         maskedValue &= Math::Vector4::MakeMask<1,1,1,0>();
 #endif
         return maskedValue.HorizontalMax()[0];
+    }
+
+    NFE_FORCE_INLINE float Average() const
+    {
+        float sum = 0.0f;
+        for (uint32 i = 0; i < Wavelength::NumComponents; ++i)
+        {
+            sum += value[i];
+        }
+        return sum / static_cast<float>(Wavelength::NumComponents);
     }
 
     NFE_FORCE_INLINE bool IsValid() const

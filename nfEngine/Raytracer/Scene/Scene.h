@@ -36,6 +36,11 @@ public:
     NFE_FORCE_INLINE const Common::DynArray<const LightSceneObject*>& GetLights() const { return mLights; }
     NFE_FORCE_INLINE const Common::DynArray<const LightSceneObject*>& GetGlobalLights() const { return mGlobalLights; }
 
+    // find medium intersection for a given ray
+    const IMedium* GetMedium(RenderingContext& context, const Math::Ray& ray, float solidGeometryDistance, float& outMinDistance, float& outMaxDistance) const;
+
+    const IMedium* GetMediumAtPoint(const RenderingContext& context, const Math::Vector4& p) const;
+
     // traverse the scene, returns hit points
     NFE_RAYTRACER_API void Traverse(const SingleTraversalContext& context) const;
     NFE_RAYTRACER_API void Traverse(const PacketTraversalContext& context) const;
@@ -71,6 +76,8 @@ private:
 
     Common::DynArray<const ITraceableSceneObject*> mTraceableObjects;
     BVH mTraceableObjectsBVH;
+
+    Common::DynArray<const ShapeSceneObject*> mMediumObjects;
 
     Common::DynArray<const DecalSceneObject*> mDecals;
     BVH mDecalsBVH;

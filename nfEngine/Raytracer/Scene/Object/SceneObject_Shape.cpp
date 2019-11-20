@@ -5,6 +5,7 @@
 #include "Rendering/RenderingContext.h"
 #include "Traversal/TraversalContext.h"
 #include "Material/Material.h"
+#include "Medium/Medium.h"
 #include "../nfCommon/Math/Simd8Geometry.hpp"
 #include "../nfCommon/Reflection/Types/ReflectionSharedPtrType.hpp"
 #include "../nfCommon/Reflection/ReflectionClassDefine.hpp"
@@ -13,6 +14,7 @@ NFE_DEFINE_POLYMORPHIC_CLASS(NFE::RT::ShapeSceneObject)
 {
     NFE_CLASS_PARENT(NFE::RT::ISceneObject);
     NFE_CLASS_MEMBER(mShape).NonNull();
+    NFE_CLASS_MEMBER(mMedium);
 }
 NFE_END_DEFINE_CLASS()
 
@@ -34,14 +36,14 @@ Box ShapeSceneObject::GetBoundingBox() const
     return { GetBaseTransform().TransformBox(localSpaceBox), GetTransform(1.0f).TransformBox(localSpaceBox) };
 }
 
-void ShapeSceneObject::SetDefaultMaterial(const MaterialPtr& material)
+void ShapeSceneObject::BindMaterial(const MaterialPtr& material)
 {
-    mDefaultMaterial = material;
+    mMaterial = material;
+}
 
-    if (!mDefaultMaterial)
-    {
-        mDefaultMaterial = Material::GetDefaultMaterial();
-    }
+void ShapeSceneObject::BindMedium(const MediumPtr& medium)
+{
+    mMedium = medium;
 }
 
 void ShapeSceneObject::Traverse(const SingleTraversalContext& context, const uint32 objectID) const
@@ -65,7 +67,8 @@ void ShapeSceneObject::Traverse(const PacketTraversalContext& context, const uin
 
 void ShapeSceneObject::EvaluateIntersection(const HitPoint& hitPoint, IntersectionData& outIntersectionData) const
 {
-    outIntersectionData.material = mDefaultMaterial.Get();
+    outIntersectionData.material = mMaterial.Get();
+    outIntersectionData.medium = mMedium.Get();
 
     mShape->EvaluateIntersection(hitPoint, outIntersectionData);
 }

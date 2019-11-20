@@ -197,9 +197,21 @@ exrImageError:
 
 bool Bitmap::SaveEXR(const char* path, const float exposure) const
 {
+    if (GetDepth() > 1)
+    {
+        NFE_LOG_ERROR("Bitmap::SaveEXR: Cannot save 3D texture as BMP file");
+        return false;
+    }
+
+    if (GetWidth() == 0 || GetHeight() == 0)
+    {
+        NFE_LOG_ERROR("Bitmap::SaveEXR: Cannot save empty texture");
+        return false;
+    }
+
     if (mFormat != Format::R32G32B32_Float)
     {
-        NFE_LOG_ERROR("Bitmap::SaveEXR: Unsupported format");
+        NFE_LOG_ERROR("Bitmap::SaveEXR: Unsupported format: %s", FormatToString(mFormat));
         return false;
     }
 
@@ -216,9 +228,9 @@ bool Bitmap::SaveEXR(const char* path, const float exposure) const
     image.num_channels = 3;
 
     DynArray<float> images[3];
-    images[0].Resize(mWidth * mHeight);
-    images[1].Resize(mWidth * mHeight);
-    images[2].Resize(mWidth * mHeight);
+    images[0].Resize(GetWidth() * GetHeight());
+    images[1].Resize(GetWidth() * GetHeight());
+    images[2].Resize(GetWidth() * GetHeight());
 
     // Split RGBRGBRGB... into R, G and B layer
     const uint32 numPixels = GetWidth() * GetHeight();
@@ -235,8 +247,8 @@ bool Bitmap::SaveEXR(const char* path, const float exposure) const
     image_ptr[2] = images[0].Data(); // R
 
     image.images = (unsigned char**)image_ptr;
-    image.width = mWidth;
-    image.height = mHeight;
+    image.width = GetWidth();
+    image.height = GetHeight();
 
     header.compression_type = TINYEXR_COMPRESSIONTYPE_PIZ;
     header.num_channels = 3;
