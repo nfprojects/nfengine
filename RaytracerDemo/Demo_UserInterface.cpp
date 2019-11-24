@@ -10,6 +10,7 @@
 #include "../nfEngine/Raytracer/Utils/Profiler.h"
 
 #include "../nfEngine/nfCommon/Reflection/Types/ReflectionUniquePtrType.hpp"
+#include "../nfEngine/nfCommon/Reflection/Types/ReflectionClassType.hpp"
 
 #include "../nfEngineDeps/imgui/imgui.h"
 
@@ -244,8 +245,25 @@ void DemoWindow::RenderUI_Debugging_Path()
             //ImGui::Text("Tex coord"); ImGui::NextColumn();
             //ImGui::Text("[%f, %f]", data.shadingData.texCoord.x, data.shadingData.texCoord.y); ImGui::NextColumn();
 
-            ImGui::Text("Material"); ImGui::NextColumn();
-            ImGui::Text("%s", data.shadingData.intersection.material->debugName.Str()); ImGui::NextColumn();
+            if (data.objectHit)
+            {
+                ImGui::Text("Object"); ImGui::NextColumn();
+                if (ImGui::Button(data.objectHit->GetDynamicType()->GetName().Str()))
+                {
+                    mSelectedObject = const_cast<ISceneObject*>(data.objectHit);
+                }
+                ImGui::NextColumn();
+            }
+
+            if (data.shadingData.intersection.material)
+            {
+                ImGui::Text("Material"); ImGui::NextColumn();
+                if (ImGui::Button(data.shadingData.intersection.material->debugName.Str()))
+                {
+                    mSelectedMaterial = const_cast<Material*>(data.shadingData.intersection.material);
+                }
+                ImGui::NextColumn();
+            }
 
             ImGui::Text("Throughput"); ImGui::NextColumn();
 #ifdef RT_ENABLE_SPECTRAL_RENDERING
@@ -361,19 +379,12 @@ bool DemoWindow::RenderUI_Settings()
 
     if (mSelectedObject)
     {
-        if (ImGui::TreeNode("Object"))
+        if (EditObject("Selection", *mSelectedObject))
         {
-            resetFrame |= RenderUI_Settings_Object();
-            ImGui::TreePop();
-        }
-    }
+            resetFrame = true;
 
-    if (mSelectedLight)
-    {
-        if (ImGui::TreeNode("Light"))
-        {
-            resetFrame |= RenderUI_Settings_Light();
-            ImGui::TreePop();
+            // TODO not all changes require BVH rebuild
+            mScene->BuildBVH();
         }
     }
 
@@ -383,12 +394,6 @@ bool DemoWindow::RenderUI_Settings()
         {
             resetFrame = true;
         }
-
-        //if (ImGui::TreeNode("Material", "Material (%s)", mSelectedMaterial->debugName.Str()))
-        //{
-        //    resetFrame |= RenderUI_Settings_Material();
-        //    ImGui::TreePop();
-        //}
     }
 
     // screenshot saving
@@ -462,81 +467,6 @@ bool DemoWindow::RenderUI_Settings_Camera()
     }
 
     return resetFrame;
-}
-
-bool DemoWindow::RenderUI_Settings_Light()
-{
-    bool changed = false;
-
-    {
-        Spectrum color = mSelectedLight->GetColor();
-        if (ImGui::ColorEdit3("Color", &color.rgbValues.x, ImGuiColorEditFlags_Float | ImGuiColorEditFlags_HDR))
-        {
-            if ((color.rgbValues >= Vector4::Zero()).All())
-            {
-                mSelectedLight->SetColor(color);
-                changed = true;
-            }
-        }
-    }
-
-    return changed;
-}
-
-bool DemoWindow::RenderUI_Settings_Object()
-{
-    bool changed = false;
-
-    {
-        Float3 position = mSelectedObject->GetBaseTransform().GetTranslation().ToFloat3();
-        if (ImGui::InputFloat3("Position", &position.x, 2, ImGuiInputTextFlags_EnterReturnsTrue))
-        {
-            mSelectedObject->SetTransform(Matrix4::MakeTranslation(Vector4(position)));
-            changed = true;
-        }
-    }
-
-    // TODO
-    /*
-    {
-        Float3 orientation = mSelectedObject->mTransform.GetRotation().ToEulerAngles();
-        orientation *= 180.0f / NFE_MATH_PI;
-        if (ImGui::InputFloat3("Orientation", &orientation.x, 2, ImGuiInputTextFlags_EnterReturnsTrue))
-        {
-            orientation *= NFE_MATH_PI / 180.0f;
-            mSelectedObject->mTransform.SetRotation(Quaternion::FromEulerAngles(orientation));
-            changed = true;
-        }
-    }
-
-
-    {
-        Float3 velocity = mSelectedObject->mLinearVelocity.ToFloat3();
-        if (ImGui::InputFloat3("Linear Velocity", &velocity.x, 2, ImGuiInputTextFlags_EnterReturnsTrue))
-        {
-            mSelectedObject->mLinearVelocity = Vector4(velocity);
-            changed = true;
-        }
-    }
-
-    {
-        Float3 angularVelocity = mSelectedObject->mAngularVelocity.ToEulerAngles();
-        angularVelocity *= 180.0f / NFE_MATH_PI;
-        if (ImGui::InputFloat3("Angular Velocity", &angularVelocity.x, 2, ImGuiInputTextFlags_EnterReturnsTrue))
-        {
-            angularVelocity *= NFE_MATH_PI / 180.0f;
-            mSelectedObject->mAngularVelocity = Quaternion::FromEulerAngles(angularVelocity);
-            changed = true;
-        }
-    }
-    */
-
-    if (changed)
-    {
-        mScene->BuildBVH();
-    }
-
-    return changed;
 }
 
 bool DemoWindow::RenderUI()

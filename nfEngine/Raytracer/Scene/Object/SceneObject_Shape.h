@@ -12,10 +12,10 @@ using MaterialPtr = Common::SharedPtr<Material>;
 
 class ShapeSceneObject : public ITraceableSceneObject
 {
+    NFE_DECLARE_POLYMORPHIC_CLASS(ShapeSceneObject);
+
 public:
     NFE_RAYTRACER_API ShapeSceneObject(const ShapePtr& shape);
-
-    virtual Type GetType() const override;
 
     NFE_RAYTRACER_API void SetDefaultMaterial(const MaterialPtr& material);
 

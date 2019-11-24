@@ -147,7 +147,7 @@ public:
     using TypeClass = DynArrayTypeImpl<T>;
     using TypeInfoClass = TypeInfo;
 
-    static TypePtr CreateType()
+    static Type* CreateType()
     {
         const Type* templateArgumentType = GetType<T>();
 
@@ -161,7 +161,7 @@ public:
         typeInfo.constructor = []() { return new Common::DynArray<T>; };
         typeInfo.arrayConstructor = [](uint32 num) { return new Common::DynArray<T>[num]; };
 
-        return TypePtr(new DynArrayTypeImpl<T>(typeInfo));
+        return new DynArrayTypeImpl<T>(typeInfo);
     }
 };
 

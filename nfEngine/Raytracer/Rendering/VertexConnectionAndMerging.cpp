@@ -11,10 +11,12 @@
 #include "Traversal/TraversalContext.h"
 #include "Sampling/GenericSampler.h"
 #include "Utils/Profiler.h"
-#include "../../nfCommon/Memory/MemoryHelpers.hpp"
-#include "../../nfCommon/Utils/TaskBuilder.hpp"
+#include "../nfCommon/Memory/MemoryHelpers.hpp"
+#include "../nfCommon/Utils/TaskBuilder.hpp"
+#include "../nfCommon/Reflection/ReflectionUtils.hpp"
+#include "../nfCommon/Reflection/ReflectionClassDefine.hpp"
 
-NFE_BEGIN_DEFINE_POLYMORPHIC_CLASS(NFE::RT::VertexConnectionAndMerging)
+NFE_DEFINE_POLYMORPHIC_CLASS(NFE::RT::VertexConnectionAndMerging)
 {
     NFE_CLASS_PARENT(NFE::RT::IRenderer);
     NFE_CLASS_MEMBER(mBSDFSamplingWeight);
@@ -340,8 +342,8 @@ const RayColor VertexConnectionAndMerging::RenderPixel(const Math::Ray& ray, con
         if (hitPoint.subObjectId == NFE_LIGHT_OBJECT)
         {
             const ISceneObject* sceneObject = param.scene.GetHitObject(hitPoint.objectId);
-            NFE_ASSERT(sceneObject->GetType() == ISceneObject::Type::Light);
-            const LightSceneObject* lightObject = static_cast<const LightSceneObject*>(sceneObject);
+            const LightSceneObject* lightObject = RTTI::Cast<LightSceneObject>(sceneObject);
+            NFE_ASSERT(lightObject);
 
             const float cosAtLight = -shadingData.intersection.CosTheta(pathState.ray.dir);
             const RayColor lightColor = EvaluateLight(param.iteration, lightObject, &shadingData.intersection, pathState, ctx);

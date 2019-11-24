@@ -9,10 +9,10 @@
 #include "EntitySystem.hpp"
 #include "../EntityController.hpp"
 #include "../Components/ComponentController.hpp"
+#include "nfCommon/Reflection/ReflectionClassDefine.hpp"
 
 
-
-NFE_BEGIN_DEFINE_POLYMORPHIC_CLASS(NFE::Scene::EventSystem)
+NFE_DEFINE_POLYMORPHIC_CLASS(NFE::Scene::EventSystem)
     NFE_CLASS_PARENT(NFE::Scene::ISystem)
 NFE_END_DEFINE_CLASS()
 

@@ -4,10 +4,14 @@
 #include "../nfEngine/nfCommon/Reflection/Types/ReflectionUniquePtrType.hpp"
 #include "../nfEngine/nfCommon/Reflection/Types/ReflectionNativeArrayType.hpp"
 #include "../nfEngine/nfCommon/Reflection/Types/ReflectionDynArrayType.hpp"
+#include "../nfEngine/nfCommon/Reflection/Types/ReflectionClassType.hpp"
 #include "../nfEngine/nfCommon/Math/LdrColor.hpp"
 #include "../nfEngine/nfCommon/Math/HdrColor.hpp"
+#include "../nfEngine/nfCommon/Math/Quaternion.hpp"
 
 #include "../nfEngineDeps/imgui/imgui.h"
+
+#pragma optimize("",off)
 
 namespace NFE {
 
@@ -40,7 +44,7 @@ static bool EditObject_Internal_LdrColorRGB(const char* name, Math::LdrColorRGB*
     values[2] = color->b / 255.0f;
 
     bool changed = false;
-    if (ImGui::ColorEdit3(name, values))
+    if (ImGui::ColorEdit3("", values))
     {
         color->r = static_cast<uint8>(values[0] * 255.0f);
         color->g = static_cast<uint8>(values[1] * 255.0f);
@@ -63,14 +67,55 @@ static bool EditObject_Internal_HdrColorRGB(const char* name, Math::HdrColorRGB*
     // property value
     ImGui::SetNextItemWidth(-1);
 
-    bool changed = ImGui::ColorEdit3(name, &(color->r), ImGuiColorEditFlags_Float | ImGuiColorEditFlags_HDR);
+    bool changed = ImGui::ColorEdit3("", &(color->r), ImGuiColorEditFlags_Float | ImGuiColorEditFlags_HDR);
 
     ImGui::NextColumn();
 
     return changed;
 }
 
-#pragma optimize("",off)
+static bool EditObject_Internal_FloatVector(const char* name, float* data, uint32 numComponents)
+{
+    // property name
+    ImGui::AlignTextToFramePadding();
+    ImGui::TreeNodeEx(name, ImGuiTreeNodeFlags_Leaf | ImGuiTreeNodeFlags_NoTreePushOnOpen, name);
+    ImGui::NextColumn();
+
+    // property value
+    ImGui::SetNextItemWidth(-1);
+
+    bool changed = ImGui::InputScalarN("", ImGuiDataType_Float, data, numComponents, nullptr, nullptr, "%.4f");
+
+    ImGui::NextColumn();
+
+    return changed;
+}
+
+static bool EditObject_Internal_Quaternion(const char* name, Math::Quaternion* quat)
+{
+    // property name
+    ImGui::AlignTextToFramePadding();
+    ImGui::TreeNodeEx(name, ImGuiTreeNodeFlags_Leaf | ImGuiTreeNodeFlags_NoTreePushOnOpen, name);
+    ImGui::NextColumn();
+
+    // property value
+    ImGui::SetNextItemWidth(-1);
+
+    bool changed = false;
+
+    Math::Float3 angles = quat->ToEulerAngles();
+    angles *= 180.0f / NFE_MATH_PI;
+    if (ImGui::InputFloat3("", &angles.x, 2))
+    {
+        angles *= NFE_MATH_PI / 180.0f;
+        *quat = Math::Quaternion::FromEulerAngles(angles);
+        changed = true;
+    }
+
+    ImGui::NextColumn();
+
+    return changed;
+}
 
 template<typename T, ImGuiDataType_ ImGuiDataType>
 static bool EditObject_Internal_Fundamental_Typed(const EditPropertyContext& ctx)
@@ -225,8 +270,20 @@ static bool EditObject_Internal_Class_Members(const ClassType* type, void* data)
         };
 
         ImGui::PushID(i);
-        changed |= EditObject_Internal(propertyContext);
+        const bool propertyChanged = EditObject_Internal(propertyContext);
         ImGui::PopID();
+
+        if (propertyChanged)
+        {
+            // notify object
+            if (type->GetKind() == TypeKind::PolymorphicClass || type->GetKind() == TypeKind::AbstractClass)
+            {
+                IObject* object = reinterpret_cast<IObject*>(data);
+                const bool propertyChangeHandled = object->OnPropertyChanged(StringView(member.GetName()));
+                NFE_ASSERT(propertyChangeHandled, "Property change not handled");
+            }
+            changed = true;
+        }
     }
 
     return changed;
@@ -266,11 +323,11 @@ static bool EditObject_TypeGetter(void* data, int idx, const char** outText)
     return true;
 }
 
-static bool EditObject_Internal_UniquePtr(const EditPropertyContext& ctx)
+static bool EditObject_Internal_Pointer(const EditPropertyContext& ctx)
 {
     bool changed = false;
 
-    const UniquePtrType* type = static_cast<const UniquePtrType*>(ctx.type);
+    const PointerType* type = static_cast<const PointerType*>(ctx.type);
 
     // property name
     ImGui::AlignTextToFramePadding();
@@ -329,7 +386,7 @@ static bool EditObject_Internal_UniquePtr(const EditPropertyContext& ctx)
             if (currentType->GetKind() == TypeKind::AbstractClass || currentType->GetKind() == TypeKind::PolymorphicClass)
             {
                 // skip header for class types
-                EditObject_Internal_Class_Members(static_cast<const ClassType*>(currentType), type->GetPointedData(ctx.data));
+                changed |= EditObject_Internal_Class_Members(static_cast<const ClassType*>(currentType), type->GetPointedData(ctx.data));
             }
             else
             {
@@ -340,7 +397,7 @@ static bool EditObject_Internal_UniquePtr(const EditPropertyContext& ctx)
                     type->GetPointedData(ctx.data),
                 };
 
-                EditObject_Internal(propertyContext);
+                changed |= EditObject_Internal(propertyContext);
             }
         }
         ImGui::TreePop();
@@ -447,6 +504,26 @@ static bool EditObject_Internal(const EditPropertyContext& ctx)
     {
         changed = EditObject_Internal_HdrColorRGB(ctx.name, static_cast<Math::HdrColorRGB*>(ctx.data));
     }
+    else if (ctx.type == RTTI::GetType<Math::Float2>())
+    {
+        changed = EditObject_Internal_FloatVector(ctx.name, static_cast<float*>(ctx.data), 2);
+    }
+    else if (ctx.type == RTTI::GetType<Math::Float3>())
+    {
+        changed = EditObject_Internal_FloatVector(ctx.name, static_cast<float*>(ctx.data), 3);
+    }
+    else if (ctx.type == RTTI::GetType<Math::Float4>())
+    {
+        changed = EditObject_Internal_FloatVector(ctx.name, static_cast<float*>(ctx.data), 4);
+    }
+    else if (ctx.type == RTTI::GetType<Math::Vector4>())
+    {
+        changed = EditObject_Internal_FloatVector(ctx.name, static_cast<float*>(ctx.data), 4);
+    }
+    else if (ctx.type == RTTI::GetType<Math::Quaternion>())
+    {
+        changed = EditObject_Internal_Quaternion(ctx.name, static_cast<Math::Quaternion*>(ctx.data));
+    }
     else
     {
         switch (ctx.type->GetKind())
@@ -462,7 +539,8 @@ static bool EditObject_Internal(const EditPropertyContext& ctx)
             changed = EditObject_Internal_Class(ctx);
             break;
         case TypeKind::UniquePtr:
-            changed = EditObject_Internal_UniquePtr(ctx);
+        case TypeKind::SharedPtr:
+            changed = EditObject_Internal_Pointer(ctx);
             break;
         case TypeKind::NativeArray:
             changed = EditObject_Internal_NativeArray(ctx);
@@ -470,11 +548,6 @@ static bool EditObject_Internal(const EditPropertyContext& ctx)
         case TypeKind::DynArray:
             changed = EditObject_Internal_DynArray(ctx);
             break;
-
-            // TODO DynArray
-            // TODO String
-            // TODO custom types (float2, float3, vector4, color, etc.)
-
         default:
             NFE_FATAL("Invalid type");
             break;

@@ -1,7 +1,8 @@
 #include "PCH.h"
 #include "NullBSDF.h"
+#include "../nfCommon/Reflection/ReflectionClassDefine.hpp"
 
-NFE_BEGIN_DEFINE_POLYMORPHIC_CLASS(NFE::RT::NullBSDF)
+NFE_DEFINE_POLYMORPHIC_CLASS(NFE::RT::NullBSDF)
 NFE_CLASS_PARENT(NFE::RT::BSDF);
 NFE_END_DEFINE_CLASS()
 

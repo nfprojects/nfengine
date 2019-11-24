@@ -6,6 +6,16 @@
 #include "Traversal/TraversalContext.h"
 #include "Material/Material.h"
 #include "../nfCommon/Math/Simd8Geometry.hpp"
+#include "../nfCommon/Reflection/Types/ReflectionSharedPtrType.hpp"
+#include "../nfCommon/Reflection/ReflectionClassDefine.hpp"
+
+NFE_DEFINE_POLYMORPHIC_CLASS(NFE::RT::ShapeSceneObject)
+{
+    NFE_CLASS_PARENT(NFE::RT::ISceneObject);
+    NFE_CLASS_MEMBER(mShape).NonNull();
+}
+NFE_END_DEFINE_CLASS()
+
 
 namespace NFE {
 namespace RT {
@@ -16,11 +26,6 @@ ShapeSceneObject::ShapeSceneObject(const ShapePtr& shape)
     : mShape(shape)
 {
     NFE_ASSERT(mShape, "Invalid shape");
-}
-
-ISceneObject::Type ShapeSceneObject::GetType() const
-{
-    return Type::Shape;
 }
 
 Box ShapeSceneObject::GetBoundingBox() const

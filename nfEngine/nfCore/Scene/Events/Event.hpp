@@ -7,9 +7,9 @@
 
 #include "../../Core.hpp"
 
-#include "nfCommon/Reflection/ReflectionClassMacros.hpp"
+#include "nfCommon/Reflection/ReflectionClassDeclare.hpp"
+#include "nfCommon/Reflection/Object.hpp"
 #include "nfCommon/Containers/SharedPtr.hpp"
-
 
 namespace NFE {
 namespace Scene {

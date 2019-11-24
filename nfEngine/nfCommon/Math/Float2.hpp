@@ -1,6 +1,8 @@
 #pragma once
 
 #include "Math.hpp"
+#include "../Reflection/ReflectionClassDeclare.hpp"
+
 
 namespace NFE {
 namespace Math {
@@ -10,6 +12,10 @@ namespace Math {
  */
 struct Float2
 {
+    NFE_DECLARE_CLASS(Float2);
+
+public:
+
     union
     {
         float f[2];

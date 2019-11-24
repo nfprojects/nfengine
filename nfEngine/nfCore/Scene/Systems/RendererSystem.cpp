@@ -6,9 +6,10 @@
 
 #include "PCH.hpp"
 #include "RendererSystem.hpp"
+#include "nfCommon/Reflection/ReflectionClassDefine.hpp"
 
 
-NFE_BEGIN_DEFINE_POLYMORPHIC_CLASS(NFE::Scene::RendererSystem)
+NFE_DEFINE_POLYMORPHIC_CLASS(NFE::Scene::RendererSystem)
     NFE_CLASS_PARENT(NFE::Scene::ISystem)
 NFE_END_DEFINE_CLASS()
 

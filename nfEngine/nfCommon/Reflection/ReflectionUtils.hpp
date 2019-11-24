@@ -7,6 +7,7 @@
 #pragma once
 
 #include "../nfCommon.hpp"
+#include "ReflectionTypeResolver.hpp"
 #include "Types/ReflectionType.hpp"
 
 
@@ -31,7 +32,7 @@ TargetType* Cast(SourceType* source)
         // TODO multiple inheritance support
         if (sourceType->IsA(targetType))
         {
-            return reinterpret_cast<TargetType*>(source);
+            return static_cast<TargetType*>(source);
         }
     }
 
@@ -57,7 +58,7 @@ const TargetType* Cast(const SourceType* source)
         // TODO multiple inheritance support
         if (sourceType->IsA(targetType))
         {
-            return reinterpret_cast<const TargetType*>(source);
+            return static_cast<const TargetType*>(source);
         }
     }
 

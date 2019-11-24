@@ -11,12 +11,13 @@
 #include "Utils/OutputStream.hpp"
 #include "Image.hpp"
 #include "ImageJPG.hpp"
+#include "Reflection/ReflectionClassDefine.hpp"
 
 #include "jpeg/jpgd.h"
 #include "jpeg/jpge.h"
 
 
-NFE_BEGIN_DEFINE_POLYMORPHIC_CLASS(NFE::Common::ImageJPG)
+NFE_DEFINE_POLYMORPHIC_CLASS(NFE::Common::ImageJPG)
     NFE_CLASS_PARENT(NFE::Common::ImageType)
 NFE_END_DEFINE_CLASS()
 

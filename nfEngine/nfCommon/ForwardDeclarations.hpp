@@ -137,10 +137,12 @@ namespace RTTI {
 
 enum class TypeKind : uint8;
 struct TypeInfo;
+struct ClassTypeInfo;
 class Type;
 class TypeRegistry;
 class Member;
 class ITypeSerializer;
+template<typename T> class TypeCreator;
 
 } // namespace RTTI
 

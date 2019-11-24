@@ -4,7 +4,7 @@
 #include "nfCommon/Utils/InputStream.hpp"
 #include "nfCommon/Utils/OutputStream.hpp"
 #include "nfCommon/FileSystem/FileSystem.hpp"
-
+#include "nfCommon/Containers/String.hpp"
 
 
 using namespace NFE;

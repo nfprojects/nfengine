@@ -3,9 +3,10 @@
 #include "BSDF/BSDF.h"
 #include "Color/Spectrum.h"
 #include "../nfCommon/Logger/Logger.hpp"
+#include "../nfCommon/Reflection/ReflectionClassDefine.hpp"
 
 
-NFE_BEGIN_DEFINE_CLASS(NFE::RT::DispersionParams)
+NFE_DEFINE_CLASS(NFE::RT::DispersionParams)
 {
     NFE_CLASS_MEMBER(enable);
     NFE_CLASS_MEMBER(C);
@@ -13,7 +14,7 @@ NFE_BEGIN_DEFINE_CLASS(NFE::RT::DispersionParams)
 }
 NFE_END_DEFINE_CLASS()
 
-NFE_BEGIN_DEFINE_CLASS(NFE::RT::Material)
+NFE_DEFINE_CLASS(NFE::RT::Material)
 {
     NFE_CLASS_MEMBER(mBSDF).Name("BSDF").NonNull();
     NFE_CLASS_MEMBER(emission);

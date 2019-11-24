@@ -15,6 +15,10 @@ namespace Math {
  */
 struct NFE_ALIGN(16) Vector4
 {
+    NFE_DECLARE_CLASS(Vector4);
+
+public:
+
     union
     {
         float f[4];

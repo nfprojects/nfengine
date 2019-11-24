@@ -1,5 +1,6 @@
 #include "PCH.h"
 #include "RenderingParams.h"
+#include "../nfCommon/Reflection/ReflectionClassDefine.hpp"
 
 
 NFE_BEGIN_DEFINE_ENUM(NFE::RT::TraversalMode)
@@ -14,7 +15,7 @@ NFE_BEGIN_DEFINE_ENUM(NFE::RT::LightSamplingStrategy)
 NFE_END_DEFINE_ENUM()
 
 
-NFE_BEGIN_DEFINE_CLASS(NFE::RT::AdaptiveRenderingSettings)
+NFE_DEFINE_CLASS(NFE::RT::AdaptiveRenderingSettings)
 {
     NFE_CLASS_MEMBER(enable);
     NFE_CLASS_MEMBER(numInitialPasses).Min(1).Max(100);
@@ -26,7 +27,7 @@ NFE_BEGIN_DEFINE_CLASS(NFE::RT::AdaptiveRenderingSettings)
 NFE_END_DEFINE_CLASS()
 
 
-NFE_BEGIN_DEFINE_CLASS(NFE::RT::SamplingParams)
+NFE_DEFINE_CLASS(NFE::RT::SamplingParams)
 {
     NFE_CLASS_MEMBER(dimensions).Min(1).Max(256);
     NFE_CLASS_MEMBER(useBlueNoiseDithering);
@@ -34,7 +35,7 @@ NFE_BEGIN_DEFINE_CLASS(NFE::RT::SamplingParams)
 NFE_END_DEFINE_CLASS()
 
 
-NFE_BEGIN_DEFINE_CLASS(NFE::RT::RenderingParams)
+NFE_DEFINE_CLASS(NFE::RT::RenderingParams)
 {
     NFE_CLASS_MEMBER(maxRayDepth).Min(0).Max(256);
     NFE_CLASS_MEMBER(tileSize).Min(4).Max(256);

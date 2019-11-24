@@ -5,8 +5,11 @@
 #include "../../Traversal/HitPoint.h"
 #include "../../../nfCommon/Math/Box.hpp"
 #include "../../../nfCommon/Math/Matrix4.hpp"
+#include "../../../nfCommon/Math/Transform.hpp"
 #include "../../../nfCommon/Containers/UniquePtr.hpp"
 #include "../../../nfCommon/Memory/Aligned.hpp"
+#include "../../../nfCommon/Reflection/ReflectionClassDeclare.hpp"
+#include "../../../nfCommon/Reflection/Object.hpp"
 
 namespace NFE {
 namespace RT {
@@ -14,28 +17,25 @@ namespace RT {
 using SceneObjectPtr = Common::UniquePtr<ISceneObject>;
 
 // Object on a scene
-class ISceneObject : public Common::Aligned<16>
+class ISceneObject
+    : public Common::Aligned<16>
+    , public IObject
 {
+    NFE_DECLARE_POLYMORPHIC_CLASS(ISceneObject);
+
 public:
-    enum class Type : uint8
-    {
-        Shape,
-        Light,
-        Decal,
-    };
 
     NFE_RAYTRACER_API ISceneObject();
     NFE_RAYTRACER_API virtual ~ISceneObject();
 
-    virtual Type GetType() const = 0;
-
+    NFE_RAYTRACER_API void SetTransform(const Math::Transform& transform);
     NFE_RAYTRACER_API void SetTransform(const Math::Matrix4& matrix);
 
     // Get world-space bounding box
     virtual Math::Box GetBoundingBox() const = 0;
 
     // get transform at time=0
-    NFE_FORCE_INLINE const Math::Matrix4& GetBaseTransform() const { return mTransform; }
+    NFE_FORCE_INLINE const Math::Matrix4& GetBaseTransform() const { return mBaseTransform; }
     NFE_FORCE_INLINE const Math::Matrix4& GetBaseInverseTransform() const { return mInverseTranform; }
 
     // get transform at given point in time
@@ -43,8 +43,13 @@ public:
     const Math::Matrix4 GetInverseTransform(const float t) const;
 
 private:
-    Math::Matrix4 mTransform; // local->world transform at time=0.0
-    Math::Matrix4 mInverseTranform;
+
+    virtual bool OnPropertyChanged(const Common::StringView propertyName) override;
+
+    Math::Matrix4 mBaseTransform;   // local->world transform at time=0.0
+    Math::Matrix4 mInverseTranform; // world->local transform at time=0.0
+
+    Math::Transform mTransform;
 
     // TODO velocity
 };

@@ -7,9 +7,10 @@
 #include "PCH.hpp"
 #include "Component.hpp"
 #include "../Entity.hpp"
+#include "nfCommon/Reflection/ReflectionClassDefine.hpp"
 
 
-NFE_BEGIN_DEFINE_POLYMORPHIC_CLASS(NFE::Scene::IComponent)
+NFE_DEFINE_POLYMORPHIC_CLASS(NFE::Scene::IComponent)
 NFE_END_DEFINE_CLASS()
 
 

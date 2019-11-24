@@ -1,5 +1,15 @@
 #include "PCH.h"
 #include "SceneObject.h"
+#include "../nfCommon/Reflection/ReflectionClassDefine.hpp"
+
+
+NFE_DEFINE_POLYMORPHIC_CLASS(NFE::RT::ISceneObject)
+{
+    NFE_CLASS_MEMBER(mTransform);
+    // TODO velocity
+}
+NFE_END_DEFINE_CLASS()
+
 
 namespace NFE {
 namespace RT {
@@ -8,17 +18,32 @@ using namespace Math;
 
 ISceneObject::ISceneObject()
 {
-    mTransform = Matrix4::Identity();
+    mBaseTransform = Matrix4::Identity();
     mInverseTranform = Matrix4::Identity();
 }
 
 ISceneObject::~ISceneObject() = default;
 
+bool ISceneObject::OnPropertyChanged(const Common::StringView propertyName)
+{
+    if (propertyName == "mTransform")
+    {
+        NFE_ASSERT(mTransform.IsValid());
+        mBaseTransform = mTransform.ToMatrix();
+        mInverseTranform = mTransform.Inverted().ToMatrix();
+        return true;
+    }
+
+    return IObject::OnPropertyChanged(propertyName);
+}
+
 void ISceneObject::SetTransform(const Math::Matrix4& matrix)
 {
     NFE_ASSERT(matrix.IsValid());
 
-    mTransform = matrix;
+    mTransform = Transform::FromMatrix(matrix);
+
+    mBaseTransform = matrix;
 
     // TODO scaling support
     mInverseTranform = matrix.Inverted();
@@ -31,7 +56,7 @@ const Matrix4 ISceneObject::GetTransform(const float t) const
 
     // TODO motion blur
 
-    return mTransform;
+    return mBaseTransform;
 }
 
 const Matrix4 ISceneObject::GetInverseTransform(const float t) const

@@ -3,12 +3,12 @@
  */
 
 #include "PCH.hpp"
-#include "ReflectionUniquePtrType.hpp"
+#include "ReflectionPointerType.hpp"
 
 namespace NFE {
 namespace RTTI {
 
-bool UniquePtrType::Compare(const void* objectA, const void* objectB) const
+bool PointerType::Compare(const void* objectA, const void* objectB) const
 {
     const void* pointedObjectA = GetPointedData(objectA);
     const void* pointedObjectB = GetPointedData(objectB);

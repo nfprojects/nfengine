@@ -1,9 +1,10 @@
 #include "PCH.h"
 #include "DielectricBSDF.h"
 #include "../Material.h"
-#include "../../../nfCommon/Math/Utils.hpp"
+#include "../nfCommon/Math/Utils.hpp"
+#include "../nfCommon/Reflection/ReflectionClassDefine.hpp"
 
-NFE_BEGIN_DEFINE_POLYMORPHIC_CLASS(NFE::RT::DielectricBSDF)
+NFE_DEFINE_POLYMORPHIC_CLASS(NFE::RT::DielectricBSDF)
 NFE_CLASS_PARENT(NFE::RT::BSDF);
 NFE_END_DEFINE_CLASS()
 

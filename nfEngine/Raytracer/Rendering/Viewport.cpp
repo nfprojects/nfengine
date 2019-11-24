@@ -16,6 +16,7 @@
 #include "../nfCommon/Logger/Logger.hpp"
 #include "../nfCommon/Utils/ThreadPool.hpp"
 #include "../nfCommon/Utils/Waitable.hpp"
+#include "../nfCommon/Reflection/Types/ReflectionClassType.hpp"
 
 namespace NFE {
 namespace RT {

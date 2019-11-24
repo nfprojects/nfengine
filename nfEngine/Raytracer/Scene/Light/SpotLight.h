@@ -7,10 +7,11 @@ namespace RT {
 
 class SpotLight : public ILight
 {
-public:
-    NFE_RAYTRACER_API SpotLight(const Math::Vector4& color, const float angle);
+    NFE_DECLARE_POLYMORPHIC_CLASS(SpotLight);
 
-    virtual Type GetType() const override;
+public:
+    NFE_RAYTRACER_API SpotLight(const Math::HdrColorRGB& color, const float angle);
+
     virtual const Math::Box GetBoundingBox() const override;
     virtual bool TestRayHit(const Math::Ray& ray, float& outDistance) const override;
     virtual const RayColor Illuminate(const IlluminateParam& param, IlluminateResult& outResult) const override;

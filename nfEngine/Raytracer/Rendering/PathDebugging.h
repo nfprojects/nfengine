@@ -35,6 +35,8 @@ struct PathDebugData
 
         HitPoint hitPoint;
 
+        const ISceneObject* objectHit = nullptr;
+
         // evaluated world-space shading data
         ShadingData shadingData;
 
@@ -51,6 +53,12 @@ struct PathDebugData
 
     PathTerminationReason terminationReason = PathTerminationReason::None;
     Common::DynArray<HitPointData> data;
+
+    void Clear()
+    {
+        terminationReason = PathTerminationReason::None;
+        data.Clear();
+    }
 };
 
 

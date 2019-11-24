@@ -7,7 +7,8 @@
 
 #include "../../Core.hpp"
 
-#include "nfCommon/Reflection/ReflectionClassMacros.hpp"
+#include "nfCommon/Reflection/ReflectionClassDeclare.hpp"
+#include "nfCommon/Reflection/Object.hpp"
 
 
 namespace NFE {

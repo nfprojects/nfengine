@@ -10,8 +10,6 @@
 #include "../../Containers/UniquePtr.hpp"
 #include "../../Containers/String.hpp"
 
-#include <type_traits>
-#include <typeinfo>
 #include <functional>
 
 
@@ -175,8 +173,6 @@ protected:
 
     const void* mDefaultObject;
 };
-
-using TypePtr = Common::UniquePtr<Type>;
 
 
 } // namespace RTTI

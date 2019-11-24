@@ -7,6 +7,15 @@
 #include "../../../nfCommon/Math/Transcendental.hpp"
 #include "../../../nfCommon/Math/Geometry.hpp"
 #include "../../../nfCommon/Math/SamplingHelpers.hpp"
+#include "../../../nfCommon/Reflection/ReflectionClassDefine.hpp"
+
+
+NFE_DEFINE_POLYMORPHIC_CLASS(NFE::RT::BackgroundLight)
+{
+    NFE_CLASS_PARENT(NFE::RT::ILight);
+    // NFE_CLASS_MEMBER(mTexture); // TODO
+}
+NFE_END_DEFINE_CLASS()
 
 namespace NFE {
 namespace RT {
@@ -18,14 +27,9 @@ static const float SceneRadius = 30.0f; // TODO
 
 BackgroundLight::BackgroundLight() = default;
 
-BackgroundLight::BackgroundLight(const Math::Vector4& color)
+BackgroundLight::BackgroundLight(const Math::HdrColorRGB& color)
     : ILight(color)
 {}
-
-ILight::Type BackgroundLight::GetType() const
-{
-    return Type::Background;
-}
 
 const Box BackgroundLight::GetBoundingBox() const
 {

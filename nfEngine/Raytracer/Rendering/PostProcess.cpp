@@ -1,5 +1,6 @@
 #include "PCH.h"
 #include "PostProcess.h"
+#include "../nfCommon/Reflection/ReflectionClassDefine.hpp"
 
 NFE_BEGIN_DEFINE_ENUM(NFE::RT::Tonemapper)
 {
@@ -10,7 +11,7 @@ NFE_BEGIN_DEFINE_ENUM(NFE::RT::Tonemapper)
 }
 NFE_END_DEFINE_ENUM()
 
-NFE_BEGIN_DEFINE_CLASS(NFE::RT::BloomElement)
+NFE_DEFINE_CLASS(NFE::RT::BloomElement)
 {
     NFE_CLASS_MEMBER(weight).Min(0.0f).Max(1.0f);
     NFE_CLASS_MEMBER(sigma).Min(0.0f).Max(100.0f);
@@ -18,14 +19,14 @@ NFE_BEGIN_DEFINE_CLASS(NFE::RT::BloomElement)
 }
 NFE_END_DEFINE_CLASS()
 
-NFE_BEGIN_DEFINE_CLASS(NFE::RT::BloomParams)
+NFE_DEFINE_CLASS(NFE::RT::BloomParams)
 {
     NFE_CLASS_MEMBER(factor).Min(0.0f).Max(1.0f);
     NFE_CLASS_MEMBER(elements);
 }
 NFE_END_DEFINE_CLASS()
 
-NFE_BEGIN_DEFINE_CLASS(NFE::RT::PostprocessParams)
+NFE_DEFINE_CLASS(NFE::RT::PostprocessParams)
 {
     NFE_CLASS_MEMBER(colorFilter);
     NFE_CLASS_MEMBER(exposure).Min(-10.0f).Max(10.0f);

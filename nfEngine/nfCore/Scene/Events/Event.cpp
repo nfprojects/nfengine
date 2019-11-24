@@ -7,6 +7,7 @@
 
 #include "PCH.hpp"
 #include "Event.hpp"
+#include "nfCommon/Reflection/ReflectionClassDefine.hpp"
 
-NFE_BEGIN_DEFINE_POLYMORPHIC_CLASS(NFE::Scene::Event)
+NFE_DEFINE_POLYMORPHIC_CLASS(NFE::Scene::Event)
 NFE_END_DEFINE_CLASS()

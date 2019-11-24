@@ -7,6 +7,8 @@ namespace RT {
 
 class RectShape : public IShape
 {
+    NFE_DECLARE_POLYMORPHIC_CLASS(RectShape);
+
 public:
     NFE_RAYTRACER_API RectShape(const Math::Float2 size = Math::Float2(FLT_MAX), const Math::Float2 texScale = Math::Float2(1.0f));
 

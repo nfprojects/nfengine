@@ -4,7 +4,7 @@
 #include "../Color/ColorHelpers.h"
 #include "../../nfCommon/Math/Vector4.hpp"
 #include "../../nfCommon/Math/HdrColor.hpp"
-#include "../../nfCommon/Reflection/ReflectionClassMacros.hpp"
+#include "../../nfCommon/Reflection/ReflectionClassDeclare.hpp"
 #include "../../nfCommon/Reflection/ReflectionEnumMacros.hpp"
 #include "../../nfCommon/Reflection/Types/ReflectionDynArrayType.hpp"
 

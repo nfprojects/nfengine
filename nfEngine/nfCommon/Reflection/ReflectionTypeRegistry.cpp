@@ -13,6 +13,10 @@ namespace RTTI {
 
 using namespace Common;
 
+ITypeRegistry& ITypeRegistry::GetInstance()
+{
+    return TypeRegistry::GetInstance();
+}
 
 TypeRegistry& TypeRegistry::GetInstance()
 {
@@ -29,7 +33,12 @@ const Type* TypeRegistry::GetExistingType(size_t hash) const
         return nullptr;
     }
 
-    return iter->second.Get();
+    return iter->second;
+}
+
+const Type* TypeRegistry::GetExistingType(const char* name) const
+{
+    return GetExistingType(StringView(name));
 }
 
 const Type* TypeRegistry::GetExistingType(const StringView name) const
@@ -44,20 +53,19 @@ const Type* TypeRegistry::GetExistingType(const StringView name) const
     return iter->second;
 }
 
-const Type* TypeRegistry::RegisterType(size_t hash, TypePtr&& type)
+const Type* TypeRegistry::RegisterType(size_t hash, Type* type)
 {
     NFE_ASSERT(type, "Invalid type pointer");
 
     const auto iter = mTypesByHash.Find(hash);
     NFE_ASSERT(iter == mTypesByHash.End(), "Type with given hash already exists (%s)", iter->second->GetName().Str());
 
-    const Type* typePtr = type.Get();
-    mTypesByHash.Insert(hash, std::move(type));
-    mTypesByName.Insert(StringView(typePtr->GetName()), typePtr);
+    mTypesByHash.Insert(hash, type);
+    mTypesByName.Insert(StringView(type->GetName()), type);
 
-    typePtr->PrintInfo();
+    type->PrintInfo();
 
-    return typePtr;
+    return type;
 }
 
 void TypeRegistry::Cleanup()

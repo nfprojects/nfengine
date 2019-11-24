@@ -10,7 +10,7 @@
 #include "../../nfCommon/Math/Random.hpp"
 #include "../../nfCommon/Containers/UniquePtr.hpp"
 #include "../../nfCommon/Memory/Aligned.hpp"
-#include "../../nfCommon/Reflection/ReflectionClassMacros.hpp"
+#include "../../nfCommon/Reflection/ReflectionClassDeclare.hpp"
 #include "../../nfCommon/Reflection/ReflectionEnumMacros.hpp"
 
 namespace NFE {

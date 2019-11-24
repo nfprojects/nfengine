@@ -1,7 +1,8 @@
 #include "PCH.h"
 #include "Renderer.h"
+#include "../nfCommon/Reflection/ReflectionClassDefine.hpp"
 
-NFE_BEGIN_DEFINE_POLYMORPHIC_CLASS(NFE::RT::IRenderer)
+NFE_DEFINE_POLYMORPHIC_CLASS(NFE::RT::IRenderer)
 NFE_END_DEFINE_CLASS()
 
 namespace NFE {

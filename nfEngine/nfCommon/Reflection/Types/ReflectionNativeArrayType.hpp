@@ -157,7 +157,7 @@ public:
     using TypeClass = NativeArrayTypeImpl<T>;
     using ObjectType = T[N];
 
-    static TypePtr CreateType()
+    static Type* CreateType()
     {
         const Type* templateArgumentType = GetType<T>();
         const Common::String typeName = Common::String(templateArgumentType->GetName()) + "[]";
@@ -170,7 +170,7 @@ public:
         typeInfo.constructor = []() { return new ObjectType; };
         typeInfo.arrayConstructor = [](uint32 num) { return new ObjectType[num]; };
 
-        return TypePtr(new TypeClass(typeInfo, N));
+        return new TypeClass(typeInfo, N);
     }
 
     void FinishInitialization(TypeInfo& typeInfo)

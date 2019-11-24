@@ -13,12 +13,13 @@ using TexturePtr = Common::SharedPtr<ITexture>;
 
 class AreaLight : public ILight
 {
+    NFE_DECLARE_POLYMORPHIC_CLASS(AreaLight);
+
 public:
-    NFE_RAYTRACER_API AreaLight(ShapePtr shape, const Math::Vector4& color);
+    NFE_RAYTRACER_API AreaLight(ShapePtr shape, const Math::HdrColorRGB& color);
 
     NFE_FORCE_INLINE const ShapePtr& GetShape() const { return mShape; }
 
-    virtual Type GetType() const override;
     virtual const Math::Box GetBoundingBox() const override;
     virtual bool TestRayHit(const Math::Ray& ray, float& outDistance) const override;
     virtual const RayColor Illuminate(const IlluminateParam& param, IlluminateResult& outResult) const override;

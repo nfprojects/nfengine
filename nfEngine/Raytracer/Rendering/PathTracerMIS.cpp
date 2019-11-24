@@ -9,8 +9,10 @@
 #include "Material/Material.h"
 #include "Traversal/TraversalContext.h"
 #include "Sampling/GenericSampler.h"
+#include "../nfCommon/Reflection/ReflectionUtils.hpp"
+#include "../nfCommon/Reflection/ReflectionClassDefine.hpp"
 
-NFE_BEGIN_DEFINE_POLYMORPHIC_CLASS(NFE::RT::PathTracerMIS)
+NFE_DEFINE_POLYMORPHIC_CLASS(NFE::RT::PathTracerMIS)
 {
     NFE_CLASS_PARENT(NFE::RT::IRenderer);
     NFE_CLASS_MEMBER(lightSamplingWeight);
@@ -270,6 +272,8 @@ const RayColor PathTracerMIS::RenderPixel(const Math::Ray& primaryRay, const Ren
 
     PathState pathState;
 
+    const ISceneObject* objectHit = nullptr;
+
     const float lightPickProbability = GetLightPickingProbability(param.scene, context);
 
     for (;;)
@@ -291,13 +295,14 @@ const RayColor PathTracerMIS::RenderPixel(const Math::Ray& primaryRay, const Ren
             param.scene.EvaluateIntersection(ray, hitPoint, context.time, shadingData.intersection);
         }
 
+        objectHit = param.scene.GetHitObject(hitPoint.objectId);
+
         // we hit a light directly
         if (hitPoint.subObjectId == NFE_LIGHT_OBJECT)
         {
-            const ISceneObject* sceneObject = param.scene.GetHitObject(hitPoint.objectId);
-            NFE_ASSERT(sceneObject->GetType() == ISceneObject::Type::Light);
-            const LightSceneObject* lightObject = static_cast<const LightSceneObject*>(sceneObject);
-            
+            const LightSceneObject* lightObject = RTTI::Cast<LightSceneObject>(objectHit);
+            NFE_ASSERT(lightObject);
+
             const RayColor lightColor = EvaluateLight(lightObject, ray, hitPoint.distance, shadingData.intersection, pathState, context, lightPickProbability);
             NFE_ASSERT(lightColor.IsValid());
             resultColor.MulAndAccumulate(throughput, lightColor);
@@ -386,6 +391,7 @@ const RayColor PathTracerMIS::RenderPixel(const Math::Ray& primaryRay, const Ren
             data.rayOrigin = ray.origin;
             data.rayDir = ray.dir;
             data.hitPoint = hitPoint;
+            data.objectHit = objectHit;
             data.shadingData = shadingData;
             data.throughput = throughput;
             data.bsdfEvent = lastSampledBsdfEvent;
@@ -407,6 +413,7 @@ const RayColor PathTracerMIS::RenderPixel(const Math::Ray& primaryRay, const Ren
         data.rayOrigin = ray.origin;
         data.rayDir = ray.dir;
         data.hitPoint = hitPoint;
+        data.objectHit = objectHit;
         data.shadingData = shadingData;
         data.throughput = throughput;
         context.pathDebugData->data.PushBack(data);

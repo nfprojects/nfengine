@@ -6,8 +6,10 @@
 #include "../nfEngine/nfCommon/Logger/Logger.hpp"
 #include "../nfEngine/Raytracer/Utils/Profiler.h"
 #include "../nfEngine/Raytracer/Rendering/Renderer.h"
+#include "../nfEngine/Raytracer/Rendering/Film.h"
 #include "../nfEngine/Raytracer/Traversal/TraversalContext.h"
 #include "../nfEngine/Raytracer/Textures/Texture.h"
+#include "../nfEngine/Raytracer/Scene/Object/SceneObject.h"
 
 #include "../nfEngineDeps/imgui/imgui.h"
 #include "../nfEngineDeps/imgui/imgui_sw.hpp"
@@ -36,7 +38,6 @@ DemoWindow::DemoWindow()
     , mTotalRenderTime(0.0)
     , mSelectedMaterial(nullptr)
     , mSelectedObject(nullptr)
-    , mSelectedLight(nullptr)
 {
     ResetFrame();
     ResetCounters();
@@ -200,7 +201,6 @@ void DemoWindow::SwitchScene(const String& sceneName)
 
     mSelectedMaterial = nullptr;
     mSelectedObject = nullptr;
-    mSelectedLight = nullptr;
 
     mRenderer = CreateRenderer(gOptions.rendererName, *mScene);
     mViewport->SetRenderer(mRenderer.Get());
@@ -256,16 +256,16 @@ void DemoWindow::OnMouseDown(MouseButton button, int x, int y)
     uint32 width, height;
     GetSize(width, height);
 
+    RenderingParams params = mRenderingParams;
+    params.antiAliasingSpread = 0.0f;
+
     auto renderingContext = MakeUniquePtr<RenderingContext>();
+    renderingContext->params = &params;
+    renderingContext->sampler.fallbackGenerator = &renderingContext->randomGenerator;
+    renderingContext->rendererContext = mRenderer->CreateContext();
 
     if (mFocalDistancePicking && button == MouseButton::Left)
     {
-        RenderingParams params = mRenderingParams;
-        params.antiAliasingSpread = 0.0f;
-
-        renderingContext->params = &params;
-        renderingContext->sampler.fallbackGenerator = &renderingContext->randomGenerator;
-
         const Vector4 coords((float)x / (float)width, 1.0f - (float)y / (float)height, 0.0f, 0.0f);
         const Ray ray = mCamera.GenerateRay(coords, *renderingContext);
 
@@ -291,15 +291,20 @@ void DemoWindow::OnMouseDown(MouseButton button, int x, int y)
     }
     else if (button == MouseButton::Left)
     {
-        RenderingParams params = mRenderingParams;
-        params.antiAliasingSpread = 0.0f;
-
-        renderingContext->params = &params;
-#ifndef RT_CONFIGURATION_FINAL
-        renderingContext->pathDebugData = &mPathDebugData;
-#endif
-        const Vector4 coords((float)x / (float)width, 1.0f - (float)y / (float)height, 0.0f, 0.0f);
+        const Vector4 coords((float)x / (float)width, 1.0f - (float)y / (float)height);
         const Ray ray = mCamera.GenerateRay(coords, *renderingContext);
+
+#ifndef RT_CONFIGURATION_FINAL
+        mPathDebugData.Clear();
+        renderingContext->pathDebugData = &mPathDebugData;
+
+        // render pixel in order to obtain path debug data
+        {
+            Film fakeFilm;
+            IRenderer::RenderParam renderParam = { *mScene, mCamera, 0, fakeFilm };
+            mRenderer->RenderPixel(ray, renderParam, *renderingContext);
+        }
+#endif
 
         HitPoint hitPoint;
         mScene->Traverse({ ray, hitPoint, *renderingContext });
@@ -309,18 +314,14 @@ void DemoWindow::OnMouseDown(MouseButton button, int x, int y)
             if (hitPoint.subObjectId == NFE_LIGHT_OBJECT)
             {
                 mSelectedMaterial = nullptr;
-                mSelectedObject = nullptr;
-                //mSelectedLight = const_cast<ILight*>(&(mScene->GetLightByObjectId(hitPoint.objectId)));
             }
             else // regular scene object
             {
                 IntersectionData intersectionData;
                 mScene->EvaluateIntersection(ray, hitPoint, renderingContext->time, intersectionData);
-
                 mSelectedMaterial = const_cast<Material*>(intersectionData.material);
-                mSelectedObject = const_cast<ITraceableSceneObject*>(mScene->GetHitObject(hitPoint.objectId));
-                mSelectedLight = nullptr;
             }
+            mSelectedObject = const_cast<ITraceableSceneObject*>(mScene->GetHitObject(hitPoint.objectId));
         }
     }
 }

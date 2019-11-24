@@ -4,13 +4,22 @@
 #include "../../Rendering/ShadingData.h"
 #include "../../../nfCommon/Math/Geometry.hpp"
 #include "../../../nfCommon/Math/Transcendental.hpp"
+#include "../../../nfCommon/Reflection/ReflectionClassDefine.hpp"
+
+
+NFE_DEFINE_POLYMORPHIC_CLASS(NFE::RT::SpotLight)
+{
+    NFE_CLASS_PARENT(NFE::RT::ILight);
+    NFE_CLASS_MEMBER(mAngle).Min(0.0f).Max(NFE_MATH_2PI - 0.001f); // TODO degrees
+}
+NFE_END_DEFINE_CLASS()
 
 namespace NFE {
 namespace RT {
 
 using namespace Math;
 
-SpotLight::SpotLight(const Vector4& color, const float angle)
+SpotLight::SpotLight(const Math::HdrColorRGB& color, const float angle)
     : ILight(color)
     , mAngle(angle)
 {
@@ -18,11 +27,6 @@ SpotLight::SpotLight(const Vector4& color, const float angle)
 
     mCosAngle = cosf(angle);
     mIsDelta = mCosAngle > CosEpsilon;
-}
-
-ILight::Type SpotLight::GetType() const
-{
-    return Type::Spot;
 }
 
 const Box SpotLight::GetBoundingBox() const

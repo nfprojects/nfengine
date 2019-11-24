@@ -12,9 +12,10 @@
 #include "Utils/BitUtils.hpp"
 #include "Utils/InputStream.hpp"
 #include "Containers/DynArray.hpp"
+#include "Reflection/ReflectionClassDefine.hpp"
 
 
-NFE_BEGIN_DEFINE_POLYMORPHIC_CLASS(NFE::Common::ImageBMP)
+NFE_DEFINE_POLYMORPHIC_CLASS(NFE::Common::ImageBMP)
     NFE_CLASS_PARENT(NFE::Common::ImageType)
 NFE_END_DEFINE_CLASS()
 

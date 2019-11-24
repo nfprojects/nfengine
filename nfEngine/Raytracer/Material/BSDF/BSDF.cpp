@@ -1,7 +1,9 @@
 #include "PCH.h"
 #include "BSDF.h"
+#include "../nfCommon/Reflection/ReflectionClassDefine.hpp"
 
-NFE_BEGIN_DEFINE_POLYMORPHIC_CLASS(NFE::RT::BSDF)
+
+NFE_DEFINE_POLYMORPHIC_CLASS(NFE::RT::BSDF)
 NFE_END_DEFINE_CLASS()
 
 namespace NFE {

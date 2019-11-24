@@ -556,8 +556,8 @@ static bool ParseLight(const rapidjson::Value& value, Scene& scene, const Textur
         return false;
     }
 
-    Vector4 lightColor;
-    if (!TryParseVector3(value, "color", false, lightColor))
+    HdrColorRGB lightColor;
+    if (!TryParseHdrColorRGB(value, "color", false, lightColor))
     {
         return false;
     }

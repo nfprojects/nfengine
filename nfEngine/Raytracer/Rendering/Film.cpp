@@ -9,12 +9,20 @@ namespace RT {
 
 using namespace Math;
 
+Film::Film()
+    : mFilmSize(Vector4::Zero())
+    , mSum(nullptr)
+    , mSecondarySum(nullptr)
+    , mWidth(0)
+    , mHeight(0)
+{}
+
 Film::Film(Bitmap& sum, Bitmap* secondarySum)
     : mFilmSize((float)sum.GetWidth(), (float)sum.GetHeight())
-    , mSum(sum)
+    , mSum(&sum)
     , mSecondarySum(secondarySum) 
-    , mWidth(mSum.GetWidth())
-    , mHeight(mSum.GetHeight())
+    , mWidth(sum.GetWidth())
+    , mHeight(sum.GetHeight())
 {
     if (mSecondarySum)
     {
@@ -31,7 +39,12 @@ NFE_FORCE_INLINE static void AccumulateToFloat3(Float3& target, const Vector4& v
 
 void Film::AccumulateColor(const uint32 x, const uint32 y, const Vector4& sampleColor)
 {
-    AccumulateToFloat3(mSum.GetPixelRef<Float3>(x, y), sampleColor);
+    if (!mSum)
+    {
+        return;
+    }
+
+    AccumulateToFloat3(mSum->GetPixelRef<Float3>(x, y), sampleColor);
 
     if (mSecondarySum)
     {
@@ -42,6 +55,11 @@ void Film::AccumulateColor(const uint32 x, const uint32 y, const Vector4& sample
 NFE_FORCE_NOINLINE
 void Film::AccumulateColor(const Vector4& pos, const Vector4& sampleColor, Random& randomGenerator)
 {
+    if (!mSum)
+    {
+        return;
+    }
+
     const Vector4 filmCoords = pos * mFilmSize + Vector4(0.0f, 0.5f);
     VectorInt4 intFilmCoords = VectorInt4::Convert(filmCoords);
 
@@ -68,7 +86,7 @@ void Film::AccumulateColor(const Vector4& pos, const Vector4& sampleColor, Rando
 
     if (uint32(x) < mWidth && uint32(y) < mHeight)
     {
-        AccumulateToFloat3(mSum.GetPixelRef<Float3>(x, y), sampleColor);
+        AccumulateToFloat3(mSum->GetPixelRef<Float3>(x, y), sampleColor);
 
         if (mSecondarySum)
         {

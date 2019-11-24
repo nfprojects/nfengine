@@ -9,10 +9,10 @@
 #include "EventSystem.hpp"
 #include "../Events/Event_Input.hpp"
 #include "../Scene.hpp"
+#include "nfCommon/Reflection/ReflectionClassDefine.hpp"
 
 
-
-NFE_BEGIN_DEFINE_POLYMORPHIC_CLASS(NFE::Scene::InputSystem)
+NFE_DEFINE_POLYMORPHIC_CLASS(NFE::Scene::InputSystem)
     NFE_CLASS_PARENT(NFE::Scene::ISystem)
 NFE_END_DEFINE_CLASS()
 

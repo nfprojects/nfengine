@@ -11,6 +11,10 @@ namespace Math {
  */
 struct Float3
 {
+    NFE_DECLARE_CLASS(Float3);
+
+public:
+
     union
     {
         float f[3];

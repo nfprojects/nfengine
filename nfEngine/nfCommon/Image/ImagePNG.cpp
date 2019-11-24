@@ -10,9 +10,10 @@
 #include "libpng/png.h"
 #include "Logger/Logger.hpp"
 #include "Utils/InputStream.hpp"
+#include "Reflection/ReflectionClassDefine.hpp"
 
 
-NFE_BEGIN_DEFINE_POLYMORPHIC_CLASS(NFE::Common::ImagePNG)
+NFE_DEFINE_POLYMORPHIC_CLASS(NFE::Common::ImagePNG)
     NFE_CLASS_PARENT(NFE::Common::ImageType)
 NFE_END_DEFINE_CLASS()
 

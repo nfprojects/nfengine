@@ -1,7 +1,8 @@
 #include "PCH.hpp"
 #include "HdrColor.hpp"
+#include "Reflection/ReflectionClassDefine.hpp"
 
-NFE_BEGIN_DEFINE_CLASS(NFE::Math::HdrColorRGB)
+NFE_DEFINE_CLASS(NFE::Math::HdrColorRGB)
 {
     NFE_CLASS_MEMBER(r);
     NFE_CLASS_MEMBER(g);

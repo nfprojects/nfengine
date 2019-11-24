@@ -1,14 +1,21 @@
 #include "PCH.h"
 #include "Shape.h"
 #include "Traversal/TraversalContext.h"
+#include "../nfCommon/Reflection/ReflectionClassDefine.hpp"
+
+
+NFE_DEFINE_POLYMORPHIC_CLASS(NFE::RT::IShape)
+{
+}
+NFE_END_DEFINE_CLASS()
+
 
 namespace NFE {
 namespace RT {
 
 using namespace Math;
 
-IShape::IShape()
-{}
+IShape::IShape() = default;
 
 IShape::~IShape() = default;
 

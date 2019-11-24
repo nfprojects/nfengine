@@ -29,6 +29,10 @@ namespace Math {
  */
 struct Float4
 {
+    NFE_DECLARE_CLASS(Float4);
+
+public:
+
     union
     {
         float f[4];

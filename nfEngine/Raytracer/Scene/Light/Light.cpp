@@ -1,23 +1,29 @@
 #include "PCH.h"
 #include "Light.h"
+#include "../nfCommon/Reflection/ReflectionClassDefine.hpp"
+
+
+NFE_DEFINE_POLYMORPHIC_CLASS(NFE::RT::ILight)
+{
+    NFE_CLASS_MEMBER(mColor);
+}
+NFE_END_DEFINE_CLASS()
 
 namespace NFE {
 namespace RT {
 
 using namespace Math;
 
-ILight::ILight(const Vector4& color)
+ILight::ILight(const Math::HdrColorRGB& color)
 {
     // TODO generic spectrum
     NFE_ASSERT(color.IsValid());
-    NFE_ASSERT((color >= Vector4::Zero()).All());
-    mColor.rgbValues = color;
+    mColor = color;
 }
 
-void ILight::SetColor(const Spectrum& color)
+void ILight::SetColor(const Math::HdrColorRGB& color)
 {
-    NFE_ASSERT((color.rgbValues >= Vector4::Zero()).All(), "Invalid color");
-    NFE_ASSERT(color.rgbValues.IsValid(), "Invalid color");
+    NFE_ASSERT(color.IsValid());
     mColor = color;
 }
 

@@ -7,12 +7,13 @@ namespace RT {
 
 class DirectionalLight : public ILight
 {
+    NFE_DECLARE_POLYMORPHIC_CLASS(DirectionalLight);
+
 public:
     NFE_RAYTRACER_API DirectionalLight() = default;
 
-    NFE_RAYTRACER_API DirectionalLight(const Math::Vector4& color, const float angle = 0.2f);
+    NFE_RAYTRACER_API DirectionalLight(const Math::HdrColorRGB& color, const float angle = 0.2f);
 
-    virtual Type GetType() const override;
     virtual const Math::Box GetBoundingBox() const override;
     virtual bool TestRayHit(const Math::Ray& ray, float& outDistance) const override;
     virtual const RayColor Illuminate(const IlluminateParam& param, IlluminateResult& outResult) const override;

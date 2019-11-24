@@ -7,8 +7,9 @@
 #include "Traversal/TraversalContext.h"
 #include "Rendering/Film.h"
 #include "Rendering/RenderingContext.h"
+#include "../nfCommon/Reflection/ReflectionClassDefine.hpp"
 
-NFE_BEGIN_DEFINE_POLYMORPHIC_CLASS(NFE::RT::DebugRenderer)
+NFE_DEFINE_POLYMORPHIC_CLASS(NFE::RT::DebugRenderer)
 {
     NFE_CLASS_PARENT(NFE::RT::IRenderer);
     NFE_CLASS_MEMBER(renderingMode);

@@ -7,8 +7,10 @@ namespace RT {
 
 class SphereShape : public IShape
 {
+    NFE_DECLARE_POLYMORPHIC_CLASS(SphereShape);
+
 public:
-    NFE_RAYTRACER_API SphereShape(const float radius);
+    NFE_RAYTRACER_API SphereShape(const float radius = 1.0f);
 
 private:
     virtual const Math::Box GetBoundingBox() const override;
@@ -18,6 +20,8 @@ private:
     virtual bool Sample(const Math::Vector4& ref, const Math::Float3& u, ShapeSampleResult& result) const override;
     virtual float Pdf(const Math::Vector4& ref, const Math::Vector4& point) const override;
     virtual void EvaluateIntersection(const HitPoint& hitPoint, IntersectionData& outIntersectionData) const override;
+
+    virtual bool OnPropertyChanged(const Common::StringView propertyName) override;
 
     double mRadiusD;
     float mRadius;

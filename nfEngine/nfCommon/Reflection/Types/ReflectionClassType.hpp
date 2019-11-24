@@ -105,6 +105,34 @@ struct ClassTypeInfo : public TypeInfo
     { }
 };
 
+/**
+ * Template class used to generate Type class instances.
+ * This template will be specialized in NFE_DECLARE_TYPE macro.
+ */
+template <typename T>
+class TypeCreator
+{
+public:
+    using TypeClass = ClassType;
+    using TypeInfoClass = ClassTypeInfo;
+
+    static Type* CreateType()
+    {
+        ClassTypeInfo typeInfo;
+        typeInfo.kind = TypeKind::SimpleClass; // can be overridden in FinishInitialization
+        typeInfo.size = sizeof(T);
+        typeInfo.alignment = std::alignment_of_v<T>;
+        typeInfo.constructor = GetObjectConstructor<T>();
+        typeInfo.arrayConstructor = GetArrayConstructor<T>();
+
+        TypeCreator creator;
+        creator.FinishInitialization(typeInfo);
+        return new ClassType(typeInfo);
+    }
+
+    void FinishInitialization(TypeInfoClass& typeInfo);
+};
+
 
 } // namespace RTTI
 } // namespace NFE

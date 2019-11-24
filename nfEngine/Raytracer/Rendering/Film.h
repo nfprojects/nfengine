@@ -1,7 +1,7 @@
 #pragma once
 
 #include "../Raytracer.h"
-#include "../nfCommon/Math/Vector4.hpp"
+#include "../../nfCommon/Math/Vector4.hpp"
 
 namespace NFE {
 namespace RT {
@@ -9,7 +9,8 @@ namespace RT {
 class Film
 {
 public:
-    Film(Bitmap& sum, Bitmap* secondarySum = nullptr);
+    NFE_RAYTRACER_API Film();
+    NFE_RAYTRACER_API Film(Bitmap& sum, Bitmap* secondarySum = nullptr);
 
     NFE_FORCE_INLINE uint32 GetWidth() const
     {
@@ -27,7 +28,7 @@ public:
 private:
     Math::Vector4 mFilmSize;
 
-    Bitmap& mSum;
+    Bitmap* mSum;
     Bitmap* mSecondarySum;
 
     const uint32 mWidth;

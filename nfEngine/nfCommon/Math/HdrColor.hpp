@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Vector4.hpp"
-#include "../Reflection/ReflectionClassMacros.hpp"
+#include "../Reflection/ReflectionClassDeclare.hpp"
 
 namespace NFE {
 namespace Math {
@@ -17,6 +17,7 @@ public:
 
     NFE_FORCE_INLINE constexpr HdrColorRGB() : r(0.0f), g(0.0f), b(0.0f) { }
     NFE_FORCE_INLINE constexpr HdrColorRGB(float r, float g, float b) : r(r), g(g), b(b) { }
+    NFE_FORCE_INLINE constexpr explicit HdrColorRGB(float intensity) : r(intensity), g(intensity), b(intensity) { }
 
     NFE_FORCE_INLINE const Vector4 ToVector4() const
     {

@@ -217,7 +217,8 @@
     </ClCompile>
     <ClCompile Include="TestCases\Reflection\ReflectionEnumTest.cpp" />
     <ClCompile Include="TestCases\Reflection\ReflectionFundamentalTypesTest.cpp" />
-    <ClCompile Include="TestCases\Reflection\ReflectionPointersTest.cpp" />
+    <ClCompile Include="TestCases\Reflection\ReflectionSharedPtrTest.cpp" />
+    <ClCompile Include="TestCases\Reflection\ReflectionUniquePtrTest.cpp" />
     <ClCompile Include="TestCases\Reflection\ReflectionPolymorphicClassTest.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</ExcludedFromBuild>

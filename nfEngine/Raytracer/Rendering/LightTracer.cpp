@@ -9,8 +9,9 @@
 #include "Scene/Object/SceneObject_Light.h"
 #include "Material/Material.h"
 #include "Traversal/TraversalContext.h"
+#include "../nfCommon/Reflection/ReflectionClassDefine.hpp"
 
-NFE_BEGIN_DEFINE_POLYMORPHIC_CLASS(NFE::RT::LightTracer)
+NFE_DEFINE_POLYMORPHIC_CLASS(NFE::RT::LightTracer)
     NFE_CLASS_PARENT(NFE::RT::IRenderer)
 NFE_END_DEFINE_CLASS()
 

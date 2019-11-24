@@ -4,11 +4,14 @@
 #include "nfCommon/Containers/DynArray.hpp"
 
 // TODO encapsulate these into one common header
-#include "nfCommon/Reflection/ReflectionClassMacros.hpp"
+#include "nfCommon/Reflection/ReflectionClassDeclare.hpp"
 #include "nfCommon/Reflection/ReflectionEnumMacros.hpp"
+#include "nfCommon/Reflection/Object.hpp"
+#include "nfCommon/Reflection/Types/ReflectionClassType.hpp"
 #include "nfCommon/Reflection/Types/ReflectionFundamentalType.hpp"
 #include "nfCommon/Reflection/Types/ReflectionDynArrayType.hpp"
 #include "nfCommon/Reflection/Types/ReflectionUniquePtrType.hpp"
+#include "nfCommon/Reflection/Types/ReflectionSharedPtrType.hpp"
 #include "nfCommon/Reflection/Types/ReflectionNativeArrayType.hpp"
 #include "nfCommon/Reflection/Types/ReflectionStringType.hpp"
 

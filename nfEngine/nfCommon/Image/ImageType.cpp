@@ -7,9 +7,10 @@
 #include "PCH.hpp"
 #include "ImageType.hpp"
 #include "Image.hpp"
+#include "Reflection/ReflectionClassDefine.hpp"
 
 
-NFE_BEGIN_DEFINE_POLYMORPHIC_CLASS(NFE::Common::ImageType)
+NFE_DEFINE_POLYMORPHIC_CLASS(NFE::Common::ImageType)
 NFE_END_DEFINE_CLASS()
 
 namespace NFE {

@@ -9,7 +9,7 @@
 #include "../../nfCommon/Containers/String.hpp"
 #include "../../nfCommon/Containers/SharedPtr.hpp"
 #include "../../nfCommon/Memory/Aligned.hpp"
-#include "../../nfCommon/Reflection/ReflectionClassMacros.hpp"
+#include "../../nfCommon/Reflection/ReflectionClassDeclare.hpp"
 #include "../../nfCommon/Reflection/Types/ReflectionUniquePtrType.hpp"
 
 namespace NFE {

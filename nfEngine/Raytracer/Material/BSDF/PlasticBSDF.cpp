@@ -1,9 +1,10 @@
 #include "PCH.h"
 #include "PlasticBSDF.h"
-#include "../../../nfCommon/Math/SamplingHelpers.hpp"
-#include "../../../nfCommon/Math/Utils.hpp"
+#include "../nfCommon/Math/SamplingHelpers.hpp"
+#include "../nfCommon/Math/Utils.hpp"
+#include "../nfCommon/Reflection/ReflectionClassDefine.hpp"
 
-NFE_BEGIN_DEFINE_POLYMORPHIC_CLASS(NFE::RT::PlasticBSDF)
+NFE_DEFINE_POLYMORPHIC_CLASS(NFE::RT::PlasticBSDF)
 NFE_CLASS_PARENT(NFE::RT::BSDF);
 NFE_END_DEFINE_CLASS()
 

@@ -7,8 +7,9 @@
 #pragma once
 
 #include "Object.hpp"
+#include "ReflectionTypeResolver.hpp"
+#include "Types/ReflectionClassType.hpp"
 #include "Types/ReflectionFundamentalType.hpp"
-#include "ReflectionTypeRegistry.hpp"
 
 #include <type_traits>
 
@@ -35,36 +36,11 @@ NFE_FORCE_INLINE constexpr size_t OffsetOf(Member Class::*member)
 
 
 /**
- * Declare occurrence of a non-polymorphic class. Must be placed inside class declaration.
- */
-#define NFE_DECLARE_CLASS(T)                                                                \
-    friend class NFE::RTTI::TypeCreator<T>;                                                 \
-    private:                                                                                \
-        static const char* _GetName();                                                      \
-        static bool _InitType(NFE::RTTI::ClassTypeInfo& typeInfo);
-
-
-/**
- * Declare occurrence of a polymorphic class. Must be placed inside class declaration.
- */
-#define NFE_DECLARE_POLYMORPHIC_CLASS(T)                                                    \
-    friend class NFE::RTTI::TypeCreator<T>;                                                 \
-    private:                                                                                \
-        static const char* _GetName();                                                      \
-        static bool _InitType(NFE::RTTI::ClassTypeInfo& typeInfo);                          \
-    public:                                                                                 \
-        virtual const NFE::RTTI::Type* GetDynamicType() const;
-
-
-//////////////////////////////////////////////////////////////////////////
-
-
-/**
  * Begin definition of a class type.
  * @note    Must be ended with NFE_END_DEFINE_CLASS.
  * @note    Must be used outside any namespace.
  */
-#define NFE_BEGIN_DEFINE_CLASS(T)                                                                       \
+#define NFE_DEFINE_CLASS(T)                                                                             \
     static_assert(std::is_class_v<T>, "Given type '" #T "' is not a class");                            \
     static_assert(!std::is_polymorphic_v<T>, "Given type '" #T "' is polymorphic");                     \
     namespace NFE { namespace RTTI {                                                                    \
@@ -87,7 +63,7 @@ NFE_FORCE_INLINE constexpr size_t OffsetOf(Member Class::*member)
  * @note    Must be ended with NFE_END_DEFINE_CLASS.
  * @note    Must be used outside any namespace.
  */
-#define NFE_BEGIN_DEFINE_POLYMORPHIC_CLASS(T)                                                                   \
+#define NFE_DEFINE_POLYMORPHIC_CLASS(T)                                                                         \
     static_assert(std::is_class_v<T>, "Given type '" #T "' is not a class");                                    \
     static_assert(std::is_base_of_v<NFE::IObject, T>, "Polymorphic type must inherit from IObject");            \
     static_assert(std::is_polymorphic_v<T>, "Given type '" #T "' is not polymorphic");                          \

@@ -1,15 +1,17 @@
 #include "PCH.h"
 #include "Scene.h"
 #include "Light/BackgroundLight.h"
+#include "Object/SceneObject_Shape.h"
 #include "Object/SceneObject_Light.h"
 #include "Object/SceneObject_Decal.h"
 #include "Rendering/ShadingData.h"
 #include "BVH/BVHBuilder.h"
 #include "Material/Material.h"
 #include "Utils/Profiler.h"
-
 #include "Traversal/Traversal_Single.h"
 #include "Traversal/Traversal_Packet.h"
+#include "../nfCommon/Reflection/ReflectionUtils.hpp"
+#include "../nfCommon/Reflection/Types/ReflectionClassType.hpp"
 
 namespace NFE {
 namespace RT {
@@ -27,9 +29,9 @@ Scene& Scene::operator = (Scene&&) = default;
 
 void Scene::AddObject(SceneObjectPtr object)
 {
-    if (object->GetType() == ISceneObject::Type::Light)
+    if (const LightSceneObject* lightObject = RTTI::Cast<LightSceneObject>(object.Get()))
     {
-        mLights.PushBack(static_cast<const LightSceneObject*>(object.Get()));
+        mLights.PushBack(lightObject);
     }
 
     mAllObjects.PushBack(std::move(object));
@@ -44,9 +46,8 @@ bool Scene::BuildBVH()
     mGlobalLights.Clear();
     for (const auto& object : mAllObjects)
     {
-        if (object->GetType() == ISceneObject::Type::Light)
+        if (const LightSceneObject* lightObject = RTTI::Cast<LightSceneObject>(object.Get()))
         {
-            const LightSceneObject* lightObject = static_cast<const LightSceneObject*>(object.Get());
             mLights.PushBack(lightObject);
 
             const ILight& light = lightObject->GetLight();
@@ -60,13 +61,12 @@ bool Scene::BuildBVH()
                 mGlobalLights.PushBack(lightObject);
             }
         }
-        else if (object->GetType() == ISceneObject::Type::Shape)
+        else if (const ShapeSceneObject* shapeObject = RTTI::Cast<ShapeSceneObject>(object.Get()))
         {
-            mTraceableObjects.PushBack(static_cast<const ITraceableSceneObject*>(object.Get()));
+            mTraceableObjects.PushBack(shapeObject);
         }
-        else if (object->GetType() == ISceneObject::Type::Decal)
+        else if (const DecalSceneObject* decalObject = RTTI::Cast<DecalSceneObject>(object.Get()))
         {
-            const DecalSceneObject* decalObject = static_cast<const DecalSceneObject*>(object.Get());
             mDecals.PushBack(decalObject);
         }
     }

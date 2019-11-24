@@ -4,6 +4,17 @@
 #include "../Light/AreaLight.h"
 #include "../../Shapes/Shape.h"
 #include "Traversal/TraversalContext.h"
+#include "../nfCommon/Reflection/ReflectionClassDefine.hpp"
+#include "../nfCommon/Reflection/Types/ReflectionUniquePtrType.hpp"
+
+
+NFE_DEFINE_POLYMORPHIC_CLASS(NFE::RT::LightSceneObject)
+{
+    NFE_CLASS_PARENT(NFE::RT::ISceneObject);
+    NFE_CLASS_MEMBER(mLight).NonNull();
+}
+NFE_END_DEFINE_CLASS()
+
 
 namespace NFE {
 namespace RT {
@@ -13,11 +24,6 @@ using namespace Math;
 LightSceneObject::LightSceneObject(LightPtr light)
     : mLight(std::move(light))
 { }
-
-ISceneObject::Type LightSceneObject::GetType() const
-{
-    return Type::Light;
-}
 
 Box LightSceneObject::GetBoundingBox() const
 {
@@ -63,7 +69,7 @@ void LightSceneObject::Traverse(const PacketTraversalContext& context, const uin
 
 void LightSceneObject::EvaluateIntersection(const HitPoint& hitPoint, IntersectionData& outIntersectionData) const
 {
-    if (mLight->GetType() == ILight::Type::Area)
+    if (mLight->GetDynamicType() == RTTI::GetType<AreaLight>())
     {
         const AreaLight& areaLight = static_cast<const AreaLight&>(*mLight);
         areaLight.GetShape()->EvaluateIntersection(hitPoint, outIntersectionData);

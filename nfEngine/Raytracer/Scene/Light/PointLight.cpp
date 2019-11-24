@@ -3,20 +3,23 @@
 #include "../../Rendering/RenderingContext.h"
 #include "../../Rendering/ShadingData.h"
 #include "../../../nfCommon/Math/SamplingHelpers.hpp"
+#include "../../../nfCommon/Reflection/ReflectionClassDefine.hpp"
+
+
+NFE_DEFINE_POLYMORPHIC_CLASS(NFE::RT::PointLight)
+{
+    NFE_CLASS_PARENT(NFE::RT::ILight);
+}
+NFE_END_DEFINE_CLASS()
 
 namespace NFE {
 namespace RT {
 
 using namespace Math;
 
-PointLight::PointLight(const Math::Vector4& color)
+PointLight::PointLight(const Math::HdrColorRGB& color)
     : ILight(color)
 {
-}
-
-ILight::Type PointLight::GetType() const
-{
-    return Type::Point;
 }
 
 const Box PointLight::GetBoundingBox() const

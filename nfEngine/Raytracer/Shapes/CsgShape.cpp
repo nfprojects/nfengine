@@ -3,9 +3,21 @@
 #include "Rendering/ShadingData.h"
 #include "Traversal/TraversalContext.h"
 #include "../nfCommon/Math/Geometry.hpp"
+#include "../nfCommon/Reflection/Types/ReflectionSharedPtrType.hpp"
+#include "../nfCommon/Reflection/ReflectionClassDefine.hpp"
 
 #include "BoxShape.h"
 #include "SphereShape.h"
+
+
+NFE_DEFINE_POLYMORPHIC_CLASS(NFE::RT::CsgShape)
+{
+    NFE_CLASS_PARENT(NFE::RT::IShape);
+    NFE_CLASS_MEMBER(mShapeA);
+    NFE_CLASS_MEMBER(mShapeB);
+}
+NFE_END_DEFINE_CLASS()
+
 
 namespace NFE {
 namespace RT {

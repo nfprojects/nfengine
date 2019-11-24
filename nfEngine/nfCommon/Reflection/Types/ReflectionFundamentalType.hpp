@@ -81,7 +81,7 @@ public:
         public:                                                                         \
             using TypeClass = FundamentalType<T>;                                       \
             using TypeInfoClass = TypeInfo;                                             \
-            static TypePtr CreateType()                                                 \
+            static Type* CreateType()                                                   \
             {                                                                           \
                 TypeInfo typeInfo;                                                      \
                 typeInfo.kind = TypeKind::Fundamental;                                  \
@@ -90,7 +90,7 @@ public:
                 typeInfo.alignment = alignof(T);                                        \
                 typeInfo.constructor = []() { return new T(); };                        \
                 typeInfo.arrayConstructor = [](uint32 num) { return new T[num](); };    \
-                return TypePtr(new FundamentalType<T>(typeInfo));                       \
+                return new FundamentalType<T>(typeInfo);                                \
             }                                                                           \
         };                                                                              \
     } } /* namespace NFE::RTTI */

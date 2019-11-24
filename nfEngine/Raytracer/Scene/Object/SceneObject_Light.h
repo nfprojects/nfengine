@@ -9,10 +9,10 @@ using LightPtr = Common::UniquePtr<ILight>;
 
 class LightSceneObject : public ITraceableSceneObject
 {
+    NFE_DECLARE_POLYMORPHIC_CLASS(LightSceneObject);
+
 public:
     NFE_RAYTRACER_API explicit LightSceneObject(LightPtr light);
-
-    virtual Type GetType() const override;
 
     NFE_FORCE_INLINE const ILight& GetLight() const { return *mLight; }
 

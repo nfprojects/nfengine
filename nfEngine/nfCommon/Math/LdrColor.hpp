@@ -1,7 +1,7 @@
 #pragma once
 
 #include "../nfCommon.hpp"
-#include "../Reflection/ReflectionClassMacros.hpp"
+#include "../Reflection/ReflectionClassDeclare.hpp"
 
 namespace NFE {
 namespace Math {

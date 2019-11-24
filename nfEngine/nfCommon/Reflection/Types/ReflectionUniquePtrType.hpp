@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include "ReflectionType.hpp"
+#include "ReflectionPointerType.hpp"
 #include "../../Config/Config.hpp"
 #include "../../Config/ConfigValue.hpp"
 #include "../../Containers/UniquePtr.hpp"
@@ -14,41 +14,14 @@
 namespace NFE {
 namespace RTTI {
 
-/**
- * Type information for UniquePtr<T> types.
- */
-class NFCOMMON_API UniquePtrType : public Type
-{
-    NFE_MAKE_NONCOPYABLE(UniquePtrType)
-
-public:
-    NFE_FORCE_INLINE const Type* GetPointedType() const { return mPointedType; }
-
-    // get data pointed by the unique pointer
-    virtual void* GetPointedData(const void* uniquePtrObject) const = 0;
-
-    // get object type under the pointer
-    virtual const Type* GetPointedType(const void* uniquePtrObject) const = 0;
-
-    // set object under the pointer
-    virtual void Reset(void* uniquePtrObject, const Type* newDataType = nullptr) const = 0;
-
-    virtual bool Compare(const void* objectA, const void* objectB) const override;
-
-protected:
-    NFE_FORCE_INLINE UniquePtrType(const TypeInfo& info) : Type(info) { }
-
-    const Type* mPointedType;
-};
-
 template<typename T>
-class UniquePtrTypeImpl final : public UniquePtrType
+class UniquePtrTypeImpl final : public PointerType
 {
 public:
     using ObjectType = Common::UniquePtr<T>;
 
-    NFE_FORCE_INLINE UniquePtrTypeImpl(const TypeInfo& info)
-        : UniquePtrType(info)
+    UniquePtrTypeImpl(const TypeInfo& info)
+        : PointerType(info)
     {
         mPointedType = GetType<T>();
         NFE_ASSERT(mPointedType, "Invalid pointed type");
@@ -155,7 +128,7 @@ public:
             if (typeName)
             {
                 // get type from name
-                targetType = TypeRegistry::GetInstance().GetExistingType(Common::StringView(typeName));
+                targetType = ITypeRegistry::GetInstance().GetExistingType(typeName);
                 if (!targetType)
                 {
                     NFE_LOG_ERROR("Type not found: '%s'", typeName);
@@ -216,7 +189,7 @@ public:
     using TypeClass = UniquePtrTypeImpl<T>;
     using ObjectType = Common::UniquePtr<T>;
 
-    static TypePtr CreateType()
+    static Type* CreateType()
     {
         const Type* templateArgumentType = GetType<T>();
 
@@ -230,7 +203,7 @@ public:
         typeInfo.constructor = []() { return new ObjectType; };
         typeInfo.arrayConstructor = [](uint32 num) { return new ObjectType[num]; };
 
-        return TypePtr(new UniquePtrTypeImpl<T>(typeInfo));
+        return new UniquePtrTypeImpl<T>(typeInfo);
     }
 };
 

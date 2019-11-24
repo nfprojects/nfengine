@@ -11,13 +11,14 @@ using TexturePtr = Common::SharedPtr<ITexture>;
 
 class BackgroundLight : public ILight
 {
+    NFE_DECLARE_POLYMORPHIC_CLASS(BackgroundLight);
+
 public:
     NFE_RAYTRACER_API BackgroundLight();
-    NFE_RAYTRACER_API BackgroundLight(const Math::Vector4& color);
+    NFE_RAYTRACER_API BackgroundLight(const Math::HdrColorRGB& color);
 
     TexturePtr mTexture = nullptr;
 
-    virtual Type GetType() const override;
     virtual const Math::Box GetBoundingBox() const override;
     virtual bool TestRayHit(const Math::Ray& ray, float& outDistance) const override;
     virtual const RayColor Illuminate(const IlluminateParam& param, IlluminateResult& outResult) const override;

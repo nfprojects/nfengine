@@ -243,15 +243,6 @@ TEST(ReflectionClassTest, DynamicCast_FromChild)
 
     const TestChildClassA* pointerA = RTTI::Cast<TestChildClassA>(pointer.Get());
     EXPECT_EQ(pointerA, pointer.Get());
-
-    const TestChildClassB* pointerB = RTTI::Cast<TestChildClassB>(pointer.Get());
-    EXPECT_EQ(pointerB, nullptr);
-
-    const TestAbstractClass* pointerAbstract = RTTI::Cast<TestAbstractClass>(pointer.Get());
-    EXPECT_EQ(pointerAbstract, nullptr);
-
-    const TestClassWithFundamentalMembers* pointerNonCompatible = RTTI::Cast<TestClassWithFundamentalMembers>(pointer.Get());
-    EXPECT_EQ(pointerNonCompatible, nullptr);
 }
 
 TEST(ReflectionClassTest, DynamicCast_FromBase)
@@ -266,12 +257,6 @@ TEST(ReflectionClassTest, DynamicCast_FromBase)
 
     const TestChildClassB* pointerB = RTTI::Cast<TestChildClassB>(pointer.Get());
     EXPECT_EQ(pointerB, nullptr);
-
-    const TestAbstractClass* pointerAbstract = RTTI::Cast<TestAbstractClass>(pointer.Get());
-    EXPECT_EQ(pointerAbstract, nullptr);
-
-    const TestClassWithFundamentalMembers* pointerNonCompatible = RTTI::Cast<TestClassWithFundamentalMembers>(pointer.Get());
-    EXPECT_EQ(pointerNonCompatible, nullptr);
 }
 
 TEST(ReflectionClassTest, DynamicCast_FromChild_Nullptr)
@@ -280,12 +265,6 @@ TEST(ReflectionClassTest, DynamicCast_FromChild_Nullptr)
 
     const TestBaseClass* pointerBase = RTTI::Cast<TestBaseClass>(pointer);
     EXPECT_EQ(pointerBase, nullptr);
-
-    const TestAbstractClass* pointerAbstract = RTTI::Cast<TestAbstractClass>(pointer);
-    EXPECT_EQ(pointerAbstract, nullptr);
-
-    const TestClassWithFundamentalMembers* pointerNonCompatible = RTTI::Cast<TestClassWithFundamentalMembers>(pointer);
-    EXPECT_EQ(pointerNonCompatible, nullptr);
 }
 
 TEST(ReflectionClassTest, DynamicCast_FromBase_Nullptr)
@@ -294,10 +273,4 @@ TEST(ReflectionClassTest, DynamicCast_FromBase_Nullptr)
 
     const TestBaseClass* pointerBase = RTTI::Cast<TestBaseClass>(pointer);
     EXPECT_EQ(pointerBase, nullptr);
-
-    const TestAbstractClass* pointerAbstract = RTTI::Cast<TestAbstractClass>(pointer);
-    EXPECT_EQ(pointerAbstract, nullptr);
-
-    const TestClassWithFundamentalMembers* pointerNonCompatible = RTTI::Cast<TestClassWithFundamentalMembers>(pointer);
-    EXPECT_EQ(pointerNonCompatible, nullptr);
 }

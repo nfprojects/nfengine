@@ -10,8 +10,16 @@
 
 #include "../nfCommon/Math/Geometry.hpp"
 #include "../nfCommon/Math/Simd8Geometry.hpp"
-
 #include "../nfCommon/Logger/Logger.hpp"
+#include "../nfCommon/Reflection/ReflectionClassDefine.hpp"
+
+
+NFE_DEFINE_POLYMORPHIC_CLASS(NFE::RT::MeshShape)
+{
+    NFE_CLASS_PARENT(NFE::RT::IShape);
+    // TODO resource path
+}
+NFE_END_DEFINE_CLASS()
 
 
 namespace NFE {

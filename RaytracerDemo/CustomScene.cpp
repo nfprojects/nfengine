@@ -182,7 +182,7 @@ bool LoadCustomScene(Scene& scene, Camera& camera)
     */
 
     {
-        const Vector4 lightColor(100.0f, 100.0f, 100.0f);
+        const HdrColorRGB lightColor(100.0f, 100.0f, 100.0f);
         auto background = MakeUniquePtr<PointLight>(lightColor);
         auto lightObject = MakeUniquePtr<LightSceneObject>(std::move(background));
         lightObject->SetTransform(Matrix4::MakeTranslation(Vector4(5.0f, 5.0f, 5.0f)));
@@ -190,7 +190,7 @@ bool LoadCustomScene(Scene& scene, Camera& camera)
     }
 
     //{
-    //    const Vector4 lightColor(2.0f, 2.0f, 2.0f);
+    //    const HdrColorRGB lightColor(2.0f, 2.0f, 2.0f);
     //    auto background = MakeUniquePtr<BackgroundLight>(lightColor);
     //    background->mTexture = backgroundTexture;
     //    auto lightObject = MakeUniquePtr<LightSceneObject>(std::move(background));

@@ -9,8 +9,10 @@
 #include "Material/Material.h"
 #include "Traversal/TraversalContext.h"
 #include "Sampling/GenericSampler.h"
+#include "../nfCommon/Reflection/ReflectionUtils.hpp"
+#include "../nfCommon/Reflection/ReflectionClassDefine.hpp"
 
-NFE_BEGIN_DEFINE_POLYMORPHIC_CLASS(NFE::RT::PathTracer)
+NFE_DEFINE_POLYMORPHIC_CLASS(NFE::RT::PathTracer)
     NFE_CLASS_PARENT(NFE::RT::IRenderer)
 NFE_END_DEFINE_CLASS()
 
@@ -103,8 +105,8 @@ const RayColor PathTracer::RenderPixel(const Math::Ray& primaryRay, const Render
         if (hitPoint.subObjectId == NFE_LIGHT_OBJECT)
         {
             const ISceneObject* sceneObject = param.scene.GetHitObject(hitPoint.objectId);
-            NFE_ASSERT(sceneObject->GetType() == ISceneObject::Type::Light);
-            const LightSceneObject* lightObject = static_cast<const LightSceneObject*>(sceneObject);
+            const LightSceneObject* lightObject = RTTI::Cast<LightSceneObject>(sceneObject);
+            NFE_ASSERT(lightObject);
 
             const RayColor lightColor = EvaluateLight(lightObject, ray, shadingData.intersection, context);
             NFE_ASSERT(lightColor.IsValid());

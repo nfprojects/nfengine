@@ -8,7 +8,8 @@
 
 #include "../../Core.hpp"
 
-#include "nfCommon/Reflection/ReflectionClassMacros.hpp"
+#include "nfCommon/Reflection/ReflectionClassDeclare.hpp"
+#include "nfCommon/Reflection/Object.hpp"
 #include "nfCommon/Math/Box.hpp"
 
 

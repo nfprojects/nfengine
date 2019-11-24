@@ -10,7 +10,10 @@ namespace Math {
  */
 class NFE_ALIGN(16) Box
 {
+    NFE_DECLARE_CLASS(Box);
+
 public:
+
     Vector4 min;
     Vector4 max;
 

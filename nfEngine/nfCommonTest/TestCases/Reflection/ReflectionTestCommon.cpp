@@ -1,6 +1,6 @@
 #include "PCH.hpp"
 #include "ReflectionTestCommon.hpp"
-
+#include "nfCommon/Reflection/ReflectionClassDefine.hpp"
 
 
 using namespace NFE;
@@ -12,7 +12,7 @@ using namespace NFE::Common;
 // Test types definitions
 //////////////////////////////////////////////////////////////////////////
 
-NFE_BEGIN_DEFINE_CLASS(TestClassWithFundamentalMembers)
+NFE_DEFINE_CLASS(TestClassWithFundamentalMembers)
 {
     NFE_CLASS_MEMBER(intValue);
     NFE_CLASS_MEMBER(floatValue);
@@ -21,28 +21,28 @@ NFE_BEGIN_DEFINE_CLASS(TestClassWithFundamentalMembers)
 }
 NFE_END_DEFINE_CLASS()
 
-NFE_BEGIN_DEFINE_CLASS(TestClassWithNestedType)
+NFE_DEFINE_CLASS(TestClassWithNestedType)
 {
     NFE_CLASS_MEMBER(foo);
     NFE_CLASS_MEMBER(bar);
 }
 NFE_END_DEFINE_CLASS()
 
-NFE_BEGIN_DEFINE_CLASS(TestClassWithArrayType)
+NFE_DEFINE_CLASS(TestClassWithArrayType)
 {
     NFE_CLASS_MEMBER(arrayOfInts);
     NFE_CLASS_MEMBER(foo);
 }
 NFE_END_DEFINE_CLASS()
 
-NFE_BEGIN_DEFINE_CLASS(TestClassWithDynArrayType)
+NFE_DEFINE_CLASS(TestClassWithDynArrayType)
 {
     NFE_CLASS_MEMBER(arrayOfInts);
     NFE_CLASS_MEMBER(arrayOfObjects);
 }
 NFE_END_DEFINE_CLASS()
 
-NFE_BEGIN_DEFINE_CLASS(TestClassWithUniquePtrType)
+NFE_DEFINE_CLASS(TestClassWithUniquePtrType)
 {
     NFE_CLASS_MEMBER(pointerToInt);
     NFE_CLASS_MEMBER(pointerToObject);
@@ -54,28 +54,28 @@ NFE_END_DEFINE_CLASS()
 
 // Polymorphic classes:
 
-NFE_BEGIN_DEFINE_POLYMORPHIC_CLASS(TestAbstractClass)
+NFE_DEFINE_POLYMORPHIC_CLASS(TestAbstractClass)
 {
     NFE_CLASS_MEMBER(intVal);
     NFE_CLASS_MEMBER(floatVal);
 }
 NFE_END_DEFINE_CLASS()
 
-NFE_BEGIN_DEFINE_POLYMORPHIC_CLASS(TestChildClassA)
+NFE_DEFINE_POLYMORPHIC_CLASS(TestChildClassA)
 {
     NFE_CLASS_PARENT(TestBaseClass);
     NFE_CLASS_MEMBER(foo);
 }
 NFE_END_DEFINE_CLASS()
 
-NFE_BEGIN_DEFINE_POLYMORPHIC_CLASS(TestChildClassB)
+NFE_DEFINE_POLYMORPHIC_CLASS(TestChildClassB)
 {
     NFE_CLASS_PARENT(TestBaseClass);
     NFE_CLASS_MEMBER(bar);
 }
 NFE_END_DEFINE_CLASS()
 
-NFE_BEGIN_DEFINE_POLYMORPHIC_CLASS(TestBaseClass)
+NFE_DEFINE_POLYMORPHIC_CLASS(TestBaseClass)
 {
     NFE_CLASS_MEMBER(intVal);
     NFE_CLASS_MEMBER(floatVal);

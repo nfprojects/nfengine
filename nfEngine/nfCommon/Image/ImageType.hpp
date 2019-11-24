@@ -11,7 +11,8 @@
 #include "../Containers/UniquePtr.hpp"
 #include "../Containers/StringView.hpp"
 #include "../Containers/HashMap.hpp"
-#include "../Reflection/ReflectionClassMacros.hpp"
+#include "../Reflection/ReflectionClassDeclare.hpp"
+#include "../Reflection/Object.hpp"
 
 
 namespace NFE {

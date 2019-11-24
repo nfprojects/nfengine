@@ -2,9 +2,19 @@
 #include "SphereShape.h"
 #include "Rendering/ShadingData.h"
 #include "Traversal/TraversalContext.h"
-#include "../../nfCommon/Math/Geometry.hpp"
-#include "../../nfCommon/Math/SamplingHelpers.hpp"
-#include "../../nfCommon/Math/Transcendental.hpp"
+#include "../nfCommon/Math/Geometry.hpp"
+#include "../nfCommon/Math/SamplingHelpers.hpp"
+#include "../nfCommon/Math/Transcendental.hpp"
+#include "../nfCommon/Reflection/ReflectionClassDefine.hpp"
+
+
+NFE_DEFINE_POLYMORPHIC_CLASS(NFE::RT::SphereShape)
+{
+    NFE_CLASS_PARENT(NFE::RT::IShape);
+    NFE_CLASS_MEMBER(mRadius).Min(0.000001f);
+}
+NFE_END_DEFINE_CLASS()
+
 
 namespace NFE {
 namespace RT {
@@ -15,7 +25,22 @@ SphereShape::SphereShape(const float radius)
     : mRadius(radius)
     , mRadiusD(radius)
     , mInvRadius(1.0f / radius)
-{ }
+{
+    NFE_ASSERT(mRadius > 0.0f);
+}
+
+bool SphereShape::OnPropertyChanged(const Common::StringView propertyName)
+{
+    if (propertyName == "mRadius")
+    {
+        NFE_ASSERT(mRadius > 0.0f);
+        mRadiusD = mRadius;
+        mInvRadius = 1.0f / mRadius;
+        return true;
+    }
+
+    return IShape::OnPropertyChanged(propertyName);
+}
 
 const Box SphereShape::GetBoundingBox() const
 {

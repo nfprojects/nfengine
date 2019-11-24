@@ -41,7 +41,7 @@ class TypeCreator<NFE::Common::String>
 public:
     using TypeClass = StringType;
 
-    static TypePtr CreateType()
+    static Type* CreateType()
     {
         TypeInfo typeInfo;
         typeInfo.kind = TypeKind::String;
@@ -51,7 +51,7 @@ public:
         typeInfo.constructor = []() { return new Common::String; };
         typeInfo.arrayConstructor = [](uint32 num) { return new Common::String[num]; };
 
-        return TypePtr(new StringType(typeInfo));
+        return new StringType(typeInfo);
     }
 };
 

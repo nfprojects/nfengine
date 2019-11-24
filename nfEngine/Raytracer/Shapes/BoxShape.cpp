@@ -2,8 +2,18 @@
 #include "BoxShape.h"
 #include "Rendering/ShadingData.h"
 #include "Traversal/TraversalContext.h"
-#include "../../nfCommon/Math/Geometry.hpp"
-#include "../../nfCommon/Math/Simd8Geometry.hpp"
+#include "../nfCommon/Math/Geometry.hpp"
+#include "../nfCommon/Math/Simd8Geometry.hpp"
+#include "../nfCommon/Reflection/ReflectionClassDefine.hpp"
+
+
+NFE_DEFINE_POLYMORPHIC_CLASS(NFE::RT::BoxShape)
+{
+    NFE_CLASS_PARENT(NFE::RT::IShape);
+    NFE_CLASS_MEMBER(mSize).Min(0.000001f);
+}
+NFE_END_DEFINE_CLASS()
+
 
 namespace NFE {
 namespace RT {
@@ -87,23 +97,37 @@ NFE_FORCE_INLINE int32 ConvertXYZtoCubeUV(const Vector4& p, Vector4& outUV)
 
 } // helper
 
-
 BoxShape::BoxShape(const Vector4& size)
     : mSize(size)
-    , mInvSize(VECTOR_ONE / mSize)
+{
+    OnSizeChanged();
+}
+
+bool BoxShape::OnPropertyChanged(const Common::StringView propertyName)
+{
+    if (propertyName == "mSize")
+    {
+        OnSizeChanged();
+        return true;
+    }
+
+    return IShape::OnPropertyChanged(propertyName);
+}
+
+void BoxShape::OnSizeChanged()
 {
     NFE_ASSERT(mSize.x > 0.0f);
     NFE_ASSERT(mSize.y > 0.0f);
     NFE_ASSERT(mSize.z > 0.0f);
 
+    mInvSize = VECTOR_ONE / mSize;
+
     mSize.w = 0.0f;
     mInvSize.w = 0.0f;
 
-    {
-        mFaceCdf.x = mSize.y * mSize.z;
-        mFaceCdf.y = mFaceCdf.x + mSize.z * mSize.x;
-        mFaceCdf.z = mFaceCdf.y + mSize.x * mSize.y;
-    }
+    mFaceCdf.x = mSize.y * mSize.z;
+    mFaceCdf.y = mFaceCdf.x + mSize.z * mSize.x;
+    mFaceCdf.z = mFaceCdf.y + mSize.x * mSize.y;
 }
 
 const Box BoxShape::GetBoundingBox() const

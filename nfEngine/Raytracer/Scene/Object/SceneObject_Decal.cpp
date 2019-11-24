@@ -2,19 +2,27 @@
 #include "SceneObject_Decal.h"
 #include "../../Rendering/ShadingData.h"
 #include "../../Rendering/RenderingContext.h"
+#include "../nfCommon/Reflection/ReflectionClassDefine.hpp"
+
+
+NFE_DEFINE_POLYMORPHIC_CLASS(NFE::RT::DecalSceneObject)
+{
+    NFE_CLASS_PARENT(NFE::RT::ISceneObject);
+    NFE_CLASS_MEMBER(baseColor);
+    NFE_CLASS_MEMBER(roughness);
+    NFE_CLASS_MEMBER(alphaMin);
+    NFE_CLASS_MEMBER(alphaMax);
+    NFE_CLASS_MEMBER(order);
+}
+NFE_END_DEFINE_CLASS()
+
 
 namespace NFE {
 namespace RT {
 
 using namespace Math;
 
-DecalSceneObject::DecalSceneObject()
-{ }
-
-ISceneObject::Type DecalSceneObject::GetType() const
-{
-    return Type::Decal;
-}
+DecalSceneObject::DecalSceneObject() = default;
 
 Box DecalSceneObject::GetBoundingBox() const
 {

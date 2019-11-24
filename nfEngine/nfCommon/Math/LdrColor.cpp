@@ -1,7 +1,8 @@
 #include "PCH.hpp"
 #include "LdrColor.hpp"
+#include "../Reflection/ReflectionClassDefine.hpp"
 
-NFE_BEGIN_DEFINE_CLASS(NFE::Math::LdrColorRGB)
+NFE_DEFINE_CLASS(NFE::Math::LdrColorRGB)
 {
     NFE_CLASS_MEMBER(r);
     NFE_CLASS_MEMBER(g);
@@ -9,7 +10,7 @@ NFE_BEGIN_DEFINE_CLASS(NFE::Math::LdrColorRGB)
 }
 NFE_END_DEFINE_CLASS()
 
-NFE_BEGIN_DEFINE_CLASS(NFE::Math::LdrColorRGBA)
+NFE_DEFINE_CLASS(NFE::Math::LdrColorRGBA)
 {
     NFE_CLASS_MEMBER(r);
     NFE_CLASS_MEMBER(g);

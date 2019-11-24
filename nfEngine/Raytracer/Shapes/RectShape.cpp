@@ -2,9 +2,21 @@
 #include "RectShape.h"
 #include "Rendering/ShadingData.h"
 #include "Traversal/TraversalContext.h"
-#include "../../nfCommon/Math/Geometry.hpp"
-#include "../../nfCommon/Math/SamplingHelpers.hpp"
-#include "../../nfCommon/Math/SphericalQuad.hpp"
+#include "../nfCommon/Math/Geometry.hpp"
+#include "../nfCommon/Math/SamplingHelpers.hpp"
+#include "../nfCommon/Math/SphericalQuad.hpp"
+#include "../nfCommon/Reflection/ReflectionClassDefine.hpp"
+
+
+NFE_DEFINE_POLYMORPHIC_CLASS(NFE::RT::RectShape)
+{
+    NFE_CLASS_PARENT(NFE::RT::IShape);
+    NFE_CLASS_MEMBER(mSize);
+    NFE_CLASS_MEMBER(mTextureScale);
+    NFE_CLASS_MEMBER(mEnableSolidAngleSampling);
+}
+NFE_END_DEFINE_CLASS()
+
 
 namespace NFE {
 namespace RT {

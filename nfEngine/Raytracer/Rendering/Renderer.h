@@ -9,8 +9,9 @@
 #include "../../nfCommon/Containers/StringView.hpp"
 #include "../../nfCommon/Containers/ArrayView.hpp"
 #include "../../nfCommon/Memory/Aligned.hpp"
-#include "../../nfCommon/Memory/Aligned.hpp"
-#include "../../nfCommon/Reflection/ReflectionClassMacros.hpp"
+#include "../../nfCommon/Reflection/ReflectionClassDeclare.hpp"
+#include "../../nfCommon/Reflection/Object.hpp"
+
 
 namespace NFE {
 namespace RT {

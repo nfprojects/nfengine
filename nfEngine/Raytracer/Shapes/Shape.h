@@ -7,6 +7,8 @@
 #include "../../nfCommon/Math/Matrix4.hpp"
 #include "../../nfCommon/Containers/SharedPtr.hpp"
 #include "../../nfCommon/Memory/Aligned.hpp"
+#include "../../nfCommon/Reflection/ReflectionClassDeclare.hpp"
+#include "../../nfCommon/Reflection/Object.hpp"
 
 #include <memory>
 
@@ -30,8 +32,12 @@ struct ShapeSampleResult
     float cosAtSurface = -1.0f;
 };
 
-class IShape : public Common::Aligned<16>
+class IShape
+    : public Common::Aligned<16>
+    , public IObject
 {
+    NFE_DECLARE_POLYMORPHIC_CLASS(IShape);
+
 public:
     NFE_RAYTRACER_API IShape();
     NFE_RAYTRACER_API virtual ~IShape();

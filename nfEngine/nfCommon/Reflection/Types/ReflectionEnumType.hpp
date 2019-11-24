@@ -86,7 +86,7 @@ private:
         public:                                                                     \
             using TypeClass = EnumType;                                             \
             using TypeInfoClass = EnumTypeInfo;                                     \
-            static TypePtr CreateType()                                             \
+            static Type* CreateType()                                               \
             {                                                                       \
                 TypeInfoClass typeInfo;                                             \
                 typeInfo.kind = TypeKind::Enumeration;                              \
@@ -98,7 +98,7 @@ private:
                                                                                     \
                 TypeCreator creator;                                                \
                 creator.FinishInitialization(typeInfo);                             \
-                return TypePtr(new EnumType(typeInfo));                             \
+                return new EnumType(typeInfo);                                      \
             }                                                                       \
                                                                                     \
             void FinishInitialization(TypeInfoClass& typeInfo);                     \

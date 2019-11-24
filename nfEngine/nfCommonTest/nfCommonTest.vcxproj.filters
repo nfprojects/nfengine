@@ -16,9 +16,6 @@
     <ClCompile Include="TestCases\Reflection\ReflectionClassTest.cpp">
       <Filter>TestCases\Reflection</Filter>
     </ClCompile>
-    <ClCompile Include="TestCases\Reflection\ReflectionPointersTest.cpp">
-      <Filter>TestCases\Reflection</Filter>
-    </ClCompile>
     <ClCompile Include="TestCases\Reflection\ReflectionEnumTest.cpp">
       <Filter>TestCases\Reflection</Filter>
     </ClCompile>
@@ -231,6 +228,12 @@
     </ClCompile>
     <ClCompile Include="TestCases\Math\MathVectorInt8Test.cpp">
       <Filter>TestCases\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="TestCases\Reflection\ReflectionUniquePtrTest.cpp">
+      <Filter>TestCases\Reflection</Filter>
+    </ClCompile>
+    <ClCompile Include="TestCases\Reflection\ReflectionSharedPtrTest.cpp">
+      <Filter>TestCases\Reflection</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

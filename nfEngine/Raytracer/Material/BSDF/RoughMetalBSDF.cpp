@@ -3,9 +3,10 @@
 #include "RoughMetalBSDF.h"
 #include "MetalBSDF.h"
 #include "../Material.h"
-#include "../../../nfCommon/Math/Utils.hpp"
+#include "../nfCommon/Math/Utils.hpp"
+#include "../nfCommon/Reflection/ReflectionClassDefine.hpp"
 
-NFE_BEGIN_DEFINE_POLYMORPHIC_CLASS(NFE::RT::RoughMetalBSDF)
+NFE_DEFINE_POLYMORPHIC_CLASS(NFE::RT::RoughMetalBSDF)
 NFE_CLASS_PARENT(NFE::RT::BSDF);
 NFE_END_DEFINE_CLASS()
 

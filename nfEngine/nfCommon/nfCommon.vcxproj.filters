@@ -339,9 +339,6 @@
     <ClInclude Include="Reflection\Types\ReflectionEnumType.hpp">
       <Filter>Reflection\Types</Filter>
     </ClInclude>
-    <ClInclude Include="Reflection\ReflectionClassMacros.hpp">
-      <Filter>Reflection</Filter>
-    </ClInclude>
     <ClInclude Include="Reflection\ReflectionEnumMacros.hpp">
       <Filter>Reflection</Filter>
     </ClInclude>
@@ -607,6 +604,11 @@
     <ClInclude Include="Math\HdrColor.hpp" />
     <ClInclude Include="Reflection\ReflectionMemberMetadataBuilder.hpp" />
     <ClInclude Include="Utils\FundamentalTypesUnion.hpp" />
+    <ClInclude Include="Reflection\Types\ReflectionSharedPtrType.hpp" />
+    <ClInclude Include="Reflection\Types\ReflectionPointerType.hpp" />
+    <ClInclude Include="Reflection\ReflectionClassDeclare.hpp" />
+    <ClInclude Include="Reflection\ReflectionClassDefine.hpp" />
+    <ClInclude Include="Reflection\ReflectionTypeResolver.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="PCH.cpp" />
@@ -845,8 +847,10 @@
     <ClCompile Include="Math\LdrColor.cpp" />
     <ClCompile Include="Math\HdrColor.cpp" />
     <ClCompile Include="Reflection\Types\ReflectionDynArrayType.cpp" />
-    <ClCompile Include="Reflection\Types\ReflectionUniquePtrType.cpp" />
     <ClCompile Include="Reflection\ReflectionMemberMetadataBuilder.cpp" />
+    <ClCompile Include="Reflection\Types\ReflectionPointerType.cpp" />
+    <ClCompile Include="Math\MathTypes.cpp" />
+    <ClCompile Include="Reflection\Object.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Natvis Include="Math\Math.natvis">

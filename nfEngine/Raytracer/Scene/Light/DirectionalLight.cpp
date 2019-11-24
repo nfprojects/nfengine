@@ -6,6 +6,15 @@
 #include "../../../nfCommon/Math/Geometry.hpp"
 #include "../../../nfCommon/Math/SamplingHelpers.hpp"
 #include "../../../nfCommon/Math/Transcendental.hpp"
+#include "../../../nfCommon/Reflection/ReflectionClassDefine.hpp"
+
+
+NFE_DEFINE_POLYMORPHIC_CLASS(NFE::RT::DirectionalLight)
+{
+    NFE_CLASS_PARENT(NFE::RT::ILight);
+    // NFE_CLASS_MEMBER(mAngle); // TODO
+}
+NFE_END_DEFINE_CLASS()
 
 namespace NFE {
 namespace RT {
@@ -14,17 +23,12 @@ using namespace Math;
 
 static constexpr const float SceneRadius = 30.0f; // TODO
 
-DirectionalLight::DirectionalLight(const Math::Vector4& color, const float angle)
+DirectionalLight::DirectionalLight(const Math::HdrColorRGB& color, const float angle)
     : ILight(color)
 {
     NFE_ASSERT(angle >= 0.0f && angle < NFE_MATH_2PI);
     mCosAngle = cosf(angle);
     mIsDelta = mCosAngle > CosEpsilon;
-}
-
-ILight::Type DirectionalLight::GetType() const
-{
-    return Type::Directional;
 }
 
 const Box DirectionalLight::GetBoundingBox() const

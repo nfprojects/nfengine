@@ -6,27 +6,25 @@
 #include "../../Utils/Memory.h"
 #include "../../../nfCommon/Math/Box.hpp"
 #include "../../../nfCommon/Math/Matrix4.hpp"
+#include "../../../nfCommon/Math/HdrColor.hpp"
 #include "../../../nfCommon/Containers/UniquePtr.hpp"
 #include "../../../nfCommon/Memory/Aligned.hpp"
+#include "../../../nfCommon/Reflection/ReflectionClassDeclare.hpp"
+#include "../../../nfCommon/Reflection/Object.hpp"
 
 namespace NFE {
 namespace RT {
 
 // abstract light
-class NFE_ALIGN(16) ILight : public Common::Aligned<16>
+class NFE_ALIGN(16) ILight 
+    : public Common::Aligned<16>
+    , public IObject
 {
+    NFE_DECLARE_POLYMORPHIC_CLASS(ILight);
+
 public:
     static constexpr const float BackgroundLightDistance = std::numeric_limits<float>::max();
     static constexpr const float CosEpsilon = 0.9999f;
-
-    enum class Type : uint8
-    {
-        Area,
-        Background,
-        Directional,
-        Point,
-        Spot,
-    };
 
     enum Flags : uint8
     {
@@ -80,14 +78,11 @@ public:
         float cosAtLight;
     };
 
-    explicit ILight(const Math::Vector4& color = Math::Vector4(1.0f));
+    explicit ILight(const Math::HdrColorRGB& color = Math::HdrColorRGB(1.0f));
     NFE_RAYTRACER_API virtual ~ILight() = default;
 
-    NFE_FORCE_INLINE const Spectrum& GetColor() const { return mColor; }
-    NFE_RAYTRACER_API void SetColor(const Spectrum& color);
-
-    // get light's type
-    virtual Type GetType() const = 0;
+    NFE_FORCE_INLINE const Spectrum GetColor() const { return Spectrum(mColor); }
+    NFE_RAYTRACER_API void SetColor(const Math::HdrColorRGB& color);
 
     // get light's surface bounding box
     virtual const Math::Box GetBoundingBox() const = 0;
@@ -114,7 +109,7 @@ private:
     ILight(const ILight&) = delete;
     ILight& operator = (const ILight&) = delete;
 
-    Spectrum mColor;
+    Math::HdrColorRGB mColor;
 };
 
 using LightPtr = Common::UniquePtr<ILight>;

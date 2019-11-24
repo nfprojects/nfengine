@@ -10,17 +10,38 @@ namespace Math {
  */
 struct NFE_ALIGN(16) Quaternion final
 {
-    // XYZ - vector part, W - scalar part:
-    // q = f[3] + i * q[0] + j * q[1] + k * q[2]
-    Vector4 q;
+    NFE_DECLARE_CLASS(Quaternion);
+
+public:
+
+    union
+    {
+        // XYZ - vector part, W - scalar part:
+        // q = f[3] + i * q[0] + j * q[1] + k * q[2]
+        Vector4 q;
+
+        struct
+        {
+            float i;
+            float j;
+            float k;
+            float r;
+        };
+    };
 
     NFE_FORCE_INLINE Quaternion() : q(0.0f, 0.0f, 0.0f, 1.0f) { }
-    NFE_FORCE_INLINE Quaternion(const Quaternion&) = default;
+    NFE_FORCE_INLINE Quaternion(const Quaternion& rhs) : q(rhs.q) { }
     NFE_FORCE_INLINE explicit Quaternion(const Vector4& v) : q(v) { }
     NFE_FORCE_INLINE explicit Quaternion(float i, float j, float k, float s) : q(i, j, k, s) { }
 
     NFE_FORCE_INLINE operator const Vector4&() const { return q; }
     NFE_FORCE_INLINE operator Vector4&() { return q; }
+
+    NFE_FORCE_INLINE Quaternion& operator = (const Quaternion& rhs)
+    {
+        q = rhs.q;
+        return *this;
+    }
 
     // check if quaternion is normalized and its values are valid
     NFCOMMON_API bool IsValid() const;

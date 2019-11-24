@@ -6,21 +6,27 @@
 #include "../../Shapes/Shape.h"
 #include "../../../nfCommon/Math/Geometry.hpp"
 #include "../../../nfCommon/Math/SamplingHelpers.hpp"
+#include "../../../nfCommon/Reflection/ReflectionClassDefine.hpp"
+#include "../../../nfCommon/Reflection/Types/ReflectionSharedPtrType.hpp"
+
+
+NFE_DEFINE_POLYMORPHIC_CLASS(NFE::RT::AreaLight)
+{
+    NFE_CLASS_PARENT(NFE::RT::ILight);
+    NFE_CLASS_MEMBER(mShape).NonNull();
+}
+NFE_END_DEFINE_CLASS()
+
 
 namespace NFE {
 namespace RT {
 
 using namespace Math;
 
-AreaLight::AreaLight(ShapePtr shape, const Vector4& color)
+AreaLight::AreaLight(ShapePtr shape, const Math::HdrColorRGB& color)
     : ILight(color)
     , mShape(std::move(shape))
 {
-}
-
-ILight::Type AreaLight::GetType() const
-{
-    return Type::Area;
 }
 
 const Box AreaLight::GetBoundingBox() const

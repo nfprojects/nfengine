@@ -7,9 +7,10 @@
 
 #include "PCH.hpp"
 #include "Event_Trigger.hpp"
+#include "nfCommon/Reflection/ReflectionClassDefine.hpp"
 
 
-NFE_BEGIN_DEFINE_POLYMORPHIC_CLASS(NFE::Scene::Event_Trigger)
+NFE_DEFINE_POLYMORPHIC_CLASS(NFE::Scene::Event_Trigger)
     NFE_CLASS_PARENT(NFE::Scene::Event)
 NFE_END_DEFINE_CLASS()
 

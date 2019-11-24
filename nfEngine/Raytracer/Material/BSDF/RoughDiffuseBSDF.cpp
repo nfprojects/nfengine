@@ -1,8 +1,9 @@
 #include "PCH.h"
 #include "RoughDiffuseBSDF.h"
-#include "../../../nfCommon/Math/SamplingHelpers.hpp"
+#include "../nfCommon/Math/SamplingHelpers.hpp"
+#include "../nfCommon/Reflection/ReflectionClassDefine.hpp"
 
-NFE_BEGIN_DEFINE_POLYMORPHIC_CLASS(NFE::RT::RoughDiffuseBSDF)
+NFE_DEFINE_POLYMORPHIC_CLASS(NFE::RT::RoughDiffuseBSDF)
 NFE_CLASS_PARENT(NFE::RT::BSDF);
 NFE_END_DEFINE_CLASS()
 

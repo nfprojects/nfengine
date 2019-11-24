@@ -84,9 +84,8 @@ private:
 
     // debugging
     RT::PathDebugData mPathDebugData;
-    RT::Material* mSelectedMaterial;
-    RT::ITraceableSceneObject* mSelectedObject;
-    RT::ILight* mSelectedLight;
+    RT::Material* mSelectedMaterial; // TODO WeakPtr
+    RT::ISceneObject* mSelectedObject; // TODO WeakPtr
     bool mFocalDistancePicking = false;
     bool mPixelDebuggingPicking = false;
 
@@ -106,9 +105,6 @@ private:
     bool RenderUI_Settings();
     bool RenderUI_Settings_Camera();
     bool RenderUI_Settings_PostProcess();
-    bool RenderUI_Settings_Object();
-    bool RenderUI_Settings_Light();
-
 
     virtual void OnMouseDown(Common::MouseButton button, int x, int y) override;
     virtual void OnMouseMove(int x, int y, int deltaX, int deltaY) override;
