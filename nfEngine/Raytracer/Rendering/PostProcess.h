@@ -50,7 +50,7 @@ public:
     float exposure;             // exposure in log scale
     float contrast;
     float saturation;
-    float ditheringStrength;    // applied after tonemapping
+    bool useDithering;
     BloomParams bloom;
 
     Tonemapper tonemapper;      // tonemapping curve

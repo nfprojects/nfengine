@@ -31,7 +31,7 @@ NFE_BEGIN_DEFINE_CLASS(NFE::RT::PostprocessParams)
     NFE_CLASS_MEMBER(exposure).Min(-10.0f).Max(10.0f);
     NFE_CLASS_MEMBER(contrast).Min(0.0f).Max(2.0f);
     NFE_CLASS_MEMBER(saturation).Min(0.0f).Max(2.0f);
-    NFE_CLASS_MEMBER(ditheringStrength).Min(0.0f).Max(1.0f);
+    NFE_CLASS_MEMBER(useDithering);
     NFE_CLASS_MEMBER(bloom);
     NFE_CLASS_MEMBER(tonemapper);
 }
@@ -56,7 +56,7 @@ PostprocessParams::PostprocessParams()
     , exposure(0.0f)
     , contrast(0.8f)
     , saturation(0.98f)
-    , ditheringStrength(0.005f)
+    , useDithering(true)
     , tonemapper(Tonemapper::ACES)
 {
 }

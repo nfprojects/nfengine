@@ -7,6 +7,7 @@
 #include "Textures/Texture.h"
 #include "Color/ColorHelpers.h"
 #include "Utils/BitmapUtils.h"
+#include "Utils/Profiler.h"
 #include "../nfCommon/System/Timer.hpp"
 #include "../nfCommon/Math/SamplingHelpers.hpp"
 #include "../nfCommon/Math/Vector4Load.hpp"
@@ -495,8 +496,39 @@ void Viewport::PerformPostProcess(TaskBuilder& taskBuilder)
     }
 }
 
+static void ApplyDither(Vector4& color, Random& randomGenerator)
+{
+    // based on:
+    // https://computergraphics.stackexchange.com/questions/5904/whats-a-proper-way-to-clamp-dither-noise/5952#5952
+    // https://www.shadertoy.com/view/llXfzS
+
+    // quantization scale (2^bits-1)
+    const float scale = 255.0f;
+
+    // TODO blue noise dithering
+    const Vector4 u1 = randomGenerator.GetVector4();
+    const Vector4 u2 = randomGenerator.GetVector4();
+
+    // determine blending factor 't' for triangle/square noise
+    const Vector4 lo = Vector4::Min(Vector4(1.0f), (2.0f * scale) * color);
+    const Vector4 hi = Vector4::NegMulAndAdd(color, 2.0f * scale, Vector4(2.0f * scale));
+    const Vector4 t = Vector4::Min(lo, hi);
+
+    // blend between triangle noise (middle range) and square noise (edges)
+    // this is roughly equivalent to:
+    //Vector4 ditherTri = u + v - Vector4(1.0f);  // symmetric, triangular dither, [-1;1)
+    //Vector4 ditherNorm = u - Vector4(0.5f);     // symmetric, uniform dither [-0.5;0.5)
+    //Vector4 dither = Vector4::Lerp(ditherNorm, ditherTri, t) + Vector4(0.5f);
+    const Vector4 dither = u1 + t * (u2 - Vector4(0.5f));
+
+    // apply dither
+    color += dither * (1.0f / scale);
+}
+
 void Viewport::PostProcessTile(const Block& block, uint32 threadID)
 {
+    NFE_SCOPED_TIMER(Viewport_PostProcessTile);
+
     Random& randomGenerator = mThreadData[threadID].randomGenerator;
 
     const PostprocessParams& params = mPostprocessParams.params;
@@ -504,6 +536,7 @@ void Viewport::PostProcessTile(const Block& block, uint32 threadID)
 
     const float pixelScaling = 1.0f / (float)(1u + mProgress.passesFinished);
   
+    // TODO use AVX if available
     for (uint32 y = block.minY; y < block.maxY; ++y)
     {
         for (uint32 x = block.minX; x < block.maxX; ++x)
@@ -545,13 +578,15 @@ void Viewport::PostProcessTile(const Block& block, uint32 threadID)
             rgbColor *= mPostprocessParams.colorScale;
 
             // apply tonemapping
-            const Vector4 toneMapped = ToneMap(rgbColor, params.tonemapper);
+            Vector4 toneMapped = ToneMap(rgbColor, params.tonemapper);
 
             // add dither
-            // TODO blue noise dithering
-            const Vector4 dithered = Vector4::MulAndAdd(randomGenerator.GetVector4Bipolar(), params.ditheringStrength, toneMapped);
+            if (params.useDithering)
+            {
+                ApplyDither(toneMapped, randomGenerator);
+            }
 
-            mFrontBuffer.GetPixelRef<uint32>(x, y) = dithered.ToBGR();
+            mFrontBuffer.GetPixelRef<uint32>(x, y) = toneMapped.ToBGR();
         }
     }
 }
