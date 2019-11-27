@@ -58,3 +58,4 @@ clean_errors.txt
 
 # ImGui config files
 imgui.ini
+/RaytracerDemo/imgui.ini
