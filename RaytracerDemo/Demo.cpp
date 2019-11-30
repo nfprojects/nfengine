@@ -406,6 +406,8 @@ bool DemoWindow::Loop()
 
     while (!IsClosed())
     {
+        FrameMark;
+
         CheckSceneFileModificationTime();
 
         const RenderingProgress& progress = mViewport->GetProgress();
@@ -455,11 +457,15 @@ bool DemoWindow::Loop()
         // render UI into the front buffer
         if (mEnableUI)
         {
+            NFE_SCOPED_TIMER(PaintImGui);
             imgui_sw::paint_imgui((uint32_t*)mImage.GetData(), mImage.GetWidth(), mImage.GetHeight());
         }
 
         // display pixels in the window
-        DrawPixels(mImage.GetData(), mImage.GetWidth(), mImage.GetHeight(), mImage.GetStride());
+        {
+            NFE_SCOPED_TIMER(DrawPixels);
+            DrawPixels(mImage.GetData(), mImage.GetWidth(), mImage.GetHeight(), mImage.GetStride());
+        }
 
         mLastKeyDown = KeyCode::Invalid;
 

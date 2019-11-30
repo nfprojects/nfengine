@@ -220,7 +220,7 @@ void Scene::Traverse_Leaf(const PacketTraversalContext& context, const uint32 ob
 
 void Scene::Traverse(const SingleTraversalContext& context) const
 {
-    NFE_SCOPED_TIMER(Scene_Traverse);
+    //NFE_SCOPED_TIMER(Scene_Traverse);
 
     context.context.localCounters.Reset();
 
@@ -306,7 +306,7 @@ void Scene::Traverse(const PacketTraversalContext& context) const
 
 void Scene::EvaluateIntersection(const Ray& ray, const HitPoint& hitPoint, const float time, IntersectionData& outData) const
 {
-    NFE_SCOPED_TIMER(Scene_EvaluateIntersection);
+    //NFE_SCOPED_TIMER(Scene_EvaluateIntersection);
 
     NFE_ASSERT(hitPoint.distance < FLT_MAX);
 

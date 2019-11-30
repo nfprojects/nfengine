@@ -203,6 +203,8 @@ void Viewport::ComputeError()
 
 bool Viewport::Render(const Scene& scene, const Camera& camera)
 {
+    NFE_SCOPED_TIMER(Render);
+
     const uint32 width = GetWidth();
     const uint32 height = GetHeight();
     if (width == 0 || height == 0)
@@ -306,6 +308,8 @@ bool Viewport::Render(const Scene& scene, const Camera& camera)
 
 void Viewport::RenderTile(const TileRenderingContext& tileContext, RenderingContext& ctx, const Block& tile)
 {
+    NFE_SCOPED_TIMER(Viewport_RenderTile);
+
     Timer timer;
 
     NFE_ASSERT(tile.minX < tile.maxX);
@@ -443,6 +447,8 @@ void Viewport::RenderTile(const TileRenderingContext& tileContext, RenderingCont
 
 void Viewport::PerformPostProcess(TaskBuilder& taskBuilder)
 {
+    NFE_SCOPED_TIMER(PerformPostProcess);
+
     if (!mBlurredImages.Empty() && mPostprocessParams.params.bloom.factor > 0.0f)
     {
         for (uint32 i = 0; i < mBlurredImages.Size(); ++i)
@@ -594,6 +600,8 @@ void Viewport::PostProcessTile(const Block& block, uint32 threadID)
 
 float Viewport::ComputeBlockError(const Block& block) const
 {
+    NFE_SCOPED_TIMER(ComputeBlockError);
+
     if (mProgress.passesFinished == 0)
     {
         return std::numeric_limits<float>::max();
@@ -625,6 +633,8 @@ float Viewport::ComputeBlockError(const Block& block) const
 
 void Viewport::GenerateRenderingTiles()
 {
+    NFE_SCOPED_TIMER(GenerateRenderingTiles);
+
     mRenderingTiles.Clear();
     mRenderingTiles.Reserve(mBlocks.Size());
 
@@ -657,6 +667,8 @@ void Viewport::GenerateRenderingTiles()
 
 void Viewport::BuildInitialBlocksList()
 {
+    NFE_SCOPED_TIMER(BuildInitialBlocksList);
+
     mBlocks.Clear();
 
     const uint32 blockSize = mParams.adaptiveSettings.maxBlockSize;
@@ -686,6 +698,8 @@ void Viewport::BuildInitialBlocksList()
 
 void Viewport::UpdateBlocksList()
 {
+    NFE_SCOPED_TIMER(UpdateBlocksList);
+
     DynArray<Block> newBlocks;
 
     const AdaptiveRenderingSettings& settings = mParams.adaptiveSettings;
@@ -776,6 +790,8 @@ void Viewport::UpdateBlocksList()
 
 void Viewport::VisualizeActiveBlocks(Bitmap& bitmap) const
 {
+    NFE_SCOPED_TIMER(VisualizeActiveBlocks);
+
     const LdrColorRGBA color = LdrColorRGBA::Red();
     const uint8 alpha = 64;
 

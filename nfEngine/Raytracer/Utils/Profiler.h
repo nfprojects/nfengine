@@ -4,6 +4,7 @@
 #include "../../nfCommon/Containers/DynArray.hpp"
 #include "../../nfCommon/Math/Math.hpp"
 #include "../../nfCommon/System/Mutex.hpp"
+#include "../../../nfEngineDeps/tracy/Tracy.hpp"
 
 namespace NFE {
 namespace RT {
@@ -95,5 +96,6 @@ private:
 
 
 #define NFE_SCOPED_TIMER(name) \
+    ZoneScopedN(#name); \
     thread_local ScopedEntry entry##name(#name); \
     ScopedTimer scopedTimer(entry##name);

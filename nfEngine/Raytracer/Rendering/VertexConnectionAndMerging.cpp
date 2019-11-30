@@ -938,7 +938,7 @@ const RayColor VertexConnectionAndMerging::ConnectVertices(const Scene& scene, P
 
 const RayColor VertexConnectionAndMerging::MergeVertices(PathState& cameraPathState, const ShadingData& shadingData, RenderingContext& ctx) const
 {
-    NFE_SCOPED_TIMER(MergeVertices);
+    //NFE_SCOPED_TIMER(MergeVertices);
 
     class RangeQuery
     {
