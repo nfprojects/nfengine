@@ -44,12 +44,19 @@ void Film::AccumulateColor(const uint32 x, const uint32 y, const Vector4& sample
         return;
     }
 
-    AccumulateToFloat3(mSum->GetPixelRef<Float3>(x, y), sampleColor);
+    Float3* sumPixel = &(mSum->GetPixelRef<Float3>(x, y));
+    Float3* secondarySumPixel = mSecondarySum ? &(mSecondarySum->GetPixelRef<Float3>(x, y)) : nullptr;
 
-    if (mSecondarySum)
+    LockPixel(x, y);
     {
-        AccumulateToFloat3(mSecondarySum->GetPixelRef<Float3>(x, y), sampleColor);
+        AccumulateToFloat3(*sumPixel, sampleColor);
+
+        if (secondarySumPixel)
+        {
+            AccumulateToFloat3(*secondarySumPixel, sampleColor);
+        }
     }
+    UnlockPixel(x, y);
 }
 
 NFE_FORCE_NOINLINE
@@ -86,12 +93,7 @@ void Film::AccumulateColor(const Vector4& pos, const Vector4& sampleColor, Rando
 
     if (uint32(x) < mWidth && uint32(y) < mHeight)
     {
-        AccumulateToFloat3(mSum->GetPixelRef<Float3>(x, y), sampleColor);
-
-        if (mSecondarySum)
-        {
-            AccumulateToFloat3(mSecondarySum->GetPixelRef<Float3>(x, y), sampleColor);
-        }
+        AccumulateColor(x, y, sampleColor);
     }
 }
 
