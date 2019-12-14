@@ -19,6 +19,8 @@ struct ShapeIntersection
 {
     float nearDist;
     float farDist;
+    float u;
+    float v;
     uint32 subObjectId = UINT32_MAX;
 };
 
@@ -53,10 +55,13 @@ public:
 
     // intersect with a ray and return hit points
     // TODO return array of all hit points along the ray
-    virtual bool Intersect(const Math::Ray& ray, ShapeIntersection& outResult) const;
+    virtual bool Intersect(const Math::Ray& ray, RenderingContext& renderingCtx, ShapeIntersection& outResult) const;
 
     // check intersection with a point
     virtual bool Intersect(const Math::Vector4& point) const;
+
+    // must be called before using Sample() method
+    virtual bool MakeSamplable();
 
     // generate random point on the shape's surface
     // optionaly returns normal vector and sampling probability (with respect to area on the surface)

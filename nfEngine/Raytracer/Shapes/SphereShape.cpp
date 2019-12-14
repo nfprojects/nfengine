@@ -52,8 +52,10 @@ float SphereShape::GetSurfaceArea() const
     return 4.0f * NFE_MATH_PI * Sqr(mRadius);
 }
 
-bool SphereShape::Intersect(const Math::Ray& ray, ShapeIntersection& outResult) const
+bool SphereShape::Intersect(const Math::Ray& ray, RenderingContext& renderingCtx, ShapeIntersection& outResult) const
 {
+    NFE_UNUSED(renderingCtx);
+
     const double v = Vector4::Dot3(ray.dir, -ray.origin);
     const double det = mRadiusD * mRadiusD - (double)ray.origin.SqrLength3() + v * v;
 

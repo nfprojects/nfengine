@@ -31,16 +31,7 @@ SpotLight::SpotLight(const Math::HdrColorRGB& color, const float angle)
 
 const Box SpotLight::GetBoundingBox() const
 {
-    return Box(Vector4::Zero(), 0.0f);
-}
-
-bool SpotLight::TestRayHit(const Ray& ray, float& outDistance) const
-{
-    NFE_UNUSED(ray);
-    NFE_UNUSED(outDistance);
-
-    // we assume that a ray can never hit a point light source
-    return false;
+    return Box(Vector4::Zero());
 }
 
 const RayColor SpotLight::Illuminate(const IlluminateParam& param, IlluminateResult& outResult) const

@@ -33,30 +33,12 @@ Box LightSceneObject::GetBoundingBox() const
 
 void LightSceneObject::Traverse(const SingleTraversalContext& context, const uint32 objectID) const
 {
-    float lightDistance;
-    if (mLight->TestRayHit(context.ray, lightDistance))
-    {
-        if (lightDistance > 0.0f && lightDistance < context.hitPoint.distance)
-        {
-            // mark as light
-            context.hitPoint.Set(lightDistance, objectID, NFE_LIGHT_OBJECT);
-        }
-    }
+    mLight->Traverse(context, objectID);
 }
 
 bool LightSceneObject::Traverse_Shadow(const SingleTraversalContext& context) const
 {
-    float lightDistance;
-    if (mLight->TestRayHit(context.ray, lightDistance))
-    {
-        if (lightDistance < context.hitPoint.distance)
-        {
-            context.hitPoint.distance = lightDistance;
-            return true;
-        }
-    }
-
-    return false;
+    return mLight->Traverse_Shadow(context);
 }
 
 void LightSceneObject::Traverse(const PacketTraversalContext& context, const uint32 objectID, const uint32 numActiveGroups) const

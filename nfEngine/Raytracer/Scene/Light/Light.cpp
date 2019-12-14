@@ -35,5 +35,16 @@ const RayColor ILight::GetRadiance(const RadianceParam&, float*, float*) const
     return RayColor();
 }
 
+void ILight::Traverse(const SingleTraversalContext&, const uint32) const
+{
+    NFE_FATAL("Cannot hit this type of light");
+}
+
+bool ILight::Traverse_Shadow(const SingleTraversalContext&) const
+{
+    NFE_FATAL("Cannot hit this type of light");
+    return false;
+}
+
 } // namespace RT
 } // namespace NFE

@@ -6,9 +6,6 @@
 namespace NFE {
 namespace RT {
 
-constexpr uint32 NFE_INVALID_OBJECT = UINT32_MAX;
-constexpr uint32 NFE_LIGHT_OBJECT = 0xFFFFFFFE;
-
 // Ray-scene intersection data (non-SIMD)
 struct HitPoint
 {
@@ -24,15 +21,27 @@ struct HitPoint
     };
 
     float distance;
-    float u;
-    float v;
 
+    union
+    {
+        struct
+        {
+            float u;
+            float v;
+        };
+
+        uint64 combinedUV;
+    };
+
+    static constexpr uint32 InvalidObject = UINT32_MAX;
     static constexpr float DefaultDistance = std::numeric_limits<float>::infinity();
 
-    NFE_FORCE_INLINE HitPoint()
-        : objectId(NFE_INVALID_OBJECT)
-        , distance(DefaultDistance)
-    {}
+    NFE_FORCE_INLINE void Reset()
+    {
+        objectId = InvalidObject;
+        distance = DefaultDistance;
+        combinedUV = 0;
+    }
 
     NFE_FORCE_INLINE void Set(float newDistance, uint32 newObjectId, uint32 newSubObjectId)
     {
@@ -60,7 +69,7 @@ struct NFE_ALIGN(32) HitPoint_Simd8
 
     NFE_FORCE_INLINE HitPoint_Simd8()
         : distance(Math::VECTOR8_MAX)
-        , objectId(NFE_INVALID_OBJECT)
+        , objectId(HitPoint::InvalidObject)
     {}
 
     // extract single hit point

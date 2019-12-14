@@ -89,7 +89,7 @@ VertexConnectionAndMerging::VertexConnectionAndMerging()
     , mCameraConnectingWeight(LdrColorRGB::White())
     , mVertexMergingWeight(LdrColorRGB::White())
 {
-    mUseVertexConnection = false; // true;
+    mUseVertexConnection = true;
     mUseVertexMerging = true;
     mVertexMergingKernel = VertexMergingKernel::Smooth;
     mMaxPathLength = 10;
@@ -237,8 +237,7 @@ const RayColor VertexConnectionAndMerging::RenderPixel(const Math::Ray& ray, con
     {
         NFE_ASSERT(pathState.ray.IsValid());
 
-        hitPoint.objectId = NFE_INVALID_OBJECT;
-        hitPoint.distance = HitPoint::DefaultDistance;
+        hitPoint.Reset();
         param.scene.Traverse({ pathState.ray, hitPoint, ctx });
 
         // ray missed - return background light color
@@ -261,13 +260,11 @@ const RayColor VertexConnectionAndMerging::RenderPixel(const Math::Ray& ray, con
             pathState.dVM *= invMis;
         }
 
-        // we hit a light directly
-        if (hitPoint.subObjectId == NFE_LIGHT_OBJECT)
-        {
-            const ISceneObject* sceneObject = param.scene.GetHitObject(hitPoint.objectId);
-            const LightSceneObject* lightObject = RTTI::Cast<LightSceneObject>(sceneObject);
-            NFE_ASSERT(lightObject);
+        const ISceneObject* sceneObject = param.scene.GetHitObject(hitPoint.objectId);
 
+        // we hit a light directly
+        if (const LightSceneObject* lightObject = RTTI::Cast<LightSceneObject>(sceneObject))
+        {
             const float cosAtLight = -shadingData.intersection.CosTheta(pathState.ray.dir);
             const RayColor lightColor = EvaluateLight(param.iteration, lightObject, &shadingData.intersection, pathState, ctx);
             NFE_ASSERT(lightColor.IsValid());
@@ -376,8 +373,7 @@ void VertexConnectionAndMerging::TraceLightPath(const RenderParam& param, Render
     {
         NFE_ASSERT(pathState.ray.IsValid());
 
-        hitPoint.objectId = NFE_INVALID_OBJECT;
-        hitPoint.distance = HitPoint::DefaultDistance;
+        hitPoint.Reset();
         param.scene.Traverse({ pathState.ray, hitPoint, ctx });
 
         if (hitPoint.distance == HitPoint::DefaultDistance)
@@ -385,7 +381,8 @@ void VertexConnectionAndMerging::TraceLightPath(const RenderParam& param, Render
             break; // ray missed
         }
 
-        if (hitPoint.subObjectId == NFE_LIGHT_OBJECT)
+        const ITraceableSceneObject* sceneObject = param.scene.GetHitObject(hitPoint.objectId);
+        if (sceneObject->IsA<LightSceneObject>())
         {
             break; // we hit a light directly
         }

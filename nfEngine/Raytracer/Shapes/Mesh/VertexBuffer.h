@@ -50,7 +50,11 @@ public:
     const Material* GetMaterial(const uint32 materialIndex) const;
 
     // extract preprocessed triangle data (for one triangle)
-    const Math::ProcessedTriangle& GetTriangle(const uint32 triangleIndex) const;
+    NFE_FORCE_INLINE const Math::ProcessedTriangle& GetTriangle(const uint32 triangleIndex) const
+    {
+        return mPreprocessedTriangles[triangleIndex];
+    }
+
     void GetTriangle(const uint32 triangleIndex, Math::Triangle_Simd8& outTriangle) const;
 
     void GetShadingData(const VertexIndices& indices, VertexShadingData& a, VertexShadingData& b, VertexShadingData& c) const;

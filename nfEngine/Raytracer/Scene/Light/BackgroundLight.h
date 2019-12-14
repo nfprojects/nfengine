@@ -20,7 +20,6 @@ public:
     TexturePtr mTexture = nullptr;
 
     virtual const Math::Box GetBoundingBox() const override;
-    virtual bool TestRayHit(const Math::Ray& ray, float& outDistance) const override;
     virtual const RayColor Illuminate(const IlluminateParam& param, IlluminateResult& outResult) const override;
     virtual const RayColor GetRadiance(const RadianceParam& param, float* outDirectPdfA, float* outEmissionPdfW) const override;
     virtual const RayColor Emit(const EmitParam& param, EmitResult& outResult) const override;

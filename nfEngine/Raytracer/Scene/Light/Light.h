@@ -88,7 +88,8 @@ public:
     virtual const Math::Box GetBoundingBox() const = 0;
 
     // check if a ray hits the light
-    virtual bool TestRayHit(const Math::Ray& ray, float& outDistance) const = 0;
+    virtual void Traverse(const SingleTraversalContext& context, const uint32 objectID) const;
+    virtual bool Traverse_Shadow(const SingleTraversalContext& context) const;
 
     // Illuminate a point in the scene.
     // Returns probability of sampling the returned direction.

@@ -42,8 +42,10 @@ float RectShape::GetSurfaceArea() const
     return 4.0f * mSize.x * mSize.y;
 }
 
-bool RectShape::Intersect(const Math::Ray& ray, ShapeIntersection& outResult) const
+bool RectShape::Intersect(const Math::Ray& ray, RenderingContext& renderingCtx, ShapeIntersection& outResult) const
 {
+    NFE_UNUSED(renderingCtx);
+
     const float t = -ray.origin.z * ray.invDir.z;
 
     if (t > FLT_EPSILON)

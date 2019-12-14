@@ -13,7 +13,6 @@ public:
     NFE_RAYTRACER_API PointLight(const Math::HdrColorRGB& color = Math::HdrColorRGB(1.0f));
 
     virtual const Math::Box GetBoundingBox() const override;
-    virtual bool TestRayHit(const Math::Ray& ray, float& outDistance) const override;
     virtual const RayColor Illuminate(const IlluminateParam& param, IlluminateResult& outResult) const override;
     virtual const RayColor Emit(const EmitParam& param, EmitResult& outResult) const override;
     virtual Flags GetFlags() const override final;

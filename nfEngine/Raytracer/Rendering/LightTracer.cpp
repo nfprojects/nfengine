@@ -72,8 +72,7 @@ const RayColor LightTracer::RenderPixel(const Ray&, const RenderParam& param, Re
 
     for (;;)
     {
-        hitPoint.objectId = NFE_INVALID_OBJECT;
-        hitPoint.distance = HitPoint::DefaultDistance;
+        hitPoint.Reset();
         param.scene.Traverse({ ray, hitPoint, ctx });
 
         if (hitPoint.distance == HitPoint::DefaultDistance)
@@ -81,7 +80,8 @@ const RayColor LightTracer::RenderPixel(const Ray&, const RenderParam& param, Re
             break; // ray missed
         }
 
-        if (hitPoint.subObjectId == NFE_LIGHT_OBJECT)
+        const ITraceableSceneObject* sceneObject = param.scene.GetHitObject(hitPoint.objectId);
+        if (sceneObject->IsA<LightSceneObject>())
         {
             break; // we hit a light directly
         }

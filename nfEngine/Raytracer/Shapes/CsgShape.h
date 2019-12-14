@@ -25,7 +25,7 @@ public:
 
     virtual const Math::Box GetBoundingBox() const override;
 
-    virtual bool Intersect(const Math::Ray& ray, ShapeIntersection& outResult) const override;
+    virtual bool Intersect(const Math::Ray& ray, RenderingContext& renderingCtx, ShapeIntersection& outResult) const override;
     virtual const Math::Vector4 Sample(const Math::Float3& u, Math::Vector4* outNormal, float* outPdf = nullptr) const override;
     virtual void EvaluateIntersection(const HitPoint& hitPoint, IntersectionData& outIntersectionData) const override;
 

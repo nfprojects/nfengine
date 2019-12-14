@@ -21,6 +21,12 @@ public:
 
     virtual const RTTI::Type* GetDynamicType() const = 0;
 
+    template<typename DerivedType>
+    NFE_FORCE_INLINE bool IsA() const
+    {
+        return GetDynamicType()->IsA(RTTI::GetType<DerivedType>());
+    }
+
     // Called when a property gets changed (e.g. by the editor)
     virtual bool OnPropertyChanged(const Common::StringView propertyName);
 };

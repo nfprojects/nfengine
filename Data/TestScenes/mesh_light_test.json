@@ -1,0 +1,121 @@
+{
+    "materials":
+    [
+        {
+            "name": "ground",
+            "bsdf": "diffuse",
+            "baseColor": [0.9, 0.9, 0.9],
+            "baseColorTexture": "TEXTURES/default.bmp",
+            "metalness": 0.0,
+            "roughness": 0.5
+        },
+        {
+            "name": "diffuse",
+            "bsdf": "diffuse",
+            "baseColor": [0.9, 0.9, 0.9],
+            "metalness": 0.0,
+            "roughness": 0.0
+        },
+        {
+            "name": "silver",
+            "bsdf": "metal",
+            "baseColor": [0.98, 0.98, 0.98],
+            "metalness": 0.0,
+            "roughness": 0.0
+        },
+        {
+            "name": "roughSilver",
+            "bsdf": "roughMetal",
+            "baseColor": [0.98, 0.98, 0.98],
+            "metalness": 0.0,
+            "roughness": 0.3
+        },
+        {
+            "name": "dielectric",
+            "bsdf": "dielectric",
+            "baseColor": [1.0, 1.0, 1.0]
+        }
+    ],
+    "objects":
+    [
+        {
+            "type": "plane",
+            "size": [100.0, 100.0],
+            "transform": { "translation": [0.0, 0.0, 0.0], "orientation": [-90.0, 0.0, 0.0] },
+            "textureScale" : [0.4, 0.4],
+            "material": "ground"
+        },
+
+        {
+            "type": "sphere",
+            "radius": 0.5,
+            "transform": { "translation": [-3.0, 0.5, 2.0] },
+            "material": "diffuse"
+        },
+        {
+            "type": "sphere",
+            "radius": 0.5,
+            "transform": { "translation": [-1.0, 0.5, 2.0] },
+            "material": "dielectric"
+        },
+        {
+            "type": "sphere",
+            "radius": 0.5,
+            "transform": { "translation": [1.0, 0.5, 2.0] },
+            "material": "roughSilver"
+        },
+        {
+            "type": "sphere",
+            "radius": 0.5,
+            "transform": { "translation": [3.0, 0.5, 2.0] },
+            "material": "silver"
+        },
+
+        {
+            "type": "box",
+            "size": [0.5, 0.5, 0.5],
+            "transform": { "translation": [-3.0, 0.501, 4.0] },
+            "material": "diffuse"
+        },
+        {
+            "type": "box",
+            "size": [0.5, 0.5, 0.5],
+            "transform": { "translation": [-1.0, 0.501, 4.0] },
+            "material": "dielectric"
+        },
+        {
+            "type": "box",
+            "size": [0.5, 0.5, 0.5],
+            "transform": { "translation": [1.0, 0.501, 4.0] },
+            "material": "roughSilver"
+        },
+        {
+            "type": "box",
+            "size": [0.5, 0.5, 0.5],
+            "transform": { "translation": [3.0, 0.501, 4.0] },
+            "material": "silver"
+        }
+    ],
+    "lights":
+    [
+        {
+            "type": "area",
+            "color": [5.0, 5.0, 5.0],
+            "transform": { "translation": [0.0, 0.1, 0.0], "orientation": [0.0, 0.0, 0.0] },
+            "shape":
+            {
+                "type": "mesh",
+                "path": "MODELS/bunny.obj"
+            }
+        }
+    ],
+    "camera":
+    {
+        "transform":
+        {
+            "translation": [7.1, 5.5, 9.3],
+            "orientation": [27.5, -137.5, 0.0]
+        },
+        "fieldOfView": 45.0
+    }
+}

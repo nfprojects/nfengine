@@ -28,7 +28,7 @@ void IShape::Traverse(const SingleTraversalContext& context, const uint32 object
 {
     ShapeIntersection intersection;
 
-    if (Intersect(context.ray, intersection))
+    if (Intersect(context.ray, context.context, intersection))
     {
         HitPoint& hitPoint = context.hitPoint;
 
@@ -56,7 +56,7 @@ bool IShape::Traverse_Shadow(const SingleTraversalContext& context) const
 {
     ShapeIntersection intersection;
 
-    if (!Intersect(context.ray, intersection))
+    if (!Intersect(context.ray, context.context, intersection))
     {
         return false;
     }
@@ -64,7 +64,7 @@ bool IShape::Traverse_Shadow(const SingleTraversalContext& context) const
     return intersection.farDist > 0.0f && intersection.nearDist < context.hitPoint.distance;
 }
 
-bool IShape::Intersect(const Ray&, ShapeIntersection&) const
+bool IShape::Intersect(const Ray&, RenderingContext&, ShapeIntersection&) const
 {
     NFE_FATAL("This shape has no volume");
     return false;
@@ -110,6 +110,11 @@ float IShape::Pdf(const Math::Vector4& ref, const Math::Vector4& point) const
     NFE_UNUSED(point);
 
     return 1.0f / GetSurfaceArea();
+}
+
+bool IShape::MakeSamplable()
+{
+    return true;
 }
 
 } // namespace RT

@@ -1,6 +1,7 @@
 #include "PCH.h"
 #include "DebugRenderer.h"
 #include "Scene/Scene.h"
+#include "Scene/Object/SceneObject_Light.h"
 #include "Material/Material.h"
 #include "Traversal/TraversalContext.h"
 #include "Rendering/Film.h"
@@ -91,7 +92,8 @@ const RayColor DebugRenderer::RenderPixel(const Math::Ray& ray, const RenderPara
         return RayColor::Zero();
     }
 
-    if (hitPoint.subObjectId == NFE_LIGHT_OBJECT)
+    const ITraceableSceneObject* sceneObject = param.scene.GetHitObject(hitPoint.objectId);
+    if (sceneObject->IsA<LightSceneObject>())
     {
         // ray hit a light
         const Vector4 lightColor{ 1.0, 1.0f, 0.0f };

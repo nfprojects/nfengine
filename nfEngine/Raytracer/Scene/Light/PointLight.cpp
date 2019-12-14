@@ -24,16 +24,7 @@ PointLight::PointLight(const Math::HdrColorRGB& color)
 
 const Box PointLight::GetBoundingBox() const
 {
-    return Box(Vector4::Zero(), 0.0f);
-}
-
-bool PointLight::TestRayHit(const Math::Ray& ray, float& outDistance) const
-{
-    NFE_UNUSED(ray);
-    NFE_UNUSED(outDistance);
-
-    // we assume that a ray can never hit a point light source
-    return false;
+    return Box(Vector4::Zero());
 }
 
 const RayColor PointLight::Illuminate(const IlluminateParam& param, IlluminateResult& outResult) const

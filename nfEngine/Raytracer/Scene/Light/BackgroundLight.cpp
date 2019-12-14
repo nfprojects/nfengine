@@ -36,17 +36,6 @@ const Box BackgroundLight::GetBoundingBox() const
     return Box::Full();
 }
 
-bool BackgroundLight::TestRayHit(const Math::Ray& ray, float& outDistance) const
-{
-    NFE_FATAL("No ray will hit background light");
-
-    NFE_UNUSED(ray);
-
-    // any ray can hit background
-    outDistance = BackgroundLightDistance;
-    return true;
-}
-
 const RayColor BackgroundLight::GetBackgroundColor(const Vector4& dir, const Wavelength& wavelength) const
 {
     NFE_UNUSED(dir);

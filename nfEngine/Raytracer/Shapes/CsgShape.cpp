@@ -38,11 +38,11 @@ const Box CsgShape::GetBoundingBox() const
     return Box::Empty();
 }
 
-bool CsgShape::Intersect(const Math::Ray& ray, ShapeIntersection& outResult) const
+bool CsgShape::Intersect(const Math::Ray& ray, RenderingContext& renderingCtx, ShapeIntersection& outResult) const
 {
     ShapeIntersection intersectionA, intersectionB;
 
-    if (!mShapeA->Intersect(ray, intersectionA))
+    if (!mShapeA->Intersect(ray, renderingCtx, intersectionA))
     {
         intersectionA.nearDist = FLT_MAX;
         intersectionA.farDist = -FLT_MAX;
@@ -52,7 +52,7 @@ bool CsgShape::Intersect(const Math::Ray& ray, ShapeIntersection& outResult) con
         Math::Ray transformedRay = ray;
         transformedRay.origin -= Vector4(0.25f, 0.5f, 0.1f); // TODO
 
-        if (!mShapeB->Intersect(transformedRay, intersectionB))
+        if (!mShapeB->Intersect(transformedRay, renderingCtx, intersectionB))
         {
             intersectionB.nearDist = FLT_MAX;
             intersectionB.farDist = -FLT_MAX;

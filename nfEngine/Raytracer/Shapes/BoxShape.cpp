@@ -140,8 +140,10 @@ float BoxShape::GetSurfaceArea() const
     return 8.0f * (mSize.x * (mSize.y + mSize.z) + mSize.y * mSize.z);
 }
 
-bool BoxShape::Intersect(const Math::Ray& ray, ShapeIntersection& outResult) const
+bool BoxShape::Intersect(const Math::Ray& ray, RenderingContext& renderingCtx, ShapeIntersection& outResult) const
 {
+    NFE_UNUSED(renderingCtx);
+
     const Box box(-mSize, mSize);
 
     outResult.subObjectId = 0;

@@ -96,7 +96,7 @@ const RayColor PathTracer::RenderPixel(const Math::Ray& primaryRay, const Render
 
     for (;;)
     {
-        hitPoint.distance = HitPoint::DefaultDistance;
+        hitPoint.Reset();
         param.scene.Traverse({ ray, hitPoint, context });
 
         // sample medium first
@@ -189,11 +189,8 @@ const RayColor PathTracer::RenderPixel(const Math::Ray& primaryRay, const Render
         }
 
         // we hit a light directly
-        if (hitPoint.subObjectId == NFE_LIGHT_OBJECT)
+        if (const LightSceneObject* lightObject = RTTI::Cast<LightSceneObject>(sceneObject))
         {
-            const LightSceneObject* lightObject = RTTI::Cast<LightSceneObject>(sceneObject);
-            NFE_ASSERT(lightObject);
-
             const RayColor lightColor = EvaluateLight(lightObject, ray, shadingData.intersection, context);
             NFE_ASSERT(lightColor.IsValid());
             resultColor.MulAndAccumulate(throughput, lightColor);

@@ -36,20 +36,6 @@ const Box DirectionalLight::GetBoundingBox() const
     return Box::Full();
 }
 
-bool DirectionalLight::TestRayHit(const Math::Ray& ray, float& outDistance) const
-{
-    if (!mIsDelta)
-    {
-        if (Vector4::Dot3(ray.dir, VECTOR_Z) < -mCosAngle)
-        {
-            outDistance = FLT_MAX;
-            return true;
-        }
-    }
-
-    return false;
-}
-
 const Vector4 DirectionalLight::SampleDirection(const Float2 sample, float& outPdf) const
 {
     Vector4 sampledDirection = Vector4::Zero();

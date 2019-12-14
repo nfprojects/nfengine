@@ -9,7 +9,7 @@
 #include "../nfEngine/Raytracer/Rendering/Film.h"
 #include "../nfEngine/Raytracer/Traversal/TraversalContext.h"
 #include "../nfEngine/Raytracer/Textures/Texture.h"
-#include "../nfEngine/Raytracer/Scene/Object/SceneObject.h"
+#include "../nfEngine/Raytracer/Scene/Object/SceneObject_Shape.h"
 
 #include "../nfEngineDeps/imgui/imgui.h"
 #include "../nfEngineDeps/imgui/imgui_sw.hpp"
@@ -309,21 +309,23 @@ void DemoWindow::OnMouseDown(MouseButton button, int x, int y)
 #endif
 
         HitPoint hitPoint;
+        hitPoint.Reset();
         mScene->Traverse({ ray, hitPoint, *renderingContext });
 
         if (hitPoint.objectId != UINT32_MAX)
         {
-            if (hitPoint.subObjectId == NFE_LIGHT_OBJECT)
-            {
-                mSelectedMaterial = nullptr;
-            }
-            else // regular scene object
+            mSelectedObject = const_cast<ITraceableSceneObject*>(mScene->GetHitObject(hitPoint.objectId));
+
+            if (mSelectedObject->IsA<ShapeSceneObject>())
             {
                 IntersectionData intersectionData;
                 mScene->EvaluateIntersection(ray, hitPoint, renderingContext->time, intersectionData);
                 mSelectedMaterial = const_cast<Material*>(intersectionData.material);
             }
-            mSelectedObject = const_cast<ITraceableSceneObject*>(mScene->GetHitObject(hitPoint.objectId));
+            else
+            {
+                mSelectedMaterial = nullptr;
+            }
         }
     }
 }

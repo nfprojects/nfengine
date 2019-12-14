@@ -278,12 +278,11 @@ const RayColor PathTracerMIS::RenderPixel(const Math::Ray& primaryRay, const Ren
 
     for (;;)
     {
-        hitPoint.objectId = NFE_INVALID_OBJECT;
-        hitPoint.distance = HitPoint::DefaultDistance;
+        hitPoint.Reset();
         param.scene.Traverse({ ray, hitPoint, context });
 
         // ray missed - return background light color
-        if (hitPoint.objectId == NFE_INVALID_OBJECT)
+        if (hitPoint.objectId == HitPoint::InvalidObject)
         {
             resultColor.MulAndAccumulate(throughput, EvaluateGlobalLights(param.scene, ray, pathState, context, lightPickProbability));
             pathTerminationReason = PathTerminationReason::HitBackground;
@@ -298,11 +297,8 @@ const RayColor PathTracerMIS::RenderPixel(const Math::Ray& primaryRay, const Ren
         objectHit = param.scene.GetHitObject(hitPoint.objectId);
 
         // we hit a light directly
-        if (hitPoint.subObjectId == NFE_LIGHT_OBJECT)
+        if (const LightSceneObject* lightObject = RTTI::Cast<LightSceneObject>(objectHit))
         {
-            const LightSceneObject* lightObject = RTTI::Cast<LightSceneObject>(objectHit);
-            NFE_ASSERT(lightObject);
-
             const RayColor lightColor = EvaluateLight(lightObject, ray, hitPoint.distance, shadingData.intersection, pathState, context, lightPickProbability);
             NFE_ASSERT(lightColor.IsValid());
             resultColor.MulAndAccumulate(throughput, lightColor);

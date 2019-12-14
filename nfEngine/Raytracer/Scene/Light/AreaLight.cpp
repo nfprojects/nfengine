@@ -36,6 +36,7 @@ AreaLight::AreaLight(ShapePtr shape, const Math::HdrColorRGB& color)
     : ILight(color)
     , mShape(std::move(shape))
 {
+    mShape->MakeSamplable();
 }
 
 const Box AreaLight::GetBoundingBox() const
@@ -43,17 +44,14 @@ const Box AreaLight::GetBoundingBox() const
     return mShape->GetBoundingBox();
 }
 
-bool AreaLight::TestRayHit(const Ray& ray, float& outDistance) const
+void AreaLight::Traverse(const SingleTraversalContext& context, const uint32 objectID) const
 {
-    ShapeIntersection intersection;
+    mShape->Traverse(context, objectID);
+}
 
-    if (mShape->Intersect(ray, intersection))
-    {
-        outDistance = intersection.nearDist;
-        return true;
-    }
-
-    return false;
+bool AreaLight::Traverse_Shadow(const SingleTraversalContext& context) const
+{
+    return mShape->Traverse_Shadow(context);
 }
 
 const RayColor AreaLight::Illuminate(const IlluminateParam& param, IlluminateResult& outResult) const

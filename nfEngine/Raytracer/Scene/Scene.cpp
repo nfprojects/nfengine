@@ -56,11 +56,14 @@ bool Scene::BuildBVH()
 
             const ILight& light = lightObject->GetLight();
 
-            if (light.GetFlags() & ILight::Flag_IsFinite)
+            const bool isFinite = (light.GetFlags() & ILight::Flag_IsFinite) != 0;
+            const bool isDelta = (light.GetFlags() & ILight::Flag_IsDelta) != 0;
+
+            if (isFinite && !isDelta)
             {
                 mTraceableObjects.PushBack(static_cast<const ITraceableSceneObject*>(object.Get()));
             }
-            else if (!(light.GetFlags() & ILight::Flag_IsFinite))
+            else if (!isFinite)
             {
                 mGlobalLights.PushBack(lightObject);
             }
@@ -229,8 +232,6 @@ void Scene::Traverse_Leaf(const PacketTraversalContext& context, const uint32 ob
 
 void Scene::Traverse(const SingleTraversalContext& context) const
 {
-    //NFE_SCOPED_TIMER(Scene_Traverse);
-
     context.context.localCounters.Reset();
 
     const uint32 numObjects = mTraceableObjects.Size();
@@ -317,7 +318,9 @@ void Scene::EvaluateIntersection(const Ray& ray, const HitPoint& hitPoint, const
 {
     //NFE_SCOPED_TIMER(Scene_EvaluateIntersection);
 
-    NFE_ASSERT(hitPoint.distance < FLT_MAX);
+    NFE_ASSERT(hitPoint.distance >= 0.0f && hitPoint.distance < FLT_MAX);
+    NFE_ASSERT(hitPoint.u >= 0.0f && hitPoint.u <= 1.0f);
+    NFE_ASSERT(hitPoint.v >= 0.0f && hitPoint.v <= 1.0f);
 
     const ITraceableSceneObject* object = mTraceableObjects[hitPoint.objectId];
 
@@ -329,7 +332,13 @@ void Scene::EvaluateIntersection(const Ray& ray, const HitPoint& hitPoint, const
 
     // calculate normal, tangent, tex coord, etc. from intersection data
     object->EvaluateIntersection(hitPoint, outData);
-    NFE_ASSERT(outData.texCoord.IsValid());
+    {
+        NFE_ASSERT(outData.texCoord.IsValid());
+        NFE_ASSERT(outData.frame[0].IsValid());
+        NFE_ASSERT(outData.frame[2].IsValid());
+        NFE_ASSERT(Abs(1.0f - outData.frame[0].SqrLength3()) < 0.001f);
+        NFE_ASSERT(Abs(1.0f - outData.frame[2].SqrLength3()) < 0.001f);
+    }
 
     Vector4 localSpaceTangent = outData.frame[0];
     Vector4 localSpaceNormal = outData.frame[2];
@@ -362,6 +371,7 @@ void Scene::EvaluateIntersection(const Ray& ray, const HitPoint& hitPoint, const
     {
         // validate length
         NFE_ASSERT(Abs(1.0f - outData.frame[0].SqrLength3()) < 0.001f);
+        NFE_ASSERT(Abs(1.0f - outData.frame[1].SqrLength3()) < 0.001f);
         NFE_ASSERT(Abs(1.0f - outData.frame[2].SqrLength3()) < 0.001f);
 
         // validate perpendicularity
