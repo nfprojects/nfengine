@@ -1,6 +1,6 @@
 #include "PCH.h"
 #include "CheckerboardTexture.h"
-#include "Color/ColorHelpers.h"
+#include "../../nfCommon/Math/ColorHelpers.hpp"
 
 namespace NFE {
 namespace RT {

@@ -1,7 +1,7 @@
 #include "PCH.h"
 #include "Bitmap.h"
 #include "BlockCompression.h"
-#include "../Color/ColorHelpers.h"
+#include "../nfCommon/Math/ColorHelpers.hpp"
 #include "../nfCommon/Memory/MemoryHelpers.hpp"
 #include "../nfCommon/Math/Packed.hpp"
 #include "../nfCommon/Math/Vector4Load.hpp"
@@ -26,7 +26,9 @@ uint8 Bitmap::BitsPerPixel(Format format)
     case Format::B8G8R8A8_UNorm:            return 8 * sizeof(uint8) * 4;
     case Format::R8G8B8A8_UNorm:            return 8 * sizeof(uint8) * 4;
     case Format::B8G8R8A8_UNorm_Palette:    return 8 * sizeof(uint8);
+    case Format::R10G10B10A2_UNorm:         return 32;
     case Format::B5G6R5_UNorm:              return 16;
+    case Format::B4G4R4A4_UNorm:            return 16;
     case Format::R16_UNorm:                 return 8 * sizeof(uint16);
     case Format::R16G16_UNorm:              return 8 * sizeof(uint16) * 2;
     case Format::R16G16B16A16_UNorm:        return 8 * sizeof(uint16) * 4;
@@ -59,7 +61,9 @@ const char* Bitmap::FormatToString(Format format)
     case Format::B8G8R8A8_UNorm:            return "B8G8R8A8_UNorm";
     case Format::R8G8B8A8_UNorm:            return "R8G8B8A8_UNorm";
     case Format::B8G8R8A8_UNorm_Palette:    return "B8G8R8A8_UNorm_Palette";
+    case Format::R10G10B10A2_UNorm:         return "R10G10B10A2_UNorm";
     case Format::B5G6R5_UNorm:              return "B5G6R5_UNorm";
+    case Format::B4G4R4A4_UNorm:            return "B4G4R4A4_UNorm";
     case Format::R16_UNorm:                 return "R16_UNorm";
     case Format::R16G16_UNorm:              return "R16G16_UNorm";
     case Format::R16G16B16A16_UNorm:        return "R16G16B16A16_UNorm";
@@ -300,12 +304,13 @@ bool Bitmap::Load(const char* path)
 
             if (!LoadEXR(file, path))
             {
-                if (!LoadVDB(file, path))
-                {
-                    NFE_LOG_ERROR("Failed to load '%hs' - unknown format", path);
-                    fclose(file);
-                    return false;
-                }
+                //if (!LoadVDB(file, path))
+                //{
+                //    NFE_LOG_ERROR("Failed to load '%hs' - unknown format", path);
+                //    fclose(file);
+                //    return false;
+                //}
+                return false;
             }
         }
     }
@@ -375,6 +380,20 @@ const Vector4 Bitmap::GetPixel(uint32 x, uint32 y) const
     {
         const uint16* source = reinterpret_cast<const uint16*>(rowData) + (size_t)x;
         color = Vector4_Load_B5G6R5_Norm(source);
+        break;
+    }
+
+    case Format::B4G4R4A4_UNorm:
+    {
+        const uint16* source = reinterpret_cast<const uint16*>(rowData) + (size_t)x;
+        color = Vector4_Load_B4G4R4A4_Norm(source);
+        break;
+    }
+
+    case Format::R10G10B10A2_UNorm:
+    {
+        const uint32* source = reinterpret_cast<const uint32*>(rowData) + (size_t)x;
+        color = Vector4_Load_R10G10B10A2_Norm(source);
         break;
     }
 
@@ -594,6 +613,30 @@ void Bitmap::GetPixelBlock(const VectorInt4 coords, Vector4* outColors) const
         color[1] = Vector4_Load_B5G6R5_Norm(source1);
         color[2] = Vector4_Load_B5G6R5_Norm(source2);
         color[3] = Vector4_Load_B5G6R5_Norm(source3);
+        break;
+    }
+
+    case Format::B4G4R4A4_UNorm:
+    {
+        const VectorInt4 offsets = coords << 1; // offset = 2 * coords
+        const uint16* source0 = reinterpret_cast<const uint16*>(rowData0 + (uint32)offsets.x);
+        const uint16* source1 = reinterpret_cast<const uint16*>(rowData0 + (uint32)offsets.z);
+        const uint16* source2 = reinterpret_cast<const uint16*>(rowData1 + (uint32)offsets.x);
+        const uint16* source3 = reinterpret_cast<const uint16*>(rowData1 + (uint32)offsets.z);
+        color[0] = Vector4_Load_B4G4R4A4_Norm(source0);
+        color[1] = Vector4_Load_B4G4R4A4_Norm(source1);
+        color[2] = Vector4_Load_B4G4R4A4_Norm(source2);
+        color[3] = Vector4_Load_B4G4R4A4_Norm(source3);
+        break;
+    }
+
+    case Format::R10G10B10A2_UNorm:
+    {
+        const VectorInt4 offsets = coords << 2; // offset = 4 * coords
+        color[0] = Vector4_Load_R10G10B10A2_Norm(reinterpret_cast<const uint32*>(rowData0 + (uint32)offsets.x));
+        color[1] = Vector4_Load_R10G10B10A2_Norm(reinterpret_cast<const uint32*>(rowData0 + (uint32)offsets.z));
+        color[2] = Vector4_Load_R10G10B10A2_Norm(reinterpret_cast<const uint32*>(rowData1 + (uint32)offsets.x));
+        color[3] = Vector4_Load_R10G10B10A2_Norm(reinterpret_cast<const uint32*>(rowData1 + (uint32)offsets.z));
         break;
     }
 

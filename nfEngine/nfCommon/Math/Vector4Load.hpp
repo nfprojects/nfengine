@@ -57,6 +57,42 @@ NFE_FORCE_INLINE const Vector4 Vector4_Load_B5G6R5_Norm(const uint16* src)
     return raw.ConvertToFloat() * scale;
 }
 
+// Convert uint16 (B4G4R4A4 format) to a Vector4 (normalized range)
+NFE_FORCE_INLINE const Vector4 Vector4_Load_B4G4R4A4_Norm(const uint16* src)
+{
+    const VectorInt4 mask{ 0x0F00u, 0x00F0u, 0x000Fu, 0xF000u };
+    const Vector4 scale{ 1.0f / 256.0f / 15.0f, 1.0f / 16.0f / 15.0f, 1.0f / 15.0f, 1.0f / 4096.0f / 15.0f };
+    const VectorInt4 raw = VectorInt4(*reinterpret_cast<const int32*>(src))& mask;
+    return raw.ConvertToFloat() * scale;
+}
+
+NFE_FORCE_INLINE const Vector4 Vector4_Load_R10G10B10A2_Norm(const uint32* src)
+{
+#ifdef NFE_USE_SSE
+    const Vector4 mask{ 0x3FFu, 0x3FFu << 10, 0x3FFu << 20, 0x3u << 30 };
+    const Vector4 scale{ 1.0f / 1023.0f, 1.0f / (1023.0f * 1024.0f), 1.0f / (1023.0f * 1024.0f * 1024.0f), 1.0f / (3.0f * 1024.0f * 1024.0f * 1024.0f) };
+    const Vector4 unsignedOffset{ 0.0f, 0.0f, 0.0f, 32768.0f * 65536.0f };
+
+    __m128 vTemp = _mm_load_ps1((const float*)src);
+    vTemp = _mm_and_ps(vTemp, mask.v);
+    vTemp = _mm_xor_ps(vTemp, VECTOR_MASK_SIGN_W);
+
+    // convert to float
+    vTemp = _mm_cvtepi32_ps(_mm_castps_si128(vTemp));
+    vTemp = _mm_add_ps(vTemp, unsignedOffset);
+    return _mm_mul_ps(vTemp, scale);
+#else
+    const uint32 value = *src;
+    return Vector4
+    {
+        static_cast<float>((value      ) & 0x3FF) / 1023.0f,
+        static_cast<float>((value >> 10) & 0x3FF) / 1023.0f,
+        static_cast<float>((value >> 20) & 0x3FF) / 1023.0f,
+        static_cast<float>((value >> 30)        ) / 3.0f,
+    };
+#endif // NFE_USE_SSE
+}
+
 // Convert 2 uint8 to a Vector4 (normalized range)
 NFE_FORCE_INLINE const Vector4 Vector4_Load_2xUint8_Norm(const uint8* src)
 {

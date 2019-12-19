@@ -1,7 +1,7 @@
 #include "PCH.h"
 #include "BitmapTexture.h"
 #include "../Utils/Bitmap.h"
-#include "../Color/ColorHelpers.h"
+#include "../nfCommon/Math/ColorHelpers.hpp"
 #include "../nfCommon/Logger/Logger.hpp"
 #include "../nfCommon/Math/Distribution.hpp"
 #include "../nfCommon/Containers/DynArray.hpp"

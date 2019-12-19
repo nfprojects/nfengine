@@ -1,6 +1,6 @@
 #include "PCH.h"
 #include "GradientTexture.h"
-#include "Color/ColorHelpers.h"
+#include "../../nfCommon/Math/ColorHelpers.hpp"
 #include "../../nfCommon/Math/Math.hpp"
 
 namespace NFE {

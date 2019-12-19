@@ -336,6 +336,11 @@ bool Bitmap::LoadDDS(FILE* file, const char* path)
                 initData.format = Format::B5G6R5_UNorm;
                 initData.linearSpace = false;
             }
+            else if (pf.rBitMask == 0x0f00 && pf.gBitMask == 0x00f0 && pf.bBitMask == 0x000f && pf.aBitMask == 0xf000)
+            {
+                initData.format = Format::B4G4R4A4_UNorm;
+                initData.linearSpace = false;
+            }
         }
     }
     else if (pf.flags & DDPF_FOURCC)
@@ -457,9 +462,19 @@ bool Bitmap::LoadDDS(FILE* file, const char* path)
             {
                 initData.format = Format::R8_UNorm;
             }
+            else if (headerDX10.dxgiFormat == DXGI_FORMAT_R10G10B10A2_UNORM)
+            {
+                initData.format = Format::R10G10B10A2_UNorm;
+                initData.linearSpace = false;
+            }
             else if (headerDX10.dxgiFormat == DXGI_FORMAT_B5G6R5_UNORM)
             {
                 initData.format = Format::B5G6R5_UNorm;
+                initData.linearSpace = false;
+            }
+            else if (headerDX10.dxgiFormat == DXGI_FORMAT_B4G4R4A4_UNORM)
+            {
+                initData.format = Format::B4G4R4A4_UNorm;
                 initData.linearSpace = false;
             }
             else if (headerDX10.dxgiFormat == DXGI_FORMAT_R16G16B16A16_UNORM)
