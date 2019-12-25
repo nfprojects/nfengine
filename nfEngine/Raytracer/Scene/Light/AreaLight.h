@@ -16,7 +16,9 @@ class AreaLight : public ILight
     NFE_DECLARE_POLYMORPHIC_CLASS(AreaLight);
 
 public:
+    NFE_RAYTRACER_API AreaLight();
     NFE_RAYTRACER_API AreaLight(ShapePtr shape, const Math::HdrColorRGB& color);
+    NFE_RAYTRACER_API ~AreaLight();
 
     NFE_FORCE_INLINE const ShapePtr& GetShape() const { return mShape; }
 
@@ -27,7 +29,7 @@ public:
     virtual const RayColor Emit(const EmitParam& param, EmitResult& outResult) const override;
     virtual Flags GetFlags() const override final;
 
-    TexturePtr mTexture = nullptr;
+    TexturePtr mTexture;
 
 private:
     ShapePtr mShape;

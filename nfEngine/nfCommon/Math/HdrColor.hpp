@@ -6,6 +6,10 @@
 namespace NFE {
 namespace Math {
 
+class LdrColorRGB;
+
+// High dynamic range color
+// sRGB (Rec. 709) color space, linear
 class HdrColorRGB 
 {
     NFE_DECLARE_CLASS(HdrColorRGB);
@@ -19,6 +23,7 @@ public:
     NFE_FORCE_INLINE constexpr HdrColorRGB(float r, float g, float b) : r(r), g(g), b(b) { }
     NFE_FORCE_INLINE constexpr HdrColorRGB(const Vector4& color) : r(color.x), g(color.y), b(color.z) { }
     NFE_FORCE_INLINE constexpr HdrColorRGB(float intensity) : r(intensity), g(intensity), b(intensity) { }
+    NFCOMMON_API HdrColorRGB(const LdrColorRGB& color);
 
     NFE_FORCE_INLINE const Vector4 ToVector4() const
     {

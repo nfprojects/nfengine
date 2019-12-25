@@ -551,8 +551,22 @@ void Viewport::PostProcessTile(const Block& block, uint32 threadID)
         for (uint32 x = block.minX; x < block.maxX; ++x)
         {
             const Vector4 rawValue = Vector4_Load_Float3_Unsafe(mSum.GetPixelRef<Float3>(x, y));
+
 #ifdef NFE_ENABLE_SPECTRAL_RENDERING
-            Vector4 rgbColor = Vector4::Max(Vector4::Zero(), ConvertXYZtoRGB(rawValue));
+            Vector4 rgbColor;
+            if (params.colorSpace == ColorSpace::Rec709)
+            {
+                rgbColor = ConvertXYZtoRec709(rawValue);
+            }
+            else if (params.colorSpace == ColorSpace::Rec2020)
+            {
+                rgbColor = ConvertXYZtoRec2020(rawValue);
+            }
+            else
+            {
+                NFE_FATAL("Invalid color space");
+            }
+            rgbColor = Vector4::Max(Vector4::Zero(), rgbColor);
 #else
             Vector4 rgbColor = rawValue;
 #endif

@@ -1,11 +1,13 @@
 #pragma once
 
-#include "../nfCommon.hpp"
+#include "Vector4.hpp"
 #include "../Reflection/ReflectionClassDeclare.hpp"
 
 namespace NFE {
 namespace Math {
 
+// Low dynamic range color
+// sRGB (Rec. 709) color space and gamma
 class LdrColorRGB
 {
     NFE_DECLARE_CLASS(LdrColorRGB)
@@ -16,6 +18,17 @@ public:
     uint8 b;
 
     NFE_FORCE_INLINE constexpr LdrColorRGB(uint8 r, uint8 g, uint8 b) : r(r), g(g), b(b) { }
+
+    NFE_FORCE_INLINE const Vector4 AsVector4() const
+    {
+        // TODO can optimize
+        return Vector4(r / 255.0f, g / 255.0f, b / 255.0f, 1.0f);
+    }
+
+    NFE_FORCE_INLINE bool IsBlack() const
+    {
+        return r == 0 && g == 0 && b == 0;
+    }
 
     static constexpr const LdrColorRGB White()      { return { 255, 255, 255 }; }
     static constexpr const LdrColorRGB Silver()     { return { 0xC0, 0xC0, 0xC0 }; }
@@ -35,7 +48,10 @@ public:
     static constexpr const LdrColorRGB Purple()     { return { 0x80, 0, 0x80 }; }
 };
 
-struct LdrColorRGBA : public LdrColorRGB
+// Low dynamic range color
+// RGB channels: sRGB (Rec. 709) color space and gamma
+// Alpha channel: linear
+class LdrColorRGBA : public LdrColorRGB
 {
     NFE_DECLARE_CLASS(LdrColorRGBA)
 

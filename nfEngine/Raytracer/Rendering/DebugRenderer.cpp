@@ -2,7 +2,6 @@
 #include "DebugRenderer.h"
 #include "Scene/Scene.h"
 #include "Material/Material.h"
-#include "Color/Spectrum.h"
 #include "Traversal/TraversalContext.h"
 #include "Rendering/Film.h"
 #include "Rendering/RenderingContext.h"
@@ -64,25 +63,25 @@ const RayColor DebugRenderer::RenderPixel(const Math::Ray& ray, const RenderPara
     {
         const float num = static_cast<float>(ctx.localCounters.numRayBoxTests);
         const Vector4 resultColor = Vector4(num * 0.01f, num * 0.004f, num * 0.001f, 0.0f);
-        return RayColor::Resolve(ctx.wavelength, Spectrum(resultColor));
+        return RayColor::ResolveRGB(ctx.wavelength, Spectrum(resultColor));
     }
     else if (renderingMode == DebugRenderingMode::RayBoxIntersectionPassed)
     {
         const float num = static_cast<float>(ctx.localCounters.numPassedRayBoxTests);
         const Vector4 resultColor = Vector4(num * 0.01f, num * 0.005f, num * 0.001f, 0.0f);
-        return RayColor::Resolve(ctx.wavelength, Spectrum(resultColor));
+        return RayColor::ResolveRGB(ctx.wavelength, Spectrum(resultColor));
     }
     else if (renderingMode == DebugRenderingMode::RayTriIntersection)
     {
         const float num = static_cast<float>(ctx.localCounters.numRayTriangleTests);
         const Vector4 resultColor = Vector4(num * 0.01f, num * 0.004f, num * 0.001f, 0.0f);
-        return RayColor::Resolve(ctx.wavelength, Spectrum(resultColor));
+        return RayColor::ResolveRGB(ctx.wavelength, Spectrum(resultColor));
     }
     else if (renderingMode == DebugRenderingMode::RayTriIntersectionPassed)
     {
         const float num = static_cast<float>(ctx.localCounters.numPassedRayTriangleTests);
         const Vector4 resultColor = Vector4(num * 0.01f, num * 0.004f, num * 0.001f, 0.0f);
-        return RayColor::Resolve(ctx.wavelength, Spectrum(resultColor));
+        return RayColor::ResolveRGB(ctx.wavelength, Spectrum(resultColor));
     }
 #endif // NFE_ENABLE_INTERSECTION_COUNTERS
 
@@ -96,7 +95,7 @@ const RayColor DebugRenderer::RenderPixel(const Math::Ray& ray, const RenderPara
     {
         // ray hit a light
         const Vector4 lightColor{ 1.0, 1.0f, 0.0f };
-        return RayColor::Resolve(ctx.wavelength, Spectrum(lightColor));
+        return RayColor::ResolveRGB(ctx.wavelength, lightColor);
     }
 
     ShadingData shadingData;
@@ -124,7 +123,7 @@ const RayColor DebugRenderer::RenderPixel(const Math::Ray& ray, const RenderPara
         case DebugRenderingMode::Depth:
         {
             const float invDepth = 1.0f - 1.0f / (1.0f + hitPoint.distance / 10.0f);
-            resultColor = RayColor::Resolve(ctx.wavelength, Spectrum(Vector4(invDepth)));
+            resultColor = RayColor::ResolveRGB(ctx.wavelength, Vector4(invDepth));
             break;
         }
         case DebugRenderingMode::TriangleID:
@@ -133,37 +132,37 @@ const RayColor DebugRenderer::RenderPixel(const Math::Ray& ray, const RenderPara
             const float hue = (float)(uint32)hash / (float)UINT32_MAX;
             const float saturation = 0.5f + 0.5f * (float)(uint32)(hash >> 32) / (float)UINT32_MAX;
             const Vector4 rgbColor = HSVtoRGB(hue, saturation, 1.0f);
-            resultColor = RayColor::Resolve(ctx.wavelength, Spectrum(rgbColor));
+            resultColor = RayColor::ResolveRGB(ctx.wavelength, rgbColor);
             break;
         }
         case DebugRenderingMode::Tangents:
         {
             const Vector4 rgbColor = Vector4::Saturate(BipolarToUnipolar(shadingData.intersection.frame[0]));
-            resultColor = RayColor::Resolve(ctx.wavelength, Spectrum(rgbColor));
+            resultColor = RayColor::ResolveRGB(ctx.wavelength, rgbColor);
             break;
         }
         case DebugRenderingMode::Bitangents:
         {
             const Vector4 rgbColor = Vector4::Saturate(BipolarToUnipolar(shadingData.intersection.frame[1]));
-            resultColor = RayColor::Resolve(ctx.wavelength, Spectrum(rgbColor));
+            resultColor = RayColor::ResolveRGB(ctx.wavelength, rgbColor);
             break;
         }
         case DebugRenderingMode::Normals:
         {
             const Vector4 rgbColor = Vector4::Saturate(BipolarToUnipolar(shadingData.intersection.frame[2]));
-            resultColor = RayColor::Resolve(ctx.wavelength, Spectrum(rgbColor));
+            resultColor = RayColor::ResolveRGB(ctx.wavelength, rgbColor);
             break;
         }
         case DebugRenderingMode::Position:
         {
             const Vector4 rgbColor = Vector4::Max(Vector4::Zero(), shadingData.intersection.frame[3]);
-            resultColor = RayColor::Resolve(ctx.wavelength, Spectrum(rgbColor));
+            resultColor = RayColor::ResolveRGB(ctx.wavelength, rgbColor);
             break;
         }
         case DebugRenderingMode::TexCoords:
         {
             const Vector4 rgbColor = Vector4::Mod1(shadingData.intersection.texCoord & Vector4::MakeMask<1,1,0,0>());
-            resultColor = RayColor::Resolve(ctx.wavelength, Spectrum(rgbColor));
+            resultColor = RayColor::ResolveRGB(ctx.wavelength, rgbColor);
             break;
         }
 
@@ -181,19 +180,19 @@ const RayColor DebugRenderer::RenderPixel(const Math::Ray& ray, const RenderPara
         case DebugRenderingMode::Roughness:
         {
             const Vector4 rgbColor = Vector4(shadingData.materialParams.roughness);
-            resultColor = RayColor::Resolve(ctx.wavelength, Spectrum(rgbColor));
+            resultColor = RayColor::ResolveRGB(ctx.wavelength, rgbColor);
             break;
         }
         case DebugRenderingMode::Metalness:
         {
             const Vector4 rgbColor = Vector4(shadingData.materialParams.metalness);
-            resultColor = RayColor::Resolve(ctx.wavelength, Spectrum(rgbColor));
+            resultColor = RayColor::ResolveRGB(ctx.wavelength, rgbColor);
             break;
         }
         case DebugRenderingMode::IoR:
         {
             const Vector4 rgbColor = Vector4(shadingData.materialParams.IoR);
-            resultColor = RayColor::Resolve(ctx.wavelength, Spectrum(rgbColor));
+            resultColor = RayColor::ResolveRGB(ctx.wavelength, rgbColor);
             break;
         }
 
@@ -242,7 +241,7 @@ void DebugRenderer::Raytrace_Packet(RayPacket& packet, const RenderParam& param,
                     case DebugRenderingMode::CameraLight:
                     {
                         const float NdotL = Vector4::Dot3(rayDirs[j], shadingData.intersection.frame[2]);
-                        color = shadingData.intersection.material->baseColor.Evaluate(shadingData.intersection.texCoord) * Abs(NdotL);
+                        color = Vector4(Abs(NdotL)); // TODO use texture
                         break;
                     }
 

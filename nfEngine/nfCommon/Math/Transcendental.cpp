@@ -244,6 +244,26 @@ const Vector4 FastExp(const Vector4& a)
     return y;
 }
 
+const Vector8 FastExp(const Vector8& a)
+{
+    const Vector8 t = a * 1.442695041f;
+    const Vector8 fi = Vector8::Floor(t);
+    const VectorInt8 i = VectorInt8::Convert(fi);
+    const Vector8 f = t - fi;
+
+    Vector8 y = Vector8::MulAndAdd(f, Vector8(0.3371894346f), Vector8(0.657636276f));
+    y = Vector8::MulAndAdd(f, y, Vector8(1.00172476f));
+
+    VectorInt8 yi = VectorInt8::Cast(y);
+    yi += (i << 23);
+    y = yi.CastToFloat();
+
+    const Vector8 range(87.0f);
+    y = Vector8::Select(y, Vector8::Zero(), -a >= range);
+    y = Vector8::Select(y, VECTOR8_INF, a >= range);
+    return y;
+}
+
 float Log(float x)
 {
     // based on:

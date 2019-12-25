@@ -12,6 +12,12 @@ namespace RT {
 class ITonemapper;
 using TonemapperPtr = Common::UniquePtr<ITonemapper>;
 
+enum class ColorSpace : uint8
+{
+    Rec709,
+    Rec2020,
+};
+
 class NFE_ALIGN(16) BloomElement
 {
     NFE_DECLARE_CLASS(BloomElement);
@@ -49,9 +55,13 @@ public:
     bool useDithering;
     BloomParams bloom;
 
+    ColorSpace colorSpace;
+
     NFE_RAYTRACER_API PostprocessParams();
     NFE_RAYTRACER_API ~PostprocessParams();
 };
 
 } // namespace RT
 } // namespace NFE
+
+NFE_DECLARE_ENUM_TYPE(NFE::RT::ColorSpace);

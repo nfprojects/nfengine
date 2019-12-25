@@ -21,7 +21,7 @@ public:
 
     // get next sample
     // NOTE: effectively goes to next sample dimension
-    uint32 GetInt();
+    NFE_RAYTRACER_API uint32 GetInt();
 
     NFE_FORCE_INLINE float GetFloat()
     {

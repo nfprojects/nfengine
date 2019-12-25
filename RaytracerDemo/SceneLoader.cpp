@@ -14,6 +14,7 @@
 #include "../nfEngine/Raytracer/Shapes/SphereShape.h"
 #include "../nfEngine/Raytracer/Shapes/RectShape.h"
 #include "../nfEngine/Raytracer/Shapes/CsgShape.h"
+#include "../nfEngine/Raytracer/Color/ColorRGB.h"
 
 #include "../nfEngine/Raytracer/Textures/CheckerboardTexture.h"
 #include "../nfEngine/Raytracer/Textures/BitmapTexture.h"
@@ -438,13 +439,57 @@ static MaterialPtr ParseMaterial(const rapidjson::Value& value, const TexturesMa
 
     if (!TryParseBool(value, "dispersive", true, material->dispersion.enable)) return nullptr;
 
-    if (!TryParseHdrColorRGB(value, "baseColor", true, material->baseColor.baseValue)) return nullptr;
-    if (!TryParseHdrColorRGB(value, "emissionColor", true, material->emission.baseValue)) return nullptr;
+    {
+        HdrColorRGB color;
+        if (TryParseHdrColorRGB(value, "baseColor", true, color))
+        {
+            material->baseColor.SetBaseValue(MakeSharedPtr<ColorRGB>(color));
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    {
+        HdrColorRGB color;
+        if (TryParseHdrColorRGB(value, "emissionColor", true, color))
+        {
+            material->emission.SetBaseValue(MakeSharedPtr<ColorRGB>(color));
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    {
+        TexturePtr texture;
+        if (TryParseTextureName(value, "baseColorTexture", textures, texture))
+        {
+            material->baseColor.SetTexture(texture);
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    {
+        TexturePtr texture;
+        if (TryParseTextureName(value, "emissionTexture", textures, texture))
+        {
+            material->emission.SetTexture(texture);
+        }
+        else
+        {
+            return false;
+        }
+    }
+
     if (!TryParseFloat(value, "roughness", true, material->roughness.baseValue)) return nullptr;
     if (!TryParseFloat(value, "metalness", true, material->metalness.baseValue)) return nullptr;
 
-    if (!TryParseTextureName(value, "baseColorTexture", textures, material->baseColor.texture)) return nullptr;
-    if (!TryParseTextureName(value, "emissionTexture", textures, material->emission.texture)) return nullptr;
     if (!TryParseTextureName(value, "roughnessTexture", textures, material->roughness.texture)) return nullptr;
     if (!TryParseTextureName(value, "metalnessTexture", textures, material->metalness.texture)) return nullptr;
     if (!TryParseTextureName(value, "normalMap", textures, material->normalMap)) return nullptr;

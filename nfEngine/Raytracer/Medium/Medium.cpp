@@ -86,7 +86,7 @@ const RayColor HomogenousEmissiveMedium::Sample(const Ray& ray, float minDistanc
     }
     else
     {
-        outScatteringEvent.radiance = totalDistance * RayColor::Resolve(ctx.wavelength, mEmissionCoeff);
+        outScatteringEvent.radiance = totalDistance * RayColor::ResolveRGB(ctx.wavelength, mEmissionCoeff);
     }
 
     return RayColor::One();
@@ -124,7 +124,7 @@ const RayColor HomogenousAbsorptiveMedium::Transmittance(const float distance, R
         coefficent = FastExp(-mExctinctionCoeff.ToVector4() * distance);
     }
 
-    return RayColor::Resolve(ctx.wavelength, HdrColorRGB(coefficent));
+    return RayColor::ResolveRGB(ctx.wavelength, coefficent);
 }
 
 const RayColor HomogenousAbsorptiveMedium::Transmittance(const Vector4& startPoint, const Vector4& endPoint, RenderingContext& ctx) const
@@ -194,7 +194,7 @@ const RayColor HeterogeneousAbsorptiveMedium::Transmittance(const Vector4& start
 
     const HdrColorRGB density = transmittance;
 
-    return RayColor::Resolve(ctx.wavelength, density);
+    return RayColor::ResolveRGB(ctx.wavelength, density);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////
@@ -237,9 +237,9 @@ const RayColor HomogenousScatteringMedium::Sample(const Ray& ray, float minDista
         PhaseFunction::Sample(-ray.dir, outScatteringEvent.direction, g, ctx.randomGenerator.GetFloat2());
         outScatteringEvent.distance = minDistance + scatterDistance;
 
-        density *= RayColor::Resolve(ctx.wavelength, mExctinctionCoeff);
+        density *= RayColor::ResolveRGB(ctx.wavelength, mExctinctionCoeff);
         const float pdf = density.Average();
-        const RayColor scatteringCoeff = RayColor::Resolve(ctx.wavelength, mExctinctionCoeff) * RayColor::Resolve(ctx.wavelength, mScatteringAlbedo);
+        const RayColor scatteringCoeff = RayColor::ResolveRGB(ctx.wavelength, mExctinctionCoeff) * RayColor::ResolveRGB(ctx.wavelength, mScatteringAlbedo);
         return outScatteringEvent.transmittance * scatteringCoeff / pdf;
     }
     else
@@ -293,7 +293,7 @@ const RayColor HeterogeneousScatteringMedium::Sample(const Ray& ray, float minDi
                 PhaseFunction::Sample(-ray.dir, outScatteringEvent.direction, g, Float2(u.z, u.w));
                 outScatteringEvent.distance = t;
 
-                return RayColor::Resolve(ctx.wavelength, mScatteringAlbedo);
+                return RayColor::ResolveRGB(ctx.wavelength, mScatteringAlbedo);
             }
         }
     }

@@ -4,6 +4,7 @@
 #include "../Utils/Memory.h"
 #include "../Color/RayColor.h"
 #include "../../nfCommon/Math/Ray.hpp"
+#include "../../nfCommon/Math/HdrColor.hpp"
 #include "../../nfCommon/Memory/Aligned.hpp"
 #include "../../nfCommon/Containers/SharedPtr.hpp"
 #include "../../nfCommon/Reflection/ReflectionClassDeclare.hpp"

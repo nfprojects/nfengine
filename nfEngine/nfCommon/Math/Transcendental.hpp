@@ -54,6 +54,7 @@ float FastATan2(const float y, const float x);
  */
 NFCOMMON_API float FastExp(float x);
 NFCOMMON_API const Vector4 FastExp(const Vector4& x);
+NFCOMMON_API const Vector8 FastExp(const Vector8& x);
 
 /**
  * Accurate natural logarithm.

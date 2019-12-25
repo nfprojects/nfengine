@@ -379,10 +379,10 @@ void Scene::EvaluateShadingData(ShadingData& shadingData, RenderingContext& cont
 {
     if (shadingData.intersection.material)
     {
-    shadingData.intersection.material->EvaluateShadingData(context.wavelength, shadingData);
+        shadingData.intersection.material->EvaluateShadingData(context.wavelength, shadingData);
 
-    EvaluateDecals(shadingData, context);
-}
+        EvaluateDecals(shadingData, context);
+    }
 }
 
 void Scene::EvaluateDecals(ShadingData& shadingData, RenderingContext& context) const

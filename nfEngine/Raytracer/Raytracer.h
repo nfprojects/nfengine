@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../nfCommon/nfCommon.hpp"
+#include "Config.h"
 #include "ForwardDeclarations.hpp"
 
 // DLL import / export macro

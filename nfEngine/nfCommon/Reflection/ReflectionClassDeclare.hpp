@@ -7,6 +7,7 @@
 #pragma once
 
 #include "Types/ReflectionClassType.hpp"
+#include "Object.hpp"
 
 // Declare occurrence of a non-polymorphic class. Must be placed inside class declaration.
 #define NFE_DECLARE_CLASS(T)                                                                \
@@ -19,8 +20,8 @@
 // Declare occurrence of a polymorphic class. Must be placed inside class declaration.
 #define NFE_DECLARE_POLYMORPHIC_CLASS(T)                                                    \
     friend class NFE::RTTI::TypeCreator<T>;                                                 \
+    public:                                                                                 \
+        virtual const NFE::RTTI::Type* GetDynamicType() const;                              \
     private:                                                                                \
         static const char* _GetName();                                                      \
-        static bool _InitType(NFE::RTTI::ClassTypeInfo& typeInfo);                          \
-    public:                                                                                 \
-        virtual const NFE::RTTI::Type* GetDynamicType() const;
+        static bool _InitType(NFE::RTTI::ClassTypeInfo& typeInfo);

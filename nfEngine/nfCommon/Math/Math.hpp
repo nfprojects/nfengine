@@ -121,6 +121,36 @@ NFE_FORCE_INLINE constexpr const T Cube(const T x)
     return x * x * x;
 }
 
+// raise a number to arbitrary integer number
+template<uint32 N, typename T>
+NFE_FORCE_INLINE static constexpr typename std::enable_if_t<(N == 0), const T> Pow(const T m)
+{
+    return T(1);
+}
+
+// raise a number to arbitrary integer number
+template<uint32 N, typename T>
+NFE_FORCE_INLINE static constexpr typename std::enable_if_t<(N == 1), const T> Pow(const T m)
+{
+    return m;
+}
+
+// raise a number to arbitrary integer number
+template<uint32 N, typename T>
+NFE_FORCE_INLINE static constexpr typename std::enable_if_t<(N % 2 == 0 && N >= 2), const T> Pow(const T m)
+{
+    static_assert(N < 100, "Exponent is too high");
+    return Pow<N / 2, T>(m) * Pow<N / 2, T>(m);
+}
+
+// raise a number to arbitrary integer number
+template<uint32 N, typename T>
+NFE_FORCE_INLINE static constexpr typename std::enable_if_t<(N % 2 == 1 && N >= 3), const T> Pow(const T m)
+{
+    static_assert(N < 100, "Exponent is too high");
+    return m * Pow<N / 2>(m) * Pow<N / 2>(m);
+}
+
 // approximate division
 NFE_FORCE_INLINE static float FastDivide(float a, float b)
 {

@@ -6,7 +6,6 @@
     <ClInclude Include="Color\ColorHelpers.h" />
     <ClInclude Include="Color\LdrColor.h" />
     <ClInclude Include="Color\RayColor.h" />
-    <ClInclude Include="Color\Spectrum.h" />
     <ClInclude Include="Color\Wavelength.h" />
     <ClInclude Include="Config.h" />
     <ClInclude Include="Material\BSDF\BSDF.h" />
@@ -94,6 +93,10 @@
     <ClInclude Include="Textures\GradientTexture.h" />
     <ClInclude Include="Textures\BitmapTexture3D.h" />
     <ClInclude Include="Rendering\Tonemapping.h" />
+    <ClInclude Include="Color\Color.h" />
+    <ClInclude Include="Color\ColorRGB.h" />
+    <ClInclude Include="Color\BlackBodyColor.h" />
+    <ClInclude Include="Color\MonochromaticColor.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BVH\BVH.cpp" />
@@ -173,6 +176,10 @@
     <ClCompile Include="Textures\BitmapTexture3D.cpp" />
     <ClCompile Include="Utils\BitmapVDB.cpp" />
     <ClCompile Include="Rendering\Tonemapping.cpp" />
+    <ClCompile Include="Color\Color.cpp" />
+    <ClCompile Include="Color\ColorRGB.cpp" />
+    <ClCompile Include="Color\BlackBodyColor.cpp" />
+    <ClCompile Include="Color\MonochromaticColor.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Math">

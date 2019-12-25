@@ -49,7 +49,9 @@ bool BackgroundLight::TestRayHit(const Math::Ray& ray, float& outDistance) const
 
 const RayColor BackgroundLight::GetBackgroundColor(const Vector4& dir, const Wavelength& wavelength) const
 {
-    Spectrum color = GetColor();
+    NFE_UNUSED(dir);
+
+    RayColor color = GetColor()->Resolve(wavelength);
 
     // sample environment map
     if (mTexture)
@@ -59,10 +61,10 @@ const RayColor BackgroundLight::GetBackgroundColor(const Vector4& dir, const Wav
 
         const Vector4 textureColor = Vector4::Max(Vector4::Zero(), mTexture->Evaluate(coords));
 
-        color.rgbValues *= textureColor;
+        color *= RayColor::ResolveRGB(wavelength, textureColor);
     }
 
-    return RayColor::Resolve(wavelength, color);
+    return color;
 }
 
 const RayColor BackgroundLight::Illuminate(const IlluminateParam& param, IlluminateResult& outResult) const

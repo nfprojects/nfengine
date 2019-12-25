@@ -88,6 +88,8 @@ private:
     RT::ISceneObject* mSelectedObject; // TODO WeakPtr
     bool mFocalDistancePicking = false;
     bool mPixelDebuggingPicking = false;
+    bool mSpectrumPicking = false;
+    RT::SpectrumDebugData mSpectrumDebugData;
 
     void InitializeUI();
 

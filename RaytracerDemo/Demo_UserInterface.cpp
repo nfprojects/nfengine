@@ -342,6 +342,12 @@ void DemoWindow::RenderUI_Debugging_Color()
     ImGui::Text("  R: %u", (uint32)(255.0f * ldrColor.x + 0.5f));
     ImGui::Text("  G: %u", (uint32)(255.0f * ldrColor.y + 0.5f));
     ImGui::Text("  B: %u", (uint32)(255.0f * ldrColor.z + 0.5f));
+
+//#ifdef RT_ENABLE_SPECTRAL_RENDERING
+    mSpectrumPicking = true;
+
+    ImGui::PlotLines("Spectrum", mSpectrumDebugData.samples.Data(), mSpectrumDebugData.samples.Size(), 0, 0, FLT_MAX, FLT_MAX, ImVec2(0.0f, 100.0f));
+//#endif
 }
 
 bool DemoWindow::RenderUI_Settings()

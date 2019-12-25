@@ -227,3 +227,9 @@ TEST(Math, Denormal_Float)
 
     EXPECT_EQ(0.0f, denormValue);
 }
+
+TEST(Math, Pow)
+{
+    EXPECT_EQ(32.0f, Pow<5>(2.0f));
+    EXPECT_EQ(32, Pow<5>(2));
+}

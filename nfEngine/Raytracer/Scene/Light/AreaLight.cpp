@@ -4,6 +4,7 @@
 #include "../../Rendering/ShadingData.h"
 #include "../../Textures/Texture.h"
 #include "../../Shapes/Shape.h"
+#include "../../Shapes/RectShape.h"
 #include "../../../nfCommon/Math/Geometry.hpp"
 #include "../../../nfCommon/Math/SamplingHelpers.hpp"
 #include "../../../nfCommon/Reflection/ReflectionClassDefine.hpp"
@@ -22,6 +23,14 @@ namespace NFE {
 namespace RT {
 
 using namespace Math;
+using namespace Common;
+
+AreaLight::AreaLight()
+{
+    mShape = MakeSharedPtr<RectShape>();
+}
+
+AreaLight::~AreaLight() = default;
 
 AreaLight::AreaLight(ShapePtr shape, const Math::HdrColorRGB& color)
     : ILight(color)
@@ -49,8 +58,6 @@ bool AreaLight::TestRayHit(const Ray& ray, float& outDistance) const
 
 const RayColor AreaLight::Illuminate(const IlluminateParam& param, IlluminateResult& outResult) const
 {
-    Spectrum color = GetColor();
-
     // TODO
     // sample texture map
     //if (mTexture)
@@ -108,7 +115,7 @@ const RayColor AreaLight::Illuminate(const IlluminateParam& param, IlluminateRes
         outResult.emissionPdfW = cosNormalDir * invArea * NFE_MATH_INV_PI;
     }
 
-    return RayColor::Resolve(param.wavelength, color);
+    return GetColor()->Resolve(param.wavelength);
 }
 
 const RayColor AreaLight::GetRadiance(const RadianceParam& param, float* outDirectPdfA, float* outEmissionPdfW) const
@@ -137,8 +144,6 @@ const RayColor AreaLight::GetRadiance(const RadianceParam& param, float* outDire
         *outEmissionPdfW = param.cosAtLight * invArea * NFE_MATH_INV_PI;
     }
 
-    Spectrum color = GetColor();
-
     // TODO
     //if (mTexture)
     //{
@@ -150,7 +155,7 @@ const RayColor AreaLight::GetRadiance(const RadianceParam& param, float* outDire
     //    color.rgbValues *= mTexture->Evaluate(textureCoords);
     //}
 
-    return RayColor::Resolve(param.context.wavelength, color);
+    return GetColor()->Resolve(param.context.wavelength);
 }
 
 const RayColor AreaLight::Emit(const EmitParam& param, EmitResult& outResult) const
@@ -176,8 +181,6 @@ const RayColor AreaLight::Emit(const EmitParam& param, EmitResult& outResult) co
     outResult.directPdfA = invArea;
     outResult.emissionPdfW = invArea * cosAtLight * NFE_MATH_INV_PI;
 
-    Spectrum color = GetColor();
-
     // TODO
     // sample texture map
     //if (mTexture)
@@ -185,7 +188,7 @@ const RayColor AreaLight::Emit(const EmitParam& param, EmitResult& outResult) co
     //    color.rgbValues *= mTexture->Evaluate(Vector4(uv));
     //}
 
-    return RayColor::Resolve(param.wavelength, color) * cosAtLight;
+    return GetColor()->Resolve(param.wavelength) * cosAtLight;
 }
 
 ILight::Flags AreaLight::GetFlags() const

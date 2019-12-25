@@ -91,7 +91,7 @@ const RayColor DirectionalLight::Illuminate(const IlluminateParam& param, Illumi
     outResult.cosAtLight = 1.0f;
     outResult.distance = FLT_MAX;
 
-    return RayColor::Resolve(param.wavelength, GetColor());
+    return GetColor()->Resolve(param.wavelength);
 }
 
 const RayColor DirectionalLight::GetRadiance(const RadianceParam& param, float* outDirectPdfA, float* outEmissionPdfW) const
@@ -119,7 +119,7 @@ const RayColor DirectionalLight::GetRadiance(const RadianceParam& param, float* 
         *outEmissionPdfW = directPdf * UniformCirclePdf(SceneRadius);
     }
 
-    return RayColor::Resolve(param.context.wavelength, GetColor());
+    return GetColor()->Resolve(param.context.wavelength);
 }
 
 const RayColor DirectionalLight::Emit(const EmitParam& param, EmitResult& outResult) const
@@ -135,7 +135,7 @@ const RayColor DirectionalLight::Emit(const EmitParam& param, EmitResult& outRes
     outResult.cosAtLight = 1.0f;
     outResult.emissionPdfW = outResult.directPdfA * UniformCirclePdf(SceneRadius);
 
-    return RayColor::Resolve(param.wavelength, GetColor());
+    return GetColor()->Resolve(param.wavelength);
 }
 
 ILight::Flags DirectionalLight::GetFlags() const

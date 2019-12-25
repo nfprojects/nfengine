@@ -20,8 +20,8 @@ NFE_FORCE_INLINE const T Convert_sRGB_To_Linear(const T& gammaColor)
     // http://chilliant.blogspot.com/2012/08/srgb-approximations-for-hlsl.html
 
     T result;
-    result = T::MulAndAdd(gammaColor, T(0.305306011f), T(0.682171111f));
-    result = T::MulAndAdd(gammaColor, result, T(0.012522878f));
+    result = gammaColor * T(0.305306011f) + T(0.682171111f);
+    result = gammaColor * result + T(0.012522878f);
     result *= gammaColor;
     return result;
 }
@@ -44,11 +44,23 @@ NFE_FORCE_INLINE const T Convert_Linear_To_sRGB(const T& linearColor)
 }
 
 // Convert CIE XYZ to linear RGB (Rec. BT.709)
-NFE_FORCE_INLINE Vector4 ConvertXYZtoRGB(const Vector4& xyzColor)
+NFE_FORCE_INLINE Vector4 ConvertXYZtoRec709(const Vector4& xyzColor)
 {
-    Vector4 r = XYZtoRGB_r * xyzColor;
-    Vector4 g = XYZtoRGB_g * xyzColor;
-    Vector4 b = XYZtoRGB_b * xyzColor;
+    Vector4 r = Vector4( 3.2409699419f, -1.5373831776f, -0.4986107603f) * xyzColor;
+    Vector4 g = Vector4(-0.9692436363f,  1.8759675015f,  0.0415550574f) * xyzColor;
+    Vector4 b = Vector4( 0.0556300797f, -0.2039769589f,  1.0569715142f) * xyzColor;
+
+    Vector4::Transpose3(r, g, b);
+
+    return r + g + b;
+}
+
+// Convert CIE XYZ to linear RGB (Rec. BT.2020)
+NFE_FORCE_INLINE Vector4 ConvertXYZtoRec2020(const Vector4& xyzColor)
+{
+    Vector4 r = Vector4( 1.7166511880f, -0.3556707838f, -0.2533662814f) * xyzColor;
+    Vector4 g = Vector4(-0.6666843518f,  1.6164812366f,  0.0157685458f) * xyzColor;
+    Vector4 b = Vector4( 0.0176398574f, -0.0427706133f,  0.9421031212f) * xyzColor;
 
     Vector4::Transpose3(r, g, b);
 
@@ -56,7 +68,7 @@ NFE_FORCE_INLINE Vector4 ConvertXYZtoRGB(const Vector4& xyzColor)
 }
 
 // Convert linear RGB (Rec. BT.709) to CIE XYZ
-NFE_FORCE_INLINE Vector4 ConvertRGBtoXYZ(const Vector4& rgbColor)
+NFE_FORCE_INLINE Vector4 ConvertRec709toXYZ(const Vector4& rgbColor)
 {
     const float mapping[3][3] =
     {

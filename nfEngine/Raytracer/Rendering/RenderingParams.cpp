@@ -29,7 +29,7 @@ NFE_END_DEFINE_CLASS()
 
 NFE_DEFINE_CLASS(NFE::RT::SamplingParams)
 {
-    NFE_CLASS_MEMBER(dimensions).Min(1).Max(256);
+    NFE_CLASS_MEMBER(dimensions).Min(0).Max(256);
     NFE_CLASS_MEMBER(useBlueNoiseDithering);
 }
 NFE_END_DEFINE_CLASS()

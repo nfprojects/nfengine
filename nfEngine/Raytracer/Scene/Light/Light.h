@@ -2,7 +2,7 @@
 
 #include "../../Raytracer.h"
 #include "../../Color/RayColor.h"
-#include "../../Color/Spectrum.h"
+#include "../../Color/Color.h"
 #include "../../Utils/Memory.h"
 #include "../../../nfCommon/Math/Box.hpp"
 #include "../../../nfCommon/Math/Matrix4.hpp"
@@ -81,8 +81,8 @@ public:
     explicit ILight(const Math::HdrColorRGB& color = Math::HdrColorRGB(1.0f));
     NFE_RAYTRACER_API virtual ~ILight() = default;
 
-    NFE_FORCE_INLINE const Spectrum GetColor() const { return Spectrum(mColor); }
-    NFE_RAYTRACER_API void SetColor(const Math::HdrColorRGB& color);
+    NFE_FORCE_INLINE const IColor* GetColor() const { return mColor.Get(); }
+    NFE_RAYTRACER_API void SetColor(const ColorPtr& color);
 
     // get light's surface bounding box
     virtual const Math::Box GetBoundingBox() const = 0;
@@ -109,7 +109,7 @@ private:
     ILight(const ILight&) = delete;
     ILight& operator = (const ILight&) = delete;
 
-    Math::HdrColorRGB mColor;
+    ColorPtr mColor;
 };
 
 using LightPtr = Common::UniquePtr<ILight>;

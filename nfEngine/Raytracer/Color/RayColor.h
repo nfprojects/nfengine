@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Wavelength.h"
-#include "Spectrum.h"
 
 namespace NFE {
 namespace RT {
@@ -145,11 +144,10 @@ struct RayColor
         return RayColor{ Wavelength::ValueType::Lerp(a.value, b.value, factor) };
     }
 
-    // calculate ray color values for given wavelength and linear RGB values
-    static const RayColor BlackBody(const Wavelength& wavelength, const float temperature);
-
     // calculate ray color values for given wavelength and spectrum
-    static const RayColor Resolve(const Wavelength& wavelength, const Spectrum& spectrum);
+    static const RayColor ResolveRGB(const Wavelength& wavelength, const Math::Vector4& rgbValues);
+    static const RayColor ResolveRGB(const Wavelength& wavelength, const Math::HdrColorRGB& color);
+    static const RayColor ResolveRGB(const Wavelength& wavelength, const Math::LdrColorRGB& color);
 
     // convert to CIE XYZ / RGB tristimulus values
     // NOTE: when spectral rendering is disabled, this function does nothing (returns RGB values)
@@ -169,9 +167,9 @@ NFE_FORCE_INLINE const Math::Vector4 RayColor::ConvertToTristimulus(const Wavele
     return value;
 }
 
-NFE_FORCE_INLINE const RayColor RayColor::Resolve(const Wavelength&, const Spectrum& spectrum)
+NFE_FORCE_INLINE const RayColor RayColor::ResolveRGB(const Wavelength&, const Math::Vector4& rgbValues)
 {
-    return RayColor{ spectrum.rgbValues };
+    return RayColor{ rgbValues };
 }
 
 #endif // NFE_ENABLE_SPECTRAL_RENDERING

@@ -62,7 +62,7 @@ const RayColor SpotLight::Illuminate(const IlluminateParam& param, IlluminateRes
     }
 
     // TODO IES profile
-    return RayColor::Resolve(param.wavelength, GetColor());
+    return GetColor()->Resolve(param.wavelength);
 }
 
 const RayColor SpotLight::Emit(const EmitParam& param, EmitResult& outResult) const
@@ -94,7 +94,7 @@ const RayColor SpotLight::Emit(const EmitParam& param, EmitResult& outResult) co
     outResult.cosAtLight = 1.0f;
 
     // TODO IES profile
-    return RayColor::Resolve(param.wavelength, GetColor());
+    return GetColor()->Resolve(param.wavelength);
 }
 
 ILight::Flags SpotLight::GetFlags() const

@@ -56,7 +56,7 @@ public:
     // a.k.a. albedo
     // for metals this is specular/reflection color
     // for dielectrics this is diffuse color
-    ColorMaterialParameter baseColor = Math::HdrColorRGB(0.7f, 0.7f, 0.7f);
+    ColorMaterialParameter baseColor;
 
     // 0.0 - smooth, perfect mirror
     // 1.0 - rough, maximum diffusion

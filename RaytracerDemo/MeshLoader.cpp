@@ -6,6 +6,7 @@
 #include "../nfEngine/nfCommon/Logger/Logger.hpp"
 #include "../nfEngine/nfCommon/System/Timer.hpp"
 #include "../nfEngine/nfCommon/Math/Geometry.hpp"
+#include "../nfEngine/nfCommon/Math/HdrColor.hpp"
 #include "../nfEngine/nfCommon/FileSystem/FileSystem.hpp"
 
 #include "../nfEngineDeps/tinyobjloader/tiny_obj_loader.h"
@@ -88,7 +89,7 @@ MaterialPtr LoadMaterial(const String& baseDir, const tinyobj::material_t& sourc
     material->debugName = sourceMaterial.name.c_str();
     material->baseColor = HdrColorRGB(sourceMaterial.diffuse[0], sourceMaterial.diffuse[1], sourceMaterial.diffuse[2]);
     material->emission = HdrColorRGB(sourceMaterial.emission[0], sourceMaterial.emission[1], sourceMaterial.emission[2]);
-    material->baseColor.texture = LoadTexture(baseDir, sourceMaterial.diffuse_texname.c_str());
+    material->baseColor.SetTexture(LoadTexture(baseDir, sourceMaterial.diffuse_texname.c_str()));
     material->normalMap = LoadTexture(baseDir, sourceMaterial.normal_texname.c_str());
     material->maskMap = LoadTexture(baseDir, sourceMaterial.alpha_texname.c_str());
     material->roughness = 0.075f;

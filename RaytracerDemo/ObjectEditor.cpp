@@ -352,7 +352,10 @@ static bool EditObject_Internal_Pointer(const EditPropertyContext& ctx)
     {
         static_cast<const ClassType*>(pointedType)->ListSubtypes([&typesList] (const ClassType* type)
         {
-            typesList.PushBack(type);
+            if (type->IsConstructible())
+            {
+                typesList.PushBack(type);
+            }
         }, /*skipAbstractTypes*/ true);
     }
     else

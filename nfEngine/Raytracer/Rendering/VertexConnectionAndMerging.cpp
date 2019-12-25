@@ -401,7 +401,7 @@ const RayColor VertexConnectionAndMerging::RenderPixel(const Math::Ray& ray, con
                 vertexConnectionColor.MulAndAccumulate(lightVertex.throughput, ConnectVertices(param.scene, pathState, shadingData, lightVertex, ctx));
             }
 
-            vertexConnectionColor *= RayColor::Resolve(ctx.wavelength, Spectrum(mVertexConnectingWeight));
+            vertexConnectionColor *= RayColor::ResolveRGB(ctx.wavelength, mVertexConnectingWeight);
             NFE_ASSERT(vertexConnectionColor.IsValid());
             resultColor.MulAndAccumulate(pathState.throughput, vertexConnectionColor);
         }
@@ -411,7 +411,7 @@ const RayColor VertexConnectionAndMerging::RenderPixel(const Math::Ray& ray, con
         {
             RayColor vertexMergingColor = MergeVertices(pathState, shadingData, ctx);
             NFE_ASSERT(vertexMergingColor.IsValid());
-            vertexMergingColor *= RayColor::Resolve(ctx.wavelength, Spectrum(mVertexMergingWeight));
+            vertexMergingColor *= RayColor::ResolveRGB(ctx.wavelength, mVertexMergingWeight);
             resultColor.MulAndAccumulate(pathState.throughput * vertexMergingColor, mVertexMergingNormalizationFactor);
         }
 
@@ -746,7 +746,7 @@ const RayColor VertexConnectionAndMerging::EvaluateLight(uint32 iteration, const
         }
     }
 
-    lightContribution *= RayColor::Resolve(ctx.wavelength, Spectrum(mBSDFSamplingWeight));
+    lightContribution *= RayColor::ResolveRGB(ctx.wavelength, mBSDFSamplingWeight);
 
     return lightContribution;
 }
@@ -842,7 +842,7 @@ const RayColor VertexConnectionAndMerging::SampleLights(const Scene& scene, cons
         accumulatedColor += SampleLight(scene, lightObject, shadingData, pathState, ctx);
     }
 
-    accumulatedColor *= RayColor::Resolve(ctx.wavelength, Spectrum(mLightSamplingWeight));
+    accumulatedColor *= RayColor::ResolveRGB(ctx.wavelength, mLightSamplingWeight);
 
     return accumulatedColor;
 }
@@ -983,7 +983,7 @@ const RayColor VertexConnectionAndMerging::MergeVertices(PathState& cameraPathSt
             }
 
             // decompress photon throughput
-            const RayColor throughput = RayColor::Resolve(mContext.wavelength, Spectrum{ photon.throughput.ToVector() });
+            const RayColor throughput = RayColor::ResolveRGB(mContext.wavelength, photon.throughput.ToVector());
             NFE_ASSERT(throughput.IsValid());
 
             // TODO russian roulette
@@ -1077,7 +1077,7 @@ void VertexConnectionAndMerging::ConnectToCamera(const RenderParam& renderParams
     NFE_ASSERT(misWeight >= 0.0f);
 
     RayColor contribution = (cameraFactor * lightVertex.throughput) * (misWeight * cameraPdfA / (cosToCamera));
-    contribution *= RayColor::Resolve(ctx.wavelength, Spectrum(mCameraConnectingWeight));
+    contribution *= RayColor::ResolveRGB(ctx.wavelength, mCameraConnectingWeight);
 
     const Vector4 value = contribution.ConvertToTristimulus(ctx.wavelength);
     renderParams.film.AccumulateColor(filmPos, value, ctx.randomGenerator);

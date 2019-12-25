@@ -1,9 +1,8 @@
 #include "PCH.h"
 #include "RayColor.h"
-#include "Spectrum.h"
-#include "../nfCommon/Math/VectorInt8.hpp"
 #include "../nfCommon/Math/Vector3x8.hpp"
-#include "../nfCommon/Math/Constants.hpp"
+#include "../nfCommon/Math/LdrColor.hpp"
+#include "../nfCommon/Math/HdrColor.hpp"
 
 #ifdef _MSC_VER
 #pragma warning(disable: 4305) // truncation from 'double' to 'const float'
@@ -149,68 +148,11 @@ const float rgbToSpectrum_Blue[rgbToSpectrumNumSamples] =
      3.0501024937233868e-02f,   2.1243054765241080e-02f,    6.9596532104356399e-03f,   4.1733649330980525e-03f
 };
 
-/////////////////////////////////////////////////////////////////////////////////
-
-RayColor SampleSpectrum(const float* data, const uint32 numValues, const Wavelength& wavelength)
+const RayColor RayColor::ResolveRGB(const Wavelength& wavelength, const Vector4& rgbColor)
 {
-    const Vector8 scaledWavelengths = wavelength.value * static_cast<float>(numValues - 1);
-    const VectorInt8 indices = VectorInt8::Convert(scaledWavelengths);
-    const Vector8 weights = scaledWavelengths - indices.ConvertToFloat();
-
-    const Vector8 a = Gather8(data, indices);
-    const Vector8 b = Gather8(data + 1, indices);
-
-    RayColor result;
-    result.value = Vector8::Lerp(a, b, weights);
-
-    /*
-    for (uint32 i = 0; i < Wavelength::NumComponents; ++i)
-    {
-        assert(wavelength.value[i] >= 0.0f);
-        assert(wavelength.value[i] < 1.0f);
-
-        const float w = wavelength.value[i] * static_cast<float>(numValues - 1);
-        const uint32 index = static_cast<uint32>(w);
-        assert(index >= 0);
-        assert(index + 1 < numValues);
-
-        const float weight = w - static_cast<float>(index);
-        result.value[i] = Lerp(data[index], data[index + 1], weight);
-    }
-    */
-
-    return result;
-}
-
-/////////////////////////////////////////////////////////////////////////////////
-
-const RayColor RayColor::BlackBody(const Wavelength& wavelength, const float temperature)
-{
-    RayColor result;
-
-    using namespace constants;
-    double c1 = 2.0f * constants::h * constants::c * constants::c;
-    double c2 = h * c / k;
-
-    for (uint32 i = 0; i < Wavelength::NumComponents; i++)
-    {
-        // wavelenght in meters
-        const double lambda = Wavelength::Lower + (Wavelength::Higher - Wavelength::Lower) * wavelength.value[i];
-
-        // Planck's law equation
-        const double term1 = c1 / (lambda * lambda * lambda * lambda * lambda);
-        const double term2 = exp(c2 / (lambda * temperature)) - 1.0f;
-        result.value[i] = (float)(term1 / term2);
-    }
-
-    return result;
-}
-
-const RayColor RayColor::Resolve(const Wavelength& wavelength, const Spectrum& spectrum)
-{
-    const float r = spectrum.rgbValues.x;
-    const float g = spectrum.rgbValues.y;
-    const float b = spectrum.rgbValues.z;
+    const float r = rgbColor.x;
+    const float g = rgbColor.y;
+    const float b = rgbColor.z;
 
     float coeffA, coeffB, coeffC;
     const float* sourceB;
@@ -269,19 +211,21 @@ const RayColor RayColor::Resolve(const Wavelength& wavelength, const Spectrum& s
     }
 
     RayColor result;
-    result = SampleSpectrum(rgbToSpectrum_White, rgbToSpectrumNumSamples, wavelength) * coeffA;
-    result += SampleSpectrum(sourceB, rgbToSpectrumNumSamples, wavelength) * coeffB;
-    result += SampleSpectrum(sourceC, rgbToSpectrumNumSamples, wavelength) * coeffC;
+    result = RayColor(wavelength.SampleSpectrum(rgbToSpectrum_White, rgbToSpectrumNumSamples)) * coeffA;
+    result += RayColor(wavelength.SampleSpectrum(sourceB, rgbToSpectrumNumSamples)) * coeffB;
+    result += RayColor(wavelength.SampleSpectrum(sourceC, rgbToSpectrumNumSamples)) * coeffC;
     return result * 0.86445f;
 }
+
+/////////////////////////////////////////////////////////////////////////////////
 
 const Vector4 RayColor::ConvertToTristimulus(const Wavelength& wavelength) const
 {
     Vector3x8 xyz;
-    RayColor illuminant = SampleSpectrum(illuminantD65, NumBins, wavelength);
-    xyz.x = SampleSpectrum(colorMatchingX, NumBins, wavelength).value;
-    xyz.y = SampleSpectrum(colorMatchingY, NumBins, wavelength).value;
-    xyz.z = SampleSpectrum(colorMatchingZ, NumBins, wavelength).value;
+    RayColor illuminant = RayColor(wavelength.SampleSpectrum(illuminantD65, NumBins));
+    xyz.x = wavelength.SampleSpectrum(colorMatchingX, NumBins);
+    xyz.y = wavelength.SampleSpectrum(colorMatchingY, NumBins);
+    xyz.z = wavelength.SampleSpectrum(colorMatchingZ, NumBins);
     xyz *= value * illuminant.value;
 
     Vector4 v[8];
@@ -294,6 +238,16 @@ const Vector4 RayColor::ConvertToTristimulus(const Wavelength& wavelength) const
 }
 
 #endif // NFE_ENABLE_SPECTRAL_RENDERING
+
+const RayColor RayColor::ResolveRGB(const Wavelength& wavelength, const HdrColorRGB& color)
+{
+    return ResolveRGB(wavelength, color.ToVector4());
+}
+
+const RayColor RayColor::ResolveRGB(const Wavelength& wavelength, const LdrColorRGB& color)
+{
+    return ResolveRGB(wavelength, color.AsVector4());
+}
 
 } // namespace RT
 } // namespace NFE

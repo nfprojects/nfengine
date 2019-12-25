@@ -49,7 +49,7 @@ const RayColor PointLight::Illuminate(const IlluminateParam& param, IlluminateRe
 
     // TODO texture
 
-    return RayColor::Resolve(param.wavelength, GetColor());
+    return GetColor()->Resolve(param.wavelength);
 }
 
 const RayColor PointLight::Emit(const EmitParam& param, EmitResult& outResult) const
@@ -62,7 +62,7 @@ const RayColor PointLight::Emit(const EmitParam& param, EmitResult& outResult) c
 
     // TODO texture
 
-    return RayColor::Resolve(param.wavelength, GetColor());
+    return GetColor()->Resolve(param.wavelength);
 }
 
 ILight::Flags PointLight::GetFlags() const

@@ -1,7 +1,7 @@
 #include "PCH.h"
 #include "Material.h"
 #include "BSDF/BSDF.h"
-#include "Color/Spectrum.h"
+#include "../nfCommon/Math/HdrColor.hpp"
 #include "../nfCommon/Logger/Logger.hpp"
 #include "../nfCommon/Reflection/ReflectionClassDefine.hpp"
 
@@ -47,6 +47,7 @@ DispersionParams::DispersionParams()
 
 Material::Material(const char* debugName)
     : debugName(debugName)
+    , baseColor(Math::HdrColorRGB(0.7f, 0.7f, 0.7f))
 {
     SetBsdf(Material::DefaultBsdfName);
     Compile();
@@ -96,8 +97,8 @@ Material& Material::operator = (Material&&) = default;
 
 void Material::Compile()
 {
-    NFE_ASSERT(emission.baseValue.IsValid());
-    NFE_ASSERT(baseColor.baseValue.IsValid());
+    NFE_ASSERT(emission.IsValid());
+    NFE_ASSERT(baseColor.IsValid());
     NFE_ASSERT(IsValid(roughness.baseValue));
     NFE_ASSERT(IsValid(metalness.baseValue));
     NFE_ASSERT(IsValid(normalMapStrength) && normalMapStrength >= 0.0f);
@@ -140,8 +141,8 @@ bool Material::GetMaskValue(const Vector4& uv) const
 
 void Material::EvaluateShadingData(const Wavelength& wavelength, ShadingData& shadingData) const
 {
-    shadingData.materialParams.baseColor = RayColor::Resolve(wavelength, Spectrum(baseColor.Evaluate(shadingData.intersection.texCoord)));
-    shadingData.materialParams.emissionColor = RayColor::Resolve(wavelength, Spectrum(emission.Evaluate(shadingData.intersection.texCoord)));
+    shadingData.materialParams.baseColor = baseColor.Evaluate(shadingData.intersection.texCoord, wavelength);
+    shadingData.materialParams.emissionColor = emission.Evaluate(shadingData.intersection.texCoord, wavelength);
     shadingData.materialParams.roughness = roughness.Evaluate(shadingData.intersection.texCoord);
     shadingData.materialParams.metalness = metalness.Evaluate(shadingData.intersection.texCoord);
     shadingData.materialParams.IoR = IoR;

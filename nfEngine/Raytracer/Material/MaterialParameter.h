@@ -1,10 +1,13 @@
 #pragma once
 
 #include "../Textures/Texture.h"
-#include "../../nfCommon/Math/HdrColor.hpp"
+#include "../Color/Color.h"
 
 namespace NFE {
 namespace RT {
+
+class IColor;
+using ColorPtr = Common::SharedPtr<IColor>;
 
 class MaterialParameter
 {
@@ -38,24 +41,21 @@ class ColorMaterialParameter
 
 public:
 
-    Math::HdrColorRGB baseValue;
-    TexturePtr texture = nullptr;
+    NFE_RAYTRACER_API ColorMaterialParameter();
+    NFE_RAYTRACER_API ColorMaterialParameter(const Math::HdrColorRGB& baseValue);
+    NFE_RAYTRACER_API ~ColorMaterialParameter();
 
-    ColorMaterialParameter() = default;
+    bool IsValid() const;
 
-    NFE_FORCE_INLINE ColorMaterialParameter(const Math::HdrColorRGB baseValue) : baseValue(baseValue) {}
+    NFE_RAYTRACER_API void SetBaseValue(const ColorPtr& baseValueColor);
+    NFE_RAYTRACER_API void SetTexture(const TexturePtr& texture);
 
-    NFE_FORCE_INLINE const Math::Vector4 Evaluate(const Math::Vector4& uv) const
-    {
-        Math::Vector4 value = baseValue.ToVector4();
+    const RayColor Evaluate(const Math::Vector4& uv, const Wavelength& wavelength) const;
 
-        if (texture)
-        {
-            value *= texture->Evaluate(uv);
-        }
+private:
 
-        return value;
-    };
+    ColorPtr mBaseValue;
+    TexturePtr mTexture = nullptr;
 };
 
 } // namespace RT

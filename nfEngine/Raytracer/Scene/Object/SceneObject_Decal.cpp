@@ -42,9 +42,9 @@ void DecalSceneObject::Apply(ShadingData& shadingData, RenderingContext& context
         return;
     }
 
-    const Vector4 decalBaseColorRgs = baseColor.Evaluate(decalSpacePos);
-    const RayColor decalBaseColor = RayColor::Resolve(context.wavelength, Spectrum(decalBaseColorRgs));
-    const float alpha = Lerp(alphaMin, alphaMax, decalBaseColorRgs.w);
+    const float baseColorAlpha = 1.0f; // TODO
+    const RayColor decalBaseColor = baseColor.Evaluate(decalSpacePos, context.wavelength);
+    const float alpha = Lerp(alphaMin, alphaMax, baseColorAlpha);
 
     shadingData.materialParams.baseColor = RayColor::Lerp(shadingData.materialParams.baseColor, decalBaseColor, alpha);
 

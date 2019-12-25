@@ -3,6 +3,7 @@
 #include "Renderer.h"
 #include "../Material/BSDF/BSDF.h"
 #include "../../nfCommon/Math/Packed.hpp"
+#include "../../nfCommon/Math/LdrColor.hpp"
 
 // too slow for now...
 //#define NFE_VCM_USE_KD_TREE

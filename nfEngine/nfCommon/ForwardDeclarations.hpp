@@ -129,6 +129,9 @@ class PackedColorRgbHdr;
 class SharedExpFloat3;
 class PackedFloat3;
 struct Packed565;
+class LdrColorRGB;
+class LdrColorRGBA;
+class HdrColorRGB;
 
 } // namespace Math
 

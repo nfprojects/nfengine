@@ -4,6 +4,13 @@
 #include "../nfCommon/Reflection/ReflectionClassDefine.hpp"
 #include "../nfCommon/Reflection/Types/ReflectionUniquePtrType.hpp"
 
+NFE_BEGIN_DEFINE_ENUM(NFE::RT::ColorSpace)
+{
+    NFE_ENUM_OPTION(Rec709);
+    NFE_ENUM_OPTION(Rec2020);
+}
+NFE_END_DEFINE_ENUM()
+
 NFE_DEFINE_CLASS(NFE::RT::BloomElement)
 {
     NFE_CLASS_MEMBER(weight).Min(0.0f).Max(1.0f);
@@ -28,6 +35,7 @@ NFE_DEFINE_CLASS(NFE::RT::PostprocessParams)
     NFE_CLASS_MEMBER(useDithering);
     NFE_CLASS_MEMBER(bloom);
     NFE_CLASS_MEMBER(tonemapper).NonNull();
+    NFE_CLASS_MEMBER(colorSpace);
 }
 NFE_END_DEFINE_CLASS()
 
@@ -51,6 +59,7 @@ PostprocessParams::PostprocessParams()
     , contrast(0.8f)
     , saturation(0.98f)
     , useDithering(true)
+    , colorSpace(ColorSpace::Rec709)
     , tonemapper(Common::MakeUniquePtr<ApproxACESTonemapper>())
 {
 }

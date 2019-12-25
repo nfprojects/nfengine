@@ -40,5 +40,9 @@ class Material;
 
 class ITexture;
 
+struct Wavelength;
+struct RayColor;
+class IColor;
+
 } // namespace RT
 } // namespace NFE

@@ -1,11 +1,14 @@
 #include "PCH.h"
 #include "Light.h"
 #include "../nfCommon/Reflection/ReflectionClassDefine.hpp"
+#include "../nfCommon/Reflection/Types/ReflectionSharedPtrType.hpp"
+
+#include "../../Color/ColorRGB.h"
 
 
 NFE_DEFINE_POLYMORPHIC_CLASS(NFE::RT::ILight)
 {
-    NFE_CLASS_MEMBER(mColor);
+    NFE_CLASS_MEMBER(mColor).NonNull();
 }
 NFE_END_DEFINE_CLASS()
 
@@ -16,14 +19,13 @@ using namespace Math;
 
 ILight::ILight(const Math::HdrColorRGB& color)
 {
-    // TODO generic spectrum
     NFE_ASSERT(color.IsValid());
-    mColor = color;
+    mColor = Common::MakeSharedPtr<ColorRGB>(color);
 }
 
-void ILight::SetColor(const Math::HdrColorRGB& color)
+void ILight::SetColor(const ColorPtr& color)
 {
-    NFE_ASSERT(color.IsValid());
+    NFE_ASSERT(color, "Invalid color");
     mColor = color;
 }
 

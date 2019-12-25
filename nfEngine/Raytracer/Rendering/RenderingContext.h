@@ -24,6 +24,14 @@ struct PixelBreakpoint
     uint32 y = UINT32_MAX;
 };
 
+struct NFE_RAYTRACER_API SpectrumDebugData
+{
+    Common::DynArray<float> samples;
+
+    void Clear();
+    void Accumulate(const RayColor& rayColor, const Wavelength& wavelength);
+};
+
 /**
  * A structure with local (per-thread) data.
  * It's like a hub for all global params (read only) and local state (read write).
@@ -67,6 +75,8 @@ public:
     // break on specific pixel (for debugging)
     PixelBreakpoint pixelBreakpoint;
 #endif // NFE_CONFIGURATION_FINAL
+
+    SpectrumDebugData* spectrumDebugData = nullptr;
 
     RayPacket rayPacket;
 

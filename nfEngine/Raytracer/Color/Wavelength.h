@@ -1,7 +1,6 @@
 #pragma once
 
 #include "../Raytracer.h"
-#include "../Config.h"
 
 #ifdef NFE_ENABLE_SPECTRAL_RENDERING
 #include "../../nfCommon/Math/Vector8.hpp"
@@ -28,6 +27,9 @@ struct Wavelength
     using ValueType = Math::Vector4;
 #endif // NFE_USE_AVX
 
+    // sample tabularized data and return ray color
+    const ValueType SampleSpectrum(const float* data, const uint32 numValues) const;
+
 #else // !defined(NFE_ENABLE_SPECTRAL_RENDERING)
 
     static constexpr uint32 NumComponents = 3;
@@ -41,6 +43,7 @@ struct Wavelength
     bool isSingle = false;
 #endif
 
+    NFE_RAYTRACER_API void InitRange(uint32 binId, uint32 numBins);
     NFE_RAYTRACER_API void Randomize(float u);
 
     NFE_FORCE_INLINE float GetBase() const

@@ -41,6 +41,8 @@ DemoWindow::DemoWindow()
 {
     ResetFrame();
     ResetCounters();
+
+    mSpectrumDebugData.samples.Resize(64);
 }
 
 DemoWindow::~DemoWindow()
@@ -346,6 +348,37 @@ void DemoWindow::OnMouseMove(int x, int y, int deltaX, int deltaY)
         if (mCameraSetup.orientation.x > NFE_MATH_PI * 0.49f)     mCameraSetup.orientation.x = NFE_MATH_PI * 0.49f;
         if (mCameraSetup.orientation.x < -NFE_MATH_PI * 0.49f)    mCameraSetup.orientation.x = -NFE_MATH_PI * 0.49f;
     }
+    else if (mSpectrumPicking)
+    {
+        const uint32 numSamples = 2048;
+
+        mSpectrumDebugData.Clear();
+
+        uint32 width, height;
+        GetSize(width, height);
+
+        RenderingParams params = mRenderingParams;
+        params.antiAliasingSpread = 0.0f;
+
+        auto renderingContext = MakeUniquePtr<RenderingContext>();
+        renderingContext->params = &params;
+        renderingContext->sampler.fallbackGenerator = &renderingContext->randomGenerator;
+        renderingContext->rendererContext = mRenderer->CreateContext();
+        renderingContext->spectrumDebugData = &mSpectrumDebugData;
+
+        const Vector4 coords((float)x / (float)width, 1.0f - (float)y / (float)height);
+        const Ray ray = mCamera.GenerateRay(coords, *renderingContext);
+
+        Film fakeFilm;
+        IRenderer::RenderParam renderParam = { *mScene, mCamera, 0, fakeFilm };
+
+        for (uint32 i = 0; i < numSamples; ++i)
+        {
+            renderingContext->wavelength.InitRange(i, numSamples);
+            const RayColor color = mRenderer->RenderPixel(ray, renderParam, *renderingContext);
+            mSpectrumDebugData.Accumulate(color, renderingContext->wavelength);
+        }
+    }
 }
 
 void DemoWindow::OnMouseUp(MouseButton button)
@@ -425,6 +458,7 @@ bool DemoWindow::Loop()
             resetFrame |= true;
         }
 
+        mSpectrumPicking = false;
         if (mEnableUI)
         {
             resetFrame |= RenderUI();

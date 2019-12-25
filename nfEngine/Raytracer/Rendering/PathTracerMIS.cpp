@@ -155,7 +155,7 @@ const RayColor PathTracerMIS::SampleLights(const Scene& scene, const ShadingData
             }
         };
 
-        accumulatedColor *= RayColor::Resolve(context.wavelength, Spectrum(lightSamplingWeight));
+        accumulatedColor *= RayColor::ResolveRGB(context.wavelength, lightSamplingWeight);
     }
 
     return accumulatedColor;
@@ -213,7 +213,7 @@ const RayColor PathTracerMIS::EvaluateLight(const LightSceneObject* lightObject,
         misWeight = CombineMis(pathState.lastPdfW, directPdfW * lightPickProbability);
     }
 
-    lightContribution *= RayColor::Resolve(context.wavelength, Spectrum(BSDFSamplingWeight));
+    lightContribution *= RayColor::ResolveRGB(context.wavelength, BSDFSamplingWeight);
 
     return lightContribution * misWeight;
 }
@@ -253,7 +253,7 @@ const RayColor PathTracerMIS::EvaluateGlobalLights(const Scene& scene, const Ray
         }
     }
 
-    result *= RayColor::Resolve(context.wavelength, Spectrum(BSDFSamplingWeight));
+    result *= RayColor::ResolveRGB(context.wavelength, BSDFSamplingWeight);
 
     return result;
 }
@@ -320,7 +320,7 @@ const RayColor PathTracerMIS::RenderPixel(const Math::Ray& primaryRay, const Ren
             RayColor emissionColor = shadingData.materialParams.emissionColor;
             NFE_ASSERT(emissionColor.IsValid());
 
-            emissionColor *= RayColor::Resolve(context.wavelength, Spectrum(BSDFSamplingWeight));
+            emissionColor *= RayColor::ResolveRGB(context.wavelength, BSDFSamplingWeight);
 
             resultColor.MulAndAccumulate(throughput, emissionColor);
             NFE_ASSERT(resultColor.IsValid());
