@@ -406,8 +406,6 @@ bool DemoWindow::Loop()
 
     while (!IsClosed())
     {
-        FrameMark;
-
         CheckSceneFileModificationTime();
 
         const RenderingProgress& progress = mViewport->GetProgress();

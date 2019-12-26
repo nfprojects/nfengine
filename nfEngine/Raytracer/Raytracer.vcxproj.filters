@@ -169,7 +169,6 @@
     <ClCompile Include="Medium\PhaseFunction.cpp" />
     <ClCompile Include="Medium\Medium.cpp" />
     <ClCompile Include="Textures\GradientTexture.cpp" />
-    <ClCompile Include="..\..\nfEngineDeps\tracy\TracyClientDLL.cpp" />
     <ClCompile Include="Textures\BitmapTexture3D.cpp" />
     <ClCompile Include="Utils\BitmapVDB.cpp" />
   </ItemGroup>

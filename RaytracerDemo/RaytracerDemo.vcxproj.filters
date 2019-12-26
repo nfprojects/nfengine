@@ -47,7 +47,6 @@
     <ClCompile Include="ObjectEditor.cpp">
       <Filter>Utils</Filter>
     </ClCompile>
-    <ClCompile Include="..\nfEngineDeps\tracy\TracyClientDLL.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="PCH.h" />

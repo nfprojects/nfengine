@@ -852,7 +852,6 @@
     <ClCompile Include="Reflection\Types\ReflectionPointerType.cpp" />
     <ClCompile Include="Math\MathTypes.cpp" />
     <ClCompile Include="Reflection\Object.cpp" />
-    <ClCompile Include="..\..\nfEngineDeps\tracy\TracyClient.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Natvis Include="Math\Math.natvis">
