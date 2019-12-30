@@ -50,5 +50,11 @@ bool StringType::Compare(const void* objectA, const void* objectB) const
     return typedObjectA == typedObjectB;
 }
 
+bool StringType::Clone(void* destObject, const void* sourceObject) const
+{
+    *static_cast<Common::String*>(destObject) = *static_cast<const Common::String*>(sourceObject);
+    return true;
+}
+
 } // namespace RTTI
 } // namespace NFE

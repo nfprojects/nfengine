@@ -29,6 +29,7 @@ public:
     bool Serialize(const void* object, Common::Config& config, Common::ConfigValue& outValue) const override;
     bool Deserialize(void* outObject, const Common::Config& config, const Common::ConfigValue& value) const override;
     bool Compare(const void* objectA, const void* objectB) const override;
+    bool Clone(void* destObject, const void* sourceObject) const override;
 };
 
 

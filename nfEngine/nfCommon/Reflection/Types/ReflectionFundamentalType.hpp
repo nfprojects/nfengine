@@ -59,6 +59,12 @@ public:
         const T* typedObjectB = static_cast<const T*>(objectB);
         return (*typedObjectA) == (*typedObjectB);
     }
+
+    bool Clone(void* destObject, const void* sourceObject) const override
+    {
+        *static_cast<T*>(destObject) = *static_cast<const T*>(sourceObject);
+        return true;
+    }
 };
 
 

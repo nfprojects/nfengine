@@ -6,6 +6,7 @@
 
 #include "PCH.hpp"
 #include "ReflectionClassType.hpp"
+#include "ReflectionPointerType.hpp"
 
 #include "../../Config/Config.hpp"
 
@@ -36,6 +37,27 @@ ClassType::ClassType(const ClassTypeInfo& info)
         ClassType* parent = const_cast<ClassType*>(mParent);
         parent->mChildTypes.PushBack(this);
     }
+
+    // validate default object
+    if (mDefaultObject)
+    {
+        for (const Member& member : mMembers)
+        {
+            const char* memberDataPtr = static_cast<const char*>(mDefaultObject) + member.GetOffset();
+
+            if (member.GetMetadata().nonNull)
+            {
+                // check if not null if member has "nonNull" flag on
+                if (member.GetType()->GetKind() == TypeKind::SharedPtr || member.GetType()->GetKind() == TypeKind::UniquePtr)
+                {
+                    const PointerType* pointerType = static_cast<const PointerType*>(member.GetType());
+                    NFE_ASSERT(nullptr != pointerType->GetPointedType(memberDataPtr),
+                        "Property '%s' in class '%s was marked as non-null, but the default's object propery is nullptr",
+                        member.GetName(), this->GetName().Str());
+                }
+            }
+        }
+    }
 }
 
 void ClassType::PrintInfo() const
@@ -43,16 +65,14 @@ void ClassType::PrintInfo() const
     Type::PrintInfo();
 
 #ifdef _DEBUG
+    if (mParent)
     {
-        if (mParent)
-        {
-            NFE_LOG_DEBUG("    - Parent type: %s", mParent->GetName().Str());
-        }
+        NFE_LOG_DEBUG("    - Parent type: %s", mParent->GetName().Str());
+    }
 
-        for (const Member& member : mMembers)
-        {
-            NFE_LOG_DEBUG("    - Member '%s': type=%s, offset=%u", member.GetName(), member.GetType()->GetName().Str(), member.GetOffset());
-        }
+    for (const Member& member : mMembers)
+    {
+        NFE_LOG_DEBUG("    - Member '%s': type=%s, offset=%u", member.GetName(), member.GetType()->GetName().Str(), member.GetOffset());
     }
 #endif // _DEBUG
 }
@@ -294,6 +314,30 @@ bool ClassType::Compare(const void* objectA, const void* objectB) const
     }
 
     return true;
+}
+
+
+bool ClassType::Clone(void* destObject, const void* sourceObject) const
+{
+    bool success = true;
+
+    if (mParent)
+    {
+        success &= mParent->Clone(destObject, sourceObject);
+    }
+
+    // clone members
+    for (const Member& member : mMembers)
+    {
+        const Type* memberType = member.GetType();
+
+        char* destMemberPtrA = static_cast<char*>(destObject) + member.GetOffset();
+        const char* srcMemberPtrB = static_cast<const char*>(sourceObject) + member.GetOffset();
+
+        success &= memberType->Clone(destMemberPtrA, srcMemberPtrB);
+    }
+
+    return success;
 }
 
 } // namespace RTTI

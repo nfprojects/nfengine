@@ -43,5 +43,22 @@ bool NativeArrayType::Compare(const void* objectA, const void* objectB) const
     return true;
 }
 
+bool NativeArrayType::Clone(void* destObject, const void* sourceObject) const
+{
+    const Type* underlyingType = GetUnderlyingType();
+
+    bool success = true;
+
+    for (uint32 i = 0; i < mArraySize; ++i)
+    {
+        if (!underlyingType->Clone(GetElementPointer(destObject, i), GetElementPointer(sourceObject, i)))
+        {
+            success = false;
+        }
+    }
+
+    return success;
+}
+
 } // namespace RTTI
 } // namespace NFE

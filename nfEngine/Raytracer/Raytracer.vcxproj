@@ -356,6 +356,7 @@
     <ClInclude Include="Raytracer.h" />
     <ClInclude Include="Rendering\RenderingContext.h" />
     <ClInclude Include="Rendering\RenderingParams.h" />
+    <ClInclude Include="Rendering\Tonemapping.h" />
     <ClInclude Include="Rendering\VertexConnectionAndMerging.h" />
     <ClInclude Include="Rendering\Counters.h" />
     <ClInclude Include="Rendering\DebugRenderer.h" />
@@ -456,6 +457,7 @@
     </ClCompile>
     <ClCompile Include="Rendering\RenderingContext.cpp" />
     <ClCompile Include="Rendering\RenderingParams.cpp" />
+    <ClCompile Include="Rendering\Tonemapping.cpp" />
     <ClCompile Include="Rendering\VertexConnectionAndMerging.cpp" />
     <ClCompile Include="Rendering\DebugRenderer.cpp" />
     <ClCompile Include="Rendering\Film.cpp" />

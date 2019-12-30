@@ -106,6 +106,8 @@ public:
     float floatVal;
     TestBaseClass()
         : mPrivateBool(false)
+        , intVal(0)
+        , floatVal(0.0f)
     {}
     virtual ~TestBaseClass() { }
     bool GetBool() const { return mPrivateBool; };

@@ -44,5 +44,29 @@ bool DynArrayType::Compare(const void* objectA, const void* objectB) const
     return true;
 }
 
+bool DynArrayType::Clone(void* destObject, const void* sourceObject) const
+{
+    const Type* underlyingType = GetUnderlyingType();
+    const uint32 targetSize = GetArraySize(sourceObject);
+
+    // resize destination array object to reserve space
+    if (ResizeArray(destObject, targetSize))
+    {
+        return false;
+    }
+
+    // clone array elements
+    bool success = true;
+    for (uint32 i = 0; i < targetSize; ++i)
+    {
+        if (!underlyingType->Clone(GetElementPointer(destObject, i), GetElementPointer(sourceObject, i)))
+        {
+            success = false;
+        }
+    }
+
+    return success;
+}
+
 } // namespace RTTI
 } // namespace NFE

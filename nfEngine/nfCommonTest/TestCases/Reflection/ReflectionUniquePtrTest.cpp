@@ -25,6 +25,41 @@ TEST(ReflectionClassTest, UniquePtr_Verify)
     EXPECT_EQ(alignof(TestUniquePtr), type->GetAlignment());
 }
 
+TEST(ReflectionClassTest, UniquePtr_Compare)
+{
+    const auto* type = GetType<TestUniquePtr>();
+
+    TestUniquePtr objNullptrA;
+    TestUniquePtr objNullptrB;
+    TestUniquePtr ptrA = MakeUniquePtr<TestBaseClass>();
+    TestUniquePtr ptrB = MakeUniquePtr<TestBaseClass>();
+
+    EXPECT_TRUE(type->Compare(&objNullptrA, &objNullptrA));
+    EXPECT_TRUE(type->Compare(&objNullptrA, &objNullptrB));
+    EXPECT_FALSE(type->Compare(&objNullptrA, &ptrA));
+    EXPECT_TRUE(type->Compare(&ptrA, &ptrA));
+    EXPECT_TRUE(type->Compare(&ptrA, &ptrB));
+
+    ptrB->intVal = 123;
+    EXPECT_FALSE(type->Compare(&ptrA, &ptrB));
+}
+
+TEST(ReflectionClassTest, UniquePtr_Clone)
+{
+    const auto* type = GetType<TestUniquePtr>();
+
+    TestUniquePtr ptrA = MakeUniquePtr<TestBaseClass>();
+    ptrA->intVal = 123;
+    ptrA->floatVal = 123.0f;
+
+    TestUniquePtr ptrB;
+
+    EXPECT_TRUE(type->Clone(&ptrB, &ptrA));
+    ASSERT_TRUE(ptrB);
+
+    EXPECT_TRUE(type->Compare(&ptrA, &ptrB));
+}
+
 TEST(ReflectionClassTest, UniquePtr_Serialize_Nullptr)
 {
     const auto* type = GetType<TestUniquePtr>();

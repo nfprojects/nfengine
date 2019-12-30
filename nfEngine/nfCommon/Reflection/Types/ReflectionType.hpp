@@ -155,6 +155,12 @@ public:
      */
     virtual bool Compare(const void* objectA, const void* objectB) const = 0;
 
+    /**
+     * Deep clone an object. Returns true if all fields were copied successfully.
+     * Copy may fail for non-copyable-constructible types.
+     */
+    virtual bool Clone(void* destObject, const void* sourceObject) const = 0;
+
 protected:
 
     // allocate and construct object of this type

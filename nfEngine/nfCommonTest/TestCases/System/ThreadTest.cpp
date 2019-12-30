@@ -16,12 +16,6 @@ const int maxThreadNameLength = 16;
 // Simple function to test Thread::SetPriority
 void simpleFunc()
 {
-    size_t size = 10000;
-    const char value = 123;
-
-    std::vector<char> vectDup(size, value);
-
-    std::unique(vectDup.begin(), vectDup.end());
 }
 
 // Simple function to test differences in thread Id

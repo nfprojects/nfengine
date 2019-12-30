@@ -36,6 +36,7 @@ public:
     virtual void PrintInfo() const override;
 
     bool Compare(const void* objectA, const void* objectB) const override;
+    bool Clone(void* destObject, const void* sourceObject) const override;
 
     // access element data
     void* GetElementPointer(void* arrayData, uint32 index) const;

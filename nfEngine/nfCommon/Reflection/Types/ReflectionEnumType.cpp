@@ -166,6 +166,22 @@ bool EnumType::Compare(const void* objectA, const void* objectB) const
     }
 }
 
+bool EnumType::Clone(void* destObject, const void* sourceObject) const
+{
+    switch (GetSize())
+    {
+    case 1: *static_cast<uint8*>(destObject) = *static_cast<const uint8*>(sourceObject); break;
+    case 2: *static_cast<uint16*>(destObject) = *static_cast<const uint16*>(sourceObject); break;
+    case 4: *static_cast<uint32*>(destObject) = *static_cast<const uint32*>(sourceObject); break;
+    case 8: *static_cast<uint64*>(destObject) = *static_cast<const uint64*>(sourceObject); break;
+    default:
+        NFE_ASSERT(false, "Invalid enum type size");
+        return false;
+    }
+
+    return true;
+}
+
 const char* EnumType::FindOptionByValue(uint64 value) const
 {
     for (const EnumOption& option : mOptions)

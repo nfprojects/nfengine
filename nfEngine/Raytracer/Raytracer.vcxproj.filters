@@ -93,6 +93,7 @@
     <ClInclude Include="Medium\Medium.h" />
     <ClInclude Include="Textures\GradientTexture.h" />
     <ClInclude Include="Textures\BitmapTexture3D.h" />
+    <ClInclude Include="Rendering\Tonemapping.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BVH\BVH.cpp" />
@@ -171,6 +172,7 @@
     <ClCompile Include="Textures\GradientTexture.cpp" />
     <ClCompile Include="Textures\BitmapTexture3D.cpp" />
     <ClCompile Include="Utils\BitmapVDB.cpp" />
+    <ClCompile Include="Rendering\Tonemapping.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Math">

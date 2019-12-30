@@ -15,7 +15,18 @@ bool PointerType::Compare(const void* objectA, const void* objectB) const
 
     if (pointedObjectA && pointedObjectB)
     {
-        return GetPointedType()->Compare(pointedObjectA, pointedObjectB);
+        const Type* pointedTypeA = GetPointedType(objectA);
+        const Type* pointedTypeB = GetPointedType(objectB);
+
+        NFE_ASSERT(pointedTypeA);
+        NFE_ASSERT(pointedTypeB);
+
+        if (pointedTypeA != pointedTypeB)
+        {
+            return false;
+        }
+
+        return pointedTypeA->Compare(pointedObjectA, pointedObjectB);
     }
 
     if (!pointedObjectA && !pointedObjectB)
@@ -26,6 +37,26 @@ bool PointerType::Compare(const void* objectA, const void* objectB) const
 
     // one pointer is null, the other is not
     return false;
+}
+
+bool PointerType::Clone(void* destObject, const void* sourceObject) const
+{
+    const Type* pointedSrcType = GetPointedType(sourceObject);
+
+    Reset(destObject, pointedSrcType);
+
+    if (pointedSrcType)
+    {
+        void* pointedDestObject = GetPointedData(destObject);
+        const void* pointedSrcObject = GetPointedData(sourceObject);
+
+        NFE_ASSERT(pointedDestObject);
+        NFE_ASSERT(pointedSrcObject);
+
+        return pointedSrcType->Clone(pointedDestObject, pointedSrcObject);
+    }
+
+    return true;
 }
 
 } // namespace RTTI

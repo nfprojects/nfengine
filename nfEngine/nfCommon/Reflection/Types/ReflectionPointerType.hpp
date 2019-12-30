@@ -30,6 +30,7 @@ public:
     virtual void Reset(void* uniquePtrObject, const Type* newDataType = nullptr) const = 0;
 
     virtual bool Compare(const void* objectA, const void* objectB) const override;
+    virtual bool Clone(void* destObject, const void* sourceObject) const override;
 
 protected:
     NFE_FORCE_INLINE PointerType(const TypeInfo& info) : Type(info) { }

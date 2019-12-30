@@ -34,6 +34,10 @@ public:
     virtual void PrintInfo() const override;
 
     bool Compare(const void* objectA, const void* objectB) const override;
+    bool Clone(void* destObject, const void* sourceObject) const override;
+
+    // resize array object
+    virtual bool ResizeArray(void* arrayObject, uint32 targetSize) const = 0;
 
     // access element data
     virtual void* GetElementPointer(void* arrayObject, uint32 index) const = 0;
@@ -54,6 +58,12 @@ public:
     virtual const Type* GetUnderlyingType() const override
     {
         return GetType<T>();
+    }
+
+    virtual bool ResizeArray(void* arrayObject, uint32 targetSize) const override
+    {
+        Common::DynArray<T>& typedObject = *static_cast<Common::DynArray<T>*>(arrayObject);
+        return typedObject.Resize(targetSize);
     }
 
     virtual void* GetElementPointer(void* arrayData, uint32 index) const override

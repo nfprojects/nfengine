@@ -48,6 +48,8 @@ DispersionParams::DispersionParams()
 Material::Material(const char* debugName)
     : debugName(debugName)
 {
+    SetBsdf(Material::DefaultBsdfName);
+    Compile();
 }
 
 MaterialPtr Material::Create()
@@ -78,10 +80,7 @@ void Material::SetBsdf(const String& bsdfName)
 
 static UniquePtr<Material> CreateDefaultMaterial()
 {
-    UniquePtr<Material> material = MakeUniquePtr<Material>("default");
-    material->SetBsdf(Material::DefaultBsdfName);
-    material->Compile();
-    return material;
+    return MakeUniquePtr<Material>("default");
 }
 
 const MaterialPtr& Material::GetDefaultMaterial()
