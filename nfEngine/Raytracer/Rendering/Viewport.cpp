@@ -3,6 +3,7 @@
 #include "Film.h"
 #include "Renderer.h"
 #include "RendererContext.h"
+#include "Tonemapping.h"
 #include "Scene/Camera.h"
 #include "Textures/Texture.h"
 #include "Utils/BitmapUtils.h"
@@ -185,7 +186,7 @@ bool Viewport::SetPostprocessParams(const PostprocessParams& params)
 
     if (!RTTI::GetType<PostprocessParams>()->Compare(&mPostprocessParams.params, &params))
     {
-        mPostprocessParams.params = params;
+        RTTI::GetType<PostprocessParams>()->Clone(&mPostprocessParams.params, &params);
         mPostprocessParams.fullUpdateRequired = true;
     }
 
@@ -538,6 +539,8 @@ void Viewport::PostProcessTile(const Block& block, uint32 threadID)
     Random& randomGenerator = mThreadData[threadID].randomGenerator;
 
     const PostprocessParams& params = mPostprocessParams.params;
+    NFE_ASSERT(params.tonemapper, "Tonemapper missing");
+
     const bool useBloom = params.bloom.factor > 0.0f && !mBlurredImages.Empty();
 
     const float pixelScaling = 1.0f / (float)(1u + mProgress.passesFinished);
@@ -584,7 +587,7 @@ void Viewport::PostProcessTile(const Block& block, uint32 threadID)
             rgbColor *= mPostprocessParams.colorScale;
 
             // apply tonemapping
-            Vector4 toneMapped = ToneMap(rgbColor, params.tonemapper);
+            Vector4 toneMapped = params.tonemapper->Apply(rgbColor);
 
             // add dither
             if (params.useDithering)

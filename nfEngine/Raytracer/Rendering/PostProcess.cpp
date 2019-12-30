@@ -1,15 +1,8 @@
 #include "PCH.h"
 #include "PostProcess.h"
+#include "Tonemapping.h"
 #include "../nfCommon/Reflection/ReflectionClassDefine.hpp"
-
-NFE_BEGIN_DEFINE_ENUM(NFE::RT::Tonemapper)
-{
-    NFE_ENUM_OPTION(Clamped);
-    NFE_ENUM_OPTION(Reinhard);
-    NFE_ENUM_OPTION(JimHejland_RichardBurgessDawson);
-    NFE_ENUM_OPTION(ACES);
-}
-NFE_END_DEFINE_ENUM()
+#include "../nfCommon/Reflection/Types/ReflectionUniquePtrType.hpp"
 
 NFE_DEFINE_CLASS(NFE::RT::BloomElement)
 {
@@ -34,7 +27,7 @@ NFE_DEFINE_CLASS(NFE::RT::PostprocessParams)
     NFE_CLASS_MEMBER(saturation).Min(0.0f).Max(2.0f);
     NFE_CLASS_MEMBER(useDithering);
     NFE_CLASS_MEMBER(bloom);
-    NFE_CLASS_MEMBER(tonemapper);
+    NFE_CLASS_MEMBER(tonemapper).NonNull();
 }
 NFE_END_DEFINE_CLASS()
 
@@ -58,9 +51,11 @@ PostprocessParams::PostprocessParams()
     , contrast(0.8f)
     , saturation(0.98f)
     , useDithering(true)
-    , tonemapper(Tonemapper::ACES)
+    , tonemapper(Common::MakeUniquePtr<ApproxACESTonemapper>())
 {
 }
+
+PostprocessParams::~PostprocessParams() = default;
 
 } // namespace RT
 } // namespace NFE
