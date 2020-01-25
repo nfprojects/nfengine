@@ -5,6 +5,7 @@
 #include "nfCore/Scene/Events/Event_Tick.hpp"
 #include "nfCore/Scene/Components/ComponentLight.hpp"
 
+#include "nfCommon/Reflection/ReflectionTypeResolver.hpp"
 #include "nfCommon/System/Assertion.hpp"
 
 namespace NFE {

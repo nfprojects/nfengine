@@ -8,7 +8,7 @@
 #include "nfCore/Scene/Components/ComponentLight.hpp"
 
 #include "nfCommon/System/Assertion.hpp"
-
+#include "nfCommon/Reflection/ReflectionTypeResolver.hpp"
 
 namespace NFE {
 

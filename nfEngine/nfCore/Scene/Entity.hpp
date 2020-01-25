@@ -12,6 +12,7 @@
 #include "nfCommon/Math/Box.hpp"
 #include "nfCommon/Memory/Aligned.hpp"
 #include "nfCommon/Containers/DynArray.hpp"
+#include "nfCommon/Reflection/ReflectionTypeResolver.hpp"
 
 
 // global-space position was changed

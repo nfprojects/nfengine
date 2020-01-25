@@ -6,8 +6,7 @@
 
 #pragma once
 
-#include "../nfCommon.hpp"
-
+#include "Types/ReflectionClassType.hpp"
 
 // Declare occurrence of a non-polymorphic class. Must be placed inside class declaration.
 #define NFE_DECLARE_CLASS(T)                                                                \
