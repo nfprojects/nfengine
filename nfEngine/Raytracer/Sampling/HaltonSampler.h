@@ -12,7 +12,7 @@ namespace RT {
 class HaltonSequence
 {
 public:
-    static constexpr uint32 MaxDimensions = 4096;
+    static constexpr uint32 MaxDimensions = 128;
     static constexpr uint32 Width = 64;
 
     NFE_RAYTRACER_API HaltonSequence();
@@ -22,6 +22,7 @@ public:
     NFE_FORCE_INLINE uint32 GetNumDimensions() const { return mDimensions; }
 
     NFE_RAYTRACER_API void NextSample();
+    NFE_RAYTRACER_API void NextSampleLeap();
 
     NFE_FORCE_INLINE double GetDouble(uint32 dimension) { return rnd[dimension][0]; }
     NFE_FORCE_INLINE uint32 GetInt(uint32 dimension) { return uint32(rnd[dimension][0] * (double)UINT32_MAX); }

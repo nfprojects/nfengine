@@ -107,6 +107,16 @@ void HaltonSequence::NextSample()
     }
 }
 
+void HaltonSequence::NextSampleLeap()
+{
+    const uint32 leapSize = 727; // 129th prime (not used as any base)
+
+    for (uint32 i = 0; i < leapSize; ++i)
+    {
+        NextSample();
+    }
+}
+
 uint64 HaltonSequence::Permute(uint32 i, uint8 j)
 {
     return *(*(ppm + i) + digit[i][j]);

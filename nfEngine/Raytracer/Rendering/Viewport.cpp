@@ -218,11 +218,13 @@ bool Viewport::Render(const Scene& scene, const Camera& camera)
         return false;
     }
 
-    mHaltonSequence.NextSample();
     DynArray<uint32> seed(mHaltonSequence.GetNumDimensions());
-    for (uint32 i = 0; i < mHaltonSequence.GetNumDimensions(); ++i)
     {
-        seed[i] = mHaltonSequence.GetInt(i);
+        for (uint32 i = 0; i < mHaltonSequence.GetNumDimensions(); ++i)
+        {
+            seed[i] = mHaltonSequence.GetInt(i);
+        }
+        mHaltonSequence.NextSampleLeap();
     }
 
     Film film(mSum, mProgress.passesFinished % 2 == 0 ? &mSecondarySum : nullptr);
