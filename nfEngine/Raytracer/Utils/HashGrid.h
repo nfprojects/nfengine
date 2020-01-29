@@ -140,7 +140,7 @@ public:
                 const float distSqr = (queryPos - particle.GetPosition()).SqrLength3();
                 if (distSqr <= mRadiusSqr)
                 {
-                    query(particleIndex);
+                    query(particleIndex, distSqr);
                 }
             }
         }

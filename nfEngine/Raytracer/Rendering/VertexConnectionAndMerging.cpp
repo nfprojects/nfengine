@@ -15,6 +15,15 @@
 #include "../nfCommon/Utils/TaskBuilder.hpp"
 #include "../nfCommon/Reflection/ReflectionUtils.hpp"
 #include "../nfCommon/Reflection/ReflectionClassDefine.hpp"
+#include "../nfCommon/Reflection/ReflectionEnumMacros.hpp"
+
+NFE_BEGIN_DEFINE_ENUM(NFE::RT::VertexMergingKernel)
+{
+    NFE_ENUM_OPTION(Uniform);
+    NFE_ENUM_OPTION(Epanechnikov);
+    NFE_ENUM_OPTION(Smooth);
+}
+NFE_END_DEFINE_ENUM()
 
 NFE_DEFINE_POLYMORPHIC_CLASS(NFE::RT::VertexConnectionAndMerging)
 {
@@ -30,6 +39,7 @@ NFE_DEFINE_POLYMORPHIC_CLASS(NFE::RT::VertexConnectionAndMerging)
     NFE_CLASS_MEMBER(mMergingRadiusMultiplier).Min(0.0f).Max(0.0f);
     NFE_CLASS_MEMBER(mUseVertexConnection);
     NFE_CLASS_MEMBER(mUseVertexMerging);
+    NFE_CLASS_MEMBER(mVertexMergingKernel);
 }
 NFE_END_DEFINE_CLASS()
 
@@ -79,11 +89,13 @@ VertexConnectionAndMerging::VertexConnectionAndMerging()
     , mCameraConnectingWeight(LdrColorRGB::White())
     , mVertexMergingWeight(LdrColorRGB::White())
 {
-    mUseVertexConnection = true;
+    mUseVertexConnection = false; // true;
     mUseVertexMerging = true;
+    mVertexMergingKernel = VertexMergingKernel::Smooth;
     mMaxPathLength = 10;
-    mInitialMergingRadius = 0.02f;
+    mInitialMergingRadius = 0.05f;
     mMergingRadiusVC = mMergingRadiusVM = mInitialMergingRadius;
+    mInvSqrMergingRadiusVM = 1.0f / Sqr(mMergingRadiusVM);
     mMinMergingRadius = 0.02f;
     mMergingRadiusMultiplier = 1.0f; // 0.98f; // VCM_TODO
 }
@@ -94,97 +106,6 @@ RendererContextPtr VertexConnectionAndMerging::CreateContext() const
 {
     return MakeUniquePtr<VertexConnectionAndMergingContext>();
 }
-
-/*
-void VertexConnectionAndMerging::PreRender(uint32 passNumber, const Film& film)
-{
-    NFE_ASSERT(mInitialMergingRadius >= mMinMergingRadius);
-    NFE_ASSERT(mMergingRadiusMultiplier > 0.0f);
-    NFE_ASSERT(mMergingRadiusMultiplier <= 1.0f);
-    NFE_ASSERT(mMaxPathLength > 0);
-
-    mLightPathsCount = film.GetHeight() * film.GetWidth();
-
-    if (passNumber == 0)
-    {
-        mMergingRadiusVC = mInitialMergingRadius;
-        mMergingRadiusVM = mInitialMergingRadius;
-    }
-    else
-    {
-        // merging radius for vertex merging is delayed by 1 frame
-        mMergingRadiusVM = mMergingRadiusVC;
-
-        mMergingRadiusVC *= mMergingRadiusMultiplier;
-        mMergingRadiusVC = Max(mMergingRadiusVC, mMinMergingRadius);
-    }
-
-    // Factor used to normalize vertex merging contribution.
-    // We divide the summed up energy by disk radius and number of light paths
-    mVertexMergingNormalizationFactor = 1.0f / (Sqr(mMergingRadiusVM) * NFE_MATH_PI * mLightPathsCount);
-
-    // compute MIS weights for vertex connection
-    {
-        const float etaVCM = NFE_MATH_PI * Sqr(mMergingRadiusVC) * mLightPathsCount;
-        // Note: we don't use merging in the first iteration
-        mMisVertexMergingWeightFactorVC = (mUseVertexMerging && passNumber > 0) ? Mis(etaVCM) : 0.0f;
-        mMisVertexConnectionWeightFactorVC = mUseVertexConnection ? Mis(1.f / etaVCM) : 0.0f;
-    }
-
-    // set MIS weights for vertex merging (delayed by 1 iteration)
-    {
-        const float etaVCM = NFE_MATH_PI * Sqr(mMergingRadiusVM) * mLightPathsCount;
-        mMisVertexMergingWeightFactorVM = mUseVertexMerging ? Mis(etaVCM) : 0.0f;
-        mMisVertexConnectionWeightFactorVM = mUseVertexConnection ? Mis(1.f / etaVCM) : 0.0f;
-    }
-}
-
-void VertexConnectionAndMerging::PreRender(uint32 passNumber, RenderingContext& ctx)
-{
-    NFE_ASSERT(ctx.rendererContext);
-    VertexConnectionAndMergingContext& rendererContext = *static_cast<VertexConnectionAndMergingContext*>(ctx.rendererContext.Get());
-
-    if (passNumber == 0)
-    {
-        rendererContext.photons.Clear();
-    }
-
-    // TODO this is duplicated
-    mPhotons.Clear();
-}
-
-void VertexConnectionAndMerging::PreRenderGlobal(RenderingContext& ctx)
-{
-    NFE_ASSERT(ctx.rendererContext);
-    VertexConnectionAndMergingContext& rendererContext = *static_cast<VertexConnectionAndMergingContext*>(ctx.rendererContext.Get());
-
-    NFE_SCOPED_TIMER(MergePhotonLists);
-
-    // merge photon lists
-    // TODO is there any way to get rid of this? (or at least make it multithreaded)
-    const uint32 oldPhotonsSize = mPhotons.Size();
-    const uint32 numPhotonsToAdd = rendererContext.photons.Size();
-    mPhotons.Resize_SkipConstructor(oldPhotonsSize + numPhotonsToAdd);
-    memcpy(mPhotons.Data() + oldPhotonsSize, rendererContext.photons.Data(), numPhotonsToAdd * sizeof(Photon));
-
-    // prepare data structures
-    rendererContext.photons.Clear();
-}
-
-void VertexConnectionAndMerging::PreRenderGlobal()
-{
-    // build hash grid of all light vertices
-    // TODO make it multithreaded
-    if (mUseVertexMerging)
-    {
-#ifdef NFE_VCM_USE_KD_TREE
-        mKdTree.Build(mPhotons);
-#else
-        mHashGrid.Build(mPhotons, mMergingRadiusVM);
-#endif // NFE_VCM_USE_KD_TREE
-    }
-}
-*/
 
 void VertexConnectionAndMerging::PreRender(Common::TaskBuilder& builder, const RenderParam& renderParams, Common::ArrayView<RenderingContext> contexts)
 {
@@ -208,6 +129,8 @@ void VertexConnectionAndMerging::PreRender(Common::TaskBuilder& builder, const R
         mMergingRadiusVC *= mMergingRadiusMultiplier;
         mMergingRadiusVC = Max(mMergingRadiusVC, mMinMergingRadius);
     }
+
+    mInvSqrMergingRadiusVM = 1.0f / Sqr(mMergingRadiusVM);
 
     // Factor used to normalize vertex merging contribution.
     // We divide the summed up energy by disk radius and number of light paths
@@ -936,89 +859,89 @@ const RayColor VertexConnectionAndMerging::ConnectVertices(const Scene& scene, P
     return contribution;
 }
 
+NFE_FORCE_INLINE static float ApplyVertexMergingKernel(const float sqrNormalizedDist, VertexMergingKernel kernel)
+{
+    float weight = 1.0f;
+
+    if (kernel == VertexMergingKernel::Epanechnikov)
+    {
+        // Paraboloid kernel: K(r)=2*(1-x^2)
+        weight = 2.0f - 2.0f * sqrNormalizedDist;
+    }
+    else if (kernel == VertexMergingKernel::Smooth)
+    {
+        // Quartic kernel: K(r)=3*(1-x^2)^2
+        weight = 3.0f * Sqr(1.0f - sqrNormalizedDist);
+    }
+
+    return weight;
+}
+
 const RayColor VertexConnectionAndMerging::MergeVertices(PathState& cameraPathState, const ShadingData& shadingData, RenderingContext& ctx) const
 {
     //NFE_SCOPED_TIMER(MergeVertices);
 
-    class RangeQuery
-    {
-    public:
-        NFE_FORCE_INLINE RangeQuery(const VertexConnectionAndMerging& renderer, const PathState& cameraPathState, const ShadingData& shadingData, RenderingContext& ctx)
-            : mRenderer(renderer)
-            , mShadingData(shadingData)
-            , mCameraPathState(cameraPathState)
-            , mContext(ctx)
-            , mContribution(RayColor::Zero())
-        {}
-
-        NFE_FORCE_INLINE const RayColor& GetContribution() const { return mContribution; }
-
-        NFE_FORCE_NOINLINE void operator()(uint32 photonIndex)
-        {
-            const Photon& photon = mRenderer.mPhotons[photonIndex];
-
-            // TODO russian roulette
-            //if (photon.pathLength + mCameraPathState.length > mRenderer.mMaxPathLength)
-            //{
-            //    return;
-            //}
-
-            // decompress light incoming direction in world coordinates
-            const Vector4 lightDirection{ photon.direction.ToVector() };
-            NFE_ASSERT(lightDirection.IsValid());
-
-            const float cosToLight = mShadingData.intersection.CosTheta(lightDirection);
-            if (cosToLight < FLT_EPSILON)
-            {
-                return;
-            }
-
-            float cameraBsdfDirPdfW, cameraBsdfRevPdfW;
-            const RayColor cameraBsdfFactor = mShadingData.intersection.material->Evaluate(mContext.wavelength, mShadingData, -lightDirection, &cameraBsdfDirPdfW, &cameraBsdfRevPdfW);
-            NFE_ASSERT(cameraBsdfFactor.IsValid());
-            
-            if (cameraBsdfFactor.AlmostZero())
-            {
-                return;
-            }
-
-            // decompress photon throughput
-            const RayColor throughput = RayColor::ResolveRGB(mContext.wavelength, photon.throughput.ToVector());
-            NFE_ASSERT(throughput.IsValid());
-
-            // TODO russian roulette
-            //cameraBsdfDirPdfW *= mCameraBsdf.ContinuationProb();
-            //cameraBsdfRevPdfW *= aLightVertex.mBSDF.ContinuationProb();
-
-            // Partial light sub-path MIS weight [tech. rep. (38)]
-            const float wLight = photon.dVCM * mRenderer.mMisVertexConnectionWeightFactorVM + photon.dVM * Mis(cameraBsdfDirPdfW);
-            const float wCamera = mCameraPathState.dVCM * mRenderer.mMisVertexConnectionWeightFactorVM + mCameraPathState.dVM * Mis(cameraBsdfRevPdfW);
-            const float misWeight = 1.0f / (wLight + 1.0f + wCamera);
-            const float weight = misWeight / cosToLight;
-            NFE_ASSERT(IsValid(weight));
-            NFE_ASSERT(weight > 0.0f);
-
-            mContribution.MulAndAccumulate(cameraBsdfFactor * throughput, weight);
-        }
-
-    private:
-        const VertexConnectionAndMerging& mRenderer;
-        const ShadingData& mShadingData;
-        const PathState& mCameraPathState;
-        RenderingContext& mContext;
-        RayColor mContribution;
-    };
-
     const Vector4& cameraVertexPos = shadingData.intersection.frame.GetTranslation();
 
-    RangeQuery query(*this, cameraPathState, shadingData, ctx);
+    RayColor contribution = RayColor::Zero();
+
+    const auto queryCallback = [this, &cameraPathState, &shadingData, &ctx, &contribution] (uint32 photonIndex, const float sqrDistance)
+    {
+        const Photon& photon = mPhotons[photonIndex];
+
+        // TODO russian roulette
+        //if (photon.pathLength + mCameraPathState.length > mRenderer.mMaxPathLength)
+        //{
+        //    return;
+        //}
+
+        // decompress light incoming direction in world coordinates
+        const Vector4 lightDirection{ photon.direction.ToVector() };
+        NFE_ASSERT(lightDirection.IsValid());
+
+        const float cosToLight = shadingData.intersection.CosTheta(lightDirection);
+        if (cosToLight < FLT_EPSILON)
+        {
+            return;
+        }
+
+        float cameraBsdfDirPdfW, cameraBsdfRevPdfW;
+        const RayColor cameraBsdfFactor = shadingData.intersection.material->Evaluate(ctx.wavelength, shadingData, -lightDirection, &cameraBsdfDirPdfW, &cameraBsdfRevPdfW);
+        NFE_ASSERT(cameraBsdfFactor.IsValid());
+
+        if (cameraBsdfFactor.AlmostZero())
+        {
+            return;
+        }
+
+        // decompress photon throughput
+        const RayColor throughput = RayColor::ResolveRGB(ctx.wavelength, photon.throughput.ToVector());
+        NFE_ASSERT(throughput.IsValid());
+
+        // TODO russian roulette
+        //cameraBsdfDirPdfW *= mCameraBsdf.ContinuationProb();
+        //cameraBsdfRevPdfW *= aLightVertex.mBSDF.ContinuationProb();
+
+        const float kernelWeight = ApplyVertexMergingKernel(sqrDistance * mInvSqrMergingRadiusVM, mVertexMergingKernel);
+
+        // Partial light sub-path MIS weight [tech. rep. (38)]
+        const float wLight = photon.dVCM * mMisVertexConnectionWeightFactorVM + photon.dVM * Mis(cameraBsdfDirPdfW);
+        const float wCamera = cameraPathState.dVCM * mMisVertexConnectionWeightFactorVM + cameraPathState.dVM * Mis(cameraBsdfRevPdfW);
+        const float misWeight = 1.0f / (wLight + 1.0f + wCamera);
+        const float weight = kernelWeight * misWeight / cosToLight;
+        NFE_ASSERT(IsValid(weight));
+        NFE_ASSERT(weight >= 0.0f);
+
+        contribution.MulAndAccumulate(cameraBsdfFactor * throughput, weight);
+    };
+
 #ifdef NFE_VCM_USE_KD_TREE
     mKdTree.Find(cameraVertexPos, mMergingRadiusVM, mPhotons, query);
 #else
-    mHashGrid.Process(cameraVertexPos, mPhotons, query);
+    mHashGrid.Process(cameraVertexPos, mPhotons, queryCallback);
 #endif // NFE_VCM_USE_KD_TREE
 
-    return query.GetContribution();
+    return contribution;
 }
 
 void VertexConnectionAndMerging::ConnectToCamera(const RenderParam& renderParams, const LightVertex& lightVertex, RenderingContext& ctx) const

@@ -4,6 +4,7 @@
 #include "../Material/BSDF/BSDF.h"
 #include "../../nfCommon/Math/Packed.hpp"
 #include "../../nfCommon/Math/LdrColor.hpp"
+#include "../../nfCommon/Reflection/ReflectionEnumMacros.hpp"
 
 // too slow for now...
 //#define NFE_VCM_USE_KD_TREE
@@ -16,6 +17,13 @@
 
 namespace NFE {
 namespace RT {
+
+enum class VertexMergingKernel : uint8
+{
+    Uniform,
+    Epanechnikov,
+    Smooth,
+};
 
 // Vertex Connection and Merging
 //
@@ -52,6 +60,7 @@ public:
 
     bool mUseVertexConnection;
     bool mUseVertexMerging;
+    VertexMergingKernel mVertexMergingKernel;
 
     struct LightVertex
     {
@@ -143,6 +152,7 @@ private:
 
     float mMergingRadiusVC;
     float mMergingRadiusVM;
+    float mInvSqrMergingRadiusVM;
 
     // computed based on merging radius and configuration
     float mVertexMergingNormalizationFactor;
@@ -167,3 +177,5 @@ private:
 
 } // namespace RT
 } // namespace NFE
+
+NFE_DECLARE_ENUM_TYPE(NFE::RT::VertexMergingKernel);
