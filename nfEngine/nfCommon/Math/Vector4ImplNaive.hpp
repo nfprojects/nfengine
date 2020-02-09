@@ -450,6 +450,11 @@ const Vector4 Vector4::HorizontalMax() const
     return Vector4{ Math::Max(Math::Max(x, y), Math::Max(z, w)) };
 }
 
+const Vector4 Vector4::HorizontalSum() const
+{
+    return Vector4{ x + y + z + w };
+}
+
 const VectorBool4 Vector4::operator == (const Vector4& b) const
 {
     return VectorBool4{ x == b.x, y == b.y, z == b.z, w == b.w };

@@ -219,6 +219,26 @@ const Vector4 Vector4::Swizzle(uint32 ix, uint32 iy, uint32 iz, uint32 iw) const
 #endif
 }
 
+template<uint32 ix, uint32 iy, uint32 iz, uint32 iw>
+const Vector4 Vector4::Shuffle(const Vector4& a, const Vector4& b)
+{
+    static_assert(ix < 4, "Invalid X element index");
+    static_assert(iy < 4, "Invalid Y element index");
+    static_assert(iz < 4, "Invalid Z element index");
+    static_assert(iw < 4, "Invalid W element index");
+
+    if (ix == 0 && iy == 1 && iz == 0 && iw == 1)
+    {
+        return _mm_movelh_ps(a, b);
+    }
+    else if (ix == 2 && iy == 3 && iz == 2 && iw == 3)
+    {
+        return _mm_movehl_ps(b, a);
+    }
+
+    return _mm_shuffle_ps(a, b, ix | (iy << 2) | (iz << 4) | (iw << 6));
+}
+
 const Vector4 Vector4::Select(const Vector4& a, const Vector4& b, const VectorBool4& sel)
 {
     return _mm_blendv_ps(a, b, sel.v);
@@ -435,6 +455,12 @@ const Vector4 Vector4::HorizontalMax() const
     temp = _mm_max_ps(v, _mm_shuffle_ps(v, v, _MM_SHUFFLE(2, 3, 0, 1)));
     temp = _mm_max_ps(temp, _mm_shuffle_ps(temp, temp, _MM_SHUFFLE(1, 0, 3, 2)));
     return temp;
+}
+
+const Vector4 Vector4::HorizontalSum() const
+{
+    const __m128 temp = _mm_hadd_ps(v, v);
+    return _mm_hadd_ps(temp, temp);
 }
 
 const VectorBool4 Vector4::operator == (const Vector4& b) const

@@ -55,3 +55,11 @@ TEST(MathMatrix4, Determinant)
     EXPECT_EQ(1.0f, Matrix4::Identity().Determinant());
     EXPECT_EQ(-12039.0f, matA.Determinant());
 }
+
+TEST(MathMatrix4, Inverse)
+{
+    const Matrix4 result = matA * matA.Inverted();
+
+    const float maxDiff = (result - Matrix4::Identity()).Abs().Max();
+    EXPECT_GE(1.0e-6f, maxDiff);
+}

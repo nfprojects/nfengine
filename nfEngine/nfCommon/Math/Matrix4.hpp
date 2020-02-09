@@ -91,6 +91,34 @@ public:
         return rows[3];
     }
 
+    NFE_FORCE_INLINE const Matrix4 operator - (const Matrix4& other) const
+    {
+        return
+        {
+            rows[0] - other.rows[0],
+            rows[1] - other.rows[1],
+            rows[2] - other.rows[2],
+            rows[3] - other.rows[3],
+        };
+    }
+
+    NFE_FORCE_INLINE const Matrix4 Abs() const
+    {
+        return
+        {
+            Vector4::Abs(rows[0]),
+            Vector4::Abs(rows[1]),
+            Vector4::Abs(rows[2]),
+            Vector4::Abs(rows[3]),
+        };
+    }
+
+    NFE_FORCE_INLINE float Max() const
+    {
+        const Vector4 rowsMax = Vector4::Max(Vector4::Max(rows[0], rows[1]), Vector4::Max(rows[2], rows[3]));
+        return rowsMax.HorizontalMax().x;
+    }
+
     // Compute matrix determinant
     NFCOMMON_API float Determinant() const;
 

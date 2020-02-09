@@ -153,133 +153,72 @@ float Matrix4::Determinant() const
     return Vector4::Dot4(s, r);
 }
 
+// for row major matrix
+// we use Vector4 to represent 2x2 matrix as A = | A0  A1 |
+//                                               | A2  A3 |
+// 2x2 row major Matrix multiply A*B
+NFE_FORCE_INLINE static const Vector4 Mat2Mul(const Vector4 vec1, const Vector4 vec2)
+{
+    return vec1 * vec2.Swizzle<0, 3, 0, 3>() + vec1.Swizzle<1, 0, 3, 2>() * vec2.Swizzle<2, 1, 2, 1>();
+}
+// 2x2 row major Matrix adjugate multiply (A#)*B
+NFE_FORCE_INLINE static const Vector4 Mat2AdjMul(const Vector4 vec1, const Vector4 vec2)
+{
+    return vec1.Swizzle<3, 3, 0, 0>() * vec2 - vec1.Swizzle<1, 1, 2, 2>() * vec2.Swizzle<2, 3, 0, 1>();
+
+}
+// 2x2 row major Matrix multiply adjugate A*(B#)
+NFE_FORCE_INLINE static const Vector4 Mat2MulAdj(const Vector4 vec1, const Vector4 vec2)
+{
+    return vec1 * vec2.Swizzle<3, 0, 3, 0>() - vec1.Swizzle<1, 0, 3, 2>() * vec2.Swizzle<2, 1, 2, 1>();
+}
+
 const Matrix4 Matrix4::Inverted() const
 {
-    float inv[16], det;
-    int i;
+    // based on:
+    // https://lxjk.github.io/2017/09/03/Fast-4x4-Matrix-Inverse-with-SSE-SIMD-Explained.html
 
-    inv[0] = f[5] * f[10] * f[15] -
-        f[5] * f[11] * f[14] -
-        f[9] * f[6] * f[15] +
-        f[9] * f[7] * f[14] +
-        f[13] * f[6] * f[11] -
-        f[13] * f[7] * f[10];
+    const Vector4 A = Vector4::Shuffle<0,1,0,1>(rows[0], rows[1]);
+    const Vector4 B = Vector4::Shuffle<2,3,2,3>(rows[0], rows[1]);
+    const Vector4 C = Vector4::Shuffle<0,1,0,1>(rows[2], rows[3]);
+    const Vector4 D = Vector4::Shuffle<2,3,2,3>(rows[2], rows[3]);
 
-    inv[4] = -f[4] * f[10] * f[15] +
-        f[4] * f[11] * f[14] +
-        f[8] * f[6] * f[15] -
-        f[8] * f[7] * f[14] -
-        f[12] * f[6] * f[11] +
-        f[12] * f[7] * f[10];
+    // determinant as (|A| |B| |C| |D|)
+    const Vector4 detSub =
+        Vector4::Shuffle<0,2,0,2>(rows[0], rows[2]) * Vector4::Shuffle<1,3,1,3>(rows[1], rows[3]) -
+        Vector4::Shuffle<1,3,1,3>(rows[0], rows[2]) * Vector4::Shuffle<0,2,0,2>(rows[1], rows[3]);
 
-    inv[8] = f[4] * f[9] * f[15] -
-        f[4] * f[11] * f[13] -
-        f[8] * f[5] * f[15] +
-        f[8] * f[7] * f[13] +
-        f[12] * f[5] * f[11] -
-        f[12] * f[7] * f[9];
+    const Vector4 detA = detSub.SplatX();
+    const Vector4 detB = detSub.SplatY();
+    const Vector4 detC = detSub.SplatZ();
+    const Vector4 detD = detSub.SplatW();
 
-    inv[12] = -f[4] * f[9] * f[14] +
-        f[4] * f[10] * f[13] +
-        f[8] * f[5] * f[14] -
-        f[8] * f[6] * f[13] -
-        f[12] * f[5] * f[10] +
-        f[12] * f[6] * f[9];
+    const Vector4 D_C = Mat2AdjMul(D, C); // D#C
+    const Vector4 A_B = Mat2AdjMul(A, B); // A#B
 
-    inv[1] = -f[1] * f[10] * f[15] +
-        f[1] * f[11] * f[14] +
-        f[9] * f[2] * f[15] -
-        f[9] * f[3] * f[14] -
-        f[13] * f[2] * f[11] +
-        f[13] * f[3] * f[10];
+    // tr((A#B)(D#C))
+    const Vector4 tr = (A_B * D_C.Swizzle<0, 2, 1, 3>()).HorizontalSum();
 
-    inv[5] = f[0] * f[10] * f[15] -
-        f[0] * f[11] * f[14] -
-        f[8] * f[2] * f[15] +
-        f[8] * f[3] * f[14] +
-        f[12] * f[2] * f[11] -
-        f[12] * f[3] * f[10];
+    // |M| = |A|*|D| + |B|*|C| - tr((A#B)(D#C)
+    const Vector4 detM = detA * detD + detB * detC - tr;
 
-    inv[9] = -f[0] * f[9] * f[15] +
-        f[0] * f[11] * f[13] +
-        f[8] * f[1] * f[15] -
-        f[8] * f[3] * f[13] -
-        f[12] * f[1] * f[11] +
-        f[12] * f[3] * f[9];
+    // (1/|M|, -1/|M|, -1/|M|, 1/|M|)
+    const Vector4 rDetM = Vector4(1.0f, -1.0f, -1.0f, 1.0f) / detM;
 
-    inv[13] = f[0] * f[9] * f[14] -
-        f[0] * f[10] * f[13] -
-        f[8] * f[1] * f[14] +
-        f[8] * f[2] * f[13] +
-        f[12] * f[1] * f[10] -
-        f[12] * f[2] * f[9];
+    Vector4 X = rDetM * Vector4::MulAndSub(detD, A, Mat2Mul(B, D_C));       // X# = |D|A - B(D#C)
+    Vector4 W = rDetM * Vector4::MulAndSub(detA, D, Mat2Mul(C, A_B));       // W# = |A|D - C(A#B)
+    Vector4 Y = rDetM * Vector4::MulAndSub(detB, C, Mat2MulAdj(D, A_B));    // Y# = |B|C - D(A#B)#
+    Vector4 Z = rDetM * Vector4::MulAndSub(detC, B, Mat2MulAdj(A, D_C));    // Z# = |C|B - A(D#C)#
 
-    inv[2] = f[1] * f[6] * f[15] -
-        f[1] * f[7] * f[14] -
-        f[5] * f[2] * f[15] +
-        f[5] * f[3] * f[14] +
-        f[13] * f[2] * f[7] -
-        f[13] * f[3] * f[6];
+    Matrix4 r;
 
-    inv[6] = -f[0] * f[6] * f[15] +
-        f[0] * f[7] * f[14] +
-        f[4] * f[2] * f[15] -
-        f[4] * f[3] * f[14] -
-        f[12] * f[2] * f[7] +
-        f[12] * f[3] * f[6];
+    // apply adjugate and store, here we combine adjugate shuffle and store shuffle
+    r.rows[0] = Vector4::Shuffle<3,1,3,1>(X, Y);
+    r.rows[1] = Vector4::Shuffle<2,0,2,0>(X, Y);
+    r.rows[2] = Vector4::Shuffle<3,1,3,1>(Z, W);
+    r.rows[3] = Vector4::Shuffle<2,0,2,0>(Z, W);
 
-    inv[10] = f[0] * f[5] * f[15] -
-        f[0] * f[7] * f[13] -
-        f[4] * f[1] * f[15] +
-        f[4] * f[3] * f[13] +
-        f[12] * f[1] * f[7] -
-        f[12] * f[3] * f[5];
-
-    inv[14] = -f[0] * f[5] * f[14] +
-        f[0] * f[6] * f[13] +
-        f[4] * f[1] * f[14] -
-        f[4] * f[2] * f[13] -
-        f[12] * f[1] * f[6] +
-        f[12] * f[2] * f[5];
-
-    inv[3] = -f[1] * f[6] * f[11] +
-        f[1] * f[7] * f[10] +
-        f[5] * f[2] * f[11] -
-        f[5] * f[3] * f[10] -
-        f[9] * f[2] * f[7] +
-        f[9] * f[3] * f[6];
-
-    inv[7] = f[0] * f[6] * f[11] -
-        f[0] * f[7] * f[10] -
-        f[4] * f[2] * f[11] +
-        f[4] * f[3] * f[10] +
-        f[8] * f[2] * f[7] -
-        f[8] * f[3] * f[6];
-
-    inv[11] = -f[0] * f[5] * f[11] +
-        f[0] * f[7] * f[9] +
-        f[4] * f[1] * f[11] -
-        f[4] * f[3] * f[9] -
-        f[8] * f[1] * f[7] +
-        f[8] * f[3] * f[5];
-
-    inv[15] = f[0] * f[5] * f[10] -
-        f[0] * f[6] * f[9] -
-        f[4] * f[1] * f[10] +
-        f[4] * f[2] * f[9] +
-        f[8] * f[1] * f[6] -
-        f[8] * f[2] * f[5];
-
-    det = f[0] * inv[0] + f[1] * inv[4] + f[2] * inv[8] + f[3] * inv[12];
-    det = 1.0f / det;
-
-    Matrix4 result;
-    for (i = 0; i < 16; i++)
-    {
-        result.f[i] = inv[i] * det;
-    }
-
-    return result;
+    return r;
 }
 
 const Box Matrix4::TransformBox(const Box& box) const

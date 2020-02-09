@@ -123,6 +123,11 @@ public:
     // Rearrange vector elements (variable)
     NFE_FORCE_INLINE const Vector4 Swizzle(uint32 ix, uint32 iy, uint32 iz, uint32 iw) const;
 
+    // shuffle between two vectors
+    // returns Vector4(a[ix], a[iy], b[ix], b[iy])
+    template<uint32 ix, uint32 iy, uint32 iz, uint32 iw>
+    NFE_FORCE_INLINE static const Vector4 Shuffle(const Vector4& a, const Vector4& b);
+
     // Convert to 3 uint8 values (with clamping)
     // xyz [0.0f...1.0f] -> zyx [0...255]
     NFE_FORCE_INLINE uint32 ToBGR() const;
@@ -259,6 +264,9 @@ public:
 
     // Calculate horizontal maximum. Result is splatted across all elements
     NFE_FORCE_INLINE const Vector4 HorizontalMax() const;
+
+    // Calculate horizontal sum. Result is splatted across all elements
+    NFE_FORCE_INLINE const Vector4 HorizontalSum() const;
 
     // transpose 3x3 matrix
     NFE_FORCE_INLINE static void Transpose3(Vector4& a, Vector4& b, Vector4& c);
