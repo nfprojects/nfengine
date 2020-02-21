@@ -2,23 +2,23 @@
 #include "Math.hpp"
 
 #ifdef NFE_USE_SSE
-#pragma message("[rt::math] Compiling with SSE support")
+#pragma message("[NFE::Math] Compiling with SSE support")
 #endif
 
 #ifdef NFE_USE_AVX
-#pragma message("[rt::math] Compiling with AVX support")
+#pragma message("[NFE::Math] Compiling with AVX support")
 #endif
 
 #ifdef NFE_USE_AVX2
-#pragma message("[rt::math] Compiling with AVX2 support")
+#pragma message("[NFE::Math] Compiling with AVX2 support")
 #endif
 
 #ifdef NFE_USE_FP16C
-#pragma message("[rt::math] Compiling with FP16C support")
+#pragma message("[NFE::Math] Compiling with FP16C support")
 #endif
 
 #ifdef NFE_USE_FMA
-#pragma message("[rt::math] Compiling with FMA support")
+#pragma message("[NFE::Math] Compiling with FMA support")
 #endif
 
 namespace NFE {

@@ -25,12 +25,14 @@ ResourceStateCache::~ResourceStateCache()
 
 void ResourceStateCache::OnFinishCommandBuffer()
 {
+#ifndef NFE_CONFIGURATION_FINAL
     // check if all resources in the cache are in default state
     for (const auto& pair : mCache)
     {
         NFE_ASSERT(pair.first.resource->GetDefaultState() == pair.second,
                    "Some of renderer resources are not in default state when finishing command buffer recording");
     }
+#endif // NFE_CONFIGURATION_FINAL
 
     mCache.Clear();
 }

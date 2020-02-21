@@ -43,11 +43,17 @@ PackedArray<ObjType, IDType, Alignment>::~PackedArray()
     }
 
     if (mNodes)
+    {
         NFE_FREE(mNodes);
+    }
     if (mObjects)
+    {
         NFE_FREE(mObjects);
+    }
     if (mIDs)
+    {
         NFE_FREE(mIDs);
+    }
 }
 
 template<typename ObjType, typename IDType, size_t Alignment>
@@ -105,7 +111,9 @@ bool PackedArray<ObjType, IDType, Alignment>::Resize(size_t newSize)
 
     /// update pointers
     if (mFreeHead == InvalidIndex)
+    {
         mFreeHead = static_cast<IDType>(mSize);
+    }
 
     mSize = newSize;
     return true;
@@ -115,13 +123,17 @@ template<typename ObjType, typename IDType, size_t Alignment>
 IDType PackedArray<ObjType, IDType, Alignment>::AddInternal(IDType& id)
 {
     if (mUsed == MaxSize())
+    {
         return InvalidIndex;
+    }
 
     if (mFreeHead == InvalidIndex)
     {
         size_t newSize = std::min(MaxSize(), mSize * 2);
         if (!Resize(newSize))
+        {
             return InvalidIndex;
+        }
     }
 
     // get next free index and update the free list
@@ -131,10 +143,14 @@ IDType PackedArray<ObjType, IDType, Alignment>::AddInternal(IDType& id)
     // update free indices list
     mFreeHead = mNodes[index].next;
     if (mFreeHead != InvalidIndex)
+    {
         mNodes[mFreeHead].prev = InvalidIndex;
+    }
 
     if (mTakenHead != InvalidIndex)
+    {
         mNodes[mTakenHead].prev = index;
+    }
 
     mIDs[index] = id;
     mNodes[index].next = mTakenHead;
@@ -202,10 +218,14 @@ void PackedArray<ObjType, IDType, Alignment>::Remove(IDType index)
     IDType newLastTaken = mNodes[mTakenHead].next;
 
     if (newLastTaken == index)
+    {
         newLastTaken = mTakenHead;
+    }
 
     if (mNodes[mTakenHead].next != InvalidIndex)
+    {
         mNodes[mNodes[mTakenHead].next].prev = InvalidIndex;
+    }
 
     /// update indicies of moved object
     mIDs[mTakenHead] = mIDs[index];
@@ -214,9 +234,13 @@ void PackedArray<ObjType, IDType, Alignment>::Remove(IDType index)
 
     /// correct neighbors pointers
     if (mNodes[mTakenHead].prev != InvalidIndex)
+    {
         mNodes[mNodes[mTakenHead].prev].next = mTakenHead;
+    }
     if (mNodes[mTakenHead].next != InvalidIndex)
+    {
         mNodes[mNodes[mTakenHead].next].prev = mTakenHead;
+    }
 
     mTakenHead = newLastTaken;
 
@@ -227,7 +251,9 @@ void PackedArray<ObjType, IDType, Alignment>::Remove(IDType index)
     mFreeHead = index;
 
     if (mTakenHead != InvalidIndex)
+    {
         NFE_ASSERT(mIDs[mTakenHead] == (mUsed - 1), "Free list corruption");
+    }
     NFE_ASSERT(mTakenHead != mFreeHead, "Free list corruption");
 }
 

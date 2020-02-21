@@ -90,7 +90,9 @@ const RayColor PathTracer::RenderPixel(const Math::Ray& primaryRay, const Render
 
     PathTerminationReason pathTerminationReason = PathTerminationReason::None;
 
+#ifndef NFE_CONFIGURATION_FINAL
     const ISceneObject* objectHit = nullptr;
+#endif // NFE_CONFIGURATION_FINAL
 
     const IMedium* currentMedium = param.scene.GetMediumAtPoint(context, primaryRay.origin);
 

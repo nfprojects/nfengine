@@ -71,10 +71,11 @@ public:
     {
         NFE_ASSERT(object, "Trying to serialize nullptr");
 
+        NFE_UNUSED(object);
         NFE_UNUSED(config);
         NFE_UNUSED(outValue);
 
-        NFE_FATAL("Not implemented!");
+        NFE_ASSERT(false, "Not implemented!");
 
         return false;
     }
@@ -83,10 +84,11 @@ public:
     {
         NFE_ASSERT(outObject, "Trying to deserialize to nullptr");
 
+        NFE_UNUSED(outObject);
         NFE_UNUSED(config);
         NFE_UNUSED(value);
 
-        NFE_FATAL("Not implemented!");
+        NFE_ASSERT(false, "Not implemented!");
 
         return false;
     }

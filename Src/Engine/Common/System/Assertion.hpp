@@ -19,7 +19,7 @@ void NFCOMMON_API HandleFatalAssertion(const char* expressionStr, const char* fu
 } // namespace NFE
 
 
-// TODO assertions should be disabled in "Final" build
+#ifndef NFE_CONFIGURATION_FINAL
 
 #define NFE_ASSERT(expression, ...)                                                                     \
 do {                                                                                                    \
@@ -35,3 +35,11 @@ do {                                                                            
     NFE_BREAK();                                                                                        \
     NFE::Common::HandleFatalAssertion("", __FUNCTION__, __FILE__, __LINE__, __VA_ARGS__);               \
 } while (0)
+
+#else // NFE_CONFIGURATION_FINAL
+
+#define NFE_ASSERT(expression, ...) do { } while (0)
+
+#define NFE_FATAL(...) do { } while (0)
+
+#endif // NFE_CONFIGURATION_FINAL

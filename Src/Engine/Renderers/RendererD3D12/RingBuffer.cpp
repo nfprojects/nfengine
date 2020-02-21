@@ -124,6 +124,7 @@ void RingBuffer::FinishFrame(uint64 frameIndex)
 
 void RingBuffer::OnFrameCompleted(uint64 frameIndex)
 {
+    NFE_UNUSED(frameIndex);
     NFE_ASSERT(!mCompletedFrames.Empty(), "");
     NFE_ASSERT(mCompletedFrames.Front().first == frameIndex, "");
 

@@ -36,6 +36,11 @@ struct HitPoint
     static constexpr uint32 InvalidObject = UINT32_MAX;
     static constexpr float DefaultDistance = std::numeric_limits<float>::infinity();
 
+    NFE_FORCE_INLINE HitPoint()
+    {
+        Reset();
+    }
+
     NFE_FORCE_INLINE void Reset()
     {
         objectId = InvalidObject;

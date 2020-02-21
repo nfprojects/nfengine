@@ -31,11 +31,12 @@ CommandListManager::~CommandListManager()
 {
     NFE_SCOPED_LOCK(mLock);
 
+#ifndef NFE_CONFIGURATION_FINAL
     for (const CommandListPtr& commandList : mCommandLists)
     {
-        NFE_ASSERT(commandList->GetState() == CommandList::State::Free,
-                   "All command list must be free before destroying the command list manager");
+        NFE_ASSERT(commandList->GetState() == CommandList::State::Free, "All command list must be free before destroying the command list manager");
     }
+#endif // NFE_CONFIGURATION_FINAL
 }
 
 CommandList* CommandListManager::RequestCommandList(ID3D12CommandAllocator* commandAllocator)

@@ -33,7 +33,7 @@ void IRenderer::Raytrace_Packet(RayPacket&, const RenderParam&, RenderingContext
 RendererPtr CreateRenderer(const StringView name, const Scene&)
 {
     DynArray<const RTTI::ClassType*> types;
-    RTTI::GetType<IRenderer>()->ListSubtypes(types);
+    RTTI::GetType<IRenderer>()->ListSubtypes(types, true);
     for (const RTTI::ClassType* type : types)
     {
         if (type->IsConstructible() && type->GetName() == name)

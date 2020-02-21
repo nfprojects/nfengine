@@ -297,7 +297,7 @@ void DemoWindow::OnMouseDown(MouseButton button, int x, int y)
         const Vector4 coords((float)x / (float)width, 1.0f - (float)y / (float)height);
         const Ray ray = mCamera.GenerateRay(coords, *renderingContext);
 
-#ifndef RT_CONFIGURATION_FINAL
+#ifndef NFE_CONFIGURATION_FINAL
         mPathDebugData.Clear();
         renderingContext->pathDebugData = &mPathDebugData;
 

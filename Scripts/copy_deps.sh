@@ -6,11 +6,12 @@
 
 # script assumes following arguments:
 #   %1   - PlatformDirName
-#   %2   - ConfigurationDirName
-#   %3.. - <list of files to copy>
+#   %2   - DestConfigurationDirName
+#   %3   - SrcConfigurationDirName
+#   %4.. - <list of files to copy>
 
 # verify that some arguments were given
-if [ -z "$3" ] ; then
+if [ -z "$4" ] ; then
     echo "ERROR: There were not enough arguments given. Was that intentional?"
     echo "       Leaving script."
     exit
@@ -30,20 +31,20 @@ if [ ! -d "nfEngineDeps/Bin" ] ; then
     exit
 fi
 
-BasePath="$PWD/nfEngineDeps/Bin/$1/$2/"
+BasePath="$PWD/nfEngineDeps/Bin/$1/$3/"
 DestPath="$PWD/Bin/$1/$2/"
-echo "Files will be copied to $DestPath"
+echo "Deps files will be copied from $BasePath to $DestPath"
 
 while :; do
-if [ -z "$3" ] ; then
+if [ -z "$4" ] ; then
     break
 fi
 
-if [ -x "$BasePath$3" ] ; then
-    echo "Copying $3"
-    cp "$BasePath$3" "$DestPath$3"
+if [ -x "$BasePath$4" ] ; then
+    echo "Copying $4"
+    cp "$BasePath$4" "$DestPath$4"
 else
-    echo "WARN:  $3 not found - skipping..."
+    echo "WARN:  $4 not found - skipping..."
 fi
 
 shift

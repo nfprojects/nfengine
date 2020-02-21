@@ -23,6 +23,7 @@ ClassType::ClassType(const ClassTypeInfo& info)
     , mParent(info.parent)
     , mMembers(info.members)
 {
+#ifndef NFE_CONFIGURATION_FINAL
     // verify members
     for (const Member& member : mMembers)
     {
@@ -30,6 +31,7 @@ ClassType::ClassType(const ClassTypeInfo& info)
         NFE_ASSERT(member.GetType(), "Member '%s' has invalid type", member.GetName());
         NFE_ASSERT(member.GetName() != TYPE_MARKER, "Name reserved");
     }
+#endif // NFE_CONFIGURATION_FINAL
 
     if (mParent)
     {
@@ -38,6 +40,7 @@ ClassType::ClassType(const ClassTypeInfo& info)
         parent->mChildTypes.PushBack(this);
     }
 
+#ifndef NFE_CONFIGURATION_FINAL
     // validate default object
     if (mDefaultObject)
     {
@@ -58,6 +61,7 @@ ClassType::ClassType(const ClassTypeInfo& info)
             }
         }
     }
+#endif // NFE_CONFIGURATION_FINAL
 }
 
 void ClassType::PrintInfo() const

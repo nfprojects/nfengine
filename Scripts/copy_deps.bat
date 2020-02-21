@@ -6,11 +6,12 @@
 
 :: script assumes following arguments:
 ::   %1   - PlatformDirName
-::   %2   - ConfigurationDirName
-::   %3.. - <list of files to copy>
+::   %2   - DestConfigurationDirName
+::   %4   - SrcConfigurationDirName
+::   %4.. - <list of files to copy>
 
 :: verify that some arguments were given
-if "%3"=="" (
+if "%4"=="" (
     echo ERROR: There were not enough arguments given. Was that intentional?
     echo        Leaving script.
     exit /b
@@ -30,20 +31,20 @@ if not exist "nfEngineDeps/Bin" (
     exit /b
 )
 
-set BasePath=%cd%\nfEngineDeps\Bin\%1\%2\
+set BasePath=%cd%\nfEngineDeps\Bin\%1\%3\
 set DestPath=%cd%\Bin\%1\%2\
-echo Files will be copied to %BasePath%
+echo Deps files will be copied from %BasePath% to %DestPath%
 
 :mainloop
-if "%3"=="" (
+if "%4"=="" (
     goto continue
 )
 
-if exist "%BasePath%%3" (
-    echo Copying %3 from %BasePath%
-    copy "%BasePath%%3" "%DestPath%\%~nx3"
+if exist "%BasePath%%4" (
+    echo Copying %4 from %BasePath%
+    copy "%BasePath%%4" "%DestPath%\%~nx4"
 ) else (
-    echo ERROR: %3 not found - skipping...
+    echo ERROR: %4 not found - skipping...
     set Failed=true
 )
 shift
