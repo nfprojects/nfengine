@@ -19,10 +19,13 @@ public:
     NFCOMMON_API static const Vec4f GetTriangle(const Vec2f u);
 
     // get point on a circle (radius = 1.0)
-    NFCOMMON_API static const Vec4f GetCircle(const Vec2f u);
-    NFCOMMON_API static const Vec2x4f GetCircle(const Vec2x4f& u);
-    NFCOMMON_API static const Vec2x8f GetCircle(const Vec2x8f& u);
-    NFCOMMON_API static const Vec2x16f GetCircle(const Vec2x16f& u);
+    NFCOMMON_API static const Vec4f GetCircle(const float u);
+
+    // get point on a disk (radius = 1.0)
+    NFCOMMON_API static const Vec4f GetDisk(const Vec2f u);
+    NFCOMMON_API static const Vec2x4f GetDisk(const Vec2x4f& u);
+    NFCOMMON_API static const Vec2x8f GetDisk(const Vec2x8f& u);
+    NFCOMMON_API static const Vec2x16f GetDisk(const Vec2x16f& u);
 
     // get point on a regular hexagon
     // Note: 3 sample components are required

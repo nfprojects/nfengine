@@ -85,6 +85,8 @@ bool IShape::Sample(const Vec4f& ref, const Vec3f& u, ShapeSampleResult& result)
 {
     result.position = Sample(u, &result.normal);
 
+    NFE_ASSERT(Abs(1.0f - result.normal.SqrLength3()) < 0.001f, "Normal vector must be normalized");
+
     Vec4f dir = ref - result.position;
     const float sqrDistance = dir.SqrLength3();
 

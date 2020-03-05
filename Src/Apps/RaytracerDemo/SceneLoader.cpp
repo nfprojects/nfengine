@@ -11,6 +11,7 @@
 #include "Engine/Raytracer/Scene/Object/SceneObject_Light.h"
 #include "Engine/Raytracer/Shapes/BoxShape.h"
 #include "Engine/Raytracer/Shapes/SphereShape.h"
+#include "Engine/Raytracer/Shapes/CylinderShape.h"
 #include "Engine/Raytracer/Shapes/RectShape.h"
 #include "Engine/Raytracer/Shapes/CsgShape.h"
 #include "Engine/Raytracer/Color/ColorRGB.h"
@@ -525,6 +526,22 @@ static ShapePtr ParseShape(const rapidjson::Value& value, MaterialsMap& material
         }
 
         shape = MakeUniquePtr<SphereShape>(radius);
+    }
+    else if (typeStr == "cylinder")
+    {
+        float radius = 0.5f;
+        if (!TryParseFloat(value, "radius", false, radius))
+        {
+            return false;
+        }
+
+        float height = 1.0f;
+        if (!TryParseFloat(value, "height", false, height))
+        {
+            return false;
+        }
+
+        shape = MakeUniquePtr<CylinderShape>(radius, height);
     }
     else if (typeStr == "box")
     {

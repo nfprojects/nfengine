@@ -332,8 +332,8 @@ void Scene::EvaluateIntersection(const Ray& ray, const HitPoint& hitPoint, const
         NFE_ASSERT(outData.texCoord.IsValid(), "");
         NFE_ASSERT(outData.frame[0].IsValid(), "");
         NFE_ASSERT(outData.frame[2].IsValid(), "");
-        NFE_ASSERT(Abs(1.0f - outData.frame[0].SqrLength3()) < 0.001f, "");
-        NFE_ASSERT(Abs(1.0f - outData.frame[2].SqrLength3()) < 0.001f, "");
+        NFE_ASSERT(Abs(1.0f - outData.frame[0].SqrLength3()) < 0.001f, "Tangent vector must be normalized");
+        NFE_ASSERT(Abs(1.0f - outData.frame[2].SqrLength3()) < 0.001f, "Normal vector must be normalized");
     }
 
     Vec4f localSpaceTangent = outData.frame[0];

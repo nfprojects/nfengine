@@ -236,6 +236,7 @@
     <ClInclude Include="Scene\Scene.h" />
     <ClInclude Include="Shapes\BoxShape.h" />
     <ClInclude Include="Shapes\CsgShape.h" />
+    <ClInclude Include="Shapes\CylinderShape.h" />
     <ClInclude Include="Shapes\MeshShape.h" />
     <ClInclude Include="Shapes\Mesh\VertexBuffer.h" />
     <ClInclude Include="Shapes\Mesh\VertexBufferDesc.h" />
@@ -343,6 +344,7 @@
     <ClCompile Include="Scene\Scene.cpp" />
     <ClCompile Include="Shapes\BoxShape.cpp" />
     <ClCompile Include="Shapes\CsgShape.cpp" />
+    <ClCompile Include="Shapes\CylinderShape.cpp" />
     <ClCompile Include="Shapes\MeshShape.cpp" />
     <ClCompile Include="Shapes\Mesh\VertexBuffer.cpp" />
     <ClCompile Include="Shapes\RectShape.cpp" />

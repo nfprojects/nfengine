@@ -197,7 +197,7 @@ const Vec4f Camera::GenerateBokeh(const Math::Vec3f sample) const
     switch (mDOF.bokehShape)
     {
         case BokehShape::Circle:
-            return SamplingHelpers::GetCircle(sample);
+            return SamplingHelpers::GetDisk(sample);
         case BokehShape::Hexagon:
             return SamplingHelpers::GetHexagon(sample);
         case BokehShape::Square:
@@ -226,7 +226,7 @@ const RayPacketTypes::Vec2f Camera::GenerateSimdBokeh(RenderingContext& context)
     switch (mDOF.bokehShape)
     {
         case BokehShape::Circle:
-            return SamplingHelpers::GetCircle(u);
+            return SamplingHelpers::GetDisk(u);
         //case BokehShape::Hexagon:
         //    return SamplingHelpers::GetHexagon_Simd8(u, context.randomGenerator.GetVector8());
         case BokehShape::Square:

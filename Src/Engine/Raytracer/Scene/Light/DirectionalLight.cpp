@@ -113,7 +113,7 @@ const RayColor DirectionalLight::Emit(const EmitParam& param, EmitResult& outRes
     outResult.direction = param.lightToWorld.TransformVector(-sampledDirectionLocalSpace);
 
     // generate random origin
-    const Vec4f uv = SamplingHelpers::GetCircle(param.positionSample);
+    const Vec4f uv = SamplingHelpers::GetDisk(param.positionSample);
     outResult.position = Vec4f(uv.x, uv.y, -1.0f) * SceneRadius;
 
     outResult.cosAtLight = 1.0f;

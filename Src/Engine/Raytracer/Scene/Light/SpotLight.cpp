@@ -44,7 +44,7 @@ const RayColor SpotLight::Illuminate(const IlluminateParam& param, IlluminateRes
     outResult.cosAtLight = 1.0f;
     outResult.emissionPdfW = mIsDelta ? 1.0f : SphereCapPdf(mCosAngle);
 
-    const float angle = Vec4f::Dot3(outResult.directionToLight, -VECTOR_Z);
+    const float angle = -outResult.directionToLight.z;
     
     if (angle < mCosAngle)
     {

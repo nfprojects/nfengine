@@ -90,7 +90,7 @@ const RayColor BackgroundLight::Emit(const EmitParam& param, EmitResult& outResu
     outResult.direction = SamplingHelpers::GetSphere(param.directionSample);
 
     // generate random origin
-    const Vec4f uv = SamplingHelpers::GetCircle(param.positionSample);
+    const Vec4f uv = SamplingHelpers::GetDisk(param.positionSample);
     {
         Vec4f u, v;
         BuildOrthonormalBasis(outResult.direction, u, v);

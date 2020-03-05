@@ -5,7 +5,7 @@
 namespace NFE {
 namespace Math {
 
-const Vec2x8f SamplingHelpers::GetCircle(const Vec2x8f& u)
+const Vec2x8f SamplingHelpers::GetDisk(const Vec2x8f& u)
 {
     // angle (uniform distribution)
     const Vec8f theta = u.x * (2.0f * NFE_MATH_PI);
@@ -19,7 +19,7 @@ const Vec2x8f SamplingHelpers::GetCircle(const Vec2x8f& u)
     return { r * vSin, r * vCos };
 }
 
-const Vec2x4f SamplingHelpers::GetCircle(const Vec2x4f& u)
+const Vec2x4f SamplingHelpers::GetDisk(const Vec2x4f& u)
 {
     // angle (uniform distribution)
     const Vec4f theta = u.x * (2.0f * NFE_MATH_PI);
@@ -33,7 +33,7 @@ const Vec2x4f SamplingHelpers::GetCircle(const Vec2x4f& u)
     return { r * vSin, r * vCos };
 }
 
-const Vec2x16f SamplingHelpers::GetCircle(const Vec2x16f& u)
+const Vec2x16f SamplingHelpers::GetDisk(const Vec2x16f& u)
 {
     // angle (uniform distribution)
     const Vec16f theta = u.x * (2.0f * NFE_MATH_PI);
@@ -53,7 +53,12 @@ const Vec4f SamplingHelpers::GetTriangle(const Vec2f u)
     return { 1.0f - t, u.y * t };
 }
 
-const Vec4f SamplingHelpers::GetCircle(const Vec2f u)
+const Vec4f SamplingHelpers::GetCircle(const float u)
+{
+    return SinCos(NFE_MATH_2PI * u);
+}
+
+const Vec4f SamplingHelpers::GetDisk(const Vec2f u)
 {
     // angle (uniform distribution)
     const float theta = 2.0f * NFE_MATH_PI * u.x;
