@@ -175,7 +175,14 @@ NFE_INLINE const VectorBool8 Intersect_TriangleRay_Simd8(
     outV = v;
     outDist = t;
 
-#ifdef NFE_USE_AVX
+#ifdef NFE_USE_AVX2
+    // t > 0 && t < maxDist
+    const __m256i condA = _mm256_andnot_si256(_mm256_castps_si256(u), _mm256_cmpgt_epi32(_mm256_castps_si256(maxDistance), _mm256_castps_si256(t)));
+    // u > 0 && u + v < 1
+    const __m256i condB = _mm256_andnot_si256(_mm256_castps_si256(t), _mm256_castps_si256(_mm256_cmp_ps(u + v, one, _CMP_LE_OQ)));
+    // v > 0
+    return _mm256_andnot_si256(v, _mm256_and_si256(condA, condB));
+#elif defined(NFE_USE_AVX)
     // u > 0 && v > 0 && t > 0 && u + v < 1 && t < maxDist
     const Vector8 condA = _mm256_andnot_ps(u, _mm256_cmp_ps(t, maxDistance, _CMP_LT_OQ));
     const Vector8 condB = _mm256_andnot_ps(t, _mm256_cmp_ps(u + v, one, _CMP_LE_OQ));

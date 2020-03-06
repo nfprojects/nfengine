@@ -36,6 +36,7 @@ public:
     virtual const Math::Box GetBoundingBox() const override;
     virtual float GetSurfaceArea() const override;
     virtual void Traverse(const SingleTraversalContext& context, const uint32 objectID) const override;
+    virtual void Traverse(const PacketTraversalContext & context, const uint32 objectID, const uint32 numActiveGroups) const override;
     virtual bool Traverse_Shadow(const SingleTraversalContext& context) const override;
     virtual bool Intersect(const Math::Ray& ray, RenderingContext& renderingCtx, ShapeIntersection& outResult) const override;
     virtual bool MakeSamplable() override;

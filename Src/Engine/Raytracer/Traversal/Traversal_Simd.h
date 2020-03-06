@@ -43,7 +43,7 @@ static void GenericTraverse(const SimdTraversalContext& context, const uint32 ob
 
             Math::Vector8 distanceA;
             const Math::Vector8 maskA = Intersect_BoxRay(rayInvDir, rayOriginDivDir, childA->GetBox(), context.hitPoint.distance, distanceA);
-            const int32 intMaskA = maskA.GetSignMask();
+            const uint32 intMaskA = maskA.GetSignMask();
 
             // Note: according to Intel manuals, prefetch instructions should not be grouped together
             NFE_PREFETCH_L1(nodes + childB->childIndex);
@@ -58,14 +58,14 @@ static void GenericTraverse(const SimdTraversalContext& context, const uint32 ob
             context.context.localCounters.numPassedRayBoxTests += Math::PopCount(intMaskB);
 #endif // NFE_ENABLE_INTERSECTION_COUNTERS
 
-            if (const int32 intMaskAB = intMaskA & intMaskB)
+            if (const uint32 intMaskAB = intMaskA & intMaskB)
             {
-                const int32 intOrderMask = (distanceA < distanceB).GetMask();
-                const int32 orderMaskA = intOrderMask & intMaskAB;
-                const int32 orderMaskB = (~intOrderMask) & intMaskAB;
+                const uint32 intOrderMask = (distanceA < distanceB).GetMask();
+                const uint32 orderMaskA = intOrderMask & intMaskAB;
+                const uint32 orderMaskB = (~intOrderMask) & intMaskAB;
 
                 // traverse to child node A if majority rays hit it before the child B
-                if (Math::PopCount(orderMaskB) > Math::PopCount(orderMaskA))
+                if (Common::BitUtils<uint32>::CountBits(orderMaskB) > Common::BitUtils<uint32>::CountBits(orderMaskA))
                 {
                     std::swap(childB, childA);
                 }

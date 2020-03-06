@@ -7,6 +7,7 @@
 #include "Rendering/ShadingData.h"
 #include "Traversal/TraversalContext.h"
 #include "Traversal/Traversal_Single.h"
+#include "Traversal/Traversal_Packet.h"
 
 #include "../Common/Math/Geometry.hpp"
 #include "../Common/Math/Simd8Geometry.hpp"
@@ -215,6 +216,11 @@ bool MeshShape::Intersect(const Ray& ray, RenderingContext& renderingCtx, ShapeI
     }
 
     return false;
+}
+
+void MeshShape::Traverse(const PacketTraversalContext& context, const uint32 objectID, const uint32 numActiveGroups) const
+{
+    GenericTraverse<MeshShape, 1>(context, objectID, this, numActiveGroups);
 }
 
 void MeshShape::Traverse_Leaf(const SingleTraversalContext& context, const uint32 objectID, const BVH::Node& node) const

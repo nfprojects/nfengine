@@ -82,7 +82,7 @@ struct NFE_ALIGN(32) VectorInt8
     NFE_FORCE_INLINE const Vector8 CastToFloat() const;
 
     // build mask of sign bits.
-    NFE_FORCE_INLINE int32 GetSignMask() const;
+    NFE_FORCE_INLINE uint32 GetSignMask() const;
 
     // for each vector component, copy value from "a" if "sel" > 0.0f, or from "b" otherwise.
     NFE_FORCE_INLINE static const VectorInt8 SelectBySign(const VectorInt8& a, const VectorInt8& b, const VectorInt8& sel);

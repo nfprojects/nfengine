@@ -49,6 +49,7 @@ public:
 
     // traverse the object and find nearest intersection
     virtual void Traverse(const SingleTraversalContext& context, const uint32 objectID) const;
+    virtual void Traverse(const PacketTraversalContext& context, const uint32 objectID, const uint32 numActiveGroups) const;
 
     // traverse the object and check if the ray is occluded
     virtual bool Traverse_Shadow(const SingleTraversalContext& context) const;

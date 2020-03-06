@@ -58,11 +58,7 @@ bool ShapeSceneObject::Traverse_Shadow(const SingleTraversalContext& context) co
 
 void ShapeSceneObject::Traverse(const PacketTraversalContext& context, const uint32 objectID, const uint32 numActiveGroups) const
 {
-    // TODO
-
-    NFE_UNUSED(context);
-    NFE_UNUSED(objectID);
-    NFE_UNUSED(numActiveGroups);
+    return mShape->Traverse(context, objectID, numActiveGroups);
 }
 
 void ShapeSceneObject::EvaluateIntersection(const HitPoint& hitPoint, IntersectionData& outIntersectionData) const

@@ -2,6 +2,7 @@
 
 #include "Vector3x8.hpp"
 #include "Ray.hpp"
+#include "../Utils/BitUtils.hpp"
 
 namespace NFE {
 namespace Math {
@@ -48,9 +49,9 @@ public:
     // otherwise, returns 0xFFFFFFFF
     NFE_FORCE_INLINE uint32 GetOctant() const
     {
-        const int32 countX = PopCount(dir.x.GetSignMask());
-        const int32 countY = PopCount(dir.y.GetSignMask());
-        const int32 countZ = PopCount(dir.z.GetSignMask());
+        const size_t countX = Common::BitUtils<uint32>::CountBits(dir.x.GetSignMask());
+        const size_t countY = Common::BitUtils<uint32>::CountBits(dir.y.GetSignMask());
+        const size_t countZ = Common::BitUtils<uint32>::CountBits(dir.z.GetSignMask());
 
         const uint32 xPart[9] = { 0u, ~0u, ~0u, ~0u, ~0u, ~0u, ~0u, ~0u, 1u << 0u };
         const uint32 yPart[9] = { 0u, ~0u, ~0u, ~0u, ~0u, ~0u, ~0u, ~0u, 1u << 1u };

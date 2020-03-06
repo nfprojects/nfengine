@@ -52,6 +52,11 @@ void IShape::Traverse(const SingleTraversalContext& context, const uint32 object
     }
 }
 
+void IShape::Traverse(const PacketTraversalContext&, const uint32, const uint32) const
+{
+    NFE_FATAL("Not implemented");
+}
+
 bool IShape::Traverse_Shadow(const SingleTraversalContext& context) const
 {
     ShapeIntersection intersection;

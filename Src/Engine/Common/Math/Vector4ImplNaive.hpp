@@ -435,13 +435,13 @@ const Vector4 Vector4::Abs(const Vector4& v)
     };
 }
 
-int Vector4::GetSignMask() const
+uint32 Vector4::GetSignMask() const
 {
-    int ret = 0;
-    ret |= x < 0.0f ? (1 << 0) : 0;
-    ret |= y < 0.0f ? (1 << 1) : 0;
-    ret |= z < 0.0f ? (1 << 2) : 0;
-    ret |= w < 0.0f ? (1 << 3) : 0;
+    uint32 ret = 0;
+    ret |= x < 0.0f ? (1u << 0u) : 0u;
+    ret |= y < 0.0f ? (1u << 1u) : 0u;
+    ret |= z < 0.0f ? (1u << 2u) : 0u;
+    ret |= w < 0.0f ? (1u << 3u) : 0u;
     return ret;
 }
 

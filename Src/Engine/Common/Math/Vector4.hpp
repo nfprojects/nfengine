@@ -152,7 +152,7 @@ public:
     NFE_FORCE_INLINE static const Vector4 Clamp(const Vector4& x, const Vector4& min, const Vector4& max);
 
     // Build mask of sign bits
-    NFE_FORCE_INLINE int GetSignMask() const;
+    NFE_FORCE_INLINE uint32 GetSignMask() const;
 
     // For each vector component, copy value from "a" if "sel" is "false", or from "b" otherwise
     NFE_FORCE_INLINE static const Vector4 Select(const Vector4& a, const Vector4& b, const VectorBool4& sel);

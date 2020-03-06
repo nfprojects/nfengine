@@ -444,9 +444,9 @@ const Vector4 Vector4::Abs(const Vector4& v)
     return _mm_and_ps(v, VECTOR_MASK_ABS);
 }
 
-int Vector4::GetSignMask() const
+uint32 Vector4::GetSignMask() const
 {
-    return _mm_movemask_ps(v);
+    return static_cast<uint32>(_mm_movemask_ps(v));
 }
 
 const Vector4 Vector4::HorizontalMax() const

@@ -90,7 +90,7 @@ struct NFE_ALIGN(32) Vector8
     NFE_FORCE_INLINE const Vector8 Clamped(const Vector8& min, const Vector8& max) const;
 
     // Build mask of sign bits.
-    NFE_FORCE_INLINE int32 GetSignMask() const;
+    NFE_FORCE_INLINE uint32 GetSignMask() const;
 
     // For each vector component, copy value from "a" if "sel" is "false", or from "b" otherwise.
     NFE_FORCE_INLINE static const Vector8 Select(const Vector8& a, const Vector8& b, const VectorBool8& sel);

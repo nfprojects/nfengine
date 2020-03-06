@@ -126,15 +126,20 @@ uint32 TestRayPacket(RayPacket& packet, uint32 numGroups, const BVH::Node& node,
         const RayGroup& rayGroupC = packet.groups[context.activeGroupsIndices[i + 2]];
         const RayGroup& rayGroupD = packet.groups[context.activeGroupsIndices[i + 3]];
 
-        const Vector3x8 rayOriginDivDirA = rayGroupA.rays[traversalDepth].origin * rayGroupA.rays[traversalDepth].invDir;
-        const Vector3x8 rayOriginDivDirB = rayGroupB.rays[traversalDepth].origin * rayGroupB.rays[traversalDepth].invDir;
-        const Vector3x8 rayOriginDivDirC = rayGroupC.rays[traversalDepth].origin * rayGroupC.rays[traversalDepth].invDir;
-        const Vector3x8 rayOriginDivDirD = rayGroupD.rays[traversalDepth].origin * rayGroupD.rays[traversalDepth].invDir;
+        const Ray_Simd8& raysA = rayGroupA.rays[traversalDepth];
+        const Ray_Simd8& raysB = rayGroupB.rays[traversalDepth];
+        const Ray_Simd8& raysC = rayGroupC.rays[traversalDepth];
+        const Ray_Simd8& raysD = rayGroupD.rays[traversalDepth];
 
-        const VectorBool8 maskA = Intersect_BoxRay_Simd8(rayGroupA.rays[traversalDepth].invDir, rayOriginDivDirA, box, rayGroupA.maxDistances, distance);
-        const VectorBool8 maskB = Intersect_BoxRay_Simd8(rayGroupB.rays[traversalDepth].invDir, rayOriginDivDirB, box, rayGroupB.maxDistances, distance);
-        const VectorBool8 maskC = Intersect_BoxRay_Simd8(rayGroupC.rays[traversalDepth].invDir, rayOriginDivDirC, box, rayGroupC.maxDistances, distance);
-        const VectorBool8 maskD = Intersect_BoxRay_Simd8(rayGroupD.rays[traversalDepth].invDir, rayOriginDivDirD, box, rayGroupD.maxDistances, distance);
+        const Vector3x8 rayOriginDivDirA = raysA.origin * raysA.invDir;
+        const Vector3x8 rayOriginDivDirB = raysB.origin * raysB.invDir;
+        const Vector3x8 rayOriginDivDirC = raysC.origin * raysC.invDir;
+        const Vector3x8 rayOriginDivDirD = raysD.origin * raysD.invDir;
+
+        const VectorBool8 maskA = Intersect_BoxRay_Simd8(raysA.invDir, rayOriginDivDirA, box, rayGroupA.maxDistances, distance);
+        const VectorBool8 maskB = Intersect_BoxRay_Simd8(raysB.invDir, rayOriginDivDirB, box, rayGroupB.maxDistances, distance);
+        const VectorBool8 maskC = Intersect_BoxRay_Simd8(raysC.invDir, rayOriginDivDirC, box, rayGroupC.maxDistances, distance);
+        const VectorBool8 maskD = Intersect_BoxRay_Simd8(raysD.invDir, rayOriginDivDirD, box, rayGroupD.maxDistances, distance);
 
         const uint32 intMaskA = maskA.GetMask();
         const uint32 intMaskB = maskB.GetMask();
@@ -143,7 +148,7 @@ uint32 TestRayPacket(RayPacket& packet, uint32 numGroups, const BVH::Node& node,
 
         const uint32 intMaskCombined = (intMaskA | (intMaskB << 8u)) | ((intMaskC << 16u) | (intMaskD << 24u));
         *reinterpret_cast<uint32*>(context.activeRaysMask + i) = intMaskCombined;
-        raysHit += PopCount(intMaskCombined);
+        raysHit += (uint32)Common::BitUtils<uint32>::CountBits(intMaskCombined);
 
         i += 4;
     }
@@ -156,7 +161,7 @@ uint32 TestRayPacket(RayPacket& packet, uint32 numGroups, const BVH::Node& node,
         const VectorBool8 mask = Intersect_BoxRay_Simd8(rayGroup.rays[traversalDepth].invDir, rayOriginDivDir, box, rayGroup.maxDistances, distance);
         const uint32 intMask = mask.GetMask();
         context.activeRaysMask[i] = (uint8)intMask;
-        raysHit += PopCount(intMask);
+        raysHit += (uint32)Common::BitUtils<uint32>::CountBits(intMask);
     }
 
     return raysHit;

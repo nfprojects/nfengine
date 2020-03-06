@@ -345,20 +345,5 @@ NFE_FORCE_INLINE constexpr uint64 Hash(uint64 h)
     return h;
 }
 
-// bit population count
-NFE_FORCE_INLINE uint32 PopCount(uint32 x)
-{
-#if defined(WIN32) && NFE_USE_BMI
-    return __popcnt(x);
-#elif defined(__LINUX__) | defined(__linux__)
-    return __builtin_popcount(x);
-#else
-    // https://graphics.stanford.edu/~seander/bithacks.html#CountBitsSetParallel
-    x = x - ((x >> 1) & 0x55555555);
-    x = (x & 0x33333333) + ((x >> 2) & 0x33333333);
-    return ((x + (x >> 4) & 0xF0F0F0F) * 0x1010101) >> 24;
-#endif // defined(WIN32)
-}
-
 } // namespace Math
 } // namespace NFE

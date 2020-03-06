@@ -287,9 +287,9 @@ const Vector8 Vector8::Abs(const Vector8& v)
     return { Vector4::Abs(v.low), Vector4::Abs(v.high) };
 }
 
-int32 Vector8::GetSignMask() const
+uint32 Vector8::GetSignMask() const
 {
-    return low.GetSignMask() | (high.GetSignMask() << 4);
+    return low.GetSignMask() | (high.GetSignMask() << 4u);
 }
 
 const Vector8 Vector8::HorizontalMax() const

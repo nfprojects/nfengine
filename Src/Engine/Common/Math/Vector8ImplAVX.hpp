@@ -298,9 +298,9 @@ const Vector8 Vector8::Abs(const Vector8& v)
     return _mm256_and_ps(v, VECTOR8_MASK_ABS);
 }
 
-int32 Vector8::GetSignMask() const
+uint32 Vector8::GetSignMask() const
 {
-    return _mm256_movemask_ps(v);
+    return static_cast<uint32>(_mm256_movemask_ps(v));
 }
 
 const Vector8 Vector8::HorizontalMax() const
