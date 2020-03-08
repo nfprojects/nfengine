@@ -18,9 +18,9 @@ cd %~dp0\..
 echo Current dir is %cd%
 
 if "%1" == "quiet" (
-    cppcheck ./nfEngine/ -q -j 8 --enable=warning 2> cppcheck_result.txt
+    cppcheck ./Src/ -q -j 8 --enable=warning 2> cppcheck_result.txt
 ) else (
-    cppcheck ./nfEngine/ -j 8 --enable=warning 2> cppcheck_result.txt
+    cppcheck ./Src/ -j 8 --enable=warning 2> cppcheck_result.txt
 )
 
 popd

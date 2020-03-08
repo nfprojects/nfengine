@@ -5,20 +5,20 @@ VisualStudioVersion = 16.0.29230.47
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Engine", "Engine", "{A160B4A7-4E09-4DB6-8EF9-D2E015E20AEE}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "nfCommon", "nfEngine\nfCommon\nfCommon.vcxproj", "{3561E54D-E8B0-4C0E-AB84-0E636A5FE43A}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Common", "Src\Engine\Common\Common.vcxproj", "{3561E54D-E8B0-4C0E-AB84-0E636A5FE43A}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "nfCore", "nfEngine\nfCore\nfCore.vcxproj", "{C9DA778F-C44E-46F3-8F03-E98B05F7A87D}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Core", "Src\Engine\Core\Core.vcxproj", "{C9DA778F-C44E-46F3-8F03-E98B05F7A87D}"
 	ProjectSection(ProjectDependencies) = postProject
 		{3561E54D-E8B0-4C0E-AB84-0E636A5FE43A} = {3561E54D-E8B0-4C0E-AB84-0E636A5FE43A}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "nfEngineDemo", "nfEngineDemo\nfEngineDemo.vcxproj", "{7A8D6FAC-3418-4A88-AD37-B72D35921AE2}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "EngineDemo", "Src\Apps\EngineDemo\EngineDemo.vcxproj", "{7A8D6FAC-3418-4A88-AD37-B72D35921AE2}"
 	ProjectSection(ProjectDependencies) = postProject
 		{3561E54D-E8B0-4C0E-AB84-0E636A5FE43A} = {3561E54D-E8B0-4C0E-AB84-0E636A5FE43A}
 		{C9DA778F-C44E-46F3-8F03-E98B05F7A87D} = {C9DA778F-C44E-46F3-8F03-E98B05F7A87D}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "nfCommonTest", "nfEngine\nfCommonTest\nfCommonTest.vcxproj", "{1EEE1F90-5261-43E9-A133-FFBCD7DA4077}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CommonTest", "Src\Tests\CommonTest\CommonTest.vcxproj", "{1EEE1F90-5261-43E9-A133-FFBCD7DA4077}"
 	ProjectSection(ProjectDependencies) = postProject
 		{3561E54D-E8B0-4C0E-AB84-0E636A5FE43A} = {3561E54D-E8B0-4C0E-AB84-0E636A5FE43A}
 	EndProjectSection
@@ -27,82 +27,82 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Renderers", "Renderers", "{
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "RendererInterface", "RendererInterface", "{35D637D1-D523-48E5-8AE7-77435A736666}"
 	ProjectSection(SolutionItems) = preProject
-		nfEngine\Renderers\RendererInterface\Backbuffer.hpp = nfEngine\Renderers\RendererInterface\Backbuffer.hpp
-		nfEngine\Renderers\RendererInterface\Buffer.hpp = nfEngine\Renderers\RendererInterface\Buffer.hpp
-		nfEngine\Renderers\RendererInterface\CommandRecorder.hpp = nfEngine\Renderers\RendererInterface\CommandRecorder.hpp
-		nfEngine\Renderers\RendererInterface\ComputePipelineState.hpp = nfEngine\Renderers\RendererInterface\ComputePipelineState.hpp
-		nfEngine\Renderers\RendererInterface\Device.hpp = nfEngine\Renderers\RendererInterface\Device.hpp
-		nfEngine\Renderers\RendererInterface\PipelineState.hpp = nfEngine\Renderers\RendererInterface\PipelineState.hpp
-		nfEngine\Renderers\RendererInterface\RenderTarget.hpp = nfEngine\Renderers\RendererInterface\RenderTarget.hpp
-		nfEngine\Renderers\RendererInterface\ResourceBinding.hpp = nfEngine\Renderers\RendererInterface\ResourceBinding.hpp
-		nfEngine\Renderers\RendererInterface\Shader.hpp = nfEngine\Renderers\RendererInterface\Shader.hpp
-		nfEngine\Renderers\RendererInterface\Texture.hpp = nfEngine\Renderers\RendererInterface\Texture.hpp
-		nfEngine\Renderers\RendererInterface\Types.hpp = nfEngine\Renderers\RendererInterface\Types.hpp
-		nfEngine\Renderers\RendererInterface\VertexLayout.hpp = nfEngine\Renderers\RendererInterface\VertexLayout.hpp
+		Src\Engine\Renderers\Interface\Backbuffer.hpp = Src\Engine\Renderers\Interface\Backbuffer.hpp
+		Src\Engine\Renderers\Interface\Buffer.hpp = Src\Engine\Renderers\Interface\Buffer.hpp
+		Src\Engine\Renderers\Interface\CommandRecorder.hpp = Src\Engine\Renderers\Interface\CommandRecorder.hpp
+		Src\Engine\Renderers\Interface\ComputePipelineState.hpp = Src\Engine\Renderers\Interface\ComputePipelineState.hpp
+		Src\Engine\Renderers\Interface\Device.hpp = Src\Engine\Renderers\Interface\Device.hpp
+		Src\Engine\Renderers\Interface\PipelineState.hpp = Src\Engine\Renderers\Interface\PipelineState.hpp
+		Src\Engine\Renderers\Interface\RenderTarget.hpp = Src\Engine\Renderers\Interface\RenderTarget.hpp
+		Src\Engine\Renderers\Interface\ResourceBinding.hpp = Src\Engine\Renderers\Interface\ResourceBinding.hpp
+		Src\Engine\Renderers\Interface\Shader.hpp = Src\Engine\Renderers\Interface\Shader.hpp
+		Src\Engine\Renderers\Interface\Texture.hpp = Src\Engine\Renderers\Interface\Texture.hpp
+		Src\Engine\Renderers\Interface\Types.hpp = Src\Engine\Renderers\Interface\Types.hpp
+		Src\Engine\Renderers\Interface\VertexLayout.hpp = Src\Engine\Renderers\Interface\VertexLayout.hpp
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "nfRendererDemo", "nfEngine\nfRendererDemo\nfRendererDemo.vcxproj", "{EEFC1232-FD3F-429B-B24A-2A37D808A9C5}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "RendererDemo", "Src\Apps\RendererDemo\RendererDemo.vcxproj", "{EEFC1232-FD3F-429B-B24A-2A37D808A9C5}"
 	ProjectSection(ProjectDependencies) = postProject
 		{3561E54D-E8B0-4C0E-AB84-0E636A5FE43A} = {3561E54D-E8B0-4C0E-AB84-0E636A5FE43A}
 		{1A1154B8-E09A-472F-A0F0-20F530741587} = {1A1154B8-E09A-472F-A0F0-20F530741587}
 		{49AB8AC7-1834-4AF8-9792-59313C71C7E0} = {49AB8AC7-1834-4AF8-9792-59313C71C7E0}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "nfRendererTest", "nfEngine\nfRendererTest\nfRendererTest.vcxproj", "{36597B67-26C3-4ADB-B0A5-E08D30AA4319}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "RendererTest", "Src\Tests\RendererTest\RendererTest.vcxproj", "{36597B67-26C3-4ADB-B0A5-E08D30AA4319}"
 	ProjectSection(ProjectDependencies) = postProject
 		{1A1154B8-E09A-472F-A0F0-20F530741587} = {1A1154B8-E09A-472F-A0F0-20F530741587}
 		{49AB8AC7-1834-4AF8-9792-59313C71C7E0} = {49AB8AC7-1834-4AF8-9792-59313C71C7E0}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "nfCommonPerfTest", "nfEngine\nfCommonPerfTest\nfCommonPerfTest.vcxproj", "{28D2531F-9FEE-4848-B101-B8EB10858371}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CommonPerfTest", "Src\Tests\CommonPerfTest\CommonPerfTest.vcxproj", "{28D2531F-9FEE-4848-B101-B8EB10858371}"
 	ProjectSection(ProjectDependencies) = postProject
 		{3561E54D-E8B0-4C0E-AB84-0E636A5FE43A} = {3561E54D-E8B0-4C0E-AB84-0E636A5FE43A}
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Shaders", "Shaders", "{B19B4C10-EB4D-4782-8933-120A35AC259D}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "nfRendererD3D12", "nfEngine\Renderers\nfRendererD3D12\nfRendererD3D12.vcxproj", "{49AB8AC7-1834-4AF8-9792-59313C71C7E0}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "RendererD3D12", "Src\Engine\Renderers\RendererD3D12\RendererD3D12.vcxproj", "{49AB8AC7-1834-4AF8-9792-59313C71C7E0}"
 	ProjectSection(ProjectDependencies) = postProject
 		{3561E54D-E8B0-4C0E-AB84-0E636A5FE43A} = {3561E54D-E8B0-4C0E-AB84-0E636A5FE43A}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "nfRendererVk", "nfEngine\Renderers\nfRendererVk\nfRendererVk.vcxproj", "{1A1154B8-E09A-472F-A0F0-20F530741587}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "RendererVk", "Src\Engine\Renderers\RendererVk\RendererVk.vcxproj", "{1A1154B8-E09A-472F-A0F0-20F530741587}"
 	ProjectSection(ProjectDependencies) = postProject
 		{3561E54D-E8B0-4C0E-AB84-0E636A5FE43A} = {3561E54D-E8B0-4C0E-AB84-0E636A5FE43A}
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "HLSL5", "HLSL5", "{9BA96BF9-A3AC-4B9D-911A-46C0FE261983}"
 	ProjectSection(SolutionItems) = preProject
-		nfEngine\Shaders\HLSL5\AmbientLightPS.hlsl = nfEngine\Shaders\HLSL5\AmbientLightPS.hlsl
-		nfEngine\Shaders\HLSL5\Common.hlsl = nfEngine\Shaders\HLSL5\Common.hlsl
-		nfEngine\Shaders\HLSL5\DebugPS.hlsl = nfEngine\Shaders\HLSL5\DebugPS.hlsl
-		nfEngine\Shaders\HLSL5\DebugVS.hlsl = nfEngine\Shaders\HLSL5\DebugVS.hlsl
-		nfEngine\Shaders\HLSL5\FullScreenQuadVS.hlsl = nfEngine\Shaders\HLSL5\FullScreenQuadVS.hlsl
-		nfEngine\Shaders\HLSL5\GeometryPassPS.hlsl = nfEngine\Shaders\HLSL5\GeometryPassPS.hlsl
-		nfEngine\Shaders\HLSL5\GeometryPassVS.hlsl = nfEngine\Shaders\HLSL5\GeometryPassVS.hlsl
-		nfEngine\Shaders\HLSL5\GuiCommon.hlsl = nfEngine\Shaders\HLSL5\GuiCommon.hlsl
-		nfEngine\Shaders\HLSL5\GuiGS.hlsl = nfEngine\Shaders\HLSL5\GuiGS.hlsl
-		nfEngine\Shaders\HLSL5\GuiPS.hlsl = nfEngine\Shaders\HLSL5\GuiPS.hlsl
-		nfEngine\Shaders\HLSL5\GuiVS.hlsl = nfEngine\Shaders\HLSL5\GuiVS.hlsl
-		nfEngine\Shaders\HLSL5\ImGuiPS.hlsl = nfEngine\Shaders\HLSL5\ImGuiPS.hlsl
-		nfEngine\Shaders\HLSL5\ImGuiVS.hlsl = nfEngine\Shaders\HLSL5\ImGuiVS.hlsl
-		nfEngine\Shaders\HLSL5\LightCommon.hlsl = nfEngine\Shaders\HLSL5\LightCommon.hlsl
-		nfEngine\Shaders\HLSL5\OmniLightCommon.hlsl = nfEngine\Shaders\HLSL5\OmniLightCommon.hlsl
-		nfEngine\Shaders\HLSL5\OmniLightPS.hlsl = nfEngine\Shaders\HLSL5\OmniLightPS.hlsl
-		nfEngine\Shaders\HLSL5\OmniLightVS.hlsl = nfEngine\Shaders\HLSL5\OmniLightVS.hlsl
-		nfEngine\Shaders\HLSL5\ShadowCommon.hlsl = nfEngine\Shaders\HLSL5\ShadowCommon.hlsl
-		nfEngine\Shaders\HLSL5\ShadowPS.hlsl = nfEngine\Shaders\HLSL5\ShadowPS.hlsl
-		nfEngine\Shaders\HLSL5\ShadowVS.hlsl = nfEngine\Shaders\HLSL5\ShadowVS.hlsl
-		nfEngine\Shaders\HLSL5\SpotLightCommon.hlsl = nfEngine\Shaders\HLSL5\SpotLightCommon.hlsl
-		nfEngine\Shaders\HLSL5\SpotLightPS.hlsl = nfEngine\Shaders\HLSL5\SpotLightPS.hlsl
-		nfEngine\Shaders\HLSL5\SpotLightVS.hlsl = nfEngine\Shaders\HLSL5\SpotLightVS.hlsl
-		nfEngine\Shaders\HLSL5\TonemappingPS.hlsl = nfEngine\Shaders\HLSL5\TonemappingPS.hlsl
+		Src\Shaders\HLSL5\AmbientLightPS.hlsl = Src\Shaders\HLSL5\AmbientLightPS.hlsl
+		Src\Shaders\HLSL5\Common.hlsl = Src\Shaders\HLSL5\Common.hlsl
+		Src\Shaders\HLSL5\DebugPS.hlsl = Src\Shaders\HLSL5\DebugPS.hlsl
+		Src\Shaders\HLSL5\DebugVS.hlsl = Src\Shaders\HLSL5\DebugVS.hlsl
+		Src\Shaders\HLSL5\FullScreenQuadVS.hlsl = Src\Shaders\HLSL5\FullScreenQuadVS.hlsl
+		Src\Shaders\HLSL5\GeometryPassPS.hlsl = Src\Shaders\HLSL5\GeometryPassPS.hlsl
+		Src\Shaders\HLSL5\GeometryPassVS.hlsl = Src\Shaders\HLSL5\GeometryPassVS.hlsl
+		Src\Shaders\HLSL5\GuiCommon.hlsl = Src\Shaders\HLSL5\GuiCommon.hlsl
+		Src\Shaders\HLSL5\GuiGS.hlsl = Src\Shaders\HLSL5\GuiGS.hlsl
+		Src\Shaders\HLSL5\GuiPS.hlsl = Src\Shaders\HLSL5\GuiPS.hlsl
+		Src\Shaders\HLSL5\GuiVS.hlsl = Src\Shaders\HLSL5\GuiVS.hlsl
+		Src\Shaders\HLSL5\ImGuiPS.hlsl = Src\Shaders\HLSL5\ImGuiPS.hlsl
+		Src\Shaders\HLSL5\ImGuiVS.hlsl = Src\Shaders\HLSL5\ImGuiVS.hlsl
+		Src\Shaders\HLSL5\LightCommon.hlsl = Src\Shaders\HLSL5\LightCommon.hlsl
+		Src\Shaders\HLSL5\OmniLightCommon.hlsl = Src\Shaders\HLSL5\OmniLightCommon.hlsl
+		Src\Shaders\HLSL5\OmniLightPS.hlsl = Src\Shaders\HLSL5\OmniLightPS.hlsl
+		Src\Shaders\HLSL5\OmniLightVS.hlsl = Src\Shaders\HLSL5\OmniLightVS.hlsl
+		Src\Shaders\HLSL5\ShadowCommon.hlsl = Src\Shaders\HLSL5\ShadowCommon.hlsl
+		Src\Shaders\HLSL5\ShadowPS.hlsl = Src\Shaders\HLSL5\ShadowPS.hlsl
+		Src\Shaders\HLSL5\ShadowVS.hlsl = Src\Shaders\HLSL5\ShadowVS.hlsl
+		Src\Shaders\HLSL5\SpotLightCommon.hlsl = Src\Shaders\HLSL5\SpotLightCommon.hlsl
+		Src\Shaders\HLSL5\SpotLightPS.hlsl = Src\Shaders\HLSL5\SpotLightPS.hlsl
+		Src\Shaders\HLSL5\SpotLightVS.hlsl = Src\Shaders\HLSL5\SpotLightVS.hlsl
+		Src\Shaders\HLSL5\TonemappingPS.hlsl = Src\Shaders\HLSL5\TonemappingPS.hlsl
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Natvis", "Natvis", "{24032EB4-D975-4601-AA55-4D0ABE656011}"
 	ProjectSection(SolutionItems) = preProject
-		nfEngine\nfCommon\Containers\Containers.natvis = nfEngine\nfCommon\Containers\Containers.natvis
-		nfEngine\nfCommon\Math\Math.natvis = nfEngine\nfCommon\Math\Math.natvis
+		Src\Engine\Common\Containers\Containers.natvis = Src\Engine\Common\Containers\Containers.natvis
+		Src\Engine\Common\Math\Math.natvis = Src\Engine\Common\Math\Math.natvis
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Scripts", "Scripts", "{B5DA450B-3EEA-4E41-80D7-7987A9397F8D}"
@@ -118,31 +118,30 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Scripts", "Scripts", "{B5DA
 		Scripts\cppcheck.bat = Scripts\cppcheck.bat
 		Scripts\cppcheck.sh = Scripts\cppcheck.sh
 		Scripts\doxygen.cfg = Scripts\doxygen.cfg
-		Scripts\format.bat = Scripts\format.bat
-		Scripts\format.sh = Scripts\format.sh
 		Scripts\gen_doc.bat = Scripts\gen_doc.bat
 		Scripts\gen_doc.sh = Scripts\gen_doc.sh
 		Scripts\pre-commit.bat = Scripts\pre-commit.bat
 		Scripts\pre-commit.sh = Scripts\pre-commit.sh
 		Scripts\rebuild-all.sh = Scripts\rebuild-all.sh
-		Scripts\style.cfg = Scripts\style.cfg
 		Scripts\syncher.py = Scripts\syncher.py
 		Scripts\tests.py = Scripts\tests.py
 		Scripts\xmlParser.py = Scripts\xmlParser.py
 		Scripts\xmlParser.pyc = Scripts\xmlParser.pyc
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Raytracer", "nfEngine\Raytracer\Raytracer.vcxproj", "{3C8B7001-E7F9-49E7-B49A-B766D5D7FC8D}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Raytracer", "Src\Engine\Raytracer\Raytracer.vcxproj", "{3C8B7001-E7F9-49E7-B49A-B766D5D7FC8D}"
 	ProjectSection(ProjectDependencies) = postProject
 		{3561E54D-E8B0-4C0E-AB84-0E636A5FE43A} = {3561E54D-E8B0-4C0E-AB84-0E636A5FE43A}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "RaytracerDemo", "RaytracerDemo\RaytracerDemo.vcxproj", "{8AE4CB99-BC63-4282-BC29-5888458F3FB6}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "RaytracerDemo", "Src\Apps\RaytracerDemo\RaytracerDemo.vcxproj", "{8AE4CB99-BC63-4282-BC29-5888458F3FB6}"
 	ProjectSection(ProjectDependencies) = postProject
 		{3C8B7001-E7F9-49E7-B49A-B766D5D7FC8D} = {3C8B7001-E7F9-49E7-B49A-B766D5D7FC8D}
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{05C646B1-6ED2-4950-9A99-B2A791E2D8C8}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Apps", "Apps", "{87F5059E-D5F9-4F86-87A4-92AF37DA848C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -362,10 +361,11 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{3561E54D-E8B0-4C0E-AB84-0E636A5FE43A} = {A160B4A7-4E09-4DB6-8EF9-D2E015E20AEE}
 		{C9DA778F-C44E-46F3-8F03-E98B05F7A87D} = {A160B4A7-4E09-4DB6-8EF9-D2E015E20AEE}
+		{7A8D6FAC-3418-4A88-AD37-B72D35921AE2} = {87F5059E-D5F9-4F86-87A4-92AF37DA848C}
 		{1EEE1F90-5261-43E9-A133-FFBCD7DA4077} = {05C646B1-6ED2-4950-9A99-B2A791E2D8C8}
 		{265F0BFF-E485-46E3-9213-D339828982B3} = {A160B4A7-4E09-4DB6-8EF9-D2E015E20AEE}
 		{35D637D1-D523-48E5-8AE7-77435A736666} = {265F0BFF-E485-46E3-9213-D339828982B3}
-		{EEFC1232-FD3F-429B-B24A-2A37D808A9C5} = {A160B4A7-4E09-4DB6-8EF9-D2E015E20AEE}
+		{EEFC1232-FD3F-429B-B24A-2A37D808A9C5} = {87F5059E-D5F9-4F86-87A4-92AF37DA848C}
 		{36597B67-26C3-4ADB-B0A5-E08D30AA4319} = {05C646B1-6ED2-4950-9A99-B2A791E2D8C8}
 		{28D2531F-9FEE-4848-B101-B8EB10858371} = {05C646B1-6ED2-4950-9A99-B2A791E2D8C8}
 		{B19B4C10-EB4D-4782-8933-120A35AC259D} = {A160B4A7-4E09-4DB6-8EF9-D2E015E20AEE}
@@ -373,6 +373,7 @@ Global
 		{1A1154B8-E09A-472F-A0F0-20F530741587} = {265F0BFF-E485-46E3-9213-D339828982B3}
 		{9BA96BF9-A3AC-4B9D-911A-46C0FE261983} = {B19B4C10-EB4D-4782-8933-120A35AC259D}
 		{3C8B7001-E7F9-49E7-B49A-B766D5D7FC8D} = {A160B4A7-4E09-4DB6-8EF9-D2E015E20AEE}
+		{8AE4CB99-BC63-4282-BC29-5888458F3FB6} = {87F5059E-D5F9-4F86-87A4-92AF37DA848C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {0DA0ED22-E481-43EF-8228-F75562FD998A}

@@ -1,0 +1,3 @@
+#ADD_SUBDIRECTORY("EngineDemo")
+ADD_SUBDIRECTORY("RaytracerDemo")
+ADD_SUBDIRECTORY("RendererDemo")

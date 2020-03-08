@@ -1,0 +1,4 @@
+ADD_SUBDIRECTORY("CommonPerfTest")
+ADD_SUBDIRECTORY("CommonTest")
+ADD_SUBDIRECTORY("RaytracerTests")
+ADD_SUBDIRECTORY("RendererTest")

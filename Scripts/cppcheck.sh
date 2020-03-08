@@ -18,9 +18,9 @@ cd ${DIR}/..
 echo -n "Current directory is "; pwd
 
 if [ "$1" == "quiet" ] ; then
-    cppcheck ./nfEngine/ -q -j 8 --enable=warning 2> cppcheck_result.txt
+    cppcheck ./Src/ -q -j 8 --enable=warning 2> cppcheck_result.txt
 else
-    cppcheck ./nfEngine/ -j 8 --enable=warning 2> cppcheck_result.txt
+    cppcheck ./Src/ -j 8 --enable=warning 2> cppcheck_result.txt
 fi
 
 popd > /dev/null

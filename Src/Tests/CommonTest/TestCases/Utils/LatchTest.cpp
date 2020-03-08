@@ -1,0 +1,43 @@
+/**
+ * @file
+ * @author LKostyra (costyrra.xl@gmail.com)
+ * @brief  Unit tests for Latch class.
+ */
+
+#include "PCH.hpp"
+#include "Engine/Common/Utils/Latch.hpp"
+
+
+namespace {
+    const unsigned int TIMEOUT = 500; /* ms */
+} // namespace
+
+using namespace NFE::Common;
+
+TEST(Latch, Wait)
+{
+    Latch l;
+    std::thread t([&l]() {
+        l.Set();
+    });
+
+    t.join();
+    l.Wait();
+}
+
+TEST(Latch, WaitFor)
+{
+    Latch l;
+    std::thread t([&l]() {
+        l.Set();
+    });
+
+    t.join();
+    ASSERT_TRUE(l.Wait(TIMEOUT));
+}
+
+TEST(Latch, Timeout)
+{
+    Latch l;
+    ASSERT_FALSE(l.Wait(TIMEOUT));
+}

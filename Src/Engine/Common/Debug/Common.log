@@ -1,0 +1,1 @@
+﻿C:\Users\Michal\Documents\DEV\nfengine\Src\Engine\Common\Common.vcxproj(359,5): error MSB4019: The imported project "C:\Users\Michal\Documents\DEV\nfengine\Src\PropertyPages\GlobalProperties.props" was not found. Confirm that the expression in the Import declaration "..\..\PropertyPages\GlobalProperties.props" is correct, and that the file exists on disk.
