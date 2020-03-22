@@ -126,6 +126,19 @@ TEST(MathTest, FastExp_4)
     TestTranscendental("FastExp_4", range, func, expf, 1.0f, 2.0e-2f);
 }
 
+TEST(Math, FastExp2)
+{
+    TestRange range(-5.0f, 5.0f, 0.01f, TestRange::StepType::Increment);
+    TestTranscendental("FastExp2", range, Math::FastExp2, exp2f, 1.0f, 2.0e-2f);
+}
+
+TEST(MathTest, FastExp2_4)
+{
+    const auto func = [] (float x) { return Math::FastExp2(Math::Vector4(x)).x; };
+    const TestRange range(-40.0f, 5.0f, 0.01f, TestRange::StepType::Increment);
+    TestTranscendental("FastExp2_4", range, func, exp2f, 1.0f, 2.0e-2f);
+}
+
 TEST(Math, Log)
 {
     TestRange range(0.0001f, 1.0e+30f, 1.5f, TestRange::StepType::Multiply);
@@ -143,4 +156,17 @@ TEST(Math, FastLog_4)
     const auto func = [] (float x) { return Math::FastLog(Math::Vector4(x)).x; };
     TestRange range(0.0001f, 1.0e+30f, 1.5f, TestRange::StepType::Multiply);
     TestTranscendental("FastLog_4", range, func, logf, 1.0f, 1.0e-4f);
+}
+
+TEST(Math, FastLog2)
+{
+    TestRange range(1.0e-30f, 1.0e+30f, 1.01f, TestRange::StepType::Multiply);
+    TestTranscendental("FastLog2", range, Math::FastLog2, log2f, 0.01f, 0.1f);
+}
+
+TEST(Math, FastLog2_4)
+{
+    const auto func = [] (float x) { return Math::FastLog2(Math::Vector4(x)).x; };
+    TestRange range(1.0e-30f, 1.0e+30f, 1.01f, TestRange::StepType::Multiply);
+    TestTranscendental("FastLog2_4", range, func, log2f, 0.01f, 0.1f);
 }

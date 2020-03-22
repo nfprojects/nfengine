@@ -57,8 +57,6 @@ class ApproxACESTonemapper : public ITonemapper
     NFE_DECLARE_POLYMORPHIC_CLASS(ApproxACESTonemapper);
 public:
     virtual const Math::Vector4 Apply(const Math::Vector4 hdrColor) const override;
-private:
-    bool fitted = false;
 };
 
 } // namespace RT

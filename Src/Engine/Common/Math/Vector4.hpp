@@ -2,6 +2,7 @@
 
 #include "Math.hpp"
 
+#include "Half.hpp"
 #include "Float2.hpp"
 #include "Float3.hpp"
 #include "Float4.hpp"
@@ -54,6 +55,7 @@ public:
     NFE_FORCE_INLINE explicit Vector4(const Float4& src);
     NFE_FORCE_INLINE Vector4& operator = (const Vector4& other);
 
+    NFE_FORCE_INLINE static const Vector4 FromHalf4(const Half4& x);
     NFE_FORCE_INLINE static const Vector4 FromInteger(int32 x);
     NFE_FORCE_INLINE static const Vector4 FromIntegers(int32 x, int32 y, int32 z, int32 w);
 
@@ -138,6 +140,8 @@ public:
     NFE_FORCE_INLINE const Float2 ToFloat2() const;
     NFE_FORCE_INLINE const Float3 ToFloat3() const;
     NFE_FORCE_INLINE const Float4 ToFloat4() const;
+
+    NFE_FORCE_INLINE const Half4 ToHalf4() const;
 
     NFE_FORCE_INLINE static const Vector4 Floor(const Vector4& v);
     NFE_FORCE_INLINE static const Vector4 Sqrt(const Vector4& v);

@@ -42,6 +42,11 @@ public:
     // typical usage is Lambertian BRDF sampling
     NFCOMMON_API static const Vector4 GetHemishpereCos(const Float2 u);
 
+
+    // get float with normal (Gaussian) distribution
+    // Note: 2 input values are required
+    NFCOMMON_API static float GetFloatNormal(const Float2 u);
+
     // get 2D point with normal (Gaussian) distribution
     NFCOMMON_API static const Vector4 GetFloatNormal2(const Float2 u);
 };

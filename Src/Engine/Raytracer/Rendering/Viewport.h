@@ -78,6 +78,7 @@ private:
 
         Math::Vector4 colorScale = Math::Vector4::Zero();
         bool fullUpdateRequired = false;
+        bool lutGenerationRequired = false;
     };
 
     void BuildInitialBlocksList();
@@ -119,6 +120,7 @@ private:
 
     RenderingParams mParams;
     PostprocessParamsInternal mPostprocessParams;
+    PostprocessLUT mPostprocessLUT;
 
     RayTracingCounters mCounters;
 

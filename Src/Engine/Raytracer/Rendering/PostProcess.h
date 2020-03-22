@@ -39,26 +39,75 @@ public:
     NFE_RAYTRACER_API BloomParams();
 };
 
+class PostprocessLutParams
+{
+    NFE_DECLARE_CLASS(PostprocessLutParams);
+public:
+    uint32 sizeShift = 6;
+    float minValue = 1.0e-4f;
+    float maxValue = 1.0e+3f;
+};
+
+class ColorGradingParams
+{
+    NFE_DECLARE_CLASS(ColorGradingParams);
+public:
+    Math::HdrColorRGB gain;
+    Math::HdrColorRGB contrast;
+    float contrastMidPoint;     // midpoint for contrast in log scale
+    float saturation;
+    bool negative;
+
+    ColorGradingParams();
+};
+
 class NFE_ALIGN(16) PostprocessParams
 {
     NFE_DECLARE_CLASS(PostprocessParams);
 
 public:
 
-    TonemapperPtr tonemapper;      // tonemapping curve
+    // exposure in log scale
+    float exposure;
 
-    Math::HdrColorRGB colorFilter;
+    // pre-tonemapping film grain
+    float filmGrainStrength;
 
-    float exposure;             // exposure in log scale
-    float contrast;
-    float saturation;
-    bool useDithering;
+    ColorGradingParams colorGradingParams;
+    TonemapperPtr tonemapper;
+    PostprocessLutParams lutParams;
+
     BloomParams bloom;
 
+    bool useDithering;
     ColorSpace colorSpace;
 
     NFE_RAYTRACER_API PostprocessParams();
     NFE_RAYTRACER_API ~PostprocessParams();
+
+    const Math::Vector4 Process(const Math::Vector4& inputColor) const;
+};
+
+class PostprocessLUT
+{
+public:
+    static constexpr uint32 MaxLutSize = 256;
+
+    // generate LUT given postprocessing parameters
+    bool Generate(const PostprocessParams& postprocessParams);
+
+    // sample LUT
+    const Math::Vector4 Sample(const Math::Vector4& inputColor) const;
+
+    NFE_FORCE_INLINE bool IsGenerated() const { return mLUT != nullptr; }
+
+private:
+    Math::Half4* mLUT = nullptr;
+    uint32 mSizeShift;
+    float mScale;
+    float mBias;
+    float mMinValue;
+    float mMaxValue;
 };
 
 } // namespace RT

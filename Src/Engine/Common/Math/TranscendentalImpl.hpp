@@ -35,5 +35,20 @@ float Cot(float x)
     return Cos(x) / Sin(x);
 }
 
+float FastExp(float a)
+{
+    return FastExp2(a * 1.442695041f); // 1.0f/log(2.0f)
+}
+
+const Vector4 FastExp(const Vector4& a)
+{
+    return FastExp2(a * 1.442695041f); // 1.0f/log(2.0f)
+}
+
+const Vector8 FastExp(const Vector8& a)
+{
+    return FastExp2(a * 1.442695041f); // 1.0f/log(2.0f)
+}
+
 } // namespace Math
 } // namespace NFE

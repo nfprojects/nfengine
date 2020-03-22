@@ -18,6 +18,7 @@
 #include "../Common/Utils/ThreadPool.hpp"
 #include "../Common/Utils/Waitable.hpp"
 #include "../Common/Reflection/Types/ReflectionClassType.hpp"
+#include "../Common/Reflection/Types/ReflectionUniquePtrType.hpp"
 
 namespace NFE {
 namespace RT {
@@ -184,7 +185,14 @@ bool Viewport::SetPostprocessParams(const PostprocessParams& params)
         InitBluredImages();
     }
 
-    if (!RTTI::GetType<PostprocessParams>()->Compare(&mPostprocessParams.params, &params))
+    if (!RTTI::Compare(mPostprocessParams.params.lutParams, params.lutParams) ||
+        !RTTI::Compare(mPostprocessParams.params.colorGradingParams, params.colorGradingParams) ||
+        !RTTI::Compare(mPostprocessParams.params.tonemapper, params.tonemapper))
+    {
+        mPostprocessParams.lutGenerationRequired = true;
+    }
+
+    if (!RTTI::Compare(mPostprocessParams.params, params))
     {
         RTTI::GetType<PostprocessParams>()->Clone(&mPostprocessParams.params, &params);
         mPostprocessParams.fullUpdateRequired = true;
@@ -466,7 +474,13 @@ void Viewport::PerformPostProcess(TaskBuilder& taskBuilder)
         }
     }
 
-    mPostprocessParams.colorScale = mPostprocessParams.params.colorFilter.ToVector4() * powf(2.0f, mPostprocessParams.params.exposure);
+    mPostprocessParams.colorScale = Vector4(exp2f(mPostprocessParams.params.exposure));
+
+    if (!mPostprocessLUT.IsGenerated() || mPostprocessParams.lutGenerationRequired)
+    {
+        mPostprocessLUT.Generate(mPostprocessParams.params);
+        mPostprocessParams.lutGenerationRequired = false;
+    }
 
     if (mPostprocessParams.fullUpdateRequired)
     {
@@ -547,7 +561,6 @@ void Viewport::PostProcessTile(const Block& block, uint32 threadID)
 
     const float pixelScaling = 1.0f / (float)(1u + mProgress.passesFinished);
   
-    // TODO use AVX if available
     for (uint32 y = block.minY; y < block.maxY; ++y)
     {
         for (uint32 x = block.minX; x < block.maxX; ++x)
@@ -576,42 +589,38 @@ void Viewport::PostProcessTile(const Block& block, uint32 threadID)
             // add bloom
             if (useBloom)
             {
-                const float bloomFactor = params.bloom.factor;
-                rgbColor *= 1.0f - bloomFactor;
-
                 Vector4 bloomColor = Vector4::Zero();
                 for (uint32 i = 0; i < mBlurredImages.Size(); ++i)
                 {
                     const Vector4 blurredColor = Vector4_Load_Float3_Unsafe(mBlurredImages[i].GetPixelRef<Float3>(x, y));
                     bloomColor = Vector4::MulAndAdd(blurredColor, params.bloom.elements[i].weight, bloomColor);
                 }
-                rgbColor = Vector4::MulAndAdd(bloomColor, bloomFactor, rgbColor);
+                rgbColor = Vector4::Lerp(rgbColor, bloomColor, params.bloom.factor);
             }
 
             // scale down by number of rendering passes finished
             // TODO support different number of passes per-pixel (adaptive rendering)
             rgbColor *= pixelScaling;
 
-            // apply saturation
-            const float grayscale = Vector4::Dot3(rgbColor, c_rgbIntensityWeights);
-            rgbColor = Vector4::Max(Vector4::Zero(), Vector4::Lerp(Vector4(grayscale), rgbColor, params.saturation));
-
-            // apply contrast
-            rgbColor = FastExp(FastLog(rgbColor) * params.contrast);
-
             // apply exposure
             rgbColor *= mPostprocessParams.colorScale;
 
-            // apply tonemapping
-            Vector4 toneMapped = params.tonemapper->Apply(rgbColor);
+            if (params.filmGrainStrength > 0.0f)
+            {
+                const float u = SamplingHelpers::GetFloatNormal(randomGenerator.GetFloat2());
+                rgbColor *= FastExp2(params.filmGrainStrength * u);
+            }
+
+            // apply color grading & tonemapping
+            rgbColor = mPostprocessLUT.Sample(rgbColor);
 
             // add dither
             if (params.useDithering)
             {
-                ApplyDither(toneMapped, randomGenerator);
+                ApplyDither(rgbColor, randomGenerator);
             }
 
-            mFrontBuffer.GetPixelRef<uint32>(x, y) = toneMapped.ToBGR();
+            mFrontBuffer.GetPixelRef<uint32>(x, y) = rgbColor.ToBGR();
         }
     }
 }

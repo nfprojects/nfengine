@@ -106,6 +106,5 @@ float Half::ToFloat() const
 #endif // NFE_USE_FP16C
 }
 
-
 } // namespace Math
 } // namespace NFE

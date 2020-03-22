@@ -86,6 +86,11 @@ Vector4& Vector4::operator = (const Vector4& other)
     return *this;
 }
 
+const Vector4 Vector4::FromHalf4(const Half4& halfs)
+{
+    return Vector4(halfs.x.ToFloat(), halfs.y.ToFloat(), halfs.z.ToFloat(), halfs.w.ToFloat());
+}
+
 const Vector4 Vector4::FromInteger(int32 x)
 {
     return Vector4{ static_cast<float>(x) };

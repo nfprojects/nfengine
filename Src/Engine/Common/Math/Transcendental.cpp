@@ -199,24 +199,23 @@ float FastACos(float x)
     return negate * 3.14159265358979f + ret;
 }
 
-float FastExp(float x)
+float FastExp2(float a)
 {
     // implementation based on: "A more accurate, performance-competitive implementation of expf" by njuffa
 
     // handle special cases: severe overflow / underflow
-    if (x >= 87.0f) // overflow
+    if (a >= 128.0f) // overflow
     {
         return std::numeric_limits<float>::infinity();
     }
-    else if (x <= -87.0f) // underflow
+    else if (a <= -125.0f) // underflow
     {
         return 0.0f;
     }
 
-    const float t = x * 1.442695041f;
-    const float fi = floorf(t);
+    const float fi = floorf(a);
     const int32 i = (int32)fi;
-    const float f = t - fi;
+    const float f = a - fi;
 
     Common::FundamentalTypesUnion bits;
     bits.f = (0.3371894346f * f + 0.657636276f) * f + 1.00172476f;
@@ -224,12 +223,11 @@ float FastExp(float x)
     return bits.f;
 }
 
-const Vector4 FastExp(const Vector4& a)
+const Vector4 FastExp2(const Vector4& a)
 {
-    const Vector4 t = a * 1.442695041f;
-    const Vector4 fi = Vector4::Floor(t);
+    const Vector4 fi = Vector4::Floor(a);
     const VectorInt4 i = VectorInt4::Convert(fi);
-    const Vector4 f = t - fi;
+    const Vector4 f = a - fi;
 
     Vector4 y = Vector4::MulAndAdd(f, Vector4(0.3371894346f), Vector4(0.657636276f));
     y = Vector4::MulAndAdd(f, y, Vector4(1.00172476f));
@@ -238,18 +236,18 @@ const Vector4 FastExp(const Vector4& a)
     yi += (i << 23);
     y = yi.CastToFloat();
 
-    const Vector4 range(87.0f);
-    y = Vector4::Select(y, Vector4::Zero(), -a >= range);
-    y = Vector4::Select(y, VECTOR_INF, a >= range);
+    // handle overflow
+    y = Vector4::Select(y, Vector4::Zero(), -a >= Vector4(125.0f));
+    y = Vector4::Select(y, VECTOR_INF, a >= Vector4(128.0f));
+
     return y;
 }
 
-const Vector8 FastExp(const Vector8& a)
+const Vector8 FastExp2(const Vector8& a)
 {
-    const Vector8 t = a * 1.442695041f;
-    const Vector8 fi = Vector8::Floor(t);
+    const Vector8 fi = Vector8::Floor(a);
     const VectorInt8 i = VectorInt8::Convert(fi);
-    const Vector8 f = t - fi;
+    const Vector8 f = a - fi;
 
     Vector8 y = Vector8::MulAndAdd(f, Vector8(0.3371894346f), Vector8(0.657636276f));
     y = Vector8::MulAndAdd(f, y, Vector8(1.00172476f));
@@ -258,9 +256,10 @@ const Vector8 FastExp(const Vector8& a)
     yi += (i << 23);
     y = yi.CastToFloat();
 
-    const Vector8 range(87.0f);
-    y = Vector8::Select(y, Vector8::Zero(), -a >= range);
-    y = Vector8::Select(y, VECTOR8_INF, a >= range);
+    // handle overflow
+    y = Vector8::Select(y, Vector8::Zero(), -a >= Vector8(125.0f));
+    y = Vector8::Select(y, VECTOR8_INF, a >= Vector8(128.0f));
+
     return y;
 }
 
@@ -288,6 +287,34 @@ float Log(float x)
     r = r * f - 0.500000000f;
     r = r * s + f;
     r = i * 0.693147182f + r; // log(2)
+    return r;
+}
+
+float FastLog2(float x)
+{
+    // based on:
+    // https://stackoverflow.com/questions/9411823/fast-log2float-x-implementation-c/9411984#9411984
+
+    Common::FundamentalTypesUnion u;
+    u.f = x;
+    float result = (float)(((u.i32 >> 23) & 255) - 128);
+    u.i32 &= ~(255 << 23);
+    u.i32 += 127 << 23;
+    result += ((-0.33333333f) * u.f + 2.0f) * u.f - 0.66666666f;
+    return result;
+}
+
+const Vector4 FastLog2(const Vector4& a)
+{
+    // based on:
+    // https://stackoverflow.com/questions/9411823/fast-log2float-x-implementation-c/9411984#9411984
+
+    VectorInt4 i = VectorInt4::Cast(a);
+    Vector4 r = (((i >> 23)& VectorInt4(255)) - VectorInt4(128)).ConvertToFloat();
+    i &= VectorInt4(~(255 << 23));
+    i += 127 << 23;
+    Vector4 f = i.CastToFloat();
+    r += (-0.33333333f * f + Vector4(2.0f)) * f - Vector4(0.66666666f);
     return r;
 }
 

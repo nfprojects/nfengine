@@ -94,6 +94,11 @@ const Type* ResolveType()
     return existingType;
 }
 
+template<typename T, typename = void>
+constexpr bool IsTypeDefined = false;
+
+template<typename T>
+constexpr bool IsTypeDefined<T, decltype(typeid(T), void())> = true;
 
 /**
  * Get NFE::RTTI::Type object from a C++ type.
@@ -101,6 +106,9 @@ const Type* ResolveType()
 template<typename T>
 const typename TypeCreator<T>::TypeClass* GetType()
 {
+    static_assert(IsTypeDefined<T>, "Type is not defined");
+    static_assert(IsTypeDefined<TypeCreator<T>>, "Type is not defined");
+
     // cache the type pointer so it's resolved only once
     static const Type* type = ResolveType<T>();
 
@@ -124,6 +132,18 @@ const T* GetDefaultObject()
     }
 
     return nullptr;
+}
+
+/**
+ * Compare two objects.
+ */
+template<typename T>
+bool Compare(const T& objectA, const T& objectB)
+{
+    const Type* type = GetType<T>();
+    NFE_ASSERT(type, "Unknown type");
+
+    return type->Compare(&objectA, &objectB);
 }
 
 

@@ -142,6 +142,12 @@ const Vector4 SamplingHelpers::GetHemishpereCos(const Float2 u)
     return result;
 }
 
+float SamplingHelpers::GetFloatNormal(const Float2 u)
+{
+    // Box-Muller method (take single result)
+    return sqrtf(-2.0f * FastLog(u.x)) * Sin(2.0f * NFE_MATH_PI * u.y);
+}
+
 const Vector4 SamplingHelpers::GetFloatNormal2(const Float2 u)
 {
     // Box-Muller method

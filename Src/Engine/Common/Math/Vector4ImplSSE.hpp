@@ -80,6 +80,15 @@ Vector4& Vector4::operator = (const Vector4& other)
     return *this;
 }
 
+const Vector4 Vector4::FromHalf4(const Half4& halfs)
+{
+#ifdef NFE_USE_FP16C
+    return _mm_cvtph_ps(_mm_cvtsi64_si128(halfs.packed));
+#else // NFE_USE_FP16C
+    return Vector4(halfs.x.ToFloat(), halfs.y.ToFloat(), halfs.z.ToFloat(), halfs.w.ToFloat());
+#endif // NFE_USE_FP16C
+}
+
 const Vector4 Vector4::FromInteger(int32 x)
 {
     return _mm_cvtepi32_ps(_mm_set1_epi32(x));
@@ -131,6 +140,20 @@ uint32 Vector4::ToRGBA() const
     vInt = _mm_packus_epi16(vInt, vInt);
     // Return color
     return _mm_extract_epi32(vInt, 0);
+}
+
+const Half4 Vector4::ToHalf4() const
+{
+    Half4 halfs;
+#ifdef NFE_USE_FP16C
+    halfs.packed = static_cast<uint64>(_mm_cvtsi128_si64(_mm_cvtps_ph(v, 0)));
+#else // NFE_USE_FP16C
+    halfs.x = Half{ other.x };
+    halfs.y = Half{ other.y };
+    halfs.z = Half{ other.z };
+    halfs.w = Half{ other.w };
+#endif // NFE_USE_FP16C
+    return halfs;
 }
 
 template<uint32 flipX, uint32 flipY, uint32 flipZ, uint32 flipW>

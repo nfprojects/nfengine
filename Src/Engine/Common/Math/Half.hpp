@@ -44,8 +44,25 @@ private:
 
 struct Half2
 {
-    Half x;
-    Half y;
+    NFE_FORCE_INLINE Half2() = default;
+    NFE_FORCE_INLINE Half2(const Half2& other) : packed(other.packed) { }
+
+    NFE_FORCE_INLINE Half2& operator = (const Half2& other)
+    {
+        packed = other.packed;
+        return *this;
+    }
+
+    union
+    {
+        uint32 packed;
+
+        struct
+        {
+            Half x;
+            Half y;
+        };
+    };
 };
 
 
@@ -59,10 +76,27 @@ struct Half3
 
 struct Half4
 {
-    Half x;
-    Half y;
-    Half z;
-    Half w;
+    NFE_FORCE_INLINE Half4() = default;
+    NFE_FORCE_INLINE Half4(const Half4& other) : packed(other.packed) { }
+    
+    NFE_FORCE_INLINE Half4& operator = (const Half4& other)
+    {
+        packed = other.packed;
+        return *this;
+    }
+
+    union
+    {
+        uint64 packed;
+
+        struct
+        {
+            Half x;
+            Half y;
+            Half z;
+            Half w;
+        };
+    };
 };
 
 

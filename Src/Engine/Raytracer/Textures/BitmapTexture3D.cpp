@@ -44,7 +44,7 @@ const Vector4 BitmapTexture3D::Evaluate(const Vector4& coords) const
 
     // compute texel coordinates
     const Vector4 scaledCoords = warpedCoords * bitmapPtr->mFloatSize;
-    const VectorInt4 intCoords = VectorInt4::Convert(Vector4::Floor(scaledCoords));
+    const VectorInt4 intCoords = VectorInt4::TruncateAndConvert(scaledCoords);
 
     VectorInt4 texelCoords = intCoords;
     texelCoords -= VectorInt4::AndNot(intCoords < size, size);
@@ -70,13 +70,13 @@ const Vector4 BitmapTexture3D::Evaluate(const Vector4& coords) const
         {
             const Vector4 weights = scaledCoords - intCoords.ConvertToFloat();
 
-            const Vector4 value00 = Vector4::Lerp(colors[0], colors[2], weights.SplatY());
-            const Vector4 value01 = Vector4::Lerp(colors[1], colors[3], weights.SplatY());
-            const Vector4 value10 = Vector4::Lerp(colors[4], colors[5], weights.SplatY());
-            const Vector4 value11 = Vector4::Lerp(colors[6], colors[7], weights.SplatY());
+            const Vector4 value00 = Vector4::Lerp(colors[0], colors[1], weights.SplatX());
+            const Vector4 value01 = Vector4::Lerp(colors[2], colors[3], weights.SplatX());
+            const Vector4 value10 = Vector4::Lerp(colors[4], colors[5], weights.SplatX());
+            const Vector4 value11 = Vector4::Lerp(colors[6], colors[7], weights.SplatX());
 
-            const Vector4 value0 = Vector4::Lerp(value00, value01, weights.SplatX());
-            const Vector4 value1 = Vector4::Lerp(value10, value11, weights.SplatX());
+            const Vector4 value0 = Vector4::Lerp(value00, value01, weights.SplatY());
+            const Vector4 value1 = Vector4::Lerp(value10, value11, weights.SplatY());
 
             result = Vector4::Lerp(value0, value1, weights.SplatZ());
         }
