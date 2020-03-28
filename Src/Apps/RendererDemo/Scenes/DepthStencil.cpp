@@ -295,15 +295,15 @@ void DepthStencilScene::Draw(float dt)
     if (mAngle > 2.0f * Constants::pi<float>)
         mAngle -= 2.0f * Constants::pi<float>;
 
-    Matrix4 modelMatrix = Matrix4::MakeRotationNormal(Vector4(0.0f, 1.0f, 0.0f), mAngle);
-    Matrix4 viewMatrix = Matrix4::MakeLookTo(Vector4(6.0f, 1.2f, 0.0f), Vector4(-2.0f, -1.0f, 0.0f),
-                                     Vector4(0.0f, 1.0f, 0.0f));
+    Matrix4 modelMatrix = Matrix4::MakeRotationNormal(Vec4f(0.0f, 1.0f, 0.0f), mAngle);
+    Matrix4 viewMatrix = Matrix4::MakeLookTo(Vec4f(6.0f, 1.2f, 0.0f), Vec4f(-2.0f, -1.0f, 0.0f),
+                                     Vec4f(0.0f, 1.0f, 0.0f));
     Matrix4 projMatrix = Matrix4::MakePerspective(static_cast<float>(WINDOW_WIDTH) /
                                                 static_cast<float>(WINDOW_HEIGHT),
                                                 DegToRad(70.0f), 100.0f, 0.1f);
 
-    Matrix4 reflectionMatrix = Matrix4::MakeScaling(Vector4(1.0f, -1.0f, 1.0f)) *
-                               Matrix4::MakeTranslation(Vector4(0.0f, -2.0f, 0.0f));
+    Matrix4 reflectionMatrix = Matrix4::MakeScaling(Vec4f(1.0f, -1.0f, 1.0f)) *
+                               Matrix4::MakeTranslation(Vec4f(0.0f, -2.0f, 0.0f));
 
     mCommandBuffer->Begin();
     mCommandBuffer->SetViewport(0.0f, static_cast<float>(WINDOW_WIDTH), 0.0f,
@@ -336,7 +336,7 @@ void DepthStencilScene::Draw(float dt)
         mCommandBuffer->SetStencilRef(0x01);
         mCommandBuffer->DrawIndexed(2 * 3, 1, 2 * 6 * 3);
 
-        const Float4 color(0.7f, 0.8f, 0.9f, 1.0f);
+        const Vec4fU color(0.7f, 0.8f, 0.9f, 1.0f);
         mCommandBuffer->Clear(ClearFlagsColor, 1, nullptr, &color);
 
         // Step 2: draw cube reflection
@@ -348,7 +348,7 @@ void DepthStencilScene::Draw(float dt)
         // clear depth buffer
         mCommandBuffer->Clear(ClearFlagsDepth, 0, nullptr, nullptr, 1.0f);
 
-        const Float4 color(0.7f, 0.8f, 0.9f, 1.0f);
+        const Vec4fU color(0.7f, 0.8f, 0.9f, 1.0f);
         mCommandBuffer->Clear(ClearFlagsColor, 1, nullptr, &color);
     }
 

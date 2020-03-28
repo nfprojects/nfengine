@@ -35,6 +35,16 @@
 #endif // _MSC_VER
 
 
+// detect CPU architecture
+#if defined(_M_X64) || defined(__amd64__) || defined(_M_AMD64)
+#define NFE_ARCH_X64
+#elif defined(_M_IX86) || defined(__i386__) || defined(__i386)
+#define NFE_ARCH_X86
+#else
+#error "Target architecture not supported!"
+#endif
+
+
 // DLL import / export macro
 #ifdef WIN32
 #define NFE_API_EXPORT __declspec(dllexport)

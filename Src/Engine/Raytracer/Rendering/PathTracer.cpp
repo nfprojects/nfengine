@@ -34,7 +34,7 @@ const RayColor PathTracer::EvaluateLight(const LightSceneObject* lightObject, co
 
     const Matrix4 worldToLight = lightObject->GetInverseTransform(context.time);
     const Ray lightSpaceRay = worldToLight.TransformRay_Unsafe(ray);
-    const Vector4 lightSpaceHitPoint = worldToLight.TransformPoint(intersection.frame.GetTranslation());
+    const Vec4f lightSpaceHitPoint = worldToLight.TransformPoint(intersection.frame.GetTranslation());
 
     const ILight& light = lightObject->GetLight();
 
@@ -142,7 +142,7 @@ const RayColor PathTracer::RenderPixel(const Math::Ray& primaryRay, const Render
 #endif // NFE_CONFIGURATION_FINAL
 
                 // generate secondary ray
-                const Vector4 scatterPosition = ray.GetAtDistance(event.distance);
+                const Vec4f scatterPosition = ray.GetAtDistance(event.distance);
                 ray = Ray(scatterPosition, event.direction);
                 depth++;
                 continue;
@@ -171,7 +171,7 @@ const RayColor PathTracer::RenderPixel(const Math::Ray& primaryRay, const Render
             
             if (!shapeObject->GetMaterial())
             {
-                const bool enter = Vector4::Dot3(ray.dir, shadingData.intersection.frame[2]) < 0.0f;
+                const bool enter = Vec4f::Dot3(ray.dir, shadingData.intersection.frame[2]) < 0.0f;
 
                 if (enter)
                 {
@@ -237,9 +237,9 @@ const RayColor PathTracer::RenderPixel(const Math::Ray& primaryRay, const Render
         }
 
         // sample BSDF
-        Vector4 incomingDirWorldSpace;
+        Vec4f incomingDirWorldSpace;
         BSDF::EventType lastSampledBsdfEvent = BSDF::NullEvent;
-        const RayColor bsdfValue = shadingData.intersection.material->Sample(context.wavelength, incomingDirWorldSpace, shadingData, context.sampler.GetFloat3(), nullptr, &lastSampledBsdfEvent);
+        const RayColor bsdfValue = shadingData.intersection.material->Sample(context.wavelength, incomingDirWorldSpace, shadingData, context.sampler.GetVec3f(), nullptr, &lastSampledBsdfEvent);
 
         if (lastSampledBsdfEvent == BSDF::NullEvent)
         {

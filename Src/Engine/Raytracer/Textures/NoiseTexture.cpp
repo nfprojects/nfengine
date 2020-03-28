@@ -40,7 +40,7 @@ NFE_FORCE_INLINE static float Gradient(const int32 hash, const float x, const fl
 
 } // namespace
 
-NoiseTexture::NoiseTexture(const Math::Vector4& colorA, const Math::Vector4& colorB, const uint32 numOctaves)
+NoiseTexture::NoiseTexture(const Math::Vec4f& colorA, const Math::Vec4f& colorB, const uint32 numOctaves)
     : mColorA(colorA)
     , mColorB(colorB)
     , mNumOctaves(numOctaves)
@@ -55,7 +55,7 @@ const char* NoiseTexture::GetName() const
     return "noise";
 }
 
-float NoiseTexture::EvaluateInternal(const Math::Vector4& coords) const
+float NoiseTexture::EvaluateInternal(const Math::Vec4f& coords) const
 {
     // implementation taken from:
     // https://github.com/SRombauts/SimplexNoise
@@ -151,7 +151,7 @@ float NoiseTexture::EvaluateInternal(const Math::Vector4& coords) const
     return v;
 }
 
-const Vector4 NoiseTexture::Evaluate(const Vector4& coords) const
+const Vec4f NoiseTexture::Evaluate(const Vec4f& coords) const
 {
     float value = 0.0f;
 
@@ -164,14 +164,14 @@ const Vector4 NoiseTexture::Evaluate(const Vector4& coords) const
         octaveCoordScale *= 2.0f;
     }
 
-    return Vector4::Lerp(mColorA, mColorB, value);
+    return Vec4f::Lerp(mColorA, mColorB, value);
 }
 
-const Vector4 NoiseTexture::Sample(const Float2 u, Vector4& outCoords, float* outPdf) const
+const Vec4f NoiseTexture::Sample(const Vec2f u, Vec4f& outCoords, float* outPdf) const
 {
     float pdf = 1.0f;
     
-    outCoords = Vector4(u);
+    outCoords = Vec4f(u);
 
     if (outPdf)
     {

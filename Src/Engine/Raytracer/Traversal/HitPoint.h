@@ -1,7 +1,7 @@
 #pragma once
 
 #include "RayPacket.h"
-#include "../../Common/Math/VectorInt8.hpp"
+#include "../../Common/Math/Vec8i.hpp"
 
 namespace NFE {
 namespace RT {
@@ -66,11 +66,11 @@ struct HitPoint
 // Ray-scene intersection data (SIMD-8)
 struct NFE_ALIGN(32) HitPoint_Simd8
 {
-    Math::Vector8 distance;
-    Math::Vector8 u;
-    Math::Vector8 v;
-    Math::VectorInt8 objectId;
-    Math::VectorInt8 subObjectId;
+    Math::Vec8f distance;
+    Math::Vec8f u;
+    Math::Vec8f v;
+    Math::Vec8i objectId;
+    Math::Vec8i subObjectId;
 
     NFE_FORCE_INLINE HitPoint_Simd8()
         : distance(Math::VECTOR8_MAX)

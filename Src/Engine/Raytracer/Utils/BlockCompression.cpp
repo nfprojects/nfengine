@@ -1,5 +1,5 @@
 #include "PCH.h"
-#include "../Common/Math/VectorInt4.hpp"
+#include "../Common/Math/Vec4i.hpp"
 
 namespace NFE {
 namespace RT {
@@ -7,7 +7,7 @@ namespace RT {
 using namespace Math;
 
 NFE_FORCE_NOINLINE
-const Vector4 DecodeBC1(const uint8* data, uint32 x, uint32 y, const uint32 width)
+const Vec4f DecodeBC1(const uint8* data, uint32 x, uint32 y, const uint32 width)
 {
     // FPU version
     /*
@@ -45,7 +45,7 @@ const Vector4 DecodeBC1(const uint8* data, uint32 x, uint32 y, const uint32 widt
     const uint32 red   = (weight0 * red0 + weight1 * red1) / 3u;
     const uint32 rgba =  ((blue << 19) | (green << 10)) | (red << 3);
 
-    return Vector4::Load4((const uint8*)&rgba) * (1.0f / 255.0f);
+    return Vec4f::Load4((const uint8*)&rgba) * (1.0f / 255.0f);
     */
 
     const size_t blocksInRow = width / 4u; // TODO non-4-multiply width support
@@ -59,11 +59,11 @@ const Vector4 DecodeBC1(const uint8* data, uint32 x, uint32 y, const uint32 widt
     const uint8* blockData = data + 8u * (blocksInRow * blockY + blockX);
 
     // extract base colors for given block
-    const VectorInt4 mask = { 0x1F << 11, 0x3F << 5, 0x1F, 0 };
-    const VectorInt4 raw0 = VectorInt4(*reinterpret_cast<const int32*>(blockData + 0)) & mask;
-    const VectorInt4 raw1 = VectorInt4(*reinterpret_cast<const int32*>(blockData + 2)) & mask;
-    const Vector4 color0 = raw0.ConvertToFloat();
-    const Vector4 color1 = raw1.ConvertToFloat();
+    const Vec4i mask = { 0x1F << 11, 0x3F << 5, 0x1F, 0 };
+    const Vec4i raw0 = Vec4i(*reinterpret_cast<const int32*>(blockData + 0)) & mask;
+    const Vec4i raw1 = Vec4i(*reinterpret_cast<const int32*>(blockData + 2)) & mask;
+    const Vec4f color0 = raw0.ConvertToVec4f();
+    const Vec4f color1 = raw1.ConvertToVec4f();
     // TODO alpha support
 
     // extract color index for given pixel
@@ -73,8 +73,8 @@ const Vector4 DecodeBC1(const uint8* data, uint32 x, uint32 y, const uint32 widt
 
     // calculate final color by blending base colors + scale down from 5,6,5 bit ranges to 0...1 float range
     const float weights[] = { 0.0f, 1.0f, 1.0f / 3.0f, 2.0f / 3.0f };
-    const Vector4 scale{ 1.0f / 2048.0f / 31.0f, 1.0f / 32.0f / 63.0f, 1.0f / 31.0f, 0.0f };
-    return Vector4::Lerp(color0, color1, weights[index]) * scale;
+    const Vec4f scale{ 1.0f / 2048.0f / 31.0f, 1.0f / 32.0f / 63.0f, 1.0f / 31.0f, 0.0f };
+    return Vec4f::Lerp(color0, color1, weights[index]) * scale;
 }
 
 namespace helper
@@ -111,7 +111,7 @@ static float DecodeBC_Grayscale(const uint8* blockData, const uint32 x, const ui
 
 } // helper
 
-const Vector4 DecodeBC4(const uint8* data, uint32 x, uint32 y, const uint32 width)
+const Vec4f DecodeBC4(const uint8* data, uint32 x, uint32 y, const uint32 width)
 {
     const size_t blocksInRow = width / 4; // TODO non-4-multiply width support
     const size_t blockX = x / 4u;
@@ -123,10 +123,10 @@ const Vector4 DecodeBC4(const uint8* data, uint32 x, uint32 y, const uint32 widt
 
     const uint8* blockData = reinterpret_cast<const uint8*>(data + 8 * (blocksInRow * blockY + blockX));
     const float value = helper::DecodeBC_Grayscale(blockData, x, y);
-    return Vector4(value, value, value, 1.0f);
+    return Vec4f(value, value, value, 1.0f);
 }
 
-const Vector4 DecodeBC5(const uint8* data, uint32 x, uint32 y, const uint32 width)
+const Vec4f DecodeBC5(const uint8* data, uint32 x, uint32 y, const uint32 width)
 {
     const size_t blocksInRow = width / 4; // TODO non-4-multiply width support
     const size_t blockX = x / 4u;
@@ -142,7 +142,7 @@ const Vector4 DecodeBC5(const uint8* data, uint32 x, uint32 y, const uint32 widt
     const uint8* blockDataGreen = blockDataRed + 8;
     const float green = helper::DecodeBC_Grayscale(blockDataGreen, x, y);
 
-    return Vector4(green, red, 0.0f, 1.0f);
+    return Vec4f(green, red, 0.0f, 1.0f);
 }
 
 } // namespace RT

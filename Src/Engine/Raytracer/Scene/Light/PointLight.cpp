@@ -24,7 +24,7 @@ PointLight::PointLight(const Math::HdrColorRGB& color)
 
 const Box PointLight::GetBoundingBox() const
 {
-    return Box(Vector4::Zero());
+    return Box(Vec4f::Zero());
 }
 
 const RayColor PointLight::Illuminate(const IlluminateParam& param, IlluminateResult& outResult) const

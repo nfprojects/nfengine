@@ -11,14 +11,14 @@ class NFE_ALIGN(16) ConstTexture
     : public ITexture
 {
 public:
-    NFE_RAYTRACER_API ConstTexture(const Math::Vector4& color);
+    NFE_RAYTRACER_API ConstTexture(const Math::Vec4f& color);
 
     virtual const char* GetName() const override;
-    virtual const Math::Vector4 Evaluate(const Math::Vector4& coords) const override;
-    virtual const Math::Vector4 Sample(const Math::Float2 u, Math::Vector4& outCoords, float* outPdf) const override;
+    virtual const Math::Vec4f Evaluate(const Math::Vec4f& coords) const override;
+    virtual const Math::Vec4f Sample(const Math::Vec2f u, Math::Vec4f& outCoords, float* outPdf) const override;
 
 private:
-    Math::Vector4 mColor;
+    Math::Vec4f mColor;
 };
 
 } // namespace RT

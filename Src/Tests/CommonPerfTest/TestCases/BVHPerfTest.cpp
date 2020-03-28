@@ -10,7 +10,7 @@
 #include "Engine/Common/Utils/BVH.hpp"
 #include "Engine/Common/System/Timer.hpp"
 #include "Engine/Common/Math/Random.hpp"
-#include "Engine/Common/Math/Vector4.hpp"
+#include "Engine/Common/Math/Vec4f.hpp"
 
 
 using namespace NFE;
@@ -30,7 +30,7 @@ TEST(BVH, InsertQueryAndRemove)
     const int leavesNumStart = 32;
     const int leavesNumEnd = 2000000;
     const int queriesNum = 1024;
-    const Vector4 boxHalfSize = Vector4(0.5f, 0.5f, 0.5f);
+    const Vec4f boxHalfSize = Vec4f(0.5f, 0.5f, 0.5f);
 
     auto queryCallback = [] (void* leafUserData)
     {
@@ -50,7 +50,7 @@ TEST(BVH, InsertQueryAndRemove)
         timer.Start();
         for (int i = 0; i < leavesNum; ++i)
         {
-            Vector4 center(random.GetFloat3());
+            Vec4f center(random.GetVec3f());
             center *= 100.0f;
 
             Box box(center - boxHalfSize, center + boxHalfSize);
@@ -65,7 +65,7 @@ TEST(BVH, InsertQueryAndRemove)
         timer.Start();
         for (int i = 0; i < queriesNum; ++i)
         {
-            Vector4 center(random.GetFloat3());
+            Vec4f center(random.GetVec3f());
             center *= 100.0f;
             Box box(center - boxHalfSize, center + boxHalfSize);
 
@@ -80,7 +80,7 @@ TEST(BVH, InsertQueryAndRemove)
         timer.Start();
         for (int i = 0; i < queriesNum; ++i)
         {
-            Vector4 center(random.GetFloat3());
+            Vec4f center(random.GetVec3f());
             center *= 100.0f;
             Box box(center - boxHalfSize * 20.0f, center + boxHalfSize * 20.0f);
 
@@ -120,7 +120,7 @@ TEST(BVH, TreeBalance)
     const uint32 initialLeaves = 100000;
     const uint32 leavesToReplace = 20000;
     const uint32 queriesNum = 500;
-    const Vector4 boxHalfSize = Vector4(0.5f, 0.5f, 0.5f);
+    const Vec4f boxHalfSize = Vec4f(0.5f, 0.5f, 0.5f);
 
     BVH bvh;
     std::vector<BVHStats> statsArray;
@@ -136,7 +136,7 @@ TEST(BVH, TreeBalance)
     std::cout << "Inserting initial leaves..." << std::endl;
     for (uint32 i = 0; i < initialLeaves; ++i)
     {
-        Vector4 center(random.GetFloat3());
+        Vec4f center(random.GetVec3f());
         center *= 100.0f;
 
         Box box(center - boxHalfSize, center + boxHalfSize);
@@ -155,7 +155,7 @@ TEST(BVH, TreeBalance)
         timer.Start();
         for (uint32 i = 0; i < queriesNum; ++i)
         {
-            Vector4 center(random.GetFloat3());
+            Vec4f center(random.GetVec3f());
             center *= 100.0f;
             Box box(center - boxHalfSize, center + boxHalfSize);
 
@@ -169,7 +169,7 @@ TEST(BVH, TreeBalance)
         timer.Start();
         for (uint32 i = 0; i < queriesNum; ++i)
         {
-            Vector4 center(random.GetFloat3());
+            Vec4f center(random.GetVec3f());
             center *= 100.0f;
             Box box(center - boxHalfSize * 20.0f, center + boxHalfSize * 20.0f);
 
@@ -194,7 +194,7 @@ TEST(BVH, TreeBalance)
         timer.Start();
         for (int i = 0; i < leavesToReplace; ++i)
         {
-            Vector4 center(random.GetFloat3());
+            Vec4f center(random.GetVec3f());
             center *= 100.0f;
 
             Box box(center - boxHalfSize, center + boxHalfSize);

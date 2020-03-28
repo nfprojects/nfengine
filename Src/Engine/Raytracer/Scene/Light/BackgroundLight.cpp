@@ -36,7 +36,7 @@ const Box BackgroundLight::GetBoundingBox() const
     return Box::Full();
 }
 
-const RayColor BackgroundLight::GetBackgroundColor(const Vector4& dir, const Wavelength& wavelength) const
+const RayColor BackgroundLight::GetBackgroundColor(const Vec4f& dir, const Wavelength& wavelength) const
 {
     NFE_UNUSED(dir);
 
@@ -45,10 +45,10 @@ const RayColor BackgroundLight::GetBackgroundColor(const Vector4& dir, const Wav
     // sample environment map
     if (mTexture)
     {
-        const Vector4 coords = CartesianToSphericalCoordinates(dir);
+        const Vec4f coords = CartesianToSphericalCoordinates(dir);
         NFE_ASSERT(coords.IsValid());
 
-        const Vector4 textureColor = Vector4::Max(Vector4::Zero(), mTexture->Evaluate(coords));
+        const Vec4f textureColor = Vec4f::Max(Vec4f::Zero(), mTexture->Evaluate(coords));
 
         color *= RayColor::ResolveRGB(wavelength, textureColor);
     }
@@ -58,7 +58,7 @@ const RayColor BackgroundLight::GetBackgroundColor(const Vector4& dir, const Wav
 
 const RayColor BackgroundLight::Illuminate(const IlluminateParam& param, IlluminateResult& outResult) const
 {
-    const Vector4 randomDirLocalSpace = SamplingHelpers::GetHemishpere(param.sample);
+    const Vec4f randomDirLocalSpace = SamplingHelpers::GetHemishpere(param.sample);
     outResult.directionToLight = param.intersection.LocalToWorld(randomDirLocalSpace);
     outResult.directPdfW = UniformHemispherePdf();
     outResult.emissionPdfW = UniformSpherePdf() * UniformCirclePdf(SceneRadius);
@@ -92,9 +92,9 @@ const RayColor BackgroundLight::Emit(const EmitParam& param, EmitResult& outResu
     outResult.direction = SamplingHelpers::GetSphere(param.directionSample);
 
     // generate random origin
-    const Vector4 uv = SamplingHelpers::GetCircle(param.positionSample);
+    const Vec4f uv = SamplingHelpers::GetCircle(param.positionSample);
     {
-        Vector4 u, v;
+        Vec4f u, v;
         BuildOrthonormalBasis(outResult.direction, u, v);
 
         outResult.position = SceneRadius * (u * uv.x + v * uv.y - outResult.direction);

@@ -12,17 +12,17 @@ namespace Math {
 
 Frustum Frustum::ConstructForPerspective(const Matrix4& matrix, float nearDist, float farDist, float cutoff, float aspect)
 {
-    const Vector4 pos = matrix[3] & Vector4::MakeMask<1,1,1,0>();
+    const Vec4f pos = matrix[3] & Vec4f::MakeMask<1,1,1,0>();
     const float scale = tanf(cutoff / 2.0f);
-    const Vector4 xAxis = aspect * scale * matrix[0];
-    const Vector4 yAxis = scale * matrix[1];
-    const Vector4 zAxis = scale * matrix[2];
+    const Vec4f xAxis = aspect * scale * matrix[0];
+    const Vec4f yAxis = scale * matrix[1];
+    const Vec4f zAxis = scale * matrix[2];
 
     return ConstructForPerspective(pos, xAxis, yAxis, zAxis, nearDist, farDist);
 }
 
-Frustum Frustum::ConstructForPerspective(const Vector4& origin,
-                                         const Vector4& xAxis, const Vector4& yAxis, const Vector4& zAxis,
+Frustum Frustum::ConstructForPerspective(const Vec4f& origin,
+                                         const Vec4f& xAxis, const Vec4f& yAxis, const Vec4f& zAxis,
                                          float nearDist, float farDist)
 {
     Frustum frustum;
@@ -56,12 +56,12 @@ void Frustum::CalculatePlanes()
     }
 }
 
-float Frustum::SupportVertex(const Vector4& dir) const
+float Frustum::SupportVertex(const Vec4f& dir) const
 {
-    float d = Vector4::Dot3(dir, verticies[0]);
+    float d = Vec4f::Dot3(dir, verticies[0]);
     for (int i = 1; i < 8; i++)
     {
-        float tmp_d = Vector4::Dot3(dir, verticies[i]);
+        float tmp_d = Vec4f::Dot3(dir, verticies[i]);
         if (tmp_d > d)
             d = tmp_d;
     }

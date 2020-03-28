@@ -2,7 +2,7 @@
 
 #include "../Raytracer.h"
 #include "../Utils/Memory.h"
-#include "../../Common/Math/VectorInt4.hpp"
+#include "../../Common/Math/Vec4i.hpp"
 #include "../../Common/Containers/SharedPtr.hpp"
 #include "../../Common/Memory/Aligned.hpp"
 
@@ -105,7 +105,7 @@ public:
     NFE_FORCE_INLINE const uint8* GetData() const { return mData; }
 
 
-    NFE_FORCE_INLINE Math::VectorInt4 GetSize() const { return mSize; }
+    NFE_FORCE_INLINE Math::Vec4i GetSize() const { return mSize; }
     NFE_FORCE_INLINE uint32 GetWidth() const { return mSize.x; }
     NFE_FORCE_INLINE uint32 GetHeight() const { return mSize.y; }
     NFE_FORCE_INLINE uint32 GetDepth() const { return mSize.z; }
@@ -148,20 +148,20 @@ public:
     static const char* FormatToString(Format format);
 
     // get single pixel
-    NFE_RAYTRACER_API const Math::Vector4 GetPixel(uint32 x, uint32 y) const;
-    NFE_RAYTRACER_API const Math::Vector4 GetPixel3D(uint32 x, uint32 y, uint32 z) const;
+    NFE_RAYTRACER_API const Math::Vec4f GetPixel(uint32 x, uint32 y) const;
+    NFE_RAYTRACER_API const Math::Vec4f GetPixel3D(uint32 x, uint32 y, uint32 z) const;
 
     // get 2x2 pixel block
-    NFE_RAYTRACER_API void GetPixelBlock(const Math::VectorInt4 coords, Math::Vector4* outColors) const;
+    NFE_RAYTRACER_API void GetPixelBlock(const Math::Vec4i coords, Math::Vec4f* outColors) const;
 
     // get 2x2x2 pixel block
-    NFE_RAYTRACER_API void GetPixelBlock3D(const Math::VectorInt4 coordsA, const Math::VectorInt4 coordsB, Math::Vector4* outColors) const;
+    NFE_RAYTRACER_API void GetPixelBlock3D(const Math::Vec4i coordsA, const Math::Vec4i coordsB, Math::Vec4f* outColors) const;
 
     // fill with zeros
     NFE_RAYTRACER_API void Clear();
 
     // scale pixels by a given value
-    NFE_RAYTRACER_API bool Scale(const Math::Vector4& factor);
+    NFE_RAYTRACER_API bool Scale(const Math::Vec4f& factor);
     
 private:
 
@@ -174,8 +174,8 @@ private:
     bool LoadEXR(FILE* file, const char* path);
     bool LoadVDB(FILE* file, const char* path);
 
-    Math::VectorInt4 mSize = Math::VectorInt4::Zero();
-    Math::Vector4 mFloatSize = Math::Vector4::Zero();
+    Math::Vec4i mSize = Math::Vec4i::Zero();
+    Math::Vec4f mFloatSize = Math::Vec4f::Zero();
     uint8* mData;
     uint8* mPalette;
     uint32 mStride;         // number of bytes between rows

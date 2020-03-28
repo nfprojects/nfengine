@@ -112,7 +112,7 @@ struct RayColor
     {
         Wavelength::ValueType maskedValue = value;
 #ifndef NFE_ENABLE_SPECTRAL_RENDERING
-        maskedValue &= Math::Vector4::MakeMask<1,1,1,0>();
+        maskedValue &= Math::Vec4f::MakeMask<1,1,1,0>();
 #endif
         return maskedValue.HorizontalMax()[0];
     }
@@ -145,13 +145,13 @@ struct RayColor
     }
 
     // calculate ray color values for given wavelength and spectrum
-    static const RayColor ResolveRGB(const Wavelength& wavelength, const Math::Vector4& rgbValues);
+    static const RayColor ResolveRGB(const Wavelength& wavelength, const Math::Vec4f& rgbValues);
     static const RayColor ResolveRGB(const Wavelength& wavelength, const Math::HdrColorRGB& color);
     static const RayColor ResolveRGB(const Wavelength& wavelength, const Math::LdrColorRGB& color);
 
     // convert to CIE XYZ / RGB tristimulus values
     // NOTE: when spectral rendering is disabled, this function does nothing (returns RGB values)
-    const Math::Vector4 ConvertToTristimulus(const Wavelength& wavelength) const;
+    const Math::Vec4f ConvertToTristimulus(const Wavelength& wavelength) const;
 };
 
 NFE_FORCE_INLINE const RayColor operator * (const float a, const RayColor& b)
@@ -162,12 +162,12 @@ NFE_FORCE_INLINE const RayColor operator * (const float a, const RayColor& b)
 
 #ifndef NFE_ENABLE_SPECTRAL_RENDERING
 
-NFE_FORCE_INLINE const Math::Vector4 RayColor::ConvertToTristimulus(const Wavelength&) const
+NFE_FORCE_INLINE const Math::Vec4f RayColor::ConvertToTristimulus(const Wavelength&) const
 {
     return value;
 }
 
-NFE_FORCE_INLINE const RayColor RayColor::ResolveRGB(const Wavelength&, const Math::Vector4& rgbValues)
+NFE_FORCE_INLINE const RayColor RayColor::ResolveRGB(const Wavelength&, const Math::Vec4f& rgbValues)
 {
     return RayColor{ rgbValues };
 }

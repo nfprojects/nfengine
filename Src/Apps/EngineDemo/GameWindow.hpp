@@ -38,7 +38,7 @@ public:
 
     // TODO temporary - remove
     // spawn test object (cube, barrel, etc.)
-    void SpawnTestObject(uint32 objectType, const Math::Vector4& position, const Math::Vector4& velocity);
+    void SpawnTestObject(uint32 objectType, const Math::Vec4f& position, const Math::Vec4f& velocity);
 
 private:
     Common::SharedPtr<Scene::Scene> mScene;

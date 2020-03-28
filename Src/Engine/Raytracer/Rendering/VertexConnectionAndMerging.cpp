@@ -252,7 +252,7 @@ const RayColor VertexConnectionAndMerging::RenderPixel(const Math::Ray& ray, con
 
         // update MIS quantities
         {
-            const float cosTheta = Vector4::Dot3(pathState.ray.dir, shadingData.intersection.frame[2]);
+            const float cosTheta = Vec4f::Dot3(pathState.ray.dir, shadingData.intersection.frame[2]);
             const float invMis = 1.0f / Mis(Abs(cosTheta));
             pathState.dVCM *= Mis(Sqr(hitPoint.distance));
             pathState.dVCM *= invMis;
@@ -407,7 +407,7 @@ void VertexConnectionAndMerging::TraceLightPath(const RenderParam& param, Render
                 pathState.dVCM *= Mis(Sqr(hitPoint.distance));
             }
 
-            const float cosTheta = Vector4::Dot3(pathState.ray.dir, shadingData.intersection.frame[2]);
+            const float cosTheta = Vec4f::Dot3(pathState.ray.dir, shadingData.intersection.frame[2]);
             const float invMis = 1.0f / Mis(Abs(cosTheta));
             pathState.dVCM *= invMis;
             pathState.dVC  *= invMis;
@@ -439,7 +439,7 @@ void VertexConnectionAndMerging::TraceLightPath(const RenderParam& param, Render
                 rendererContext.photons.EmplaceBack();
                 Photon& photon = rendererContext.photons.Back();
 
-                photon.position = shadingData.intersection.frame[3].ToFloat3();
+                photon.position = shadingData.intersection.frame[3].ToVec3f();
                 photon.direction.FromVector(shadingData.outgoingDirWorldSpace);
                 photon.throughput.FromVector(pathState.throughput.ConvertToTristimulus(ctx.wavelength));
                 photon.dVM = pathState.dVM;
@@ -479,8 +479,8 @@ bool VertexConnectionAndMerging::GenerateLightSample(const Scene& scene, PathSta
     {
         lightObject->GetTransform(ctx.time),
         ctx.wavelength,
-        ctx.randomGenerator.GetFloat3(),
-        ctx.randomGenerator.GetFloat2(),
+        ctx.randomGenerator.GetVec3f(),
+        ctx.randomGenerator.GetVec2f(),
     };
 
     ILight::EmitResult emitResult;
@@ -528,14 +528,14 @@ bool VertexConnectionAndMerging::GenerateLightSample(const Scene& scene, PathSta
 
 bool VertexConnectionAndMerging::AdvancePath(PathState& path, const ShadingData& shadingData, RenderingContext& ctx, PathType pathType) const
 {
-    Float3 sample;
+    Vec3f sample;
     if (pathType == PathType::Camera)
     {
-        sample = ctx.sampler.GetFloat3();
+        sample = ctx.sampler.GetVec3f();
     }
     else
     {
-        sample = ctx.randomGenerator.GetFloat3();
+        sample = ctx.randomGenerator.GetVec3f();
     }
 
     NFE_ASSERT(sample.x >= 0.0f && sample.x < 1.0f);
@@ -543,12 +543,12 @@ bool VertexConnectionAndMerging::AdvancePath(PathState& path, const ShadingData&
     NFE_ASSERT(sample.z >= 0.0f && sample.z < 1.0f);
 
     // sample BSDF
-    Vector4 incomingDirWorldSpace;
+    Vec4f incomingDirWorldSpace;
     float bsdfDirPdf;
     BSDF::EventType sampledEvent = BSDF::NullEvent;
     const RayColor bsdfValue = shadingData.intersection.material->Sample(ctx.wavelength, incomingDirWorldSpace, shadingData, sample, &bsdfDirPdf, &sampledEvent);
 
-    const float cosThetaOut = Abs(Vector4::Dot3(incomingDirWorldSpace, shadingData.intersection.frame[2]));
+    const float cosThetaOut = Abs(Vec4f::Dot3(incomingDirWorldSpace, shadingData.intersection.frame[2]));
 
     if (sampledEvent == BSDF::NullEvent)
     {
@@ -617,7 +617,7 @@ const RayColor VertexConnectionAndMerging::EvaluateLight(uint32 iteration, const
     const Matrix4 worldToLight = lightObject->GetInverseTransform(ctx.time);
     const Ray lightSpaceRay = worldToLight.TransformRay_Unsafe(pathState.ray);
     const float cosAtLight = intersection ? -intersection->CosTheta(pathState.ray.dir) : 1.0f;
-    const Vector4 lightSpaceHitPoint = intersection ? worldToLight.TransformPoint(intersection->frame.GetTranslation()) : Vector4::Zero();
+    const Vec4f lightSpaceHitPoint = intersection ? worldToLight.TransformPoint(intersection->frame.GetTranslation()) : Vec4f::Zero();
 
     const ILight& light = lightObject->GetLight();
 
@@ -681,7 +681,7 @@ const RayColor VertexConnectionAndMerging::SampleLight(const Scene& scene, const
         lightObject->GetTransform(ctx.time),
         shadingData.intersection,
         ctx.wavelength,
-        ctx.sampler.GetFloat3(),
+        ctx.sampler.GetVec3f(),
         false, // rendererSupportsSolidAngleSampling
     };
 
@@ -737,7 +737,7 @@ const RayColor VertexConnectionAndMerging::SampleLight(const Scene& scene, const
     bsdfPdfW *= isDeltaLight ? 0.0f : continuationProbability;
     bsdfRevPdfW *= continuationProbability;
 
-    const float cosToLight = Vector4::Dot3(shadingData.intersection.frame[2], illuminateResult.directionToLight);
+    const float cosToLight = Vec4f::Dot3(shadingData.intersection.frame[2], illuminateResult.directionToLight);
     if (cosToLight <= FLT_EPSILON)
     {
         return RayColor::Zero();
@@ -782,7 +782,7 @@ const RayColor VertexConnectionAndMerging::EvaluateGlobalLights(const Scene& sce
 const RayColor VertexConnectionAndMerging::ConnectVertices(const Scene& scene, PathState& cameraPathState, const ShadingData& shadingData, const LightVertex& lightVertex, RenderingContext& ctx) const
 {
     // compute connection direction (from camera vertex to light vertex)
-    Vector4 lightDir = lightVertex.shadingData.intersection.frame.GetTranslation() - shadingData.intersection.frame.GetTranslation();
+    Vec4f lightDir = lightVertex.shadingData.intersection.frame.GetTranslation() - shadingData.intersection.frame.GetTranslation();
     const float distanceSqr = lightDir.SqrLength3();
     const float distance = sqrtf(distanceSqr);
     lightDir /= distance;
@@ -878,7 +878,7 @@ const RayColor VertexConnectionAndMerging::MergeVertices(PathState& cameraPathSt
 {
     //NFE_SCOPED_TIMER(MergeVertices);
 
-    const Vector4& cameraVertexPos = shadingData.intersection.frame.GetTranslation();
+    const Vec4f& cameraVertexPos = shadingData.intersection.frame.GetTranslation();
 
     RayColor contribution = RayColor::Zero();
 
@@ -893,7 +893,7 @@ const RayColor VertexConnectionAndMerging::MergeVertices(PathState& cameraPathSt
         //}
 
         // decompress light incoming direction in world coordinates
-        const Vector4 lightDirection{ photon.direction.ToVector() };
+        const Vec4f lightDirection{ photon.direction.ToVector() };
         NFE_ASSERT(lightDirection.IsValid());
 
         const float cosToLight = shadingData.intersection.CosTheta(lightDirection);
@@ -943,10 +943,10 @@ const RayColor VertexConnectionAndMerging::MergeVertices(PathState& cameraPathSt
 
 void VertexConnectionAndMerging::ConnectToCamera(const RenderParam& renderParams, const LightVertex& lightVertex, RenderingContext& ctx) const
 {
-    const Vector4 cameraPos = renderParams.camera.GetTransform().GetTranslation();
-    const Vector4 samplePos = lightVertex.shadingData.intersection.frame.GetTranslation();
+    const Vec4f cameraPos = renderParams.camera.GetTransform().GetTranslation();
+    const Vec4f samplePos = lightVertex.shadingData.intersection.frame.GetTranslation();
 
-    Vector4 dirToCamera = cameraPos - samplePos;
+    Vec4f dirToCamera = cameraPos - samplePos;
 
     const float cameraDistanceSqr = dirToCamera.SqrLength3();
     const float cameraDistance = sqrtf(cameraDistanceSqr);
@@ -963,7 +963,7 @@ void VertexConnectionAndMerging::ConnectToCamera(const RenderParam& renderParams
         return;
     }
 
-    Vector4 filmPos;
+    Vec4f filmPos;
     if (!renderParams.camera.WorldToFilm(samplePos, filmPos))
     {
         // vertex is not visible in the viewport
@@ -982,7 +982,7 @@ void VertexConnectionAndMerging::ConnectToCamera(const RenderParam& renderParams
         return;
     }
 
-    const float cosToCamera = Vector4::Dot3(dirToCamera, lightVertex.shadingData.intersection.frame[2]);
+    const float cosToCamera = Vec4f::Dot3(dirToCamera, lightVertex.shadingData.intersection.frame[2]);
     if (cosToCamera <= FLT_EPSILON)
     {
         return;
@@ -999,7 +999,7 @@ void VertexConnectionAndMerging::ConnectToCamera(const RenderParam& renderParams
     RayColor contribution = (cameraFactor * lightVertex.throughput) * (misWeight * cameraPdfA / (cosToCamera));
     contribution *= RayColor::ResolveRGB(ctx.wavelength, mCameraConnectingWeight);
 
-    const Vector4 value = contribution.ConvertToTristimulus(ctx.wavelength);
+    const Vec4f value = contribution.ConvertToTristimulus(ctx.wavelength);
     renderParams.film.AccumulateColor(filmPos, value, ctx.randomGenerator);
 }
 

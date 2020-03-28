@@ -1,0 +1,179 @@
+#pragma once
+
+#include "Math.hpp"
+#include "../Memory/Aligned.hpp"
+
+namespace NFE {
+namespace Math {
+
+struct Vec4f;
+
+/**
+ * Boolean vector for Vec4f type.
+ */
+struct NFE_ALIGN(16) VecBool4i : public Common::Aligned<16>
+{
+    VecBool4i() = default;
+
+    NFE_FORCE_INLINE explicit VecBool4i(bool x, bool y, bool z, bool w);
+
+    NFE_FORCE_INLINE VecBool4i(const VecBool4f& other);
+    NFE_FORCE_INLINE operator VecBool4f();
+
+#ifdef NFE_USE_SSE
+    NFE_FORCE_INLINE VecBool4i(const __m128 other) : v(_mm_castps_si128(other)) { }
+    NFE_FORCE_INLINE VecBool4i(const __m128i other) : v(other) { }
+    NFE_FORCE_INLINE operator __m128() const { return _mm_castsi128_ps(v); }
+    NFE_FORCE_INLINE operator __m128i() const { return v; }
+#endif // NFE_USE_SSE
+
+    template<uint32 index>
+    NFE_FORCE_INLINE bool Get() const;
+
+    NFE_FORCE_INLINE bool All() const;
+    NFE_FORCE_INLINE bool None() const;
+    NFE_FORCE_INLINE bool Any() const;
+
+    NFE_FORCE_INLINE bool All3() const;
+    NFE_FORCE_INLINE bool None3() const;
+    NFE_FORCE_INLINE bool Any3() const;
+
+    NFE_FORCE_INLINE const VecBool4i operator & (const VecBool4i rhs) const;
+    NFE_FORCE_INLINE const VecBool4i operator | (const VecBool4i rhs) const;
+    NFE_FORCE_INLINE const VecBool4i operator ^ (const VecBool4i rhs) const;
+
+    NFE_FORCE_INLINE bool operator == (const VecBool4i& other) const;
+    NFE_FORCE_INLINE bool operator != (const VecBool4i& other) const;
+
+private:
+    friend struct Vec4i;
+    friend struct VecBool4f;
+
+#ifdef NFE_USE_SSE
+    __m128i v;
+#else
+    bool b[4];
+#endif // NFE_USE_SSE
+};
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+
+/**
+ * 4-element signed integer SIMD vector.
+ */
+struct NFE_ALIGN(16) Vec4i : public Common::Aligned<16>
+{
+    union
+    {
+        int32 i[4];
+        int64 i64[2];
+
+
+#ifdef NFE_USE_SSE
+        __m128i v;
+#endif // NFE_USE_SSE
+
+        struct
+        {
+            int32 x;
+            int32 y;
+            int32 z;
+            int32 w;
+        };
+    };
+
+    // constructors
+    NFE_FORCE_INLINE Vec4i() = default;
+    NFE_FORCE_INLINE static const Vec4i Zero();
+    NFE_FORCE_INLINE Vec4i(const Vec4i& other);
+    NFE_FORCE_INLINE Vec4i(const VecBool4i& other);
+    NFE_FORCE_INLINE explicit Vec4i(const int32 scalar);
+    NFE_FORCE_INLINE explicit Vec4i(const uint32 scalar);
+    NFE_FORCE_INLINE Vec4i(const int32 x, const int32 y, const int32 z, const int32 w);
+
+#ifdef NFE_USE_SSE
+    NFE_FORCE_INLINE Vec4i(const __m128i& m);
+    NFE_FORCE_INLINE operator __m128i() const { return v; }
+#endif // NFE_USE_SSE
+
+    NFE_FORCE_INLINE int32 operator[] (const uint32 index) const { return i[index]; }
+    NFE_FORCE_INLINE int32& operator[] (const uint32 index) { return i[index]; }
+
+    // bitwise logic operations
+    NFE_FORCE_INLINE const Vec4i operator & (const Vec4i& b) const;
+    NFE_FORCE_INLINE const Vec4i operator | (const Vec4i& b) const;
+    NFE_FORCE_INLINE const Vec4i operator ^ (const Vec4i& b) const;
+    NFE_FORCE_INLINE Vec4i& operator &= (const Vec4i& b);
+    NFE_FORCE_INLINE Vec4i& operator |= (const Vec4i& b);
+    NFE_FORCE_INLINE Vec4i& operator ^= (const Vec4i& b);
+    NFE_FORCE_INLINE static const Vec4i AndNot(const Vec4i& a, const Vec4i& b);
+
+    // simple arithmetics
+    NFE_FORCE_INLINE const Vec4i operator - () const;
+    NFE_FORCE_INLINE const Vec4i operator + (const Vec4i& b) const;
+    NFE_FORCE_INLINE const Vec4i operator - (const Vec4i& b) const;
+    NFE_FORCE_INLINE const Vec4i operator * (const Vec4i& b) const;
+    NFE_FORCE_INLINE Vec4i& operator += (const Vec4i& b);
+    NFE_FORCE_INLINE Vec4i& operator -= (const Vec4i& b);
+    NFE_FORCE_INLINE Vec4i& operator *= (const Vec4i& b);
+    NFE_FORCE_INLINE const Vec4i operator + (int32 b) const;
+    NFE_FORCE_INLINE const Vec4i operator - (int32 b) const;
+    NFE_FORCE_INLINE const Vec4i operator * (int32 b) const;
+    NFE_FORCE_INLINE Vec4i& operator += (int32 b);
+    NFE_FORCE_INLINE Vec4i& operator -= (int32 b);
+    NFE_FORCE_INLINE Vec4i& operator *= (int32 b);
+
+    // bit shifting
+    NFE_FORCE_INLINE const Vec4i operator << (const Vec4i& b) const;
+    NFE_FORCE_INLINE const Vec4i operator >> (const Vec4i& b) const;
+    NFE_FORCE_INLINE Vec4i& operator <<= (const Vec4i& b);
+    NFE_FORCE_INLINE Vec4i& operator >>= (const Vec4i& b);
+    NFE_FORCE_INLINE const Vec4i operator << (int32 b) const;
+    NFE_FORCE_INLINE const Vec4i operator >> (int32 b) const;
+    NFE_FORCE_INLINE Vec4i& operator <<= (int32 b);
+    NFE_FORCE_INLINE Vec4i& operator >>= (int32 b);
+
+    // For each vector component, copy value from "a" if "sel" is "false", or from "b" otherwise
+    NFE_FORCE_INLINE static const Vec4i Select(const Vec4i& a, const Vec4i& b, const VecBool4i& sel);
+
+    NFE_FORCE_INLINE const VecBool4i operator == (const Vec4i& b) const;
+    NFE_FORCE_INLINE const VecBool4i operator < (const Vec4i& b) const;
+    NFE_FORCE_INLINE const VecBool4i operator <= (const Vec4i& b) const;
+    NFE_FORCE_INLINE const VecBool4i operator > (const Vec4i& b) const;
+    NFE_FORCE_INLINE const VecBool4i operator >= (const Vec4i& b) const;
+    NFE_FORCE_INLINE const VecBool4i operator != (const Vec4i& b) const;
+
+    NFE_FORCE_INLINE static const Vec4i Min(const Vec4i& a, const Vec4i& b);
+    NFE_FORCE_INLINE static const Vec4i Max(const Vec4i& a, const Vec4i& b);
+
+    NFE_FORCE_INLINE const Vec4i Clamped(const Vec4i& min, const Vec4i& max) const;
+
+    // convert from float vector to integer vector (with rounding)
+    NFE_FORCE_INLINE static const Vec4i Convert(const Vec4f& v);
+
+    // convert from float vector to integer vector (with truncation towards zero)
+    NFE_FORCE_INLINE static const Vec4i TruncateAndConvert(const Vec4f& v);
+
+    // convert to float vector
+    NFE_FORCE_INLINE const Vec4f ConvertToVec4f() const;
+
+    // cast from float vector (preserve bits)
+    NFE_FORCE_INLINE static const Vec4i Cast(const Vec4f& v);
+
+    // convert to float vector
+    NFE_FORCE_INLINE const Vec4f AsVec4f() const;
+
+    // Rearrange vector elements
+    template<uint32 ix, uint32 iy, uint32 iz, uint32 iw>
+    NFE_FORCE_INLINE const Vec4i Swizzle() const;
+};
+
+} // namespace Math
+} // namespace NFE
+
+
+#ifdef NFE_USE_SSE
+#include "Vec4iImplSSE.hpp"
+#else
+#include "Vec4iImplNaive.hpp"
+#endif

@@ -55,13 +55,13 @@ void ColorMaterialParameter::SetTexture(const TexturePtr& texture)
     mTexture = texture;
 }
 
-const RayColor ColorMaterialParameter::Evaluate(const Vector4& uv, const Wavelength& wavelength) const
+const RayColor ColorMaterialParameter::Evaluate(const Vec4f& uv, const Wavelength& wavelength) const
 {
     RayColor color = mBaseValue->Resolve(wavelength);
 
     if (mTexture)
     {
-        const Vector4 textureColor = mTexture->Evaluate(uv);
+        const Vec4f textureColor = mTexture->Evaluate(uv);
         color *= RayColor::ResolveRGB(wavelength, textureColor);
     }
 

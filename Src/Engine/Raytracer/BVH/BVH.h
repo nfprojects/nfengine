@@ -2,8 +2,8 @@
 
 #include "../Raytracer.h"
 #include "../Utils/Memory.h"
-#include "../../Common/Math/Vector4.hpp"
-#include "../../Common/Math/Float3.hpp"
+#include "../../Common/Math/Vec4f.hpp"
+#include "../../Common/Math/Vec3f.hpp"
 #include "../../Common/Math/Box.hpp"
 #include "../../Common/Math/Simd8Box.hpp"
 #include "../../Common/Containers/DynArray.hpp"
@@ -20,30 +20,30 @@ public:
     struct NFE_ALIGN(32) Node
     {
         // TODO revisit this structure: keeping a pointer to child would be faster than index
-        Math::Float3 min;
+        Math::Vec3f min;
         uint32 childIndex; // first child node / leaf index
-        Math::Float3 max;
+        Math::Vec3f max;
         uint32 numLeaves : 30;
         uint32 splitAxis : 2;
 
         NFE_FORCE_INLINE const Math::Box GetBox() const
         {
-            const Math::Vector4 mask = Math::Vector4::MakeMask<1,1,1,0>();
+            const Math::Vec4f mask = Math::Vec4f::MakeMask<1,1,1,0>();
 
-            return { Math::Vector4(&min.x) & mask, Math::Vector4(&max.x) & mask };
+            return { Math::Vec4f(&min.x) & mask, Math::Vec4f(&max.x) & mask };
         }
 
         NFE_FORCE_INLINE Math::Box_Simd8 GetBox_Simd8() const
         {
             Math::Box_Simd8 ret;
 
-            ret.min.x = Math::Vector8(min.x);
-            ret.min.y = Math::Vector8(min.y);
-            ret.min.z = Math::Vector8(min.z);
+            ret.min.x = Math::Vec8f(min.x);
+            ret.min.y = Math::Vec8f(min.y);
+            ret.min.z = Math::Vec8f(min.z);
 
-            ret.max.x = Math::Vector8(max.x);
-            ret.max.y = Math::Vector8(max.y);
-            ret.max.z = Math::Vector8(max.z);
+            ret.max.x = Math::Vec8f(max.x);
+            ret.max.y = Math::Vec8f(max.y);
+            ret.max.z = Math::Vec8f(max.z);
 
             return ret;
         }

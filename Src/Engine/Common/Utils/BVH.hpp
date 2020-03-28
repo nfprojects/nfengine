@@ -33,9 +33,9 @@ namespace Common {
 
 struct NFE_ALIGN(16) BVHNode
 {
-    Math::Float3 boxMin;
+    Math::Vec3f boxMin;
     uint32 child0;   // set to NFE_BVH_NULL_NODE when the node is leaf node
-    Math::Float3 boxMax;
+    Math::Vec3f boxMax;
     uint32 child1;
 
     // TODO: move to separate arrays
@@ -55,14 +55,14 @@ struct NFE_ALIGN(16) BVHNode
 
     NFE_FORCE_INLINE const Math::Box GetBox() const
     {
-        const Math::Vector4 mask = Math::Vector4::MakeMask<1, 1, 1, 0>();
-        return { Math::Vector4(&boxMin.x) & mask, Math::Vector4(&boxMax.x) & mask };
+        const Math::Vec4f mask = Math::Vec4f::MakeMask<1, 1, 1, 0>();
+        return { Math::Vec4f(&boxMin.x) & mask, Math::Vec4f(&boxMax.x) & mask };
     }
 
     NFE_FORCE_INLINE void SetBox(const Math::Box& newBox)
     {
-        boxMin = newBox.min.ToFloat3();
-        boxMax = newBox.max.ToFloat3();
+        boxMin = newBox.min.ToVec3f();
+        boxMax = newBox.max.ToVec3f();
     }
 
     NFE_FORCE_INLINE bool IsValid() const

@@ -26,9 +26,9 @@ struct ShapeIntersection
 
 struct ShapeSampleResult
 {
-    Math::Vector4 position;
-    Math::Vector4 normal;
-    Math::Vector4 direction;
+    Math::Vec4f position;
+    Math::Vec4f normal;
+    Math::Vec4f direction;
     float distance = -1.0f;
     float pdf = -1.0f;
     float cosAtSurface = -1.0f;
@@ -59,19 +59,19 @@ public:
     virtual bool Intersect(const Math::Ray& ray, RenderingContext& renderingCtx, ShapeIntersection& outResult) const;
 
     // check intersection with a point
-    virtual bool Intersect(const Math::Vector4& point) const;
+    virtual bool Intersect(const Math::Vec4f& point) const;
 
     // must be called before using Sample() method
     virtual bool MakeSamplable();
 
     // generate random point on the shape's surface
     // optionaly returns normal vector and sampling probability (with respect to area on the surface)
-    virtual const Math::Vector4 Sample(const Math::Float3& u, Math::Vector4* outNormal = nullptr, float* outPdf = nullptr) const = 0;
+    virtual const Math::Vec4f Sample(const Math::Vec3f& u, Math::Vec4f* outNormal = nullptr, float* outPdf = nullptr) const = 0;
 
     // generate random point on the shape's surface for given reference point
     // optionaly returns normal vector and sampling probability (with respect to solid angle visible from ref point)
-    virtual bool Sample(const Math::Vector4& ref, const Math::Float3& u, ShapeSampleResult& result) const;
-    virtual float Pdf(const Math::Vector4& ref, const Math::Vector4& point) const;
+    virtual bool Sample(const Math::Vec4f& ref, const Math::Vec3f& u, ShapeSampleResult& result) const;
+    virtual float Pdf(const Math::Vec4f& ref, const Math::Vec4f& point) const;
 
     // Calculate intersection data (tangent frame, tex coords, etc.) at given intersection point
     // NOTE: all calculations are performed in local space

@@ -12,7 +12,7 @@ class ITonemapper : public IObject
 {
     NFE_DECLARE_POLYMORPHIC_CLASS(ITonemapper);
 public:
-    virtual const Math::Vector4 Apply(const Math::Vector4 hdrColor) const = 0;
+    virtual const Math::Vec4f Apply(const Math::Vec4f hdrColor) const = 0;
 };
 
 class DebugTonemapper : public ITonemapper
@@ -20,7 +20,7 @@ class DebugTonemapper : public ITonemapper
     NFE_DECLARE_POLYMORPHIC_CLASS(DebugTonemapper);
 public:
     DebugTonemapper();
-    virtual const Math::Vector4 Apply(const Math::Vector4 hdrColor) const override;
+    virtual const Math::Vec4f Apply(const Math::Vec4f hdrColor) const override;
 private:
     float mMinValue;
     float mMaxValue;
@@ -31,14 +31,14 @@ class ClampedTonemapper : public ITonemapper
 {
     NFE_DECLARE_POLYMORPHIC_CLASS(ClampedTonemapper);
 public:
-    virtual const Math::Vector4 Apply(const Math::Vector4 hdrColor) const override;
+    virtual const Math::Vec4f Apply(const Math::Vec4f hdrColor) const override;
 };
 
 class ReinhardTonemapper : public ITonemapper
 {
     NFE_DECLARE_POLYMORPHIC_CLASS(ReinhardTonemapper);
 public:
-    virtual const Math::Vector4 Apply(const Math::Vector4 hdrColor) const override;
+    virtual const Math::Vec4f Apply(const Math::Vec4f hdrColor) const override;
 };
 
 // Jim Hejland & Richard Burgess-Dawson formula
@@ -47,7 +47,7 @@ class FilmicTonemapper : public ITonemapper
 {
     NFE_DECLARE_POLYMORPHIC_CLASS(FilmicTonemapper);
 public:
-    virtual const Math::Vector4 Apply(const Math::Vector4 hdrColor) const override;
+    virtual const Math::Vec4f Apply(const Math::Vec4f hdrColor) const override;
 };
 
 // approximate filmic ACES
@@ -56,7 +56,7 @@ class ApproxACESTonemapper : public ITonemapper
 {
     NFE_DECLARE_POLYMORPHIC_CLASS(ApproxACESTonemapper);
 public:
-    virtual const Math::Vector4 Apply(const Math::Vector4 hdrColor) const override;
+    virtual const Math::Vec4f Apply(const Math::Vec4f hdrColor) const override;
 };
 
 } // namespace RT

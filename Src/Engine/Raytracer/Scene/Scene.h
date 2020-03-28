@@ -39,7 +39,7 @@ public:
     // find medium intersection for a given ray
     const IMedium* GetMedium(RenderingContext& context, const Math::Ray& ray, float solidGeometryDistance, float& outMinDistance, float& outMaxDistance) const;
 
-    const IMedium* GetMediumAtPoint(const RenderingContext& context, const Math::Vector4& p) const;
+    const IMedium* GetMediumAtPoint(const RenderingContext& context, const Math::Vec4f& p) const;
 
     // traverse the scene, returns hit points
     NFE_RAYTRACER_API void Traverse(const SingleTraversalContext& context) const;

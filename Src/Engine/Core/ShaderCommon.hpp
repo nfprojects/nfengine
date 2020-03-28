@@ -1,15 +1,15 @@
 #pragma once
 
-#include "Engine/Common/Math/Vector4.hpp"
+#include "Engine/Common/Math/Vec4f.hpp"
 #include "Engine/Common/Math/Matrix4.hpp"
 
 
 namespace NFE {
 
 // translate HLSL types to C++ types
-typedef Math::Vector4 float4;
-typedef Math::Float3 float3;
-typedef Math::Float2 float2;
+typedef Math::Vec4f float4;
+typedef Math::Vec3f float3;
+typedef Math::Vec2f float2;
 typedef Math::Matrix4 float4x4;
 
 struct Int4

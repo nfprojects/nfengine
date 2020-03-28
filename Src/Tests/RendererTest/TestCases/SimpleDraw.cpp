@@ -4,25 +4,25 @@
 
 #include "Engine/Common/Math/Math.hpp"
 #include "Engine/Common/Math/Conversions.hpp"
-#include "Engine/Common/Math/Float4.hpp"
+#include "Engine/Common/Math/Vec4fU.hpp"
 #include "Engine/Common/Math/Half.hpp"
 
 using namespace NFE::Common;
 using namespace Math;
 
 const int VIEWPORT_SIZE = 16;
-const Float4 CLEAR_COLOR = Float4(0.0f, 0.0f, 0.0f, 0.0f);
+const Vec4fU CLEAR_COLOR = Vec4fU(0.0f, 0.0f, 0.0f, 0.0f);
 
 class SimpleDrawTest : public DrawTest
 {
 protected:
     struct VertexFormat
     {
-        Float3 pos;
-        Float2 texCoord;
+        Vec3f pos;
+        Vec2f texCoord;
         uint32 color;
 
-        VertexFormat(const Math::Float3& pos, const Math::Float2& texCoord, uint32 color)
+        VertexFormat(const Math::Vec3f& pos, const Math::Vec2f& texCoord, uint32 color)
             : pos(pos), texCoord(texCoord), color(color)
         {
         }
@@ -61,10 +61,10 @@ protected:
         // vertex buffer
         const VertexFormat vbData[] =
         {
-            VertexFormat(Float3(-1.0f, -1.0f, 0.0f), Float2(0.0f, 0.0f), 0xFFFFFFFF),
-            VertexFormat(Float3(-1.0f,  1.0f, 0.0f), Float2(0.0f, 1.0f), 0xFFFFFFFF),
-            VertexFormat(Float3( 1.0f, -1.0f, 0.0f), Float2(1.0f, 0.0f), 0xFFFFFFFF),
-            VertexFormat(Float3( 1.0f,  1.0f, 0.0f), Float2(1.0f, 1.0f), 0xFFFFFFFF),
+            VertexFormat(Vec3f(-1.0f, -1.0f, 0.0f), Vec2f(0.0f, 0.0f), 0xFFFFFFFF),
+            VertexFormat(Vec3f(-1.0f,  1.0f, 0.0f), Vec2f(0.0f, 1.0f), 0xFFFFFFFF),
+            VertexFormat(Vec3f( 1.0f, -1.0f, 0.0f), Vec2f(1.0f, 0.0f), 0xFFFFFFFF),
+            VertexFormat(Vec3f( 1.0f,  1.0f, 0.0f), Vec2f(1.0f, 1.0f), 0xFFFFFFFF),
         };
 
         BufferDesc vbDesc;
@@ -127,18 +127,18 @@ TEST_F(SimpleDrawTest, Culling)
 
     for (size_t i = 0; i < ArraySize(cullModes); ++i)
     {
-        Float4 expectedColor = CLEAR_COLOR;
+        Vec4fU expectedColor = CLEAR_COLOR;
 
         const char* cullModeStr = "unknown";
         switch (cullModes[i])
         {
         case CullMode::Disabled:
             cullModeStr = "Disabled";
-            expectedColor = Float4(1.0f, 1.0f, 1.0f, 1.0f);
+            expectedColor = Vec4fU(1.0f, 1.0f, 1.0f, 1.0f);
             break;
         case CullMode::CW:
             cullModeStr = "CW";
-            expectedColor = Float4(1.0f, 1.0f, 1.0f, 1.0f);
+            expectedColor = Vec4fU(1.0f, 1.0f, 1.0f, 1.0f);
             break;
         case CullMode::CCW:
             cullModeStr = "CCW";
@@ -187,21 +187,21 @@ TEST_F(SimpleDrawTest, Culling)
 // clear render targets with various formats
 TEST_F(SimpleDrawTest, RenderTargetFormats)
 {
-    const Float4 testColors[] =
+    const Vec4fU testColors[] =
     {
         // TODO: 1.0e+10, -1.0e+20, etc. values should be also tested, by the test fails
         // then with integer formats on nvidia and Intel cards due to driver bug
 
-        Float4(1.0e9f, -1.0e9f, -1.0e-10f, 1.0e-10f),
-        Float4(-718424.0f, -8242.246f, -314.246f, -104.825f),
-        Float4(-0.245f, -1.0f, -0.003f, -0.422525f),
-        Float4(0.002f, 0.874f, 0.231f, 1.0f),
-        Float4(1.425f, 834.0f, 122456.0f, 8492875.0f),
+        Vec4fU(1.0e9f, -1.0e9f, -1.0e-10f, 1.0e-10f),
+        Vec4fU(-718424.0f, -8242.246f, -314.246f, -104.825f),
+        Vec4fU(-0.245f, -1.0f, -0.003f, -0.422525f),
+        Vec4fU(0.002f, 0.874f, 0.231f, 1.0f),
+        Vec4fU(1.425f, 834.0f, 122456.0f, 8492875.0f),
     };
 
     for (size_t colorIndex = 0; colorIndex < ArraySize(testColors); ++colorIndex)
     {
-        const Float4 clearColor = testColors[colorIndex];
+        const Vec4fU clearColor = testColors[colorIndex];
         SCOPED_TRACE("TestColor = [" +
                      std::to_string(clearColor.x) + ", " +
                      std::to_string(clearColor.y) + ", " +
@@ -451,7 +451,7 @@ TEST_F(SimpleDrawTest, RenderTargetFormats)
 
 TEST_F(SimpleDrawTest, StaticCBuffer)
 {
-    const Float4 customColor = Float4(0.123f, -654.0f, 983.0f, 1.0f);
+    const Vec4fU customColor = Vec4fU(0.123f, -654.0f, 983.0f, 1.0f);
 
     BufferPtr constatnBuffer;
     ResourceBindingSetPtr resBindingSet;
@@ -465,7 +465,7 @@ TEST_F(SimpleDrawTest, StaticCBuffer)
     BufferDesc cbufferDesc;
     cbufferDesc.type = BufferType::Constant;
     cbufferDesc.mode = BufferMode::Static;
-    cbufferDesc.size = sizeof(Float4);
+    cbufferDesc.size = sizeof(Vec4fU);
     cbufferDesc.initialData = &customColor;
     constatnBuffer = gRendererDevice->CreateBuffer(cbufferDesc);
     ASSERT_NE(nullptr, constatnBuffer.Get());

@@ -469,7 +469,7 @@ bool Image::ConvertActual(ImageFormat destFormat)
         newMipmaps[i].mHeight = height;
         newMipmaps[i].mWidth = width;
 
-        Math::Vector4 tmp;
+        Math::Vec4f tmp;
 
         for (uint32 y = 0; y < height; y++)
         {
@@ -511,7 +511,7 @@ bool Image::Grayscale()
                     tmp = mMipmaps[i].GetTexel(x, y, mFormat);
 
                     // Calculate grayscale value using luminance transformation
-                    float grayVal = Math::Vector4::Dot3(tmp, luminanceMask);
+                    float grayVal = Math::Vec4f::Dot3(tmp, luminanceMask);
 
                     // Overwrite only color values, leaving alpha as it was
                     mMipmaps[i].SetTexel(Color(grayVal, grayVal, grayVal, tmp.f[3]),

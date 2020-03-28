@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Vector3x8.hpp"
+#include "Vec3x8f.hpp"
 #include "Ray.hpp"
 #include "../Utils/BitUtils.hpp"
 
@@ -10,12 +10,12 @@ namespace Math {
 /**
  * 4 rays (SIMD version).
  */
-class NFE_ALIGN(32) Ray_Simd8
+class NFE_ALIGN(32) Ray_Simd8 : public Common::Aligned<32>
 {
 public:
-    Vector3x8 dir;
-    Vector3x8 origin;
-    Vector3x8 invDir; 
+    Vec3x8f dir;
+    Vec3x8f origin;
+    Vec3x8f invDir; 
 
     Ray_Simd8() = default;
     Ray_Simd8(const Ray_Simd8&) = default;
@@ -38,11 +38,11 @@ public:
     {
     }
 
-    NFE_FORCE_INLINE Ray_Simd8(const Vector3x8& origin, const Vector3x8& dir)
+    NFE_FORCE_INLINE Ray_Simd8(const Vec3x8f& origin, const Vec3x8f& dir)
         : dir(dir.Normalized())
         , origin(origin)
     {
-        invDir = Vector3x8::FastReciprocal(dir);
+        invDir = Vec3x8f::FastReciprocal(dir);
     }
 
     // return rays octant if all the rays are in the same on

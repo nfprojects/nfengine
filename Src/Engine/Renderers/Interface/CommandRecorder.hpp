@@ -166,7 +166,7 @@ public:
      * @param depthValue    New depth value (should be between 0.0f and 1.0f).
      * @param stencilValue  New stencil value.
      */
-    virtual void Clear(uint32 flags, uint32 numTargets, const uint32* slots, const Math::Float4* colors,
+    virtual void Clear(uint32 flags, uint32 numTargets, const uint32* slots, const Math::Vec4fU* colors,
                        float depthValue = 0.0f, uint8 stencilValue = 0) = 0;
 
     /**

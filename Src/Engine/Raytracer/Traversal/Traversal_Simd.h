@@ -17,8 +17,8 @@ namespace RT {
 template <typename ObjectType>
 static void GenericTraverse(const SimdTraversalContext& context, const uint32 objectID, const ObjectType* object)
 {
-    const Math::Vector3x8 rayInvDir = context.ray.invDir;
-    const Math::Vector3x8 rayOriginDivDir = context.ray.origin * context.ray.invDir;
+    const Math::Vec3x8f rayInvDir = context.ray.invDir;
+    const Math::Vec3x8f rayOriginDivDir = context.ray.origin * context.ray.invDir;
 
     // all nodes
     const BVH::Node* __restrict nodes = object->GetBVH().GetNodes();
@@ -41,15 +41,15 @@ static void GenericTraverse(const SimdTraversalContext& context, const uint32 ob
 
             NFE_PREFETCH_L1(nodes + childA->childIndex);
 
-            Math::Vector8 distanceA;
-            const Math::Vector8 maskA = Intersect_BoxRay(rayInvDir, rayOriginDivDir, childA->GetBox(), context.hitPoint.distance, distanceA);
+            Math::Vec8f distanceA;
+            const Math::Vec8f maskA = Intersect_BoxRay(rayInvDir, rayOriginDivDir, childA->GetBox(), context.hitPoint.distance, distanceA);
             const uint32 intMaskA = maskA.GetSignMask();
 
             // Note: according to Intel manuals, prefetch instructions should not be grouped together
             NFE_PREFETCH_L1(nodes + childB->childIndex);
 
-            Math::Vector8 distanceB;
-            const Math::Vector8 maskB = Intersect_BoxRay(rayInvDir, rayOriginDivDir, childB->GetBox(), context.hitPoint.distance, distanceB);
+            Math::Vec8f distanceB;
+            const Math::Vec8f maskB = Intersect_BoxRay(rayInvDir, rayOriginDivDir, childB->GetBox(), context.hitPoint.distance, distanceB);
             const int32 intMaskB = maskB.GetSignMask();
 
 #ifdef NFE_ENABLE_INTERSECTION_COUNTERS

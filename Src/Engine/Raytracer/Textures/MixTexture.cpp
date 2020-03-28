@@ -21,20 +21,20 @@ const char* MixTexture::GetName() const
     return "mix";
 }
 
-const Vector4 MixTexture::Evaluate(const Vector4& coords) const
+const Vec4f MixTexture::Evaluate(const Vec4f& coords) const
 {
-    const Vector4 colorA = mTextureA->Evaluate(coords);
-    const Vector4 colorB = mTextureB->Evaluate(coords);
-    const Vector4 weight = mTextureMask->Evaluate(coords);
+    const Vec4f colorA = mTextureA->Evaluate(coords);
+    const Vec4f colorB = mTextureB->Evaluate(coords);
+    const Vec4f weight = mTextureMask->Evaluate(coords);
 
-    return Vector4::Lerp(colorA, colorB, weight);
+    return Vec4f::Lerp(colorA, colorB, weight);
 }
 
-const Vector4 MixTexture::Sample(const Float2 u, Vector4& outCoords, float* outPdf) const
+const Vec4f MixTexture::Sample(const Vec2f u, Vec4f& outCoords, float* outPdf) const
 {
     // TODO
     
-    outCoords = Vector4(u);
+    outCoords = Vec4f(u);
 
     if (outPdf)
     {

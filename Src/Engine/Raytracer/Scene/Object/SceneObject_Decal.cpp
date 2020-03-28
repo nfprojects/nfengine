@@ -26,13 +26,13 @@ DecalSceneObject::DecalSceneObject() = default;
 
 Box DecalSceneObject::GetBoundingBox() const
 {
-    const Box localSpaceBox(Vector4::Zero(), 1.0f);
+    const Box localSpaceBox(Vec4f::Zero(), 1.0f);
     return { GetBaseTransform().TransformBox(localSpaceBox), GetTransform(1.0f).TransformBox(localSpaceBox) };
 }
 
 void DecalSceneObject::Apply(ShadingData& shadingData, RenderingContext& context) const
 {
-    Vector4 decalSpacePos = GetBaseInverseTransform().TransformPoint(shadingData.intersection.frame.GetTranslation());
+    Vec4f decalSpacePos = GetBaseInverseTransform().TransformPoint(shadingData.intersection.frame.GetTranslation());
 
     decalSpacePos = BipolarToUnipolar(decalSpacePos);
 

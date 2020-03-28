@@ -12,7 +12,7 @@
 #include "../../../Common/Containers/Map.hpp"
 #include "../../../Common/Containers/HashSet.hpp"
 #include "../../../Common/Memory/Aligned.hpp"
-#include "../../../Common/Math/Vector4.hpp"
+#include "../../../Common/Math/Vec4f.hpp"
 #include "../../../Common/Math/Box.hpp"
 #include "../../../Common/Utils/BVH.hpp"
 

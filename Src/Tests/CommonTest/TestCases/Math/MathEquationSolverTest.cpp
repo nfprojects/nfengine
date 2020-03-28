@@ -103,13 +103,13 @@ TEST(MathEquationSolver, LinearEquationsSystem3)
     // 2x +  y -  z = 6
 
     const Matrix3 m(
-        Float3(1.0f, 1.0f, 1.0f),
-        Float3(5.0f, 2.0f, 2.0f),
-        Float3(2.0f, 1.0f, -1.0f)
+        Vec3f(1.0f, 1.0f, 1.0f),
+        Vec3f(5.0f, 2.0f, 2.0f),
+        Vec3f(2.0f, 1.0f, -1.0f)
     );
-    const Float3 b(25.0f, 1.0f, 6.0f);
+    const Vec3f b(25.0f, 1.0f, 6.0f);
 
-    Float3 x;
+    Vec3f x;
     ASSERT_TRUE(EquationSolver::SolveLinearEquationsSystem3(m, b, x));
 
     EXPECT_FLOAT_EQ(-49.0f / 3.0f, x.x);
@@ -120,13 +120,13 @@ TEST(MathEquationSolver, LinearEquationsSystem3)
 TEST(MathEquationSolver, LinearEquationsSystem3_Invalid)
 {
     const Matrix3 m(
-        Float3(1.0f, 1.0f, 2.0f),
-        Float3(5.0f, 2.0f, 2.0f),
-        Float3(12.0f, 6.0f, 8.0f)
+        Vec3f(1.0f, 1.0f, 2.0f),
+        Vec3f(5.0f, 2.0f, 2.0f),
+        Vec3f(12.0f, 6.0f, 8.0f)
     );
-    const Float3 b(25.0f, 1.0f, 6.0f);
+    const Vec3f b(25.0f, 1.0f, 6.0f);
 
-    Float3 x;
+    Vec3f x;
     ASSERT_FALSE(EquationSolver::SolveLinearEquationsSystem3(m, b, x));
 }
 

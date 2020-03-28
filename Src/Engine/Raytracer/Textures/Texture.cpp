@@ -18,7 +18,7 @@ bool ITexture::IsSamplable() const
     return true;
 }
 
-const Vector4 ITexture::Sample(const Float2 u, Vector4& outCoords, float* outPdf) const
+const Vec4f ITexture::Sample(const Vec2f u, Vec4f& outCoords, float* outPdf) const
 {
     NFE_UNUSED(u);
     NFE_UNUSED(outCoords);
@@ -26,7 +26,7 @@ const Vector4 ITexture::Sample(const Float2 u, Vector4& outCoords, float* outPdf
 
     NFE_FATAL("Not implemented");
 
-    return Vector4::Zero();
+    return Vec4f::Zero();
 }
 
 } // namespace RT

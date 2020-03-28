@@ -269,7 +269,7 @@ void DemoWindow::OnMouseDown(MouseButton button, int x, int y)
 
     if (mFocalDistancePicking && button == MouseButton::Left)
     {
-        const Vector4 coords((float)x / (float)width, 1.0f - (float)y / (float)height, 0.0f, 0.0f);
+        const Vec4f coords((float)x / (float)width, 1.0f - (float)y / (float)height, 0.0f, 0.0f);
         const Ray ray = mCamera.GenerateRay(coords, *renderingContext);
 
         HitPoint hitPoint;
@@ -281,7 +281,7 @@ void DemoWindow::OnMouseDown(MouseButton button, int x, int y)
         }
         else
         {
-            mCamera.mDOF.focalPlaneDistance = Vector4::Dot3(mCamera.mTransform.GetRotation().GetAxisZ(), ray.dir) * hitPoint.distance;
+            mCamera.mDOF.focalPlaneDistance = Vec4f::Dot3(mCamera.mTransform.GetRotation().GetAxisZ(), ray.dir) * hitPoint.distance;
         }
         ResetFrame();
 
@@ -294,7 +294,7 @@ void DemoWindow::OnMouseDown(MouseButton button, int x, int y)
     }
     else if (button == MouseButton::Left)
     {
-        const Vector4 coords((float)x / (float)width, 1.0f - (float)y / (float)height);
+        const Vec4f coords((float)x / (float)width, 1.0f - (float)y / (float)height);
         const Ray ray = mCamera.GenerateRay(coords, *renderingContext);
 
 #ifndef NFE_CONFIGURATION_FINAL
@@ -369,7 +369,7 @@ void DemoWindow::OnMouseMove(int x, int y, int deltaX, int deltaY)
         renderingContext->rendererContext = mRenderer->CreateContext();
         renderingContext->spectrumDebugData = &mSpectrumDebugData;
 
-        const Vector4 coords((float)x / (float)width, 1.0f - (float)y / (float)height);
+        const Vec4f coords((float)x / (float)width, 1.0f - (float)y / (float)height);
         const Ray ray = mCamera.GenerateRay(coords, *renderingContext);
 
         Film fakeFilm;
@@ -533,11 +533,11 @@ void DemoWindow::UpdateCamera()
 
     // calculate camera direction from Euler angles
     const Quaternion cameraOrientation = Quaternion::FromEulerAngles(mCameraSetup.orientation);
-    const Vector4 frontDir = cameraOrientation.GetAxisZ();
-    const Vector4 rightDir = cameraOrientation.GetAxisX();
-    const Vector4 upDir = cameraOrientation.GetAxisY();
+    const Vec4f frontDir = cameraOrientation.GetAxisZ();
+    const Vec4f rightDir = cameraOrientation.GetAxisX();
+    const Vec4f upDir = cameraOrientation.GetAxisY();
 
-    Vector4 movement = Math::Vector4::Zero();
+    Vec4f movement = Math::Vec4f::Zero();
     if (IsKeyPressed(KeyCode::W))
         movement += frontDir;
     if (IsKeyPressed(KeyCode::S))
@@ -566,7 +566,7 @@ void DemoWindow::UpdateCamera()
         else if (IsKeyPressed(KeyCode::ControlLeft))
             movement /= 5.0f;
 
-        const Vector4 delta = movement * (float)mDeltaTime;
+        const Vec4f delta = movement * (float)mDeltaTime;
         mCameraSetup.position += delta;
 
         // TODO

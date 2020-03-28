@@ -176,7 +176,7 @@ bool MultithreadedScene::CreateIndexBuffer()
 
 bool MultithreadedScene::CreateConstantBuffer(BufferMode cbufferMode)
 {
-    const Matrix4 rotMatrix = Matrix4::MakeRotationNormal(Vector4(0.0f, 0.0f, 1.0f), Constants::pi<float>);
+    const Matrix4 rotMatrix = Matrix4::MakeRotationNormal(Vec4f(0.0f, 0.0f, 1.0f), Constants::pi<float>);
     mAngle = 0.0f;
     mCBufferMode = cbufferMode;
 
@@ -348,9 +348,9 @@ void MultithreadedScene::DrawTask(const Common::TaskContext& ctx, int i, int j)
         float yOffset = 2.0f * (static_cast<float>(j) + 0.5f) * scaleCoeff - 1.0f;
         const float angle = mAngle + 5.0f * i + 7.0f * j;
 
-        const Matrix4 rotMatrix = Matrix4::MakeRotationNormal(Vector4(0.0f, 0.0f, 1.0f), angle);
-        const Matrix4 translationMatrix = Matrix4::MakeTranslation(Vector4(xOffset, yOffset, 0.0f));
-        const Matrix4 scaleMatrix = Matrix4::MakeScaling(Vector4(scaleCoeff, scaleCoeff, 0.0f));
+        const Matrix4 rotMatrix = Matrix4::MakeRotationNormal(Vec4f(0.0f, 0.0f, 1.0f), angle);
+        const Matrix4 translationMatrix = Matrix4::MakeTranslation(Vec4f(xOffset, yOffset, 0.0f));
+        const Matrix4 scaleMatrix = Matrix4::MakeScaling(Vec4f(scaleCoeff, scaleCoeff, 0.0f));
 
         VertexCBuffer vertexCBufferData;
         vertexCBufferData.viewMatrix = scaleMatrix * rotMatrix * translationMatrix;
@@ -379,7 +379,7 @@ void MultithreadedScene::Draw(float dt)
         mCommandBuffer->SetRenderTarget(mWindowRenderTarget);
 
         // clear target
-        const Float4 color(0.0f, 0.0f, 0.0f, 1.0f);
+        const Vec4fU color(0.0f, 0.0f, 0.0f, 1.0f);
         mCommandBuffer->Clear(ClearFlagsColor, 1, nullptr, &color);
 
         CommandListID clearCommandList = mCommandBuffer->Finish();

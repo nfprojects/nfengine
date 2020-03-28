@@ -1,6 +1,6 @@
 #include "PCH.h"
 #include "RayColor.h"
-#include "../Common/Math/Vector3x8.hpp"
+#include "../Common/Math/Vec3x8f.hpp"
 #include "../Common/Math/LdrColor.hpp"
 #include "../Common/Math/HdrColor.hpp"
 
@@ -148,7 +148,7 @@ const float rgbToSpectrum_Blue[rgbToSpectrumNumSamples] =
      3.0501024937233868e-02f,   2.1243054765241080e-02f,    6.9596532104356399e-03f,   4.1733649330980525e-03f
 };
 
-const RayColor RayColor::ResolveRGB(const Wavelength& wavelength, const Vector4& rgbColor)
+const RayColor RayColor::ResolveRGB(const Wavelength& wavelength, const Vec4f& rgbColor)
 {
     const float r = rgbColor.x;
     const float g = rgbColor.y;
@@ -219,19 +219,19 @@ const RayColor RayColor::ResolveRGB(const Wavelength& wavelength, const Vector4&
 
 /////////////////////////////////////////////////////////////////////////////////
 
-const Vector4 RayColor::ConvertToTristimulus(const Wavelength& wavelength) const
+const Vec4f RayColor::ConvertToTristimulus(const Wavelength& wavelength) const
 {
-    Vector3x8 xyz;
+    Vec3x8f xyz;
     RayColor illuminant = RayColor(wavelength.SampleSpectrum(illuminantD65, NumBins));
     xyz.x = wavelength.SampleSpectrum(colorMatchingX, NumBins);
     xyz.y = wavelength.SampleSpectrum(colorMatchingY, NumBins);
     xyz.z = wavelength.SampleSpectrum(colorMatchingZ, NumBins);
     xyz *= value * illuminant.value;
 
-    Vector4 v[8];
+    Vec4f v[8];
     xyz.Unpack(v);
 
-    Vector4 result = ((v[0] + v[1]) + (v[2] + v[3])) + ((v[4] + v[5]) + (v[6] + v[7]));
+    Vec4f result = ((v[0] + v[1]) + (v[2] + v[3])) + ((v[4] + v[5]) + (v[6] + v[7]));
     result *= 1.0f / 1.33f;
     result *= colorMatchinhNormFactor / static_cast<float>(Wavelength::NumComponents);
     return result;
@@ -241,12 +241,12 @@ const Vector4 RayColor::ConvertToTristimulus(const Wavelength& wavelength) const
 
 const RayColor RayColor::ResolveRGB(const Wavelength& wavelength, const HdrColorRGB& color)
 {
-    return ResolveRGB(wavelength, color.ToVector4());
+    return ResolveRGB(wavelength, color.ToVec4f());
 }
 
 const RayColor RayColor::ResolveRGB(const Wavelength& wavelength, const LdrColorRGB& color)
 {
-    return ResolveRGB(wavelength, color.AsVector4());
+    return ResolveRGB(wavelength, color.AsVec4f());
 }
 
 } // namespace RT

@@ -7,7 +7,7 @@
 #pragma once
 
 #include "Math.hpp"
-#include "Float2.hpp"
+#include "Vec2f.hpp"
 
 #include <initializer_list>
 
@@ -24,26 +24,26 @@ class Matrix2
 public:
     union
     {
-        Float2 r[2];
+        Vec2f r[2];
         float f[4];
         float m[2][2];
     };
 
     NFE_INLINE constexpr Matrix2();
-    NFE_INLINE constexpr explicit Matrix2(const Float2& r0, const Float2& r1);
+    NFE_INLINE constexpr explicit Matrix2(const Vec2f& r0, const Vec2f& r1);
     NFE_INLINE explicit Matrix2(const std::initializer_list<float>& list);
 
     /**
      * Access element (read-only).
      */
-    NFE_INLINE const Float2& GetRow(int i) const;
-    NFE_INLINE const Float2& operator[] (int i) const;
+    NFE_INLINE const Vec2f& GetRow(int i) const;
+    NFE_INLINE const Vec2f& operator[] (int i) const;
 
     /**
      * Access element (read-write).
      */
-    NFE_INLINE Float2& GetRow(int i);
-    NFE_INLINE Float2& operator[] (int i);
+    NFE_INLINE Vec2f& GetRow(int i);
+    NFE_INLINE Vec2f& operator[] (int i);
 
     /**
      * Offset matrix element by the same value.
@@ -93,7 +93,7 @@ public:
      * Multiply a 2D vector by a 2x2 matrix.
      * @return  a.x * m.r[0] + a.y * m.r[1]
      */
-    NFE_INLINE Float2 LinearCombination(const Float2& a) const;
+    NFE_INLINE Vec2f LinearCombination(const Vec2f& a) const;
 
     /**
      * Check if two matrices are (almost) equal.
@@ -110,7 +110,7 @@ public:
 /**
  * Alias for Matrix2::LinearCombination()
  */
-NFE_INLINE Float2 operator * (const Float2& vector, const Matrix2& m);
+NFE_INLINE Vec2f operator * (const Vec2f& vector, const Matrix2& m);
 
 
 } // namespace Math

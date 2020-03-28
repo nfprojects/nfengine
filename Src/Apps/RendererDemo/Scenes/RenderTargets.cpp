@@ -403,9 +403,9 @@ void RenderTargetsScene::Draw(float dt)
     if (mAngle > 2.0f * Constants::pi<float>)
         mAngle -= 2.0f * Constants::pi<float>;
 
-    Matrix4 modelMatrix = Matrix4::MakeRotationNormal(Vector4(0.0f, 1.0f, 0.0f), mAngle);
-    Matrix4 viewMatrix = Matrix4::MakeLookTo(Vector4(3.0f, 0.0f, 0.0f), Vector4(-1.0f, 0.0f, 0.0f),
-                                     Vector4(0.0f, 1.0f, 0.0f));
+    Matrix4 modelMatrix = Matrix4::MakeRotationNormal(Vec4f(0.0f, 1.0f, 0.0f), mAngle);
+    Matrix4 viewMatrix = Matrix4::MakeLookTo(Vec4f(3.0f, 0.0f, 0.0f), Vec4f(-1.0f, 0.0f, 0.0f),
+                                     Vec4f(0.0f, 1.0f, 0.0f));
     Matrix4 projMatrix = Matrix4::MakePerspective((float)WINDOW_WIDTH / (float)WINDOW_HEIGHT,
                                                 DegToRad(70.0f), 5.0f, 1.0f);
 
@@ -434,10 +434,10 @@ void RenderTargetsScene::Draw(float dt)
         mCommandBuffer->SetRenderTarget(mRenderTarget);
         mCommandBuffer->SetPipelineState(mPipelineStateMRT);
 
-        const Float4 colors[] =
+        const Vec4fU colors[] =
         {
-            Float4(0.2f, 0.3f, 0.4f, 1.0f),
-            Float4(0.8f, 0.8f, 0.8f, 1.0f),
+            Vec4fU(0.2f, 0.3f, 0.4f, 1.0f),
+            Vec4fU(0.8f, 0.8f, 0.8f, 1.0f),
         };
         mCommandBuffer->Clear(ClearFlagsColor | ClearFlagsDepth, GetCurrentSubSceneNumber() > 1 ? 2 : 1,
                               nullptr, colors, 1.0f);
@@ -455,14 +455,14 @@ void RenderTargetsScene::Draw(float dt)
     mCommandBuffer->SetViewport(0.0f, (float)WINDOW_WIDTH, 0.0f, (float)WINDOW_HEIGHT, 0.0f, 1.0f);
     mCommandBuffer->SetScissors(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
 
-    const Float4 color(0.0f, 0.0f, 0.0f, 1.0f);
+    const Vec4fU color(0.0f, 0.0f, 0.0f, 1.0f);
     mCommandBuffer->Clear(ClearFlagsColor, 1, nullptr, &color);
 
     // show primary render target texture with simple effect (blur)
     {
         VertexCBuffer cbuffer;
-        cbuffer.viewMatrix = Matrix4::MakeScaling(Vector4(0.5f, 0.5f, 0.5f, 1.0f)) *
-                             Matrix4::MakeTranslation(Vector4(-0.5f, 0.5f, 0.5f));
+        cbuffer.viewMatrix = Matrix4::MakeScaling(Vec4f(0.5f, 0.5f, 0.5f, 1.0f)) *
+                             Matrix4::MakeTranslation(Vec4f(-0.5f, 0.5f, 0.5f));
         mCommandBuffer->WriteBuffer(cb, 0, sizeof(VertexCBuffer), &cbuffer);
 
         mCommandBuffer->DrawIndexed(2 * 3,      // 2 triangles
@@ -474,8 +474,8 @@ void RenderTargetsScene::Draw(float dt)
     if (GetCurrentSubSceneNumber() > 0)
     {
         VertexCBuffer cbuffer;
-        cbuffer.viewMatrix = Matrix4::MakeScaling(Vector4(0.5f, 0.5f, 0.5f, 1.0f)) *
-                             Matrix4::MakeTranslation(Vector4(0.5f, 0.5f, 0.5f));
+        cbuffer.viewMatrix = Matrix4::MakeScaling(Vec4f(0.5f, 0.5f, 0.5f, 1.0f)) *
+                             Matrix4::MakeTranslation(Vec4f(0.5f, 0.5f, 0.5f));
         mCommandBuffer->WriteBuffer(cb, 0, sizeof(VertexCBuffer), &cbuffer);
 
         mCommandBuffer->SetPipelineState(mDepthPipelineState);
@@ -489,8 +489,8 @@ void RenderTargetsScene::Draw(float dt)
     if (GetCurrentSubSceneNumber() > 1)
     {
         VertexCBuffer cbuffer;
-        cbuffer.viewMatrix = Matrix4::MakeScaling(Vector4(0.5f, 0.5f, 0.5f, 1.0f)) *
-                             Matrix4::MakeTranslation(Vector4(-0.5f, -0.5f, 0.5f));
+        cbuffer.viewMatrix = Matrix4::MakeScaling(Vec4f(0.5f, 0.5f, 0.5f, 1.0f)) *
+                             Matrix4::MakeTranslation(Vec4f(-0.5f, -0.5f, 0.5f));
         mCommandBuffer->WriteBuffer(cb, 0, sizeof(VertexCBuffer), &cbuffer);
 
         mCommandBuffer->SetPipelineState(mSecondTargetPipelineState);

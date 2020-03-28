@@ -8,7 +8,7 @@ namespace Math {
 /**
  * Class representing 4D quaternion. Useful for representing rotations.
  */
-struct NFE_ALIGN(16) Quaternion final
+struct NFE_ALIGN(16) Quaternion final : public Common::Aligned<16>
 {
     NFE_DECLARE_CLASS(Quaternion);
 
@@ -18,7 +18,7 @@ public:
     {
         // XYZ - vector part, W - scalar part:
         // q = f[3] + i * q[0] + j * q[1] + k * q[2]
-        Vector4 q;
+        Vec4f q;
 
         struct
         {
@@ -31,11 +31,11 @@ public:
 
     NFE_FORCE_INLINE Quaternion() : q(0.0f, 0.0f, 0.0f, 1.0f) { }
     NFE_FORCE_INLINE Quaternion(const Quaternion& rhs) : q(rhs.q) { }
-    NFE_FORCE_INLINE explicit Quaternion(const Vector4& v) : q(v) { }
+    NFE_FORCE_INLINE explicit Quaternion(const Vec4f& v) : q(v) { }
     NFE_FORCE_INLINE explicit Quaternion(float i, float j, float k, float s) : q(i, j, k, s) { }
 
-    NFE_FORCE_INLINE operator const Vector4&() const { return q; }
-    NFE_FORCE_INLINE operator Vector4&() { return q; }
+    NFE_FORCE_INLINE operator const Vec4f&() const { return q; }
+    NFE_FORCE_INLINE operator Vec4f&() { return q; }
 
     NFE_FORCE_INLINE Quaternion& operator = (const Quaternion& rhs)
     {
@@ -47,16 +47,16 @@ public:
     NFCOMMON_API bool IsValid() const;
 
     // Get transformed X, Y, Z axes.
-    NFE_FORCE_INLINE const Vector4 GetAxisX() const;
-    NFE_FORCE_INLINE const Vector4 GetAxisY() const;
-    NFE_FORCE_INLINE const Vector4 GetAxisZ() const;
+    NFE_FORCE_INLINE const Vec4f GetAxisX() const;
+    NFE_FORCE_INLINE const Vec4f GetAxisY() const;
+    NFE_FORCE_INLINE const Vec4f GetAxisZ() const;
 
     // Create null rotation quaternion.
     NFE_FORCE_INLINE static const Quaternion Identity();
 
     // Create quaternion form axis and angle.
     // Note: Returned quaternion is normalized.
-    NFCOMMON_API static const Quaternion FromAxisAndAngle(const Vector4& axis, float angle);
+    NFCOMMON_API static const Quaternion FromAxisAndAngle(const Vec4f& axis, float angle);
 
     // Create quaternion representing rotation around X axis.
     // Note: Returned quaternion is normalized.
@@ -89,12 +89,12 @@ public:
     NFCOMMON_API Quaternion& Invert();
 
     // Rotate a 3D vector with a quaternion.
-    NFCOMMON_API const Vector4 TransformVector(const Vector4& v) const;
-    NFCOMMON_API const Vector3x8 TransformVector(const Vector3x8& v) const;
+    NFCOMMON_API const Vec4f TransformVector(const Vec4f& v) const;
+    NFCOMMON_API const Vec3x8f TransformVector(const Vec3x8f& v) const;
 
     // Extract rotation axis and angle from a quaternion.
     // Note: This is slow.
-    NFCOMMON_API void ToAxis(Vector4& outAxis, float& outAngle) const;
+    NFCOMMON_API void ToAxis(Vec4f& outAxis, float& outAngle) const;
 
     // Spherical interpolation of two quaternions.
     // Returns Interpolated quaternion (equal to q0 when t=0.0f and equal to q1 when t=1.0f).
@@ -107,12 +107,12 @@ public:
     // pitch   - rotation in X axis (in radians)
     // yaw     - rotation in Y axis (in radians)
     // roll    - rotation in Z axis (in radians)
-    NFCOMMON_API static const Quaternion FromEulerAngles(const Float3& angles);
+    NFCOMMON_API static const Quaternion FromEulerAngles(const Vec3f& angles);
 
     NFE_FORCE_INLINE static const Quaternion FromEulerAngles(float pitch, float yaw, float roll)
     {
         // TODO proper 'EulerAngles' class
-        return FromEulerAngles(Float3(pitch, yaw, roll));
+        return FromEulerAngles(Vec3f(pitch, yaw, roll));
     }
 
     // Create quaternion from rotation matrix.
@@ -123,7 +123,7 @@ public:
 
     // Convert quaternion to Euler angles (pitch, yaw, roll).
     // Note: This is quite costly method.
-    NFCOMMON_API const Float3 ToEulerAngles() const;
+    NFCOMMON_API const Vec3f ToEulerAngles() const;
 };
 
 

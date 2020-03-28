@@ -13,31 +13,31 @@ namespace NFE {
 namespace Math {
 
 
-Float2& Matrix2::GetRow(int i)
+Vec2f& Matrix2::GetRow(int i)
 {
-    return reinterpret_cast<Float2&>(r[i]);
+    return reinterpret_cast<Vec2f&>(r[i]);
 }
 
-const Float2& Matrix2::GetRow(int i) const
+const Vec2f& Matrix2::GetRow(int i) const
 {
-    return reinterpret_cast<const Float2&>(r[i]);
+    return reinterpret_cast<const Vec2f&>(r[i]);
 }
 
-Float2& Matrix2::operator[] (int i)
+Vec2f& Matrix2::operator[] (int i)
 {
-    return reinterpret_cast<Float2&>(r[i]);
+    return reinterpret_cast<Vec2f&>(r[i]);
 }
 
-const Float2& Matrix2::operator[] (int i) const
+const Vec2f& Matrix2::operator[] (int i) const
 {
-    return reinterpret_cast<const Float2&>(r[i]);
+    return reinterpret_cast<const Vec2f&>(r[i]);
 }
 
 constexpr Matrix2::Matrix2()
-    : r{ Float2(1.0f, 0.0f), Float2(0.0f, 1.0f) }
+    : r{ Vec2f(1.0f, 0.0f), Vec2f(0.0f, 1.0f) }
 { }
 
-constexpr Matrix2::Matrix2(const Float2& r0, const Float2& r1)
+constexpr Matrix2::Matrix2(const Vec2f& r0, const Vec2f& r1)
     : r{ r0, r1 }
 { }
 
@@ -118,7 +118,7 @@ Matrix2& Matrix2::operator *= (const Matrix2& b)
 
 constexpr Matrix2 Matrix2::Transposed() const
 {
-    return Matrix2(Float2(m[0][0], m[1][0]), Float2(m[0][1], m[1][1]));
+    return Matrix2(Vec2f(m[0][0], m[1][0]), Vec2f(m[0][1], m[1][1]));
 }
 
 Matrix2& Matrix2::Transpose()
@@ -127,17 +127,17 @@ Matrix2& Matrix2::Transpose()
     return *this;
 }
 
-Float2 Matrix2::LinearCombination(const Float2& a) const
+Vec2f Matrix2::LinearCombination(const Vec2f& a) const
 {
     return a.x * r[0] + a.y * r[1];
 }
 
 Matrix2 Matrix2::Abs(const Matrix2& m)
 {
-    return Matrix2(Float2::Abs(m[0]), Float2::Abs(m[1]));
+    return Matrix2(Vec2f::Abs(m[0]), Vec2f::Abs(m[1]));
 }
 
-Float2 operator* (const Float2& vector, const Matrix2& m)
+Vec2f operator* (const Vec2f& vector, const Matrix2& m)
 {
     return m.LinearCombination(vector);
 }

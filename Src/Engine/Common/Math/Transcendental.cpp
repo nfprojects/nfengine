@@ -1,6 +1,6 @@
 #include "PCH.hpp"
 #include "Transcendental.hpp"
-#include "VectorInt8.hpp"
+#include "Vec8i.hpp"
 
 namespace NFE {
 namespace Math {
@@ -51,7 +51,7 @@ float Sin(float x)
     return (i & 1) ? -y : y;
 }
 
-const Vector4 Sin(const Vector4& a)
+const Vec4f Sin(const Vec4f& a)
 {
     using namespace sinCoeffs;
 
@@ -59,23 +59,23 @@ const Vector4 Sin(const Vector4& a)
     // https://www.gamedev.net/forums/topic/681723-faster-sin-and-cos/
 
     // range reduction
-    const VectorInt4 i = VectorInt4::Convert(a * (1.0f / NFE_MATH_PI));
-    const Vector4 x = Vector4::NegMulAndAdd(i.ConvertToFloat(), NFE_MATH_PI, a);
+    const Vec4i i = Vec4i::Convert(a * (1.0f / NFE_MATH_PI));
+    const Vec4f x = Vec4f::NegMulAndAdd(i.ConvertToVec4f(), NFE_MATH_PI, a);
 
-    const Vector4 x2 = x * x;
+    const Vec4f x2 = x * x;
 
-    Vector4 y = Vector4::MulAndAdd(Vector4(c5), x2, Vector4(c4));
-    y = Vector4::MulAndAdd(y, x2, Vector4(c3));
-    y = Vector4::MulAndAdd(y, x2, Vector4(c2));
-    y = Vector4::MulAndAdd(y, x2, Vector4(c1));
-    y = Vector4::MulAndAdd(y, x2, Vector4(c0));
+    Vec4f y = Vec4f::MulAndAdd(Vec4f(c5), x2, Vec4f(c4));
+    y = Vec4f::MulAndAdd(y, x2, Vec4f(c3));
+    y = Vec4f::MulAndAdd(y, x2, Vec4f(c2));
+    y = Vec4f::MulAndAdd(y, x2, Vec4f(c1));
+    y = Vec4f::MulAndAdd(y, x2, Vec4f(c0));
     y *= x;
 
     // equivalent of: (i & 1) ? -y : y;
-    return y ^ (i << 31).CastToFloat();
+    return y ^ (i << 31).AsVec4f();
 }
 
-const Vector8 Sin(const Vector8& a)
+const Vec8f Sin(const Vec8f& a)
 {
 #ifdef NFE_USE_AVX2
     using namespace sinCoeffs;
@@ -84,22 +84,22 @@ const Vector8 Sin(const Vector8& a)
     // https://www.gamedev.net/forums/topic/681723-faster-sin-and-cos/
 
     // range reduction
-    const VectorInt8 i = VectorInt8::Convert(a * (1.0f / NFE_MATH_PI));
-    const Vector8 x = Vector8::NegMulAndAdd(i.ConvertToFloat(), NFE_MATH_PI, a);
+    const Vec8i i = Vec8i::Convert(a * (1.0f / NFE_MATH_PI));
+    const Vec8f x = Vec8f::NegMulAndAdd(i.ConvertToVec8f(), NFE_MATH_PI, a);
 
-    const Vector8 x2 = x * x;
+    const Vec8f x2 = x * x;
 
-    Vector8 y = Vector8::MulAndAdd(Vector8(c5), x2, Vector8(c4));
-    y = Vector8::MulAndAdd(y, x2, Vector8(c3));
-    y = Vector8::MulAndAdd(y, x2, Vector8(c2));
-    y = Vector8::MulAndAdd(y, x2, Vector8(c1));
-    y = Vector8::MulAndAdd(y, x2, Vector8(c0));
+    Vec8f y = Vec8f::MulAndAdd(Vec8f(c5), x2, Vec8f(c4));
+    y = Vec8f::MulAndAdd(y, x2, Vec8f(c3));
+    y = Vec8f::MulAndAdd(y, x2, Vec8f(c2));
+    y = Vec8f::MulAndAdd(y, x2, Vec8f(c1));
+    y = Vec8f::MulAndAdd(y, x2, Vec8f(c0));
     y *= x;
 
     // equivalent of: (i & 1) ? -y : y;
-    return y ^ (i << 31).CastToFloat();
+    return y ^ (i << 31).AsVec8f();
 #else
-    return Vector8{sinf(a[0]), sinf(a[1]), sinf(a[2]), sinf(a[3]), sinf(a[4]), sinf(a[5]), sinf(a[6]), sinf(a[7])};
+    return Vec8f{sinf(a[0]), sinf(a[1]), sinf(a[2]), sinf(a[3]), sinf(a[4]), sinf(a[5]), sinf(a[6]), sinf(a[7])};
 #endif // NFE_USE_AVX2
 }
 
@@ -223,42 +223,42 @@ float FastExp2(float a)
     return bits.f;
 }
 
-const Vector4 FastExp2(const Vector4& a)
+const Vec4f FastExp2(const Vec4f& a)
 {
-    const Vector4 fi = Vector4::Floor(a);
-    const VectorInt4 i = VectorInt4::Convert(fi);
-    const Vector4 f = a - fi;
+    const Vec4f fi = Vec4f::Floor(a);
+    const Vec4i i = Vec4i::Convert(fi);
+    const Vec4f f = a - fi;
 
-    Vector4 y = Vector4::MulAndAdd(f, Vector4(0.3371894346f), Vector4(0.657636276f));
-    y = Vector4::MulAndAdd(f, y, Vector4(1.00172476f));
+    Vec4f y = Vec4f::MulAndAdd(f, Vec4f(0.3371894346f), Vec4f(0.657636276f));
+    y = Vec4f::MulAndAdd(f, y, Vec4f(1.00172476f));
 
-    VectorInt4 yi = VectorInt4::Cast(y);
+    Vec4i yi = Vec4i::Cast(y);
     yi += (i << 23);
-    y = yi.CastToFloat();
+    y = yi.AsVec4f();
 
     // handle overflow
-    y = Vector4::Select(y, Vector4::Zero(), -a >= Vector4(125.0f));
-    y = Vector4::Select(y, VECTOR_INF, a >= Vector4(128.0f));
+    y = Vec4f::Select(y, Vec4f::Zero(), -a >= Vec4f(125.0f));
+    y = Vec4f::Select(y, VECTOR_INF, a >= Vec4f(128.0f));
 
     return y;
 }
 
-const Vector8 FastExp2(const Vector8& a)
+const Vec8f FastExp2(const Vec8f& a)
 {
-    const Vector8 fi = Vector8::Floor(a);
-    const VectorInt8 i = VectorInt8::Convert(fi);
-    const Vector8 f = a - fi;
+    const Vec8f fi = Vec8f::Floor(a);
+    const Vec8i i = Vec8i::Convert(fi);
+    const Vec8f f = a - fi;
 
-    Vector8 y = Vector8::MulAndAdd(f, Vector8(0.3371894346f), Vector8(0.657636276f));
-    y = Vector8::MulAndAdd(f, y, Vector8(1.00172476f));
+    Vec8f y = Vec8f::MulAndAdd(f, Vec8f(0.3371894346f), Vec8f(0.657636276f));
+    y = Vec8f::MulAndAdd(f, y, Vec8f(1.00172476f));
 
-    VectorInt8 yi = VectorInt8::Cast(y);
+    Vec8i yi = Vec8i::Cast(y);
     yi += (i << 23);
-    y = yi.CastToFloat();
+    y = yi.AsVec8f();
 
     // handle overflow
-    y = Vector8::Select(y, Vector8::Zero(), -a >= Vector8(125.0f));
-    y = Vector8::Select(y, VECTOR8_INF, a >= Vector8(128.0f));
+    y = Vec8f::Select(y, Vec8f::Zero(), -a >= Vec8f(125.0f));
+    y = Vec8f::Select(y, VECTOR8_INF, a >= Vec8f(128.0f));
 
     return y;
 }
@@ -304,17 +304,17 @@ float FastLog2(float x)
     return result;
 }
 
-const Vector4 FastLog2(const Vector4& a)
+const Vec4f FastLog2(const Vec4f& a)
 {
     // based on:
     // https://stackoverflow.com/questions/9411823/fast-log2float-x-implementation-c/9411984#9411984
 
-    VectorInt4 i = VectorInt4::Cast(a);
-    Vector4 r = (((i >> 23)& VectorInt4(255)) - VectorInt4(128)).ConvertToFloat();
-    i &= VectorInt4(~(255 << 23));
+    Vec4i i = Vec4i::Cast(a);
+    Vec4f r = (((i >> 23)& Vec4i(255)) - Vec4i(128)).ConvertToVec4f();
+    i &= Vec4i(~(255 << 23));
     i += 127 << 23;
-    Vector4 f = i.CastToFloat();
-    r += (-0.33333333f * f + Vector4(2.0f)) * f - Vector4(0.66666666f);
+    Vec4f f = i.AsVec4f();
+    r += (-0.33333333f * f + Vec4f(2.0f)) * f - Vec4f(0.66666666f);
     return r;
 }
 
@@ -340,22 +340,22 @@ float FastLog(float x)
     return r;
 }
 
-const Vector4 FastLog(const Vector4& a)
+const Vec4f FastLog(const Vec4f& a)
 {
     // range reduction
-    const VectorInt4 e = (VectorInt4::Cast(a) - VectorInt4(0x3f2aaaab)) & VectorInt4(0xff800000);
-    const Vector4 m = (VectorInt4::Cast(a) - e).CastToFloat();
-    const Vector4 i = e.ConvertToFloat() * 1.19209290e-7f;
+    const Vec4i e = (Vec4i::Cast(a) - Vec4i(0x3f2aaaab)) & Vec4i(0xff800000);
+    const Vec4f m = (Vec4i::Cast(a) - e).AsVec4f();
+    const Vec4f i = e.ConvertToVec4f() * 1.19209290e-7f;
 
-    const Vector4 f = m - Vector4(1.0f);
-    const Vector4 s = f * f;
+    const Vec4f f = m - Vec4f(1.0f);
+    const Vec4f s = f * f;
 
     // Compute log1p(f) for f in [-1/3, 1/3]
-    Vector4 r = Vector4::MulAndAdd(f, Vector4(0.230836749f), Vector4(-0.279208571f));
-    Vector4 t = Vector4::MulAndAdd(f, Vector4(0.331826031f), Vector4(-0.498910338f));
-    r = Vector4::MulAndAdd(r, s, t);
-    r = Vector4::MulAndAdd(r, s, f);
-    r = Vector4::MulAndAdd(i, Vector4(0.693147182f), r); // log(2)
+    Vec4f r = Vec4f::MulAndAdd(f, Vec4f(0.230836749f), Vec4f(-0.279208571f));
+    Vec4f t = Vec4f::MulAndAdd(f, Vec4f(0.331826031f), Vec4f(-0.498910338f));
+    r = Vec4f::MulAndAdd(r, s, t);
+    r = Vec4f::MulAndAdd(r, s, f);
+    r = Vec4f::MulAndAdd(i, Vec4f(0.693147182f), r); // log(2)
     return r;
 }
 

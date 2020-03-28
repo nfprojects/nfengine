@@ -133,7 +133,7 @@ void Entity::SetGlobalTransform(const Transform& transform)
     MarkAsDirty(NFE_ENTITY_FLAG_MOVED_GLOBAL);
 }
 
-void Entity::SetGlobalPosition(const Vector4& pos)
+void Entity::SetGlobalPosition(const Vec4f& pos)
 {
     if ((mGlobalTransform.GetTranslation() == pos).All())
         return;
@@ -164,7 +164,7 @@ void Entity::SetLocalTransform(const Transform& transform)
     MarkAsDirty(NFE_ENTITY_FLAG_MOVED_LOCAL);
 }
 
-void Entity::SetLocalPosition(const Vector4& pos)
+void Entity::SetLocalPosition(const Vec4f& pos)
 {
     if ((mLocalTransform.GetTranslation() == pos).All())
         return;

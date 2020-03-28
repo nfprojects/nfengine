@@ -77,7 +77,7 @@ public:
 
     struct NFE_ALIGN(32) Photon
     {
-        Math::Float3 position;
+        Math::Vec3f position;
         Math::PackedColorRgbHdr throughput;
         Math::PackedUnitVector3 direction;
 
@@ -86,9 +86,9 @@ public:
         float dVCM; // TODO should be Half (watch out range)
 
         // used by hash grid query
-        NFE_FORCE_INLINE const Math::Vector4 GetPosition() const
+        NFE_FORCE_INLINE const Math::Vec4f GetPosition() const
         {
-            return *reinterpret_cast<const Math::Vector4*>(this);
+            return *reinterpret_cast<const Math::Vec4f*>(this);
         }
     };
 

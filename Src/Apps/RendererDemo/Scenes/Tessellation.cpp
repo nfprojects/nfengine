@@ -214,7 +214,7 @@ void TessellationScene::Draw(float dt)
     mCommandBuffer->SetRenderTarget(mWindowRenderTarget);
 
     // clear target
-    const Float4 color(0.0f, 0.0f, 0.0f, 1.0f);
+    const Vec4fU color(0.0f, 0.0f, 0.0f, 1.0f);
     mCommandBuffer->Clear(ClearFlagsColor, 1, nullptr, &color);
 
     // draw

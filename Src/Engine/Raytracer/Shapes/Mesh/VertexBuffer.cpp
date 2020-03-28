@@ -78,7 +78,7 @@ bool VertexBuffer::Initialize(const VertexBufferDesc& desc)
     }
 
     const size_t preprocessedTrianglesBufferSize = sizeof(ProcessedTriangle) * desc.numTriangles;
-    const size_t positionsBufferSize = sizeof(Float3) * desc.numVertices;
+    const size_t positionsBufferSize = sizeof(Vec3f) * desc.numVertices;
     const size_t indexBufferSize = sizeof(VertexIndices) * desc.numTriangles;
     const size_t shadingDataBufferSize = sizeof(VertexShadingData) * desc.numVertices;
     const size_t materialBufferSize = sizeof(Material*) * desc.numMaterials;
@@ -115,18 +115,18 @@ bool VertexBuffer::Initialize(const VertexBufferDesc& desc)
             return false;
         }
 
-        const Float3* positions = desc.positions;
+        const Vec3f* positions = desc.positions;
         const uint32* indexBuffer = desc.vertexIndexBuffer;
 
         for (uint32 i = 0; i < desc.numTriangles; ++i)
         {
-            const Vector4 v0(positions[indexBuffer[3 * i + 0]]);
-            const Vector4 v1(positions[indexBuffer[3 * i + 1]]);
-            const Vector4 v2(positions[indexBuffer[3 * i + 2]]);
+            const Vec4f v0(positions[indexBuffer[3 * i + 0]]);
+            const Vec4f v1(positions[indexBuffer[3 * i + 1]]);
+            const Vec4f v2(positions[indexBuffer[3 * i + 2]]);
 
-            mPreprocessedTriangles[i].v0 = v0.ToFloat3();
-            mPreprocessedTriangles[i].edge1 = (v1 - v0).ToFloat3();
-            mPreprocessedTriangles[i].edge2 = (v2 - v0).ToFloat3();
+            mPreprocessedTriangles[i].v0 = v0.ToVec3f();
+            mPreprocessedTriangles[i].edge1 = (v1 - v0).ToVec3f();
+            mPreprocessedTriangles[i].edge2 = (v2 - v0).ToVec3f();
         }
     }
 
@@ -156,16 +156,16 @@ bool VertexBuffer::Initialize(const VertexBufferDesc& desc)
         VertexShadingData* buffer = reinterpret_cast<VertexShadingData*>(mBuffer + mShadingDataBufferOffset);
         for (uint32 i = 0; i < desc.numVertices; ++i)
         {
-            buffer[i].normal = desc.normals ? desc.normals[i] : Float3();
-            buffer[i].tangent = desc.tangents ? desc.tangents[i] : Float3();
-            buffer[i].texCoord = desc.texCoords ? desc.texCoords[i] : Float2();
+            buffer[i].normal = desc.normals ? desc.normals[i] : Vec3f();
+            buffer[i].tangent = desc.tangents ? desc.tangents[i] : Vec3f();
+            buffer[i].texCoord = desc.texCoords ? desc.texCoords[i] : Vec2f();
 
             NFE_ASSERT(buffer[i].normal.IsValid(), "Corrupted normal vector");
             NFE_ASSERT(buffer[i].tangent.IsValid(), "Corrupted tangent vector");
             NFE_ASSERT(buffer[i].texCoord.IsValid(), "Corrupted texture coordinates");
             NFE_ASSERT(Abs(1.0f - buffer[i].normal.Length()) < 0.0001f, "Normal vector is not normalized");
             NFE_ASSERT(Abs(1.0f - buffer[i].tangent.Length()) < 0.0001f, "Tangent vector is not normalized");
-            NFE_ASSERT(Abs(Float3::Dot(buffer[i].normal, buffer[i].tangent)) < 0.0001f, "Normal and tangent vectors are not orthogonal");
+            NFE_ASSERT(Abs(Vec3f::Dot(buffer[i].normal, buffer[i].tangent)) < 0.0001f, "Normal and tangent vectors are not orthogonal");
         }
     }
 
@@ -206,9 +206,9 @@ const Material* VertexBuffer::GetMaterial(const uint32 materialIndex) const
 void VertexBuffer::GetTriangle(const uint32 triangleIndex, Triangle_Simd8& outTriangle) const
 {
     const ProcessedTriangle& tri = mPreprocessedTriangles[triangleIndex];
-    outTriangle.v0 = Vector3x8(tri.v0);
-    outTriangle.edge1 = Vector3x8(tri.edge1);
-    outTriangle.edge2 = Vector3x8(tri.edge2);
+    outTriangle.v0 = Vec3x8f(tri.v0);
+    outTriangle.edge1 = Vec3x8f(tri.edge1);
+    outTriangle.edge2 = Vec3x8f(tri.edge2);
 }
 
 void VertexBuffer::GetShadingData(const VertexIndices& indices, VertexShadingData& a, VertexShadingData& b, VertexShadingData& c) const

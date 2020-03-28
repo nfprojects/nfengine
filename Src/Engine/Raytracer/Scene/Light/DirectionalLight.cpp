@@ -36,9 +36,9 @@ const Box DirectionalLight::GetBoundingBox() const
     return Box::Full();
 }
 
-const Vector4 DirectionalLight::SampleDirection(const Float2 sample, float& outPdf) const
+const Vec4f DirectionalLight::SampleDirection(const Vec2f sample, float& outPdf) const
 {
-    Vector4 sampledDirection = Vector4::Zero();
+    Vec4f sampledDirection = Vec4f::Zero();
 
     if (mIsDelta)
     {
@@ -50,7 +50,7 @@ const Vector4 DirectionalLight::SampleDirection(const Float2 sample, float& outP
         outPdf = SphereCapPdf(mCosAngle);
 
         const float phi = NFE_MATH_2PI * sample.y;
-        const Vector4 sinCosPhi = SinCos(phi);
+        const Vec4f sinCosPhi = SinCos(phi);
 
         float cosTheta = Lerp(mCosAngle, 1.0f, sample.x);
         float sinThetaSqr = 1.0f - Sqr(cosTheta);
@@ -70,7 +70,7 @@ const Vector4 DirectionalLight::SampleDirection(const Float2 sample, float& outP
 
 const RayColor DirectionalLight::Illuminate(const IlluminateParam& param, IlluminateResult& outResult) const
 {
-    const Vector4 sampledDirectionLocalSpace = SampleDirection(param.sample, outResult.directPdfW);
+    const Vec4f sampledDirectionLocalSpace = SampleDirection(param.sample, outResult.directPdfW);
 
     outResult.directionToLight = param.lightToWorld.TransformVectorNeg(sampledDirectionLocalSpace);
     outResult.emissionPdfW = outResult.directPdfW * UniformCirclePdf(SceneRadius);
@@ -88,7 +88,7 @@ const RayColor DirectionalLight::GetRadiance(const RadianceParam& param, float* 
         return RayColor::Zero();
     }
 
-    if (Vector4::Dot3(param.ray.dir, VECTOR_Z) > -mCosAngle)
+    if (Vec4f::Dot3(param.ray.dir, VECTOR_Z) > -mCosAngle)
     {
         return RayColor::Zero();
     }
@@ -110,13 +110,13 @@ const RayColor DirectionalLight::GetRadiance(const RadianceParam& param, float* 
 
 const RayColor DirectionalLight::Emit(const EmitParam& param, EmitResult& outResult) const
 {
-    const Vector4 sampledDirectionLocalSpace = SampleDirection(param.directionSample, outResult.directPdfA);
+    const Vec4f sampledDirectionLocalSpace = SampleDirection(param.directionSample, outResult.directPdfA);
 
     outResult.direction = param.lightToWorld.TransformVector(-sampledDirectionLocalSpace);
 
     // generate random origin
-    const Vector4 uv = SamplingHelpers::GetCircle(param.positionSample);
-    outResult.position = Vector4(uv.x, uv.y, -1.0f) * SceneRadius;
+    const Vec4f uv = SamplingHelpers::GetCircle(param.positionSample);
+    outResult.position = Vec4f(uv.x, uv.y, -1.0f) * SceneRadius;
 
     outResult.cosAtLight = 1.0f;
     outResult.emissionPdfW = outResult.directPdfA * UniformCirclePdf(SceneRadius);

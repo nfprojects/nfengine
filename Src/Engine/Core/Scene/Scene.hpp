@@ -9,7 +9,7 @@
 #include "../Core.hpp"
 #include "Systems/System.hpp"
 
-#include "../../Common/Math/Vector4.hpp"
+#include "../../Common/Math/Vec4f.hpp"
 #include "../../Common/Containers/UniquePtr.hpp"
 #include "../../Common/Containers/String.hpp"
 

@@ -73,15 +73,15 @@ void FreeCameraController::ProcessTickEvent(const Scene::Event_Tick& tickEvent)
 
     const Quaternion rotation = prevOrientation * targetOrientation.Inverted();
     {
-        Vector4 axis;
+        Vec4f axis;
         float angle;
         rotation.ToAxis(axis, angle);
     }
 
     entity->SetGlobalOrientation(targetOrientation);
 
-    Vector4 movementDirection = mMovementDirection;
-    if (!Vector4::AlmostEqual(movementDirection, Vector4::Zero()))
+    Vec4f movementDirection = mMovementDirection;
+    if (!Vec4f::AlmostEqual(movementDirection, Vec4f::Zero()))
     {
         movementDirection.Normalize3();
     }
@@ -93,7 +93,7 @@ void FreeCameraController::ProcessTickEvent(const Scene::Event_Tick& tickEvent)
         movementDirection *= (1.0f / MOVEMENT_SPEED_MULTIPLIER);
 
     // update position manually - body is static
-    const Vector4 newPosition = entity->GetGlobalPosition() + targetOrientation.TransformVector(movementDirection) * dt;
+    const Vec4f newPosition = entity->GetGlobalPosition() + targetOrientation.TransformVector(movementDirection) * dt;
     entity->SetGlobalPosition(newPosition);
 }
 

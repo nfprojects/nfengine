@@ -15,7 +15,7 @@ namespace Math {
 bool Matrix3::Equal(const Matrix3& m1, const Matrix3& m2, float epsilon)
 {
     const Matrix3 diff = Abs(m1 - m2);
-    const Float3 epsilonV = Float3::Splat(epsilon);
+    const Vec3f epsilonV = Vec3f::Splat(epsilon);
     return (diff[0] < epsilonV) && (diff[1] < epsilonV) && (diff[2] < epsilonV);
 }
 

@@ -29,7 +29,7 @@ public:
         mBox = Math::Box::Empty();
         for (uint32 i = 0; i < particles.Size(); i++)
         {
-            const Math::Vector4& pos = particles[i].GetPosition();
+            const Math::Vec4f& pos = particles[i].GetPosition();
             mBox.AddPoint(pos);
         }
 
@@ -47,7 +47,7 @@ public:
             // set mCellEnds[x] to number of particles within x
             for (uint32 i = 0; i < particles.Size(); i++)
             {
-                const Math::Vector4& pos = particles[i].GetPosition();
+                const Math::Vec4f& pos = particles[i].GetPosition();
                 mCellEnds[GetCellIndex(pos)]++;
             }
 
@@ -67,23 +67,23 @@ public:
         mIndices.Resize(particles.Size());
         for (uint32 i = 0; i < particles.Size(); i++)
         {
-            const Math::Vector4& pos = particles[i].GetPosition();
+            const Math::Vec4f& pos = particles[i].GetPosition();
             const int targetIdx = mCellEnds[GetCellIndex(pos)]++;
             mIndices[targetIdx] = uint32(i);
         }
     }
 
     template<typename ParticleType, typename Query>
-    NFE_FORCE_NOINLINE void Process(const Math::Vector4& queryPos, const Common::DynArray<ParticleType>& particles, Query& query) const
+    NFE_FORCE_NOINLINE void Process(const Math::Vec4f& queryPos, const Common::DynArray<ParticleType>& particles, Query& query) const
     {
         if (mIndices.Empty())
         {
             return;
         }
 
-        const Math::Vector4 distMin = queryPos - mBox.min;
-        const Math::Vector4 cellCoords = Math::Vector4::MulAndSub(distMin, mInvCellSize, Math::Vector4(0.5f));
-        const Math::VectorInt4 coordI = Math::VectorInt4::TruncateAndConvert(cellCoords);
+        const Math::Vec4f distMin = queryPos - mBox.min;
+        const Math::Vec4f cellCoords = Math::Vec4f::MulAndSub(distMin, mInvCellSize, Math::Vec4f(0.5f));
+        const Math::Vec4i coordI = Math::Vec4i::TruncateAndConvert(cellCoords);
 
         uint32 numVisitedCells = 0;
         uint32 visitedCells[8];
@@ -160,17 +160,17 @@ private:
         return ((x * 73856093u) ^ (y * 19349663u) ^ (z * 83492791u)) & mHashTableMask;
     }
 
-    NFE_FORCE_INLINE uint32 GetCellIndex(const Math::VectorInt4& p) const
+    NFE_FORCE_INLINE uint32 GetCellIndex(const Math::Vec4i& p) const
     {
         // "Optimized Spatial Hashing for Collision Detection of Deformable Objects", Matthias Teschner, 2003
         return ((p.x * 73856093u) ^ (p.y * 19349663u) ^ (p.z * 83492791u)) & mHashTableMask;
     }
 
-    uint32 GetCellIndex(const Math::Vector4& p) const
+    uint32 GetCellIndex(const Math::Vec4f& p) const
     {
-        const Math::Vector4 distMin = p - mBox.min;
-        const Math::Vector4 coordF = mInvCellSize * distMin;
-        const Math::VectorInt4 coordI = Math::VectorInt4::TruncateAndConvert(coordF);
+        const Math::Vec4f distMin = p - mBox.min;
+        const Math::Vec4f coordF = mInvCellSize * distMin;
+        const Math::Vec4i coordI = Math::Vec4i::TruncateAndConvert(coordF);
 
         return GetCellIndex(coordI);
     }

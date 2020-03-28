@@ -41,7 +41,7 @@ bool PlasticBSDF::Sample(SamplingContext& ctx) const
     if (specular)
     {
         ctx.outColor = RayColor(Fi / specularProbability);
-        ctx.outIncomingDir = -Vector4::Reflect3(ctx.outgoingDir, VECTOR_Z);
+        ctx.outIncomingDir = -Vec4f::Reflect3(ctx.outgoingDir, VECTOR_Z);
         ctx.outPdf = specularProbability;
         ctx.outEventType = SpecularReflectionEvent;
     }

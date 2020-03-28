@@ -1,7 +1,7 @@
 #include "PCH.h"
 #include "Tonemapping.h"
 #include "../Common/Reflection/ReflectionClassDefine.hpp"
-#include "../Common/Math/Vector4.hpp"
+#include "../Common/Math/Vec4f.hpp"
 #include "../Common/Math/ColorHelpers.hpp"
 #include "../Common/Math/Transcendental.hpp"
 
@@ -52,41 +52,41 @@ DebugTonemapper::DebugTonemapper()
     , mMaxValue(1.0e+3f)
 {}
 
-const Vector4 DebugTonemapper::Apply(const Vector4 hdrColor) const
+const Vec4f DebugTonemapper::Apply(const Vec4f hdrColor) const
 {
-    const Vector4 min(mMinValue);
-    const Vector4 max(mMaxValue);
+    const Vec4f min(mMinValue);
+    const Vec4f max(mMaxValue);
 
-    return FastLog(Vector4::Clamp(hdrColor, min, max) / min) / FastLog(max / min);
+    return FastLog(Vec4f::Clamp(hdrColor, min, max) / min) / FastLog(max / min);
 }
 
-const Vector4 ClampedTonemapper::Apply(const Vector4 hdrColor) const
+const Vec4f ClampedTonemapper::Apply(const Vec4f hdrColor) const
 {
     return Convert_Linear_To_sRGB(hdrColor);
 }
 
-const Vector4 ReinhardTonemapper::Apply(const Vector4 hdrColor) const
+const Vec4f ReinhardTonemapper::Apply(const Vec4f hdrColor) const
 {
-    return Convert_Linear_To_sRGB(hdrColor / (hdrColor + Vector4(1.0f)));
+    return Convert_Linear_To_sRGB(hdrColor / (hdrColor + Vec4f(1.0f)));
 }
 
-const Vector4 FilmicTonemapper::Apply(const Vector4 hdrColor) const
+const Vec4f FilmicTonemapper::Apply(const Vec4f hdrColor) const
 {
-    const Vector4 b(6.2f);
-    const Vector4 c(1.7f);
-    const Vector4 d(0.06f);
-    const Vector4 t0 = hdrColor * Vector4::MulAndAdd(hdrColor, b, Vector4(0.5f));
-    const Vector4 t1 = Vector4::MulAndAdd(hdrColor, b, c);
-    const Vector4 t2 = Vector4::MulAndAdd(hdrColor, t1, d);
-    return t0 * Vector4::FastReciprocal(t2);
+    const Vec4f b(6.2f);
+    const Vec4f c(1.7f);
+    const Vec4f d(0.06f);
+    const Vec4f t0 = hdrColor * Vec4f::MulAndAdd(hdrColor, b, Vec4f(0.5f));
+    const Vec4f t1 = Vec4f::MulAndAdd(hdrColor, b, c);
+    const Vec4f t2 = Vec4f::MulAndAdd(hdrColor, t1, d);
+    return t0 * Vec4f::FastReciprocal(t2);
 }
 
-const Vector4 ApproxACESTonemapper::Apply(const Vector4 hdrColor) const
+const Vec4f ApproxACESTonemapper::Apply(const Vec4f hdrColor) const
 {
     // based on https://github.com/TheRealMJP/BakingLab/blob/master/BakingLab/ACES.hlsl
 
     // sRGB => XYZ => D65_2_D60 => AP1 => RRT_SAT
-    const Vector4 ACESInputMat[] =
+    const Vec4f ACESInputMat[] =
     {
         { 0.59719f, 0.07600f, 0.02840f, 0.0f },
         { 0.35458f, 0.90834f, 0.13383f, 0.0f },
@@ -94,20 +94,20 @@ const Vector4 ApproxACESTonemapper::Apply(const Vector4 hdrColor) const
     };
 
     // ODT_SAT => XYZ => D60_2_D65 => sRGB
-    const Vector4 ACESOutputMat[] =
+    const Vec4f ACESOutputMat[] =
     {
         {  1.60475f, -0.10208f, -0.00327f, 0.0f },
         { -0.53108f,  1.10813f, -0.07276f, 0.0f },
         { -0.07367f, -0.00605f,  1.07602f, 0.0f },
     };
 
-    const Vector4 v = ACESInputMat[0] * hdrColor.x + ACESInputMat[1] * hdrColor.y + ACESInputMat[2] * hdrColor.z;
+    const Vec4f v = ACESInputMat[0] * hdrColor.x + ACESInputMat[1] * hdrColor.y + ACESInputMat[2] * hdrColor.z;
 
-    const Vector4 a = v * (v + Vector4(0.0245786f)) - Vector4(0.000090537f);
-    const Vector4 b = v * (0.983729f * v + Vector4(0.4329510f)) + Vector4(0.238081f);
-    Vector4 color = a * Vector4::FastReciprocal(b);
+    const Vec4f a = v * (v + Vec4f(0.0245786f)) - Vec4f(0.000090537f);
+    const Vec4f b = v * (0.983729f * v + Vec4f(0.4329510f)) + Vec4f(0.238081f);
+    Vec4f color = a * Vec4f::FastReciprocal(b);
 
-    color = Vector4::Saturate(ACESOutputMat[0] * color.x + ACESOutputMat[1] * color.y + ACESOutputMat[2] * color.z);
+    color = Vec4f::Saturate(ACESOutputMat[0] * color.x + ACESOutputMat[1] * color.y + ACESOutputMat[2] * color.z);
 
     return Convert_Linear_To_sRGB(color);
 

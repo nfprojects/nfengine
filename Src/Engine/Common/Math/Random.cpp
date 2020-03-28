@@ -23,9 +23,9 @@ void Random::Reset()
     for (uint32 i = 0; i < 2; ++i)
     {
         mSeed[i] = ((uint64)entropy.GetInt() << 32) | (uint64)entropy.GetInt();
-        mSeedSimd4[i] = VectorInt4(entropy.GetInt(), entropy.GetInt(), entropy.GetInt(), entropy.GetInt());
+        mSeedSimd4[i] = Vec4i(entropy.GetInt(), entropy.GetInt(), entropy.GetInt(), entropy.GetInt());
 #ifdef NFE_USE_AVX2
-        mSeedSimd8[i] = VectorInt8(entropy.GetInt(), entropy.GetInt(), entropy.GetInt(), entropy.GetInt(), entropy.GetInt(), entropy.GetInt(), entropy.GetInt(), entropy.GetInt());
+        mSeedSimd8[i] = Vec8i(entropy.GetInt(), entropy.GetInt(), entropy.GetInt(), entropy.GetInt(), entropy.GetInt(), entropy.GetInt(), entropy.GetInt(), entropy.GetInt());
 #endif // NFE_USE_AVX2
     }
 }
@@ -70,28 +70,28 @@ float Random::GetFloatBipolar()
     return myrand.f - 3.0f;
 }
 
-VectorInt4 Random::GetIntVector4()
+Vec4i Random::GetVec4i()
 {
     // NOTE: xoroshiro128+ is faster when using general purpose registers, because there's
     // no rotate left/right instruction in SSE2 (it's only in AVX512)
 
     // xorshift128+ algorithm
-    const VectorInt4 s0 = mSeedSimd4[1];
-    VectorInt4 s1 = mSeedSimd4[0];
+    const Vec4i s0 = mSeedSimd4[1];
+    Vec4i s1 = mSeedSimd4[0];
 
     // TODO introduce Vector2ul
 #ifdef NFE_USE_SSE
-    VectorInt4 v = _mm_add_epi64(s0, s1);
+    Vec4i v = _mm_add_epi64(s0, s1);
     s1 = _mm_slli_epi64(s1, 23);
-    const VectorInt4 t0 = _mm_srli_epi64(s0, 5);
-    const VectorInt4 t1 = _mm_srli_epi64(s1, 18);
+    const Vec4i t0 = _mm_srli_epi64(s0, 5);
+    const Vec4i t1 = _mm_srli_epi64(s1, 18);
 #else
-    VectorInt4 v;
+    Vec4i v;
     v.i64[0] = s0.i64[0] + s1.i64[0];
     v.i64[1] = s0.i64[1] + s1.i64[1];
     s1.i64[0] <<= 23;
     s1.i64[1] <<= 23;
-    VectorInt4 t0, t1;
+    Vec4i t0, t1;
     t0.i64[0] = s0.i64[0] >> 5;
     t0.i64[1] = s0.i64[1] >> 5;
     t1.i64[0] = s1.i64[0] >> 5;
@@ -103,44 +103,44 @@ VectorInt4 Random::GetIntVector4()
     return v;
 }
 
-const Vector4 Random::GetVector4()
+const Vec4f Random::GetVec4f()
 {
-    VectorInt4 v = GetIntVector4();
+    Vec4i v = GetVec4i();
 
     // setup float mask
-    v &= VectorInt4(0x007fffffu);
-    v |= VectorInt4(0x3f800000u);
+    v &= Vec4i(0x007fffffu);
+    v |= Vec4i(0x3f800000u);
 
     // convert to float and go from [1, 2) to [0, 1) range
-    return v.CastToFloat() - VECTOR_ONE;
+    return v.AsVec4f() - VECTOR_ONE;
 }
 
-const Vector4 Random::GetVector4Bipolar()
+const Vec4f Random::GetVec4fBipolar()
 {
-    VectorInt4 v = GetIntVector4();
+    Vec4i v = GetVec4i();
 
     // setup float mask
-    v &= VectorInt4(0x007fffffu);
-    v |= VectorInt4(0x40000000u);
+    v &= Vec4i(0x007fffffu);
+    v |= Vec4i(0x40000000u);
 
     // convert to float and go from [2, 4) to [-1, 1) range
-    return v.CastToFloat() - Vector4(3.0f);
+    return v.AsVec4f() - Vec4f(3.0f);
 }
 
 #ifdef NFE_USE_AVX2
 
-VectorInt8 Random::GetIntVector8()
+Vec8i Random::GetVec8i()
 {
     // NOTE: xoroshiro128+ is faster when using general purpose registers, because there's
     // no rotate left/right instruction in AVX2 (it's only in AVX512)
 
     // xorshift128+ algorithm
-    const VectorInt8 s0 = mSeedSimd8[1];
-    VectorInt8 s1 = mSeedSimd8[0];
-    VectorInt8 v = _mm256_add_epi64(s0, s1);
+    const Vec8i s0 = mSeedSimd8[1];
+    Vec8i s1 = mSeedSimd8[0];
+    Vec8i v = _mm256_add_epi64(s0, s1);
     s1 = _mm256_slli_epi64(s1, 23);
-    const VectorInt8 t0 = _mm256_srli_epi64(s0, 5);
-    const VectorInt8 t1 = _mm256_srli_epi64(s1, 18);
+    const Vec8i t0 = _mm256_srli_epi64(s0, 5);
+    const Vec8i t1 = _mm256_srli_epi64(s1, 18);
     mSeedSimd8[0] = s0;
     mSeedSimd8[1] = (s0 ^ s1) ^ (t0 ^ t1);
 
@@ -149,35 +149,35 @@ VectorInt8 Random::GetIntVector8()
 
 #else
 
-VectorInt8 Random::GetIntVector8()
+Vec8i Random::GetIntVector8()
 {
-    return VectorInt8{ GetIntVector4(), GetIntVector4() };
+    return Vec8i{ GetIntVec4f(), GetIntVec4f() };
 }
 
 #endif // NFE_USE_AVX2
 
-const Vector8 Random::GetVector8()
+const Vec8f Random::GetVec8f()
 {
-    VectorInt8 v = GetIntVector8();
+    Vec8i v = GetVec8i();
 
     // setup float mask
-    v &= VectorInt8(0x007fffffu);
-    v |= VectorInt8(0x3f800000u);
+    v &= Vec8i(0x007fffffu);
+    v |= Vec8i(0x3f800000u);
 
     // convert to float and go from [1, 2) to [0, 1) range
-    return v.CastToFloat() - VECTOR8_ONE;
+    return v.AsVec8f() - VECTOR8_ONE;
 }
 
-const Vector8 Random::GetVector8Bipolar()
+const Vec8f Random::GetVec8fBipolar()
 {
-    VectorInt8 v = GetIntVector8();
+    Vec8i v = GetVec8i();
 
     // setup float mask
-    v &= VectorInt8(0x007fffffu);
-    v |= VectorInt8(0x40000000u);
+    v &= Vec8i(0x007fffffu);
+    v |= Vec8i(0x40000000u);
 
     // convert to float and go from [1, 2) to [0, 1) range
-    return v.CastToFloat() - Vector8(3.0f);
+    return v.AsVec8f() - Vec8f(3.0f);
 }
 
 } // namespace Math

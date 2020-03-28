@@ -30,30 +30,30 @@ const char* BitmapTexture::GetName() const
     return mBitmap->GetDebugName();
 }
 
-const Vector4 BitmapTexture::Evaluate(const Vector4& coords) const
+const Vec4f BitmapTexture::Evaluate(const Vec4f& coords) const
 {
     const Bitmap* bitmapPtr = mBitmap.Get();
 
     if (!bitmapPtr)
     {
-        return Vector4::Zero();
+        return Vec4f::Zero();
     }
 
     // bitmap size
-    const VectorInt4 size = bitmapPtr->GetSize().Swizzle<0,1,0,1>();
+    const Vec4i size = bitmapPtr->GetSize().Swizzle<0,1,0,1>();
 
     // wrap to 0..1 range
-    const Vector4 warpedCoords = Vector4::Mod1(coords);
+    const Vec4f warpedCoords = Vec4f::Mod1(coords);
 
     // compute texel coordinates
-    const Vector4 scaledCoords = warpedCoords * bitmapPtr->mFloatSize.Swizzle<0,1,0,1>();
-    const VectorInt4 intCoords = VectorInt4::Convert(Vector4::Floor(scaledCoords));
+    const Vec4f scaledCoords = warpedCoords * bitmapPtr->mFloatSize.Swizzle<0,1,0,1>();
+    const Vec4i intCoords = Vec4i::Convert(Vec4f::Floor(scaledCoords));
 
-    VectorInt4 texelCoords = intCoords;
-    texelCoords -= VectorInt4::AndNot(intCoords < size, size);
-    texelCoords += size & (intCoords < VectorInt4::Zero());
+    Vec4i texelCoords = intCoords;
+    texelCoords -= Vec4i::AndNot(intCoords < size, size);
+    texelCoords += size & (intCoords < Vec4i::Zero());
 
-    Vector4 result;
+    Vec4f result;
 
     if (mFilter == BitmapTextureFilter::NearestNeighbor)
     {
@@ -62,30 +62,30 @@ const Vector4 BitmapTexture::Evaluate(const Vector4& coords) const
     else if (mFilter == BitmapTextureFilter::Linear || mFilter == BitmapTextureFilter::Linear_SmoothStep)
     {
         texelCoords = texelCoords.Swizzle<0, 1, 0, 1>();
-        texelCoords += VectorInt4(0, 0, 1, 1);
+        texelCoords += Vec4i(0, 0, 1, 1);
 
         // wrap secondary coordinates
-        texelCoords -= VectorInt4::AndNot(texelCoords < size, size);
+        texelCoords -= Vec4i::AndNot(texelCoords < size, size);
 
-        Vector4 colors[4];
+        Vec4f colors[4];
         bitmapPtr->GetPixelBlock(texelCoords, colors);
 
         // bilinear interpolation
-        Vector4 weights = scaledCoords - intCoords.ConvertToFloat();
+        Vec4f weights = scaledCoords - intCoords.ConvertToVec4f();
 
         if (mFilter == BitmapTextureFilter::Linear_SmoothStep)
         {
             weights = SmoothStep(weights);
         }
 
-        const Vector4 value0 = Vector4::Lerp(colors[0], colors[2], weights.SplatY());
-        const Vector4 value1 = Vector4::Lerp(colors[1], colors[3], weights.SplatY());
-        result = Vector4::Lerp(value0, value1, weights.SplatX());
+        const Vec4f value0 = Vec4f::Lerp(colors[0], colors[2], weights.SplatY());
+        const Vec4f value1 = Vec4f::Lerp(colors[1], colors[3], weights.SplatY());
+        result = Vec4f::Lerp(value0, value1, weights.SplatX());
     }
     else
     {
         NFE_FATAL("Invalid bitmap filter mode");
-        result = Vector4::Zero();
+        result = Vec4f::Zero();
     }
 
     NFE_ASSERT(result.IsValid());
@@ -93,7 +93,7 @@ const Vector4 BitmapTexture::Evaluate(const Vector4& coords) const
     return result;
 }
 
-const Vector4 BitmapTexture::Sample(const Float2 u, Vector4& outCoords, float* outPdf) const
+const Vec4f BitmapTexture::Sample(const Vec2f u, Vec4f& outCoords, float* outPdf) const
 {
     NFE_ASSERT(mImportanceMap, "Bitmap texture is not samplable");
 
@@ -110,7 +110,7 @@ const Vector4 BitmapTexture::Sample(const Float2 u, Vector4& outCoords, float* o
     NFE_ASSERT(y < height);
 
     // TODO this is redundant, because BitmapTexture::Evaluate multiplies coords by size again...
-    outCoords = Vector4::FromIntegers(x, y, 0, 0) / mBitmap->mFloatSize;
+    outCoords = Vec4f::FromIntegers(x, y, 0, 0) / mBitmap->mFloatSize;
 
     if (outPdf)
     {
@@ -145,8 +145,8 @@ bool BitmapTexture::MakeSamplable()
     {
         for (uint32 i = 0; i < width; ++i)
         {
-            const Vector4 value = mBitmap->GetPixel(i, j);
-            importancePdf[width * j + i] = Vector4::Dot3(c_rgbIntensityWeights, value);
+            const Vec4f value = mBitmap->GetPixel(i, j);
+            importancePdf[width * j + i] = Vec4f::Dot3(c_rgbIntensityWeights, value);
         }
     }
 

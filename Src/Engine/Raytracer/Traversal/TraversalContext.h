@@ -24,7 +24,7 @@ struct PacketTraversalContext
     RayPacket& ray;
     RenderingContext& context;
 
-    void StoreIntersection(RayGroup& rayGroup, const Math::Vector8& t, const Math::Vector8& u, const Math::Vector8& v, const Math::VectorBool8& mask, uint32 objectID, uint32 subObjectID = 0) const;
+    void StoreIntersection(RayGroup& rayGroup, const Math::Vec8f& t, const Math::Vec8f& u, const Math::Vec8f& v, const Math::VecBool8f& mask, uint32 objectID, uint32 subObjectID = 0) const;
 };
 
 } // namespace RT

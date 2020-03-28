@@ -212,8 +212,8 @@ void BVHBuilder::BuildNode(ThreadData& threadData, WorkSet& workSet, BVH::Node& 
     NFE_ASSERT(workSet.depth < mNumLeaves);
     NFE_ASSERT(workSet.depth <= BVH::MaxDepth);
 
-    targetNode.min = workSet.box.min.ToFloat3();
-    targetNode.max = workSet.box.max.ToFloat3();
+    targetNode.min = workSet.box.min.ToVec3f();
+    targetNode.max = workSet.box.max.ToVec3f();
 
     if (workSet.numLeaves <= mParams.maxLeafNodeSize)
     {
@@ -285,8 +285,8 @@ void BVHBuilder::BuildNode_Threaded(const WorkSetPtr& workSet, BVH::Node& target
     NFE_ASSERT(workSet->depth < mNumLeaves);
     NFE_ASSERT(workSet->depth <= BVH::MaxDepth);
 
-    targetNode.min = workSet->box.min.ToFloat3();
-    targetNode.max = workSet->box.max.ToFloat3();
+    targetNode.min = workSet->box.min.ToVec3f();
+    targetNode.max = workSet->box.max.ToVec3f();
 
     if (workSet->numLeaves <= mParams.maxLeafNodeSize)
     {
@@ -363,8 +363,8 @@ void BVHBuilder::SortLeavesInAxis(Indices& indicesToSort, uint32 axis) const
     {
         const Box& leafA = mLeafBoxes[a];
         const Box& leafB = mLeafBoxes[b];
-        const Vector4 centerA = leafA.max + leafA.min;
-        const Vector4 centerB = leafB.max + leafB.min;
+        const Vec4f centerA = leafA.max + leafA.min;
+        const Vec4f centerB = leafB.max + leafB.min;
         return centerA[axis] < centerB[axis];
     };
 

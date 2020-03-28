@@ -10,7 +10,7 @@
 #include "Utils/Profiler.h"
 #include "../Common/System/Timer.hpp"
 #include "../Common/Math/SamplingHelpers.hpp"
-#include "../Common/Math/Vector4Load.hpp"
+#include "../Common/Math/Vec4fLoad.hpp"
 #include "../Common/Math/Transcendental.hpp"
 #include "../Common/Math/LdrColor.hpp"
 #include "../Common/Math/ColorHelpers.hpp"
@@ -123,7 +123,7 @@ bool Viewport::Resize(uint32 width, uint32 height)
     mPixelSalt.Resize(width * height);
     for (uint32 i = 0; i < width * height; ++i)
     {
-        mPixelSalt[i] = mRandomGenerator.GetVector4().ToFloat2();
+        mPixelSalt[i] = mRandomGenerator.GetVec4f().ToVec2f();
     }
 
     Reset();
@@ -266,7 +266,7 @@ bool Viewport::Render(const Scene& scene, const Camera& camera)
         }
 
         // randomize pixel offset (antialiasing)
-        const Vector4 pixelOffset = SamplingHelpers::GetFloatNormal2(mRandomGenerator.GetFloat2());
+        const Vec4f pixelOffset = SamplingHelpers::GetFloatNormal2(mRandomGenerator.GetVec2f());
 
         // pre-rendering pass
         mRenderer->PreRender(taskBuilder, renderParam, mThreadData);
@@ -327,8 +327,8 @@ void Viewport::RenderTile(const TileRenderingContext& tileContext, RenderingCont
     NFE_ASSERT(tile.maxX <= GetWidth());
     NFE_ASSERT(tile.maxY <= GetHeight());
 
-    const Vector4 filmSize = Vector4::FromIntegers(GetWidth(), GetHeight(), 1, 1);
-    const Vector4 invSize = VECTOR_ONE2 / filmSize;
+    const Vec4f filmSize = Vec4f::FromIntegers(GetWidth(), GetHeight(), 1, 1);
+    const Vec4f invSize = VECTOR_ONE2 / filmSize;
 
     if (ctx.params->traversalMode == TraversalMode::Single)
     {
@@ -345,7 +345,7 @@ void Viewport::RenderTile(const TileRenderingContext& tileContext, RenderingCont
                 }
 #endif // NFE_CONFIGURATION_FINAL
 
-                const Vector4 coords = (Vector4::FromIntegers(x, realY, 0, 0) + tileContext.sampleOffset) * invSize;
+                const Vec4f coords = (Vec4f::FromIntegers(x, realY, 0, 0) + tileContext.sampleOffset) * invSize;
 
                 ctx.sampler.ResetPixel(x, y);
                 ctx.time = ctx.randomGenerator.GetFloat() * ctx.params->motionBlurStrength;
@@ -370,11 +370,11 @@ void Viewport::RenderTile(const TileRenderingContext& tileContext, RenderingCont
                     color = RayColor(timePerRay);
                 }
 
-                const Vector4 sampleColor = color.ConvertToTristimulus(ctx.wavelength);
+                const Vec4f sampleColor = color.ConvertToTristimulus(ctx.wavelength);
 
 #ifndef NFE_ENABLE_SPECTRAL_RENDERING
                 // exception: in spectral rendering these values can get below zero due to RGB->Spectrum conversion
-                NFE_ASSERT((sampleColor >= Vector4::Zero()).All());
+                NFE_ASSERT((sampleColor >= Vec4f::Zero()).All());
 #endif // NFE_ENABLE_SPECTRAL_RENDERING
 
                 tileContext.renderParam.film.AccumulateColor(x, y, sampleColor);
@@ -402,7 +402,7 @@ void Viewport::RenderTile(const TileRenderingContext& tileContext, RenderingCont
 
             for (uint32 x = tile.minX; x < tile.maxX; ++x)
             {
-                const Vector4 coords = (Vector4::FromIntegers(x, realY, 0, 0) + tileContext.sampleOffset) * invSize;
+                const Vec4f coords = (Vec4f::FromIntegers(x, realY, 0, 0) + tileContext.sampleOffset) * invSize;
 
                 for (uint32 s = 0; s < samplesPerPixel; ++s)
                 {
@@ -410,7 +410,7 @@ void Viewport::RenderTile(const TileRenderingContext& tileContext, RenderingCont
                     const Ray ray = tileContext.camera.GenerateRay(coords, ctx);
 
                     const ImageLocationInfo location = { (uint16)x, (uint16)y };
-                    primaryPacket.PushRay(ray, Vector4(sampleScale), location);
+                    primaryPacket.PushRay(ray, Vec4f(sampleScale), location);
                 }
             }
         }
@@ -428,11 +428,11 @@ void Viewport::RenderTile(const TileRenderingContext& tileContext, RenderingCont
                 // generate ray group with following layout:
                 //  0 1 2 3
                 //  4 5 6 7
-                Vector2x8 coords{ Vector8::FromInteger(x), Vector8::FromInteger(realY) };
-                coords.x += Vector8(0.0f, 1.0f, 2.0f, 3.0f, 0.0f, 1.0f, 2.0f, 3.0f);
-                coords.y -= Vector8(0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f);
-                coords.x += Vector8(tileContext.sampleOffset.x);
-                coords.y += Vector8(tileContext.sampleOffset.y);
+                Vec2x8f coords{ Vec8f::FromInteger(x), Vec8f::FromInteger(realY) };
+                coords.x += Vec8f(0.0f, 1.0f, 2.0f, 3.0f, 0.0f, 1.0f, 2.0f, 3.0f);
+                coords.y -= Vec8f(0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f);
+                coords.x += Vec8f(tileContext.sampleOffset.x);
+                coords.y += Vec8f(tileContext.sampleOffset.y);
                 coords.x *= invSize.x;
                 coords.y *= invSize.y;
 
@@ -443,7 +443,7 @@ void Viewport::RenderTile(const TileRenderingContext& tileContext, RenderingCont
                 };
 
                 const Ray_Simd8 simdRay = tileContext.renderParam.camera.GenerateRay_Simd8(coords, ctx);
-                primaryPacket.PushRays(simdRay, Vector3x8(1.0f), locations);
+                primaryPacket.PushRays(simdRay, Vec3x8f(1.0f), locations);
             }
         }
 
@@ -474,7 +474,7 @@ void Viewport::PerformPostProcess(TaskBuilder& taskBuilder)
         }
     }
 
-    mPostprocessParams.colorScale = Vector4(exp2f(mPostprocessParams.params.exposure));
+    mPostprocessParams.colorScale = Vec4f(exp2f(mPostprocessParams.params.exposure));
 
     if (!mPostprocessLUT.IsGenerated() || mPostprocessParams.lutGenerationRequired)
     {
@@ -519,7 +519,7 @@ void Viewport::PerformPostProcess(TaskBuilder& taskBuilder)
     }
 }
 
-static void ApplyDither(Vector4& color, Random& randomGenerator)
+static void ApplyDither(Vec4f& color, Random& randomGenerator)
 {
     // based on:
     // https://computergraphics.stackexchange.com/questions/5904/whats-a-proper-way-to-clamp-dither-noise/5952#5952
@@ -529,20 +529,20 @@ static void ApplyDither(Vector4& color, Random& randomGenerator)
     const float scale = 255.0f;
 
     // TODO blue noise dithering
-    const Vector4 u1 = randomGenerator.GetVector4();
-    const Vector4 u2 = randomGenerator.GetVector4();
+    const Vec4f u1 = randomGenerator.GetVec4f();
+    const Vec4f u2 = randomGenerator.GetVec4f();
 
     // determine blending factor 't' for triangle/square noise
-    const Vector4 lo = Vector4::Min(Vector4(1.0f), (2.0f * scale) * color);
-    const Vector4 hi = Vector4::NegMulAndAdd(color, 2.0f * scale, Vector4(2.0f * scale));
-    const Vector4 t = Vector4::Min(lo, hi);
+    const Vec4f lo = Vec4f::Min(Vec4f(1.0f), (2.0f * scale) * color);
+    const Vec4f hi = Vec4f::NegMulAndAdd(color, 2.0f * scale, Vec4f(2.0f * scale));
+    const Vec4f t = Vec4f::Min(lo, hi);
 
     // blend between triangle noise (middle range) and square noise (edges)
     // this is roughly equivalent to:
-    //Vector4 ditherTri = u + v - Vector4(1.0f);  // symmetric, triangular dither, [-1;1)
-    //Vector4 ditherNorm = u - Vector4(0.5f);     // symmetric, uniform dither [-0.5;0.5)
-    //Vector4 dither = Vector4::Lerp(ditherNorm, ditherTri, t) + Vector4(0.5f);
-    const Vector4 dither = u1 + t * (u2 - Vector4(0.5f));
+    //Vec4f ditherTri = u + v - Vec4f(1.0f);  // symmetric, triangular dither, [-1;1)
+    //Vec4f ditherNorm = u - Vec4f(0.5f);     // symmetric, uniform dither [-0.5;0.5)
+    //Vec4f dither = Vec4f::Lerp(ditherNorm, ditherTri, t) + Vec4f(0.5f);
+    const Vec4f dither = u1 + t * (u2 - Vec4f(0.5f));
 
     // apply dither
     color += dither * (1.0f / scale);
@@ -565,10 +565,10 @@ void Viewport::PostProcessTile(const Block& block, uint32 threadID)
     {
         for (uint32 x = block.minX; x < block.maxX; ++x)
         {
-            const Vector4 rawValue = Vector4_Load_Float3_Unsafe(mSum.GetPixelRef<Float3>(x, y));
+            const Vec4f rawValue = Vec4f_Load_Vec3f_Unsafe(mSum.GetPixelRef<Vec3f>(x, y));
 
 #ifdef NFE_ENABLE_SPECTRAL_RENDERING
-            Vector4 rgbColor;
+            Vec4f rgbColor;
             if (params.colorSpace == ColorSpace::Rec709)
             {
                 rgbColor = ConvertXYZtoRec709(rawValue);
@@ -581,21 +581,21 @@ void Viewport::PostProcessTile(const Block& block, uint32 threadID)
             {
                 NFE_FATAL("Invalid color space");
             }
-            rgbColor = Vector4::Max(Vector4::Zero(), rgbColor);
+            rgbColor = Vec4f::Max(Vec4f::Zero(), rgbColor);
 #else
-            Vector4 rgbColor = rawValue;
+            Vec4f rgbColor = rawValue;
 #endif
 
             // add bloom
             if (useBloom)
             {
-                Vector4 bloomColor = Vector4::Zero();
+                Vec4f bloomColor = Vec4f::Zero();
                 for (uint32 i = 0; i < mBlurredImages.Size(); ++i)
                 {
-                    const Vector4 blurredColor = Vector4_Load_Float3_Unsafe(mBlurredImages[i].GetPixelRef<Float3>(x, y));
-                    bloomColor = Vector4::MulAndAdd(blurredColor, params.bloom.elements[i].weight, bloomColor);
+                    const Vec4f blurredColor = Vec4f_Load_Vec3f_Unsafe(mBlurredImages[i].GetPixelRef<Vec3f>(x, y));
+                    bloomColor = Vec4f::MulAndAdd(blurredColor, params.bloom.elements[i].weight, bloomColor);
                 }
-                rgbColor = Vector4::Lerp(rgbColor, bloomColor, params.bloom.factor);
+                rgbColor = Vec4f::Lerp(rgbColor, bloomColor, params.bloom.factor);
             }
 
             // scale down by number of rendering passes finished
@@ -607,7 +607,7 @@ void Viewport::PostProcessTile(const Block& block, uint32 threadID)
 
             if (params.filmGrainStrength > 0.0f)
             {
-                const float u = SamplingHelpers::GetFloatNormal(randomGenerator.GetFloat2());
+                const float u = SamplingHelpers::GetFloatNormal(randomGenerator.GetVec2f());
                 rgbColor *= FastExp2(params.filmGrainStrength * u);
             }
 
@@ -644,11 +644,11 @@ float Viewport::ComputeBlockError(const Block& block) const
         float rowError = 0.0f;
         for (uint32 x = block.minX; x < block.maxX; ++x)
         {
-            const Vector4 a = imageScalingFactor * Vector4_Load_Float3_Unsafe(mSum.GetPixelRef<Float3>(x, y));
-            const Vector4 b = (2.0f * imageScalingFactor) * Vector4_Load_Float3_Unsafe(mSecondarySum.GetPixelRef<Float3>(x, y));
-            const Vector4 diff = Vector4::Abs(a - b);
-            const float aLuminance = Vector4::Dot3(c_rgbIntensityWeights, a);
-            const float diffLuminance = Vector4::Dot3(c_rgbIntensityWeights, diff);
+            const Vec4f a = imageScalingFactor * Vec4f_Load_Vec3f_Unsafe(mSum.GetPixelRef<Vec3f>(x, y));
+            const Vec4f b = (2.0f * imageScalingFactor) * Vec4f_Load_Vec3f_Unsafe(mSecondarySum.GetPixelRef<Vec3f>(x, y));
+            const Vec4f diff = Vec4f::Abs(a - b);
+            const float aLuminance = Vec4f::Dot3(c_rgbIntensityWeights, a);
+            const float diffLuminance = Vec4f::Dot3(c_rgbIntensityWeights, diff);
             const float error = diffLuminance / Sqrt(NFE_MATH_EPSILON + aLuminance);
             rowError += error;
         }

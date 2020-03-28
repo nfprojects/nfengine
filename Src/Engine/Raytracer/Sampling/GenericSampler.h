@@ -1,7 +1,7 @@
 #pragma once
 
 #include "../Raytracer.h"
-#include "../../Common/Math/Float3.hpp"
+#include "../../Common/Math/Vec3f.hpp"
 #include "../../Common/Containers/DynArray.hpp"
 
 namespace NFE {
@@ -28,14 +28,14 @@ public:
         return Math::Min(0.999999940395f, static_cast<float>(GetInt()) / 4294967296.0f);
     }
 
-    NFE_FORCE_INLINE const Math::Float2 GetFloat2()
+    NFE_FORCE_INLINE const Math::Vec2f GetVec2f()
     {
-        return Math::Float2{ GetFloat(), GetFloat() };
+        return Math::Vec2f{ GetFloat(), GetFloat() };
     }
 
-    NFE_FORCE_INLINE const Math::Float3 GetFloat3()
+    NFE_FORCE_INLINE const Math::Vec3f GetVec3f()
     {
-        return Math::Float3{ GetFloat(), GetFloat(), GetFloat() };
+        return Math::Vec3f{ GetFloat(), GetFloat(), GetFloat() };
     }
 
     Math::Random* fallbackGenerator = nullptr;

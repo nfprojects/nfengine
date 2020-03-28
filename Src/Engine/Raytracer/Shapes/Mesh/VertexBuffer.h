@@ -4,9 +4,9 @@
 
 #include "VertexBufferDesc.h"
 
-#include "../../../Common/Math/Vector4.hpp"
+#include "../../../Common/Math/Vec4f.hpp"
 #include "../../../Common/Math/Triangle.hpp"
-#include "../../../Common/Math/Float3.hpp"
+#include "../../../Common/Math/Vec3f.hpp"
 #include "../../../Common/Containers/DynArray.hpp"
 
 namespace NFE {
@@ -24,9 +24,9 @@ struct NFE_ALIGN(16) VertexIndices
 
 struct NFE_ALIGN(32) VertexShadingData
 {
-    Math::Float3 normal;
-    Math::Float3 tangent;
-    Math::Float2 texCoord;
+    Math::Vec3f normal;
+    Math::Vec3f tangent;
+    Math::Vec2f texCoord;
 };
 
 

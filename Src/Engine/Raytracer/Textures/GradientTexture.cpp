@@ -8,7 +8,7 @@ namespace RT {
 
 using namespace Math;
 
-GradientTexture::GradientTexture(const Vector4& colorA, const Vector4& colorB, const Plane& plane, float planeDistance)
+GradientTexture::GradientTexture(const Vec4f& colorA, const Vec4f& colorB, const Plane& plane, float planeDistance)
     : mColorA(colorA)
     , mColorB(colorB)
     , mPlane(plane)
@@ -27,10 +27,10 @@ const char* GradientTexture::GetName() const
     return "gradient";
 }
 
-const Vector4 GradientTexture::Evaluate(const Vector4& coords) const
+const Vec4f GradientTexture::Evaluate(const Vec4f& coords) const
 {
     const float t = Saturate(mPlane.PointDistance(coords) * mInvDistance);
-    return Vector4::Lerp(mColorA, mColorB, t);
+    return Vec4f::Lerp(mColorA, mColorB, t);
 }
 
 } // namespace RT

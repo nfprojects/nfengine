@@ -106,11 +106,11 @@ void Material::Compile()
     NFE_ASSERT(IsValid(K) && K >= 0.0f);
 }
 
-const Vector4 Material::GetNormalVector(const Vector4& uv) const
+const Vec4f Material::GetNormalVector(const Vec4f& uv) const
 {
-    const Vector4 z = VECTOR_Z;
+    const Vec4f z = VECTOR_Z;
 
-    Vector4 normal = z;
+    Vec4f normal = z;
 
     if (normalMap)
     {
@@ -122,13 +122,13 @@ const Vector4 Material::GetNormalVector(const Vector4& uv) const
         // reconstruct Z
         normal.z = Sqrt(Max(0.0f, 1.0f - normal.SqrLength2()));
 
-        normal = Vector4::Lerp(z, normal, normalMapStrength);
+        normal = Vec4f::Lerp(z, normal, normalMapStrength);
     }
 
     return normal;
 }
 
-bool Material::GetMaskValue(const Vector4& uv) const
+bool Material::GetMaskValue(const Vec4f& uv) const
 {
     if (maskMap)
     {
@@ -151,7 +151,7 @@ void Material::EvaluateShadingData(const Wavelength& wavelength, ShadingData& sh
 const RayColor Material::Evaluate(
     const Wavelength& wavelength,
     const ShadingData& shadingData,
-    const Vector4& incomingDirWorldSpace,
+    const Vec4f& incomingDirWorldSpace,
     float* outPdfW, float* outReversePdfW) const
 {
     if (!mBSDF)
@@ -159,8 +159,8 @@ const RayColor Material::Evaluate(
         return RayColor::Zero();
     }
 
-    const Vector4 outgoingDirLocalSpace = shadingData.intersection.WorldToLocal(shadingData.outgoingDirWorldSpace);
-    const Vector4 incomingDirLocalSpace = shadingData.intersection.WorldToLocal(incomingDirWorldSpace);
+    const Vec4f outgoingDirLocalSpace = shadingData.intersection.WorldToLocal(shadingData.outgoingDirWorldSpace);
+    const Vec4f incomingDirLocalSpace = shadingData.intersection.WorldToLocal(incomingDirWorldSpace);
 
     const BSDF::EvaluationContext evalContext =
     {
@@ -176,9 +176,9 @@ const RayColor Material::Evaluate(
 
 const RayColor Material::Sample(
     Wavelength& wavelength,
-    Vector4& outIncomingDirWorldSpace,
+    Vec4f& outIncomingDirWorldSpace,
     const ShadingData& shadingData,
-    const Float3& sample,
+    const Vec3f& sample,
     float* outPdfW,
     BSDF::EventType* outSampledEvent) const
 {

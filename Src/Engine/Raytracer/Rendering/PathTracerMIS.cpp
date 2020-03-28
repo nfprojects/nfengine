@@ -57,7 +57,7 @@ const RayColor PathTracerMIS::SampleLight(const Scene& scene, const LightSceneOb
         lightObject->GetTransform(context.time),
         shadingData.intersection,
         context.wavelength,
-        context.sampler.GetFloat3(),
+        context.sampler.GetVec3f(),
     };
 
     // calculate light contribution
@@ -184,7 +184,7 @@ const RayColor PathTracerMIS::EvaluateLight(const LightSceneObject* lightObject,
 
     const Matrix4 worldToLight = lightObject->GetInverseTransform(context.time);
     const Ray lightSpaceRay = worldToLight.TransformRay_Unsafe(ray);
-    const Vector4 lightSpaceHitPoint = worldToLight.TransformPoint(intersection.frame.GetTranslation());
+    const Vec4f lightSpaceHitPoint = worldToLight.TransformPoint(intersection.frame.GetTranslation());
     const float cosAtLight = -intersection.CosTheta(ray.dir);
 
     const ILight::RadianceParam param =
@@ -354,9 +354,9 @@ const RayColor PathTracerMIS::RenderPixel(const Math::Ray& primaryRay, const Ren
 
         // sample BSDF
         float pdf;
-        Vector4 incomingDirWorldSpace;
+        Vec4f incomingDirWorldSpace;
         BSDF::EventType lastSampledBsdfEvent = BSDF::NullEvent;
-        const RayColor bsdfValue = shadingData.intersection.material->Sample(context.wavelength, incomingDirWorldSpace, shadingData, context.sampler.GetFloat3(), &pdf, &lastSampledBsdfEvent);
+        const RayColor bsdfValue = shadingData.intersection.material->Sample(context.wavelength, incomingDirWorldSpace, shadingData, context.sampler.GetVec3f(), &pdf, &lastSampledBsdfEvent);
 
         if (lastSampledBsdfEvent == BSDF::NullEvent)
         {

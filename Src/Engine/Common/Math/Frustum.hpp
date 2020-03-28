@@ -7,7 +7,7 @@
 #pragma once
 
 #include "Math.hpp"
-#include "Vector4.hpp"
+#include "Vec4f.hpp"
 #include "Matrix4.hpp"
 #include "Box.hpp"
 #include "Plane.hpp"
@@ -34,7 +34,7 @@ public:
     };
 
     Plane planes[6];
-    Vector4 verticies[8];
+    Vec4f verticies[8];
     Box boundingBox;
 
     /**
@@ -47,8 +47,8 @@ public:
      * @param nearDist Near plane distance.
      * @param farDist  Far plane distance.
      */
-    static Frustum ConstructForPerspective(const Vector4& origin,
-                                           const Vector4& xAxis, const Vector4& yAxis, const Vector4& zAxis,
+    static Frustum ConstructForPerspective(const Vec4f& origin,
+                                           const Vec4f& xAxis, const Vec4f& yAxis, const Vec4f& zAxis,
                                            float nearDist, float farDist);
 
     /**
@@ -69,7 +69,7 @@ public:
     /**
      * Calculate maximum scalar projection of the shape along @dir direction.
      */
-    float SupportVertex(const Vector4& dir) const;
+    float SupportVertex(const Vec4f& dir) const;
 };
 
 

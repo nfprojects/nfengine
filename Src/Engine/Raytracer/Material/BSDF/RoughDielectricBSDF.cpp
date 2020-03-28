@@ -54,9 +54,9 @@ bool RoughDielectricBSDF::Sample(SamplingContext& ctx) const
 
     // microfacet normal (aka. half vector)
     const Microfacet microfacet(roughness * roughness);
-    const Vector4 m = microfacet.Sample(ctx.sample);
+    const Vec4f m = microfacet.Sample(ctx.sample);
     const float microfacetPdf = microfacet.Pdf(m);
-    const float VdotH = Vector4::Dot3(m, ctx.outgoingDir);
+    const float VdotH = Vec4f::Dot3(m, ctx.outgoingDir);
 
     // compute Fresnel term
     const float F = FresnelDielectric(VdotH, ior);
@@ -64,17 +64,17 @@ bool RoughDielectricBSDF::Sample(SamplingContext& ctx) const
 
     if (reflection)
     {
-        ctx.outIncomingDir = -Vector4::Reflect3(ctx.outgoingDir, m);
+        ctx.outIncomingDir = -Vec4f::Reflect3(ctx.outgoingDir, m);
         ctx.outEventType = GlossyReflectionEvent;
     }
     else // transmission
     {
-        ctx.outIncomingDir = Vector4::Refract3(-ctx.outgoingDir, m, ior);
+        ctx.outIncomingDir = Vec4f::Refract3(-ctx.outgoingDir, m, ior);
         ctx.outEventType = GlossyRefractionEvent;
     }
 
     const float NdotL = ctx.outIncomingDir.z;
-    const float LdotH = Vector4::Dot3(m, ctx.outIncomingDir);
+    const float LdotH = Vec4f::Dot3(m, ctx.outIncomingDir);
 
     if ((NdotV * NdotL > 0.0f) != reflection)
     {
@@ -137,7 +137,7 @@ const RayColor RoughDielectricBSDF::Evaluate(const EvaluationContext& ctx, float
     const bool reflection = NdotV * NdotL >= 0.0f;
 
     // microfacet normal
-    Vector4 m;
+    Vec4f m;
     if (reflection)
     {
         m = ctx.outgoingDir - ctx.incomingDir;
@@ -154,8 +154,8 @@ const RayColor RoughDielectricBSDF::Evaluate(const EvaluationContext& ctx, float
         return RayColor::Zero();
     }
 
-    const float VdotH = Vector4::Dot3(m, ctx.outgoingDir);
-    const float LdotH = Vector4::Dot3(m, -ctx.incomingDir);
+    const float VdotH = Vec4f::Dot3(m, ctx.outgoingDir);
+    const float LdotH = Vec4f::Dot3(m, -ctx.incomingDir);
 
     RayColor color;
     float pdf;
@@ -219,7 +219,7 @@ float RoughDielectricBSDF::Pdf(const EvaluationContext& ctx, PdfDirection dir) c
     const bool reflection = NdotV * NdotL >= 0.0f;
 
     // microfacet normal
-    Vector4 m;
+    Vec4f m;
     if (reflection)
     {
         m = ctx.outgoingDir - ctx.incomingDir;
@@ -236,8 +236,8 @@ float RoughDielectricBSDF::Pdf(const EvaluationContext& ctx, PdfDirection dir) c
         return 0.0f;
     }
 
-    const float VdotH = Vector4::Dot3(m, ctx.outgoingDir);
-    const float LdotH = Vector4::Dot3(m, -ctx.incomingDir);
+    const float VdotH = Vec4f::Dot3(m, ctx.outgoingDir);
+    const float LdotH = Vec4f::Dot3(m, -ctx.incomingDir);
 
     const Microfacet microfacet(roughness * roughness);
     const float F = FresnelDielectric(VdotH, ior);

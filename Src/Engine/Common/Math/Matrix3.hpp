@@ -7,7 +7,7 @@
 #pragma once
 
 #include "Math.hpp"
-#include "Float3.hpp"
+#include "Vec3f.hpp"
 
 #include <initializer_list>
 
@@ -25,26 +25,26 @@ class Matrix3 final
 public:
     union
     {
-        Float3 r[3];
+        Vec3f r[3];
         float f[9];
         float m[3][3];
     };
 
     NFE_INLINE constexpr Matrix3();
-    NFE_INLINE constexpr explicit Matrix3(const Float3& r0, const Float3& r1, const Float3& r2);
+    NFE_INLINE constexpr explicit Matrix3(const Vec3f& r0, const Vec3f& r1, const Vec3f& r2);
     NFE_INLINE explicit Matrix3(const std::initializer_list<float>& list);
 
     /**
      * Access element (read-only).
      */
-    NFE_INLINE const Float3& GetRow(int i) const;
-    NFE_INLINE const Float3& operator[] (int i) const;
+    NFE_INLINE const Vec3f& GetRow(int i) const;
+    NFE_INLINE const Vec3f& operator[] (int i) const;
 
     /**
      * Access element (read-write).
      */
-    NFE_INLINE Float3& GetRow(int i);
-    NFE_INLINE Float3& operator[] (int i);
+    NFE_INLINE Vec3f& GetRow(int i);
+    NFE_INLINE Vec3f& operator[] (int i);
 
     /**
      * Offset matrix element by the same value.
@@ -94,13 +94,13 @@ public:
      * Multiply a 3D vector by a 3x3 matrix.
      * @return  a.x * m.r[0] + a.y * m.r[1]
      */
-    NFE_INLINE Float3 LinearCombination(const Float3& a) const;
+    NFE_INLINE Vec3f LinearCombination(const Vec3f& a) const;
 
     /**
      * Multiply a 2D vector by a 3x3 matrix (affine transformation).
      * @return  a.x * m.r[0] + a.y * m.r[1] + m.r[2].xy
      */
-    NFE_INLINE Float2 AffineTransform2(const Float2& a) const;
+    NFE_INLINE Vec2f AffineTransform2(const Vec2f& a) const;
 
     /**
      * Check if two matrices are (almost) equal.
@@ -111,7 +111,7 @@ public:
 /**
  * Alias for Matrix3::LinearCombination()
  */
-NFE_INLINE Float3 operator* (const Float3& vector, const Matrix3& m);
+NFE_INLINE Vec3f operator* (const Vec3f& vector, const Matrix3& m);
 
 
 } // namespace Math

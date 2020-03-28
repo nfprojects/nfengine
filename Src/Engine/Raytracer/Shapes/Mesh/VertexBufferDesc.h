@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../../../Common/Math/Float3.hpp"
+#include "../../../Common/Math/Vec3f.hpp"
 #include "../../../Common/Containers/SharedPtr.hpp"
 
 namespace NFE {
@@ -18,10 +18,10 @@ struct VertexBufferDesc
     uint32 numMaterials = 0;
 
     const uint32* vertexIndexBuffer = nullptr;
-    const Math::Float3* positions = nullptr;
-    const Math::Float3* normals = nullptr;
-    const Math::Float3* tangents = nullptr;
-    const Math::Float2* texCoords = nullptr;
+    const Math::Vec3f* positions = nullptr;
+    const Math::Vec3f* normals = nullptr;
+    const Math::Vec3f* tangents = nullptr;
+    const Math::Vec2f* texCoords = nullptr;
     const uint32* materialIndexBuffer = nullptr;
     const MaterialPtr* materials = nullptr;
 };

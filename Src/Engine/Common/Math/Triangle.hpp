@@ -1,8 +1,8 @@
 #pragma once
 
 #include "Math.hpp"
-#include "Vector4.hpp"
-#include "Float3.hpp"
+#include "Vec4f.hpp"
+#include "Vec3f.hpp"
 
 
 namespace NFE {
@@ -12,12 +12,12 @@ namespace Math {
 class NFE_ALIGN(16) Triangle
 {
 public:
-    Vector4 v0, v1, v2;
+    Vec4f v0, v1, v2;
 
     NFE_FORCE_INLINE Triangle() = default;
     NFE_FORCE_INLINE Triangle(const Triangle&) = default;
 
-    NFE_FORCE_INLINE Triangle(const Vector4& v0, const Vector4& v1, const Vector4& v2)
+    NFE_FORCE_INLINE Triangle(const Vec4f& v0, const Vec4f& v1, const Vec4f& v2)
         : v0(v0), v1(v1), v2(v2)
     {}
 };
@@ -25,18 +25,18 @@ public:
 class ProcessedTriangle
 {
 public:
-    Float3 v0;
-    Float3 edge1;
-    Float3 edge2;
+    Vec3f v0;
+    Vec3f edge1;
+    Vec3f edge2;
 
     NFE_FORCE_INLINE ProcessedTriangle() = default;
     NFE_FORCE_INLINE ProcessedTriangle(const ProcessedTriangle&) = default;
 
-    NFE_FORCE_INLINE ProcessedTriangle(const Vector4& v0, const Vector4& v1, const Vector4& v2)
+    NFE_FORCE_INLINE ProcessedTriangle(const Vec4f& v0, const Vec4f& v1, const Vec4f& v2)
     {
-        this->v0 = v0.ToFloat3();
-        edge1 = (v1 - v0).ToFloat3();
-        edge2 = (v2 - v0).ToFloat3();
+        this->v0 = v0.ToVec3f();
+        edge1 = (v1 - v0).ToVec3f();
+        edge2 = (v2 - v0).ToVec3f();
     }
 };
 

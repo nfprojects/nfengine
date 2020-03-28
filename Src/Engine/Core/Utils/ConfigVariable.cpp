@@ -8,7 +8,7 @@
 #include "ConfigVariable.hpp"
 
 #include "Engine/Common/Config/Config.hpp"
-#include "Engine/Common/Math/Float4.hpp"
+#include "Engine/Common/Math/Vec4fU.hpp"
 
 
 namespace NFE {
@@ -70,21 +70,21 @@ void ConfigVariable<float>::SetType()
 }
 
 template<>
-void ConfigVariable<Math::Float2>::SetType()
+void ConfigVariable<Math::Vec2f>::SetType()
 {
-    mType = ConfigVarType::Float2;
+    mType = ConfigVarType::Vec2f;
 }
 
 template<>
-void ConfigVariable<Math::Float3>::SetType()
+void ConfigVariable<Math::Vec3f>::SetType()
 {
-    mType = ConfigVarType::Float3;
+    mType = ConfigVarType::Vec3f;
 }
 
 template<>
-void ConfigVariable<Math::Float4>::SetType()
+void ConfigVariable<Math::Vec4fU>::SetType()
 {
-    mType = ConfigVarType::Float4;
+    mType = ConfigVarType::Vec4fU;
 }
 
 
@@ -113,19 +113,19 @@ std::string ConfigVariable<const char*>::ToString() const
 }
 
 template<>
-std::string ConfigVariable<Math::Float2>::ToString() const
+std::string ConfigVariable<Math::Vec2f>::ToString() const
 {
     return '[' + std::to_string(mValue.x) + ", " + std::to_string(mValue.y) + ']';
 }
 
 template<>
-std::string ConfigVariable<Math::Float3>::ToString() const
+std::string ConfigVariable<Math::Vec3f>::ToString() const
 {
     return '[' + std::to_string(mValue.x) + ", " + std::to_string(mValue.y) + ", " + std::to_string(mValue.z) + ']';
 }
 
 template<>
-std::string ConfigVariable<Math::Float4>::ToString() const
+std::string ConfigVariable<Math::Vec4fU>::ToString() const
 {
     return '[' + std::to_string(mValue.x) + ", " + std::to_string(mValue.y) + ", " + std::to_string(mValue.z) + ", " + std::to_string(mValue.w) + ']';
 }

@@ -7,8 +7,8 @@
 #include "PCH.hpp"
 #include "Mipmap.hpp"
 #include "Logger/Logger.hpp"
-#include "Math/Float4.hpp"
-#include "Math/Vector4Load.hpp"
+#include "Math/Vec4fU.hpp"
+#include "Math/Vec4fLoad.hpp"
 
 namespace NFE {
 namespace Common {
@@ -133,7 +133,7 @@ Color Mipmap::FilterGammaCorrected(uint32 x, uint32 y, ImageFormat fmt) const
     c *= c;
     d *= d;
 
-    return Vector4::Sqrt(((a + b) + (c + d)) * 0.25f);
+    return Vec4f::Sqrt(((a + b) + (c + d)) * 0.25f);
 }
 
 Color Mipmap::GetTexel(uint32 x, uint32 y, ImageFormat fmt) const
@@ -144,7 +144,7 @@ Color Mipmap::GetTexel(uint32 x, uint32 y, ImageFormat fmt) const
         {
             // TODO use function similar to VectorLoadUChar4
             uint8* data = static_cast<uint8*>(mData.GetData());
-            Float4 colors;
+            Vec4fU colors;
             colors.x = 1.0f;
             colors.y = 1.0f;
             colors.z = 1.0f;
@@ -156,7 +156,7 @@ Color Mipmap::GetTexel(uint32 x, uint32 y, ImageFormat fmt) const
         {
             // TODO use function similar to VectorLoadUChar4
             uint8* data = static_cast<uint8*>(mData.GetData());
-            Float4 colors;
+            Vec4fU colors;
             colors.x = static_cast<float>(data[(y * mWidth + x)]) / 255.0f;
             colors.y = 0.0f;
             colors.z = 0.0f;
@@ -168,7 +168,7 @@ Color Mipmap::GetTexel(uint32 x, uint32 y, ImageFormat fmt) const
         {
             // TODO use function similar to VectorLoadUChar4
             uint8* data = static_cast<uint8*>(mData.GetData());
-            Float4 colors;
+            Vec4fU colors;
             colors.x = static_cast<float>(data[3 * (y * mWidth + x)]    ) / 255.0f;
             colors.y = static_cast<float>(data[3 * (y * mWidth + x) + 1]) / 255.0f;
             colors.z = static_cast<float>(data[3 * (y * mWidth + x) + 2]) / 255.0f;
@@ -180,7 +180,7 @@ Color Mipmap::GetTexel(uint32 x, uint32 y, ImageFormat fmt) const
         {
             uint8* data = static_cast<uint8*>(mData.GetData());
             data += 4 * (y * mWidth + x);
-            return Vector4_Load_4xUint8(data) * VECTOR_INV_255;
+            return Vec4f_Load_4xUint8(data) * VECTOR_INV_255;
         }
 
         case ImageFormat::R_Float:
@@ -192,7 +192,7 @@ Color Mipmap::GetTexel(uint32 x, uint32 y, ImageFormat fmt) const
 
         case ImageFormat::RGBA_Float:
         {
-            Float4* data = static_cast<Float4*>(mData.GetData());
+            Vec4fU* data = static_cast<Vec4fU*>(mData.GetData());
             data += (y * mWidth + x);
             return Color(*data);
         }
@@ -252,9 +252,9 @@ void Mipmap::SetTexel(const Color& v, uint32 x, uint32 y, ImageFormat fmt)
 
         case ImageFormat::RGBA_Float:
         {
-            Float4* data = static_cast<Float4*>(mData.GetData());
+            Vec4fU* data = static_cast<Vec4fU*>(mData.GetData());
             data += (y * mWidth + x);
-            *data = v.ToFloat4();
+            *data = v.ToVec4fU();
             break;
         }
 

@@ -69,14 +69,14 @@ private:
     {
         const IRenderer& renderer;
         IRenderer::RenderParam renderParam;
-        const Math::Vector4 sampleOffset;
+        const Math::Vec4f sampleOffset;
     };
 
     struct NFE_ALIGN(16) PostprocessParamsInternal
     {
         PostprocessParams params;
 
-        Math::Vector4 colorScale = Math::Vector4::Zero();
+        Math::Vec4f colorScale = Math::Vec4f::Zero();
         bool fullUpdateRequired = false;
         bool lutGenerationRequired = false;
     };
@@ -116,7 +116,7 @@ private:
     Bitmap mFrontBuffer;                // postprocesses image (low dynamic range)
     Common::DynArray<Bitmap> mBlurredImages;    // blurred images for bloom
     Common::DynArray<uint32> mPassesPerPixel;
-    Common::DynArray<Math::Float2> mPixelSalt; // salt value for each pixel
+    Common::DynArray<Math::Vec2f> mPixelSalt; // salt value for each pixel
 
     RenderingParams mParams;
     PostprocessParamsInternal mPostprocessParams;

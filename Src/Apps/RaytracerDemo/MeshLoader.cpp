@@ -179,19 +179,19 @@ public:
                 const bool hasNormals = idx[0].normal_index >= 0 && idx[1].normal_index >= 0 && idx[2].normal_index >= 0;
                 const bool hasTexCoords = idx[0].texcoord_index >= 0 && idx[1].texcoord_index >= 0 && idx[2].texcoord_index >= 0;
 
-                Vector4 verts[3];
+                Vec4f verts[3];
                 for (size_t i = 0; i < 3; i++)
                 {
-                    verts[i] = scale * Vector4(
+                    verts[i] = scale * Vec4f(
                         attrib.vertices[3 * idx[i].vertex_index + 0],
                         attrib.vertices[3 * idx[i].vertex_index + 1],
                         attrib.vertices[3 * idx[i].vertex_index + 2]);
                 }
 
                 // discard degenerate triangles
-                const Vector4 edge1 = verts[1] - verts[0];
-                const Vector4 edge2 = verts[2] - verts[0];
-                const Vector4 edge3 = verts[2] - verts[1];
+                const Vec4f edge1 = verts[1] - verts[0];
+                const Vec4f edge2 = verts[2] - verts[0];
+                const Vec4f edge3 = verts[2] - verts[1];
                 if (edge1.SqrLength3() < MinEdgeLengthSqr ||
                     edge2.SqrLength3() < MinEdgeLengthSqr ||
                     edge3.SqrLength3() < MinEdgeLengthSqr ||
@@ -202,7 +202,7 @@ public:
                 }
 
                 // compute per-face normal
-                const Vector4 faceNormal = Vector4::Cross3(verts[1] - verts[0], verts[2] - verts[0]).Normalized3();
+                const Vec4f faceNormal = Vec4f::Cross3(verts[1] - verts[0], verts[2] - verts[0]).Normalized3();
                 NFE_ASSERT(faceNormal.IsValid());
 
                 for (size_t i = 0; i < 3; i++)
@@ -220,30 +220,30 @@ public:
                         uniqueIndex = mUniqueIndices.Size();
                         mUniqueIndices.Insert(indices, uniqueIndex);
 
-                        mVertexPositions.PushBack(verts[i].ToFloat3());
+                        mVertexPositions.PushBack(verts[i].ToVec3f());
 
                         if (hasNormals)
                         {
-                            const Vector4 normal(
+                            const Vec4f normal(
                                 attrib.normals[3 * indices.normal_index + 0],
                                 attrib.normals[3 * indices.normal_index + 1],
                                 attrib.normals[3 * indices.normal_index + 2]);
-                            mVertexNormals.PushBack(normal.Normalized3().ToFloat3());
+                            mVertexNormals.PushBack(normal.Normalized3().ToVec3f());
                         }
                         else
                         {
                             // fallback to face normal
                             // TODO smooth shading
-                            mVertexNormals.PushBack(faceNormal.ToFloat3());
+                            mVertexNormals.PushBack(faceNormal.ToVec3f());
                         }
 
                         if (hasTexCoords)
                         {
-                            mVertexTexCoords.PushBack(Float2(attrib.texcoords.data() + 2 * idx[i].texcoord_index));
+                            mVertexTexCoords.PushBack(Vec2f(attrib.texcoords.data() + 2 * idx[i].texcoord_index));
                         }
                         else
                         {
-                            mVertexTexCoords.PushBack(Float2());
+                            mVertexTexCoords.PushBack(Vec2f());
                         }
                     }
 
@@ -292,9 +292,9 @@ public:
     {
         mVertexTangents.Resize(mVertexNormals.Size());
 
-        DynArray<Vector4> bitangents;
+        DynArray<Vec4f> bitangents;
         bitangents.Resize(mVertexNormals.Size());
-        memset(bitangents.Data(), 0, bitangents.Size() * sizeof(Vector4));
+        memset(bitangents.Data(), 0, bitangents.Size() * sizeof(Vec4f));
 
         uint32 numTriangles = mVertexIndices.Size() / 3;
         for (uint32 i = 0; i < numTriangles; ++i)
@@ -306,15 +306,15 @@ public:
             const uint32 i1 = mVertexIndices[3 * i + 1];
             const uint32 i2 = mVertexIndices[3 * i + 2];
 
-            const Vector4 p0(mVertexPositions[i0]);
-            const Vector4 p1(mVertexPositions[i1]);
-            const Vector4 p2(mVertexPositions[i2]);
-            const Vector4 e1 = p1 - p0;
-            const Vector4 e2 = p2 - p0;
+            const Vec4f p0(mVertexPositions[i0]);
+            const Vec4f p1(mVertexPositions[i1]);
+            const Vec4f p2(mVertexPositions[i2]);
+            const Vec4f e1 = p1 - p0;
+            const Vec4f e2 = p2 - p0;
 
-            const Float2& w0 = mVertexTexCoords[i0];
-            const Float2& w1 = mVertexTexCoords[i1];
-            const Float2& w2 = mVertexTexCoords[i2];
+            const Vec2f& w0 = mVertexTexCoords[i0];
+            const Vec2f& w1 = mVertexTexCoords[i1];
+            const Vec2f& w2 = mVertexTexCoords[i2];
             const float s1 = w1.x - w0.x;
             const float t1 = w1.y - w0.y;
             const float s2 = w2.x - w0.x;
@@ -327,15 +327,15 @@ public:
             }
 
             const float r = 1.0f / det;
-            const Vector4 sdir = (t2 * e1 - t1 * e2) * r;
-            const Vector4 tdir = (s1 * e2 - s2 * e1) * r;
+            const Vec4f sdir = (t2 * e1 - t1 * e2) * r;
+            const Vec4f tdir = (s1 * e2 - s2 * e1) * r;
 
             NFE_ASSERT(sdir.IsValid());
             NFE_ASSERT(tdir.IsValid());
 
-            mVertexTangents[i0] += sdir.ToFloat3();
-            mVertexTangents[i1] += sdir.ToFloat3();
-            mVertexTangents[i2] += sdir.ToFloat3();
+            mVertexTangents[i0] += sdir.ToVec3f();
+            mVertexTangents[i1] += sdir.ToVec3f();
+            mVertexTangents[i2] += sdir.ToVec3f();
 
             bitangents[i0] += tdir;
             bitangents[i1] += tdir;
@@ -345,9 +345,9 @@ public:
         uint32 numVertices = static_cast<uint32>(mVertexPositions.Size());
         for (uint32 i = 0; i < numVertices; ++i)
         {
-            Vector4 tangent(mVertexTangents[i]);
-            Vector4 normal(mVertexNormals[i]);
-            Vector4 bitangent(bitangents[i]);
+            Vec4f tangent(mVertexTangents[i]);
+            Vec4f normal(mVertexNormals[i]);
+            Vec4f bitangent(bitangents[i]);
 
             NFE_ASSERT(tangent.IsValid());
             NFE_ASSERT(normal.IsValid());
@@ -357,9 +357,9 @@ public:
             if (tangent.SqrLength3() > 0.1f)
             {
                 tangent.Normalize3();
-                if (Vector4::Cross3(tangent, normal).SqrLength3() > 0.01f)
+                if (Vec4f::Cross3(tangent, normal).SqrLength3() > 0.01f)
                 {
-                    tangent = Vector4::Orthogonalize(tangent, normal);
+                    tangent = Vec4f::Orthogonalize(tangent, normal);
                     tangentIsValid = true;
                 }
             }
@@ -371,14 +371,14 @@ public:
             tangent.Normalize3();
 
             NFE_ASSERT(tangent.IsValid());
-            NFE_ASSERT(Abs(Vector4::Dot3(normal, tangent)) < 0.0001f, "Normal and tangent vectors are not orthogonal");
+            NFE_ASSERT(Abs(Vec4f::Dot3(normal, tangent)) < 0.0001f, "Normal and tangent vectors are not orthogonal");
 
             // Calculate handedness
-            const Vector4 computedBitangent = Vector4::Cross3(normal, tangent);
-            float headedness = Vector4::Dot3(computedBitangent, bitangent) < 0.0f ? -1.0f : 1.0f;
+            const Vec4f computedBitangent = Vec4f::Cross3(normal, tangent);
+            float headedness = Vec4f::Dot3(computedBitangent, bitangent) < 0.0f ? -1.0f : 1.0f;
             (void)headedness; // TODO
 
-            mVertexTangents[i] = tangent.ToFloat3();
+            mVertexTangents[i] = tangent.ToVec3f();
         }
     }
 
@@ -412,10 +412,10 @@ private:
 
     DynArray<uint32> mVertexIndices;
     DynArray<uint32> mMaterialIndices;
-    DynArray<Float3> mVertexPositions;
-    DynArray<Float3> mVertexNormals;
-    DynArray<Float3> mVertexTangents;
-    DynArray<Float2> mVertexTexCoords;
+    DynArray<Vec3f> mVertexPositions;
+    DynArray<Vec3f> mVertexNormals;
+    DynArray<Vec3f> mVertexTangents;
+    DynArray<Vec2f> mVertexTexCoords;
     DynArray<MaterialPtr> mMaterialPointers;
     HashMap<tinyobj::index_t, uint32, TriangleIndicesHash, TriangleIndicesComparator> mUniqueIndices;
 };

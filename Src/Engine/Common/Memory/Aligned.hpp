@@ -34,38 +34,52 @@ class Aligned
 public:
     static_assert(Math::IsPowerOfTwo(Alignment), "'Alignment' template parameter must be a power of two.");
 
-    void* operator new(size_t size)
+    NFE_FORCE_INLINE void* operator new(size_t size)
     {
         return NFE_MALLOC(size, Alignment);
     }
 
-    void operator delete(void* ptr)
+    NFE_FORCE_INLINE void operator delete(void* ptr)
     {
         NFE_FREE(ptr);
     }
 
-    void* operator new[](size_t size)
+    NFE_FORCE_INLINE void* operator new[](size_t size)
     {
         return NFE_MALLOC(size, Alignment);
     }
 
-    void operator delete[](void* ptr)
+    NFE_FORCE_INLINE void operator delete[](void* ptr)
     {
         NFE_FREE(ptr);
     }
 
     // placement new
-    void* operator new(size_t size, void* ptr)
+    NFE_FORCE_INLINE void* operator new(size_t size, void* ptr)
     {
         NFE_UNUSED(size);
         return ptr;
     }
 
     // placement new (array)
-    void* operator new[](size_t size, void* ptr)
+    NFE_FORCE_INLINE void* operator new[](size_t size, void* ptr)
     {
         NFE_UNUSED(size);
         return ptr;
+    }
+
+    // placement delete
+    NFE_FORCE_INLINE void operator delete(void* ptr, void* place)
+    {
+        NFE_UNUSED(ptr);
+        NFE_UNUSED(place);
+    }
+
+    // placement delete (array)
+    NFE_FORCE_INLINE void operator delete[](void* ptr, void* place)
+    {
+        NFE_UNUSED(ptr);
+        NFE_UNUSED(place);
     }
 };
 

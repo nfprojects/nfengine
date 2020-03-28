@@ -2,8 +2,8 @@
 #include "PostProcess.h"
 #include "Tonemapping.h"
 #include "../Common/Math/Transcendental.hpp"
-#include "../Common/Math/VectorInt4.hpp"
-#include "../Common/Math/Vector4Load.hpp"
+#include "../Common/Math/Vec4i.hpp"
+#include "../Common/Math/Vec4fLoad.hpp"
 #include "../Common/Containers/StaticArray.hpp"
 #include "../Common/Reflection/ReflectionClassDefine.hpp"
 #include "../Common/Reflection/Types/ReflectionUniquePtrType.hpp"
@@ -99,26 +99,26 @@ PostprocessParams::PostprocessParams()
 
 PostprocessParams::~PostprocessParams() = default;
 
-const Vector4 PostprocessParams::Process(const Vector4& inputColor) const
+const Vec4f PostprocessParams::Process(const Vec4f& inputColor) const
 {
-    Vector4 color = inputColor;
+    Vec4f color = inputColor;
 
     // apply gain
     {
-        color *= colorGradingParams.gain.ToVector4();
+        color *= colorGradingParams.gain.ToVec4f();
     }
 
     // apply saturation
     {
-        const float grayscale = Vector4::Dot3(color, c_rgbIntensityWeights);
-        color = Vector4::Max(Vector4::Zero(), Vector4::Lerp(Vector4(grayscale), color, colorGradingParams.saturation));
+        const float grayscale = Vec4f::Dot3(color, c_rgbIntensityWeights);
+        color = Vec4f::Max(Vec4f::Zero(), Vec4f::Lerp(Vec4f(grayscale), color, colorGradingParams.saturation));
     }
 
     // apply contrast
     {
-        const Vector4 logMidpoint(colorGradingParams.contrastMidPoint);
-        const Vector4 logColor = FastLog(color);
-        const Vector4 adjColor = logMidpoint + (logColor - logMidpoint) * colorGradingParams.contrast.ToVector4();
+        const Vec4f logMidpoint(colorGradingParams.contrastMidPoint);
+        const Vec4f logColor = FastLog(color);
+        const Vec4f adjColor = logMidpoint + (logColor - logMidpoint) * colorGradingParams.contrast.ToVec4f();
         color = FastExp(adjColor);
     }
 
@@ -133,7 +133,7 @@ const Vector4 PostprocessParams::Process(const Vector4& inputColor) const
 
     if (colorGradingParams.negative)
     {
-        color = Vector4(1.0f) - color;
+        color = Vec4f(1.0f) - color;
     }
 
     return color;
@@ -198,8 +198,8 @@ bool PostprocessLUT::Generate(const PostprocessParams& params)
             {
                 const float r = precomputedColorValues[x];
 
-                const Vector4 inputColor(r, g, b);
-                const Vector4 outputColor = params.Process(inputColor);
+                const Vec4f inputColor(r, g, b);
+                const Vec4f outputColor = params.Process(inputColor);
 
                 mLUT[index++] = outputColor.ToHalf4();
             }
@@ -209,21 +209,23 @@ bool PostprocessLUT::Generate(const PostprocessParams& params)
     return true;
 }
 
-const Vector4 PostprocessLUT::Sample(const Vector4& inputColor) const
+#pragma optimize("",off)
+
+const Vec4f PostprocessLUT::Sample(const Vec4f& inputColor) const
 {
     const uint32 lutSize = 1 << mSizeShift;
 
-    const Vector4 color = Vector4::Clamp(inputColor, Vector4(mMinValue), Vector4(mMaxValue));
-    const Vector4 coord = mScale * FastLog2(color) + Vector4(mBias);
+    const Vec4f color = Vec4f::Clamp(inputColor, Vec4f(mMinValue), Vec4f(mMaxValue));
+    const Vec4f coord = mScale * FastLog2(color) + Vec4f(mBias);
 
     // compute texel coordinates
-    const Vector4 scaledCoords = coord * static_cast<float>(lutSize - 1u);
+    const Vec4f scaledCoords = coord * static_cast<float>(lutSize - 1u);
 
-    const VectorInt4 coordsA = VectorInt4::TruncateAndConvert(scaledCoords);
-    NFE_ASSERT(((coordsA >= VectorInt4::Zero()) & (coordsA < VectorInt4(lutSize))).All3());
+    const Vec4i coordsA = Vec4i::TruncateAndConvert(scaledCoords);
+    NFE_ASSERT(((coordsA >= Vec4i::Zero()) & (coordsA < Vec4i(lutSize))).All3());
 
-    const VectorInt4 coordsB = VectorInt4::Min(coordsA + VectorInt4(1u), VectorInt4(lutSize - 1));
-    NFE_ASSERT(((coordsB >= VectorInt4::Zero()) & (coordsB < VectorInt4(lutSize))).All3());
+    const Vec4i coordsB = Vec4i::Min(coordsA + Vec4i(1u), Vec4i(lutSize - 1));
+    NFE_ASSERT(((coordsB >= Vec4i::Zero()) & (coordsB < Vec4i(lutSize))).All3());
 
     // trilinear interpolation
 
@@ -232,29 +234,29 @@ const Vector4 PostprocessLUT::Sample(const Vector4& inputColor) const
     const Half4* rowData2 = mLUT + ((coordsA.y + (coordsB.z << mSizeShift)) << mSizeShift);
     const Half4* rowData3 = mLUT + ((coordsB.y + (coordsB.z << mSizeShift)) << mSizeShift);
 
-    Vector4 colors[8] =
+    Vec4f colors[8] =
     {
-        Vector4::FromHalf4(rowData0[coordsA.x]),
-        Vector4::FromHalf4(rowData0[coordsB.x]),
-        Vector4::FromHalf4(rowData1[coordsA.x]),
-        Vector4::FromHalf4(rowData1[coordsB.x]),
-        Vector4::FromHalf4(rowData2[coordsA.x]),
-        Vector4::FromHalf4(rowData2[coordsB.x]),
-        Vector4::FromHalf4(rowData3[coordsA.x]),
-        Vector4::FromHalf4(rowData3[coordsB.x]),
+        Vec4f::FromHalf4(rowData0[coordsA.x]),
+        Vec4f::FromHalf4(rowData0[coordsB.x]),
+        Vec4f::FromHalf4(rowData1[coordsA.x]),
+        Vec4f::FromHalf4(rowData1[coordsB.x]),
+        Vec4f::FromHalf4(rowData2[coordsA.x]),
+        Vec4f::FromHalf4(rowData2[coordsB.x]),
+        Vec4f::FromHalf4(rowData3[coordsA.x]),
+        Vec4f::FromHalf4(rowData3[coordsB.x]),
     };
 
-    const Vector4 weights = scaledCoords - coordsA.ConvertToFloat();
+    const Vec4f weights = scaledCoords - coordsA.ConvertToVec4f();
 
-    const Vector4 value00 = Vector4::Lerp(colors[0], colors[1], weights.SplatX());
-    const Vector4 value01 = Vector4::Lerp(colors[2], colors[3], weights.SplatX());
-    const Vector4 value10 = Vector4::Lerp(colors[4], colors[5], weights.SplatX());
-    const Vector4 value11 = Vector4::Lerp(colors[6], colors[7], weights.SplatX());
+    const Vec4f value00 = Vec4f::Lerp(colors[0], colors[1], weights.SplatX());
+    const Vec4f value01 = Vec4f::Lerp(colors[2], colors[3], weights.SplatX());
+    const Vec4f value10 = Vec4f::Lerp(colors[4], colors[5], weights.SplatX());
+    const Vec4f value11 = Vec4f::Lerp(colors[6], colors[7], weights.SplatX());
 
-    const Vector4 value0 = Vector4::Lerp(value00, value01, weights.SplatY());
-    const Vector4 value1 = Vector4::Lerp(value10, value11, weights.SplatY());
+    const Vec4f value0 = Vec4f::Lerp(value00, value01, weights.SplatY());
+    const Vec4f value1 = Vec4f::Lerp(value10, value11, weights.SplatY());
 
-    return Vector4::Lerp(value0, value1, weights.SplatZ());
+    return Vec4f::Lerp(value0, value1, weights.SplatZ());
 }
 
 } // namespace RT

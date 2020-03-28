@@ -28,7 +28,7 @@ bool MetalBSDF::Sample(SamplingContext& ctx) const
     const float F = FresnelMetal(NdotV, ctx.material.IoR, ctx.material.K);
 
     ctx.outColor = ctx.materialParam.baseColor * RayColor(F);
-    ctx.outIncomingDir = -Vector4::Reflect3(ctx.outgoingDir, VECTOR_Z);
+    ctx.outIncomingDir = -Vec4f::Reflect3(ctx.outgoingDir, VECTOR_Z);
     ctx.outPdf = 1.0f;
     ctx.outEventType = SpecularReflectionEvent;
 

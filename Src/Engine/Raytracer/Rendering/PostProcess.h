@@ -18,7 +18,7 @@ enum class ColorSpace : uint8
     Rec2020,
 };
 
-class NFE_ALIGN(16) BloomElement
+class BloomElement
 {
     NFE_DECLARE_CLASS(BloomElement);
 public:
@@ -28,7 +28,7 @@ public:
     uint32 numBlurPasses = 8;
 };
 
-class NFE_ALIGN(16) BloomParams
+class BloomParams
 {
     NFE_DECLARE_CLASS(BloomParams);
 public:
@@ -61,7 +61,7 @@ public:
     ColorGradingParams();
 };
 
-class NFE_ALIGN(16) PostprocessParams
+class NFE_ALIGN(16) PostprocessParams : public Common::Aligned<16>
 {
     NFE_DECLARE_CLASS(PostprocessParams);
 
@@ -85,7 +85,7 @@ public:
     NFE_RAYTRACER_API PostprocessParams();
     NFE_RAYTRACER_API ~PostprocessParams();
 
-    const Math::Vector4 Process(const Math::Vector4& inputColor) const;
+    const Math::Vec4f Process(const Math::Vec4f& inputColor) const;
 };
 
 class PostprocessLUT
@@ -97,7 +97,7 @@ public:
     bool Generate(const PostprocessParams& postprocessParams);
 
     // sample LUT
-    const Math::Vector4 Sample(const Math::Vector4& inputColor) const;
+    const Math::Vec4f Sample(const Math::Vec4f& inputColor) const;
 
     NFE_FORCE_INLINE bool IsGenerated() const { return mLUT != nullptr; }
 

@@ -11,8 +11,8 @@ public:
     NFE_RAYTRACER_API MixTexture(const TexturePtr& textureA, const TexturePtr& textureB, const TexturePtr& textureMask);
 
     virtual const char* GetName() const override;
-    virtual const Math::Vector4 Evaluate(const Math::Vector4& coords) const override;
-    virtual const Math::Vector4 Sample(const Math::Float2 u, Math::Vector4& outCoords, float* outPdf) const override;
+    virtual const Math::Vec4f Evaluate(const Math::Vec4f& coords) const override;
+    virtual const Math::Vec4f Sample(const Math::Vec2f u, Math::Vec4f& outCoords, float* outPdf) const override;
 
 private:
     TexturePtr mTextureA;

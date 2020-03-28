@@ -18,7 +18,7 @@ float PhaseFunction::Eval(const float cosTheta, const float g)
     return 0.25f * NFE_MATH_INV_PI * (1.0f - g * g) / (denom * Sqrt(denom));
 }
 
-float PhaseFunction::Sample(const Vector4& outDir, Vector4& inDir, const float g, const Float2& u)
+float PhaseFunction::Sample(const Vec4f& outDir, Vec4f& inDir, const float g, const Vec2f& u)
 {
     float cosTheta;
     if (Abs(g) < 1.0e-3f)
@@ -37,10 +37,10 @@ float PhaseFunction::Sample(const Vector4& outDir, Vector4& inDir, const float g
         const float sinTheta = sqrtf(1.0f - cosTheta * cosTheta);
         const float phi = 2.0f * NFE_MATH_PI * u.y;
 
-        Vector4 dirLocalSpace = sinTheta * SinCos(phi);
+        Vec4f dirLocalSpace = sinTheta * SinCos(phi);
         dirLocalSpace.z = cosTheta;
 
-        Vector4 v1, v2;
+        Vec4f v1, v2;
         BuildOrthonormalBasis(outDir, v1, v2);
         inDir = v1 * dirLocalSpace.x + v2 * dirLocalSpace.y - outDir * dirLocalSpace.z;
     }

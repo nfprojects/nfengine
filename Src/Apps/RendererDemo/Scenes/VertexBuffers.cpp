@@ -115,7 +115,7 @@ bool VertexBuffersScene::CreateBuffers(bool withInstanceBuffer, BufferMode verte
             mInstancesData[i].pos.x = random.GetFloatBipolar();
             mInstancesData[i].pos.y = random.GetFloatBipolar();
             mInstancesData[i].pos.z = random.GetFloatBipolar();
-            mInstancesData[i].color = random.GetFloat4();
+            mInstancesData[i].color = random.GetVec4fU();
 
             mVelocities[i].x = random.GetFloatBipolar();
             mVelocities[i].y = random.GetFloatBipolar();
@@ -320,7 +320,7 @@ void VertexBuffersScene::Draw(float dt)
     if (gFrameIndex == 0)
     {
         // clear target
-        const Float4 color(0.0f, 0.0f, 0.0f, 1.0f);
+        const Vec4fU color(0.0f, 0.0f, 0.0f, 1.0f);
         mCommandBuffer->Clear(ClearFlagsColor, 1, nullptr, &color);
     }
 

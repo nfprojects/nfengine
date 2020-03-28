@@ -7,14 +7,14 @@
 namespace NFE {
 namespace Math {
 
-float ClosestPointOnSegment(const Vector4& p, const Vector4& p1, const Vector4& p2, Vector4& out)
+float ClosestPointOnSegment(const Vec4f& p, const Vec4f& p1, const Vec4f& p2, Vec4f& out)
 {
-    Vector4 ab = p2 - p1;
-    float dot = Vector4::Dot3(p - p1, ab);
-    float len_sq = Vector4::Dot3(ab, ab);
+    Vec4f ab = p2 - p1;
+    float dot = Vec4f::Dot3(p - p1, ab);
+    float len_sq = Vec4f::Dot3(ab, ab);
     float param = dot / len_sq;
 
-    Vector4 result;
+    Vec4f result;
     if (param < 0.0f)
         result = p1;
     else if (param > 1.0f)
@@ -74,7 +74,7 @@ bool Intersect(const Box& box, const Frustum& frustum)
     for (int i = 0; i < 6; i++)
     {
         const Plane& plane = frustum.planes[i];
-        const Vector4 vmax = Vector4::Select(box.max, box.min, plane.v < Vector4::Zero());
+        const Vec4f vmax = Vec4f::Select(box.max, box.min, plane.v < Vec4f::Zero());
         if (!plane.Side(vmax))
         {
             return false;
@@ -111,8 +111,8 @@ IntersectionResult IntersectEx(const Box& box, const Frustum& frustum)
     for (int i = 0; i < 6; i++)
     {
         const Plane& plane = frustum.planes[i];
-        const Vector4 vmax = Vector4::Select(box.max, box.min, plane.v < Vector4::Zero());
-        const Vector4 vmin = Vector4::Select(box.min, box.max, plane.v < Vector4::Zero());
+        const Vec4f vmax = Vec4f::Select(box.max, box.min, plane.v < Vec4f::Zero());
+        const Vec4f vmin = Vec4f::Select(box.min, box.max, plane.v < Vec4f::Zero());
 
         if (!plane.Side(vmax))
             return IntersectionResult::Outside;
@@ -164,7 +164,7 @@ bool Intersect(const Frustum& f1, const Frustum& f2)
 
 // Point-frustum intersection test
 template<> NFCOMMON_API
-bool Intersect(const Vector4& point, const Frustum& frustum)
+bool Intersect(const Vec4f& point, const Frustum& frustum)
 {
     for (int i = 0; i < 6; i++)
     {
@@ -215,19 +215,19 @@ bool Intersect(const Triangle& tri, const Frustum& frustum)
 
 // Point-sphere intersection test
 template<> NFCOMMON_API
-bool Intersect(const Vector4& point, const Sphere& sphere)
+bool Intersect(const Vec4f& point, const Sphere& sphere)
 {
-    Vector4 segment = point - sphere.origin;
-    return Vector4::Dot3(segment, segment) <= sphere.r * sphere.r;
+    Vec4f segment = point - sphere.origin;
+    return Vec4f::Dot3(segment, segment) <= sphere.r * sphere.r;
 }
 
 // Sphere-sphere intersection test
 template<> NFCOMMON_API
 bool Intersect(const Sphere& sphere1, const Sphere& sphere2)
 {
-    Vector4 segment = sphere1.origin - sphere2.origin;
+    Vec4f segment = sphere1.origin - sphere2.origin;
     float radiiSum = sphere1.r + sphere2.r;
-    return Vector4::Dot3(segment, segment) <= radiiSum * radiiSum;
+    return Vec4f::Dot3(segment, segment) <= radiiSum * radiiSum;
 }
 
 // Box-sphere intersection test
@@ -277,12 +277,12 @@ bool Intersect(const Frustum& frustum, const Sphere& sphere)
 
     // find the nearest point on frustum's edges to the sphere center
     // TODO: optimize - each ClosestPointOnSegment() call does division
-    Vector4 nearest;
+    Vec4f nearest;
     float dist = std::numeric_limits<float>::max();
 
     auto check = [&] (const int i, const int j)
     {
-        Vector4 tmpNearest;
+        Vec4f tmpNearest;
         float tmpDist;
         tmpDist = ClosestPointOnSegment(sphere.origin, frustum.verticies[i], frustum.verticies[j],
             tmpNearest);
@@ -328,14 +328,14 @@ bool Intersect(const Frustum& frustum, const Sphere& sphere)
     return false;
 }
 
-const Vector4 CartesianToSphericalCoordinates(const Vector4& input)
+const Vec4f CartesianToSphericalCoordinates(const Vec4f& input)
 {
     const float theta = FastACos(Clamp(input.y, -1.0f, 1.0f));
     const float phi = Abs(input.x) > FLT_EPSILON ? FastATan2(input.z, input.x) : 0.0f;
-    return Vector4(phi / (2.0f * NFE_MATH_PI) + 0.5f, theta / NFE_MATH_PI, 0.0f, 0.0f);
+    return Vec4f(phi / (2.0f * NFE_MATH_PI) + 0.5f, theta / NFE_MATH_PI, 0.0f, 0.0f);
 }
 
-void BuildOrthonormalBasis(const Vector4& n, Vector4& u, Vector4& v)
+void BuildOrthonormalBasis(const Vec4f& n, Vec4f& u, Vec4f& v)
 {
     // algorithm based on "Building an Orthonormal Basis, Revisited" (2017) paper
     // by T. Duff, J. Burgess, P. Christensen, C. Hery, A. Kensler, M. Liani, and R. Villemin
@@ -343,12 +343,12 @@ void BuildOrthonormalBasis(const Vector4& n, Vector4& u, Vector4& v)
     const float sign = CopySign(1.0f, n.z);
     const float a = -1.0f / (sign + n.z);
 
-    u = Vector4(
+    u = Vec4f(
         1.0f + sign * n.x * n.x * a,
         sign * n.x * n.y * a,
         -sign * n.x);
 
-    v = Vector4(
+    v = Vec4f(
         n.x * n.y * a,
         sign + n.y * n.y * a,
         -n.y);

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Vector4.hpp"
+#include "Vec4f.hpp"
 
 
 namespace NFE {
@@ -9,24 +9,24 @@ namespace Math {
 /**
  * Sphere
  */
-class NFE_ALIGN(16) Sphere
+class NFE_ALIGN(16) Sphere : public Common::Aligned<16>
 {
 public:
-    Vector4 origin; //< Sphere center
+    Vec4f origin; //< Sphere center
     float r; //< Sphere radius
 
     NFE_FORCE_INLINE Sphere()
         : origin(), r()
     {}
 
-    NFE_FORCE_INLINE Sphere(const Vector4& origin, float r)
+    NFE_FORCE_INLINE Sphere(const Vec4f& origin, float r)
         : origin(origin), r(r)
     {}
 
-    NFE_FORCE_INLINE float SupportVertex(const Vector4& dir) const
+    NFE_FORCE_INLINE float SupportVertex(const Vec4f& dir) const
     {
-        Vector4 pos = origin + r * dir;
-        return Vector4::Dot3(dir, pos);
+        Vec4f pos = origin + r * dir;
+        return Vec4f::Dot3(dir, pos);
     }
 };
 

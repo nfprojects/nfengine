@@ -2,12 +2,12 @@
 
 #include "../nfCommon.hpp"
 
-#include "Float2.hpp"
-#include "Float3.hpp"
-#include "Vector4.hpp"
-#include "Vector2x8.hpp"
-#include "VectorInt4.hpp"
-#include "VectorInt8.hpp"
+#include "Vec2f.hpp"
+#include "Vec3f.hpp"
+#include "Vec4f.hpp"
+#include "Vec2x8f.hpp"
+#include "Vec4i.hpp"
+#include "Vec8i.hpp"
 
 namespace NFE {
 namespace Math {
@@ -28,19 +28,19 @@ public:
     float GetFloat();
     double GetDouble();
 
-    NFE_FORCE_INLINE const Float2 GetFloat2()
+    NFE_FORCE_INLINE const Vec2f GetVec2f()
     {
-        return GetVector4().ToFloat2();
+        return GetVec4f().ToVec2f();
     }
 
-    NFE_FORCE_INLINE const Float3 GetFloat3()
+    NFE_FORCE_INLINE const Vec3f GetVec3f()
     {
-        return GetVector4().ToFloat3();
+        return GetVec4f().ToVec3f();
     }
 
-    NFE_FORCE_INLINE const Float3 GetFloat4()
+    NFE_FORCE_INLINE const Vec3f GetVec4fU()
     {
-        return GetVector4().ToFloat4();
+        return GetVec4f().ToVec4fU();
     }
 
     // Generate random float with uniform distribution from range [-1.0f, 1.0f)
@@ -49,17 +49,17 @@ public:
 
     // generate random vector of 4 elements from range [0.0f, 1.0f)
     // this is much faster that using GetFloat() 4 times
-    const Vector4 GetVector4();
+    const Vec4f GetVec4f();
 
     // generate random vector of 4 elements from range [-1.0f, 1.0f)
-    const Vector4 GetVector4Bipolar();
+    const Vec4f GetVec4fBipolar();
 
     // generate random vector of 8 elements from range [0.0f, 1.0f)
     // this is much faster that using GetFloat() 8 times
-    const Vector8 GetVector8();
+    const Vec8f GetVec8f();
 
     // generate random vector of 8 elements from range [-1.0f, 1.0f)
-    const Vector8 GetVector8Bipolar();
+    const Vec8f GetVec8fBipolar();
 
     /**
      * Fisher-Yates shuffle algorithm.
@@ -96,14 +96,14 @@ public:
     }
 
 private:
-    NFE_FORCE_INLINE VectorInt8 GetIntVector8();
-    NFE_FORCE_INLINE VectorInt4 GetIntVector4();
+    NFE_FORCE_INLINE Vec8i GetVec8i();
+    NFE_FORCE_INLINE Vec4i GetVec4i();
 
 #ifdef NFE_USE_AVX2
-    VectorInt8 mSeedSimd8[2];
+    Vec8i mSeedSimd8[2];
 #endif // NFE_USE_AVX2
 
-    VectorInt4 mSeedSimd4[2];
+    Vec4i mSeedSimd4[2];
 
     uint64 mSeed[2];
 };

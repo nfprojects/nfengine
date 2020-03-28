@@ -24,9 +24,9 @@ enum class ConfigVarType
 {
     Integer,
     Float,
-    Float2,
-    Float3,
-    Float4,
+    Vec2f,
+    Vec3f,
+    Vec4fU,
     Bool,
     String,
 };

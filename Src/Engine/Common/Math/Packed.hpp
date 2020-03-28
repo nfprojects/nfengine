@@ -1,8 +1,8 @@
 #pragma once
 
 #include "Math.hpp"
-#include "Vector4.hpp"
-#include "VectorInt4.hpp"
+#include "Vec4f.hpp"
+#include "Vec4i.hpp"
 
 namespace NFE {
 namespace Math {
@@ -11,7 +11,7 @@ namespace Math {
 // 4-byte compressed 3D unit vector
 // Based on "Signed Octahedron Normal Encoding" scheme:
 // the vector is first mapped to surface of octahedron and then to [-1,1] square
-// Note: accuracy somewhere between Float3 and Half3
+// Note: accuracy somewhere between Vec3f and Half3
 class PackedUnitVector3
 {
 public:
@@ -22,36 +22,36 @@ public:
     NFE_FORCE_INLINE PackedUnitVector3(const PackedUnitVector3&) = default;
     NFE_FORCE_INLINE PackedUnitVector3& operator = (const PackedUnitVector3&) = default;
     
-    void FromVector(const Vector4& input)
+    void FromVector(const Vec4f& input)
     {
-        const Vector4 vAbs = Vector4::Abs(input);
-        Vector4 n = input / (vAbs.x + vAbs.y + vAbs.z);
+        const Vec4f vAbs = Vec4f::Abs(input);
+        Vec4f n = input / (vAbs.x + vAbs.y + vAbs.z);
 
         if (input.z < 0.0f)
         {
             //(1.0 - abs(v.yx))* (v.xy >= 0.0 ? 1.0 : -1.0);
             n = n.Swizzle<1, 0, 1, 0>();
-            n = (Vector4(1.0f) - Vector4::Abs(n)).ChangeSign(input < Vector4::Zero());
+            n = (Vec4f(1.0f) - Vec4f::Abs(n)).ChangeSign(input < Vec4f::Zero());
         }
 
-        const VectorInt4 i = VectorInt4::Convert(n * Scale);
+        const Vec4i i = Vec4i::Convert(n * Scale);
         u = static_cast<int16>(i.x);
         v = static_cast<int16>(i.y);
     }
 
-    const Vector4 ToVector() const
+    const Vec4f ToVector() const
     {
-        Vector4 f = Vector4::FromIntegers(u, v, 0, 0) * (1.0f / Scale);
+        Vec4f f = Vec4f::FromIntegers(u, v, 0, 0) * (1.0f / Scale);
 
         // based on: https://twitter.com/Stubbesaurus/status/937994790553227264
 
-        const Vector4 fAbs = Vector4::Abs(f);
+        const Vec4f fAbs = Vec4f::Abs(f);
         f.z = 1.0f - fAbs.x - fAbs.y;
 
         // t = Max([-f.z, -f.z, 0, 0], 0)
-        const Vector4 t = Vector4::Max(-f.Swizzle<2, 2, 3, 3>(), Vector4::Zero());
+        const Vec4f t = Vec4f::Max(-f.Swizzle<2, 2, 3, 3>(), Vec4f::Zero());
 
-        f += t.ChangeSign(f > Vector4::Zero());
+        f += t.ChangeSign(f > Vec4f::Zero());
 
         return f.Normalized3();
     }
@@ -76,13 +76,13 @@ public:
     NFE_FORCE_INLINE PackedColorRgbHdr(const PackedColorRgbHdr&) = default;
     NFE_FORCE_INLINE PackedColorRgbHdr& operator = (const PackedColorRgbHdr&) = default;
 
-    void FromVector(Vector4 color)
+    void FromVector(Vec4f color)
     {
-        NFE_ASSERT((color >= Vector4::Zero()).All(), "Color cannot be negative");
+        NFE_ASSERT((color >= Vec4f::Zero()).All(), "Color cannot be negative");
 
-        Vector4 ycocg = color.SplatX() * Vector4(0.25f, 0.5f * ChromaScale, -0.25f * ChromaScale);
-        ycocg = Vector4::MulAndAdd(color.SplatY(), Vector4(0.5f, 0.0f, 0.5f * ChromaScale), ycocg);
-        ycocg = Vector4::MulAndAdd(color.SplatZ(), Vector4(0.25f, -0.5f * ChromaScale, -0.25f * ChromaScale), ycocg);
+        Vec4f ycocg = color.SplatX() * Vec4f(0.25f, 0.5f * ChromaScale, -0.25f * ChromaScale);
+        ycocg = Vec4f::MulAndAdd(color.SplatY(), Vec4f(0.5f, 0.0f, 0.5f * ChromaScale), ycocg);
+        ycocg = Vec4f::MulAndAdd(color.SplatZ(), Vec4f(0.25f, -0.5f * ChromaScale, -0.25f * ChromaScale), ycocg);
 
         y = ycocg.x;
 
@@ -91,16 +91,16 @@ public:
             ycocg /= y;
         }
 
-        const VectorInt4 i = VectorInt4::Convert(ycocg);
+        const Vec4i i = Vec4i::Convert(ycocg);
         co = static_cast<int16>(i.y);
         cg = static_cast<int16>(i.z);
     }
 
-    const Vector4 ToVector() const
+    const Vec4f ToVector() const
     {
-        const Vector4 cocg = Vector4::FromIntegers(co, cg, 0, 0) * (1.0f / ChromaScale);
+        const Vec4f cocg = Vec4f::FromIntegers(co, cg, 0, 0) * (1.0f / ChromaScale);
         const float tmp = 1.0f - cocg.y;
-        return Vector4::Max(Vector4::Zero(), Vector4(tmp + cocg.x, 1.0f + cocg.y, tmp - cocg.x) * y);
+        return Vec4f::Max(Vec4f::Zero(), Vec4f(tmp + cocg.x, 1.0f + cocg.y, tmp - cocg.x) * y);
     }
 
 private:
@@ -123,11 +123,11 @@ public:
     NFE_FORCE_INLINE SharedExpFloat3(const SharedExpFloat3&) = default;
     NFE_FORCE_INLINE SharedExpFloat3& operator = (const SharedExpFloat3&) = default;
 
-    const Vector4 ToVector() const
+    const Vec4f ToVector() const
     {
         Common::FundamentalTypesUnion fi;
         fi.u32 = 0x33800000 + (e << 23);
-        return fi.f * VectorInt4(x, y, z, 0).ConvertToFloat();
+        return fi.f * Vec4i(x, y, z, 0).ConvertToVec4f();
     }
 
 private:
@@ -157,13 +157,13 @@ public:
     NFE_FORCE_INLINE PackedFloat3(const PackedFloat3&) = default;
     NFE_FORCE_INLINE PackedFloat3& operator = (const PackedFloat3&) = default;
 
-    const Vector4 ToVector() const
+    const Vec4f ToVector() const
     {
         // TODO handle INF, NAN and denormals?
         uint32 x = ((xe + 112) << 23) | (xm << 17);
         uint32 y = ((ye + 112) << 23) | (ym << 17);
         uint32 z = ((ze + 112) << 23) | (zm << 17);
-        return Vector4(x, y, z, 0u);
+        return Vec4f(x, y, z, 0u);
     }
 
 private:

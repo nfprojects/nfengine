@@ -1,8 +1,8 @@
 #pragma once
 
 #include "Math.hpp"
-#include "Vector4.hpp"
-#include "Vector3x8.hpp"
+#include "Vec4f.hpp"
+#include "Vec3x8f.hpp"
 #include "Box.hpp"
 #include "Ray.hpp"
 
@@ -11,13 +11,13 @@ namespace NFE {
 namespace Math {
 
 // 4x4 matrix
-class NFE_ALIGN(32) Matrix4 final
+class NFE_ALIGN(32) Matrix4 final : public Common::Aligned<16>
 {
 public:
     union
     {
-        Vector4 rows[4];
-        Vector8 vec[2];
+        Vec4f rows[4];
+        Vec8f vec[2];
         float f[16];
         float m[4][4];
     };
@@ -31,10 +31,10 @@ public:
 
     NFE_FORCE_INLINE static const Matrix4 Zero()
     {
-        return { Vector4::Zero(), Vector4::Zero(), Vector4::Zero(), Vector4::Zero() };
+        return { Vec4f::Zero(), Vec4f::Zero(), Vec4f::Zero(), Vec4f::Zero() };
     }
 
-    NFE_FORCE_INLINE Matrix4(const Vector4& r0, const Vector4& r1, const Vector4& r2, const Vector4& r3)
+    NFE_FORCE_INLINE Matrix4(const Vec4f& r0, const Vec4f& r1, const Vec4f& r2, const Vec4f& r3)
     {
         rows[0] = r0;
         rows[1] = r1;
@@ -43,7 +43,7 @@ public:
     }
 
 
-    NFE_FORCE_INLINE Matrix4(const Vector8& v0, const Vector8& v1)
+    NFE_FORCE_INLINE Matrix4(const Vec8f& v0, const Vec8f& v1)
     {
         vec[0] = v0;
         vec[1] = v1;
@@ -66,27 +66,27 @@ public:
         return *this;
     }
 
-    NFE_FORCE_INLINE Vector4& operator[] (int i)
+    NFE_FORCE_INLINE Vec4f& operator[] (int i)
     {
         return rows[i];
     }
 
-    NFE_FORCE_INLINE const Vector4& operator[] (int i) const
+    NFE_FORCE_INLINE const Vec4f& operator[] (int i) const
     {
         return rows[i];
     }
 
-    NFE_FORCE_INLINE Vector4& GetRow(int i)
+    NFE_FORCE_INLINE Vec4f& GetRow(int i)
     {
         return rows[i];
     }
 
-    NFE_FORCE_INLINE const Vector4& GetRow(int i) const
+    NFE_FORCE_INLINE const Vec4f& GetRow(int i) const
     {
         return rows[i];
     }
 
-    NFE_FORCE_INLINE const Vector4& GetTranslation() const
+    NFE_FORCE_INLINE const Vec4f& GetTranslation() const
     {
         return rows[3];
     }
@@ -106,16 +106,16 @@ public:
     {
         return
         {
-            Vector4::Abs(rows[0]),
-            Vector4::Abs(rows[1]),
-            Vector4::Abs(rows[2]),
-            Vector4::Abs(rows[3]),
+            Vec4f::Abs(rows[0]),
+            Vec4f::Abs(rows[1]),
+            Vec4f::Abs(rows[2]),
+            Vec4f::Abs(rows[3]),
         };
     }
 
     NFE_FORCE_INLINE float Max() const
     {
-        const Vector4 rowsMax = Vector4::Max(Vector4::Max(rows[0], rows[1]), Vector4::Max(rows[2], rows[3]));
+        const Vec4f rowsMax = Vec4f::Max(Vec4f::Max(rows[0], rows[1]), Vec4f::Max(rows[2], rows[3]));
         return rowsMax.HorizontalMax().x;
     }
 
@@ -143,75 +143,75 @@ public:
 
     // Multiply a 3D vector by a 4x4 matrix (affine transform).
     // Equivalent of a[0] * m.rows[0] + a[1] * m.rows[1] + a[2] * m.rows[2] + m.rows[3]
-    NFE_FORCE_INLINE const Vector4 TransformPoint(const Vector4& a) const
+    NFE_FORCE_INLINE const Vec4f TransformPoint(const Vec4f& a) const
     {
-        Vector4 t;
-        t = Vector4::MulAndAdd(a.SplatX(), rows[0], rows[3]);
-        t = Vector4::MulAndAdd(a.SplatY(), rows[1], t);
-        t = Vector4::MulAndAdd(a.SplatZ(), rows[2], t);
+        Vec4f t;
+        t = Vec4f::MulAndAdd(a.SplatX(), rows[0], rows[3]);
+        t = Vec4f::MulAndAdd(a.SplatY(), rows[1], t);
+        t = Vec4f::MulAndAdd(a.SplatZ(), rows[2], t);
         return t;
     }
 
-    const Vector3x8 TransformPoint(const Vector3x8& a) const
+    const Vec3x8f TransformPoint(const Vec3x8f& a) const
     {
-        const Vector3x8 row0(rows[0]);
-        const Vector3x8 row1(rows[1]);
-        const Vector3x8 row2(rows[2]);
-        const Vector3x8 row3(rows[3]);
+        const Vec3x8f row0(rows[0]);
+        const Vec3x8f row1(rows[1]);
+        const Vec3x8f row2(rows[2]);
+        const Vec3x8f row3(rows[3]);
 
-        Vector3x8 t;
-        t = Vector3x8::MulAndAdd(row0, a.x, row3);
-        t = Vector3x8::MulAndAdd(row1, a.y, t);
-        t = Vector3x8::MulAndAdd(row2, a.z, t);
+        Vec3x8f t;
+        t = Vec3x8f::MulAndAdd(row0, a.x, row3);
+        t = Vec3x8f::MulAndAdd(row1, a.y, t);
+        t = Vec3x8f::MulAndAdd(row2, a.z, t);
         return t;
     }
 
-    NFE_FORCE_INLINE const Vector4 TransformVector(const Vector4& a) const
+    NFE_FORCE_INLINE const Vec4f TransformVector(const Vec4f& a) const
     {
-        Vector4 t = a.SplatX() * rows[0];
-        t = Vector4::MulAndAdd(a.SplatY(), rows[1], t);
-        t = Vector4::MulAndAdd(a.SplatZ(), rows[2], t);
+        Vec4f t = a.SplatX() * rows[0];
+        t = Vec4f::MulAndAdd(a.SplatY(), rows[1], t);
+        t = Vec4f::MulAndAdd(a.SplatZ(), rows[2], t);
         return t;
     }
 
     // transform and negate a vector
     // Note: faster than TransformVector(-a)
-    NFE_FORCE_INLINE const Vector4 TransformVectorNeg(const Vector4& a) const
+    NFE_FORCE_INLINE const Vec4f TransformVectorNeg(const Vec4f& a) const
     {
-        Vector4 t = a.SplatX() * rows[0];
-        t = Vector4::NegMulAndSub(a.SplatY(), rows[1], t);
-        t = Vector4::NegMulAndAdd(a.SplatZ(), rows[2], t);
+        Vec4f t = a.SplatX() * rows[0];
+        t = Vec4f::NegMulAndSub(a.SplatY(), rows[1], t);
+        t = Vec4f::NegMulAndAdd(a.SplatZ(), rows[2], t);
         return t;
     }
 
-    const Vector3x8 TransformVector(const Vector3x8& a) const
+    const Vec3x8f TransformVector(const Vec3x8f& a) const
     {
-        const Vector3x8 row0(rows[0]);
-        const Vector3x8 row1(rows[1]);
-        const Vector3x8 row2(rows[2]);
+        const Vec3x8f row0(rows[0]);
+        const Vec3x8f row1(rows[1]);
+        const Vec3x8f row2(rows[2]);
 
-        Vector3x8 t = row0 * a.x;
-        t = Vector3x8::MulAndAdd(row1, a.y, t);
-        t = Vector3x8::MulAndAdd(row2, a.z, t);
+        Vec3x8f t = row0 * a.x;
+        t = Vec3x8f::MulAndAdd(row1, a.y, t);
+        t = Vec3x8f::MulAndAdd(row2, a.z, t);
         return t;
     }
 
     // Multiply a 4D vector by a 4x4 matrix.
     // Equivalent of a[0] * m.rows[0] + a[1] * m.rows[1] + a[2] * m.rows[2] + a[3] * m.rows[3]
-    NFE_FORCE_INLINE const Vector4 operator * (const Vector4& a) const
+    NFE_FORCE_INLINE const Vec4f operator * (const Vec4f& a) const
     {
-        Vector4 t = a.SplatX() * rows[0];
-        t = Vector4::MulAndAdd(a.SplatY(), rows[1], t);
-        t = Vector4::MulAndAdd(a.SplatZ(), rows[2], t);
-        t = Vector4::MulAndAdd(a.SplatW(), rows[3], t);
+        Vec4f t = a.SplatX() * rows[0];
+        t = Vec4f::MulAndAdd(a.SplatY(), rows[1], t);
+        t = Vec4f::MulAndAdd(a.SplatZ(), rows[2], t);
+        t = Vec4f::MulAndAdd(a.SplatW(), rows[3], t);
         return t;
     }
 
     // Create rotation matrix
-    NFCOMMON_API static const Matrix4 MakeRotationNormal(const Vector4& normalAxis, float angle);
+    NFCOMMON_API static const Matrix4 MakeRotationNormal(const Vec4f& normalAxis, float angle);
 
     // Create view matrix
-    NFCOMMON_API static const Matrix4 MakeLookTo(const Vector4& eyePosition, const Vector4& eyeDirection, const Vector4& upDirection);
+    NFCOMMON_API static const Matrix4 MakeLookTo(const Vec4f& eyePosition, const Vec4f& eyeDirection, const Vec4f& upDirection);
 
     // Create perspective projection matrix
     NFCOMMON_API static const Matrix4 MakePerspective(float aspect, float fovY, float nearZ, float farZ);
@@ -220,10 +220,10 @@ public:
     NFCOMMON_API static const Matrix4 MakeOrtho(float left, float right, float bottom, float top, float zNear, float zFar);
 
     // Create matrix representing a translation by 3D vector.
-    NFCOMMON_API static const Matrix4 MakeTranslation(const Vector4& pos);
+    NFCOMMON_API static const Matrix4 MakeTranslation(const Vec4f& pos);
 
     // Create scaling matrix
-    NFCOMMON_API static const Matrix4 MakeScaling(const Vector4& scale);
+    NFCOMMON_API static const Matrix4 MakeScaling(const Vec4f& scale);
 
     // Get inverted matrix
     NFCOMMON_API const Matrix4 Inverted() const;
@@ -239,7 +239,7 @@ public:
     {
         Matrix4 result = *this;
         result.rows[3] = VECTOR_W;
-        Vector4::Transpose3(result[0], result[1], result[2]);
+        Vec4f::Transpose3(result[0], result[1], result[2]);
         result.rows[3] = result.TransformVectorNeg(rows[3]);
         return result;
     }
@@ -247,10 +247,10 @@ public:
     NFE_FORCE_INLINE Matrix4& Transpose()
     {
 #ifdef NFE_USE_SSE
-        Vector4& row0 = rows[0];
-        Vector4& row1 = rows[1];
-        Vector4& row2 = rows[2];
-        Vector4& row3 = rows[3];
+        Vec4f& row0 = rows[0];
+        Vec4f& row1 = rows[1];
+        Vec4f& row2 = rows[2];
+        Vec4f& row3 = rows[3];
         _MM_TRANSPOSE4_PS(row0, row1, row2, row3);
 #else // !NFE_USE_SSE
         std::swap(rows[0][1], rows[1][0]);
@@ -266,10 +266,10 @@ public:
 
     NFE_FORCE_INLINE const Matrix4 Transposed() const
     {
-        Vector4 row0 = rows[0];
-        Vector4 row1 = rows[1];
-        Vector4 row2 = rows[2];
-        Vector4 row3 = rows[3];
+        Vec4f row0 = rows[0];
+        Vec4f row1 = rows[1];
+        Vec4f row2 = rows[2];
+        Vec4f row3 = rows[3];
 
 #ifdef NFE_USE_SSE
         _MM_TRANSPOSE4_PS(row0, row1, row2, row3);
@@ -289,15 +289,15 @@ public:
 
     NFE_FORCE_INLINE const Ray TransformRay(const Ray& ray) const
     {
-        const Vector4 origin = TransformPoint(ray.origin);
-        const Vector4 dir = TransformVector(ray.dir);
+        const Vec4f origin = TransformPoint(ray.origin);
+        const Vec4f dir = TransformVector(ray.dir);
         return Ray(origin, dir);
     }
 
     NFE_FORCE_INLINE const Ray TransformRay_Unsafe(const Ray& ray) const
     {
-        const Vector4 origin = TransformPoint(ray.origin);
-        const Vector4 dir = TransformVector(ray.dir);
+        const Vec4f origin = TransformPoint(ray.origin);
+        const Vec4f dir = TransformVector(ray.dir);
         return Ray::BuildUnsafe(origin, dir);
     }
 };

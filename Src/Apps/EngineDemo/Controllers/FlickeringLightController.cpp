@@ -14,7 +14,7 @@ using namespace Math;
 
 static Math::Random gRandomGenerator;
 
-FlickeringLightController::FlickeringLightController(const Float3& baseColor, float freqency)
+FlickeringLightController::FlickeringLightController(const Vec3f& baseColor, float freqency)
     : mBaseColor(baseColor)
     , mFrequency(freqency)
 { }

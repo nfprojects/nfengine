@@ -217,7 +217,7 @@ bool Bitmap::SaveEXR(const char* path, const float exposure) const
 
     // TODO support more types
 
-    const Float3* data = reinterpret_cast<const Float3*>(mData);
+    const Vec3f* data = reinterpret_cast<const Vec3f*>(mData);
 
     EXRHeader header;
     InitEXRHeader(&header);

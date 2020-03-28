@@ -5,7 +5,7 @@
 #include "../../Utils/Memory.h"
 #include "../../Color/RayColor.h"
 #include "../../../Common/Math/Ray.hpp"
-#include "../../../Common/Math/Float3.hpp"
+#include "../../../Common/Math/Vec3f.hpp"
 #include "../../../Common/Memory/Aligned.hpp"
 #include "../../../Common/Reflection/Object.hpp"
 
@@ -62,13 +62,13 @@ public:
         // inputs
         const Material& material;
         SampledMaterialParameters materialParam;    // evaluated material parameters
-        const Math::Float3 sample;                  // random sample
-        const Math::Vector4 outgoingDir;            // fixed ray direction
+        const Math::Vec3f sample;                  // random sample
+        const Math::Vec4f outgoingDir;            // fixed ray direction
         Wavelength& wavelength;                     // non-const, because can trigger dispersion
 
         // outputs
         RayColor outColor = RayColor::Zero();
-        Math::Vector4 outIncomingDir = Math::Vector4::Zero();
+        Math::Vec4f outIncomingDir = Math::Vec4f::Zero();
         float outPdf = 0.0f;
         EventType outEventType = NullEvent;
     };
@@ -78,8 +78,8 @@ public:
         const Material& material;
         SampledMaterialParameters materialParam;
         const Wavelength& wavelength;
-        const Math::Vector4 outgoingDir;
-        const Math::Vector4 incomingDir;
+        const Math::Vec4f outgoingDir;
+        const Math::Vec4f incomingDir;
     };
 
     // get debug name

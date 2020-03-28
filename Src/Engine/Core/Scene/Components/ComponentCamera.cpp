@@ -61,10 +61,10 @@ void CameraComponent::OnUpdate()
     const Matrix4& matrix = GetEntity()->GetGlobalTransform().ToMatrix();
 
     // TODO get velocity from body component
-    Update(matrix, Vector4::Zero(), Vector4::Zero());
+    Update(matrix, Vec4f::Zero(), Vec4f::Zero());
 }
 
-void CameraComponent::Update(const Matrix4& matrix, const Vector4& velocity, const Vector4& angularVelocity)
+void CameraComponent::Update(const Matrix4& matrix, const Vec4f& velocity, const Vec4f& angularVelocity)
 {
     // calculate view matrix
     mViewMatrix = Matrix4::MakeLookTo(matrix.rows[3], matrix.rows[2], matrix.rows[1]);
@@ -90,20 +90,20 @@ void CameraComponent::Update(const Matrix4& matrix, const Vector4& velocity, con
     secondaryCameraMatrix[0] = rotMatrix.TransformPoint(matrix.rows[0]);
     secondaryCameraMatrix[1] = rotMatrix.TransformPoint(matrix.rows[1]);
     secondaryCameraMatrix[2] = rotMatrix.TransformPoint(matrix.rows[2]);
-    secondaryCameraMatrix[3] = (Vector4)matrix.rows[3] + velocity * 0.01f;
+    secondaryCameraMatrix[3] = (Vec4f)matrix.rows[3] + velocity * 0.01f;
     Matrix4 secondaryViewMatrix = Matrix4::MakeLookTo(secondaryCameraMatrix.rows[3],
                                                       secondaryCameraMatrix.rows[2],
                                                       secondaryCameraMatrix.rows[1]);
     mSecondaryProjViewMatrix = secondaryViewMatrix * mProjMatrix;
 
-    Vector4 xAxis, yAxis, zAxis;
-    Vector4 pos = matrix.GetRow(3);
+    Vec4f xAxis, yAxis, zAxis;
+    Vec4f pos = matrix.GetRow(3);
 
     if (mProjMode == ProjectionMode::Perspective)
     {
         float y = tanf(mPerspective.FoV / 2.0f);
         float x = mPerspective.aspectRatio * y;
-        mScreenScale = Vector4(x, y);
+        mScreenScale = Vec4f(x, y);
 
         xAxis = x * matrix.GetRow(0);
         yAxis = y * matrix.GetRow(1);
@@ -124,7 +124,7 @@ void CameraComponent::Update(const Matrix4& matrix, const Vector4& velocity, con
         xAxis = matrix.GetRow(0);
         yAxis = matrix.GetRow(1);
         zAxis = matrix.GetRow(2);
-        mScreenScale = Vector4(1, 1, 0, 0);
+        mScreenScale = Vec4f(1, 1, 0, 0);
 
         mFrustum.verticies[0] = pos + mOrtho.nearDist * zAxis + mOrtho.left * xAxis + mOrtho.bottom * yAxis;
         mFrustum.verticies[1] = pos + mOrtho.nearDist * zAxis + mOrtho.right * xAxis + mOrtho.bottom * yAxis;
@@ -142,8 +142,8 @@ void CameraComponent::Update(const Matrix4& matrix, const Vector4& velocity, con
 
 void CameraComponent::SplitFrustum(const Matrix4& matrix, float zn, float zf, Frustum* frustum) const
 {
-    Vector4 xAxis, yAxis, zAxis;
-    Vector4 pos = matrix.GetRow(3);
+    Vec4f xAxis, yAxis, zAxis;
+    Vec4f pos = matrix.GetRow(3);
 
     if (mProjMode == ProjectionMode::Perspective)
     {

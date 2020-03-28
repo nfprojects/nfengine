@@ -7,14 +7,14 @@
 #pragma once
 
 #include "ImageFormat.hpp"
-#include "../Math/Vector4.hpp"
+#include "../Math/Vec4f.hpp"
 #include "../Memory/Buffer.hpp"
 
 
 namespace NFE {
 namespace Common {
 
-using Color = Math::Vector4;
+using Color = Math::Vec4f;
 
 class NFCOMMON_API Mipmap
 {

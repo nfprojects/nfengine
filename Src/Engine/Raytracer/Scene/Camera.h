@@ -68,16 +68,16 @@ public:
 
     // Generate ray for the camera for a given time
     // x and y coordinates should be in [0.0f, 1.0f) range.
-    NFE_RAYTRACER_API NFE_FORCE_NOINLINE const Math::Ray GenerateRay(const Math::Vector4& coords, RenderingContext& context) const;
-    NFE_FORCE_NOINLINE const Math::Ray_Simd8 GenerateRay_Simd8(const Math::Vector2x8& coords, RenderingContext& context) const;
+    NFE_RAYTRACER_API NFE_FORCE_NOINLINE const Math::Ray GenerateRay(const Math::Vec4f& coords, RenderingContext& context) const;
+    NFE_FORCE_NOINLINE const Math::Ray_Simd8 GenerateRay_Simd8(const Math::Vec2x8f& coords, RenderingContext& context) const;
 
-    NFE_FORCE_INLINE const Math::Vector4 GenerateBokeh(const Math::Float3 sample) const;
-    NFE_FORCE_INLINE const Math::Vector2x8 GenerateBokeh_Simd8(RenderingContext& context) const;
+    NFE_FORCE_INLINE const Math::Vec4f GenerateBokeh(const Math::Vec3f sample) const;
+    NFE_FORCE_INLINE const Math::Vec2x8f GenerateBokeh_Simd8(RenderingContext& context) const;
 
     // Convert world-space coordinates to film-space coordinates including camera projection (0...1 range)
-    bool WorldToFilm(const Math::Vector4& worldPosition, Math::Vector4& outFilmCoords) const;
+    bool WorldToFilm(const Math::Vec4f& worldPosition, Math::Vec4f& outFilmCoords) const;
 
-    float PdfW(const Math::Vector4& direction) const;
+    float PdfW(const Math::Vec4f& direction) const;
 
     // camera placement
     Math::Transform mTransform;

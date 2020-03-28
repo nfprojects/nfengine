@@ -45,8 +45,8 @@ const RayColor LightTracer::RenderPixel(const Ray&, const RenderParam& param, Re
     {
         lightObject->GetTransform(ctx.time),
         ctx.wavelength,
-        ctx.randomGenerator.GetFloat3(),
-        ctx.randomGenerator.GetFloat2(),
+        ctx.randomGenerator.GetVec3f(),
+        ctx.randomGenerator.GetVec2f(),
     };
 
     ILight::EmitResult emitResult;
@@ -121,10 +121,10 @@ const RayColor LightTracer::RenderPixel(const Ray&, const RenderParam& param, Re
 
         // connect to camera
         {
-            const Vector4 cameraPos = param.camera.GetTransform().GetTranslation();
-            const Vector4 samplePos = shadingData.intersection.frame.GetTranslation();
+            const Vec4f cameraPos = param.camera.GetTransform().GetTranslation();
+            const Vec4f samplePos = shadingData.intersection.frame.GetTranslation();
 
-            Vector4 dirToCamera = cameraPos - samplePos;
+            Vec4f dirToCamera = cameraPos - samplePos;
 
             const float cameraDistanceSqr = dirToCamera.SqrLength3();
             const float cameraDistance = sqrtf(cameraDistanceSqr);
@@ -138,7 +138,7 @@ const RayColor LightTracer::RenderPixel(const Ray&, const RenderParam& param, Re
 
             if (!cameraFactor.AlmostZero())
             {
-                Vector4 filmPos;
+                Vec4f filmPos;
 
                 if (param.camera.WorldToFilm(samplePos, filmPos))
                 {
@@ -151,7 +151,7 @@ const RayColor LightTracer::RenderPixel(const Ray&, const RenderParam& param, Re
                     {
                         const float cameraPdfA = param.camera.PdfW(-dirToCamera) / cameraDistanceSqr;
                         const RayColor contribution = (cameraFactor * throughput) * cameraPdfA;
-                        const Vector4 value = contribution.ConvertToTristimulus(ctx.wavelength);
+                        const Vec4f value = contribution.ConvertToTristimulus(ctx.wavelength);
                         param.film.AccumulateColor(filmPos, value, ctx.randomGenerator);
                     }
                 }
@@ -159,8 +159,8 @@ const RayColor LightTracer::RenderPixel(const Ray&, const RenderParam& param, Re
         }
 
         // sample BSDF
-        Vector4 incomingDirWorldSpace;
-        const RayColor bsdfValue = shadingData.intersection.material->Sample(ctx.wavelength, incomingDirWorldSpace, shadingData, ctx.randomGenerator.GetFloat3());
+        Vec4f incomingDirWorldSpace;
+        const RayColor bsdfValue = shadingData.intersection.material->Sample(ctx.wavelength, incomingDirWorldSpace, shadingData, ctx.randomGenerator.GetVec3f());
 
         NFE_ASSERT(bsdfValue.IsValid());
         throughput *= bsdfValue;

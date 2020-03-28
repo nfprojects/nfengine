@@ -10,14 +10,14 @@ class BoxShape : public IShape
     NFE_DECLARE_POLYMORPHIC_CLASS(BoxShape);
 
 public:
-    NFE_RAYTRACER_API BoxShape(const Math::Vector4& size = Math::Vector4(0.5f, 0.5f, 0.5f));
+    NFE_RAYTRACER_API BoxShape(const Math::Vec4f& size = Math::Vec4f(0.5f, 0.5f, 0.5f));
 
 private:
     virtual const Math::Box GetBoundingBox() const override;
     virtual float GetSurfaceArea() const override;
     virtual bool Intersect(const Math::Ray& ray, RenderingContext& renderingCtx, ShapeIntersection& outResult) const override;
-    virtual bool Intersect(const Math::Vector4& point) const override;
-    virtual const Math::Vector4 Sample(const Math::Float3& u, Math::Vector4* outNormal, float* outPdf = nullptr) const override;
+    virtual bool Intersect(const Math::Vec4f& point) const override;
+    virtual const Math::Vec4f Sample(const Math::Vec3f& u, Math::Vec4f* outNormal, float* outPdf = nullptr) const override;
     virtual void EvaluateIntersection(const HitPoint& hitPoint, IntersectionData& outIntersectionData) const override;
 
     virtual bool OnPropertyChanged(const Common::StringView propertyName) override;
@@ -25,11 +25,11 @@ private:
     void OnSizeChanged();
 
     // half size
-    Math::Vector4 mSize;
-    Math::Vector4 mInvSize;
+    Math::Vec4f mSize;
+    Math::Vec4f mInvSize;
 
     // unnormalized face distribution (for box face sampling)
-    Math::Float3 mFaceCdf;
+    Math::Vec3f mFaceCdf;
 };
 
 } // namespace RT

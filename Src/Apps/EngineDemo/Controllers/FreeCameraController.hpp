@@ -24,7 +24,7 @@ public:
     virtual void OnEvent(const Scene::Event& event) override;
 
 private:
-    Math::Vector4 mMovementDirection;
+    Math::Vec4f mMovementDirection;
     float mMovementSpeed;
 
     // yaw and pitch angles

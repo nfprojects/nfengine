@@ -37,7 +37,7 @@ public:
     {
         RenderingContext& context;
         const Math::Ray& ray;
-        const Math::Vector4 hitPoint = Math::Vector4::Zero();
+        const Math::Vec4f hitPoint = Math::Vec4f::Zero();
         const float cosAtLight = 1.0f;
         bool rendererSupportsSolidAngleSampling = true;
     };
@@ -48,13 +48,13 @@ public:
         const Math::Matrix4 lightToWorld;       // transform from light local space to world space
         const IntersectionData& intersection;   // intersection data of the shaded object
         Wavelength& wavelength;
-        Math::Float3 sample;
+        Math::Vec3f sample;
         bool rendererSupportsSolidAngleSampling = true;
     };
 
     struct IlluminateResult
     {
-        Math::Vector4 directionToLight = Math::Vector4::Zero();
+        Math::Vec4f directionToLight = Math::Vec4f::Zero();
         float distance = -1.0f;
         float directPdfW = -1.0f;
         float emissionPdfW = -1.0f;
@@ -65,14 +65,14 @@ public:
     {
         const Math::Matrix4 lightToWorld; // transform from light local space to world space
         Wavelength& wavelength;
-        Math::Float3 positionSample;
-        Math::Float2 directionSample;
+        Math::Vec3f positionSample;
+        Math::Vec2f directionSample;
     };
 
     struct EmitResult
     {
-        Math::Vector4 position;
-        Math::Vector4 direction;
+        Math::Vec4f position;
+        Math::Vec4f direction;
         float directPdfA;
         float emissionPdfW;
         float cosAtLight;

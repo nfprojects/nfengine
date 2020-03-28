@@ -11,14 +11,14 @@ RayStream::RayStream()
 
 RayStream::~RayStream() = default;
 
-void RayStream::PushRay(const Math::Ray& ray, const Math::Vector4& weight, const ImageLocationInfo& imageLocation)
+void RayStream::PushRay(const Math::Ray& ray, const Math::Vec4f& weight, const ImageLocationInfo& imageLocation)
 {
     NFE_ASSERT(mNumRays < MaxRays);
 
     PendingRay& pendingRay = mRays[mNumRays];
     pendingRay.rayWeight = weight;
-    pendingRay.rayDir = ray.dir.ToFloat3();
-    pendingRay.rayOrigin = ray.origin.ToFloat3();
+    pendingRay.rayDir = ray.dir.ToVec3f();
+    pendingRay.rayOrigin = ray.origin.ToVec3f();
     pendingRay.imageLocation = imageLocation;
 
     mNumRays++;

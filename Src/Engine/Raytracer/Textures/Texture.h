@@ -1,7 +1,7 @@
 #pragma once
 
 #include "../Raytracer.h"
-#include "../../Common/Math/Vector4.hpp"
+#include "../../Common/Math/Vec4f.hpp"
 #include "../../Common/Containers/SharedPtr.hpp"
 #include "../../Common/Memory/Aligned.hpp"
 
@@ -20,10 +20,10 @@ public:
     virtual const char* GetName() const = 0;
 
     // evaluate texture color at given coordinates
-    virtual const Math::Vector4 Evaluate(const Math::Vector4& coords) const = 0;
+    virtual const Math::Vec4f Evaluate(const Math::Vec4f& coords) const = 0;
 
     // generate random sample on the texture
-    virtual const Math::Vector4 Sample(const Math::Float2 u, Math::Vector4& outCoords, float* outPdf = nullptr) const;
+    virtual const Math::Vec4f Sample(const Math::Vec2f u, Math::Vec4f& outCoords, float* outPdf = nullptr) const;
 
     // must be called before using Sample() method
     virtual bool MakeSamplable();

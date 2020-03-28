@@ -55,7 +55,7 @@ public:
      *
      * @return  True if the equations system has exactly one solution.
      */
-    NFCOMMON_API static bool SolveLinearEquationsSystem2(const Matrix2& a, const Float2& b, Float2& outX);
+    NFCOMMON_API static bool SolveLinearEquationsSystem2(const Matrix2& a, const Vec2f& b, Vec2f& outX);
 
     /**
      * Solve system of linear equations with three variables.
@@ -66,7 +66,7 @@ public:
      *
      * @return  True if the equations system has exactly one solution.
      */
-    NFCOMMON_API static bool SolveLinearEquationsSystem3(const Matrix3& a, const Float3& b, Float3& outX);
+    NFCOMMON_API static bool SolveLinearEquationsSystem3(const Matrix3& a, const Vec3f& b, Vec3f& outX);
 
     /**
      * Solve system of linear equations with four variables.
@@ -77,7 +77,7 @@ public:
      *
      * @return  True if the equations system has exactly one solution.
      */
-    NFCOMMON_API static bool SolveLinearEquationsSystem4(const Matrix4& a, const Vector4& b, Vector4& outX);
+    NFCOMMON_API static bool SolveLinearEquationsSystem4(const Matrix4& a, const Vec4f& b, Vec4f& outX);
 };
 
 

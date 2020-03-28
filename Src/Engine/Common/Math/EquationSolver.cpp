@@ -147,7 +147,7 @@ uint32 EquationSolver::SolveCubicEquation(double a, double b, double c, double d
 
 //////////////////////////////////////////////////////////////////////////
 
-bool EquationSolver::SolveLinearEquationsSystem2(const Matrix2& a, const Float2& b, Float2& outX)
+bool EquationSolver::SolveLinearEquationsSystem2(const Matrix2& a, const Vec2f& b, Vec2f& outX)
 {
     Matrix2 aInverted;
     if (!a.Invert(aInverted))
@@ -157,7 +157,7 @@ bool EquationSolver::SolveLinearEquationsSystem2(const Matrix2& a, const Float2&
     return true;
 }
 
-bool EquationSolver::SolveLinearEquationsSystem3(const Matrix3& a, const Float3& b, Float3& outX)
+bool EquationSolver::SolveLinearEquationsSystem3(const Matrix3& a, const Vec3f& b, Vec3f& outX)
 {
     Matrix3 aInverted;
     if (!a.Invert(aInverted))
@@ -167,7 +167,7 @@ bool EquationSolver::SolveLinearEquationsSystem3(const Matrix3& a, const Float3&
     return true;
 }
 
-bool EquationSolver::SolveLinearEquationsSystem4(const Matrix4& a, const Vector4& b, Vector4& outX)
+bool EquationSolver::SolveLinearEquationsSystem4(const Matrix4& a, const Vec4f& b, Vec4f& outX)
 {
     // TODO
 

@@ -13,7 +13,7 @@
 #include "../Common/Math/Simd8Geometry.hpp"
 #include "../Common/Math/Distribution.hpp"
 #include "../Common/Math/SamplingHelpers.hpp"
-#include "../Common/Math/Vector4Load.hpp"
+#include "../Common/Math/Vec4fLoad.hpp"
 #include "../Common/Logger/Logger.hpp"
 #include "../Common/Reflection/ReflectionClassDefine.hpp"
 
@@ -48,16 +48,16 @@ bool MeshShape::Initialize(const MeshDesc& desc)
 {
     mBoundingBox = Box::Empty();
 
-    const Float3* positions = desc.vertexBufferDesc.positions;
+    const Vec3f* positions = desc.vertexBufferDesc.positions;
     const uint32* indexBuffer = desc.vertexBufferDesc.vertexIndexBuffer;
 
     DynArray<Box> boxes;
     boxes.Reserve(desc.vertexBufferDesc.numTriangles);
     for (uint32 i = 0; i < desc.vertexBufferDesc.numTriangles; ++i)
     {
-        const Vector4 v0(positions[indexBuffer[3 * i + 0]]);
-        const Vector4 v1(positions[indexBuffer[3 * i + 1]]);
-        const Vector4 v2(positions[indexBuffer[3 * i + 2]]);
+        const Vec4f v0(positions[indexBuffer[3 * i + 0]]);
+        const Vec4f v1(positions[indexBuffer[3 * i + 1]]);
+        const Vec4f v2(positions[indexBuffer[3 * i + 2]]);
 
         Box triBox(v0, v1, v2);
 
@@ -145,7 +145,7 @@ bool MeshShape::MakeSamplable()
     for (uint32 i = 0; i < mVertexBuffer.GetNumTriangles(); ++i)
     {
         const ProcessedTriangle& tri = mVertexBuffer.GetTriangle(i);
-        const float triArea = TriangleSurfaceArea(Vector4(tri.edge1), Vector4(tri.edge2));
+        const float triArea = TriangleSurfaceArea(Vec4f(tri.edge1), Vec4f(tri.edge2));
         importancePdf[i] = triArea;
         totalArea += triArea;
     }
@@ -157,7 +157,7 @@ bool MeshShape::MakeSamplable()
     return mImportanceMap->Initialize(importancePdf.Data(), importancePdf.Size());
 }
 
-const Vector4 MeshShape::Sample(const Float3& u, Vector4* outNormal, float* outPdf) const
+const Vec4f MeshShape::Sample(const Vec3f& u, Vec4f* outNormal, float* outPdf) const
 {
     NFE_ASSERT(mImportanceMap, "Mesh is not samplable");
 
@@ -166,16 +166,16 @@ const Vector4 MeshShape::Sample(const Float3& u, Vector4* outNormal, float* outP
     NFE_ASSERT(triangleIndex < mVertexBuffer.GetNumTriangles());
 
     const ProcessedTriangle& tri = mVertexBuffer.GetTriangle(triangleIndex);
-    const Vector4 uv = SamplingHelpers::GetTriangle(u);
+    const Vec4f uv = SamplingHelpers::GetTriangle(u);
 
-    const Vector4 v0 = Vector4_Load_Float3_Unsafe(tri.v0);
-    const Vector4 edge1 = Vector4_Load_Float3_Unsafe(tri.edge1);
-    const Vector4 edge2 = Vector4_Load_Float3_Unsafe(tri.edge2);
-    const Vector4 pos = v0 + edge1 * uv.x + edge2 * uv.y;
+    const Vec4f v0 = Vec4f_Load_Vec3f_Unsafe(tri.v0);
+    const Vec4f edge1 = Vec4f_Load_Vec3f_Unsafe(tri.edge1);
+    const Vec4f edge2 = Vec4f_Load_Vec3f_Unsafe(tri.edge2);
+    const Vec4f pos = v0 + edge1 * uv.x + edge2 * uv.y;
 
     if (outNormal)
     {
-        *outNormal = Vector4::Cross3(edge1, edge2).Normalized3();
+        *outNormal = Vec4f::Cross3(edge1, edge2).Normalized3();
     }
 
     if (outPdf)
@@ -239,7 +239,7 @@ void MeshShape::Traverse_Leaf(const SingleTraversalContext& context, const uint3
         const uint32 triangleIndex = childIndex + i;
         const ProcessedTriangle& tri = mVertexBuffer.GetTriangle(triangleIndex);
 
-        if (Intersect_TriangleRay(context.ray, Vector4(&tri.v0.x), Vector4(&tri.edge1.x), Vector4(&tri.edge2.x), u, v, distance))
+        if (Intersect_TriangleRay(context.ray, Vec4f(&tri.v0.x), Vec4f(&tri.edge1.x), Vec4f(&tri.edge2.x), u, v, distance))
         {
             HitPoint& hitPoint = context.hitPoint;
 
@@ -279,7 +279,7 @@ bool MeshShape::Traverse_Leaf_Shadow(const SingleTraversalContext& context, cons
     {
         const uint32 triangleIndex = childIndex + i;
         const ProcessedTriangle& tri = mVertexBuffer.GetTriangle(triangleIndex);
-        if (Intersect_TriangleRay(context.ray, Vector4(&tri.v0.x), Vector4(&tri.edge1.x), Vector4(&tri.edge2.x), u, v, distance))
+        if (Intersect_TriangleRay(context.ray, Vec4f(&tri.v0.x), Vec4f(&tri.edge1.x), Vec4f(&tri.edge2.x), u, v, distance))
         {
             HitPoint& hitPoint = context.hitPoint;
             if (distance < hitPoint.distance)
@@ -301,9 +301,9 @@ bool MeshShape::Traverse_Leaf_Shadow(const SingleTraversalContext& context, cons
 /*
 void MeshShape::Traverse_Leaf_Simd8(const SimdTraversalContext& context, const uint32 objectID, const BVH::Node& node) const
 {
-    const VectorInt8 objectIndexVec(objectID);
+    const Vec8i objectIndexVec(objectID);
 
-    Vector8 distance, u, v;
+    Vec8f distance, u, v;
     Triangle_Simd8 tri;
 
 #ifdef NFE_ENABLE_INTERSECTION_COUNTERS
@@ -314,22 +314,22 @@ void MeshShape::Traverse_Leaf_Simd8(const SimdTraversalContext& context, const u
     {
         HitPoint_Simd8& hitPoint = context.hitPoint;
         const uint32 triangleIndex = node.childIndex + i;
-        const VectorInt8 triangleIndexVec(triangleIndex);
+        const Vec8i triangleIndexVec(triangleIndex);
 
         mVertexBuffer.GetTriangle(triangleIndex, tri);
 
-        const Vector8 mask = Intersect_TriangleRay_Simd8(context.ray.dir, context.ray.origin, tri, hitPoint.distance, u, v, distance);
+        const Vec8f mask = Intersect_TriangleRay_Simd8(context.ray.dir, context.ray.origin, tri, hitPoint.distance, u, v, distance);
         const uint32 intMask = mask.GetSignMask();
 
         // TODO triangle & object filtering
         if (intMask)
         {
             // combine results according to mask
-            hitPoint.u = Vector8::SelectBySign(hitPoint.u, u, mask);
-            hitPoint.v = Vector8::SelectBySign(hitPoint.v, v, mask);
-            hitPoint.distance = Vector8::SelectBySign(hitPoint.distance, distance, mask);
-            hitPoint.subObjectId = VectorInt8::SelectBySign(hitPoint.subObjectId, triangleIndexVec, VectorInt8::Cast(mask));
-            hitPoint.objectId = VectorInt8::SelectBySign(hitPoint.objectId, objectIndexVec, VectorInt8::Cast(mask));
+            hitPoint.u = Vec8f::SelectBySign(hitPoint.u, u, mask);
+            hitPoint.v = Vec8f::SelectBySign(hitPoint.v, v, mask);
+            hitPoint.distance = Vec8f::SelectBySign(hitPoint.distance, distance, mask);
+            hitPoint.subObjectId = Vec8i::SelectBySign(hitPoint.subObjectId, triangleIndexVec, Vec8i::Cast(mask));
+            hitPoint.objectId = Vec8i::SelectBySign(hitPoint.objectId, objectIndexVec, Vec8i::Cast(mask));
 
 #ifdef NFE_ENABLE_INTERSECTION_COUNTERS
             context.context.localCounters.numPassedRayTriangleTests += PopCount(intMask);
@@ -341,7 +341,7 @@ void MeshShape::Traverse_Leaf_Simd8(const SimdTraversalContext& context, const u
 
 void MeshShape::Traverse_Leaf(const PacketTraversalContext& context, const uint32 objectID, const BVH::Node& node, const uint32 numActiveGroups) const
 {
-    Vector8 distance, u, v;
+    Vec8f distance, u, v;
     Triangle_Simd8 tri;
 
 #ifdef NFE_ENABLE_INTERSECTION_COUNTERS
@@ -351,7 +351,7 @@ void MeshShape::Traverse_Leaf(const PacketTraversalContext& context, const uint3
     for (uint32 i = 0; i < node.numLeaves; ++i)
     {
         const uint32 triangleIndex = node.childIndex + i;
-        const Vector8 triangleIndexVec(triangleIndex);
+        const Vec8f triangleIndexVec(triangleIndex);
 
         mVertexBuffer.GetTriangle(triangleIndex, tri);
 
@@ -359,7 +359,7 @@ void MeshShape::Traverse_Leaf(const PacketTraversalContext& context, const uint3
         {
             RayGroup& rayGroup = context.ray.groups[context.context.activeGroupsIndices[j]];
 
-            const VectorBool8 mask = Intersect_TriangleRay_Simd8(rayGroup.rays[1].dir, rayGroup.rays[1].origin, tri, rayGroup.maxDistances, u, v, distance);
+            const VecBool8f mask = Intersect_TriangleRay_Simd8(rayGroup.rays[1].dir, rayGroup.rays[1].origin, tri, rayGroup.maxDistances, u, v, distance);
 
             context.StoreIntersection(rayGroup, distance, u, v, mask, objectID, triangleIndex);
 
@@ -386,37 +386,37 @@ void MeshShape::EvaluateIntersection(const HitPoint& hitPoint, IntersectionData&
     VertexShadingData vertexShadingData[3];
     mVertexBuffer.GetShadingData(indices, vertexShadingData[0], vertexShadingData[1], vertexShadingData[2]);
 
-    const Vector4 coeff1 = Vector4(hitPoint.u);
-    const Vector4 coeff2 = Vector4(hitPoint.v);
-    const Vector4 coeff0 = Vector4(VECTOR_ONE) - (coeff1 + coeff2);
+    const Vec4f coeff1 = Vec4f(hitPoint.u);
+    const Vec4f coeff2 = Vec4f(hitPoint.v);
+    const Vec4f coeff0 = Vec4f(VECTOR_ONE) - (coeff1 + coeff2);
 
-    const Vector4 texCoord0 = Vector4_Load_Float2_Unsafe(vertexShadingData[0].texCoord);
-    const Vector4 texCoord1 = Vector4_Load_Float2_Unsafe(vertexShadingData[1].texCoord);
-    const Vector4 texCoord2 = Vector4_Load_Float2_Unsafe(vertexShadingData[2].texCoord);
-    Vector4 texCoord = coeff1 * texCoord1;
-    texCoord = Vector4::MulAndAdd(coeff2, texCoord2, texCoord);
-    texCoord = Vector4::MulAndAdd(coeff0, texCoord0, texCoord);
+    const Vec4f texCoord0 = Vec4f_Load_Vec2f_Unsafe(vertexShadingData[0].texCoord);
+    const Vec4f texCoord1 = Vec4f_Load_Vec2f_Unsafe(vertexShadingData[1].texCoord);
+    const Vec4f texCoord2 = Vec4f_Load_Vec2f_Unsafe(vertexShadingData[2].texCoord);
+    Vec4f texCoord = coeff1 * texCoord1;
+    texCoord = Vec4f::MulAndAdd(coeff2, texCoord2, texCoord);
+    texCoord = Vec4f::MulAndAdd(coeff0, texCoord0, texCoord);
     texCoord = texCoord.Swizzle<0,1,0,1>();
     NFE_ASSERT(texCoord.IsValid());
     outData.texCoord = texCoord;
 
-    const Vector4 tangent0 = Vector4_Load_Float3_Unsafe(vertexShadingData[0].tangent);
-    const Vector4 tangent1 = Vector4_Load_Float3_Unsafe(vertexShadingData[1].tangent);
-    const Vector4 tangent2 = Vector4_Load_Float3_Unsafe(vertexShadingData[2].tangent);
-    Vector4 tangent = coeff1 * tangent1;
-    tangent = Vector4::MulAndAdd(coeff2, tangent2, tangent);
-    tangent = Vector4::MulAndAdd(coeff0, tangent0, tangent);
+    const Vec4f tangent0 = Vec4f_Load_Vec3f_Unsafe(vertexShadingData[0].tangent);
+    const Vec4f tangent1 = Vec4f_Load_Vec3f_Unsafe(vertexShadingData[1].tangent);
+    const Vec4f tangent2 = Vec4f_Load_Vec3f_Unsafe(vertexShadingData[2].tangent);
+    Vec4f tangent = coeff1 * tangent1;
+    tangent = Vec4f::MulAndAdd(coeff2, tangent2, tangent);
+    tangent = Vec4f::MulAndAdd(coeff0, tangent0, tangent);
     tangent.FastNormalize3();
     tangent = tangent.Swizzle<0, 1, 2, 0>();
     NFE_ASSERT(tangent.IsValid());
     outData.frame[0] = tangent;
 
-    const Vector4 normal0 = Vector4_Load_Float3_Unsafe(vertexShadingData[0].normal);
-    const Vector4 normal1 = Vector4_Load_Float3_Unsafe(vertexShadingData[1].normal);
-    const Vector4 normal2 = Vector4_Load_Float3_Unsafe(vertexShadingData[2].normal);
-    Vector4 normal = coeff1 * normal1;
-    normal = Vector4::MulAndAdd(coeff2, normal2, normal);
-    normal = Vector4::MulAndAdd(coeff0, normal0, normal);
+    const Vec4f normal0 = Vec4f_Load_Vec3f_Unsafe(vertexShadingData[0].normal);
+    const Vec4f normal1 = Vec4f_Load_Vec3f_Unsafe(vertexShadingData[1].normal);
+    const Vec4f normal2 = Vec4f_Load_Vec3f_Unsafe(vertexShadingData[2].normal);
+    Vec4f normal = coeff1 * normal1;
+    normal = Vec4f::MulAndAdd(coeff2, normal2, normal);
+    normal = Vec4f::MulAndAdd(coeff0, normal0, normal);
     normal.Normalize3();
     normal = normal.Swizzle<0, 1, 2, 0>();
     NFE_ASSERT(normal.IsValid());

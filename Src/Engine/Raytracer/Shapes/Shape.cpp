@@ -75,17 +75,17 @@ bool IShape::Intersect(const Ray&, RenderingContext&, ShapeIntersection&) const
     return false;
 }
 
-bool IShape::Intersect(const Math::Vector4&) const
+bool IShape::Intersect(const Math::Vec4f&) const
 {
     NFE_FATAL("This shape has no volume");
     return false;
 }
 
-bool IShape::Sample(const Vector4& ref, const Float3& u, ShapeSampleResult& result) const
+bool IShape::Sample(const Vec4f& ref, const Vec3f& u, ShapeSampleResult& result) const
 {
     result.position = Sample(u, &result.normal);
 
-    Vector4 dir = ref - result.position;
+    Vec4f dir = ref - result.position;
     const float sqrDistance = dir.SqrLength3();
 
     // compute PDF with respect to solid angle
@@ -94,7 +94,7 @@ bool IShape::Sample(const Vector4& ref, const Float3& u, ShapeSampleResult& resu
         const float distance = sqrtf(sqrDistance);
         dir /= distance;
 
-        const float cosNormalDir = Vector4::Dot3(result.normal, dir);
+        const float cosNormalDir = Vec4f::Dot3(result.normal, dir);
         if (cosNormalDir > FLT_EPSILON)
         {
             const float invArea = 1.0f / GetSurfaceArea();
@@ -109,7 +109,7 @@ bool IShape::Sample(const Vector4& ref, const Float3& u, ShapeSampleResult& resu
     return false;
 }
 
-float IShape::Pdf(const Math::Vector4& ref, const Math::Vector4& point) const
+float IShape::Pdf(const Math::Vec4f& ref, const Math::Vec4f& point) const
 {
     NFE_UNUSED(ref);
     NFE_UNUSED(point);

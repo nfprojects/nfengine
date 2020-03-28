@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Vector4.hpp"
+#include "Vec4f.hpp"
 #include "../Reflection/ReflectionClassDeclare.hpp"
 
 namespace NFE {
@@ -19,10 +19,10 @@ public:
 
     NFE_FORCE_INLINE constexpr LdrColorRGB(uint8 r, uint8 g, uint8 b) : r(r), g(g), b(b) { }
 
-    NFE_FORCE_INLINE const Vector4 AsVector4() const
+    NFE_FORCE_INLINE const Vec4f AsVec4f() const
     {
         // TODO can optimize
-        return Vector4(r / 255.0f, g / 255.0f, b / 255.0f, 1.0f);
+        return Vec4f(r / 255.0f, g / 255.0f, b / 255.0f, 1.0f);
     }
 
     NFE_FORCE_INLINE bool IsBlack() const

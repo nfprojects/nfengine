@@ -34,7 +34,7 @@ using namespace Common;
 
 using TexturesMap = HashMap<String, TexturePtr>;
 
-static bool ParseVector2(const rapidjson::Value& value, Vector4& outVector)
+static bool ParseVector2(const rapidjson::Value& value, Vec4f& outVector)
 {
     if (!value.IsArray())
     {
@@ -51,12 +51,12 @@ static bool ParseVector2(const rapidjson::Value& value, Vector4& outVector)
     const float x = static_cast<float>(value[0u].GetDouble());
     const float y = static_cast<float>(value[1u].GetDouble());
 
-    outVector = Vector4(x, y, 0.0f, 0.0f);
+    outVector = Vec4f(x, y, 0.0f, 0.0f);
 
     return true;
 }
 
-static bool ParseVector3(const rapidjson::Value& value, Vector4& outVector)
+static bool ParseVector3(const rapidjson::Value& value, Vec4f& outVector)
 {
     if (!value.IsArray())
     {
@@ -74,7 +74,7 @@ static bool ParseVector3(const rapidjson::Value& value, Vector4& outVector)
     const float y = static_cast<float>(value[1u].GetDouble());
     const float z = static_cast<float>(value[2u].GetDouble());
 
-    outVector = Vector4(x, y, z, 0.0f);
+    outVector = Vec4f(x, y, z, 0.0f);
 
     return true;
 }
@@ -177,7 +177,7 @@ static bool TryParseFloat(const rapidjson::Value& value, const char* name, bool 
     return true;
 }
 
-static bool TryParseVector2(const rapidjson::Value& value, const char* name, bool optional, Vector4& outValue)
+static bool TryParseVector2(const rapidjson::Value& value, const char* name, bool optional, Vec4f& outValue)
 {
     if (!value.HasMember(name))
     {
@@ -195,7 +195,7 @@ static bool TryParseVector2(const rapidjson::Value& value, const char* name, boo
     return ParseVector2(value[name], outValue);
 }
 
-static bool TryParseVector3(const rapidjson::Value& value, const char* name, bool optional, Vector4& outValue)
+static bool TryParseVector3(const rapidjson::Value& value, const char* name, bool optional, Vec4f& outValue)
 {
     if (!value.HasMember(name))
     {
@@ -245,17 +245,17 @@ static bool TryParseTransform(const rapidjson::Value& parentValue, const char* n
         return false;
     }
 
-    Vector4 translation = Vector4::Zero();
+    Vec4f translation = Vec4f::Zero();
     if (!TryParseVector3(value, "translation", true, translation))
         return false;
 
-    Vector4 orientation = Vector4::Zero();
+    Vec4f orientation = Vec4f::Zero();
     if (!TryParseVector3(value, "orientation", true, orientation))
         return false;
 
     orientation *= (NFE_MATH_PI / 180.0f);
 
-    outValue = Transform(translation, Quaternion::FromEulerAngles(orientation.ToFloat3()));
+    outValue = Transform(translation, Quaternion::FromEulerAngles(orientation.ToVec3f()));
 
     return true;
 }
@@ -371,8 +371,8 @@ static TexturePtr ParseTexture(const rapidjson::Value& value, const TexturesMap&
     }
     else if (type == "checkerboard")
     {
-        Vector4 colorA = Vector4::Zero();
-        Vector4 colorB = Vector4::Zero();
+        Vec4f colorA = Vec4f::Zero();
+        Vec4f colorB = Vec4f::Zero();
         if (!TryParseVector3(value, "colorA", false, colorA)) return nullptr;
         if (!TryParseVector3(value, "colorB", false, colorB)) return nullptr;
 
@@ -380,8 +380,8 @@ static TexturePtr ParseTexture(const rapidjson::Value& value, const TexturesMap&
     }
     else if (type == "noise")
     {
-        Vector4 colorA = Vector4::Zero();
-        Vector4 colorB = Vector4::Zero();
+        Vec4f colorA = Vec4f::Zero();
+        Vec4f colorB = Vec4f::Zero();
         if (!TryParseVector3(value, "colorA", false, colorA)) return nullptr;
         if (!TryParseVector3(value, "colorB", false, colorB)) return nullptr;
 
@@ -528,7 +528,7 @@ static ShapePtr ParseShape(const rapidjson::Value& value, Scene& scene, Material
     }
     else if (typeStr == "box")
     {
-        Vector4 size;
+        Vec4f size;
         if (!TryParseVector3(value, "size", false, size))
         {
             return false;
@@ -538,18 +538,18 @@ static ShapePtr ParseShape(const rapidjson::Value& value, Scene& scene, Material
     }
     else if (typeStr == "rect" || typeStr == "plane")
     {
-        Vector4 size(FLT_MAX);
+        Vec4f size(FLT_MAX);
         if (!TryParseVector2(value, "size", false, size))
         {
             return false;
         }
-        Vector4 textureScale(1.0f);
+        Vec4f textureScale(1.0f);
         if (!TryParseVector2(value, "textureScale", true, textureScale))
         {
             return false;
         }
 
-        shape = MakeUniquePtr<RectShape>(size.ToFloat2(), textureScale.ToFloat2());
+        shape = MakeUniquePtr<RectShape>(size.ToVec2f(), textureScale.ToVec2f());
     }
     else if (typeStr == "csg")
     {

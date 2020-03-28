@@ -11,20 +11,20 @@ class NFE_ALIGN(16) NoiseTexture3D
     : public ITexture
 {
 public:
-    NFE_RAYTRACER_API NoiseTexture3D(const Math::Vector4& colorA, const Math::Vector4& colorB, const uint32 numOctaves = 1);
+    NFE_RAYTRACER_API NoiseTexture3D(const Math::Vec4f& colorA, const Math::Vec4f& colorB, const uint32 numOctaves = 1);
 
     virtual const char* GetName() const override;
-    virtual const Math::Vector4 Evaluate(const Math::Vector4& coords) const override;
-    virtual const Math::Vector4 Sample(const Math::Float2 u, Math::Vector4& outCoords, float* outPdf) const override;
+    virtual const Math::Vec4f Evaluate(const Math::Vec4f& coords) const override;
+    virtual const Math::Vec4f Sample(const Math::Vec2f u, Math::Vec4f& outCoords, float* outPdf) const override;
 
 private:
     static constexpr float F3 = 0.33333333f;
     static constexpr float G3 = 0.16666667f;
 
-    static float EvaluateInternal(const Math::Vector4& coords);
+    static float EvaluateInternal(const Math::Vec4f& coords);
 
-    Math::Vector4 mColorA;
-    Math::Vector4 mColorB;
+    Math::Vec4f mColorA;
+    Math::Vec4f mColorB;
     uint32 mNumOctaves;
     float mScale;
 };

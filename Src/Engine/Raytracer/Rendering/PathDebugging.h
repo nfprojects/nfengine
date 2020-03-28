@@ -31,8 +31,8 @@ struct PathDebugData
     struct NFE_ALIGN(32) HitPointData
     {
         // ray traced
-        Math::Vector4 rayOrigin;
-        Math::Vector4 rayDir;
+        Math::Vec4f rayOrigin;
+        Math::Vec4f rayDir;
 
         HitPoint hitPoint;
 
@@ -47,7 +47,7 @@ struct PathDebugData
         RayColor throughput;
 
         // evaluated ray color (excluding weight)
-        Math::Vector4 color;
+        Math::Vec4f color;
 
         RaySource raySource;
 

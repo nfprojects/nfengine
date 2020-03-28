@@ -441,75 +441,6 @@
     <ClInclude Include="Math\Utils.hpp">
       <Filter>Math</Filter>
     </ClInclude>
-    <ClInclude Include="Math\Vector2x8.hpp">
-      <Filter>Math</Filter>
-    </ClInclude>
-    <ClInclude Include="Math\Vector3x8.hpp">
-      <Filter>Math</Filter>
-    </ClInclude>
-    <ClInclude Include="Math\Vector4.hpp">
-      <Filter>Math</Filter>
-    </ClInclude>
-    <ClInclude Include="Math\Vector4Impl.hpp">
-      <Filter>Math</Filter>
-    </ClInclude>
-    <ClInclude Include="Math\Vector4ImplNaive.hpp">
-      <Filter>Math</Filter>
-    </ClInclude>
-    <ClInclude Include="Math\Vector4ImplSSE.hpp">
-      <Filter>Math</Filter>
-    </ClInclude>
-    <ClInclude Include="Math\Vector4Load.hpp">
-      <Filter>Math</Filter>
-    </ClInclude>
-    <ClInclude Include="Math\Vector8.hpp">
-      <Filter>Math</Filter>
-    </ClInclude>
-    <ClInclude Include="Math\Vector8ImplAVX.hpp">
-      <Filter>Math</Filter>
-    </ClInclude>
-    <ClInclude Include="Math\Vector8ImplCommon.hpp">
-      <Filter>Math</Filter>
-    </ClInclude>
-    <ClInclude Include="Math\Vector8ImplNaive.hpp">
-      <Filter>Math</Filter>
-    </ClInclude>
-    <ClInclude Include="Math\VectorBool4.hpp">
-      <Filter>Math</Filter>
-    </ClInclude>
-    <ClInclude Include="Math\VectorBool4ImplNaive.hpp">
-      <Filter>Math</Filter>
-    </ClInclude>
-    <ClInclude Include="Math\VectorBool4ImplSSE.hpp">
-      <Filter>Math</Filter>
-    </ClInclude>
-    <ClInclude Include="Math\VectorBool8.hpp">
-      <Filter>Math</Filter>
-    </ClInclude>
-    <ClInclude Include="Math\VectorBool8ImplAVX.hpp">
-      <Filter>Math</Filter>
-    </ClInclude>
-    <ClInclude Include="Math\VectorBool8ImplNaive.hpp">
-      <Filter>Math</Filter>
-    </ClInclude>
-    <ClInclude Include="Math\VectorInt4.hpp">
-      <Filter>Math</Filter>
-    </ClInclude>
-    <ClInclude Include="Math\VectorInt4ImplNaive.hpp">
-      <Filter>Math</Filter>
-    </ClInclude>
-    <ClInclude Include="Math\VectorInt4ImplSSE.hpp">
-      <Filter>Math</Filter>
-    </ClInclude>
-    <ClInclude Include="Math\VectorInt8.hpp">
-      <Filter>Math</Filter>
-    </ClInclude>
-    <ClInclude Include="Math\VectorInt8ImplAVX2.hpp">
-      <Filter>Math</Filter>
-    </ClInclude>
-    <ClInclude Include="Math\VectorInt8ImplNaive.hpp">
-      <Filter>Math</Filter>
-    </ClInclude>
     <ClInclude Include="Math\Box.hpp">
       <Filter>Math</Filter>
     </ClInclude>
@@ -523,24 +454,6 @@
       <Filter>Math</Filter>
     </ClInclude>
     <ClInclude Include="Math\EquationSolver.hpp">
-      <Filter>Math</Filter>
-    </ClInclude>
-    <ClInclude Include="Math\Float2.hpp">
-      <Filter>Math</Filter>
-    </ClInclude>
-    <ClInclude Include="Math\Float2Impl.hpp">
-      <Filter>Math</Filter>
-    </ClInclude>
-    <ClInclude Include="Math\Float3.hpp">
-      <Filter>Math</Filter>
-    </ClInclude>
-    <ClInclude Include="Math\Float3Impl.hpp">
-      <Filter>Math</Filter>
-    </ClInclude>
-    <ClInclude Include="Math\Float4.hpp">
-      <Filter>Math</Filter>
-    </ClInclude>
-    <ClInclude Include="Math\Float4Impl.hpp">
       <Filter>Math</Filter>
     </ClInclude>
     <ClInclude Include="Math\Frustum.hpp">
@@ -611,6 +524,75 @@
     <ClInclude Include="Reflection\ReflectionTypeResolver.hpp" />
     <ClInclude Include="Math\ColorHelpers.hpp" />
     <ClInclude Include="Utils\ParallelAlgorithms.hpp" />
+    <ClInclude Include="Math\Vec4f.hpp">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\Vec4fImpl.hpp">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\Vec4fImplNaive.hpp">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\Vec4fImplSSE.hpp">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\Vec4fLoad.hpp">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\Vec4i.hpp">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\Vec4iImplSSE.hpp">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\Vec4iImplNaive.hpp">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\Vec8f.hpp">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\Vec8fImplAVX.hpp">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\Vec8fImplNaive.hpp">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\Vec8fImplCommon.hpp">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\Vec8iImplNaive.hpp">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\Vec8iImplAVX2.hpp">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\Vec8i.hpp">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\Vec2f.hpp">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\Vec2fImpl.hpp">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\Vec3f.hpp">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\Vec3fImpl.hpp">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\Vec4fU.hpp">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\Vec4fUImpl.hpp">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\Vec2x8f.hpp">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\Vec3x8f.hpp">
+      <Filter>Math</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="PCH.cpp" />
@@ -801,9 +783,6 @@
     <ClCompile Include="Math\Utils.cpp">
       <Filter>Math</Filter>
     </ClCompile>
-    <ClCompile Include="Math\Vector4.cpp">
-      <Filter>Math</Filter>
-    </ClCompile>
     <ClCompile Include="Math\Conversions.cpp">
       <Filter>Math</Filter>
     </ClCompile>
@@ -853,6 +832,9 @@
     <ClCompile Include="Reflection\Types\ReflectionPointerType.cpp" />
     <ClCompile Include="Math\MathTypes.cpp" />
     <ClCompile Include="Reflection\Object.cpp" />
+    <ClCompile Include="Math\Vec4f.cpp">
+      <Filter>Math</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Natvis Include="Math\Math.natvis">

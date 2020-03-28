@@ -17,7 +17,7 @@
 #include "ComputePipelineState.hpp"
 #include "Backbuffer.hpp"
 
-#include "Engine/Common/Math/Float4.hpp"
+#include "Engine/Common/Math/Vec4fU.hpp"
 #include "Engine/Common/Containers/StaticArray.hpp"
 
 namespace NFE {
@@ -844,7 +844,7 @@ void CommandRecorder::CopyTexture(const TexturePtr& src, const BackbufferPtr& de
     }
 }
 
-void CommandRecorder::Clear(uint32 flags, uint32 numTargets, const uint32* slots, const Math::Float4* colors, float depthValue, uint8 stencilValue)
+void CommandRecorder::Clear(uint32 flags, uint32 numTargets, const uint32* slots, const Math::Vec4fU* colors, float depthValue, uint8 stencilValue)
 {
     if (mCurrRenderTarget == nullptr)
         return;

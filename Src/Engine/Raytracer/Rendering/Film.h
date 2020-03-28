@@ -1,7 +1,7 @@
 #pragma once
 
 #include "../Raytracer.h"
-#include "../../Common/Math/Vector4.hpp"
+#include "../../Common/Math/Vec4f.hpp"
 #include "../../Common/System/SpinLock.hpp"
 
 namespace NFE {
@@ -23,11 +23,11 @@ public:
         return mHeight;
     }
 
-    void AccumulateColor(const Math::Vector4& pos, const Math::Vector4& sampleColor, Math::Random& randomGenerator);
-    void AccumulateColor(const uint32 x, const uint32 y, const Math::Vector4& sampleColor);
+    void AccumulateColor(const Math::Vec4f& pos, const Math::Vec4f& sampleColor, Math::Random& randomGenerator);
+    void AccumulateColor(const uint32 x, const uint32 y, const Math::Vec4f& sampleColor);
 
 private:
-    Math::Vector4 mFilmSize;
+    Math::Vec4f mFilmSize;
 
     Bitmap* mSum;
     Bitmap* mSecondarySum;

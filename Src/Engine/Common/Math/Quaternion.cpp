@@ -16,7 +16,7 @@ bool Quaternion::IsValid() const
     return Abs(q.SqrLength4() - 1.0f) < 0.001f;
 }
 
-const Quaternion Quaternion::FromAxisAndAngle(const Vector4& axis, float angle)
+const Quaternion Quaternion::FromAxisAndAngle(const Vec4f& axis, float angle)
 {
     angle *= 0.5f;
     Quaternion q = Quaternion(axis * Sin(angle));
@@ -44,21 +44,21 @@ const Quaternion Quaternion::RotationZ(float angle)
 
 const Quaternion Quaternion::operator * (const Quaternion& b) const
 {
-    const Vector4 a0120 = q.Swizzle<0, 1, 2, 0>();
-    const Vector4 b3330 = b.q.Swizzle<3, 3, 3, 0>();
-    const Vector4 t1 = a0120 * b3330;
+    const Vec4f a0120 = q.Swizzle<0, 1, 2, 0>();
+    const Vec4f b3330 = b.q.Swizzle<3, 3, 3, 0>();
+    const Vec4f t1 = a0120 * b3330;
 
-    const Vector4 a1201 = q.Swizzle<1, 2, 0, 1>();
-    const Vector4 b2011 = b.q.Swizzle<2, 0, 1, 1>();
-    const Vector4 t12 = Vector4::MulAndAdd(a1201, b2011, t1);
+    const Vec4f a1201 = q.Swizzle<1, 2, 0, 1>();
+    const Vec4f b2011 = b.q.Swizzle<2, 0, 1, 1>();
+    const Vec4f t12 = Vec4f::MulAndAdd(a1201, b2011, t1);
 
-    const Vector4 a3333 = q.Swizzle<3, 3, 3, 3>();
-    const Vector4 b0123 = b.q;
-    const Vector4 t0 = a3333 * b0123;
+    const Vec4f a3333 = q.Swizzle<3, 3, 3, 3>();
+    const Vec4f b0123 = b.q;
+    const Vec4f t0 = a3333 * b0123;
 
-    const Vector4 a2012 = q.Swizzle<2, 0, 1, 2>();
-    const Vector4 b1202 = b.q.Swizzle<1, 2, 0, 2>();
-    const Vector4 t03 = Vector4::NegMulAndAdd(a2012, b1202, t0);
+    const Vec4f a2012 = q.Swizzle<2, 0, 1, 2>();
+    const Vec4f b1202 = b.q.Swizzle<1, 2, 0, 2>();
+    const Vec4f t03 = Vec4f::NegMulAndAdd(a2012, b1202, t0);
 
     return Quaternion(t03 + t12.ChangeSign<false, false, false, true>());
 }
@@ -78,27 +78,27 @@ Quaternion& Quaternion::Invert()
     return *this;
 }
 
-const Vector4 Quaternion::TransformVector(const Vector4& v) const
+const Vec4f Quaternion::TransformVector(const Vec4f& v) const
 {
     // based on identity:
     //
     // t = 2 * cross(q.xyz, v)
     // v' = v + q.w * t + cross(q.xyz, t)
 
-    Vector4 t = Vector4::Cross3(q, v);
+    Vec4f t = Vec4f::Cross3(q, v);
     t = t + t;
-    return Vector4::MulAndAdd(t, q.w, v) + Vector4::Cross3(q, t);
+    return Vec4f::MulAndAdd(t, q.w, v) + Vec4f::Cross3(q, t);
 }
 
-const Vector3x8 Quaternion::TransformVector(const Vector3x8& v) const
+const Vec3x8f Quaternion::TransformVector(const Vec3x8f& v) const
 {
-    const Vector3x8 q8(q);
-    Vector3x8 t = Vector3x8::Cross(q8, v);
+    const Vec3x8f q8(q);
+    Vec3x8f t = Vec3x8f::Cross(q8, v);
     t = t + t;
-    return Vector3x8::MulAndAdd(t, Vector8(q.w), v) + Vector3x8::Cross(q8, t);
+    return Vec3x8f::MulAndAdd(t, Vec8f(q.w), v) + Vec3x8f::Cross(q8, t);
 }
 
-void Quaternion::ToAxis(Vector4& outAxis, float& outAngle) const
+void Quaternion::ToAxis(Vec4f& outAxis, float& outAngle) const
 {
     Quaternion normalized = *this;
     if (normalized.q[3] > 1.0f)
@@ -121,8 +121,8 @@ void Quaternion::ToAxis(Vector4& outAxis, float& outAngle) const
 
 const Quaternion Quaternion::Interpolate(const Quaternion& q0, const Quaternion& q1, float t)
 {
-    float cosOmega = Vector4::Dot4(q0, q1);
-    Vector4 new_q1 = q1;
+    float cosOmega = Vec4f::Dot4(q0, q1);
+    Vec4f new_q1 = q1;
     if (cosOmega < 0.0f)
     {
         new_q1 = -new_q1;
@@ -149,11 +149,11 @@ const Quaternion Quaternion::Interpolate(const Quaternion& q0, const Quaternion&
 
 bool Quaternion::AlmostEqual(const Quaternion& a, const Quaternion& b, float epsilon)
 {
-    float d = Vector4::Dot4(a.q, b.q);
+    float d = Vec4f::Dot4(a.q, b.q);
     return Abs(d) > 1.0f - epsilon;
 }
 
-const Quaternion Quaternion::FromEulerAngles(const Float3& angles)
+const Quaternion Quaternion::FromEulerAngles(const Vec3f& angles)
 {
     // based on: https://en.wikipedia.org/wiki/Conversion_between_quaternions_and_Euler_angles
 
@@ -169,27 +169,27 @@ const Quaternion Quaternion::FromEulerAngles(const Float3& angles)
     float t4 = Cos(pitch);
     float t5 = Sin(pitch);
 
-    const Vector4 term0 = Vector4(t0, t1, t0, t0);
-    const Vector4 term1 = Vector4(t2, t2, t3, t2);
-    const Vector4 term2 = Vector4(t5, t4, t4, t4);
+    const Vec4f term0 = Vec4f(t0, t1, t0, t0);
+    const Vec4f term1 = Vec4f(t2, t2, t3, t2);
+    const Vec4f term2 = Vec4f(t5, t4, t4, t4);
 
-    const Vector4 term3 = Vector4(t1, -t0, -t1, t1);
-    const Vector4 term4 = Vector4(t3, t3, t2, t3);
-    const Vector4 term5 = Vector4(t4, t5, t5, t5);
+    const Vec4f term3 = Vec4f(t1, -t0, -t1, t1);
+    const Vec4f term4 = Vec4f(t3, t3, t2, t3);
+    const Vec4f term5 = Vec4f(t4, t5, t5, t5);
 
     return Quaternion(term0 * term1 * term2 + term3 * term4 * term5);
 }
 
 const Quaternion Quaternion::FromMatrix(const Matrix4& m)
 {
-    const Vector4 x = Vector4(m.m[0][0]).ChangeSign<false, true, true, false>();
-    const Vector4 y = Vector4(m.m[1][1]).ChangeSign<true, false, true, false>();
-    const Vector4 z = Vector4(m.m[2][2]).ChangeSign<true, true, false, false>();
+    const Vec4f x = Vec4f(m.m[0][0]).ChangeSign<false, true, true, false>();
+    const Vec4f y = Vec4f(m.m[1][1]).ChangeSign<true, false, true, false>();
+    const Vec4f z = Vec4f(m.m[2][2]).ChangeSign<true, true, false, false>();
 
     Quaternion q;
-    q.q = (Vector4(1.0f) + x) + (y + z);
-    q.q = Vector4::Max(q.q, Vector4::Zero());
-    q.q = Vector4::Sqrt(q.q) * 0.5f;
+    q.q = (Vec4f(1.0f) + x) + (y + z);
+    q.q = Vec4f::Max(q.q, Vec4f::Zero());
+    q.q = Vec4f::Sqrt(q.q) * 0.5f;
 
     q.q.x = CopySign(q.q.x, m.m[1][2] - m.m[2][1]);
     q.q.y = CopySign(q.q.y, m.m[2][0] - m.m[0][2]);
@@ -207,7 +207,7 @@ const Matrix4 Quaternion::ToMatrix() const
     return m;
 }
 
-const Float3 Quaternion::ToEulerAngles() const
+const Vec3f Quaternion::ToEulerAngles() const
 {
     // based on: https://en.wikipedia.org/wiki/Conversion_between_quaternions_and_Euler_angles
 
@@ -250,7 +250,7 @@ const Float3 Quaternion::ToEulerAngles() const
         roll += 2.0f * NFE_MATH_PI;
     }
 
-    return Float3{ pitch, yaw, roll };
+    return Vec3f{ pitch, yaw, roll };
 }
 
 } // namespace Math

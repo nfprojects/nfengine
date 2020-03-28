@@ -20,9 +20,9 @@ using namespace Math;
 using namespace RT;
 using namespace Common;
 
-static bool EditEulerAngles(const char* name, Float3& angles)
+static bool EditEulerAngles(const char* name, Vec3f& angles)
 {
-    Float3 orientation = angles * (180.0f / NFE_MATH_PI);
+    Vec3f orientation = angles * (180.0f / NFE_MATH_PI);
     if (ImGui::InputFloat3(name, &orientation.x, 3, ImGuiInputTextFlags_EnterReturnsTrue))
     {
         angles = orientation * (NFE_MATH_PI / 180.0f);
@@ -33,7 +33,7 @@ static bool EditEulerAngles(const char* name, Float3& angles)
 
 static bool EditRotation(const char* name, Quaternion& quat)
 {
-    Float3 orientation = quat.ToEulerAngles();
+    Vec3f orientation = quat.ToEulerAngles();
     orientation *= 180.0f / NFE_MATH_PI;
     if (ImGui::InputFloat3(name, &orientation.x, 3, ImGuiInputTextFlags_EnterReturnsTrue))
     {
@@ -230,11 +230,11 @@ void DemoWindow::RenderUI_Debugging_Path()
             ImGui::Text("Tri UV"); ImGui::NextColumn();
             ImGui::Text("[%f, %f]", data.hitPoint.u, data.hitPoint.v); ImGui::NextColumn();
 
-            const Vector4 pos = data.shadingData.intersection.frame.GetTranslation();
+            const Vec4f pos = data.shadingData.intersection.frame.GetTranslation();
             ImGui::Text("Position"); ImGui::NextColumn();
             ImGui::Text("[%f, %f, %f]", pos.x, pos.y, pos.z); ImGui::NextColumn();
 
-            const Vector4 normal = data.shadingData.intersection.frame.GetTranslation();
+            const Vec4f normal = data.shadingData.intersection.frame.GetTranslation();
             ImGui::Text("Normal"); ImGui::NextColumn();
             ImGui::Text("[%f, %f, %f]", normal.x, normal.y, normal.z); ImGui::NextColumn();
 
@@ -314,7 +314,7 @@ void DemoWindow::RenderUI_Debugging_Color()
     uint32 width, height;
     GetSize(width, height);
 
-    Vector4 hdrColor, ldrColor;
+    Vec4f hdrColor, ldrColor;
     if (x >= 0 && y >= 0 && (uint32)x < width && (uint32)y < height)
     {
         // TODO this is incorrect, each pixel can have different number of samples
@@ -325,7 +325,7 @@ void DemoWindow::RenderUI_Debugging_Color()
 
     ImGui::Text("HDR color:");
 #ifdef RT_ENABLE_SPECTRAL_RENDERING
-    const Vector4 rgbHdrColor = RT::ConvertXYZtoRGB(hdrColor);
+    const Vec4f rgbHdrColor = RT::ConvertXYZtoRGB(hdrColor);
     ImGui::Text("  R: %f", rgbHdrColor.x);
     ImGui::Text("  G: %f", rgbHdrColor.y);
     ImGui::Text("  B: %f", rgbHdrColor.z);

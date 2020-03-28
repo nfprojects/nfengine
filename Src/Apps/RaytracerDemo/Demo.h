@@ -24,10 +24,10 @@ struct Options
 
 struct CameraSetup
 {
-    Math::Vector4 position = Math::Vector4::Zero();
-    Math::Vector4 linearVelocity = Math::Vector4::Zero();
-    Math::Float3 orientation; // yaw, pitch, roll
-    Math::Float3 angularVelocity;
+    Math::Vec4f position = Math::Vec4f::Zero();
+    Math::Vec4f linearVelocity = Math::Vec4f::Zero();
+    Math::Vec3f orientation; // yaw, pitch, roll
+    Math::Vec3f angularVelocity;
     float fov = 60.0f;
 };
 

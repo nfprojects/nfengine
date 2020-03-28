@@ -9,20 +9,20 @@ float Cos(float x)
     return Sin(x + NFE_MATH_PI / 2.0f);
 }
 
-const Vector4 Cos(const Vector4& x)
+const Vec4f Cos(const Vec4f& x)
 {
-    return Sin(x + Vector4(NFE_MATH_PI / 2.0f));
+    return Sin(x + Vec4f(NFE_MATH_PI / 2.0f));
 }
 
-const Vector8 Cos(const Vector8& x)
+const Vec8f Cos(const Vec8f& x)
 {
-    return Sin(x + Vector8(NFE_MATH_PI / 2.0f));
+    return Sin(x + Vec8f(NFE_MATH_PI / 2.0f));
 }
 
-const Vector4 SinCos(const float x)
+const Vec4f SinCos(const float x)
 {
-    const Vector4 offset(0.0f, NFE_MATH_PI / 2.0f, 0.0f, 0.0f);
-    return Sin(Vector4(x) + offset) & Vector4::MakeMask<1, 1, 0, 0>();
+    const Vec4f offset(0.0f, NFE_MATH_PI / 2.0f, 0.0f, 0.0f);
+    return Sin(Vec4f(x) + offset) & Vec4f::MakeMask<1, 1, 0, 0>();
 }
 
 float Tan(float x)
@@ -40,12 +40,12 @@ float FastExp(float a)
     return FastExp2(a * 1.442695041f); // 1.0f/log(2.0f)
 }
 
-const Vector4 FastExp(const Vector4& a)
+const Vec4f FastExp(const Vec4f& a)
 {
     return FastExp2(a * 1.442695041f); // 1.0f/log(2.0f)
 }
 
-const Vector8 FastExp(const Vector8& a)
+const Vec8f FastExp(const Vec8f& a)
 {
     return FastExp2(a * 1.442695041f); // 1.0f/log(2.0f)
 }

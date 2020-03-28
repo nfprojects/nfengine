@@ -33,9 +33,9 @@ const Matrix4 g_faceFrames[] =
     { {+1.0f, 0.0f,  0.0f, 0.0f}, { 0.0f, 1.0f,  0.0f, 0.0f}, { 0.0f,  0.0f, +1.0f, 0.0f}, {-1.0f,  0.0f,  0.0f, 0.0f} },
 };
 
-NFE_FORCE_INLINE int32 ConvertXYZtoCubeUV(const Vector4& p, Vector4& outUV)
+NFE_FORCE_INLINE int32 ConvertXYZtoCubeUV(const Vec4f& p, Vec4f& outUV)
 {
-    const Vector4 abs = Vector4::Abs(p);
+    const Vec4f abs = Vec4f::Abs(p);
     const int32 isXPositive = p.x > 0 ? 1 : 0;
     const int32 isYPositive = p.y > 0 ? 1 : 0;
     const int32 isZPositive = p.z > 0 ? 1 : 0;
@@ -90,14 +90,14 @@ NFE_FORCE_INLINE int32 ConvertXYZtoCubeUV(const Vector4& p, Vector4& outUV)
     }
 
     // Convert range from -1 to 1 to 0 to 1
-    outUV = Vector4(uc, vc, 0.0f, 0.0f) / (2.0f * maxAxis) + Vector4(0.5f);
+    outUV = Vec4f(uc, vc, 0.0f, 0.0f) / (2.0f * maxAxis) + Vec4f(0.5f);
 
     return side;
 }
 
 } // helper
 
-BoxShape::BoxShape(const Vector4& size)
+BoxShape::BoxShape(const Vec4f& size)
     : mSize(size)
 {
     OnSizeChanged();
@@ -151,13 +151,13 @@ bool BoxShape::Intersect(const Math::Ray& ray, RenderingContext& renderingCtx, S
     return Intersect_BoxRay_TwoSided(ray, box, outResult.nearDist, outResult.farDist);
 }
 
-bool BoxShape::Intersect(const Math::Vector4& point) const
+bool BoxShape::Intersect(const Math::Vec4f& point) const
 {
     const Box box(-mSize, mSize);
     return box.Intersects(point);
 }
 
-const Vector4 BoxShape::Sample(const Float3& u, Math::Vector4* outNormal, float* outPdf) const
+const Vec4f BoxShape::Sample(const Vec3f& u, Math::Vec4f* outNormal, float* outPdf) const
 {
     float v = u.z;
 
@@ -189,11 +189,11 @@ const Vector4 BoxShape::Sample(const Float3& u, Math::Vector4* outNormal, float*
     const uint32 yAxis = (zAxis + 2) % 3u;
 
     // generate normal vector (2 possible directions for already chosen axis)
-    Vector4 normal = Vector4::Zero();
+    Vec4f normal = Vec4f::Zero();
     normal[zAxis] = v < 0.5f ? -1.0f : 1.0f;
 
     // generate position by filling up remaining coordinates
-    Vector4 pos = Vector4::Zero();
+    Vec4f pos = Vec4f::Zero();
     pos[xAxis] = (2.0f * u.x - 1.0f) * mSize[xAxis];
     pos[yAxis] = (2.0f * u.y - 1.0f) * mSize[yAxis];
     pos[zAxis] = normal[zAxis] * mSize[zAxis];

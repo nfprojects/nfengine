@@ -227,7 +227,7 @@ void MultisampleScene::Draw(float dt)
     }
 
     // clear target
-    const Float4 color(0.0f, 1.0f, 0.0f, 1.0f);
+    const Vec4fU color(0.0f, 1.0f, 0.0f, 1.0f);
     mCommandBuffer->Clear(ClearFlagsColor, 1, nullptr, &color);
 
     mCommandBuffer->Draw(6, 1);

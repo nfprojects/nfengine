@@ -49,13 +49,13 @@ bool RoughPlasticBSDF::Sample(SamplingContext& ctx) const
     {
         // microfacet normal (aka. half vector)
         const Microfacet microfacet(roughness * roughness);
-        const Vector4 m = microfacet.Sample(ctx.sample);
+        const Vec4f m = microfacet.Sample(ctx.sample);
 
         // compute reflected direction
-        ctx.outIncomingDir = -Vector4::Reflect3(ctx.outgoingDir, m);
+        ctx.outIncomingDir = -Vec4f::Reflect3(ctx.outgoingDir, m);
 
         const float NdotL = ctx.outIncomingDir.z;
-        const float VdotH = Vector4::Dot3(m, ctx.outgoingDir);
+        const float VdotH = Vec4f::Dot3(m, ctx.outgoingDir);
 
         if (NdotL < CosEpsilon || VdotH < CosEpsilon)
         {
@@ -129,8 +129,8 @@ const RayColor RoughPlasticBSDF::Evaluate(const EvaluationContext& ctx, float* o
 
     {
         // microfacet normal
-        const Vector4 m = (ctx.outgoingDir - ctx.incomingDir).Normalized3();
-        const float VdotH = Vector4::Dot3(m, ctx.outgoingDir);
+        const Vec4f m = (ctx.outgoingDir - ctx.incomingDir).Normalized3();
+        const float VdotH = Vec4f::Dot3(m, ctx.outgoingDir);
 
         // clip the function
         if (VdotH >= CosEpsilon)
@@ -199,8 +199,8 @@ float RoughPlasticBSDF::Pdf(const EvaluationContext& ctx, PdfDirection dir) cons
     float specularPdf = 0.0f;
 
     // microfacet normal
-    const Vector4 m = (ctx.outgoingDir - ctx.incomingDir).Normalized3();
-    const float VdotH = Vector4::Dot3(m, ctx.outgoingDir);
+    const Vec4f m = (ctx.outgoingDir - ctx.incomingDir).Normalized3();
+    const float VdotH = Vec4f::Dot3(m, ctx.outgoingDir);
 
     // clip the function
     if (VdotH >= CosEpsilon)

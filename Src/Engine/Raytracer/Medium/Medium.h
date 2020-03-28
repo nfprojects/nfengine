@@ -26,7 +26,7 @@ struct MediumScatteringEvent
     RayColor transmittance;        // medium transmittance between ray origin and scattering event
 
     float distance;             // distance along the ray where the scattering occurs
-    Math::Vector4 direction;    // scattered ray direction
+    Math::Vec4f direction;    // scattered ray direction
 };
 
 // generic medium interface
@@ -42,7 +42,7 @@ public:
     virtual const RayColor Sample(const Math::Ray& ray, float minDistance, float maxDistance, MediumScatteringEvent& outScatteringEvent, RenderingContext& context) const = 0;
 
     // compute medium transmittance between two points
-    virtual const RayColor Transmittance(const Math::Vector4& startPoint, const Math::Vector4& endPoint, RenderingContext& context) const = 0;
+    virtual const RayColor Transmittance(const Math::Vec4f& startPoint, const Math::Vec4f& endPoint, RenderingContext& context) const = 0;
 };
 
 class HomogenousEmissiveMedium : public IMedium
@@ -51,7 +51,7 @@ class HomogenousEmissiveMedium : public IMedium
 public:
     NFE_RAYTRACER_API HomogenousEmissiveMedium(const Math::HdrColorRGB emissionCoeff = 0.0f);
     NFE_RAYTRACER_API virtual const RayColor Sample(const Math::Ray& ray, float minDistance, float maxDistance, MediumScatteringEvent& outScatteringEvent, RenderingContext& context) const override;
-    NFE_RAYTRACER_API virtual const RayColor Transmittance(const Math::Vector4& startPoint, const Math::Vector4& endPoint, RenderingContext& context) const override;
+    NFE_RAYTRACER_API virtual const RayColor Transmittance(const Math::Vec4f& startPoint, const Math::Vec4f& endPoint, RenderingContext& context) const override;
 
 protected:
     Math::HdrColorRGB mEmissionCoeff;
@@ -63,7 +63,7 @@ class HomogenousAbsorptiveMedium : public IMedium
 public:
     NFE_RAYTRACER_API HomogenousAbsorptiveMedium(const Math::HdrColorRGB exctinctionCoeff = 0.5f);
     NFE_RAYTRACER_API virtual const RayColor Sample(const Math::Ray& ray, float minDistance, float maxDistance, MediumScatteringEvent& outScatteringEvent, RenderingContext& context) const override;
-    NFE_RAYTRACER_API virtual const RayColor Transmittance(const Math::Vector4& startPoint, const Math::Vector4& endPoint, RenderingContext& context) const override;
+    NFE_RAYTRACER_API virtual const RayColor Transmittance(const Math::Vec4f& startPoint, const Math::Vec4f& endPoint, RenderingContext& context) const override;
 
 protected:
     const RayColor Transmittance(const float distance, RenderingContext& ctx) const;
@@ -77,7 +77,7 @@ class HeterogeneousAbsorptiveMedium : public IMedium
 public:
     NFE_RAYTRACER_API HeterogeneousAbsorptiveMedium(const TexturePtr& densityTexture, const Math::HdrColorRGB exctinctionCoeff = Math::HdrColorRGB(1.0f, 1.0f, 1.0f));
     NFE_RAYTRACER_API virtual const RayColor Sample(const Math::Ray& ray, float minDistance, float maxDistance, MediumScatteringEvent& outScatteringEvent, RenderingContext& context) const override;
-    NFE_RAYTRACER_API virtual const RayColor Transmittance(const Math::Vector4& startPoint, const Math::Vector4& endPoint, RenderingContext& context) const override;
+    NFE_RAYTRACER_API virtual const RayColor Transmittance(const Math::Vec4f& startPoint, const Math::Vec4f& endPoint, RenderingContext& context) const override;
 
 protected:
 

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Vector3x8.hpp"
+#include "Vec3x8f.hpp"
 #include "Box.hpp"
 
 
@@ -11,11 +11,11 @@ namespace Math {
 /**
  * Eight boxes (SIMD version).
  */
-class NFE_ALIGN(32) Box_Simd8
+class NFE_ALIGN(32) Box_Simd8 : public Common::Aligned<32>
 {
 public:
-    Vector3x8 min;
-    Vector3x8 max;
+    Vec3x8f min;
+    Vec3x8f max;
 
     Box_Simd8() = default;
     Box_Simd8(const Box_Simd8&) = default;

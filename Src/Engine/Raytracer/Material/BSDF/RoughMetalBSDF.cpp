@@ -34,17 +34,17 @@ bool RoughMetalBSDF::Sample(SamplingContext& ctx) const
 
     // microfacet normal (aka. half vector)
     const Microfacet microfacet(roughness * roughness);
-    const Vector4 m = microfacet.Sample(ctx.sample);
+    const Vec4f m = microfacet.Sample(ctx.sample);
 
     // compute reflected direction
-    ctx.outIncomingDir = -Vector4::Reflect3(ctx.outgoingDir, m);
+    ctx.outIncomingDir = -Vec4f::Reflect3(ctx.outgoingDir, m);
     if (ctx.outIncomingDir.z < CosEpsilon)
     {
         return false;
     }
     
     const float NdotL = ctx.outIncomingDir.z;
-    const float VdotH = Vector4::Dot3(m, ctx.outgoingDir);
+    const float VdotH = Vec4f::Dot3(m, ctx.outgoingDir);
 
     const float pdf = microfacet.Pdf(m);
     const float D = microfacet.D(m);
@@ -75,11 +75,11 @@ const RayColor RoughMetalBSDF::Evaluate(const EvaluationContext& ctx, float* out
     }
 
     // microfacet normal
-    const Vector4 m = (ctx.outgoingDir - ctx.incomingDir).Normalized3();
+    const Vec4f m = (ctx.outgoingDir - ctx.incomingDir).Normalized3();
 
     const float NdotV = ctx.outgoingDir.z;
     const float NdotL = -ctx.incomingDir.z;
-    const float VdotH = Vector4::Dot3(m, ctx.outgoingDir);
+    const float VdotH = Vec4f::Dot3(m, ctx.outgoingDir);
 
     // clip the function
     if (NdotV < CosEpsilon || NdotL < CosEpsilon || VdotH < CosEpsilon)
@@ -120,11 +120,11 @@ float RoughMetalBSDF::Pdf(const EvaluationContext& ctx, PdfDirection dir) const
     }
 
     // microfacet normal
-    const Vector4 m = (ctx.outgoingDir - ctx.incomingDir).Normalized3();
+    const Vec4f m = (ctx.outgoingDir - ctx.incomingDir).Normalized3();
 
     const float NdotV = ctx.outgoingDir.z;
     const float NdotL = -ctx.incomingDir.z;
-    const float VdotH = Vector4::Dot3(m, ctx.outgoingDir);
+    const float VdotH = Vec4f::Dot3(m, ctx.outgoingDir);
 
     // clip the function
     if (NdotV < CosEpsilon || NdotL < CosEpsilon || VdotH < CosEpsilon)

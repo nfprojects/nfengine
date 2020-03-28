@@ -22,7 +22,7 @@ public:
 
     NFE_FORCE_INLINE MaterialParameter(const float baseValue) : baseValue(baseValue) {}
 
-    NFE_FORCE_INLINE float Evaluate(const Math::Vector4& uv) const
+    NFE_FORCE_INLINE float Evaluate(const Math::Vec4f& uv) const
     {
         float value = baseValue;
 
@@ -50,7 +50,7 @@ public:
     NFE_RAYTRACER_API void SetBaseValue(const ColorPtr& baseValueColor);
     NFE_RAYTRACER_API void SetTexture(const TexturePtr& texture);
 
-    const RayColor Evaluate(const Math::Vector4& uv, const Wavelength& wavelength) const;
+    const RayColor Evaluate(const Math::Vec4f& uv, const Wavelength& wavelength) const;
 
 private:
 

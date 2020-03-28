@@ -88,17 +88,17 @@ public:
 
     NFE_RAYTRACER_API void Compile();
 
-    const Math::Vector4 GetNormalVector(const Math::Vector4& uv) const;
-    bool GetMaskValue(const Math::Vector4& uv) const;
+    const Math::Vec4f GetNormalVector(const Math::Vec4f& uv) const;
+    bool GetMaskValue(const Math::Vec4f& uv) const;
 
     void EvaluateShadingData(const Wavelength& wavelength, ShadingData& shadingData) const;
 
     // sample material's BSDFs
     const RayColor Sample(
         Wavelength& wavelength,
-        Math::Vector4& outIncomingDirWorldSpace,
+        Math::Vec4f& outIncomingDirWorldSpace,
         const ShadingData& shadingData,
-        const Math::Float3& sample,
+        const Math::Vec3f& sample,
         float* outPdfW = nullptr,
         BSDF::EventType* outSampledEvent = nullptr) const;
 
@@ -106,7 +106,7 @@ public:
     const RayColor Evaluate(
         const Wavelength& wavelength,
         const ShadingData& shadingData,
-        const Math::Vector4& incomingDirWorldSpace,
+        const Math::Vec4f& incomingDirWorldSpace,
         float* outPdfW = nullptr,
         float* outReversePdfW = nullptr) const;
 

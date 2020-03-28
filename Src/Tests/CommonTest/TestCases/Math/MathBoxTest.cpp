@@ -6,10 +6,10 @@ using namespace NFE::Math;
 
 namespace {
 
-const Box box1(Vector4(1.0f, 2.0f, 3.0f), Vector4(2.0f, 3.0f, 4.0f));
-const Box box2(Vector4(1.0f, 2.0f, 3.0f), Vector4(2.0f, 3.0f, 5.0f));
+const Box box1(Vec4f(1.0f, 2.0f, 3.0f), Vec4f(2.0f, 3.0f, 4.0f));
+const Box box2(Vec4f(1.0f, 2.0f, 3.0f), Vec4f(2.0f, 3.0f, 5.0f));
 const Box boxEmpty = Box::Empty();
-const Box boxPoint(Vector4::Zero(), Vector4::Zero());
+const Box boxPoint(Vec4f::Zero(), Vec4f::Zero());
 
 } // namespace
 

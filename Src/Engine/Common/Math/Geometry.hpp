@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Math.hpp"
-#include "Vector4.hpp"
+#include "Vec4f.hpp"
 #include "Ray.hpp"
 #include "Box.hpp"
 #include "Triangle.hpp"
@@ -23,7 +23,7 @@ enum class IntersectionResult
  * @param[out] out Nearest point on the segment.
  * @return     Distance to the segment.
  */
-NFCOMMON_API float ClosestPointOnSegment(const Vector4& p, const Vector4& p1, const Vector4& p2, Vector4& out);
+NFCOMMON_API float ClosestPointOnSegment(const Vec4f& p, const Vec4f& p1, const Vec4f& p2, Vec4f& out);
 
 /**
  * Template function for intersection tests.
@@ -43,10 +43,10 @@ IntersectionResult IntersectEx(const ShapeTypeA& shapeA, const ShapeTypeB& shape
  * @param dist Distance to the intersection.
  */
 template<typename ShapeType>
-bool Intersect(const Ray& ray, const ShapeType& shape, Vector4& dist);
+bool Intersect(const Ray& ray, const ShapeType& shape, Vec4f& dist);
 
 // convert cartesian (x,y,z) to spherical coordinates (phi,theta)
-NFCOMMON_API const Vector4 CartesianToSphericalCoordinates(const Vector4& input);
+NFCOMMON_API const Vec4f CartesianToSphericalCoordinates(const Vec4f& input);
 
 NFE_FORCE_INLINE constexpr float UniformHemispherePdf()
 {
@@ -74,38 +74,38 @@ NFE_FORCE_INLINE constexpr float SphereCapPdf(const float cosTheta)
 }
 
 // Given a normalized vector 'n', generate orthonormal vectors 'u' and 'v'
-NFCOMMON_API void BuildOrthonormalBasis(const Vector4& n, Vector4& u, Vector4& v);
+NFCOMMON_API void BuildOrthonormalBasis(const Vec4f& n, Vec4f& u, Vec4f& v);
 
-NFE_FORCE_INLINE float PointLineDistanceSqr(const Vector4& pointOnLine, const Vector4& lineDir, const Vector4& testPoint)
+NFE_FORCE_INLINE float PointLineDistanceSqr(const Vec4f& pointOnLine, const Vec4f& lineDir, const Vec4f& testPoint)
 {
-    const Vector4 t = testPoint - pointOnLine;
-    return Vector4::Cross3(lineDir, t).SqrLength3() / lineDir.SqrLength3();
+    const Vec4f t = testPoint - pointOnLine;
+    return Vec4f::Cross3(lineDir, t).SqrLength3() / lineDir.SqrLength3();
 }
 
-NFE_FORCE_INLINE float TriangleSurfaceArea(const Vector4& edge0, const Vector4& edge1)
+NFE_FORCE_INLINE float TriangleSurfaceArea(const Vec4f& edge0, const Vec4f& edge1)
 {
-    const Vector4 cross = Vector4::Cross3(edge1, edge0);
+    const Vec4f cross = Vec4f::Cross3(edge1, edge0);
     return cross.Length3() * 0.5f;
 }
 
 NFE_FORCE_INLINE bool Intersect_BoxRay(const Ray& ray, const Box& box, float& outDistance)
 {
     // calculate all box planes distances
-    Vector4 tmp1 = Vector4::MulAndSub(box.min, ray.invDir, ray.originDivDir); // box.min * ray.invDir - ray.originDivDir;
-    Vector4 tmp2 = Vector4::MulAndSub(box.max, ray.invDir, ray.originDivDir); // box.max * ray.invDir - ray.originDivDir;
-    Vector4 lmin = Vector4::Min(tmp1, tmp2);
-    Vector4 lmax = Vector4::Max(tmp1, tmp2);
+    Vec4f tmp1 = Vec4f::MulAndSub(box.min, ray.invDir, ray.originDivDir); // box.min * ray.invDir - ray.originDivDir;
+    Vec4f tmp2 = Vec4f::MulAndSub(box.max, ray.invDir, ray.originDivDir); // box.max * ray.invDir - ray.originDivDir;
+    Vec4f lmin = Vec4f::Min(tmp1, tmp2);
+    Vec4f lmax = Vec4f::Max(tmp1, tmp2);
 
 #ifdef NFE_USE_SSE
 
     // transpose (we need to calculate min and max of X, Y and Z)
-    Vector4 lx = _mm_shuffle_ps(lmin, lmax, _MM_SHUFFLE(0, 0, 0, 0));
-    Vector4 ly = _mm_shuffle_ps(lmin, lmax, _MM_SHUFFLE(1, 1, 1, 1));
-    Vector4 lz = _mm_shuffle_ps(lmin, lmax, _MM_SHUFFLE(2, 2, 2, 2));
+    Vec4f lx = _mm_shuffle_ps(lmin, lmax, _MM_SHUFFLE(0, 0, 0, 0));
+    Vec4f ly = _mm_shuffle_ps(lmin, lmax, _MM_SHUFFLE(1, 1, 1, 1));
+    Vec4f lz = _mm_shuffle_ps(lmin, lmax, _MM_SHUFFLE(2, 2, 2, 2));
 
     // calculate minimum and maximum plane distances by taking min and max of all 3 components
-    lmin = Vector4::Max(lx, Vector4::Max(ly, lz));
-    lmax = Vector4::Min(lx, Vector4::Min(ly, lz));
+    lmin = Vec4f::Max(lx, Vec4f::Max(ly, lz));
+    lmax = Vec4f::Min(lx, Vec4f::Min(ly, lz));
     outDistance = lmin.x;
 
     // setup data for final comparison
@@ -134,21 +134,21 @@ NFE_FORCE_INLINE bool Intersect_BoxRay(const Ray& ray, const Box& box, float& ou
 NFE_FORCE_INLINE bool Intersect_BoxRay_TwoSided(const Ray& ray, const Box& box, float& outNearDist, float& outFarDist)
 {
     // calculate all box planes distances
-    Vector4 tmp1 = Vector4::MulAndSub(box.min, ray.invDir, ray.originDivDir); // box.min * ray.invDir - ray.originDivDir;
-    Vector4 tmp2 = Vector4::MulAndSub(box.max, ray.invDir, ray.originDivDir); // box.max * ray.invDir - ray.originDivDir;
-    Vector4 lmin = Vector4::Min(tmp1, tmp2);
-    Vector4 lmax = Vector4::Max(tmp1, tmp2);
+    Vec4f tmp1 = Vec4f::MulAndSub(box.min, ray.invDir, ray.originDivDir); // box.min * ray.invDir - ray.originDivDir;
+    Vec4f tmp2 = Vec4f::MulAndSub(box.max, ray.invDir, ray.originDivDir); // box.max * ray.invDir - ray.originDivDir;
+    Vec4f lmin = Vec4f::Min(tmp1, tmp2);
+    Vec4f lmax = Vec4f::Max(tmp1, tmp2);
 
 #ifdef NFE_USE_SSE
 
     // transpose (we need to calculate min and max of X, Y and Z)
-    Vector4 lx = _mm_shuffle_ps(lmin, lmax, _MM_SHUFFLE(0, 0, 0, 0));
-    Vector4 ly = _mm_shuffle_ps(lmin, lmax, _MM_SHUFFLE(1, 1, 1, 1));
-    Vector4 lz = _mm_shuffle_ps(lmin, lmax, _MM_SHUFFLE(2, 2, 2, 2));
+    Vec4f lx = _mm_shuffle_ps(lmin, lmax, _MM_SHUFFLE(0, 0, 0, 0));
+    Vec4f ly = _mm_shuffle_ps(lmin, lmax, _MM_SHUFFLE(1, 1, 1, 1));
+    Vec4f lz = _mm_shuffle_ps(lmin, lmax, _MM_SHUFFLE(2, 2, 2, 2));
 
     // calculate minimum and maximum plane distances by taking min and max of all 3 components
-    lmin = Vector4::Max(lx, Vector4::Max(ly, lz));
-    lmax = Vector4::Min(lx, Vector4::Min(ly, lz));
+    lmin = Vec4f::Max(lx, Vec4f::Max(ly, lz));
+    lmax = Vec4f::Min(lx, Vec4f::Min(ly, lz));
 
     outNearDist = lmin.x;
     outFarDist  = lmax.z;
@@ -165,26 +165,26 @@ NFE_FORCE_INLINE bool Intersect_BoxRay_TwoSided(const Ray& ray, const Box& box, 
 
 NFE_FORCE_INLINE bool Intersect_TriangleRay(
     const Ray& ray,
-    const Vector4& vertex0, const Vector4& edge01, const Vector4& edge02,
+    const Vec4f& vertex0, const Vec4f& edge01, const Vec4f& edge02,
     float& outU, float& outV, float& outDistance)
 {
     // Based on "Fast, Minimum Storage Ray/Triangle Intersection" by Tomas Möller and Ben Trumbore.
 
     // calculate distance from vert0 to ray origin
-    Vector4 tvec = ray.origin - vertex0;
-    Vector4 pvec = Vector4::Cross3(ray.dir, edge02);
-    Vector4 qvec = Vector4::Cross3(tvec, edge01);
+    Vec4f tvec = ray.origin - vertex0;
+    Vec4f pvec = Vec4f::Cross3(ray.dir, edge02);
+    Vec4f qvec = Vec4f::Cross3(tvec, edge01);
 
 #ifdef NFE_USE_SSE
 
-    Vector4 det = Vector4::Dot3V(edge01, pvec);
-    Vector4 u = Vector4::Dot3V(tvec, pvec);
-    Vector4 v = Vector4::Dot3V(ray.dir, qvec);
-    Vector4 t = Vector4::Dot3V(edge02, qvec);
+    Vec4f det = Vec4f::Dot3V(edge01, pvec);
+    Vec4f u = Vec4f::Dot3V(tvec, pvec);
+    Vec4f v = Vec4f::Dot3V(ray.dir, qvec);
+    Vec4f t = Vec4f::Dot3V(edge02, qvec);
 
     // prepare data to the final comparison
-    Vector4 tmp1 = _mm_unpacklo_ps(v, u); // [v, u, v, u]
-    Vector4 tmp2 = _mm_unpacklo_ps(u + v, t); // [u+v, t, u+v, t]
+    Vec4f tmp1 = _mm_unpacklo_ps(v, u); // [v, u, v, u]
+    Vec4f tmp2 = _mm_unpacklo_ps(u + v, t); // [u+v, t, u+v, t]
     tmp1 = _mm_unpacklo_ps(tmp2, tmp1); // [u+v, v, t, u]
     tmp1 = tmp1 / det; // TODO this is slow, but reciprocal approximation gives bad results (artifacts)
     tmp2 = _mm_set_ss(1.0f); // [1.0, 0.0, 0.0, 0.0]
@@ -203,11 +203,11 @@ NFE_FORCE_INLINE bool Intersect_TriangleRay(
 #else // !NFE_USE_SSE
 
     // if determinant is near zero, ray lies in plane of triangle
-    float det = Vector4::Dot3(edge01, pvec);
+    float det = Vec4f::Dot3(edge01, pvec);
 
-    float u = Vector4::Dot3(tvec, pvec);
-    float v = Vector4::Dot3(ray.dir, qvec);
-    float t = Vector4::Dot3(edge02, qvec);
+    float u = Vec4f::Dot3(tvec, pvec);
+    float v = Vec4f::Dot3(ray.dir, qvec);
+    float t = Vec4f::Dot3(edge02, qvec);
 
     u /= det;
     v /= det;

@@ -9,7 +9,7 @@
 #include "Component.hpp"
 
 #include "../../../Common/Memory/Aligned.hpp"
-#include "../../../Common/Math/Vector4.hpp"
+#include "../../../Common/Math/Vec4f.hpp"
 
 
 namespace NFE {
@@ -90,7 +90,7 @@ class NFE_ALIGN(16) CORE_API LightComponent
     NFE_DECLARE_POLYMORPHIC_CLASS(LightComponent)
 
 private:
-    Math::Vector4 mColor;
+    Math::Vec4f mColor;
 
     LightType mLightType;
 
@@ -117,7 +117,7 @@ public:
     virtual void OnDetach() override;
     virtual void OnUpdate() override;
 
-    void SetColor(const Math::Float3& color);
+    void SetColor(const Math::Vec3f& color);
     void SetOmniLight(const OmniLightDesc& desc);
     void SetSpotLight(const SpotLightDesc& desc);
     void SetDirLight(const DirLightDesc& desc);

@@ -16,7 +16,7 @@ namespace Math {
 bool Matrix2::Equal(const Matrix2& m1, const Matrix2& m2, float epsilon)
 {
     const Matrix2 diff = Abs(m1 - m2);
-    const Float2 epsilonV = Float2::Splat(epsilon);
+    const Vec2f epsilonV = Vec2f::Splat(epsilon);
     return (diff[0] < epsilonV) && (diff[1] < epsilonV);
 }
 
@@ -33,7 +33,7 @@ bool Matrix2::Invert(Matrix2& outInverted) const
         return false;
     }
 
-    const Matrix2 temp(Float2(m[1][1], -m[0][1]), Float2(-m[1][0], m[0][0]));
+    const Matrix2 temp(Vec2f(m[1][1], -m[0][1]), Vec2f(-m[1][0], m[0][0]));
     outInverted = temp / det;
     return true;
 }
@@ -42,7 +42,7 @@ Matrix2 Matrix2::MakeRotation(float angle)
 {
     const float c = Cos(angle);
     const float s = Sin(angle);
-    return Matrix2(Float2(c, -s), Float2(s, c));
+    return Matrix2(Vec2f(c, -s), Vec2f(s, c));
 }
 
 } // namespace Math

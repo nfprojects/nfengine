@@ -8,7 +8,7 @@
 
 #include "Component.hpp"
 
-#include "../../../Common/Math/Vector4.hpp"
+#include "../../../Common/Math/Vec4f.hpp"
 #include "../../../Common/Memory/Aligned.hpp"
 
 
@@ -52,13 +52,13 @@ public:
     virtual void OnDetach() override;
     virtual void OnUpdate() override;
 
-    const Math::Vector4& GetSize() const { return mSize; }
+    const Math::Vec4f& GetSize() const { return mSize; }
     TriggerType GetType() const { return mType; }
 
     /**
      * Set trigger box size.
      */
-    void SetSize(const Math::Vector4& newSize);
+    void SetSize(const Math::Vec4f& newSize);
 
     /**
      * Change trigger type.
@@ -68,7 +68,7 @@ public:
 private:
     // TODO temporary
     // there must be a support for arbitrary shapes in the future
-    Math::Vector4 mSize;
+    Math::Vec4f mSize;
 
     // trigger ID (obtained from trigger system after registration)
     TriggerID mID;

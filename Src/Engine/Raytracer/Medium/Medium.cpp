@@ -92,7 +92,7 @@ const RayColor HomogenousEmissiveMedium::Sample(const Ray& ray, float minDistanc
     return RayColor::One();
 }
 
-const RayColor HomogenousEmissiveMedium::Transmittance(const Vector4&, const Vector4&, RenderingContext&) const
+const RayColor HomogenousEmissiveMedium::Transmittance(const Vec4f&, const Vec4f&, RenderingContext&) const
 {
     return RayColor::One();
 }
@@ -118,16 +118,16 @@ const RayColor HomogenousAbsorptiveMedium::Transmittance(const float distance, R
 {
     // TODO spectral rendering
 
-    Vector4 coefficent = Vector4::Zero();
+    Vec4f coefficent = Vec4f::Zero();
     if (distance < FLT_MAX) // avoid 0.0*(-inf) that leads to NAN
     {
-        coefficent = FastExp(-mExctinctionCoeff.ToVector4() * distance);
+        coefficent = FastExp(-mExctinctionCoeff.ToVec4f() * distance);
     }
 
     return RayColor::ResolveRGB(ctx.wavelength, coefficent);
 }
 
-const RayColor HomogenousAbsorptiveMedium::Transmittance(const Vector4& startPoint, const Vector4& endPoint, RenderingContext& ctx) const
+const RayColor HomogenousAbsorptiveMedium::Transmittance(const Vec4f& startPoint, const Vec4f& endPoint, RenderingContext& ctx) const
 {
     const float distance = (startPoint - endPoint).Length3();
 
@@ -161,11 +161,11 @@ const RayColor HeterogeneousAbsorptiveMedium::Sample(const Ray& ray, float minDi
     return outScatteringEvent.transmittance;
 }
 
-const RayColor HeterogeneousAbsorptiveMedium::Transmittance(const Vector4& startPoint, const Vector4& endPoint, RenderingContext& ctx) const
+const RayColor HeterogeneousAbsorptiveMedium::Transmittance(const Vec4f& startPoint, const Vec4f& endPoint, RenderingContext& ctx) const
 {
-    Vector4 transmittance(1.0f);
+    Vec4f transmittance(1.0f);
 
-    Vector4 dir = endPoint - startPoint;
+    Vec4f dir = endPoint - startPoint;
     const float distance = dir.Length3();
 
     if (distance > FLT_EPSILON)
@@ -183,14 +183,14 @@ const RayColor HeterogeneousAbsorptiveMedium::Transmittance(const Vector4& start
                 break;
             }
 
-            const Vector4 p = startPoint + dir * t;
-            const Vector4 density = mDensityTexture->Evaluate(p);
+            const Vec4f p = startPoint + dir * t;
+            const Vec4f density = mDensityTexture->Evaluate(p);
             transmittance *= VECTOR_ONE - density * mInvMaxDensity;
         }
     }
 
     NFE_ASSERT(transmittance.IsValid());
-    NFE_ASSERT((transmittance >= Vector4::Zero()).All());
+    NFE_ASSERT((transmittance >= Vec4f::Zero()).All());
 
     const HdrColorRGB density = transmittance;
 
@@ -204,8 +204,8 @@ HomogenousScatteringMedium::HomogenousScatteringMedium(const HdrColorRGB exctinc
     , mScatteringAlbedo(scatteringAlbedo)
 {
     NFE_ASSERT(mScatteringAlbedo.IsValid());
-    //NFE_ASSERT((mScatteringAlbedo >= Vector4::Zero()).All());
-    //NFE_ASSERT((mScatteringAlbedo <= Vector4(1.0f)).All());
+    //NFE_ASSERT((mScatteringAlbedo >= Vec4f::Zero()).All());
+    //NFE_ASSERT((mScatteringAlbedo <= Vec4f(1.0f)).All());
 }
 
 const RayColor HomogenousScatteringMedium::Sample(const Ray& ray, float minDistance, float maxDistance, MediumScatteringEvent& outScatteringEvent, RenderingContext& ctx) const
@@ -219,7 +219,7 @@ const RayColor HomogenousScatteringMedium::Sample(const Ray& ray, float minDista
     // find unbounded scatter location
     const uint32 channel = ctx.randomGenerator.GetInt() % Wavelength::NumComponents;
     const float xi = ctx.randomGenerator.GetFloat();
-    const float scatterDistance = -Log(1.0f - xi) / mExctinctionCoeff.ToVector4()[channel];
+    const float scatterDistance = -Log(1.0f - xi) / mExctinctionCoeff.ToVec4f()[channel];
 
     // TODO emissive medium
     outScatteringEvent.radiance = RayColor::Zero();
@@ -234,7 +234,7 @@ const RayColor HomogenousScatteringMedium::Sample(const Ray& ray, float minDista
     if (sampledMedium)
     {
         const float g = 0.0f;
-        PhaseFunction::Sample(-ray.dir, outScatteringEvent.direction, g, ctx.randomGenerator.GetFloat2());
+        PhaseFunction::Sample(-ray.dir, outScatteringEvent.direction, g, ctx.randomGenerator.GetVec2f());
         outScatteringEvent.distance = minDistance + scatterDistance;
 
         density *= RayColor::ResolveRGB(ctx.wavelength, mExctinctionCoeff);
@@ -259,8 +259,8 @@ HeterogeneousScatteringMedium::HeterogeneousScatteringMedium(const TexturePtr& d
     , mScatteringAlbedo(scatteringAlbedo)
 {
     //NFE_ASSERT(mScatteringAlbedo.IsValid());
-    //NFE_ASSERT((mScatteringAlbedo >= Vector4::Zero()).All());
-    //NFE_ASSERT((mScatteringAlbedo <= Vector4(1.0f)).All());
+    //NFE_ASSERT((mScatteringAlbedo >= Vec4f::Zero()).All());
+    //NFE_ASSERT((mScatteringAlbedo <= Vec4f(1.0f)).All());
 }
 
 const RayColor HeterogeneousScatteringMedium::Sample(const Ray& ray, float minDistance, float maxDistance, MediumScatteringEvent& outScatteringEvent, RenderingContext& ctx) const
@@ -277,7 +277,7 @@ const RayColor HeterogeneousScatteringMedium::Sample(const Ray& ray, float minDi
         float t = minDistance;
         while (true)
         {
-            const Vector4 u = ctx.randomGenerator.GetVector4();
+            const Vec4f u = ctx.randomGenerator.GetVec4f();
 
             t -= Log(1.0f - u.x) * invMaxDensity / mExctinctionCoeff.Luminance();
             if (t >= maxDistance)
@@ -285,12 +285,12 @@ const RayColor HeterogeneousScatteringMedium::Sample(const Ray& ray, float minDi
                 break;
             }
 
-            const Vector4 p = ray.GetAtDistance(t);
-            const Vector4 density = mDensityTexture->Evaluate(p);
+            const Vec4f p = ray.GetAtDistance(t);
+            const Vec4f density = mDensityTexture->Evaluate(p);
             if (density.x * invMaxDensity > u.y) // TODO non-monochromatic density
             {
                 const float g = 0.0f;
-                PhaseFunction::Sample(-ray.dir, outScatteringEvent.direction, g, Float2(u.z, u.w));
+                PhaseFunction::Sample(-ray.dir, outScatteringEvent.direction, g, Vec2f(u.z, u.w));
                 outScatteringEvent.distance = t;
 
                 return RayColor::ResolveRGB(ctx.wavelength, mScatteringAlbedo);

@@ -8,24 +8,24 @@ namespace NFE {
 namespace Math {
 
 // Class representing 3D transformation (translation + rotation).
-class NFE_ALIGN(16) Transform final
+class NFE_ALIGN(16) Transform final : public Common::Aligned<16>
 {
     NFE_DECLARE_CLASS(Transform);
 
 public:
     NFE_FORCE_INLINE Transform()
-        : mTranslation(Vector4::Zero())
+        : mTranslation(Vec4f::Zero())
     { }
 
     Transform(const Transform&) = default;
     Transform& operator = (const Transform&) = default;
 
-    NFE_FORCE_INLINE explicit Transform(const Vector4& translation, const Quaternion& rotation)
+    NFE_FORCE_INLINE explicit Transform(const Vec4f& translation, const Quaternion& rotation)
         : mTranslation(translation)
         , mRotation(rotation)
     { }
 
-    NFE_FORCE_INLINE explicit Transform(const Vector4& translation)
+    NFE_FORCE_INLINE explicit Transform(const Vec4f& translation)
         : mTranslation(translation)
     { }
 
@@ -33,10 +33,10 @@ public:
         : mRotation(rotation)
     { }
 
-    NFE_FORCE_INLINE const Vector4& GetTranslation() const { return mTranslation; }
+    NFE_FORCE_INLINE const Vec4f& GetTranslation() const { return mTranslation; }
     NFE_FORCE_INLINE const Quaternion& GetRotation() const { return mRotation; }
 
-    NFE_FORCE_INLINE void SetTranslation(const Vector4& translation) { mTranslation = translation; }
+    NFE_FORCE_INLINE void SetTranslation(const Vec4f& translation) { mTranslation = translation; }
     NFE_FORCE_INLINE void SetRotation(const Quaternion& rotation) { mRotation = rotation; }
 
     NFE_FORCE_INLINE bool IsValid() const { return mTranslation.IsValid() && mRotation.IsValid(); }
@@ -54,13 +54,13 @@ public:
     NFCOMMON_API Transform& Invert();
 
     // Transform a 3D point
-    NFCOMMON_API const Vector4 TransformPoint(const Vector4& p) const;
-    NFCOMMON_API const Vector3x8 TransformPoint(const Vector3x8& p) const;
+    NFCOMMON_API const Vec4f TransformPoint(const Vec4f& p) const;
+    NFCOMMON_API const Vec3x8f TransformPoint(const Vec3x8f& p) const;
 
     // Transform a 3D vector (direction).
     // Note: Translation is ignored.
-    NFCOMMON_API const Vector4 TransformVector(const Vector4& v) const;
-    NFCOMMON_API const Vector3x8 TransformVector(const Vector3x8& v) const;
+    NFCOMMON_API const Vec4f TransformVector(const Vec4f& v) const;
+    NFCOMMON_API const Vec3x8f TransformVector(const Vec3x8f& v) const;
 
     NFCOMMON_API const Box TransformBox(const Box& box) const;
     NFCOMMON_API const Ray TransformRay(const Ray& ray) const;
@@ -79,7 +79,7 @@ public:
     NFCOMMON_API static bool AlmostEqual(const Transform& a, const Transform& b, float epsilon = NFE_MATH_EPSILON);
 
 private:
-    Vector4 mTranslation;
+    Vec4f mTranslation;
     Quaternion mRotation;
 };
 

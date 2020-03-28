@@ -8,11 +8,11 @@ using namespace NFE;
 using namespace NFE::Math;
 
 
-void TestUnitVector(const Vector4& v, float maxError)
+void TestUnitVector(const Vec4f& v, float maxError)
 {
     PackedUnitVector3 packed;
     packed.FromVector(v);
-    const Vector4 decompressed = packed.ToVector();
+    const Vec4f decompressed = packed.ToVector();
 
     SCOPED_TRACE("x=[" + std::to_string(v.x) + ',' + std::to_string(v.y) + ',' + std::to_string(v.z) + ']');
 
@@ -24,46 +24,46 @@ void TestUnitVector(const Vector4& v, float maxError)
 TEST(MathPacked, UnitVector)
 {
     // test edge cases
-    TestUnitVector(Vector4( 1.0f,  0.0f,  0.0f), 0.0f);
-    TestUnitVector(Vector4(-1.0f,  0.0f,  0.0f), 0.0f);
-    TestUnitVector(Vector4( 0.0f,  1.0f,  0.0f), 0.0f);
-    TestUnitVector(Vector4( 0.0f, -1.0f,  0.0f), 0.0f);
-    TestUnitVector(Vector4( 0.0f,  0.0f,  1.0f), 0.0f);
-    TestUnitVector(Vector4( 0.0f,  0.0f, -1.0f), 0.0f);
+    TestUnitVector(Vec4f( 1.0f,  0.0f,  0.0f), 0.0f);
+    TestUnitVector(Vec4f(-1.0f,  0.0f,  0.0f), 0.0f);
+    TestUnitVector(Vec4f( 0.0f,  1.0f,  0.0f), 0.0f);
+    TestUnitVector(Vec4f( 0.0f, -1.0f,  0.0f), 0.0f);
+    TestUnitVector(Vec4f( 0.0f,  0.0f,  1.0f), 0.0f);
+    TestUnitVector(Vec4f( 0.0f,  0.0f, -1.0f), 0.0f);
 
-    TestUnitVector(Vector4( 1.0f,  1.0f,  1.0f).Normalized3(), 0.0002f);
-    TestUnitVector(Vector4( 1.0f,  1.0f, -1.0f).Normalized3(), 0.0002f);
-    TestUnitVector(Vector4( 1.0f, -1.0f,  1.0f).Normalized3(), 0.0002f);
-    TestUnitVector(Vector4( 1.0f, -1.0f, -1.0f).Normalized3(), 0.0002f);
-    TestUnitVector(Vector4(-1.0f,  1.0f,  1.0f).Normalized3(), 0.0002f);
-    TestUnitVector(Vector4(-1.0f,  1.0f, -1.0f).Normalized3(), 0.0002f);
-    TestUnitVector(Vector4(-1.0f, -1.0f,  1.0f).Normalized3(), 0.0002f);
-    TestUnitVector(Vector4(-1.0f, -1.0f, -1.0f).Normalized3(), 0.0002f);
+    TestUnitVector(Vec4f( 1.0f,  1.0f,  1.0f).Normalized3(), 0.0002f);
+    TestUnitVector(Vec4f( 1.0f,  1.0f, -1.0f).Normalized3(), 0.0002f);
+    TestUnitVector(Vec4f( 1.0f, -1.0f,  1.0f).Normalized3(), 0.0002f);
+    TestUnitVector(Vec4f( 1.0f, -1.0f, -1.0f).Normalized3(), 0.0002f);
+    TestUnitVector(Vec4f(-1.0f,  1.0f,  1.0f).Normalized3(), 0.0002f);
+    TestUnitVector(Vec4f(-1.0f,  1.0f, -1.0f).Normalized3(), 0.0002f);
+    TestUnitVector(Vec4f(-1.0f, -1.0f,  1.0f).Normalized3(), 0.0002f);
+    TestUnitVector(Vec4f(-1.0f, -1.0f, -1.0f).Normalized3(), 0.0002f);
 
-    TestUnitVector(Vector4( 1.0f,  2.0f,  3.0f).Normalized3(), 0.0002f);
-    TestUnitVector(Vector4( 1.0f,  2.0f, -3.0f).Normalized3(), 0.0002f);
-    TestUnitVector(Vector4( 1.0f, -2.0f,  3.0f).Normalized3(), 0.0002f);
-    TestUnitVector(Vector4( 1.0f, -2.0f, -3.0f).Normalized3(), 0.0002f);
-    TestUnitVector(Vector4(-1.0f,  2.0f,  3.0f).Normalized3(), 0.0002f);
-    TestUnitVector(Vector4(-1.0f,  2.0f, -3.0f).Normalized3(), 0.0002f);
-    TestUnitVector(Vector4(-1.0f, -2.0f,  3.0f).Normalized3(), 0.0002f);
-    TestUnitVector(Vector4(-1.0f, -2.0f, -3.0f).Normalized3(), 0.0002f);
+    TestUnitVector(Vec4f( 1.0f,  2.0f,  3.0f).Normalized3(), 0.0002f);
+    TestUnitVector(Vec4f( 1.0f,  2.0f, -3.0f).Normalized3(), 0.0002f);
+    TestUnitVector(Vec4f( 1.0f, -2.0f,  3.0f).Normalized3(), 0.0002f);
+    TestUnitVector(Vec4f( 1.0f, -2.0f, -3.0f).Normalized3(), 0.0002f);
+    TestUnitVector(Vec4f(-1.0f,  2.0f,  3.0f).Normalized3(), 0.0002f);
+    TestUnitVector(Vec4f(-1.0f,  2.0f, -3.0f).Normalized3(), 0.0002f);
+    TestUnitVector(Vec4f(-1.0f, -2.0f,  3.0f).Normalized3(), 0.0002f);
+    TestUnitVector(Vec4f(-1.0f, -2.0f, -3.0f).Normalized3(), 0.0002f);
 
     Random random;
 
     for (uint32 i = 0; i < 1000; ++i)
     {
-        const Vector4 vec = SamplingHelpers::GetSphere(random.GetFloat2()).Normalized3();
+        const Vec4f vec = SamplingHelpers::GetSphere(random.GetVec2f()).Normalized3();
         TestUnitVector(vec, 0.0002f);
     }
 }
 
 
-void TestColorRgbHdr(const Vector4& color, float maxError)
+void TestColorRgbHdr(const Vec4f& color, float maxError)
 {
     PackedColorRgbHdr packed;
     packed.FromVector(color);
-    const Vector4 decompressed = packed.ToVector();
+    const Vec4f decompressed = packed.ToVector();
 
     SCOPED_TRACE("color=[" + std::to_string(color.x) + ',' + std::to_string(color.y) + ',' + std::to_string(color.z) + ']');
 
@@ -75,25 +75,25 @@ void TestColorRgbHdr(const Vector4& color, float maxError)
 TEST(MathPacked, ColorRgbHdr)
 {
     // test edge cases
-    TestColorRgbHdr(Vector4(0.0f, 0.0f, 0.0f), 0.0f);
-    TestColorRgbHdr(Vector4(1.0f, 0.0f, 0.0f), 0.0f);
-    TestColorRgbHdr(Vector4(0.0f, 1.0f, 0.0f), 0.0f);
-    TestColorRgbHdr(Vector4(0.0f, 0.0f, 1.0f), 0.0f);
-    TestColorRgbHdr(Vector4(1024.0f, 0.0f, 0.0f), 0.0f);
-    TestColorRgbHdr(Vector4(0.0f, 1024.0f, 0.0f), 0.0f);
-    TestColorRgbHdr(Vector4(0.0f, 0.0f, 1024.0f), 0.0f);
+    TestColorRgbHdr(Vec4f(0.0f, 0.0f, 0.0f), 0.0f);
+    TestColorRgbHdr(Vec4f(1.0f, 0.0f, 0.0f), 0.0f);
+    TestColorRgbHdr(Vec4f(0.0f, 1.0f, 0.0f), 0.0f);
+    TestColorRgbHdr(Vec4f(0.0f, 0.0f, 1.0f), 0.0f);
+    TestColorRgbHdr(Vec4f(1024.0f, 0.0f, 0.0f), 0.0f);
+    TestColorRgbHdr(Vec4f(0.0f, 1024.0f, 0.0f), 0.0f);
+    TestColorRgbHdr(Vec4f(0.0f, 0.0f, 1024.0f), 0.0f);
 
     Random random;
 
     for (uint32 i = 0; i < 1000; ++i)
     {
-        const Vector4 vec = random.GetVector4() * 0.001f;
+        const Vec4f vec = random.GetVec4f() * 0.001f;
         TestColorRgbHdr(vec, 0.0000002f);
     }
 
     for (uint32 i = 0; i < 1000; ++i)
     {
-        const Vector4 vec = random.GetVector4() * 1000.0f;
+        const Vec4f vec = random.GetVec4f() * 1000.0f;
         TestColorRgbHdr(vec, 0.2f);
     }
 }

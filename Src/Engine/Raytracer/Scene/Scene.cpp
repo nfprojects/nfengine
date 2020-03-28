@@ -223,7 +223,7 @@ void Scene::Traverse_Leaf(const PacketTraversalContext& context, const uint32 ob
             RayGroup& rayGroup = context.ray.groups[context.context.activeGroupsIndices[j]];
             rayGroup.rays[1].origin = invTransform.TransformPoint(rayGroup.rays[0].origin);
             rayGroup.rays[1].dir = invTransform.TransformVector(rayGroup.rays[0].dir);
-            rayGroup.rays[1].invDir = Vector3x8::FastReciprocal(rayGroup.rays[1].dir);
+            rayGroup.rays[1].invDir = Vec3x8f::FastReciprocal(rayGroup.rays[1].dir);
         }
 
         object->Traverse(context, objectIndex, numActiveGroups);
@@ -303,7 +303,7 @@ void Scene::Traverse(const PacketTraversalContext& context) const
             RayGroup& rayGroup = context.ray.groups[context.context.activeGroupsIndices[j]];
             rayGroup.rays[1].origin = invTransform.TransformPoint(rayGroup.rays[0].origin);
             rayGroup.rays[1].dir = invTransform.TransformVector(rayGroup.rays[0].dir);
-            rayGroup.rays[1].invDir = Vector3x8::FastReciprocal(rayGroup.rays[1].dir);
+            rayGroup.rays[1].invDir = Vec3x8f::FastReciprocal(rayGroup.rays[1].dir);
         }
 
         mTraceableObjects.Front()->Traverse(context, 0, numRayGroups);
@@ -327,7 +327,7 @@ void Scene::EvaluateIntersection(const Ray& ray, const HitPoint& hitPoint, const
     const Matrix4 transform = object->GetTransform(time);
     const Matrix4 invTransform = transform.FastInverseNoScale();
 
-    const Vector4 worldPosition = ray.GetAtDistance(hitPoint.distance);
+    const Vec4f worldPosition = ray.GetAtDistance(hitPoint.distance);
     outData.frame[3] = invTransform.TransformPoint(worldPosition);
 
     // calculate normal, tangent, tex coord, etc. from intersection data
@@ -340,31 +340,31 @@ void Scene::EvaluateIntersection(const Ray& ray, const HitPoint& hitPoint, const
         NFE_ASSERT(Abs(1.0f - outData.frame[2].SqrLength3()) < 0.001f);
     }
 
-    Vector4 localSpaceTangent = outData.frame[0];
-    Vector4 localSpaceNormal = outData.frame[2];
-    Vector4 localSpaceBitangent = Vector4::Cross3(localSpaceTangent, localSpaceNormal);
+    Vec4f localSpaceTangent = outData.frame[0];
+    Vec4f localSpaceNormal = outData.frame[2];
+    Vec4f localSpaceBitangent = Vec4f::Cross3(localSpaceTangent, localSpaceNormal);
 
     // apply normal mapping
     if (outData.material && outData.material->normalMap)
     {
-        const Vector4 localNormal = outData.material->GetNormalVector(outData.texCoord);
+        const Vec4f localNormal = outData.material->GetNormalVector(outData.texCoord);
 
         // transform normal vector
-        Vector4 newNormal = localSpaceTangent * localNormal.x;
-        newNormal = Vector4::MulAndAdd(localSpaceBitangent, localNormal.y, newNormal);
-        newNormal = Vector4::MulAndAdd(localSpaceNormal, localNormal.z, newNormal);
+        Vec4f newNormal = localSpaceTangent * localNormal.x;
+        newNormal = Vec4f::MulAndAdd(localSpaceBitangent, localNormal.y, newNormal);
+        newNormal = Vec4f::MulAndAdd(localSpaceNormal, localNormal.z, newNormal);
         localSpaceNormal = newNormal.FastNormalized3();
     }
 
     // orthogonalize tangent vector (required due to normal/tangent vectors interpolation and normal mapping)
     // TODO this can be skipped if the tangent vector is the same for every point on the triangle (flat shading)
     // and normal mapping is disabled
-    localSpaceTangent = Vector4::Orthogonalize(localSpaceTangent, localSpaceNormal).Normalized3();
+    localSpaceTangent = Vec4f::Orthogonalize(localSpaceTangent, localSpaceNormal).Normalized3();
 
     // transform shading data from local space to world space
     outData.frame[2] = transform.TransformVector(localSpaceNormal);
     outData.frame[0] = transform.TransformVector(localSpaceTangent);
-    outData.frame[1] = Vector4::Cross3(outData.frame[0], outData.frame[2]);
+    outData.frame[1] = Vec4f::Cross3(outData.frame[0], outData.frame[2]);
     outData.frame[3] = worldPosition;
 
     // make sure the frame is orthonormal
@@ -375,12 +375,12 @@ void Scene::EvaluateIntersection(const Ray& ray, const HitPoint& hitPoint, const
         NFE_ASSERT(Abs(1.0f - outData.frame[2].SqrLength3()) < 0.001f);
 
         // validate perpendicularity
-        NFE_ASSERT(Vector4::Dot3(outData.frame[1], outData.frame[0]) < 0.001f);
-        //NFE_ASSERT(Vector4::Dot3(outData.frame[1], outData.frame[2]) < 0.001f);
-        //NFE_ASSERT(Vector4::Dot3(outData.frame[2], outData.frame[0]) < 0.001f);
+        NFE_ASSERT(Vec4f::Dot3(outData.frame[1], outData.frame[0]) < 0.001f);
+        //NFE_ASSERT(Vec4f::Dot3(outData.frame[1], outData.frame[2]) < 0.001f);
+        //NFE_ASSERT(Vec4f::Dot3(outData.frame[2], outData.frame[0]) < 0.001f);
 
         // validate headness
-        //const Vector4 computedNormal = Vector4::Cross3(outData.frame[0], outData.frame[1]);
+        //const Vec4f computedNormal = Vec4f::Cross3(outData.frame[0], outData.frame[1]);
         //NFE_ASSERT((computedNormal - outData.frame[2]).SqrLength3() < 0.001f);
     }
 }
@@ -408,7 +408,7 @@ void Scene::EvaluateDecals(ShadingData& shadingData, RenderingContext& context) 
 
     // collect overlapping decals
 
-    const Vector4& point = shadingData.intersection.frame.GetTranslation();
+    const Vec4f& point = shadingData.intersection.frame.GetTranslation();
 
     // all nodes
     const BVH::Node* __restrict nodes = mDecalsBVH.GetNodes();
@@ -485,7 +485,7 @@ void Scene::EvaluateDecals(ShadingData& shadingData, RenderingContext& context) 
     }
 }
 
-const IMedium* Scene::GetMediumAtPoint(const RenderingContext& context, const Math::Vector4& p) const
+const IMedium* Scene::GetMediumAtPoint(const RenderingContext& context, const Math::Vec4f& p) const
 {
     // TODO what in case of overlapping media?
 
@@ -496,7 +496,7 @@ const IMedium* Scene::GetMediumAtPoint(const RenderingContext& context, const Ma
 
         // transform point to local-space
         const Matrix4 invTransform = object->GetInverseTransform(context.time);
-        const Vector4 localPoint = invTransform.TransformPoint(p);
+        const Vec4f localPoint = invTransform.TransformPoint(p);
 
         if (object->GetShape()->Intersect(p))
         {

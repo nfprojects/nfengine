@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Vector3x8.hpp"
+#include "Vec3x8f.hpp"
 #include "Triangle.hpp"
 
 
@@ -10,12 +10,12 @@ namespace Math {
 /**
  * 8 triangles (SIMD version).
  */
-class NFE_ALIGN(32) Triangle_Simd8
+class NFE_ALIGN(32) Triangle_Simd8 : public Common::Aligned<32>
 {
 public:
-    Vector3x8 v0;
-    Vector3x8 edge1;
-    Vector3x8 edge2;
+    Vec3x8f v0;
+    Vec3x8f edge1;
+    Vec3x8f edge2;
 
     Triangle_Simd8() = default;
     Triangle_Simd8(const Triangle_Simd8&) = default;

@@ -12,31 +12,31 @@ struct IntersectionData
 {
     // geometry data
     Math::Matrix4 frame;
-    Math::Vector4 texCoord;
+    Math::Vec4f texCoord;
     const Material* material = nullptr;
     const IMedium* medium = nullptr;
 
-    NFE_FORCE_INLINE const Math::Vector4 LocalToWorld(const Math::Vector4& localCoords) const
+    NFE_FORCE_INLINE const Math::Vec4f LocalToWorld(const Math::Vec4f& localCoords) const
     {
         return frame.TransformVector(localCoords);
     }
 
-    NFE_FORCE_INLINE const Math::Vector4 WorldToLocal(const Math::Vector4& worldCoords) const
+    NFE_FORCE_INLINE const Math::Vec4f WorldToLocal(const Math::Vec4f& worldCoords) const
     {
-        Math::Vector4 worldToLocalX = frame[0];
-        Math::Vector4 worldToLocalY = frame[1];
-        Math::Vector4 worldToLocalZ = frame[2];
-        Math::Vector4::Transpose3(worldToLocalX, worldToLocalY, worldToLocalZ);
+        Math::Vec4f worldToLocalX = frame[0];
+        Math::Vec4f worldToLocalY = frame[1];
+        Math::Vec4f worldToLocalZ = frame[2];
+        Math::Vec4f::Transpose3(worldToLocalX, worldToLocalY, worldToLocalZ);
 
-        Math::Vector4 result = worldToLocalX * worldCoords.x;
-        result = Math::Vector4::MulAndAdd(worldToLocalY, worldCoords.y, result);
-        result = Math::Vector4::MulAndAdd(worldToLocalZ, worldCoords.z, result);
+        Math::Vec4f result = worldToLocalX * worldCoords.x;
+        result = Math::Vec4f::MulAndAdd(worldToLocalY, worldCoords.y, result);
+        result = Math::Vec4f::MulAndAdd(worldToLocalZ, worldCoords.z, result);
         return result;
     }
 
-    NFE_FORCE_INLINE float CosTheta(const Math::Vector4& dir) const
+    NFE_FORCE_INLINE float CosTheta(const Math::Vec4f& dir) const
     {
-        return Math::Vector4::Dot3(frame[2], dir);
+        return Math::Vec4f::Dot3(frame[2], dir);
     }
 };
 

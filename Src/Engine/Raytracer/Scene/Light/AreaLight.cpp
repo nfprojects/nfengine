@@ -61,17 +61,17 @@ const RayColor AreaLight::Illuminate(const IlluminateParam& param, IlluminateRes
     //if (mTexture)
     //{
     //    float pdf;
-    //    const Vector4 textureColor = mTexture->Sample(param.sample, uv, &pdf);
+    //    const Vec4f textureColor = mTexture->Sample(param.sample, uv, &pdf);
     //    color.rgbValues *= textureColor / pdf;
     //}
     //else
     //{
-    //    uv = Vector4(param.sample);
+    //    uv = Vec4f(param.sample);
     //}
 
     if (param.rendererSupportsSolidAngleSampling)
     {
-        const Vector4 ref = param.worldToLight.TransformPoint(param.intersection.frame.GetTranslation());
+        const Vec4f ref = param.worldToLight.TransformPoint(param.intersection.frame.GetTranslation());
 
         ShapeSampleResult sampleResult;
         if (!mShape->Sample(ref, param.sample, sampleResult))
@@ -90,10 +90,10 @@ const RayColor AreaLight::Illuminate(const IlluminateParam& param, IlluminateRes
     else
     {
         // generate random point on the light surface
-        Vector4 normalLocalSpace;
-        const Vector4 samplePositionLocalSpace = mShape->Sample(param.sample, &normalLocalSpace);
-        const Vector4 lightPointWorldSpace = param.lightToWorld.TransformPoint(samplePositionLocalSpace);
-        const Vector4 normalWorldSpace = param.lightToWorld.TransformPoint(normalLocalSpace);
+        Vec4f normalLocalSpace;
+        const Vec4f samplePositionLocalSpace = mShape->Sample(param.sample, &normalLocalSpace);
+        const Vec4f lightPointWorldSpace = param.lightToWorld.TransformPoint(samplePositionLocalSpace);
+        const Vec4f normalWorldSpace = param.lightToWorld.TransformPoint(normalLocalSpace);
 
         outResult.directionToLight = lightPointWorldSpace - param.intersection.frame.GetTranslation();
         const float sqrDistance = outResult.directionToLight.SqrLength3();
@@ -101,7 +101,7 @@ const RayColor AreaLight::Illuminate(const IlluminateParam& param, IlluminateRes
         outResult.distance = sqrtf(sqrDistance);
         outResult.directionToLight /= outResult.distance;
 
-        const float cosNormalDir = Vector4::Dot3(-normalWorldSpace, outResult.directionToLight);
+        const float cosNormalDir = Vec4f::Dot3(-normalWorldSpace, outResult.directionToLight);
         if (cosNormalDir < NFE_MATH_EPSILON)
         {
             return RayColor::Zero();
@@ -145,10 +145,10 @@ const RayColor AreaLight::GetRadiance(const RadianceParam& param, float* outDire
     // TODO
     //if (mTexture)
     //{
-    //    const Vector4 lightSpaceHitPoint = hitPoint - p0;
-    //    const float u = Vector4::Dot3(lightSpaceHitPoint, edge0 * edgeLengthInv0) * edgeLengthInv0;
-    //    const float v = Vector4::Dot3(lightSpaceHitPoint, edge1 * edgeLengthInv1) * edgeLengthInv1;
-    //    const Vector4 textureCoords(u, v, 0.0f, 0.0f);
+    //    const Vec4f lightSpaceHitPoint = hitPoint - p0;
+    //    const float u = Vec4f::Dot3(lightSpaceHitPoint, edge0 * edgeLengthInv0) * edgeLengthInv0;
+    //    const float v = Vec4f::Dot3(lightSpaceHitPoint, edge1 * edgeLengthInv1) * edgeLengthInv1;
+    //    const Vec4f textureCoords(u, v, 0.0f, 0.0f);
 
     //    color.rgbValues *= mTexture->Evaluate(textureCoords);
     //}
@@ -161,16 +161,16 @@ const RayColor AreaLight::Emit(const EmitParam& param, EmitResult& outResult) co
     // TODO sample texture, like in Illuminate()
 
     // generate random point on the light surface
-    Vector4 normalLocalSpace;
-    const Vector4 samplePositionLocalSpace = mShape->Sample(param.positionSample, &normalLocalSpace);
+    Vec4f normalLocalSpace;
+    const Vec4f samplePositionLocalSpace = mShape->Sample(param.positionSample, &normalLocalSpace);
     outResult.position = param.lightToWorld.TransformPoint(samplePositionLocalSpace);
 
-    Vector4 tangentLocalSpace, bitangentLocalSpace;
+    Vec4f tangentLocalSpace, bitangentLocalSpace;
     BuildOrthonormalBasis(normalLocalSpace, tangentLocalSpace, bitangentLocalSpace);
 
     // generate random direction
-    const Vector4 randomDir = SamplingHelpers::GetHemishpereCos(param.directionSample);
-    const Vector4 dirLocalSpace = randomDir.x * tangentLocalSpace + randomDir.y * bitangentLocalSpace + randomDir.z * normalLocalSpace;
+    const Vec4f randomDir = SamplingHelpers::GetHemishpereCos(param.directionSample);
+    const Vec4f dirLocalSpace = randomDir.x * tangentLocalSpace + randomDir.y * bitangentLocalSpace + randomDir.z * normalLocalSpace;
     outResult.direction = param.lightToWorld.TransformVector(dirLocalSpace);
 
     const float cosAtLight = randomDir.z;
@@ -183,7 +183,7 @@ const RayColor AreaLight::Emit(const EmitParam& param, EmitResult& outResult) co
     // sample texture map
     //if (mTexture)
     //{
-    //    color.rgbValues *= mTexture->Evaluate(Vector4(uv));
+    //    color.rgbValues *= mTexture->Evaluate(Vec4f(uv));
     //}
 
     return GetColor()->Resolve(param.wavelength) * cosAtLight;

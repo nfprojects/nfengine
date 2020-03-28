@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Vector4.hpp"
-#include "Vector8.hpp"
+#include "Vec4f.hpp"
+#include "Vec8f.hpp"
 
 namespace NFE {
 namespace Math {
@@ -12,15 +12,15 @@ namespace Math {
  * @note    Maximum absolute error: about 5.0e-07
  */
 NFCOMMON_API float Sin(float x);
-NFCOMMON_API const Vector4 Sin(const Vector4& x);
-NFCOMMON_API const Vector8 Sin(const Vector8& x);
+NFCOMMON_API const Vec4f Sin(const Vec4f& x);
+NFCOMMON_API const Vec8f Sin(const Vec8f& x);
 
 NFE_FORCE_INLINE float Cos(float x);
-NFE_FORCE_INLINE const Vector4 Cos(const Vector4& x);
-NFE_FORCE_INLINE const Vector8 Cos(const Vector8& x);
+NFE_FORCE_INLINE const Vec4f Cos(const Vec4f& x);
+NFE_FORCE_INLINE const Vec8f Cos(const Vec8f& x);
 
 // Compute sine and cosine in one go
-NFE_FORCE_INLINE const Vector4 SinCos(const float x);
+NFE_FORCE_INLINE const Vec4f SinCos(const float x);
 
 /**
  * Accurate tangent and cotangent.
@@ -53,8 +53,8 @@ float FastATan2(const float y, const float x);
  * @note    Maximum relative error: about 0.2%
  */
 NFE_FORCE_INLINE float FastExp(float x);
-NFE_FORCE_INLINE const Vector4 FastExp(const Vector4& x);
-NFE_FORCE_INLINE const Vector8 FastExp(const Vector8& x);
+NFE_FORCE_INLINE const Vec4f FastExp(const Vec4f& x);
+NFE_FORCE_INLINE const Vec8f FastExp(const Vec8f& x);
 
 /**
  * Fast base-2 exponent.
@@ -62,8 +62,8 @@ NFE_FORCE_INLINE const Vector8 FastExp(const Vector8& x);
  * @note    Maximum relative error: about 0.2%
  */
 NFCOMMON_API float FastExp2(float x);
-NFCOMMON_API const Vector4 FastExp2(const Vector4& x);
-NFCOMMON_API const Vector8 FastExp2(const Vector8& x);
+NFCOMMON_API const Vec4f FastExp2(const Vec4f& x);
+NFCOMMON_API const Vec8f FastExp2(const Vec8f& x);
 
 /**
  * Accurate natural logarithm.
@@ -77,14 +77,14 @@ NFCOMMON_API float Log(float x);
  * @note    Maximum relative error: about 0.07%
  */
 NFCOMMON_API float FastLog(float x);
-NFCOMMON_API const Vector4 FastLog(const Vector4& x);
+NFCOMMON_API const Vec4f FastLog(const Vec4f& x);
 
 /**
  * Fast base-2 logarithm.
  * @note    This is faster log2f
  */
 NFCOMMON_API float FastLog2(float x);
-NFCOMMON_API const Vector4 FastLog2(const Vector4& x);
+NFCOMMON_API const Vec4f FastLog2(const Vec4f& x);
 
 } // namespace Math
 } // namespace NFE

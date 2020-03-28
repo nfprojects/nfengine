@@ -17,11 +17,11 @@ using namespace NFE::Math;
 
 // Generate a random box with a given range of center position and range of half size
 Box GenerateRandomBox(Random& random,
-                      const Vector4& minCenter, const Vector4& maxCenter,
-                      const Vector4& minHalfSize, const Vector4& maxHalfSize)
+                      const Vec4f& minCenter, const Vec4f& maxCenter,
+                      const Vec4f& minHalfSize, const Vec4f& maxHalfSize)
 {
-    Vector4 center = minCenter + (maxCenter - minCenter) * Vector4(random.GetFloat3());
-    Vector4 halfSize = minHalfSize + (maxHalfSize - minHalfSize) * Vector4(random.GetFloat3());
+    Vec4f center = minCenter + (maxCenter - minCenter) * Vec4f(random.GetVec3f());
+    Vec4f halfSize = minHalfSize + (maxHalfSize - minHalfSize) * Vec4f(random.GetVec3f());
     return Box(center - halfSize, center + halfSize);
 }
 
@@ -31,10 +31,10 @@ TEST(BVH, Simple)
     BVHStats stats;
     const uint32 invalidLeaf = 0x12345678;
 
-    const Box box0 = Box(Vector4(-1.0f, -1.0f, -1.0f), Vector4(-0.5f, -0.5f, -0.5f));
-    const Box box1 = Box(Vector4(0.5f, 0.5f, 0.5f), Vector4(1.0f, 1.0f, 1.0f));
-    const Box box2 = Box(Vector4(5.5f, 0.5f, 0.5f), Vector4(6.0f, 1.0f, 1.0f));
-    const Box box3 = Box(Vector4(0.5f, 5.5f, 0.5f), Vector4(1.0f, 6.0f, 1.0f));
+    const Box box0 = Box(Vec4f(-1.0f, -1.0f, -1.0f), Vec4f(-0.5f, -0.5f, -0.5f));
+    const Box box1 = Box(Vec4f(0.5f, 0.5f, 0.5f), Vec4f(1.0f, 1.0f, 1.0f));
+    const Box box2 = Box(Vec4f(5.5f, 0.5f, 0.5f), Vec4f(6.0f, 1.0f, 1.0f));
+    const Box box3 = Box(Vec4f(0.5f, 5.5f, 0.5f), Vec4f(1.0f, 6.0f, 1.0f));
 
     bvh.GetStats(stats);
     EXPECT_EQ(0u, stats.height);
@@ -95,11 +95,11 @@ TEST(BVH, Simple)
  */
 TEST(BVH, QueryInsertRemove)
 {
-    const Vector4 testRegionHalfSize = Vector4(20.0f, 20.0f, 20.0f);
-    const Vector4 minBoxHalfSize = Vector4(0.5f, 0.5f, 0.5f);
-    const Vector4 maxBoxHalfSize = Vector4(2.0f, 2.0f, 2.0f);
-    const Vector4 minQueryHalfSize = Vector4(1.0f, 1.0f, 1.0f);
-    const Vector4 maxQueryHalfSize = Vector4(10.0f, 10.0f, 10.0f);
+    const Vec4f testRegionHalfSize = Vec4f(20.0f, 20.0f, 20.0f);
+    const Vec4f minBoxHalfSize = Vec4f(0.5f, 0.5f, 0.5f);
+    const Vec4f maxBoxHalfSize = Vec4f(2.0f, 2.0f, 2.0f);
+    const Vec4f minQueryHalfSize = Vec4f(1.0f, 1.0f, 1.0f);
+    const Vec4f maxQueryHalfSize = Vec4f(10.0f, 10.0f, 10.0f);
 
     const uint32 initialLeavesCount = 100;
     const uint32 leavesToBeRemoved = 50;   // number of leaves to be removed in each iteration

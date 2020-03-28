@@ -35,7 +35,7 @@ bool RoughDiffuseBSDF::Sample(SamplingContext& ctx) const
     ctx.outIncomingDir = SamplingHelpers::GetHemishpereCos(ctx.sample);
 
     const float NdotL = ctx.outIncomingDir.z;
-    const float LdotV = Max(0.0f, Vector4::Dot3(ctx.outgoingDir, -ctx.outIncomingDir));
+    const float LdotV = Max(0.0f, Vec4f::Dot3(ctx.outgoingDir, -ctx.outIncomingDir));
     const float value = Evaluate_Internal(NdotL, NdotV, LdotV, ctx.materialParam.roughness);
 
     ctx.outPdf = NdotL * NFE_MATH_INV_PI;
@@ -64,7 +64,7 @@ const RayColor RoughDiffuseBSDF::Evaluate(const EvaluationContext& ctx, float* o
             *outReversePdfW = NdotV * NFE_MATH_INV_PI;
         }
 
-        const float LdotV = Max(0.0f, Vector4::Dot3(ctx.outgoingDir, -ctx.incomingDir));
+        const float LdotV = Max(0.0f, Vec4f::Dot3(ctx.outgoingDir, -ctx.incomingDir));
         const float value = NdotL * NFE_MATH_INV_PI * Evaluate_Internal(NdotL, NdotV, LdotV, ctx.materialParam.roughness);
 
         return ctx.materialParam.baseColor * value;

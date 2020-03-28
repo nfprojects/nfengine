@@ -20,7 +20,7 @@ public:
     virtual const RayColor Emit(const EmitParam& param, EmitResult& outResult) const override;
     virtual Flags GetFlags() const override final;
 
-    const Math::Vector4 SampleDirection(const Math::Float2 sample, float& outPdf) const;
+    const Math::Vec4f SampleDirection(const Math::Vec2f sample, float& outPdf) const;
 
 private:
     float mCosAngle;

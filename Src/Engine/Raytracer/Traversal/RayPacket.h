@@ -3,7 +3,7 @@
 #include "../BVH/BVH.h"
 #include "../../Common/Math/Ray.hpp"
 #include "../../Common/Math/Simd8Ray.hpp"
-#include "../../Common/Math/VectorInt8.hpp"
+#include "../../Common/Math/Vec8i.hpp"
 
 
 namespace NFE {
@@ -28,8 +28,8 @@ struct NFE_ALIGN(4) ImageLocationInfo
 struct NFE_ALIGN(32) RayGroup
 {
     Math::Ray_Simd8 rays[2];
-    Math::Vector8 maxDistances;
-    Math::VectorInt8 rayOffsets;
+    Math::Vec8f maxDistances;
+    Math::Vec8i rayOffsets;
 };
 
 // packet of coherent rays (8-SIMD version)
@@ -41,7 +41,7 @@ struct NFE_ALIGN(32) RayPacket
     RayGroup groups[MaxNumGroups];
 
     // rays influence on the image (e.g. 1.0 for primary rays)
-    Math::Vector3x8 rayWeights[MaxNumGroups];
+    Math::Vec3x8f rayWeights[MaxNumGroups];
 
     // corresponding image pixels
     ImageLocationInfo imageLocations[MaxRayPacketSize];
@@ -58,7 +58,7 @@ struct NFE_ALIGN(32) RayPacket
         return (numRays + RaysPerGroup - 1) / RaysPerGroup;
     }
 
-    NFE_FORCE_INLINE void PushRay(const Math::Ray& ray, const Math::Vector4& weight, const ImageLocationInfo& location)
+    NFE_FORCE_INLINE void PushRay(const Math::Ray& ray, const Math::Vec4f& weight, const ImageLocationInfo& location)
     {
         NFE_ASSERT(numRays < MaxRayPacketSize);
 
@@ -88,14 +88,14 @@ struct NFE_ALIGN(32) RayPacket
     }
 
     // TODO use non-temporal stores?
-    NFE_FORCE_INLINE void PushRays(const Math::Ray_Simd8& rays, const Math::Vector3x8& weights, const ImageLocationInfo* locations)
+    NFE_FORCE_INLINE void PushRays(const Math::Ray_Simd8& rays, const Math::Vec3x8f& weights, const ImageLocationInfo* locations)
     {
         NFE_ASSERT((numRays < MaxRayPacketSize) && (numRays % RaysPerGroup == 0));
 
         RayGroup& group = groups[numRays / RaysPerGroup];
         group.rays[0] = rays;
         group.maxDistances = Math::VECTOR8_MAX;
-        group.rayOffsets = Math::VectorInt8(numRays) + Math::VectorInt8(0, 1, 2, 3, 4, 5, 6, 7);
+        group.rayOffsets = Math::Vec8i(numRays) + Math::Vec8i(0, 1, 2, 3, 4, 5, 6, 7);
 
         rayWeights[numRays / RaysPerGroup] = weights;
 

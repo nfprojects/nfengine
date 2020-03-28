@@ -1,11 +1,11 @@
 #include "PCH.h"
 #include "BitmapUtils.h"
-#include "../Common/Math/Vector4Load.hpp"
+#include "../Common/Math/Vec4fLoad.hpp"
 #include "../Common/Logger/Logger.hpp"
 #include "../Common/System/Assertion.hpp"
 #include "../Common/Utils/TaskBuilder.hpp"
 
-#include "../Common/Math/Vector8.hpp"
+#include "../Common/Math/Vec8f.hpp"
 
 
 namespace NFE {
@@ -57,7 +57,7 @@ static void BoxBlur_Internal(T* __restrict targetLine, const T* __restrict srcLi
 static constexpr const uint32 MaxLineSize = 4096;
 static constexpr const uint32 NumColumnsPerTask = 16;
 
-using TempLineType = Vector4[NumColumnsPerTask][MaxLineSize];
+using TempLineType = Vec4f[NumColumnsPerTask][MaxLineSize];
 static thread_local TempLineType gTempLineA;
 static thread_local TempLineType gTempLineB;
 
@@ -109,13 +109,13 @@ bool BitmapUtils::GaussianBlur(Bitmap& targetBitmap, const Bitmap& sourceBitmap,
     // horizontal blur
     taskBuilder.ParallelFor("BitmapUtils::GaussianBlur/Horizontal", height, [=, &sourceBitmap, &targetBitmap] (const TaskContext&, const uint32 y)
     {
-        Vector4* sourceLinePtr = gTempLineB[0];
-        Vector4* targetLinePtr = gTempLineA[0];
+        Vec4f* sourceLinePtr = gTempLineB[0];
+        Vec4f* targetLinePtr = gTempLineA[0];
 
-        const Float3* sourceRowPtr = &sourceBitmap.GetPixelRef<Float3>(0, y);
+        const Vec3f* sourceRowPtr = &sourceBitmap.GetPixelRef<Vec3f>(0, y);
         for (uint32 x = 0; x < width; ++x)
         {
-            sourceLinePtr[x] = Vector4((float*)(sourceRowPtr + x));
+            sourceLinePtr[x] = Vec4f((float*)(sourceRowPtr + x));
         }
 
         for (uint32 i = 0; i < params.numPasses; ++i)
@@ -125,10 +125,10 @@ bool BitmapUtils::GaussianBlur(Bitmap& targetBitmap, const Bitmap& sourceBitmap,
             std::swap(sourceLinePtr, targetLinePtr);
         }
 
-        Float3* targetRowPtr = &targetBitmap.GetPixelRef<Float3>(0, y);
+        Vec3f* targetRowPtr = &targetBitmap.GetPixelRef<Vec3f>(0, y);
         for (uint32 x = 0; x < width; ++x)
         {
-            *(targetRowPtr + x) = sourceLinePtr[x].ToFloat3();
+            *(targetRowPtr + x) = sourceLinePtr[x].ToVec3f();
         }
     });
 
@@ -142,15 +142,15 @@ bool BitmapUtils::GaussianBlur(Bitmap& targetBitmap, const Bitmap& sourceBitmap,
 
         const uint32 numColumnsInTask = Min(width - columnGroupIndex * NumColumnsPerTask, NumColumnsPerTask);
 
-        Vector4* sourceLinePtr = nullptr;
-        Vector4* targetLinePtr = nullptr;
+        Vec4f* sourceLinePtr = nullptr;
+        Vec4f* targetLinePtr = nullptr;
 
         for (uint32 y = 0; y < height; ++y)
         {
-            const Float3* pixels = &targetBitmap.GetPixelRef<Float3>(columnGroupIndex * NumColumnsPerTask, y);
+            const Vec3f* pixels = &targetBitmap.GetPixelRef<Vec3f>(columnGroupIndex * NumColumnsPerTask, y);
             for (uint32 i = 0; i < numColumnsInTask; ++i)
             {
-                gTempLineA[i][y] = Vector4(pixels[i]);
+                gTempLineA[i][y] = Vec4f(pixels[i]);
             }
         }
 
@@ -171,10 +171,10 @@ bool BitmapUtils::GaussianBlur(Bitmap& targetBitmap, const Bitmap& sourceBitmap,
 
         for (uint32 y = 0; y < height; ++y)
         {
-            Float3* pixels = &targetBitmap.GetPixelRef<Float3>(columnGroupIndex * NumColumnsPerTask, y);
+            Vec3f* pixels = &targetBitmap.GetPixelRef<Vec3f>(columnGroupIndex * NumColumnsPerTask, y);
             for (uint32 i = 0; i < numColumnsInTask; ++i)
             {
-                pixels[i] = srcLine[i][y].ToFloat3();
+                pixels[i] = srcLine[i][y].ToVec3f();
             }
         }
     });

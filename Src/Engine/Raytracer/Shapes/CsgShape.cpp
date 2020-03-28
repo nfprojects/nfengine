@@ -28,7 +28,7 @@ using namespace Math;
 CsgShape::CsgShape()
     : mOperator(CsgOperator::Union)
 {
-    mShapeA = MakeUniquePtr<BoxShape>(Vector4(0.5f));
+    mShapeA = MakeUniquePtr<BoxShape>(Vec4f(0.5f));
     mShapeB = MakeUniquePtr<SphereShape>(0.5f);
     mOperator = CsgOperator::Intersection;
 }
@@ -50,7 +50,7 @@ bool CsgShape::Intersect(const Math::Ray& ray, RenderingContext& renderingCtx, S
 
     {
         Math::Ray transformedRay = ray;
-        transformedRay.origin -= Vector4(0.25f, 0.5f, 0.1f); // TODO
+        transformedRay.origin -= Vec4f(0.25f, 0.5f, 0.1f); // TODO
 
         if (!mShapeB->Intersect(transformedRay, renderingCtx, intersectionB))
         {
@@ -106,7 +106,7 @@ bool CsgShape::Intersect(const Math::Ray& ray, RenderingContext& renderingCtx, S
     return outResult.nearDist < outResult.farDist;
 }
 
-const Vector4 CsgShape::Sample(const Float3& u, Math::Vector4* outNormal, float* outPdf) const
+const Vec4f CsgShape::Sample(const Vec3f& u, Math::Vec4f* outNormal, float* outPdf) const
 {
     NFE_FATAL("Not implemented");
 
@@ -114,7 +114,7 @@ const Vector4 CsgShape::Sample(const Float3& u, Math::Vector4* outNormal, float*
     NFE_UNUSED(outPdf);
     NFE_UNUSED(outNormal);
 
-    return Vector4::Zero();
+    return Vec4f::Zero();
 }
 
 void CsgShape::EvaluateIntersection(const HitPoint& hitPoint, IntersectionData& outData) const
@@ -136,14 +136,14 @@ void CsgShape::EvaluateIntersection(const HitPoint& hitPoint, IntersectionData& 
 
     if (hitPoint.subObjectId == 1)
     {
-        outData.frame[3] -= Vector4(0.25f, 0.5f, 0.1f);
+        outData.frame[3] -= Vec4f(0.25f, 0.5f, 0.1f);
     }
 
     hitShape->EvaluateIntersection(hitPoint, outData);
 
     //if (hitPoint.subObjectId == 1)
     //{
-    //    outShadingData.frame[3] -= Vector4(0.5f);
+    //    outShadingData.frame[3] -= Vec4f(0.5f);
     //}
 }
 

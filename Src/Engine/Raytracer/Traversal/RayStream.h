@@ -18,7 +18,7 @@ public:
     ~RayStream();
 
     // push a new ray to the stream
-    void PushRay(const Math::Ray& ray, const Math::Vector4& weight, const ImageLocationInfo& imageLocation);
+    void PushRay(const Math::Ray& ray, const Math::Vec4f& weight, const ImageLocationInfo& imageLocation);
 
     // Convert collected rays into ray packets.
     // This will flush all the pushed rays and generate list of fresh ray packets
@@ -33,9 +33,9 @@ private:
 
     struct PendingRay
     {
-        Math::Vector4 rayWeight;
-        Math::Float3 rayOrigin;
-        Math::Float3 rayDir;
+        Math::Vec4f rayWeight;
+        Math::Vec3f rayOrigin;
+        Math::Vec3f rayDir;
         ImageLocationInfo imageLocation;
     };
 

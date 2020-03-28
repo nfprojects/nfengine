@@ -41,7 +41,7 @@ void TriggeredLightController::OnEvent(const Scene::Event& event)
         {
             if (mTriggerCounter == 0)
             {
-                light->SetColor(Float3(20.0f, 20.0f, 20.0f));
+                light->SetColor(Vec3f(20.0f, 20.0f, 20.0f));
             }
 
             mTriggerCounter++;
@@ -53,7 +53,7 @@ void TriggeredLightController::OnEvent(const Scene::Event& event)
 
             if (mTriggerCounter == 0)
             {
-                light->SetColor(Float3(0.0f, 0.0f, 0.0f));
+                light->SetColor(Vec3f(0.0f, 0.0f, 0.0f));
             }
         }
     }

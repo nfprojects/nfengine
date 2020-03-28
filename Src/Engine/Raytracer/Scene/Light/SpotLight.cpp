@@ -31,7 +31,7 @@ SpotLight::SpotLight(const Math::HdrColorRGB& color, const float angle)
 
 const Box SpotLight::GetBoundingBox() const
 {
-    return Box(Vector4::Zero());
+    return Box(Vec4f::Zero());
 }
 
 const RayColor SpotLight::Illuminate(const IlluminateParam& param, IlluminateResult& outResult) const
@@ -45,7 +45,7 @@ const RayColor SpotLight::Illuminate(const IlluminateParam& param, IlluminateRes
     outResult.cosAtLight = 1.0f;
     outResult.emissionPdfW = mIsDelta ? 1.0f : SphereCapPdf(mCosAngle);
 
-    const float angle = Vector4::Dot3(outResult.directionToLight, -VECTOR_Z);
+    const float angle = Vec4f::Dot3(outResult.directionToLight, -VECTOR_Z);
     
     if (angle < mCosAngle)
     {
@@ -66,7 +66,7 @@ const RayColor SpotLight::Emit(const EmitParam& param, EmitResult& outResult) co
     else
     {
         const float phi = NFE_MATH_2PI * param.directionSample.y;
-        const Vector4 sinCosPhi = SinCos(phi);
+        const Vec4f sinCosPhi = SinCos(phi);
 
         float cosTheta = Lerp(mCosAngle, 1.0f, param.directionSample.x);
         float sinThetaSqr = 1.0f - Sqr(cosTheta);

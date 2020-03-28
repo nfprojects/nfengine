@@ -25,9 +25,9 @@ namespace Common {
 template<>
 inline size_t BitUtils<uint64>::CountBits(uint64 x)
 {
-#if defined(_M_X64) || defined(__amd64__)
+#if defined(NFE_ARCH_X64)
     return __popcnt64(x);
-#else
+#elif defined(NFE_ARCH_X86)
     return __popcnt(x & 0xFFFFFFFF) + __popcnt(x >> 32);
 #endif
 }
@@ -57,11 +57,11 @@ inline size_t BitUtils<uint8>::CountBits(uint8 x)
 template<>
 NFE_INLINE size_t BitUtils<uint64>::CountLeadingZeros(uint64 x)
 {
-#if defined(_M_X64) || defined(__amd64__)
+#if defined(NFE_ARCH_X64)
     unsigned long index = 0;
     _BitScanReverse64(&index, x);
     return 63 - index;
-#else
+#elif defined(NFE_ARCH_X86)
     unsigned long index = 0;
 
     // find '1' in upper half
@@ -109,11 +109,11 @@ NFE_INLINE size_t BitUtils<uint8>::CountLeadingZeros(uint8 x)
 template<>
 NFE_INLINE size_t BitUtils<uint64>::CountTrailingZeros(const uint64 x)
 {
-#if defined(_M_X64) || defined(__amd64__)
+#if defined(NFE_ARCH_X64)
     unsigned long index = 0;
     _BitScanForward64(&index, x);
     return index;
-#else
+#elif defined(NFE_ARCH_X86)
     unsigned long index = 0;
 
     // find '1' in lower half

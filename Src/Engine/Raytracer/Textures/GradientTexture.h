@@ -11,14 +11,14 @@ class NFE_ALIGN(16) GradientTexture
     : public ITexture
 {
 public:
-    NFE_RAYTRACER_API GradientTexture(const Math::Vector4& colorA, const Math::Vector4& colorB, const Math::Plane& plane, float planeDistance);
+    NFE_RAYTRACER_API GradientTexture(const Math::Vec4f& colorA, const Math::Vec4f& colorB, const Math::Plane& plane, float planeDistance);
 
     virtual const char* GetName() const override;
-    virtual const Math::Vector4 Evaluate(const Math::Vector4& coords) const override;
+    virtual const Math::Vec4f Evaluate(const Math::Vec4f& coords) const override;
 
 private:
-    Math::Vector4 mColorA;
-    Math::Vector4 mColorB;
+    Math::Vec4f mColorA;
+    Math::Vec4f mColorB;
 
     Math::Plane mPlane;
     float mDistance;

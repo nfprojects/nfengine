@@ -261,9 +261,9 @@
     <ClCompile Include="TestCases\Math\MathBoxTest.cpp" />
     <ClCompile Include="TestCases\Math\MathDistributionTest.cpp" />
     <ClCompile Include="TestCases\Math\MathEquationSolverTest.cpp" />
-    <ClCompile Include="TestCases\Math\MathFloat2Test.cpp" />
-    <ClCompile Include="TestCases\Math\MathFloat3Test.cpp" />
-    <ClCompile Include="TestCases\Math\MathFloat4Test.cpp" />
+    <ClCompile Include="TestCases\Math\MathVec2fTest.cpp" />
+    <ClCompile Include="TestCases\Math\MathVec3fTest.cpp" />
+    <ClCompile Include="TestCases\Math\MathVec4fUTest.cpp" />
     <ClCompile Include="TestCases\Math\MathGeometryTest.cpp" />
     <ClCompile Include="TestCases\Math\MathMatrix2Test.cpp" />
     <ClCompile Include="TestCases\Math\MathMatrix3Test.cpp" />
@@ -276,10 +276,10 @@
     <ClCompile Include="TestCases\Math\MathTranscendental.cpp" />
     <ClCompile Include="TestCases\Math\MathTransformTest.cpp" />
     <ClCompile Include="TestCases\Math\MathVector4LoadTest.cpp" />
-    <ClCompile Include="TestCases\Math\MathVector4Test.cpp" />
-    <ClCompile Include="TestCases\Math\MathVector8Test.cpp" />
-    <ClCompile Include="TestCases\Math\MathVectorInt4Test.cpp" />
-    <ClCompile Include="TestCases\Math\MathVectorInt8Test.cpp" />
+    <ClCompile Include="TestCases\Math\MathVec4fTest.cpp" />
+    <ClCompile Include="TestCases\Math\MathVec8fTest.cpp" />
+    <ClCompile Include="TestCases\Math\MathVec4iTest.cpp" />
+    <ClCompile Include="TestCases\Math\MathVec8iTest.cpp" />
     <ClCompile Include="TestCases\Math\RandomTest.cpp" />
     <ClCompile Include="TestCases\Memory\AlignedTest.cpp" />
     <ClCompile Include="TestCases\Memory\MemoryTest.cpp" />

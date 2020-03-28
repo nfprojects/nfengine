@@ -71,14 +71,14 @@ TEST(Math, Sin)
 
 TEST(MathTest, Sin_4)
 {
-    const auto func = [] (float x) { return Math::Sin(Math::Vector4(x)).x; };
+    const auto func = [] (float x) { return Math::Sin(Math::Vec4f(x)).x; };
     const TestRange range(-10.0f, 10.0f, 0.01f, TestRange::StepType::Increment);
     TestTranscendental("Sin_4", range, func, sinf, 2.0e-06f, 1.0f);
 }
 
 TEST(MathTest, Sin_8)
 {
-    const auto func = [] (float x) { return Math::Sin(Math::Vector8(x))[0]; };
+    const auto func = [] (float x) { return Math::Sin(Math::Vec8f(x))[0]; };
     const TestRange range(-10.0f, 10.0f, 0.01f, TestRange::StepType::Increment);
     TestTranscendental("Sin_8", range, func, sinf, 2.0e-06f, 1.0f);
 }
@@ -121,7 +121,7 @@ TEST(Math, FastExp)
 
 TEST(MathTest, FastExp_4)
 {
-    const auto func = [] (float x) { return Math::FastExp(Math::Vector4(x)).x; };
+    const auto func = [] (float x) { return Math::FastExp(Math::Vec4f(x)).x; };
     const TestRange range(-40.0f, 5.0f, 0.01f, TestRange::StepType::Increment);
     TestTranscendental("FastExp_4", range, func, expf, 1.0f, 2.0e-2f);
 }
@@ -134,7 +134,7 @@ TEST(Math, FastExp2)
 
 TEST(MathTest, FastExp2_4)
 {
-    const auto func = [] (float x) { return Math::FastExp2(Math::Vector4(x)).x; };
+    const auto func = [] (float x) { return Math::FastExp2(Math::Vec4f(x)).x; };
     const TestRange range(-40.0f, 5.0f, 0.01f, TestRange::StepType::Increment);
     TestTranscendental("FastExp2_4", range, func, exp2f, 1.0f, 2.0e-2f);
 }
@@ -153,7 +153,7 @@ TEST(Math, FastLog)
 
 TEST(Math, FastLog_4)
 {
-    const auto func = [] (float x) { return Math::FastLog(Math::Vector4(x)).x; };
+    const auto func = [] (float x) { return Math::FastLog(Math::Vec4f(x)).x; };
     TestRange range(0.0001f, 1.0e+30f, 1.5f, TestRange::StepType::Multiply);
     TestTranscendental("FastLog_4", range, func, logf, 1.0f, 1.0e-4f);
 }
@@ -166,7 +166,7 @@ TEST(Math, FastLog2)
 
 TEST(Math, FastLog2_4)
 {
-    const auto func = [] (float x) { return Math::FastLog2(Math::Vector4(x)).x; };
+    const auto func = [] (float x) { return Math::FastLog2(Math::Vec4f(x)).x; };
     TestRange range(1.0e-30f, 1.0e+30f, 1.01f, TestRange::StepType::Multiply);
     TestTranscendental("FastLog2_4", range, func, log2f, 0.01f, 0.1f);
 }

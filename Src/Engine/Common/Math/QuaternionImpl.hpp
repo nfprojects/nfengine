@@ -5,7 +5,7 @@ namespace Math {
 
 const Quaternion Quaternion::Identity()
 {
-    return Quaternion(Vector4(0.0f, 0.0f, 0.0f, 1.0f));
+    return Quaternion(Vec4f(0.0f, 0.0f, 0.0f, 1.0f));
 }
 
 const Quaternion Quaternion::Conjugate() const
@@ -32,9 +32,9 @@ Quaternion& Quaternion::operator *= (const Quaternion& q2)
     return *this;
 }
 
-const Vector4 Quaternion::GetAxisX() const
+const Vec4f Quaternion::GetAxisX() const
 {
-    return Vector4(
+    return Vec4f(
         1.0f - 2.0f * (q.y * q.y + q.z * q.z),
         2.0f * (q.x * q.y + q.w * q.z),
         2.0f * (q.x * q.z - q.w * q.y),
@@ -42,9 +42,9 @@ const Vector4 Quaternion::GetAxisX() const
     );
 }
 
-const Vector4 Quaternion::GetAxisY() const
+const Vec4f Quaternion::GetAxisY() const
 {
-    return Vector4(
+    return Vec4f(
         2.0f * (q.x * q.y - q.w * q.z),
         1.0f - 2.0f * (q.x * q.x + q.z * q.z),
         2.0f * (q.y * q.z + q.w * q.x),
@@ -52,9 +52,9 @@ const Vector4 Quaternion::GetAxisY() const
     );
 }
 
-const Vector4 Quaternion::GetAxisZ() const
+const Vec4f Quaternion::GetAxisZ() const
 {
-    return Vector4(
+    return Vec4f(
         2.0f * (q.x * q.z + q.w * q.y),
         2.0f * (q.y * q.z - q.w * q.x),
         1.0f - 2.0f * (q.x * q.x + q.y * q.y),

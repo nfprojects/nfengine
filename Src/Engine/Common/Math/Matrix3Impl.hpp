@@ -13,31 +13,31 @@ namespace NFE {
 namespace Math {
 
 
-Float3& Matrix3::GetRow(int i)
+Vec3f& Matrix3::GetRow(int i)
 {
-    return reinterpret_cast<Float3&>(r[i]);
+    return reinterpret_cast<Vec3f&>(r[i]);
 }
 
-const Float3& Matrix3::GetRow(int i) const
+const Vec3f& Matrix3::GetRow(int i) const
 {
-    return reinterpret_cast<const Float3&>(r[i]);
+    return reinterpret_cast<const Vec3f&>(r[i]);
 }
 
-Float3& Matrix3::operator[] (int i)
+Vec3f& Matrix3::operator[] (int i)
 {
-    return reinterpret_cast<Float3&>(r[i]);
+    return reinterpret_cast<Vec3f&>(r[i]);
 }
 
-const Float3& Matrix3::operator[] (int i) const
+const Vec3f& Matrix3::operator[] (int i) const
 {
-    return reinterpret_cast<const Float3&>(r[i]);
+    return reinterpret_cast<const Vec3f&>(r[i]);
 }
 
 constexpr Matrix3::Matrix3()
-    : r{ Float3(1.0f, 0.0f, 0.0f), Float3(0.0f, 1.0f, 0.0f), Float3(0.0f, 0.0f, 1.0f) }
+    : r{ Vec3f(1.0f, 0.0f, 0.0f), Vec3f(0.0f, 1.0f, 0.0f), Vec3f(0.0f, 0.0f, 1.0f) }
 { }
 
-constexpr Matrix3::Matrix3(const Float3& r0, const Float3& r1, const Float3& r2)
+constexpr Matrix3::Matrix3(const Vec3f& r0, const Vec3f& r1, const Vec3f& r2)
     : r{ r0, r1, r2 }
 { }
 
@@ -125,9 +125,9 @@ constexpr float Matrix3::Det() const
 constexpr Matrix3 Matrix3::Transposed() const
 {
     return Matrix3(
-        Float3(m[0][0], m[1][0], m[2][0]),
-        Float3(m[0][1], m[1][1], m[2][1]),
-        Float3(m[0][2], m[1][2], m[2][2])
+        Vec3f(m[0][0], m[1][0], m[2][0]),
+        Vec3f(m[0][1], m[1][1], m[2][1]),
+        Vec3f(m[0][2], m[1][2], m[2][2])
     );
 }
 
@@ -137,22 +137,22 @@ Matrix3& Matrix3::Transpose()
     return *this;
 }
 
-Float2 Matrix3::AffineTransform2(const Float2& a) const
+Vec2f Matrix3::AffineTransform2(const Vec2f& a) const
 {
     return a.x * r[0] + a.y * r[1] + r[2];
 }
 
-Float3 Matrix3::LinearCombination(const Float3& a) const
+Vec3f Matrix3::LinearCombination(const Vec3f& a) const
 {
     return a.x * r[0] + a.y * r[1] + a.z * r[2];
 }
 
 Matrix3 Matrix3::Abs(const Matrix3& m)
 {
-    return Matrix3(Float3::Abs(m[0]), Float3::Abs(m[1]), Float3::Abs(m[2]));
+    return Matrix3(Vec3f::Abs(m[0]), Vec3f::Abs(m[1]), Vec3f::Abs(m[2]));
 }
 
-Float3 operator* (const Float3& vector, const Matrix3& m)
+Vec3f operator* (const Vec3f& vector, const Matrix3& m)
 {
     return m.LinearCombination(vector);
 }

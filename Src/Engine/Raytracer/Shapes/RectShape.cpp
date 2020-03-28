@@ -23,7 +23,7 @@ namespace RT {
 
 using namespace Math;
 
-RectShape::RectShape(const Float2 size, const Float2 texScale)
+RectShape::RectShape(const Vec2f size, const Vec2f texScale)
     : mSize(size)
     , mTextureScale(texScale)
     , mEnableSolidAngleSampling(false)
@@ -34,7 +34,7 @@ RectShape::RectShape(const Float2 size, const Float2 texScale)
 
 const Box RectShape::GetBoundingBox() const
 {
-    return Box(Vector4(-mSize.x, -mSize.y, 0.0f, 0.0f), Vector4(mSize.x, mSize.y, 0.0f, 0.0f));
+    return Box(Vec4f(-mSize.x, -mSize.y, 0.0f, 0.0f), Vec4f(mSize.x, mSize.y, 0.0f, 0.0f));
 }
 
 float RectShape::GetSurfaceArea() const
@@ -50,9 +50,9 @@ bool RectShape::Intersect(const Math::Ray& ray, RenderingContext& renderingCtx, 
 
     if (t > FLT_EPSILON)
     {
-        const Vector4 pos = ray.GetAtDistance(t);
+        const Vec4f pos = ray.GetAtDistance(t);
 
-        if ((Vector4::Abs(pos) < Vector4(mSize)).GetMask() == 0x3)
+        if ((Vec4f::Abs(pos) < Vec4f(mSize)).GetMask() == 0x3)
         {
             outResult.nearDist = t;
             outResult.farDist = t;
@@ -63,7 +63,7 @@ bool RectShape::Intersect(const Math::Ray& ray, RenderingContext& renderingCtx, 
     return false;
 }
 
-const Vector4 RectShape::Sample(const Float3& u, Math::Vector4* outNormal, float* outPdf) const
+const Vec4f RectShape::Sample(const Vec3f& u, Math::Vec4f* outNormal, float* outPdf) const
 {
     if (outPdf)
     {
@@ -75,16 +75,16 @@ const Vector4 RectShape::Sample(const Float3& u, Math::Vector4* outNormal, float
         *outNormal = VECTOR_Z;
     }
 
-    return Vector4(mSize) * (2.0f * Vector4(Float2(u)) - VECTOR_ONE);
+    return Vec4f(mSize) * (2.0f * Vec4f(Vec2f(u)) - VECTOR_ONE);
 }
 
-bool RectShape::Sample(const Math::Vector4& ref, const Math::Float3& u, ShapeSampleResult& result) const
+bool RectShape::Sample(const Math::Vec4f& ref, const Math::Vec3f& u, ShapeSampleResult& result) const
 {
     if (mEnableSolidAngleSampling)
     {
         SphericalQuad squad;
-        squad.Init(Vector4(-mSize.x, -mSize.y), Vector4(2.0f * mSize.x, 0.0f), Vector4(0.0f, 2.0f * mSize.y), ref);
-        const Vector4 lightPoint = squad.Sample(u.x, u.y, result.pdf);
+        squad.Init(Vec4f(-mSize.x, -mSize.y), Vec4f(2.0f * mSize.x, 0.0f), Vec4f(0.0f, 2.0f * mSize.y), ref);
+        const Vec4f lightPoint = squad.Sample(u.x, u.y, result.pdf);
 
         result.direction = lightPoint - ref;
         result.normal = VECTOR_Z;
@@ -116,20 +116,20 @@ void PlaneSceneObject::Traverse_Packet(const PacketTraversalContext& context, co
     {
         RayGroup& rayGroup = context.ray.groups[context.context.activeGroupsIndices[i]];
 
-        const Vector8 t = -rayGroup.rays[1].origin.y * rayGroup.rays[1].invDir.y;
-        VectorBool8 mask = (t > Vector8::Zero()) & (t < rayGroup.maxDistances);
+        const Vec8f t = -rayGroup.rays[1].origin.y * rayGroup.rays[1].invDir.y;
+        VectorBool8 mask = (t > Vec8f::Zero()) & (t < rayGroup.maxDistances);
 
         if (mask.None())
         {
             continue;
         }
 
-        const Vector8 x = Vector8::MulAndAdd(rayGroup.rays[1].dir.x, t, rayGroup.rays[1].origin.x);
-        const Vector8 z = Vector8::MulAndAdd(rayGroup.rays[1].dir.z, t, rayGroup.rays[1].origin.z);
-        mask = mask & (Vector8::Abs(x) < Vector8(mSize.x)) & (Vector8::Abs(z) < Vector8(mSize.y));
+        const Vec8f x = Vec8f::MulAndAdd(rayGroup.rays[1].dir.x, t, rayGroup.rays[1].origin.x);
+        const Vec8f z = Vec8f::MulAndAdd(rayGroup.rays[1].dir.z, t, rayGroup.rays[1].origin.z);
+        mask = mask & (Vec8f::Abs(x) < Vec8f(mSize.x)) & (Vec8f::Abs(z) < Vec8f(mSize.y));
 
-        const Vector8 u = Vector8::Zero(); // TODO
-        const Vector8 v = Vector8::Zero(); // TODO
+        const Vec8f u = Vec8f::Zero(); // TODO
+        const Vec8f v = Vec8f::Zero(); // TODO
 
         context.StoreIntersection(rayGroup, t, u, v, mask, objectID);
     }
@@ -140,7 +140,7 @@ void RectShape::EvaluateIntersection(const HitPoint& hitPoint, IntersectionData&
 {
     NFE_UNUSED(hitPoint);
 
-    outData.texCoord = (outData.frame.GetTranslation() & Vector4::MakeMask<1, 1, 0, 0>()) * Vector4(mTextureScale);
+    outData.texCoord = (outData.frame.GetTranslation() & Vec4f::MakeMask<1, 1, 0, 0>()) * Vec4f(mTextureScale);
     outData.frame[0] = VECTOR_X;
     outData.frame[1] = VECTOR_Y;
     outData.frame[2] = VECTOR_Z;

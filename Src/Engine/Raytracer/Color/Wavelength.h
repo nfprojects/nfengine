@@ -3,9 +3,9 @@
 #include "../Raytracer.h"
 
 #ifdef NFE_ENABLE_SPECTRAL_RENDERING
-#include "../../Common/Math/Vector8.hpp"
+#include "../../Common/Math/Vec8f.hpp"
 #else
-#include "../../Common/Math/Vector4.hpp"
+#include "../../Common/Math/Vec4f.hpp"
 #endif
 
 namespace NFE {
@@ -21,10 +21,10 @@ struct Wavelength
 
 #ifdef NFE_USE_AVX
     static constexpr uint32 NumComponents = 8;
-    using ValueType = Math::Vector8;
+    using ValueType = Math::Vec8f;
 #else
     static constexpr uint32 NumComponents = 4;
-    using ValueType = Math::Vector4;
+    using ValueType = Math::Vec4f;
 #endif // NFE_USE_AVX
 
     // sample tabularized data and return ray color
@@ -33,7 +33,7 @@ struct Wavelength
 #else // !defined(NFE_ENABLE_SPECTRAL_RENDERING)
 
     static constexpr uint32 NumComponents = 3;
-    using ValueType = Math::Vector4;
+    using ValueType = Math::Vec4f;
 
 #endif // NFE_ENABLE_SPECTRAL_RENDERING
 

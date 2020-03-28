@@ -11,7 +11,7 @@
 
 #include "Engine/Common/Logger/Logger.hpp"
 #include "Engine/Common/Math/Math.hpp"
-#include "Engine/Common/Math/Float4.hpp"
+#include "Engine/Common/Math/Vec4fU.hpp"
 
 #include <vector>
 #include <functional>
@@ -28,7 +28,7 @@ const uint32 THREAD_GROUP_SIZE = 32;
 struct CBuffer
 {
     uint32 resolution[4];
-    Float4 resolutionInverse;
+    Vec4fU resolutionInverse;
 };
 
 } // namespace
@@ -94,7 +94,7 @@ bool ComputeScene::CreateSubSceneSimple()
     cubfferData.resolution[0] = WINDOW_WIDTH;
     cubfferData.resolution[1] = WINDOW_HEIGHT;
     cubfferData.resolution[2] = cubfferData.resolution[3] = 0;
-    cubfferData.resolutionInverse = Float4(1.0f / static_cast<float>(WINDOW_WIDTH),
+    cubfferData.resolutionInverse = Vec4fU(1.0f / static_cast<float>(WINDOW_WIDTH),
                                            1.0f / static_cast<float>(WINDOW_HEIGHT), 0.0f, 0.0f);
     BufferDesc cbufferDesc;
     cbufferDesc.type = BufferType::Constant;

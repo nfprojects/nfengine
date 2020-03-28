@@ -23,7 +23,7 @@ struct ShadingData
     IntersectionData intersection;
 
     // incoming ray data
-    Math::Vector4 outgoingDirWorldSpace;
+    Math::Vec4f outgoingDirWorldSpace;
 
     SampledMaterialParameters materialParams;
 };

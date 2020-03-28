@@ -21,13 +21,13 @@ public:
 
     NFE_FORCE_INLINE constexpr HdrColorRGB() : r(0.0f), g(0.0f), b(0.0f) { }
     NFE_FORCE_INLINE constexpr HdrColorRGB(float r, float g, float b) : r(r), g(g), b(b) { }
-    NFE_FORCE_INLINE constexpr HdrColorRGB(const Vector4& color) : r(color.x), g(color.y), b(color.z) { }
+    NFE_FORCE_INLINE constexpr HdrColorRGB(const Vec4f& color) : r(color.x), g(color.y), b(color.z) { }
     NFE_FORCE_INLINE constexpr HdrColorRGB(float intensity) : r(intensity), g(intensity), b(intensity) { }
     NFCOMMON_API HdrColorRGB(const LdrColorRGB& color);
 
-    NFE_FORCE_INLINE const Vector4 ToVector4() const
+    NFE_FORCE_INLINE const Vec4f ToVec4f() const
     {
-        return Vector4(r, g, b, 1.0f);
+        return Vec4f(r, g, b, 1.0f);
     }
 
     NFE_FORCE_INLINE bool IsBlack() const
@@ -37,7 +37,7 @@ public:
 
     NFE_FORCE_INLINE float Luminance() const
     {
-        return Math::Vector4::Dot3(ToVector4(), Math::c_rgbIntensityWeights);
+        return Math::Vec4f::Dot3(ToVec4f(), Math::c_rgbIntensityWeights);
     }
 
     NFE_FORCE_INLINE bool IsValid() const

@@ -56,12 +56,12 @@ bool DielectricBSDF::Sample(SamplingContext& ctx) const
     const bool reflection = (reflectionProbability >= 1.0f) || ctx.sample.x < reflectionProbability;
     if (reflection) 
     {
-        ctx.outIncomingDir = -Vector4::Reflect3(ctx.outgoingDir, VECTOR_Z);
+        ctx.outIncomingDir = -Vec4f::Reflect3(ctx.outgoingDir, VECTOR_Z);
         ctx.outEventType = SpecularReflectionEvent;
     }
     else // transmission
     {
-        ctx.outIncomingDir = Vector4::Refract3(-ctx.outgoingDir, VECTOR_Z, ior);
+        ctx.outIncomingDir = Vec4f::Refract3(-ctx.outgoingDir, VECTOR_Z, ior);
         ctx.outEventType = SpecularRefractionEvent;
     }
 

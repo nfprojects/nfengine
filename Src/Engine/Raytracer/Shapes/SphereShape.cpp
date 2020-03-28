@@ -44,7 +44,7 @@ bool SphereShape::OnPropertyChanged(const Common::StringView propertyName)
 
 const Box SphereShape::GetBoundingBox() const
 {
-    return Box(Vector4::Zero(), mRadius);
+    return Box(Vec4f::Zero(), mRadius);
 }
 
 float SphereShape::GetSurfaceArea() const
@@ -56,7 +56,7 @@ bool SphereShape::Intersect(const Math::Ray& ray, RenderingContext& renderingCtx
 {
     NFE_UNUSED(renderingCtx);
 
-    const double v = Vector4::Dot3(ray.dir, -ray.origin);
+    const double v = Vec4f::Dot3(ray.dir, -ray.origin);
     const double det = mRadiusD * mRadiusD - (double)ray.origin.SqrLength3() + v * v;
 
     if (det <= 0.0)
@@ -73,19 +73,19 @@ bool SphereShape::Intersect(const Math::Ray& ray, RenderingContext& renderingCtx
     return outResult.farDist > outResult.nearDist;
 }
 
-bool SphereShape::Intersect(const Math::Vector4& point) const
+bool SphereShape::Intersect(const Math::Vec4f& point) const
 {
     return point.SqrLength3() <= mRadius * mRadius;
 }
 
-const Vector4 SphereShape::Sample(const Float3& u, Math::Vector4* outNormal, float* outPdf) const
+const Vec4f SphereShape::Sample(const Vec3f& u, Math::Vec4f* outNormal, float* outPdf) const
 {
     if (outPdf)
     {
         *outPdf = 1.0f / GetSurfaceArea();
     }
 
-    const Vector4 point = SamplingHelpers::GetSphere(u);
+    const Vec4f point = SamplingHelpers::GetSphere(u);
 
     if (outNormal)
     {
@@ -95,9 +95,9 @@ const Vector4 SphereShape::Sample(const Float3& u, Math::Vector4* outNormal, flo
     return point * mRadius;
 }
 
-bool SphereShape::Sample(const Vector4& ref, const Float3& u, ShapeSampleResult& result) const
+bool SphereShape::Sample(const Vec4f& ref, const Vec3f& u, ShapeSampleResult& result) const
 {
-    const Vector4 centerDir = -ref; // direction to light center
+    const Vec4f centerDir = -ref; // direction to light center
     const float centerDistSqr = centerDir.SqrLength3();
     const float centerDist = sqrtf(centerDistSqr);
 
@@ -108,7 +108,7 @@ bool SphereShape::Sample(const Vector4& ref, const Float3& u, ShapeSampleResult&
     }
 
     const float phi = NFE_MATH_2PI * u.y;
-    const Vector4 sinCosPhi = SinCos(phi);
+    const Vec4f sinCosPhi = SinCos(phi);
 
     float sinThetaMaxSqr = Sqr(mRadius) / centerDistSqr;
     float cosThetaMax = sqrtf(1.0f - Clamp(sinThetaMaxSqr, 0.0f, 1.0f));
@@ -117,8 +117,8 @@ bool SphereShape::Sample(const Vector4& ref, const Float3& u, ShapeSampleResult&
     float sinTheta = sqrtf(sinThetaSqr);
 
     // generate ray direction in the cone uniformly
-    const Vector4 w = centerDir / centerDist;
-    Vector4 tangent, bitangent;
+    const Vec4f w = centerDir / centerDist;
+    Vec4f tangent, bitangent;
     BuildOrthonormalBasis(w, tangent, bitangent);
     result.direction = (tangent * sinCosPhi.y + bitangent * sinCosPhi.x) * sinTheta + w * cosTheta;
     result.direction.Normalize3();
@@ -140,14 +140,14 @@ bool SphereShape::Sample(const Vector4& ref, const Float3& u, ShapeSampleResult&
     return true;
 }
 
-float SphereShape::Pdf(const Math::Vector4& ref, const Math::Vector4& point) const
+float SphereShape::Pdf(const Math::Vec4f& ref, const Math::Vec4f& point) const
 {
-    const Vector4 rayDir = (point - ref).Normalized3();
+    const Vec4f rayDir = (point - ref).Normalized3();
 
-    const Vector4 centerDir = -ref; // direction to light center
+    const Vec4f centerDir = -ref; // direction to light center
     const float centerDistSqr = centerDir.SqrLength3();
-    const Vector4 normal = point.Normalized3();
-    const float cosAtLight = Max(0.0f, Vector4::Dot3(-rayDir, normal));
+    const Vec4f normal = point.Normalized3();
+    const float cosAtLight = Max(0.0f, Vec4f::Dot3(-rayDir, normal));
 
     const float sinThetaMaxSqr = Clamp(Sqr(mRadius) / centerDistSqr, 0.0f, 1.0f);
     const float cosThetaMax = sqrtf(1.0f - sinThetaMaxSqr);
@@ -165,24 +165,24 @@ void SphereShape::Traverse_Packet(const PacketTraversalContext& context, const u
         RayGroup& rayGroup = context.ray.groups[context.context.activeGroupsIndices[i]];
         const Ray_Simd8& ray = rayGroup.rays[1];
 
-        const Vector8 v = Vector3x8::Dot(ray.dir, -ray.origin);
-        const Vector8 det = Vector8(mRadius * mRadius) - Vector3x8::Dot(ray.origin, ray.origin) + v * v;
+        const Vec8f v = Vec3x8f::Dot(ray.dir, -ray.origin);
+        const Vec8f det = Vec8f(mRadius * mRadius) - Vec3x8f::Dot(ray.origin, ray.origin) + v * v;
 
-        const VectorBool8 detSign = det > Vector8::Zero();
+        const VectorBool8 detSign = det > Vec8f::Zero();
         if (detSign.None())
         {
             continue;
         }
 
-        const Vector8 sqrtDet = Vector8::Sqrt(det);
-        const Vector8 nearDist = v - sqrtDet;
-        const Vector8 farDist = v + sqrtDet;
-        const Vector8 t = Vector8::Select(nearDist, farDist, nearDist < Vector8::Zero());
+        const Vec8f sqrtDet = Vec8f::Sqrt(det);
+        const Vec8f nearDist = v - sqrtDet;
+        const Vec8f farDist = v + sqrtDet;
+        const Vec8f t = Vec8f::Select(nearDist, farDist, nearDist < Vec8f::Zero());
 
-        const VectorBool8 distMask = detSign & (t > Vector8::Zero()) & (t < rayGroup.maxDistances);
+        const VectorBool8 distMask = detSign & (t > Vec8f::Zero()) & (t < rayGroup.maxDistances);
 
-        const Vector8 uCoord = Vector8::Zero(); // TODO
-        const Vector8 vCoord = Vector8::Zero(); // TODO
+        const Vec8f uCoord = Vec8f::Zero(); // TODO
+        const Vec8f vCoord = Vec8f::Zero(); // TODO
 
         context.StoreIntersection(rayGroup, t, uCoord, vCoord, distMask, objectID);
     }
@@ -196,10 +196,10 @@ void SphereShape::EvaluateIntersection(const HitPoint& hitPoint, IntersectionDat
     outData.texCoord = CartesianToSphericalCoordinates(-outData.frame.GetTranslation());
     outData.frame[2] = outData.frame.GetTranslation() * mInvRadius;
 
-    // equivalent of: Vector4::Cross3(outData.normal, VECTOR_Y);
-    outData.frame[0] = (outData.frame[2].Swizzle<2,0,0,0>() & Vector4::MakeMask<1,0,1,0>()).ChangeSign<1,0,0,0>();
+    // equivalent of: Vec4f::Cross3(outData.normal, VECTOR_Y);
+    outData.frame[0] = (outData.frame[2].Swizzle<2,0,0,0>() & Vec4f::MakeMask<1,0,1,0>()).ChangeSign<1,0,0,0>();
 
-    outData.frame[1] = -Vector4::Cross3(outData.frame[0], outData.frame[2]);
+    outData.frame[1] = -Vec4f::Cross3(outData.frame[0], outData.frame[2]);
 
     // TODO is that needed?
     outData.frame[0].FastNormalize3();

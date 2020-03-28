@@ -4,7 +4,7 @@
 #include "../Reflection/ReflectionClassDefine.hpp"
 
 
-NFE_DEFINE_CLASS(NFE::Math::Float2)
+NFE_DEFINE_CLASS(NFE::Math::Vec2f)
 {
     NFE_CLASS_MEMBER(x);
     NFE_CLASS_MEMBER(y);
@@ -12,7 +12,7 @@ NFE_DEFINE_CLASS(NFE::Math::Float2)
 NFE_END_DEFINE_CLASS()
 
 
-NFE_DEFINE_CLASS(NFE::Math::Float3)
+NFE_DEFINE_CLASS(NFE::Math::Vec3f)
 {
     NFE_CLASS_MEMBER(x);
     NFE_CLASS_MEMBER(y);
@@ -21,7 +21,7 @@ NFE_DEFINE_CLASS(NFE::Math::Float3)
 NFE_END_DEFINE_CLASS()
 
 
-NFE_DEFINE_CLASS(NFE::Math::Float4)
+NFE_DEFINE_CLASS(NFE::Math::Vec4fU)
 {
     NFE_CLASS_MEMBER(x);
     NFE_CLASS_MEMBER(y);
@@ -31,7 +31,7 @@ NFE_DEFINE_CLASS(NFE::Math::Float4)
 NFE_END_DEFINE_CLASS()
 
 
-NFE_DEFINE_CLASS(NFE::Math::Vector4)
+NFE_DEFINE_CLASS(NFE::Math::Vec4f)
 {
     NFE_CLASS_MEMBER(x);
     NFE_CLASS_MEMBER(y);

@@ -104,7 +104,7 @@ static bool EditObject_Internal_Quaternion(const char* name, Math::Quaternion* q
 
     bool changed = false;
 
-    Math::Float3 angles = quat->ToEulerAngles();
+    Math::Vec3f angles = quat->ToEulerAngles();
     angles *= 180.0f / NFE_MATH_PI;
     if (ImGui::InputFloat3("", &angles.x, 2))
     {
@@ -508,19 +508,19 @@ static bool EditObject_Internal(const EditPropertyContext& ctx)
     {
         changed = EditObject_Internal_HdrColorRGB(ctx.name, static_cast<Math::HdrColorRGB*>(ctx.data));
     }
-    else if (ctx.type == RTTI::GetType<Math::Float2>())
+    else if (ctx.type == RTTI::GetType<Math::Vec2f>())
     {
         changed = EditObject_Internal_FloatVector(ctx.name, static_cast<float*>(ctx.data), 2);
     }
-    else if (ctx.type == RTTI::GetType<Math::Float3>())
+    else if (ctx.type == RTTI::GetType<Math::Vec3f>())
     {
         changed = EditObject_Internal_FloatVector(ctx.name, static_cast<float*>(ctx.data), 3);
     }
-    else if (ctx.type == RTTI::GetType<Math::Float4>())
+    else if (ctx.type == RTTI::GetType<Math::Vec4fU>())
     {
         changed = EditObject_Internal_FloatVector(ctx.name, static_cast<float*>(ctx.data), 4);
     }
-    else if (ctx.type == RTTI::GetType<Math::Vector4>())
+    else if (ctx.type == RTTI::GetType<Math::Vec4f>())
     {
         changed = EditObject_Internal_FloatVector(ctx.name, static_cast<float*>(ctx.data), 4);
     }

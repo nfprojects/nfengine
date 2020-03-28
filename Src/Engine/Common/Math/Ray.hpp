@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Math.hpp"
-#include "Vector4.hpp"
+#include "Vec4f.hpp"
 
 
 namespace NFE {
@@ -10,17 +10,17 @@ namespace Math {
 /**
  * Single ray (non-SIMD).
  */
-class NFE_ALIGN(16) Ray
+class NFE_ALIGN(16) Ray : public Common::Aligned<16>
 {
 public:
-    Vector4 origin;
-    Vector4 dir;
-    Vector4 invDir;
-    Vector4 originDivDir;
+    Vec4f origin;
+    Vec4f dir;
+    Vec4f invDir;
+    Vec4f originDivDir;
 
     NFE_FORCE_INLINE Ray() = default;
 
-    NFE_FORCE_INLINE Ray(const Vector4& origin, const Vector4& direction)
+    NFE_FORCE_INLINE Ray(const Vec4f& origin, const Vec4f& direction)
         : origin(origin)
     {
         dir = direction.InvNormalized(invDir);
@@ -28,19 +28,19 @@ public:
     }
 
     // same as constructor, but direction must be already normalized
-    NFE_FORCE_INLINE static const Ray BuildUnsafe(const Vector4& origin, const Vector4& direction)
+    NFE_FORCE_INLINE static const Ray BuildUnsafe(const Vec4f& origin, const Vec4f& direction)
     {
         Ray ray;
         ray.origin = origin;
         ray.dir = direction;
-        ray.invDir = Vector4::Reciprocal(direction);
+        ray.invDir = Vec4f::Reciprocal(direction);
         ray.originDivDir = origin * ray.invDir;
         return ray;
     }
 
-    NFE_FORCE_INLINE const Vector4 GetAtDistance(const float t) const
+    NFE_FORCE_INLINE const Vec4f GetAtDistance(const float t) const
     {
-        return Vector4::MulAndAdd(dir, t, origin);
+        return Vec4f::MulAndAdd(dir, t, origin);
     }
 
     NFE_FORCE_INLINE bool IsValid() const

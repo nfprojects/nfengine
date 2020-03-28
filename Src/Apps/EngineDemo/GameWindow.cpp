@@ -37,7 +37,7 @@ void GameWindow::InitCamera()
     // camera entity must be created from a resource
     {
         mCameraEntity = mScene->GetSystem<Scene::EntitySystem>()->CreateEntity();
-        mCameraEntity->SetGlobalPosition(Vector4(0.0, 1.75f, -4.0f));
+        mCameraEntity->SetGlobalPosition(Vec4f(0.0, 1.75f, -4.0f));
 
         uint32 width, height;
         GetSize(width, height);
@@ -53,7 +53,7 @@ void GameWindow::InitCamera()
         mCameraEntity->AddComponent(std::move(camera));
 
         auto trigger = MakeUniquePtr<Scene::TriggerComponent>();
-        trigger->SetSize(Vector4(0.1f, 0.1f, 0.1f));
+        trigger->SetSize(Vec4f(0.1f, 0.1f, 0.1f));
         trigger->SetType(Scene::TriggerType::Source);
         mCameraEntity->AddComponent(trigger);
 
@@ -101,7 +101,7 @@ void GameWindow::SetUpScene(GameWindow* parent)
     InitCamera();
 }
 
-void GameWindow::SpawnTestObject(uint32 objectType, const Vector4& position, const Vector4& velocity)
+void GameWindow::SpawnTestObject(uint32 objectType, const Vec4f& position, const Vec4f& velocity)
 {
     NFE_ASSERT(mScene != nullptr, "Scene is not created");
 
@@ -247,8 +247,8 @@ void GameWindow::OnMouseDown(MouseButton button, int x, int y)
 
     if (button == MouseButton::Left)
     {
-        const Vector4& forwardVector = mCameraEntity->GetGlobalRotation().GetAxisZ();
-        SpawnTestObject(0, mCameraEntity->GetGlobalPosition() + forwardVector, Vector4::Zero());
+        const Vec4f& forwardVector = mCameraEntity->GetGlobalRotation().GetAxisZ();
+        SpawnTestObject(0, mCameraEntity->GetGlobalPosition() + forwardVector, Vec4f::Zero());
     }
 
     // TODO temporary
