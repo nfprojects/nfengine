@@ -30,34 +30,37 @@ public:
     // C++ standard iterator traits
     using self_type = ConstArrayIterator;
 
-    ConstArrayIterator() : mElements(nullptr), mIndex(0) { }
-    ConstArrayIterator(const ElementType* elements, int32 index) : mElements(elements), mIndex(index) { }
+    NFE_FORCE_INLINE ConstArrayIterator() : mElements(nullptr), mIndex(0) { }
+    NFE_FORCE_INLINE ConstArrayIterator(const ElementType* elements, int32 index)
+        : mElements(elements), mIndex(index)
+    { }
 
-    NFE_INLINE ConstArrayIterator(const ArrayIterator<const ElementType>& other);
-    NFE_INLINE ConstArrayIterator(const ConstArrayIterator<const ElementType>& other);
+    NFE_FORCE_INLINE ConstArrayIterator(const ArrayIterator<const ElementType>& other);
+    NFE_FORCE_INLINE ConstArrayIterator(const ConstArrayIterator<const ElementType>& other);
 
     // comparisons
-    NFE_INLINE bool operator == (const ConstArrayIterator& other) const;
-    NFE_INLINE bool operator != (const ConstArrayIterator& other) const;
-    NFE_INLINE bool operator < (const ConstArrayIterator& rhs) const;
-    NFE_INLINE ptrdiff_t operator - (const ConstArrayIterator& rhs) const;
+    NFE_FORCE_INLINE bool operator == (const ConstArrayIterator& other) const;
+    NFE_FORCE_INLINE bool operator != (const ConstArrayIterator& other) const;
+    NFE_FORCE_INLINE bool operator < (const ConstArrayIterator& rhs) const;
+    NFE_FORCE_INLINE ptrdiff_t operator - (const ConstArrayIterator& rhs) const;
 
     // element access
-    NFE_INLINE const ElementType& operator * () const;
-    NFE_INLINE const ElementType* operator -> () const;
+    NFE_FORCE_INLINE const ElementType& operator * () const;
+    NFE_FORCE_INLINE const ElementType* operator -> () const;
+    NFE_FORCE_INLINE const ElementType& operator [] (ptrdiff_t index) const;
 
     // arithmetics
-    NFE_INLINE ConstArrayIterator& operator ++ ();
-    NFE_INLINE ConstArrayIterator operator ++ (int);
-    NFE_INLINE ConstArrayIterator& operator += (ptrdiff_t offset);
-    NFE_INLINE ConstArrayIterator& operator -- ();
-    NFE_INLINE ConstArrayIterator operator -- (int);
-    NFE_INLINE ConstArrayIterator& operator -= (ptrdiff_t offset);
-    NFE_INLINE ConstArrayIterator operator + (ptrdiff_t offset) const;
-    NFE_INLINE ConstArrayIterator operator - (ptrdiff_t offset) const;
+    NFE_FORCE_INLINE ConstArrayIterator& operator ++ ();
+    NFE_FORCE_INLINE ConstArrayIterator operator ++ (int);
+    NFE_FORCE_INLINE ConstArrayIterator& operator += (ptrdiff_t offset);
+    NFE_FORCE_INLINE ConstArrayIterator& operator -- ();
+    NFE_FORCE_INLINE ConstArrayIterator operator -- (int);
+    NFE_FORCE_INLINE ConstArrayIterator& operator -= (ptrdiff_t offset);
+    NFE_FORCE_INLINE ConstArrayIterator operator + (ptrdiff_t offset) const;
+    NFE_FORCE_INLINE ConstArrayIterator operator - (ptrdiff_t offset) const;
 
     // get array index
-    int32 GetIndex() const { return mIndex; }
+    NFE_FORCE_INLINE int32 GetIndex() const { return mIndex; }
 
 protected:
     const ElementType* mElements;   // array elements
@@ -74,29 +77,30 @@ public:
     // C++ standard iterator traits
     using self_type = ArrayIterator;
 
-    ArrayIterator() = default;
-    ArrayIterator(ElementType* elements, uint32 index)
+    NFE_FORCE_INLINE ArrayIterator() = default;
+    NFE_FORCE_INLINE ArrayIterator(ElementType* elements, uint32 index)
         : ConstArrayIterator<ElementType>(const_cast<ElementType*>(elements), index)
     { }
 
     // comparisons
-    NFE_INLINE ptrdiff_t operator - (const ArrayIterator& rhs) const;
+    NFE_FORCE_INLINE ptrdiff_t operator - (const ArrayIterator& rhs) const;
 
     // element access
-    NFE_INLINE ElementType& operator * () const;
-    NFE_INLINE ElementType* operator -> () const;
+    NFE_FORCE_INLINE ElementType& operator * () const;
+    NFE_FORCE_INLINE ElementType* operator -> () const;
+    NFE_FORCE_INLINE ElementType& operator [] (ptrdiff_t index) const;
 
     // arithmetics
-    NFE_INLINE ArrayIterator& operator ++ ();
-    NFE_INLINE ArrayIterator operator ++ (int);
-    NFE_INLINE ArrayIterator& operator += (ptrdiff_t offset);
-    NFE_INLINE ArrayIterator& operator -- ();
-    NFE_INLINE ArrayIterator operator -- (int);
-    NFE_INLINE ArrayIterator& operator -= (ptrdiff_t offset);
-    NFE_INLINE ArrayIterator operator + (ptrdiff_t offset) const;
-    NFE_INLINE ArrayIterator operator - (ptrdiff_t offset) const;
+    NFE_FORCE_INLINE ArrayIterator& operator ++ ();
+    NFE_FORCE_INLINE ArrayIterator operator ++ (int);
+    NFE_FORCE_INLINE ArrayIterator& operator += (ptrdiff_t offset);
+    NFE_FORCE_INLINE ArrayIterator& operator -- ();
+    NFE_FORCE_INLINE ArrayIterator operator -- (int);
+    NFE_FORCE_INLINE ArrayIterator& operator -= (ptrdiff_t offset);
+    NFE_FORCE_INLINE ArrayIterator operator + (ptrdiff_t offset) const;
+    NFE_FORCE_INLINE ArrayIterator operator - (ptrdiff_t offset) const;
 
-    NFE_INLINE ElementType* GetElements() const { return const_cast<ElementType*>(this->mElements); }
+    NFE_FORCE_INLINE ElementType* GetElements() const { return const_cast<ElementType*>(this->mElements); }
 };
 
 

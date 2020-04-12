@@ -67,6 +67,12 @@ const ElementType* ConstArrayIterator<ElementType>::operator->() const
 }
 
 template<typename ElementType>
+const ElementType& ConstArrayIterator<ElementType>::operator [] (ptrdiff_t index) const
+{
+    return this->mElements[this->mIndex + index];
+}
+
+template<typename ElementType>
 ConstArrayIterator<ElementType>& ConstArrayIterator<ElementType>::operator++()
 {
     this->mIndex++;
@@ -138,6 +144,12 @@ template<typename ElementType>
 ElementType* ArrayIterator<ElementType>::operator->() const
 {
     return GetElements() + this->mIndex;
+}
+
+template<typename ElementType>
+ElementType& ArrayIterator<ElementType>::operator [] (ptrdiff_t index) const
+{
+    return GetElements()[this->mIndex + index];
 }
 
 template<typename ElementType>
