@@ -85,7 +85,7 @@ bool Bitmap::LoadEXR(FILE* file, const char* path)
 
             for (size_t y = 0; y < (size_t)exrImage.height; ++y)
             {
-                float* typedData = reinterpret_cast<float*>(mData + (size_t)mStride * y);
+                float* typedData = reinterpret_cast<float*>(mData + (size_t)GetStride() * y);
                 for (size_t x = 0; x < (size_t)exrImage.width; ++x)
                 {
                     const size_t index = y * exrImage.width + x;
@@ -105,7 +105,7 @@ bool Bitmap::LoadEXR(FILE* file, const char* path)
 
             for (size_t y = 0; y < (size_t)exrImage.height; ++y)
             {
-                uint16* typedData = reinterpret_cast<uint16*>(mData + (size_t)mStride * y);
+                uint16* typedData = reinterpret_cast<uint16*>(mData + GetStride() * y);
                 for (size_t x = 0; x < (size_t)exrImage.width; ++x)
                 {
                     const size_t index = y * exrImage.width + x;
@@ -142,7 +142,7 @@ bool Bitmap::LoadEXR(FILE* file, const char* path)
 
             for (size_t y = 0; y < (size_t)exrImage.height; ++y)
             {
-                float* typedData = reinterpret_cast<float*>(mData + (size_t)mStride * y);
+                float* typedData = reinterpret_cast<float*>(mData + GetStride() * y);
                 for (size_t x = 0; x < (size_t)exrImage.width; ++x)
                 {
                     const size_t index = y * exrImage.width + x;
@@ -163,7 +163,7 @@ bool Bitmap::LoadEXR(FILE* file, const char* path)
 
             for (size_t y = 0; y < (size_t)exrImage.height; ++y)
             {
-                uint16* typedData = reinterpret_cast<uint16*>(mData + (size_t)mStride * y);
+                uint16* typedData = reinterpret_cast<uint16*>(mData + GetStride() * y);
                 for (size_t x = 0; x < (size_t)exrImage.width; ++x)
                 {
                     const size_t index = y * exrImage.width + x;

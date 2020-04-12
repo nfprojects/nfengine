@@ -15,6 +15,8 @@ namespace RT {
 using namespace Common;
 using namespace Math;
 
+static_assert(sizeof(Bitmap) <= 64, "Bitmap size has changed");
+
 uint8 Bitmap::BitsPerPixel(Format format)
 {
     switch (format)
@@ -107,7 +109,6 @@ uint32 Bitmap::ComputeDataStride(uint32 width, Format format)
 Bitmap::Bitmap(const char* debugName)
     : mData(nullptr)
     , mPalette(nullptr)
-    , mStride(0)
     , mPaletteSize(0)
     , mFormat(Format::Unknown)
     , mLinearSpace(false)
@@ -131,7 +132,7 @@ Bitmap::Bitmap(const Bitmap& other)
     data.width = other.GetWidth();
     data.height = other.GetHeight();
     data.depth = other.GetDepth();
-    data.stride = other.mStride;
+    data.stride = other.GetStride();
     data.format = other.mFormat;
     data.paletteSize = other.mPaletteSize;
 
@@ -147,7 +148,7 @@ Bitmap& Bitmap::operator = (const Bitmap& other)
     data.width = other.GetWidth();
     data.height = other.GetHeight();
     data.depth = other.GetDepth();
-    data.stride = other.mStride;
+    data.stride = other.GetStride();
     data.format = other.mFormat;
     data.paletteSize = other.mPaletteSize;
 
@@ -182,8 +183,7 @@ void Bitmap::Release()
         mData = nullptr;
     }
 
-    mStride = 0;
-    mSize = Vec4i::Zero();
+    mSize = Vec4ui::Zero();
     mPaletteSize = 0;
     mFormat = Format::Unknown;
 }
@@ -228,10 +228,10 @@ bool Bitmap::Init(const InitData& initData)
     // clear marigin
     memset(mData + dataSize, 0, marigin);
 
-    mStride = Max(initData.stride, ComputeDataStride(initData.width, initData.format));
     mSize.x = initData.width;
     mSize.y = initData.height;
     mSize.z = initData.depth;
+    mSize.w = Max(initData.stride, ComputeDataStride(initData.width, initData.format)); // stride
     mFloatSize = Vec4f::FromIntegers(initData.width, initData.height, initData.depth, 0);
     mFormat = initData.format;
     mLinearSpace = initData.linearSpace;
@@ -260,7 +260,7 @@ bool Bitmap::Copy(Bitmap& target, const Bitmap& source)
         return false;
     }
 
-    if (target.mStride == source.mStride)
+    if (target.GetStride() == source.GetStride())
     {
         NFE_ASSERT(target.GetDataSize() == source.GetDataSize());
         memcpy(target.GetData(), source.GetData(), source.GetDataSize());
@@ -271,7 +271,7 @@ bool Bitmap::Copy(Bitmap& target, const Bitmap& source)
         size_t numRows = (size_t)source.GetHeight() * (size_t)source.GetDepth();
         for (size_t i = 0; i < numRows; ++i)
         {
-            memcpy(target.GetData() + size_t(target.mStride) * i, source.GetData() + size_t(source.mStride) * i, rowSize);
+            memcpy(target.GetData() + size_t(target.GetStride()) * i, source.GetData() + size_t(source.GetStride()) * i, rowSize);
         }
     }
 
@@ -328,7 +328,7 @@ const Vec4f Bitmap::GetPixel(uint32 x, uint32 y) const
 {
     NFE_ASSERT((x < GetWidth()) && (y < GetHeight()));
 
-    const size_t rowOffset = static_cast<size_t>(mStride) * static_cast<size_t>(y);
+    const size_t rowOffset = static_cast<size_t>(GetStride()) * static_cast<size_t>(y);
     const uint8* rowData = mData + rowOffset;
 
     Vec4f color;
@@ -455,21 +455,21 @@ const Vec4f Bitmap::GetPixel(uint32 x, uint32 y) const
 
     case Format::R16G16_Half:
     {
-        const Half* source = reinterpret_cast<const Half*>(rowData) + 2u * (size_t)x;
+        const Half2* source = reinterpret_cast<const Half2*>(rowData) + (size_t)x;
         color = Vec4f_Load_Half2(source);
         break;
     }
 
     case Format::R16G16B16_Half:
     {
-        const Half* source = reinterpret_cast<const Half*>(rowData) + 3u * (size_t)x;
-        color = Vec4f_Load_Half4(source) & Vec4f::MakeMask<1, 1, 1, 0>();
+        const Half3* source = reinterpret_cast<const Half3*>(rowData) + (size_t)x;
+        color = Vec4f_Load_Half4(reinterpret_cast<const Half4*>(source)) & Vec4f::MakeMask<1, 1, 1, 0>();
         break;
     }
 
     case Format::R16G16B16A16_Half:
     {
-        const Half* source = reinterpret_cast<const Half*>(rowData) + 4u * (size_t)x;
+        const Half4* source = reinterpret_cast<const Half4*>(rowData) + (size_t)x;
         color = Vec4f_Load_Half4(source);
         break;
     }
@@ -519,13 +519,13 @@ const Vec4f Bitmap::GetPixel(uint32 x, uint32 y) const
     return color;
 }
 
-void Bitmap::GetPixelBlock(const Vec4i coords, Vec4f* outColors) const
+void Bitmap::GetPixelBlock(const Vec4ui coords, Vec4f* outColors) const
 {
-    const Vec4i size2D = mSize.Swizzle<0,1,0,1>();
-    NFE_ASSERT(((coords >= Vec4i::Zero()) & (coords < size2D)).All());
+    const Vec4ui size2D = mSize.Swizzle<0,1,0,1>();
+    NFE_ASSERT((coords < size2D).All());
 
-    const uint8* rowData0 = mData + mStride * static_cast<size_t>(coords.y);
-    const uint8* rowData1 = mData + mStride * static_cast<size_t>(coords.w);
+    const uint8* rowData0 = mData + GetStride() * static_cast<size_t>(coords.y);
+    const uint8* rowData1 = mData + GetStride() * static_cast<size_t>(coords.w);
 
     Vec4f color[4];
 
@@ -548,43 +548,43 @@ void Bitmap::GetPixelBlock(const Vec4i coords, Vec4f* outColors) const
 
     case Format::R8G8_UNorm:
     {
-        const Vec4i offsets = coords << 1; // offset = 2 * coords
-        color[0] = Vec4f_Load_2xUint8_Norm(rowData0 + (uint32)offsets.x);
-        color[1] = Vec4f_Load_2xUint8_Norm(rowData0 + (uint32)offsets.z);
-        color[2] = Vec4f_Load_2xUint8_Norm(rowData1 + (uint32)offsets.x);
-        color[3] = Vec4f_Load_2xUint8_Norm(rowData1 + (uint32)offsets.z);
+        const Vec4ui offsets = coords << 1; // offset = 2 * coords
+        color[0] = Vec4f_Load_2xUint8_Norm(rowData0 + offsets.x);
+        color[1] = Vec4f_Load_2xUint8_Norm(rowData0 + offsets.z);
+        color[2] = Vec4f_Load_2xUint8_Norm(rowData1 + offsets.x);
+        color[3] = Vec4f_Load_2xUint8_Norm(rowData1 + offsets.z);
         break;
     }
 
     case Format::B8G8R8_UNorm:
     {
-        const Vec4i offsets = coords + (coords << 1); // offset = 3 * coords
-        color[0] = Vec4f_LoadBGR_UNorm(rowData0 + (uint32)offsets.x);
-        color[1] = Vec4f_LoadBGR_UNorm(rowData0 + (uint32)offsets.z);
-        color[2] = Vec4f_LoadBGR_UNorm(rowData1 + (uint32)offsets.x);
-        color[3] = Vec4f_LoadBGR_UNorm(rowData1 + (uint32)offsets.z);
+        const Vec4ui offsets = coords + (coords << 1); // offset = 3 * coords
+        color[0] = Vec4f_LoadBGR_UNorm(rowData0 + offsets.x);
+        color[1] = Vec4f_LoadBGR_UNorm(rowData0 + offsets.z);
+        color[2] = Vec4f_LoadBGR_UNorm(rowData1 + offsets.x);
+        color[3] = Vec4f_LoadBGR_UNorm(rowData1 + offsets.z);
         break;
     }
 
     case Format::B8G8R8A8_UNorm:
     {
         constexpr float scale = 1.0f / 255.0f;
-        const Vec4i offsets = coords << 2; // offset = 4 * coords
-        color[0] = Vec4f_Load_4xUint8(rowData0 + (uint32)offsets.x).Swizzle<2, 1, 0, 3>() * scale;
-        color[1] = Vec4f_Load_4xUint8(rowData0 + (uint32)offsets.z).Swizzle<2, 1, 0, 3>() * scale;
-        color[2] = Vec4f_Load_4xUint8(rowData1 + (uint32)offsets.x).Swizzle<2, 1, 0, 3>() * scale;
-        color[3] = Vec4f_Load_4xUint8(rowData1 + (uint32)offsets.z).Swizzle<2, 1, 0, 3>() * scale;
+        const Vec4ui offsets = coords << 2; // offset = 4 * coords
+        color[0] = Vec4f_Load_4xUint8(rowData0 + offsets.x).Swizzle<2, 1, 0, 3>() * scale;
+        color[1] = Vec4f_Load_4xUint8(rowData0 + offsets.z).Swizzle<2, 1, 0, 3>() * scale;
+        color[2] = Vec4f_Load_4xUint8(rowData1 + offsets.x).Swizzle<2, 1, 0, 3>() * scale;
+        color[3] = Vec4f_Load_4xUint8(rowData1 + offsets.z).Swizzle<2, 1, 0, 3>() * scale;
         break;
     }
 
     case Format::R8G8B8A8_UNorm:
     {
         constexpr float scale = 1.0f / 255.0f;
-        const Vec4i offsets = coords << 2; // offset = 4 * coords
-        color[0] = Vec4f_Load_4xUint8(rowData0 + (uint32)offsets.x) * scale;
-        color[1] = Vec4f_Load_4xUint8(rowData0 + (uint32)offsets.z) * scale;
-        color[2] = Vec4f_Load_4xUint8(rowData1 + (uint32)offsets.x) * scale;
-        color[3] = Vec4f_Load_4xUint8(rowData1 + (uint32)offsets.z) * scale;
+        const Vec4ui offsets = coords << 2; // offset = 4 * coords
+        color[0] = Vec4f_Load_4xUint8(rowData0 + offsets.x) * scale;
+        color[1] = Vec4f_Load_4xUint8(rowData0 + offsets.z) * scale;
+        color[2] = Vec4f_Load_4xUint8(rowData1 + offsets.x) * scale;
+        color[3] = Vec4f_Load_4xUint8(rowData1 + offsets.z) * scale;
         break;
     }
 
@@ -604,11 +604,11 @@ void Bitmap::GetPixelBlock(const Vec4i coords, Vec4f* outColors) const
 
     case Format::B5G6R5_UNorm:
     {
-        const Vec4i offsets = coords << 1; // offset = 2 * coords
-        const uint16* source0 = reinterpret_cast<const uint16*>(rowData0 + (uint32)offsets.x);
-        const uint16* source1 = reinterpret_cast<const uint16*>(rowData0 + (uint32)offsets.z);
-        const uint16* source2 = reinterpret_cast<const uint16*>(rowData1 + (uint32)offsets.x);
-        const uint16* source3 = reinterpret_cast<const uint16*>(rowData1 + (uint32)offsets.z);
+        const Vec4ui offsets = coords << 1; // offset = 2 * coords
+        const uint16* source0 = reinterpret_cast<const uint16*>(rowData0 + offsets.x);
+        const uint16* source1 = reinterpret_cast<const uint16*>(rowData0 + offsets.z);
+        const uint16* source2 = reinterpret_cast<const uint16*>(rowData1 + offsets.x);
+        const uint16* source3 = reinterpret_cast<const uint16*>(rowData1 + offsets.z);
         color[0] = Vec4f_Load_B5G6R5_Norm(source0);
         color[1] = Vec4f_Load_B5G6R5_Norm(source1);
         color[2] = Vec4f_Load_B5G6R5_Norm(source2);
@@ -618,11 +618,11 @@ void Bitmap::GetPixelBlock(const Vec4i coords, Vec4f* outColors) const
 
     case Format::B4G4R4A4_UNorm:
     {
-        const Vec4i offsets = coords << 1; // offset = 2 * coords
-        const uint16* source0 = reinterpret_cast<const uint16*>(rowData0 + (uint32)offsets.x);
-        const uint16* source1 = reinterpret_cast<const uint16*>(rowData0 + (uint32)offsets.z);
-        const uint16* source2 = reinterpret_cast<const uint16*>(rowData1 + (uint32)offsets.x);
-        const uint16* source3 = reinterpret_cast<const uint16*>(rowData1 + (uint32)offsets.z);
+        const Vec4ui offsets = coords << 1; // offset = 2 * coords
+        const uint16* source0 = reinterpret_cast<const uint16*>(rowData0 + offsets.x);
+        const uint16* source1 = reinterpret_cast<const uint16*>(rowData0 + offsets.z);
+        const uint16* source2 = reinterpret_cast<const uint16*>(rowData1 + offsets.x);
+        const uint16* source3 = reinterpret_cast<const uint16*>(rowData1 + offsets.z);
         color[0] = Vec4f_Load_B4G4R4A4_Norm(source0);
         color[1] = Vec4f_Load_B4G4R4A4_Norm(source1);
         color[2] = Vec4f_Load_B4G4R4A4_Norm(source2);
@@ -632,11 +632,11 @@ void Bitmap::GetPixelBlock(const Vec4i coords, Vec4f* outColors) const
 
     case Format::R10G10B10A2_UNorm:
     {
-        const Vec4i offsets = coords << 2; // offset = 4 * coords
-        color[0] = Vec4f_Load_R10G10B10A2_Norm(reinterpret_cast<const uint32*>(rowData0 + (uint32)offsets.x));
-        color[1] = Vec4f_Load_R10G10B10A2_Norm(reinterpret_cast<const uint32*>(rowData0 + (uint32)offsets.z));
-        color[2] = Vec4f_Load_R10G10B10A2_Norm(reinterpret_cast<const uint32*>(rowData1 + (uint32)offsets.x));
-        color[3] = Vec4f_Load_R10G10B10A2_Norm(reinterpret_cast<const uint32*>(rowData1 + (uint32)offsets.z));
+        const Vec4ui offsets = coords << 2; // offset = 4 * coords
+        color[0] = Vec4f_Load_R10G10B10A2_Norm(reinterpret_cast<const uint32*>(rowData0 + offsets.x));
+        color[1] = Vec4f_Load_R10G10B10A2_Norm(reinterpret_cast<const uint32*>(rowData0 + offsets.z));
+        color[2] = Vec4f_Load_R10G10B10A2_Norm(reinterpret_cast<const uint32*>(rowData1 + offsets.x));
+        color[3] = Vec4f_Load_R10G10B10A2_Norm(reinterpret_cast<const uint32*>(rowData1 + offsets.z));
         break;
     }
 
@@ -657,11 +657,11 @@ void Bitmap::GetPixelBlock(const Vec4i coords, Vec4f* outColors) const
 
     case Format::R16G16_UNorm:
     {
-        const Vec4i offsets = coords << 2; // offset = 4 * coords
-        const uint16* source0 = reinterpret_cast<const uint16*>(rowData0 + (uint32)offsets.x);
-        const uint16* source1 = reinterpret_cast<const uint16*>(rowData0 + (uint32)offsets.z);
-        const uint16* source2 = reinterpret_cast<const uint16*>(rowData1 + (uint32)offsets.x);
-        const uint16* source3 = reinterpret_cast<const uint16*>(rowData1 + (uint32)offsets.z);
+        const Vec4ui offsets = coords << 2; // offset = 4 * coords
+        const uint16* source0 = reinterpret_cast<const uint16*>(rowData0 + offsets.x);
+        const uint16* source1 = reinterpret_cast<const uint16*>(rowData0 + offsets.z);
+        const uint16* source2 = reinterpret_cast<const uint16*>(rowData1 + offsets.x);
+        const uint16* source3 = reinterpret_cast<const uint16*>(rowData1 + offsets.z);
         color[0] = Vec4f_Load_2xUint16_Norm(source0);
         color[1] = Vec4f_Load_2xUint16_Norm(source1);
         color[2] = Vec4f_Load_2xUint16_Norm(source2);
@@ -672,11 +672,11 @@ void Bitmap::GetPixelBlock(const Vec4i coords, Vec4f* outColors) const
     case Format::R16G16B16A16_UNorm:
     {
         constexpr float scale = 1.0f / 65535.0f;
-        const Vec4i offsets = coords << 3; // offset = 8 * coords
-        const uint16* source0 = reinterpret_cast<const uint16*>(rowData0 + (uint32)offsets.x);
-        const uint16* source1 = reinterpret_cast<const uint16*>(rowData0 + (uint32)offsets.z);
-        const uint16* source2 = reinterpret_cast<const uint16*>(rowData1 + (uint32)offsets.x);
-        const uint16* source3 = reinterpret_cast<const uint16*>(rowData1 + (uint32)offsets.z);
+        const Vec4ui offsets = coords << 3; // offset = 8 * coords
+        const uint16* source0 = reinterpret_cast<const uint16*>(rowData0 + offsets.x);
+        const uint16* source1 = reinterpret_cast<const uint16*>(rowData0 + offsets.z);
+        const uint16* source2 = reinterpret_cast<const uint16*>(rowData1 + offsets.x);
+        const uint16* source3 = reinterpret_cast<const uint16*>(rowData1 + offsets.z);
         color[0] = Vec4f_Load_4xUint16(source0) * scale;
         color[1] = Vec4f_Load_4xUint16(source1) * scale;
         color[2] = Vec4f_Load_4xUint16(source2) * scale;
@@ -699,11 +699,11 @@ void Bitmap::GetPixelBlock(const Vec4i coords, Vec4f* outColors) const
 
     case Format::R32G32_Float:
     {
-        const Vec4i offsets = coords << 3; // offset = 8 * coords
-        const float* source0 = reinterpret_cast<const float*>(rowData0 + (uint32)offsets.x);
-        const float* source1 = reinterpret_cast<const float*>(rowData0 + (uint32)offsets.z);
-        const float* source2 = reinterpret_cast<const float*>(rowData1 + (uint32)offsets.x);
-        const float* source3 = reinterpret_cast<const float*>(rowData1 + (uint32)offsets.z);
+        const Vec4ui offsets = coords << 3; // offset = 8 * coords
+        const float* source0 = reinterpret_cast<const float*>(rowData0 + offsets.x);
+        const float* source1 = reinterpret_cast<const float*>(rowData0 + offsets.z);
+        const float* source2 = reinterpret_cast<const float*>(rowData1 + offsets.x);
+        const float* source3 = reinterpret_cast<const float*>(rowData1 + offsets.z);
         color[0] = Vec4f(source0) & Vec4f::MakeMask<1, 1, 0, 0>();
         color[1] = Vec4f(source1) & Vec4f::MakeMask<1, 1, 0, 0>();
         color[2] = Vec4f(source2) & Vec4f::MakeMask<1, 1, 0, 0>();
@@ -713,11 +713,11 @@ void Bitmap::GetPixelBlock(const Vec4i coords, Vec4f* outColors) const
 
     case Format::R32G32B32_Float:
     {
-        const Vec4i offsets = coords + (coords << 1); // offset = 3 * coords
-        const float* source0 = reinterpret_cast<const float*>(rowData0) + (uint32)offsets.x;
-        const float* source1 = reinterpret_cast<const float*>(rowData0) + (uint32)offsets.z;
-        const float* source2 = reinterpret_cast<const float*>(rowData1) + (uint32)offsets.x;
-        const float* source3 = reinterpret_cast<const float*>(rowData1) + (uint32)offsets.z;
+        const Vec4ui offsets = coords + (coords << 1); // offset = 3 * coords
+        const float* source0 = reinterpret_cast<const float*>(rowData0) + offsets.x;
+        const float* source1 = reinterpret_cast<const float*>(rowData0) + offsets.z;
+        const float* source2 = reinterpret_cast<const float*>(rowData1) + offsets.x;
+        const float* source3 = reinterpret_cast<const float*>(rowData1) + offsets.z;
         color[0] = Vec4f(source0) & Vec4f::MakeMask<1, 1, 1, 0>();
         color[1] = Vec4f(source1) & Vec4f::MakeMask<1, 1, 1, 0>();
         color[2] = Vec4f(source2) & Vec4f::MakeMask<1, 1, 1, 0>();
@@ -736,11 +736,11 @@ void Bitmap::GetPixelBlock(const Vec4i coords, Vec4f* outColors) const
 
     case Format::R16_Half:
     {
-        const Vec4i offsets = coords << 1; // offset = 2 * coords
-        const Half* source0 = reinterpret_cast<const Half*>(rowData0 + (uint32)offsets.x);
-        const Half* source1 = reinterpret_cast<const Half*>(rowData0 + (uint32)offsets.z);
-        const Half* source2 = reinterpret_cast<const Half*>(rowData1 + (uint32)offsets.x);
-        const Half* source3 = reinterpret_cast<const Half*>(rowData1 + (uint32)offsets.z);
+        const Vec4ui offsets = coords << 1; // offset = 2 * coords
+        const Half* source0 = reinterpret_cast<const Half*>(rowData0 + offsets.x);
+        const Half* source1 = reinterpret_cast<const Half*>(rowData0 + offsets.z);
+        const Half* source2 = reinterpret_cast<const Half*>(rowData1 + offsets.x);
+        const Half* source3 = reinterpret_cast<const Half*>(rowData1 + offsets.z);
         color[0] = Vec4f(source0->ToFloat());
         color[1] = Vec4f(source1->ToFloat());
         color[2] = Vec4f(source2->ToFloat());
@@ -750,53 +750,53 @@ void Bitmap::GetPixelBlock(const Vec4i coords, Vec4f* outColors) const
 
     case Format::R16G16_Half:
     {
-        const Vec4i offsets = coords << 2; // offset = 4 * coords
-        const Half* source0 = reinterpret_cast<const Half*>(rowData0 + (uint32)offsets.x);
-        const Half* source1 = reinterpret_cast<const Half*>(rowData0 + (uint32)offsets.z);
-        const Half* source2 = reinterpret_cast<const Half*>(rowData1 + (uint32)offsets.x);
-        const Half* source3 = reinterpret_cast<const Half*>(rowData1 + (uint32)offsets.z);
-        color[0] = Vec4f_Load_Half2(source0);
-        color[1] = Vec4f_Load_Half2(source1);
-        color[2] = Vec4f_Load_Half2(source2);
-        color[3] = Vec4f_Load_Half2(source3);
+        const Vec4ui offsets = coords << 2; // offset = 4 * coords
+        const Half* source0 = reinterpret_cast<const Half*>(rowData0 + offsets.x);
+        const Half* source1 = reinterpret_cast<const Half*>(rowData0 + offsets.z);
+        const Half* source2 = reinterpret_cast<const Half*>(rowData1 + offsets.x);
+        const Half* source3 = reinterpret_cast<const Half*>(rowData1 + offsets.z);
+        color[0] = Vec4f_Load_Half2(reinterpret_cast<const Half2*>(source0));
+        color[1] = Vec4f_Load_Half2(reinterpret_cast<const Half2*>(source1));
+        color[2] = Vec4f_Load_Half2(reinterpret_cast<const Half2*>(source2));
+        color[3] = Vec4f_Load_Half2(reinterpret_cast<const Half2*>(source3));
         break;
     }
 
     case Format::R16G16B16_Half:
     {
-        const Vec4i offsets = (coords << 2) + (coords << 1); // offset = 6 * coords
-        const Half* source0 = reinterpret_cast<const Half*>(rowData0 + (uint32)offsets.x);
-        const Half* source1 = reinterpret_cast<const Half*>(rowData0 + (uint32)offsets.z);
-        const Half* source2 = reinterpret_cast<const Half*>(rowData1 + (uint32)offsets.x);
-        const Half* source3 = reinterpret_cast<const Half*>(rowData1 + (uint32)offsets.z);
-        color[0] = Vec4f_Load_Half4(source0) & Vec4f::MakeMask<1, 1, 1, 0>();
-        color[1] = Vec4f_Load_Half4(source1) & Vec4f::MakeMask<1, 1, 1, 0>();
-        color[2] = Vec4f_Load_Half4(source2) & Vec4f::MakeMask<1, 1, 1, 0>();
-        color[3] = Vec4f_Load_Half4(source3) & Vec4f::MakeMask<1, 1, 1, 0>();
+        const Vec4ui offsets = (coords << 2) + (coords << 1); // offset = 6 * coords
+        const Half* source0 = reinterpret_cast<const Half*>(rowData0 + offsets.x);
+        const Half* source1 = reinterpret_cast<const Half*>(rowData0 + offsets.z);
+        const Half* source2 = reinterpret_cast<const Half*>(rowData1 + offsets.x);
+        const Half* source3 = reinterpret_cast<const Half*>(rowData1 + offsets.z);
+        color[0] = Vec4f_Load_Half4(reinterpret_cast<const Half4*>(source0)) & Vec4f::MakeMask<1, 1, 1, 0>();
+        color[1] = Vec4f_Load_Half4(reinterpret_cast<const Half4*>(source1)) & Vec4f::MakeMask<1, 1, 1, 0>();
+        color[2] = Vec4f_Load_Half4(reinterpret_cast<const Half4*>(source2)) & Vec4f::MakeMask<1, 1, 1, 0>();
+        color[3] = Vec4f_Load_Half4(reinterpret_cast<const Half4*>(source3)) & Vec4f::MakeMask<1, 1, 1, 0>();
         break;
     }
 
     case Format::R16G16B16A16_Half:
     {
-        const Vec4i offsets = coords << 3; // offset = 8 * coords
-        const Half* source0 = reinterpret_cast<const Half*>(rowData0 + (uint32)offsets.x);
-        const Half* source1 = reinterpret_cast<const Half*>(rowData0 + (uint32)offsets.z);
-        const Half* source2 = reinterpret_cast<const Half*>(rowData1 + (uint32)offsets.x);
-        const Half* source3 = reinterpret_cast<const Half*>(rowData1 + (uint32)offsets.z);
-        color[0] = Vec4f_Load_Half4(source0);
-        color[1] = Vec4f_Load_Half4(source1);
-        color[2] = Vec4f_Load_Half4(source2);
-        color[3] = Vec4f_Load_Half4(source3);
+        const Vec4ui offsets = coords << 3; // offset = 8 * coords
+        const Half* source0 = reinterpret_cast<const Half*>(rowData0 + offsets.x);
+        const Half* source1 = reinterpret_cast<const Half*>(rowData0 + offsets.z);
+        const Half* source2 = reinterpret_cast<const Half*>(rowData1 + offsets.x);
+        const Half* source3 = reinterpret_cast<const Half*>(rowData1 + offsets.z);
+        color[0] = Vec4f_Load_Half4(reinterpret_cast<const Half4*>(source0));
+        color[1] = Vec4f_Load_Half4(reinterpret_cast<const Half4*>(source1));
+        color[2] = Vec4f_Load_Half4(reinterpret_cast<const Half4*>(source2));
+        color[3] = Vec4f_Load_Half4(reinterpret_cast<const Half4*>(source3));
         break;
     }
     
     case Format::R9G9B9E5_SharedExp:
     {
-        const Vec4i offsets = coords << 2; // offset = 4 * coords
-        const SharedExpFloat3* source0 = reinterpret_cast<const SharedExpFloat3*>(rowData0 + (uint32)offsets.x);
-        const SharedExpFloat3* source1 = reinterpret_cast<const SharedExpFloat3*>(rowData0 + (uint32)offsets.z);
-        const SharedExpFloat3* source2 = reinterpret_cast<const SharedExpFloat3*>(rowData1 + (uint32)offsets.x);
-        const SharedExpFloat3* source3 = reinterpret_cast<const SharedExpFloat3*>(rowData1 + (uint32)offsets.z);
+        const Vec4ui offsets = coords << 2; // offset = 4 * coords
+        const SharedExpFloat3* source0 = reinterpret_cast<const SharedExpFloat3*>(rowData0 + offsets.x);
+        const SharedExpFloat3* source1 = reinterpret_cast<const SharedExpFloat3*>(rowData0 + offsets.z);
+        const SharedExpFloat3* source2 = reinterpret_cast<const SharedExpFloat3*>(rowData1 + offsets.x);
+        const SharedExpFloat3* source3 = reinterpret_cast<const SharedExpFloat3*>(rowData1 + offsets.z);
         // TODO vectorize
         color[0] = source0->ToVector();
         color[1] = source1->ToVector();
@@ -807,11 +807,11 @@ void Bitmap::GetPixelBlock(const Vec4i coords, Vec4f* outColors) const
 
     case Format::R11G11B10_Float:
     {
-        const Vec4i offsets = coords << 2; // offset = 4 * coords
-        const PackedFloat3* source0 = reinterpret_cast<const PackedFloat3*>(rowData0 + (uint32)offsets.x);
-        const PackedFloat3* source1 = reinterpret_cast<const PackedFloat3*>(rowData0 + (uint32)offsets.z);
-        const PackedFloat3* source2 = reinterpret_cast<const PackedFloat3*>(rowData1 + (uint32)offsets.x);
-        const PackedFloat3* source3 = reinterpret_cast<const PackedFloat3*>(rowData1 + (uint32)offsets.z);
+        const Vec4ui offsets = coords << 2; // offset = 4 * coords
+        const PackedFloat3* source0 = reinterpret_cast<const PackedFloat3*>(rowData0 + offsets.x);
+        const PackedFloat3* source1 = reinterpret_cast<const PackedFloat3*>(rowData0 + offsets.z);
+        const PackedFloat3* source2 = reinterpret_cast<const PackedFloat3*>(rowData1 + offsets.x);
+        const PackedFloat3* source3 = reinterpret_cast<const PackedFloat3*>(rowData1 + offsets.z);
         // TODO vectorize
         color[0] = source0->ToVector();
         color[1] = source1->ToVector();
@@ -872,7 +872,7 @@ const Vec4f Bitmap::GetPixel3D(uint32 x, uint32 y, uint32 z) const
     NFE_ASSERT(z < GetDepth());
 
     const size_t row = y + static_cast<size_t>(GetHeight()) * static_cast<size_t>(z);
-    const uint8* rowData = mData + mStride * row;
+    const uint8* rowData = mData + GetStride() * row;
 
     Vec4f color;
     switch (mFormat)
@@ -905,20 +905,20 @@ const Vec4f Bitmap::GetPixel3D(uint32 x, uint32 y, uint32 z) const
     return color;
 }
 
-void Bitmap::GetPixelBlock3D(const Vec4i coordsA, const Vec4i coordsB, Vec4f* outColors) const
+void Bitmap::GetPixelBlock3D(const Vec4ui coordsA, const Vec4ui coordsB, Vec4f* outColors) const
 {
-    NFE_ASSERT(((coordsA >= Vec4i::Zero()) & (coordsA < mSize)).All3());
-    NFE_ASSERT(((coordsB >= Vec4i::Zero()) & (coordsB < mSize)).All3());
+    NFE_ASSERT((coordsA < mSize).All3());
+    NFE_ASSERT((coordsB < mSize).All3());
 
     const size_t row0 = coordsA.y + static_cast<size_t>(GetHeight()) * static_cast<size_t>(coordsA.z);
     const size_t row1 = coordsB.y + static_cast<size_t>(GetHeight()) * static_cast<size_t>(coordsA.z);
     const size_t row2 = coordsA.y + static_cast<size_t>(GetHeight()) * static_cast<size_t>(coordsB.z);
     const size_t row3 = coordsB.y + static_cast<size_t>(GetHeight()) * static_cast<size_t>(coordsB.z);
 
-    const uint8* rowData0 = mData + mStride * row0;
-    const uint8* rowData1 = mData + mStride * row1;
-    const uint8* rowData2 = mData + mStride * row2;
-    const uint8* rowData3 = mData + mStride * row3;
+    const uint8* rowData0 = mData + GetStride() * row0;
+    const uint8* rowData1 = mData + GetStride() * row1;
+    const uint8* rowData2 = mData + GetStride() * row2;
+    const uint8* rowData3 = mData + GetStride() * row3;
 
     Vec4f color[8];
 

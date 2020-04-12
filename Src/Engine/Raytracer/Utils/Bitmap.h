@@ -76,7 +76,7 @@ public:
         NFE_ASSERT(x < GetWidth() && y < GetHeight());
         NFE_ASSERT(BitsPerPixel(mFormat) / 8 == sizeof(T));
 
-        const size_t rowOffset = static_cast<size_t>(mStride) * static_cast<size_t>(y);
+        const size_t rowOffset = GetStride() * static_cast<size_t>(y);
         return *reinterpret_cast<T*>(mData + rowOffset + sizeof(T) * x);
     }
 
@@ -97,7 +97,7 @@ public:
         NFE_ASSERT(x < GetWidth() && y < GetHeight());
         NFE_ASSERT(BitsPerPixel(mFormat) / 8 == sizeof(T));
 
-        const size_t rowOffset = static_cast<size_t>(mStride) * static_cast<size_t>(y);
+        const size_t rowOffset = GetStride() * static_cast<size_t>(y);
         return *reinterpret_cast<const T*>(mData + rowOffset + sizeof(T) * x);
     }
 
@@ -105,18 +105,18 @@ public:
     NFE_FORCE_INLINE const uint8* GetData() const { return mData; }
 
 
-    NFE_FORCE_INLINE Math::Vec4i GetSize() const { return mSize; }
+    NFE_FORCE_INLINE const Math::Vec4ui& GetSize() const { return mSize; }
     NFE_FORCE_INLINE uint32 GetWidth() const { return mSize.x; }
     NFE_FORCE_INLINE uint32 GetHeight() const { return mSize.y; }
     NFE_FORCE_INLINE uint32 GetDepth() const { return mSize.z; }
 
     // get number of bytes between rows
-    NFE_FORCE_INLINE uint32 GetStride() const { return mStride; }
+    NFE_FORCE_INLINE uint32 GetStride() const { return mSize.w; }
 
     NFE_FORCE_INLINE Format GetFormat() const { return mFormat; }
 
     // get allocated size
-    NFE_FORCE_INLINE size_t GetDataSize() const { return (size_t)mStride * (size_t)GetHeight() * (size_t)GetDepth(); }
+    NFE_FORCE_INLINE size_t GetDataSize() const { return (size_t)GetStride() * (size_t)GetHeight() * (size_t)GetDepth(); }
 
     static size_t ComputeDataSize(const InitData& initData);
     static uint32 ComputeDataStride(uint32 width, Format format);
@@ -152,10 +152,10 @@ public:
     NFE_RAYTRACER_API const Math::Vec4f GetPixel3D(uint32 x, uint32 y, uint32 z) const;
 
     // get 2x2 pixel block
-    NFE_RAYTRACER_API void GetPixelBlock(const Math::Vec4i coords, Math::Vec4f* outColors) const;
+    NFE_RAYTRACER_API void GetPixelBlock(const Math::Vec4ui coords, Math::Vec4f* outColors) const;
 
     // get 2x2x2 pixel block
-    NFE_RAYTRACER_API void GetPixelBlock3D(const Math::Vec4i coordsA, const Math::Vec4i coordsB, Math::Vec4f* outColors) const;
+    NFE_RAYTRACER_API void GetPixelBlock3D(const Math::Vec4ui coordsA, const Math::Vec4ui coordsB, Math::Vec4f* outColors) const;
 
     // fill with zeros
     NFE_RAYTRACER_API void Clear();
@@ -174,15 +174,14 @@ private:
     bool LoadEXR(FILE* file, const char* path);
     bool LoadVDB(FILE* file, const char* path);
 
-    Math::Vec4i mSize = Math::Vec4i::Zero();
+    Math::Vec4ui mSize = Math::Vec4ui::Zero(); // width, height, depth, stride
     Math::Vec4f mFloatSize = Math::Vec4f::Zero();
+    char* mDebugName;
     uint8* mData;
     uint8* mPalette;
-    uint32 mStride;         // number of bytes between rows
     uint32 mPaletteSize;    // number of colors in the palette
     Format mFormat;
     bool mLinearSpace : 1;
-    char* mDebugName;
 };
 
 using BitmapPtr = Common::SharedPtr<Bitmap>;

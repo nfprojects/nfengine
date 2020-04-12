@@ -23,17 +23,17 @@ public:
     /**
      * Count number of bits set to '1'.
      */
-    static size_t CountBits(T x);
+    static uint32 CountBits(T x);
 
     /**
      * Count leading (most significant) zeros.
      */
-    static size_t CountLeadingZeros(T x);
+    static uint32 CountLeadingZeros(T x);
 
     /**
      * Count trailing (least significant) zeros.
      */
-    static size_t CountTrailingZeros(T x);
+    static uint32 CountTrailingZeros(T x);
 
     /**
      * Reverse bits order.
@@ -48,7 +48,7 @@ public:
     /**
      * Creates bit mask of given length.
      */
-    static T CreateBitMask(size_t length);
+    static T CreateBitMask(uint32 length);
 };
 
 } // namespace Common

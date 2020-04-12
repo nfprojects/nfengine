@@ -64,7 +64,7 @@ const Vec4f BitmapTexture3D::Evaluate(const Vec4f& coords) const
         secondTexelCoords -= Vec4i::AndNot(secondTexelCoords < size, size);
 
         Vec4f colors[8];
-        bitmapPtr->GetPixelBlock3D(texelCoords, secondTexelCoords, colors);
+        bitmapPtr->GetPixelBlock3D(Vec4ui(texelCoords), Vec4ui(secondTexelCoords), colors);
 
         // trilinear interpolation
         {

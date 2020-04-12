@@ -128,6 +128,22 @@ const Vec4f Vec4f::Reflect3(const Vec4f& i, const Vec4f& n)
     return NegMulAndAdd(vDot + vDot, n, i);
 }
 
+const Vec4f Vec4f::Orthogonalize(const Vec4f& v, const Vec4f& reference)
+{
+    // Gram–Schmidt process
+    return Vec4f::NegMulAndAdd(Vec4f::Dot3V(v, reference), reference, v);
+}
+
+const Vec4f BipolarToUnipolar(const Vec4f& x)
+{
+    return Vec4f::MulAndAdd(x, VECTOR_HALVES, VECTOR_HALVES);
+}
+
+const Vec4f UnipolarToBipolar(const Vec4f& x)
+{
+    return Vec4f::MulAndSub(x, 2.0f, VECTOR_ONE);
+}
+
 bool Vec4f::AlmostEqual(const Vec4f& v1, const Vec4f& v2, float epsilon)
 {
     return (Abs(v1 - v2) < Vec4f(epsilon)).All();

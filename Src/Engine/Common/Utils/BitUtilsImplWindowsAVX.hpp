@@ -23,29 +23,29 @@ namespace Common {
 
 
 template<>
-inline size_t BitUtils<uint64>::CountBits(uint64 x)
+inline uint32 BitUtils<uint64>::CountBits(uint64 x)
 {
 #if defined(NFE_ARCH_X64)
-    return __popcnt64(x);
+    return static_cast<uint32>(__popcnt64(x));
 #elif defined(NFE_ARCH_X86)
     return __popcnt(x & 0xFFFFFFFF) + __popcnt(x >> 32);
 #endif
 }
 
 template<>
-inline size_t BitUtils<uint32>::CountBits(uint32 x)
+inline uint32 BitUtils<uint32>::CountBits(uint32 x)
 {
     return __popcnt(x);
 }
 
 template<>
-inline size_t BitUtils<uint16>::CountBits(uint16 x)
+inline uint32 BitUtils<uint16>::CountBits(uint16 x)
 {
     return __popcnt16(x);
 }
 
 template<>
-inline size_t BitUtils<uint8>::CountBits(uint8 x)
+inline uint32 BitUtils<uint8>::CountBits(uint8 x)
 {
     return __popcnt16(x);
 }
@@ -55,7 +55,7 @@ inline size_t BitUtils<uint8>::CountBits(uint8 x)
 
 
 template<>
-NFE_INLINE size_t BitUtils<uint64>::CountLeadingZeros(uint64 x)
+NFE_INLINE uint32 BitUtils<uint64>::CountLeadingZeros(uint64 x)
 {
 #if defined(NFE_ARCH_X64)
     unsigned long index = 0;
@@ -79,7 +79,7 @@ NFE_INLINE size_t BitUtils<uint64>::CountLeadingZeros(uint64 x)
 }
 
 template<>
-NFE_INLINE size_t BitUtils<uint32>::CountLeadingZeros(uint32 x)
+NFE_INLINE uint32 BitUtils<uint32>::CountLeadingZeros(uint32 x)
 {
     unsigned long index = 0;
     _BitScanReverse(&index, x);
@@ -87,7 +87,7 @@ NFE_INLINE size_t BitUtils<uint32>::CountLeadingZeros(uint32 x)
 }
 
 template<>
-NFE_INLINE size_t BitUtils<uint16>::CountLeadingZeros(uint16 x)
+NFE_INLINE uint32 BitUtils<uint16>::CountLeadingZeros(uint16 x)
 {
     unsigned long index = 0;
     _BitScanReverse(&index, x);
@@ -95,7 +95,7 @@ NFE_INLINE size_t BitUtils<uint16>::CountLeadingZeros(uint16 x)
 }
 
 template<>
-NFE_INLINE size_t BitUtils<uint8>::CountLeadingZeros(uint8 x)
+NFE_INLINE uint32 BitUtils<uint8>::CountLeadingZeros(uint8 x)
 {
     unsigned long index = 0;
     _BitScanReverse(&index, x);
@@ -107,7 +107,7 @@ NFE_INLINE size_t BitUtils<uint8>::CountLeadingZeros(uint8 x)
 
 
 template<>
-NFE_INLINE size_t BitUtils<uint64>::CountTrailingZeros(const uint64 x)
+NFE_INLINE uint32 BitUtils<uint64>::CountTrailingZeros(const uint64 x)
 {
 #if defined(NFE_ARCH_X64)
     unsigned long index = 0;
@@ -131,7 +131,7 @@ NFE_INLINE size_t BitUtils<uint64>::CountTrailingZeros(const uint64 x)
 }
 
 template<>
-NFE_INLINE size_t BitUtils<uint32>::CountTrailingZeros(const uint32 x)
+NFE_INLINE uint32 BitUtils<uint32>::CountTrailingZeros(const uint32 x)
 {
     unsigned long index = 0;
     _BitScanForward(&index, x);
@@ -139,7 +139,7 @@ NFE_INLINE size_t BitUtils<uint32>::CountTrailingZeros(const uint32 x)
 }
 
 template<>
-NFE_INLINE size_t BitUtils<uint16>::CountTrailingZeros(const uint16 x)
+NFE_INLINE uint32 BitUtils<uint16>::CountTrailingZeros(const uint16 x)
 {
     unsigned long index = 0;
     _BitScanForward(&index, x);
@@ -147,7 +147,7 @@ NFE_INLINE size_t BitUtils<uint16>::CountTrailingZeros(const uint16 x)
 }
 
 template<>
-NFE_INLINE size_t BitUtils<uint8>::CountTrailingZeros(const uint8 x)
+NFE_INLINE uint32 BitUtils<uint8>::CountTrailingZeros(const uint8 x)
 {
     unsigned long index = 0;
     _BitScanForward(&index, x);

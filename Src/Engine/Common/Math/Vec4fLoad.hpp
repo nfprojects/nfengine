@@ -28,24 +28,37 @@ NFE_FORCE_INLINE const Vec4f Vec4f_Load_Vec3f_Unsafe(const Vec3f& src)
     return Vec4f(reinterpret_cast<const float*>(&src));
 }
 
-NFE_FORCE_INLINE const Vec4f Vec4f_Load_Half2(const Half src[2])
+NFE_FORCE_INLINE const Vec4f Vec4f_Load_Half2(const Half2& src)
 {
 #ifdef NFE_USE_FP16C
-    const __m128i v = _mm_loadu_si32(src);
+    const __m128i v = _mm_loadu_si32(&src.packed);
     return _mm_cvtph_ps(v);
 #else // NFE_USE_FP16C
-    return Vec4f(src[0].ToFloat(), src[1].ToFloat(), 0.0f, 0.0f);
+    return Vec4f(src.x.ToFloat(), src.y.ToFloat(), 0.0f, 0.0f);
 #endif // NFE_USE_FP16C
 }
 
-NFE_FORCE_INLINE const Vec4f Vec4f_Load_Half4(const Half src[4])
+NFE_FORCE_INLINE const Vec4f Vec4f_Load_Half2(const Half2* src)
+{
+    return Vec4f_Load_Half2(*src);
+}
+
+NFE_FORCE_INLINE const Vec4f Vec4f_Load_Half4(const Half4& src)
 {
 #ifdef NFE_USE_FP16C
-    const __m128i v = _mm_loadl_epi64(reinterpret_cast<const __m128i*>(src));
-    return _mm_cvtph_ps(v);
+#if defined(NFE_ARCH_X64)
+    return _mm_cvtph_ps(_mm_cvtsi64_si128(src.packed));
+#elif defined(NFE_ARCH_X86)
+    return _mm_cvtph_ps(_mm_set_epi64x(0, src.packed));
+#endif
 #else // NFE_USE_FP16C
-    return Vec4f(src[0].ToFloat(), src[1].ToFloat(), src[2].ToFloat(), src[3].ToFloat());
+    return Vec4f(src.x.ToFloat(), src.y.ToFloat(), src.z.ToFloat(), src.w.ToFloat());
 #endif // NFE_USE_FP16C
+}
+
+NFE_FORCE_INLINE const Vec4f Vec4f_Load_Half4(const Half4* src)
+{
+    return Vec4f_Load_Half4(*src);
 }
 
 // Convert uint16 (B5G6R5 format) to a Vec4f (normalized range)

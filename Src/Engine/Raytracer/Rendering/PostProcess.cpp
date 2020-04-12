@@ -209,8 +209,6 @@ bool PostprocessLUT::Generate(const PostprocessParams& params)
     return true;
 }
 
-#pragma optimize("",off)
-
 const Vec4f PostprocessLUT::Sample(const Vec4f& inputColor) const
 {
     const uint32 lutSize = 1 << mSizeShift;
@@ -236,14 +234,14 @@ const Vec4f PostprocessLUT::Sample(const Vec4f& inputColor) const
 
     Vec4f colors[8] =
     {
-        Vec4f::FromHalf4(rowData0[coordsA.x]),
-        Vec4f::FromHalf4(rowData0[coordsB.x]),
-        Vec4f::FromHalf4(rowData1[coordsA.x]),
-        Vec4f::FromHalf4(rowData1[coordsB.x]),
-        Vec4f::FromHalf4(rowData2[coordsA.x]),
-        Vec4f::FromHalf4(rowData2[coordsB.x]),
-        Vec4f::FromHalf4(rowData3[coordsA.x]),
-        Vec4f::FromHalf4(rowData3[coordsB.x]),
+        Vec4f_Load_Half4(rowData0[coordsA.x]),
+        Vec4f_Load_Half4(rowData0[coordsB.x]),
+        Vec4f_Load_Half4(rowData1[coordsA.x]),
+        Vec4f_Load_Half4(rowData1[coordsB.x]),
+        Vec4f_Load_Half4(rowData2[coordsA.x]),
+        Vec4f_Load_Half4(rowData2[coordsB.x]),
+        Vec4f_Load_Half4(rowData3[coordsA.x]),
+        Vec4f_Load_Half4(rowData3[coordsB.x]),
     };
 
     const Vec4f weights = scaledCoords - coordsA.ConvertToVec4f();

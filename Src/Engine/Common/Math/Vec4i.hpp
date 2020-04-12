@@ -47,6 +47,7 @@ struct NFE_ALIGN(16) VecBool4i : public Common::Aligned<16>
 
 private:
     friend struct Vec4i;
+    friend struct Vec4ui;
     friend struct VecBool4f;
 
 #ifdef NFE_USE_SSE
@@ -88,7 +89,6 @@ struct NFE_ALIGN(16) Vec4i : public Common::Aligned<16>
     NFE_FORCE_INLINE Vec4i(const Vec4i& other);
     NFE_FORCE_INLINE Vec4i(const VecBool4i& other);
     NFE_FORCE_INLINE explicit Vec4i(const int32 scalar);
-    NFE_FORCE_INLINE explicit Vec4i(const uint32 scalar);
     NFE_FORCE_INLINE Vec4i(const int32 x, const int32 y, const int32 z, const int32 w);
 
 #ifdef NFE_USE_SSE
@@ -166,6 +166,108 @@ struct NFE_ALIGN(16) Vec4i : public Common::Aligned<16>
     // Rearrange vector elements
     template<uint32 ix, uint32 iy, uint32 iz, uint32 iw>
     NFE_FORCE_INLINE const Vec4i Swizzle() const;
+};
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+
+/**
+ * 4-element unsigned integer SIMD vector.
+ */
+struct NFE_ALIGN(16) Vec4ui : public Common::Aligned<16>
+{
+    union
+    {
+        uint32 u[4];
+        uint64 u64[2];
+
+
+#ifdef NFE_USE_SSE
+        __m128i v;
+#endif // NFE_USE_SSE
+
+        struct
+        {
+            uint32 x;
+            uint32 y;
+            uint32 z;
+            uint32 w;
+        };
+    };
+
+    // constructors
+    NFE_FORCE_INLINE Vec4ui() = default;
+    NFE_FORCE_INLINE static const Vec4ui Zero();
+    NFE_FORCE_INLINE Vec4ui(const Vec4ui& other);
+    NFE_FORCE_INLINE explicit Vec4ui(const Vec4i& other);
+    NFE_FORCE_INLINE explicit Vec4ui(const uint32 scalar);
+    NFE_FORCE_INLINE Vec4ui(const uint32 x, const uint32 y, const uint32 z, const uint32 w);
+
+#ifdef NFE_USE_SSE
+    NFE_FORCE_INLINE Vec4ui(const __m128i& m);
+    NFE_FORCE_INLINE operator __m128i() const { return v; }
+#endif // NFE_USE_SSE
+
+    NFE_FORCE_INLINE uint32 operator[] (const uint32 index) const { return u[index]; }
+    NFE_FORCE_INLINE uint32& operator[] (const uint32 index) { return u[index]; }
+
+    // bitwise logic operations
+    NFE_FORCE_INLINE const Vec4ui operator & (const Vec4ui& b) const;
+    NFE_FORCE_INLINE const Vec4ui operator | (const Vec4ui& b) const;
+    NFE_FORCE_INLINE const Vec4ui operator ^ (const Vec4ui& b) const;
+    NFE_FORCE_INLINE Vec4ui& operator &= (const Vec4ui& b);
+    NFE_FORCE_INLINE Vec4ui& operator |= (const Vec4ui& b);
+    NFE_FORCE_INLINE Vec4ui& operator ^= (const Vec4ui& b);
+    NFE_FORCE_INLINE static const Vec4ui AndNot(const Vec4ui & a, const Vec4ui & b);
+
+    // simple arithmetics
+    NFE_FORCE_INLINE const Vec4ui operator - () const;
+    NFE_FORCE_INLINE const Vec4ui operator + (const Vec4ui& b) const;
+    NFE_FORCE_INLINE const Vec4ui operator - (const Vec4ui& b) const;
+    NFE_FORCE_INLINE const Vec4ui operator * (const Vec4ui& b) const;
+    NFE_FORCE_INLINE Vec4ui& operator += (const Vec4ui& b);
+    NFE_FORCE_INLINE Vec4ui& operator -= (const Vec4ui& b);
+    NFE_FORCE_INLINE Vec4ui& operator *= (const Vec4ui& b);
+    NFE_FORCE_INLINE const Vec4ui operator + (uint32 b) const;
+    NFE_FORCE_INLINE const Vec4ui operator - (uint32 b) const;
+    NFE_FORCE_INLINE const Vec4ui operator * (uint32 b) const;
+    NFE_FORCE_INLINE Vec4ui& operator += (uint32 b);
+    NFE_FORCE_INLINE Vec4ui& operator -= (uint32 b);
+    NFE_FORCE_INLINE Vec4ui& operator *= (uint32 b);
+
+    // bit shifting
+    NFE_FORCE_INLINE const Vec4ui operator << (const Vec4ui& b) const;
+    NFE_FORCE_INLINE const Vec4ui operator >> (const Vec4ui& b) const;
+    NFE_FORCE_INLINE Vec4ui& operator <<= (const Vec4ui& b);
+    NFE_FORCE_INLINE Vec4ui& operator >>= (const Vec4ui& b);
+    NFE_FORCE_INLINE const Vec4ui operator << (uint32 b) const;
+    NFE_FORCE_INLINE const Vec4ui operator >> (uint32 b) const;
+    NFE_FORCE_INLINE Vec4ui& operator <<= (uint32 b);
+    NFE_FORCE_INLINE Vec4ui& operator >>= (uint32 b);
+
+    // For each vector component, copy value from "a" if "sel" is "false", or from "b" otherwise
+    NFE_FORCE_INLINE static const Vec4ui Select(const Vec4ui& a, const Vec4ui& b, const VecBool4i& sel);
+
+    NFE_FORCE_INLINE const VecBool4i operator == (const Vec4ui& b) const;
+    NFE_FORCE_INLINE const VecBool4i operator < (const Vec4ui& b) const;
+    NFE_FORCE_INLINE const VecBool4i operator <= (const Vec4ui& b) const;
+    NFE_FORCE_INLINE const VecBool4i operator > (const Vec4ui& b) const;
+    NFE_FORCE_INLINE const VecBool4i operator >= (const Vec4ui& b) const;
+    NFE_FORCE_INLINE const VecBool4i operator != (const Vec4ui& b) const;
+
+    NFE_FORCE_INLINE static const Vec4ui Min(const Vec4ui& a, const Vec4ui& b);
+    NFE_FORCE_INLINE static const Vec4ui Max(const Vec4ui& a, const Vec4ui& b);
+
+    NFE_FORCE_INLINE const Vec4ui Clamped(const Vec4ui& min, const Vec4ui& max) const;
+
+    // cast from float vector (preserve bits)
+    NFE_FORCE_INLINE static const Vec4ui Cast(const Vec4f& v);
+
+    // convert to float vector
+    NFE_FORCE_INLINE const Vec4f AsVec4f() const;
+
+    // Rearrange vector elements
+    template<uint32 ix, uint32 iy, uint32 iz, uint32 iw>
+    NFE_FORCE_INLINE const Vec4ui Swizzle() const;
 };
 
 } // namespace Math

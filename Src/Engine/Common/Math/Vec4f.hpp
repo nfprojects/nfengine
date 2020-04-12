@@ -109,7 +109,6 @@ public:
     NFE_FORCE_INLINE explicit Vec4f(const Vec4fU& src);
     NFE_FORCE_INLINE Vec4f& operator = (const Vec4f& other);
 
-    NFE_FORCE_INLINE static const Vec4f FromHalf4(const Half4& x);
     NFE_FORCE_INLINE static const Vec4f FromInteger(int32 x);
     NFE_FORCE_INLINE static const Vec4f FromIntegers(int32 x, int32 y, int32 z, int32 w);
 

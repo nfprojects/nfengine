@@ -68,7 +68,7 @@ const Vec4f BitmapTexture::Evaluate(const Vec4f& coords) const
         texelCoords -= Vec4i::AndNot(texelCoords < size, size);
 
         Vec4f colors[4];
-        bitmapPtr->GetPixelBlock(texelCoords, colors);
+        bitmapPtr->GetPixelBlock(Vec4ui(texelCoords), colors);
 
         // bilinear interpolation
         Vec4f weights = scaledCoords - intCoords.ConvertToVec4f();

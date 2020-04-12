@@ -14,7 +14,7 @@ namespace Common {
 
 
 template<>
-inline size_t BitUtils<uint64>::CountBits(uint64 x)
+inline uint32 BitUtils<uint64>::CountBits(uint64 x)
 {
     // based on https://en.wikipedia.org/wiki/Hamming_weight
 
@@ -26,11 +26,11 @@ inline size_t BitUtils<uint64>::CountBits(uint64 x)
     x -= (x >> 1) & m1;
     x = (x & m2) + ((x >> 2) & m2);
     x = (x + (x >> 4)) & m4;
-    return (x * h01) >> 56;
+    return static_cast<uint32>((x * h01) >> 56);
 }
 
 template<>
-inline size_t BitUtils<uint32>::CountBits(uint32 x)
+inline uint32 BitUtils<uint32>::CountBits(uint32 x)
 {
     x -= ((x >> 1) & 0x55555555);
     x = (x & 0x33333333) + ((x >> 2) & 0x33333333);
@@ -38,7 +38,7 @@ inline size_t BitUtils<uint32>::CountBits(uint32 x)
 }
 
 template<>
-inline size_t BitUtils<uint16>::CountBits(uint16 x)
+inline uint32 BitUtils<uint16>::CountBits(uint16 x)
 {
     // based on https://en.wikipedia.org/wiki/Hamming_weight
 
@@ -55,7 +55,7 @@ inline size_t BitUtils<uint16>::CountBits(uint16 x)
 }
 
 template<>
-inline size_t BitUtils<uint8>::CountBits(uint8 x)
+inline uint32 BitUtils<uint8>::CountBits(uint8 x)
 {
     // based on https://en.wikipedia.org/wiki/Hamming_weight
 
@@ -72,9 +72,9 @@ inline size_t BitUtils<uint8>::CountBits(uint8 x)
 //////////////////////////////////////////////////////////////////////////
 
 template<>
-inline size_t BitUtils<uint64>::CountLeadingZeros(uint64 x)
+inline uint32 BitUtils<uint64>::CountLeadingZeros(uint64 x)
 {
-    size_t c = 0;
+    uint32 c = 0;
     if (x <= 0x00000000FFFFFFFFul) c += 32, x <<= 32;
     if (x <= 0x0000FFFFFFFFFFFFul) c += 16, x <<= 16;
     if (x <= 0x00FFFFFFFFFFFFFFul) c += 8, x <<= 8;
@@ -85,7 +85,7 @@ inline size_t BitUtils<uint64>::CountLeadingZeros(uint64 x)
 }
 
 template<>
-inline size_t BitUtils<uint32>::CountLeadingZeros(uint32 x)
+inline uint32 BitUtils<uint32>::CountLeadingZeros(uint32 x)
 {
     size_t c = 0;
     if (x <= 0x0000FFFF) c += 16, x <<= 16;
@@ -97,7 +97,7 @@ inline size_t BitUtils<uint32>::CountLeadingZeros(uint32 x)
 }
 
 template<>
-inline size_t BitUtils<uint16>::CountLeadingZeros(uint16 x)
+inline uint32 BitUtils<uint16>::CountLeadingZeros(uint16 x)
 {
     size_t c = 0;
     if (x <= 0x00FF) c += 8, x <<= 8;
@@ -108,7 +108,7 @@ inline size_t BitUtils<uint16>::CountLeadingZeros(uint16 x)
 }
 
 template<>
-inline size_t BitUtils<uint8>::CountLeadingZeros(uint8 x)
+inline uint32 BitUtils<uint8>::CountLeadingZeros(uint8 x)
 {
     size_t c = 0;
     if (x <= 0x0F) c += 4, x <<= 4;
@@ -121,13 +121,13 @@ inline size_t BitUtils<uint8>::CountLeadingZeros(uint8 x)
 //////////////////////////////////////////////////////////////////////////
 
 template<>
-inline size_t BitUtils<uint64>::CountTrailingZeros(const uint64 x)
+inline uint32 BitUtils<uint64>::CountTrailingZeros(const uint64 x)
 {
     // based on:
     // https://graphics.stanford.edu/~seander/bithacks.html#ZerosOnRightParallel
 
     uint64 v = x;   // 32-bit word input to count zero bits on right
-    size_t c = 64;  // c will be the number of zero bits on the right
+    uint32 c = 64;  // c will be the number of zero bits on the right
 
     v &= -static_cast<int64>(v);
     if (v) c--;
@@ -141,7 +141,7 @@ inline size_t BitUtils<uint64>::CountTrailingZeros(const uint64 x)
 }
 
 template<>
-inline size_t BitUtils<uint32>::CountTrailingZeros(const uint32 x)
+inline uint32 BitUtils<uint32>::CountTrailingZeros(const uint32 x)
 {
     // based on:
     // https://graphics.stanford.edu/~seander/bithacks.html#ZerosOnRightParallel
@@ -160,13 +160,13 @@ inline size_t BitUtils<uint32>::CountTrailingZeros(const uint32 x)
 }
 
 template<>
-inline size_t BitUtils<uint16>::CountTrailingZeros(const uint16 x)
+inline uint32 BitUtils<uint16>::CountTrailingZeros(const uint16 x)
 {
     // based on:
     // https://graphics.stanford.edu/~seander/bithacks.html#ZerosOnRightParallel
 
     uint16 v = x;   // 32-bit word input to count zero bits on right
-    size_t c = 16;  // c will be the number of zero bits on the right
+    uint32 c = 16;  // c will be the number of zero bits on the right
 
     v &= -static_cast<int16>(v);
     if (v) c--;
@@ -178,13 +178,13 @@ inline size_t BitUtils<uint16>::CountTrailingZeros(const uint16 x)
 }
 
 template<>
-inline size_t BitUtils<uint8>::CountTrailingZeros(const uint8 x)
+inline uint32 BitUtils<uint8>::CountTrailingZeros(const uint8 x)
 {
     // based on:
     // https://graphics.stanford.edu/~seander/bithacks.html#ZerosOnRightParallel
 
     uint8 v = x;    // 32-bit word input to count zero bits on right
-    size_t c = 8;   // c will be the number of zero bits on the right
+    uint32 c = 8;   // c will be the number of zero bits on the right
 
     v &= -static_cast<int8>(v);
     if (v) c--;

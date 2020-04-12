@@ -119,10 +119,6 @@ Vec4i::Vec4i(const int32 i)
     : v(_mm_set1_epi32(i))
 {}
 
-Vec4i::Vec4i(const uint32 u)
-    : v(_mm_set1_epi32(u))
-{}
-
 const Vec4i Vec4i::Convert(const Vec4f& v)
 {
     return _mm_cvtps_epi32(v);
@@ -302,7 +298,7 @@ const Vec4i Vec4i::operator << (const Vec4i& b) const
 const Vec4i Vec4i::operator >> (const Vec4i& b) const
 {
 #ifdef NFE_USE_AVX2
-    return _mm_srlv_epi32(v, b);
+    return _mm_srav_epi32(v, b);
 #else
     return { x >> b.x, y >> b.y, z >> b.z, w >> b.w };
 #endif
@@ -324,7 +320,7 @@ Vec4i& Vec4i::operator <<= (const Vec4i& b)
 Vec4i& Vec4i::operator >>= (const Vec4i& b)
 {
 #ifdef NFE_USE_AVX2
-    v = _mm_srlv_epi32(v, b);
+    v = _mm_srav_epi32(v, b);
 #else
     x >>= b.x;
     y >>= b.y;
@@ -341,7 +337,7 @@ const Vec4i Vec4i::operator << (int32 b) const
 
 const Vec4i Vec4i::operator >> (int32 b) const
 {
-    return _mm_srli_epi32(v, b);
+    return _mm_srai_epi32(v, b);
 }
 
 Vec4i& Vec4i::operator <<= (int32 b)
@@ -352,7 +348,7 @@ Vec4i& Vec4i::operator <<= (int32 b)
 
 Vec4i& Vec4i::operator >>= (int32 b)
 {
-    v = _mm_srli_epi32(v, b);
+    v = _mm_srai_epi32(v, b);
     return *this;
 }
 
@@ -360,32 +356,32 @@ Vec4i& Vec4i::operator >>= (int32 b)
 
 const VecBool4i Vec4i::operator == (const Vec4i& b) const
 {
-    return _mm_castsi128_ps(_mm_cmpeq_epi32(v, b.v));
+    return _mm_cmpeq_epi32(v, b.v);
 }
 
 const VecBool4i Vec4i::operator != (const Vec4i& b) const
 {
-    return _mm_castsi128_ps(_mm_xor_si128(_mm_set1_epi32(0xFFFFFFFF), _mm_cmpeq_epi32(v, b.v)));
+    return _mm_xor_si128(_mm_set1_epi32(0xFFFFFFFF), _mm_cmpeq_epi32(v, b.v));
 }
 
 const VecBool4i Vec4i::operator < (const Vec4i& b) const
 {
-    return _mm_castsi128_ps(_mm_cmplt_epi32(v, b.v));
+    return _mm_cmplt_epi32(v, b.v);
 }
 
 const VecBool4i Vec4i::operator > (const Vec4i& b) const
 {
-    return _mm_castsi128_ps(_mm_cmpgt_epi32(v, b.v));
+    return _mm_cmpgt_epi32(v, b.v);
 }
 
 const VecBool4i Vec4i::operator >= (const Vec4i& b) const
 {
-    return _mm_castsi128_ps(_mm_xor_si128(_mm_set1_epi32(0xFFFFFFFF), _mm_cmplt_epi32(v, b.v)));
+    return _mm_xor_si128(_mm_set1_epi32(0xFFFFFFFF), _mm_cmplt_epi32(v, b.v));
 }
 
 const VecBool4i Vec4i::operator <= (const Vec4i& b) const
 {
-    return _mm_castsi128_ps(_mm_xor_si128(_mm_set1_epi32(0xFFFFFFFF), _mm_cmpgt_epi32(v, b.v)));
+    return _mm_xor_si128(_mm_set1_epi32(0xFFFFFFFF), _mm_cmpgt_epi32(v, b.v));
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -400,6 +396,312 @@ const Vec4i Vec4i::Max(const Vec4i& a, const Vec4i& b)
     return _mm_max_epi32(a, b);
 }
 
+///////////////////////////////////////////////////////////////////////////////////////////////////
+
+const Vec4ui Vec4ui::Zero()
+{
+    return _mm_setzero_si128();
+}
+
+Vec4ui::Vec4ui(const __m128i& m)
+    : v(m)
+{}
+
+Vec4ui::Vec4ui(const Vec4ui& other)
+    : v(other.v)
+{}
+
+Vec4ui::Vec4ui(const Vec4i& other)
+    : v(other.v)
+{}
+
+const Vec4ui Vec4ui::Cast(const Vec4f& v)
+{
+    return _mm_castps_si128(v);
+}
+
+const Vec4f Vec4ui::AsVec4f() const
+{
+    return _mm_castsi128_ps(v);
+}
+
+Vec4ui::Vec4ui(const uint32 x, const uint32 y, const uint32 z, const uint32 w)
+    : v(_mm_set_epi32(w, z, y, x))
+{}
+
+Vec4ui::Vec4ui(const uint32 i)
+    : v(_mm_set1_epi32(i))
+{}
+
+const Vec4ui Vec4ui::Select(const Vec4ui& a, const Vec4ui& b, const VecBool4i& sel)
+{
+    return _mm_blendv_epi8(a, b, sel.v);
+}
+
+template<uint32 ix, uint32 iy, uint32 iz, uint32 iw>
+const Vec4ui Vec4ui::Swizzle() const
+{
+    static_assert(ix < 4, "Invalid X element index");
+    static_assert(iy < 4, "Invalid Y element index");
+    static_assert(iz < 4, "Invalid Z element index");
+    static_assert(iw < 4, "Invalid W element index");
+
+    if (ix == 0 && iy == 1 && iz == 2 && iw == 3)
+    {
+        return *this;
+    }
+    else if (ix == 0 && iy == 0 && iz == 1 && iw == 1)
+    {
+        return _mm_unpacklo_epi32(v, v);
+    }
+    else if (ix == 2 && iy == 2 && iz == 3 && iw == 3)
+    {
+        return _mm_unpackhi_epi32(v, v);
+    }
+    else if (ix == 0 && iy == 1 && iz == 0 && iw == 1)
+    {
+        return _mm_unpacklo_epi64(v, v);
+    }
+    else if (ix == 2 && iy == 3 && iz == 2 && iw == 3)
+    {
+        return _mm_unpackhi_epi64(v, v);
+    }
+
+    return _mm_shuffle_epi32(v, _MM_SHUFFLE(iw, iz, iy, ix));
+}
+
+//////////////////////////////////////////////////////////////////////////
+
+const Vec4ui Vec4ui::operator & (const Vec4ui& b) const
+{
+    return _mm_and_si128(v, b.v);
+}
+
+const Vec4ui Vec4ui::AndNot(const Vec4ui& a, const Vec4ui& b)
+{
+    return _mm_andnot_si128(a.v, b.v);
+}
+
+const Vec4ui Vec4ui::operator | (const Vec4ui& b) const
+{
+    return _mm_or_si128(v, b.v);
+}
+
+const Vec4ui Vec4ui::operator ^ (const Vec4ui& b) const
+{
+    return _mm_xor_si128(v, b.v);
+}
+
+Vec4ui& Vec4ui::operator &= (const Vec4ui& b)
+{
+    v = _mm_and_si128(v, b.v);
+    return *this;
+}
+
+Vec4ui& Vec4ui::operator |= (const Vec4ui& b)
+{
+    v = _mm_or_si128(v, b.v);
+    return *this;
+}
+
+Vec4ui& Vec4ui::operator ^= (const Vec4ui& b)
+{
+    v = _mm_xor_si128(v, b.v);
+    return *this;
+}
+
+//////////////////////////////////////////////////////////////////////////
+
+const Vec4ui Vec4ui::operator - () const
+{
+    return Vec4ui::Zero() - (*this);
+}
+
+const Vec4ui Vec4ui::operator + (const Vec4ui& b) const
+{
+    return _mm_add_epi32(v, b);
+}
+
+const Vec4ui Vec4ui::operator - (const Vec4ui& b) const
+{
+    return _mm_sub_epi32(v, b);
+}
+
+const Vec4ui Vec4ui::operator * (const Vec4ui& b) const
+{
+    return _mm_mullo_epi32(v, b);
+}
+
+Vec4ui& Vec4ui::operator += (const Vec4ui& b)
+{
+    v = _mm_add_epi32(v, b);
+    return *this;
+}
+
+Vec4ui& Vec4ui::operator -= (const Vec4ui& b)
+{
+    v = _mm_sub_epi32(v, b);
+    return *this;
+}
+
+Vec4ui& Vec4ui::operator *= (const Vec4ui& b)
+{
+    v = _mm_mullo_epi32(v, b);
+    return *this;
+}
+
+const Vec4ui Vec4ui::operator + (uint32 b) const
+{
+    return _mm_add_epi32(v, _mm_set1_epi32(b));
+}
+
+const Vec4ui Vec4ui::operator - (uint32 b) const
+{
+    return _mm_sub_epi32(v, _mm_set1_epi32(b));
+}
+
+const Vec4ui Vec4ui::operator * (uint32 b) const
+{
+    return _mm_mullo_epi32(v, _mm_set1_epi32(b));
+}
+
+Vec4ui& Vec4ui::operator += (uint32 b)
+{
+    v = _mm_add_epi32(v, _mm_set1_epi32(b));
+    return *this;
+}
+
+Vec4ui& Vec4ui::operator -= (uint32 b)
+{
+    v = _mm_sub_epi32(v, _mm_set1_epi32(b));
+    return *this;
+}
+
+Vec4ui& Vec4ui::operator *= (uint32 b)
+{
+    v = _mm_mullo_epi32(v, _mm_set1_epi32(b));
+    return *this;
+}
+
+//////////////////////////////////////////////////////////////////////////
+
+const Vec4ui Vec4ui::operator << (const Vec4ui& b) const
+{
+#ifdef NFE_USE_AVX2
+    return _mm_sllv_epi32(v, b);
+#else
+    return { x << b.x, y << b.y, z << b.z, w << b.w };
+#endif
+}
+
+const Vec4ui Vec4ui::operator >> (const Vec4ui& b) const
+{
+#ifdef NFE_USE_AVX2
+    return _mm_srlv_epi32(v, b);
+#else
+    return { x >> b.x, y >> b.y, z >> b.z, w >> b.w };
+#endif
+}
+
+Vec4ui& Vec4ui::operator <<= (const Vec4ui& b)
+{
+#ifdef NFE_USE_AVX2
+    v = _mm_sllv_epi32(v, b);
+#else
+    x <<= b.x;
+    y <<= b.y;
+    z <<= b.z;
+    w <<= b.w;
+#endif
+    return *this;
+}
+
+Vec4ui& Vec4ui::operator >>= (const Vec4ui& b)
+{
+#ifdef NFE_USE_AVX2
+    v = _mm_srlv_epi32(v, b);
+#else
+    x >>= b.x;
+    y >>= b.y;
+    z >>= b.z;
+    w >>= b.w;
+#endif
+    return *this;
+}
+
+const Vec4ui Vec4ui::operator << (uint32 b) const
+{
+    return _mm_slli_epi32(v, b);
+}
+
+const Vec4ui Vec4ui::operator >> (uint32 b) const
+{
+    return _mm_srli_epi32(v, b);
+}
+
+Vec4ui& Vec4ui::operator <<= (uint32 b)
+{
+    v = _mm_slli_epi32(v, b);
+    return *this;
+}
+
+Vec4ui& Vec4ui::operator >>= (uint32 b)
+{
+    v = _mm_srli_epi32(v, b);
+    return *this;
+}
+
+//////////////////////////////////////////////////////////////////////////
+
+const VecBool4i Vec4ui::operator == (const Vec4ui& b) const
+{
+    return _mm_cmpeq_epi32(v, b.v);
+}
+
+const VecBool4i Vec4ui::operator != (const Vec4ui& b) const
+{
+    return _mm_xor_si128(_mm_set1_epi32(0xFFFFFFFF), _mm_cmpeq_epi32(v, b.v));
+}
+
+const VecBool4i Vec4ui::operator < (const Vec4ui& b) const
+{
+    const __m128i signbit = _mm_set1_epi32(0x80000000);
+    const __m128i a1 = _mm_xor_si128(v, signbit);
+    const __m128i b1 = _mm_xor_si128(b.v, signbit);
+    return _mm_cmpgt_epi32(b1, a1);
+}
+
+const VecBool4i Vec4ui::operator > (const Vec4ui& b) const
+{
+    const __m128i signbit = _mm_set1_epi32(0x80000000);
+    const __m128i a1 = _mm_xor_si128(v, signbit);
+    const __m128i b1 = _mm_xor_si128(b.v, signbit);
+    return _mm_cmpgt_epi32(a1, b1);
+}
+
+const VecBool4i Vec4ui::operator >= (const Vec4ui& b) const
+{
+    __m128i max_ab = _mm_max_epu32(v, b.v);
+    return _mm_cmpeq_epi32(v, max_ab);
+}
+
+const VecBool4i Vec4ui::operator <= (const Vec4ui& b) const
+{
+    __m128i max_ab = _mm_max_epu32(v, b.v);
+    return _mm_cmpeq_epi32(max_ab, v);
+}
+
+//////////////////////////////////////////////////////////////////////////
+
+const Vec4ui Vec4ui::Min(const Vec4ui& a, const Vec4ui& b)
+{
+    return _mm_min_epu32(a, b);
+}
+
+const Vec4ui Vec4ui::Max(const Vec4ui& a, const Vec4ui& b)
+{
+    return _mm_max_epu32(a, b);
+}
 
 } // namespace Math
 } // namespace NFE

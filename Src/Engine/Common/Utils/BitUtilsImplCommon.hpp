@@ -91,9 +91,9 @@ inline uint8 BitUtils<uint8>::ReverseBits(uint8 x)
 //////////////////////////////////////////////////////////////////////////
 
 template<typename T>
-inline T BitUtils<T>::CreateBitMask(size_t length)
+inline T BitUtils<T>::CreateBitMask(uint32 length)
 {
-    const size_t maxLen = 8 * sizeof(T);
+    const uint32 maxLen = 8 * sizeof(T);
     length = Math::Min(length, maxLen);
     const T x = static_cast<T>(-1);
     return x >> static_cast<T>(maxLen - length);

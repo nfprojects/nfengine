@@ -188,19 +188,6 @@ Vec4f& Vec4f::operator = (const Vec4f& other)
     return *this;
 }
 
-const Vec4f Vec4f::FromHalf4(const Half4& halfs)
-{
-#ifdef NFE_USE_FP16C
-#if defined(NFE_ARCH_X64)
-    return _mm_cvtph_ps(_mm_cvtsi64_si128(halfs.packed));
-#elif defined(NFE_ARCH_X86)
-    return _mm_cvtph_ps(_mm_set_epi64x(0, halfs.packed));
-#endif
-#else // NFE_USE_FP16C
-    return Vec4f(halfs.x.ToFloat(), halfs.y.ToFloat(), halfs.z.ToFloat(), halfs.w.ToFloat());
-#endif // NFE_USE_FP16C
-}
-
 const Vec4f Vec4f::FromInteger(int32 x)
 {
     return _mm_cvtepi32_ps(_mm_set1_epi32(x));
@@ -770,22 +757,6 @@ void Vec4f::Transpose3(Vec4f& a, Vec4f& b, Vec4f& c)
     a = _mm_movelh_ps(t0, c);
     b = _mm_shuffle_ps(t0, c, _MM_SHUFFLE(3, 1, 3, 2));
     c = _mm_shuffle_ps(t1, c, _MM_SHUFFLE(3, 2, 1, 0));
-}
-
-const Vec4f Vec4f::Orthogonalize(const Vec4f& v, const Vec4f& reference)
-{
-    // Gram–Schmidt process
-    return Vec4f::NegMulAndAdd(Vec4f::Dot3V(v, reference), reference, v);
-}
-
-const Vec4f BipolarToUnipolar(const Vec4f& x)
-{
-    return Vec4f::MulAndAdd(x, VECTOR_HALVES, VECTOR_HALVES);
-}
-
-const Vec4f UnipolarToBipolar(const Vec4f& x)
-{
-    return Vec4f::MulAndSub(x, 2.0f, VECTOR_ONE);
 }
 
 } // namespace Math
