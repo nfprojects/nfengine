@@ -40,7 +40,7 @@ uint32 RemoveMissedGroups(RenderingContext& context, uint32 numGroups)
         }
 
         // skip in-place misses at end
-        uint8 mask;
+        RayPacketTypes::RayMaskType mask;
         do
         {
             numGroups--;
@@ -56,6 +56,7 @@ uint32 RemoveMissedGroups(RenderingContext& context, uint32 numGroups)
     }
 }
 
+NFE_FORCE_INLINE
 static void SwapRays(RenderingContext& context, uint32 a, uint32 b, uint32 traversalDepth)
 {
     constexpr uint32 GroupSize = RayPacket::GroupSize;
@@ -83,10 +84,12 @@ static void SwapRays(RenderingContext& context, uint32 a, uint32 b, uint32 trave
     std::swap(groupA.rayOffsets[a % GroupSize], groupB.rayOffsets[b % GroupSize]);
 }
 
-static void SwapBits(uint8& a, uint8& b, uint32 indexA, uint32 indexB)
+template<typename T>
+NFE_FORCE_INLINE
+static void SwapBits(T& a, T& b, uint32 indexA, uint32 indexB)
 {
-    const uint8 bitA = (a >> indexA) & 1;
-    const uint8 bitB = (b >> indexB) & 1;
+    const T bitA = (a >> indexA) & 1;
+    const T bitB = (b >> indexB) & 1;
     a ^= (-bitB ^ a) & (1UL << indexA);
     b ^= (-bitA ^ b) & (1UL << indexB);
 }
@@ -117,6 +120,8 @@ void ReorderRays(RenderingContext& context, uint32 numGroups, uint32 traversalDe
 
 uint32 TestRayPacket(RayPacket& packet, uint32 numGroups, const BVH::Node& node, RenderingContext& context, uint32 traversalDepth)
 {
+    static_assert(8 * sizeof(RayPacketTypes::RayMaskType) >= RayPacketTypes::GroupSize, "Ray mask type is too small");
+
     RayPacketTypes::Float distance;
 
     uint32 raysHit = 0;
@@ -130,8 +135,8 @@ uint32 TestRayPacket(RayPacket& packet, uint32 numGroups, const BVH::Node& node,
         const RayPacketTypes::Vec3f rayInvDir = rayGroup.rays[traversalDepth].invDir;
 
         const auto mask = Simd<RayPacketTypes::GroupSize>::Intersect_BoxRay(rayInvDir, rayOriginDivDir, box, rayGroup.maxDistances, distance);
-        const uint32 intMask = mask.GetMask();
-        context.activeRaysMask[i] = (uint8)intMask;
+        const auto intMask = mask.GetMask();
+        context.activeRaysMask[i] = (RayPacketTypes::RayMaskType)intMask;
         raysHit += Common::BitUtils<uint32>::CountBits(intMask);
     }
 

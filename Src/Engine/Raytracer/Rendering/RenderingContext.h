@@ -83,7 +83,7 @@ public:
     HitPoint hitPoints[MaxRayPacketSize];
 
     // TODO separate stacks for scene and mesh
-    uint8 activeRaysMask[RayPacket::MaxNumGroups];
+    RayPacketTypes::RayMaskType activeRaysMask[RayPacket::MaxNumGroups];
     uint16 activeGroupsIndices[RayPacket::MaxNumGroups];
 };
 

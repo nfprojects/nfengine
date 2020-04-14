@@ -34,6 +34,20 @@ const Vec2x4f SamplingHelpers::GetCircle(const Vec2x4f& u)
     return { r * vSin, r * vCos };
 }
 
+const Vec2x16f SamplingHelpers::GetCircle(const Vec2x16f& u)
+{
+    // angle (uniform distribution)
+    const Vec16f theta = u.x * (2.0f * NFE_MATH_PI);
+
+    // radius (corrected distribution)
+    const Vec16f r = Vec16f::Sqrt(u.y);
+
+    const Vec16f vSin = Sin(theta);
+    const Vec16f vCos = Sin(theta + Vec16f(NFE_MATH_PI / 2.0f));
+
+    return { r * vSin, r * vCos };
+}
+
 const Vec4f SamplingHelpers::GetTriangle(const Vec2f u)
 {
     const float t = sqrtf(u.x);

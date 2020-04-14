@@ -79,7 +79,7 @@ NFE_FORCE_NOINLINE void GenericTraverse(const PacketTraversalContext& context, c
 
 #ifndef NFE_NO_RAY_REORDERING
             // reorder rays to restore coherency
-            if ((numGroups > 1) && ((RayPacketTypes::GroupSize / 2u * numGroups) >= raysHit)) // 50% utilization
+            if ((numGroups > 1) && ((RayPacketTypes::GroupSize / 4u * numGroups) >= raysHit)) // 25% utilization
             {
                 ReorderRays(context.context, numGroups, traversalDepth);
                 numGroups = (raysHit + RayPacketTypes::GroupSize - 1u) / RayPacketTypes::GroupSize;

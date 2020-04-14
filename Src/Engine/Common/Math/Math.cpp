@@ -13,6 +13,10 @@
 #pragma message("[NFE::Math] Compiling with AVX2 support")
 #endif
 
+#ifdef NFE_USE_AVX512
+#pragma message("[NFE::Math] Compiling with AVX-512 support")
+#endif
+
 #ifdef NFE_USE_FP16C
 #pragma message("[NFE::Math] Compiling with FP16C support")
 #endif

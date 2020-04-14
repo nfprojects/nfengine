@@ -5,6 +5,9 @@ namespace Math {
 
 VecBool8f::VecBool8f(bool e0, bool e1, bool e2, bool e3, bool e4, bool e5, bool e6, bool e7)
 {
+#ifdef NFE_USE_AVX512
+    mask = _cvtu32_mask8(uint16(e0) | e1<<1 | e2<<2 | e3<<3 | e4<<4 | e5<<5 | e6<<6 | e7<<7);
+#else
     v = _mm256_castsi256_ps(_mm256_set_epi32(
         e7 ? 0xFFFFFFFF : 0,
         e6 ? 0xFFFFFFFF : 0,
@@ -15,48 +18,77 @@ VecBool8f::VecBool8f(bool e0, bool e1, bool e2, bool e3, bool e4, bool e5, bool 
         e1 ? 0xFFFFFFFF : 0,
         e0 ? 0xFFFFFFFF : 0
     ));
+#endif
 }
 
 template<uint32 index>
 bool VecBool8f::Get() const
 {
     static_assert(index < 8, "Invalid index");
+#ifdef NFE_USE_AVX512
+    return (uint32(mask) & (1 << index)) != 0;
+#else
     return _mm256_extract_epi32(_mm256_castps_si256(v), index) != 0;
+#endif
 }
 
-int VecBool8f::GetMask() const
+uint32 VecBool8f::GetMask() const
 {
-    return _mm256_movemask_ps(v);
+#ifdef NFE_USE_AVX512
+    return mask;
+#else
+    return (uint32)_mm256_movemask_ps(v);
+#endif
 }
 
 bool VecBool8f::All() const
 {
-    return _mm256_movemask_ps(v) == 0xFF;
+    return GetMask() == 0xFF;
 }
 
 bool VecBool8f::None() const
 {
+#ifdef NFE_USE_AVX512
+    return _mm512_testz_or_mask8(mask, mask) != 0;
+#else
     return _mm256_movemask_ps(v) == 0;
+#endif
 }
 
 bool VecBool8f::Any() const
 {
+#ifdef NFE_USE_AVX512
+    return _mm512_testz_or_mask8(mask, mask) == 0;
+#else
     return _mm256_movemask_ps(v) != 0;
+#endif
 }
 
 const VecBool8f VecBool8f::operator & (const VecBool8f rhs) const
 {
+#ifdef NFE_USE_AVX512
+    return _kand_mask8(mask, rhs.mask);
+#else
     return _mm256_and_ps(v, rhs.v);
+#endif
 }
 
 const VecBool8f VecBool8f::operator | (const VecBool8f rhs) const
 {
+#ifdef NFE_USE_AVX512
+    return _kor_mask8(mask, rhs.mask);
+#else
     return _mm256_or_ps(v, rhs.v);
+#endif
 }
 
 const VecBool8f VecBool8f::operator ^ (const VecBool8f rhs) const
 {
+#ifdef NFE_USE_AVX512
+    return _kxor_mask8(mask, rhs.mask);
+#else
     return _mm256_xor_ps(v, rhs.v);
+#endif
 }
 
 bool VecBool8f::operator == (const VecBool8f rhs) const
@@ -130,7 +162,11 @@ Vec8f& Vec8f::operator = (const Vec8f& other)
 
 const Vec8f Vec8f::Select(const Vec8f& a, const Vec8f& b, const VecBool8f& sel)
 {
+#if defined(NFE_USE_AVX512)
+    return _mm256_mask_blend_ps(sel, a, b);
+#else
     return _mm256_blendv_ps(a, b, sel.v);
+#endif
 }
 
 template<uint32 selX, uint32 selY, uint32 selZ, uint32 selW>
@@ -430,32 +466,56 @@ void Vec8f::Transpose8x8(Vec8f& v0, Vec8f& v1, Vec8f& v2, Vec8f& v3, Vec8f& v4, 
 
 const VecBool8f Vec8f::operator == (const Vec8f& b) const
 {
+#ifdef NFE_USE_AVX512
+    return _mm256_cmp_ps_mask(v, b.v, _CMP_EQ_OQ);
+#else
     return _mm256_cmp_ps(v, b.v, _CMP_EQ_OQ);
+#endif
 }
 
 const VecBool8f Vec8f::operator < (const Vec8f& b) const
 {
+#ifdef NFE_USE_AVX512
+    return _mm256_cmp_ps_mask(v, b.v, _CMP_LT_OQ);
+#else
     return _mm256_cmp_ps(v, b.v, _CMP_LT_OQ);
+#endif
 }
 
 const VecBool8f Vec8f::operator <= (const Vec8f& b) const
 {
+#ifdef NFE_USE_AVX512
+    return _mm256_cmp_ps_mask(v, b.v, _CMP_LE_OQ);
+#else
     return _mm256_cmp_ps(v, b.v, _CMP_LE_OQ);
+#endif
 }
 
 const VecBool8f Vec8f::operator > (const Vec8f& b) const
 {
+#ifdef NFE_USE_AVX512
+    return _mm256_cmp_ps_mask(v, b.v, _CMP_GT_OQ);
+#else
     return _mm256_cmp_ps(v, b.v, _CMP_GT_OQ);
+#endif
 }
 
 const VecBool8f Vec8f::operator >= (const Vec8f& b) const
 {
+#ifdef NFE_USE_AVX512
+    return _mm256_cmp_ps_mask(v, b.v, _CMP_GE_OQ);
+#else
     return _mm256_cmp_ps(v, b.v, _CMP_GE_OQ);
+#endif
 }
 
 const VecBool8f Vec8f::operator != (const Vec8f& b) const
 {
+#ifdef NFE_USE_AVX512
+    return _mm256_cmp_ps_mask(v, b.v, _CMP_NEQ_OQ);
+#else
     return _mm256_cmp_ps(v, b.v, _CMP_NEQ_OQ);
+#endif
 }
 
 bool Vec8f::IsZero() const

@@ -1,6 +1,6 @@
 #include "PCH.hpp"
 #include "Transcendental.hpp"
-#include "Vec8i.hpp"
+#include "Vec16i.hpp"
 
 namespace NFE {
 namespace Math {
@@ -101,6 +101,30 @@ const Vec8f Sin(const Vec8f& a)
 #else
     return Vec8f{sinf(a[0]), sinf(a[1]), sinf(a[2]), sinf(a[3]), sinf(a[4]), sinf(a[5]), sinf(a[6]), sinf(a[7])};
 #endif // NFE_USE_AVX2
+}
+
+const Vec16f Sin(const Vec16f& a)
+{
+    using namespace sinCoeffs;
+
+    // based on:
+    // https://www.gamedev.net/forums/topic/681723-faster-sin-and-cos/
+
+    // range reduction
+    const Vec16i i = Vec16i::Convert(a * (1.0f / NFE_MATH_PI));
+    const Vec16f x = Vec16f::NegMulAndAdd(i.ConvertToVec16f(), NFE_MATH_PI, a);
+
+    const Vec16f x2 = x * x;
+
+    Vec16f y = Vec16f::MulAndAdd(Vec16f(c5), x2, Vec16f(c4));
+    y = Vec16f::MulAndAdd(y, x2, Vec16f(c3));
+    y = Vec16f::MulAndAdd(y, x2, Vec16f(c2));
+    y = Vec16f::MulAndAdd(y, x2, Vec16f(c1));
+    y = Vec16f::MulAndAdd(y, x2, Vec16f(c0));
+    y *= x;
+
+    // equivalent of: (i & 1) ? -y : y;
+    return y ^ (i << 31).AsVec16f();
 }
 
 // calculates acos(|x|)

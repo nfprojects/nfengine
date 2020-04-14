@@ -23,7 +23,7 @@ struct NFE_ALIGN(4) ImageLocationInfo
     { }
 };
 
-struct NFE_ALIGN(32) RayGroup
+struct RayGroup
 {
     RayPacketTypes::Ray rays[2];
     RayPacketTypes::Float maxDistances;
@@ -31,7 +31,7 @@ struct NFE_ALIGN(32) RayGroup
 };
 
 // packet of coherent rays
-struct NFE_ALIGN(32) RayPacket
+struct RayPacket
 {
     static constexpr uint32 GroupSize = RayPacketTypes::GroupSize;
     static constexpr uint32 MaxNumGroups = MaxRayPacketSize / GroupSize;

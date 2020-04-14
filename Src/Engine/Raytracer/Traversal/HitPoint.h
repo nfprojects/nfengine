@@ -64,7 +64,7 @@ struct HitPoint
 };
 
 // Ray-scene intersection data
-struct NFE_ALIGN(32) SimdHitPoint
+struct SimdHitPoint
 {
     RayPacketTypes::Float distance;
     RayPacketTypes::Float u;

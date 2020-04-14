@@ -2,21 +2,31 @@
 
 #include "../Raytracer.h"
 
+#define NFE_RT_RAY_GROUP_SIZE 8
+
 #include "../../Common/Math/Ray.hpp"
 #include "../../Common/Math/SimdRay.hpp"
 #include "../../Common/Math/SimdBox.hpp"
 #include "../../Common/Math/SimdTriangle.hpp"
-#include "../../Common/Math/Vec2x8f.hpp"
-#include "../../Common/Math/Vec3x8f.hpp"
-#include "../../Common/Math/Vec2x4f.hpp"
-#include "../../Common/Math/Vec3x4f.hpp"
-#include "../../Common/Math/Vec8i.hpp"
 
+#if (NFE_RT_RAY_GROUP_SIZE == 4)
+    #include "../../Common/Math/Vec2x4f.hpp"
+    #include "../../Common/Math/Vec3x4f.hpp"
+    #include "../../Common/Math/Vec4i.hpp"
+#elif (NFE_RT_RAY_GROUP_SIZE == 8)
+    #include "../../Common/Math/Vec2x8f.hpp"
+    #include "../../Common/Math/Vec3x8f.hpp"
+    #include "../../Common/Math/Vec8i.hpp"
+#elif (NFE_RT_RAY_GROUP_SIZE == 16)
+    #include "../../Common/Math/Vec2x16f.hpp"
+    #include "../../Common/Math/Vec3x16f.hpp"
+    #include "../../Common/Math/Vec16i.hpp"
+#else
+    #error Unsupported ray group size
+#endif
 
 namespace NFE {
 namespace RT {
-
-#define NFE_RT_RAY_GROUP_SIZE 8
 
 struct RayPacketTypes
 {
@@ -41,6 +51,16 @@ struct RayPacketTypes
     using Uint32 = Math::Vec8ui;
     using Vec2f = Math::Vec2x8f;
     using Vec3f = Math::Vec3x8f;
+
+#elif (NFE_RT_RAY_GROUP_SIZE == 16)
+
+    using RayMaskType = uint16;
+    using Float = Math::Vec16f;
+    using FloatMask = Math::VecBool16;
+    using Int32 = Math::Vec16i;
+    using Uint32 = Math::Vec16ui;
+    using Vec2f = Math::Vec2x16f;
+    using Vec3f = Math::Vec3x16f;
 
 #else
     #error Unsupported ray group size

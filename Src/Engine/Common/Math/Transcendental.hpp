@@ -1,7 +1,6 @@
 #pragma once
 
-#include "Vec4f.hpp"
-#include "Vec8f.hpp"
+#include "Vec16f.hpp"
 
 namespace NFE {
 namespace Math {
@@ -14,6 +13,7 @@ namespace Math {
 NFCOMMON_API float Sin(float x);
 NFCOMMON_API const Vec4f Sin(const Vec4f& x);
 NFCOMMON_API const Vec8f Sin(const Vec8f& x);
+NFCOMMON_API const Vec16f Sin(const Vec16f& x);
 
 NFE_FORCE_INLINE float Cos(float x);
 NFE_FORCE_INLINE const Vec4f Cos(const Vec4f& x);

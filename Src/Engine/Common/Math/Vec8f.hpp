@@ -15,7 +15,12 @@ struct NFE_ALIGN(32) VecBool8f : public Common::Aligned<32>
 
     NFE_FORCE_INLINE explicit VecBool8f(bool e0, bool e1, bool e2, bool e3, bool e4, bool e5, bool e6, bool e7);
 
-#ifdef NFE_USE_AVX
+#if defined(NFE_USE_AVX512)
+    NFE_FORCE_INLINE VecBool8f(const __mmask8 other) : mask(other) { }
+    NFE_FORCE_INLINE explicit VecBool8f(const __m256 other) : mask(_mm256_movepi32_mask(_mm256_castps_si256(other))) { }
+    NFE_FORCE_INLINE explicit VecBool8f(const __m256i other) : mask(_mm256_movepi32_mask(other)) { }
+    NFE_FORCE_INLINE operator __mmask8() const { return mask; }
+#elif defined(NFE_USE_AVX)
     NFE_FORCE_INLINE VecBool8f(const __m256 other) : v(other) { }
     NFE_FORCE_INLINE VecBool8f(const __m256i other) : v(_mm256_castsi256_ps(other)) { }
     NFE_FORCE_INLINE operator __m256() const { return v; }
@@ -26,7 +31,7 @@ struct NFE_ALIGN(32) VecBool8f : public Common::Aligned<32>
     NFE_FORCE_INLINE bool Get() const;
 
     // combine into 8-bit mask
-    NFE_FORCE_INLINE int32 GetMask() const;
+    NFE_FORCE_INLINE uint32 GetMask() const;
 
     NFE_FORCE_INLINE bool All() const;
     NFE_FORCE_INLINE bool None() const;
@@ -42,7 +47,9 @@ private:
     friend struct Vec8f;
     friend struct VecBool8i;
 
-#ifdef NFE_USE_AVX
+#if defined(NFE_USE_AVX512)
+    __mmask8 mask;
+#elif defined(NFE_USE_AVX)
     __m256 v;
 #else
     bool b[8];
@@ -174,7 +181,6 @@ struct NFE_ALIGN(32) Vec8f : public Common::Aligned<32>
     NFE_FORCE_INLINE static const Vec8f MulAndSub(const Vec8f& a, const Vec8f& b, const Vec8f& c);
     NFE_FORCE_INLINE static const Vec8f MulAndSub(const Vec8f& a, const float b, const Vec8f& c);
 
-    // Fused multiply (negated) and add (a * b + c)
     // Fused multiply (negated) and add (a * b + c)
     NFE_FORCE_INLINE static const Vec8f NegMulAndAdd(const Vec8f& a, const Vec8f& b, const Vec8f& c);
     NFE_FORCE_INLINE static const Vec8f NegMulAndAdd(const Vec8f& a, const float b, const Vec8f& c);

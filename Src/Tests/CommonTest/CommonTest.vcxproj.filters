@@ -232,6 +232,9 @@
     <ClCompile Include="TestCases\Math\MathVec3fTest.cpp">
       <Filter>TestCases\Math</Filter>
     </ClCompile>
+    <ClCompile Include="TestCases\Math\MathVec16fTest.cpp">
+      <Filter>TestCases\Math</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="PCH.hpp" />

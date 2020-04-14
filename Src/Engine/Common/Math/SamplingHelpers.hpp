@@ -5,6 +5,7 @@
 #include "Vec4f.hpp"
 #include "Vec2x4f.hpp"
 #include "Vec2x8f.hpp"
+#include "Vec2x16f.hpp"
 
 namespace NFE {
 namespace Math {
@@ -21,6 +22,7 @@ public:
     NFCOMMON_API static const Vec4f GetCircle(const Vec2f u);
     NFCOMMON_API static const Vec2x4f GetCircle(const Vec2x4f& u);
     NFCOMMON_API static const Vec2x8f GetCircle(const Vec2x8f& u);
+    NFCOMMON_API static const Vec2x16f GetCircle(const Vec2x16f& u);
 
     // get point on a regular hexagon
     // Note: 3 sample components are required

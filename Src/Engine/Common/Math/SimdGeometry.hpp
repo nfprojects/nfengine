@@ -38,6 +38,17 @@ struct SimdTraits<8>
     using Vec3f = Math::Vec3x8f;
 };
 
+template<>
+struct SimdTraits<16>
+{
+    using Float = Math::Vec16f;
+    using FloatMask = Math::VecBool16;
+    using Int32 = Math::Vec16i;
+    using Uint32 = Math::Vec16ui;
+    using Vec2f = Math::Vec2x16f;
+    using Vec3f = Math::Vec3x16f;
+};
+
 template<uint32 NumLanes>
 struct Simd
 {

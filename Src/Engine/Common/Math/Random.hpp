@@ -7,6 +7,7 @@
 #include "Vec4f.hpp"
 #include "Vec4i.hpp"
 #include "Vec8i.hpp"
+#include "Vec16f.hpp"
 
 namespace NFE {
 namespace Math {
@@ -187,6 +188,12 @@ template<>
 NFE_FORCE_INLINE const Vec8f Random::Get()
 {
     return GetVec8f();
+}
+
+template<>
+NFE_FORCE_INLINE const Vec16f Random::Get()
+{
+    return Vec16f{ GetVec8f(), GetVec8f() };
 }
 
 } // namespace Math

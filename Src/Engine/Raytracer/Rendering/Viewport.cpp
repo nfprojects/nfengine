@@ -21,6 +21,8 @@
 #include "../Common/Reflection/Types/ReflectionClassType.hpp"
 #include "../Common/Reflection/Types/ReflectionUniquePtrType.hpp"
 
+#pragma optimize("",off)
+
 namespace NFE {
 namespace RT {
 
@@ -502,6 +504,41 @@ void Viewport::RenderTile(const TileRenderingContext& tileContext, RenderingCont
 
                 const RayPacketTypes::Ray simdRay = tileContext.renderParam.camera.GenerateSimdRay(coords, ctx);
                 primaryPacket.PushRays(simdRay, Vec3x8f(1.0f), locations);
+            }
+        }
+
+#elif (NFE_RT_RAY_GROUP_SIZE == 16)
+
+        NFE_ASSERT((tile.maxY - tile.minY) % 4 == 0);
+        NFE_ASSERT((tile.maxX - tile.minX) % 4 == 0);
+
+        constexpr uint32 rayGroupSizeX = 4;
+        constexpr uint32 rayGroupSizeY = 4;
+
+        for (uint32 y = tile.minY; y < tile.maxY; y += rayGroupSizeY)
+        {
+            const uint32 realY = GetHeight() - 1u - y;
+
+            for (uint32 x = tile.minX; x < tile.maxX; x += rayGroupSizeX)
+            {
+                Vec2x16f coords{ Vec16f::FromInteger(x), Vec16f::FromInteger(realY) };
+                coords.x += Vec16f(0.0f, 1.0f, 2.0f, 3.0f, 0.0f, 1.0f, 2.0f, 3.0f, 0.0f, 1.0f, 2.0f, 3.0f, 0.0f, 1.0f, 2.0f, 3.0f);
+                coords.y -= Vec16f(0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 2.0f, 2.0f, 2.0f, 2.0f, 3.0f, 3.0f, 3.0f, 3.0f);
+                coords.x += Vec16f(tileContext.sampleOffset.x);
+                coords.y += Vec16f(tileContext.sampleOffset.y);
+                coords.x *= invSize.x;
+                coords.y *= invSize.y;
+
+                const ImageLocationInfo locations[] =
+                {
+                    { x + 0, y + 0 }, { x + 1, y + 0 }, { x + 2, y + 0 }, { x + 3, y + 0 },
+                    { x + 0, y + 1 }, { x + 1, y + 1 }, { x + 2, y + 1 }, { x + 3, y + 1 },
+                    { x + 0, y + 2 }, { x + 1, y + 2 }, { x + 2, y + 2 }, { x + 3, y + 2 },
+                    { x + 0, y + 3 }, { x + 1, y + 3 }, { x + 2, y + 3 }, { x + 3, y + 3 },
+                };
+
+                const RayPacketTypes::Ray simdRay = tileContext.renderParam.camera.GenerateSimdRay(coords, ctx);
+                primaryPacket.PushRays(simdRay, Vec3x16f(1.0f), locations);
             }
         }
 

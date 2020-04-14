@@ -261,6 +261,7 @@
     <ClCompile Include="TestCases\Math\MathBoxTest.cpp" />
     <ClCompile Include="TestCases\Math\MathDistributionTest.cpp" />
     <ClCompile Include="TestCases\Math\MathEquationSolverTest.cpp" />
+    <ClCompile Include="TestCases\Math\MathVec16fTest.cpp" />
     <ClCompile Include="TestCases\Math\MathVec2fTest.cpp" />
     <ClCompile Include="TestCases\Math\MathVec3fTest.cpp" />
     <ClCompile Include="TestCases\Math\MathVec4fUTest.cpp" />

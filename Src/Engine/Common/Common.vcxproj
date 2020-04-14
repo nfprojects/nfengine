@@ -98,12 +98,16 @@
     <ClInclude Include="Math\Distribution.hpp" />
     <ClInclude Include="Math\EquationSolver.hpp" />
     <ClInclude Include="Math\HilbertCurve.hpp" />
+    <ClInclude Include="Math\Vec16i.hpp" />
+    <ClInclude Include="Math\Vec16iImplAVX512.hpp" />
     <ClInclude Include="Math\Vec2f.hpp" />
     <ClInclude Include="Math\Vec2fImpl.hpp" />
+    <ClInclude Include="Math\Vec2x16f.hpp" />
     <ClInclude Include="Math\Vec2x4f.hpp" />
     <ClInclude Include="Math\Vec2x8f.hpp" />
     <ClInclude Include="Math\Vec3f.hpp" />
     <ClInclude Include="Math\Vec3fImpl.hpp" />
+    <ClInclude Include="Math\Vec3x16f.hpp" />
     <ClInclude Include="Math\Vec3x4f.hpp" />
     <ClInclude Include="Math\Vec3x8f.hpp" />
     <ClInclude Include="Math\Vec4fU.hpp" />
@@ -150,6 +154,8 @@
     <ClInclude Include="Math\Vec8fImplAVX.hpp" />
     <ClInclude Include="Math\Vec8fImplCommon.hpp" />
     <ClInclude Include="Math\Vec8fImplNaive.hpp" />
+    <ClInclude Include="Math\Vec16f.hpp" />
+    <ClInclude Include="Math\Vec16fImplAVX512.hpp" />
     <ClInclude Include="Math\Vec4i.hpp" />
     <ClInclude Include="Math\Vec4iImplNaive.hpp" />
     <ClInclude Include="Math\Vec4iImplSSE.hpp" />
