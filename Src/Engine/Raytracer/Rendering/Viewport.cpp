@@ -10,7 +10,7 @@
 #include "Utils/Profiler.h"
 #include "../Common/System/Timer.hpp"
 #include "../Common/Math/SamplingHelpers.hpp"
-#include "../Common/Math/Vec4fLoad.hpp"
+#include "../Common/Math/PackedLoadVec4f.hpp"
 #include "../Common/Math/Transcendental.hpp"
 #include "../Common/Math/LdrColor.hpp"
 #include "../Common/Math/ColorHelpers.hpp"

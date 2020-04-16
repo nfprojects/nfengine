@@ -2,7 +2,7 @@
 #include "Film.h"
 #include "../Utils/Bitmap.h"
 #include "../Common/Math/Random.hpp"
-#include "../Common/Math/Vec4fLoad.hpp"
+#include "../Common/Math/PackedLoadVec4f.hpp"
 
 namespace NFE {
 namespace RT {
@@ -47,7 +47,7 @@ void Film::AccumulateColor(const uint32 x, const uint32 y, const Vec4f& sampleCo
     Vec3f* sumPixel = &(mSum->GetPixelRef<Vec3f>(x, y));
     Vec3f* secondarySumPixel = mSecondarySum ? &(mSecondarySum->GetPixelRef<Vec3f>(x, y)) : nullptr;
 
-    LockPixel(x, y);
+    //LockPixel(x, y);
     {
         AccumulateToFloat3(*sumPixel, sampleColor);
 
@@ -56,7 +56,7 @@ void Film::AccumulateColor(const uint32 x, const uint32 y, const Vec4f& sampleCo
             AccumulateToFloat3(*secondarySumPixel, sampleColor);
         }
     }
-    UnlockPixel(x, y);
+    //UnlockPixel(x, y);
 }
 
 NFE_FORCE_NOINLINE

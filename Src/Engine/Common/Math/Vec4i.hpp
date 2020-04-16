@@ -136,6 +136,9 @@ struct NFE_ALIGN(16) Vec4i : public Common::Aligned<16>
     // For each vector component, copy value from "a" if "sel" is "false", or from "b" otherwise
     NFE_FORCE_INLINE static const Vec4i Select(const Vec4i& a, const Vec4i& b, const VecBool4i& sel);
 
+    template<uint32 selX, uint32 selY, uint32 selZ, uint32 selW>
+    NFE_FORCE_INLINE static const Vec4i Select(const Vec4i& a, const Vec4i& b);
+
     NFE_FORCE_INLINE const VecBool4i operator == (const Vec4i& b) const;
     NFE_FORCE_INLINE const VecBool4i operator < (const Vec4i& b) const;
     NFE_FORCE_INLINE const VecBool4i operator <= (const Vec4i& b) const;

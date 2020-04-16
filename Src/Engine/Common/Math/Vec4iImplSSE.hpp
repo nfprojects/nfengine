@@ -139,6 +139,17 @@ const Vec4i Vec4i::Select(const Vec4i& a, const Vec4i& b, const VecBool4i& sel)
     return _mm_blendv_epi8(a, b, sel.v);
 }
 
+template<uint32 selX, uint32 selY, uint32 selZ, uint32 selW>
+const Vec4i Vec4i::Select(const Vec4i& a, const Vec4i& b)
+{
+    static_assert(selX <= 1, "Invalid X index");
+    static_assert(selY <= 1, "Invalid Y index");
+    static_assert(selZ <= 1, "Invalid Z index");
+    static_assert(selW <= 1, "Invalid W index");
+
+    return _mm_blend_epi32(a, b, selX | (selY << 1) | (selZ << 2) | (selW << 3));
+}
+
 template<uint32 ix, uint32 iy, uint32 iz, uint32 iw>
 const Vec4i Vec4i::Swizzle() const
 {

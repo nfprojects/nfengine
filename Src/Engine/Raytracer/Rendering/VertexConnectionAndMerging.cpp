@@ -11,6 +11,7 @@
 #include "Traversal/TraversalContext.h"
 #include "Sampling/GenericSampler.h"
 #include "Utils/Profiler.h"
+#include "../Common/Math/PackedLoadVec4f.hpp"
 #include "../Common/Memory/MemoryHelpers.hpp"
 #include "../Common/Utils/TaskBuilder.hpp"
 #include "../Common/Reflection/ReflectionUtils.hpp"
@@ -893,7 +894,7 @@ const RayColor VertexConnectionAndMerging::MergeVertices(PathState& cameraPathSt
         //}
 
         // decompress light incoming direction in world coordinates
-        const Vec4f lightDirection{ photon.direction.ToVector() };
+        const Vec4f lightDirection = LoadVec4f(photon.direction);
         NFE_ASSERT(lightDirection.IsValid());
 
         const float cosToLight = shadingData.intersection.CosTheta(lightDirection);
@@ -912,7 +913,7 @@ const RayColor VertexConnectionAndMerging::MergeVertices(PathState& cameraPathSt
         }
 
         // decompress photon throughput
-        const RayColor throughput = RayColor::ResolveRGB(ctx.wavelength, photon.throughput.ToVector());
+        const RayColor throughput = RayColor::ResolveRGB(ctx.wavelength, LoadVec4f(photon.throughput));
         NFE_ASSERT(throughput.IsValid());
 
         // TODO russian roulette

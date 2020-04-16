@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Packed.hpp"
 #include "Vec4f.hpp"
 #include "Vec4i.hpp"
 #include "Half.hpp"
@@ -62,31 +63,31 @@ NFE_FORCE_INLINE const Vec4f Vec4f_Load_Half4(const Half4* src)
 }
 
 // Convert uint16 (B5G6R5 format) to a Vec4f (normalized range)
-NFE_FORCE_INLINE const Vec4f Vec4f_Load_B5G6R5_Norm(const uint16* src)
+NFE_FORCE_INLINE const Vec4f LoadVec4fUNorm(const Packed_5_6_5& src)
 {
     const Vec4i mask{ 0x1F << 11, 0x3F << 5, 0x1F, 0 };
     const Vec4f scale{ 1.0f / 2048.0f / 31.0f, 1.0f / 32.0f / 63.0f, 1.0f / 31.0f, 0.0f };
-    const Vec4i raw = Vec4i(*reinterpret_cast<const int32*>(src)) & mask;
+    const Vec4i raw = Vec4i(src.v) & mask;
     return raw.ConvertToVec4f() * scale;
 }
 
 // Convert uint16 (B4G4R4A4 format) to a Vec4f (normalized range)
-NFE_FORCE_INLINE const Vec4f Vec4f_Load_B4G4R4A4_Norm(const uint16* src)
+NFE_FORCE_INLINE const Vec4f LoadVec4fUNorm(const Packed_4_4_4_4& src)
 {
     const Vec4i mask{ 0x0F00u, 0x00F0u, 0x000Fu, 0xF000u };
     const Vec4f scale{ 1.0f / 256.0f / 15.0f, 1.0f / 16.0f / 15.0f, 1.0f / 15.0f, 1.0f / 4096.0f / 15.0f };
-    const Vec4i raw = Vec4i(*reinterpret_cast<const int32*>(src))& mask;
+    const Vec4i raw = Vec4i(src.v) & mask;
     return raw.ConvertToVec4f() * scale;
 }
 
-NFE_FORCE_INLINE const Vec4f Vec4f_Load_R10G10B10A2_Norm(const uint32* src)
+NFE_FORCE_INLINE const Vec4f LoadVec4fUNorm(const Packed_10_10_10_2& src)
 {
 #ifdef NFE_USE_SSE
     const Vec4f mask{ 0x3FFu, 0x3FFu << 10, 0x3FFu << 20, 0x3u << 30 };
     const Vec4f scale{ 1.0f / 1023.0f, 1.0f / (1023.0f * 1024.0f), 1.0f / (1023.0f * 1024.0f * 1024.0f), 1.0f / (3.0f * 1024.0f * 1024.0f * 1024.0f) };
     const Vec4f unsignedOffset{ 0.0f, 0.0f, 0.0f, 32768.0f * 65536.0f };
 
-    __m128 vTemp = _mm_load_ps1((const float*)src);
+    __m128 vTemp = _mm_load_ps1((const float*)&src);
     vTemp = _mm_and_ps(vTemp, mask.v);
     vTemp = _mm_xor_ps(vTemp, VECTOR_MASK_SIGN_W);
 
@@ -98,10 +99,10 @@ NFE_FORCE_INLINE const Vec4f Vec4f_Load_R10G10B10A2_Norm(const uint32* src)
     const uint32 value = *src;
     return Vec4f
     {
-        static_cast<float>((value      ) & 0x3FF) / 1023.0f,
-        static_cast<float>((value >> 10) & 0x3FF) / 1023.0f,
-        static_cast<float>((value >> 20) & 0x3FF) / 1023.0f,
-        static_cast<float>((value >> 30)        ) / 3.0f,
+        static_cast<float>(src->x) / 1023.0f,
+        static_cast<float>(src->y) / 1023.0f,
+        static_cast<float>(src->z) / 1023.0f,
+        static_cast<float>(src->w) / 3.0f,
     };
 #endif // NFE_USE_SSE
 }
@@ -257,6 +258,52 @@ NFE_FORCE_INLINE const Vec4f Vec4f_LoadBGR_UNorm(const uint8* src)
         1.0f,
     };
 #endif // NFE_USE_SSE
+}
+
+NFE_INLINE const Vec4f LoadVec4f(const PackedUnitVector3& src)
+{
+    Vec4f f = Vec4f::FromIntegers(src.u, src.v, 0, 0) * (1.0f / PackedUnitVector3::Scale);
+
+    // based on: https://twitter.com/Stubbesaurus/status/937994790553227264
+
+    const Vec4f fAbs = Vec4f::Abs(f);
+    f.z = 1.0f - fAbs.x - fAbs.y;
+
+    // t = Max([-f.z, -f.z, 0, 0], 0)
+    const Vec4f t = Vec4f::Max(-f.Swizzle<2, 2, 3, 3>(), Vec4f::Zero());
+
+    f += t.ChangeSign(f > Vec4f::Zero());
+
+    return f.Normalized3();
+}
+
+NFE_INLINE const Vec4f LoadVec4f(const PackedColorRgbHdr& src)
+{
+    const Vec4f cocg = Vec4f::FromIntegers(src.co, src.cg, 0, 0) * (1.0f / PackedColorRgbHdr::ChromaScale);
+    const float tmp = 1.0f - cocg.y;
+    return Vec4f::Max(Vec4f::Zero(), Vec4f(tmp + cocg.x, 1.0f + cocg.y, tmp - cocg.x) * src.y);
+}
+
+NFE_INLINE const Vec4f LoadVec4f(const PackedUFloat3_11_11_10& src)
+{
+    uint32 x = ((src.xe + 112) << 23) | (src.xm << 17);
+    uint32 y = ((src.ye + 112) << 23) | (src.ym << 17);
+    uint32 z = ((src.ze + 112) << 23) | (src.zm << 17);
+    return Vec4f(x, y, z, 0u);
+}
+
+NFE_INLINE const Vec4f LoadVec4f(const PackedUFloat3_9_9_9_5& src)
+{
+    const Vec4ui vInput(src.v);
+
+    const Vec4ui mantissaShift(0, 9, 18, 0);
+    const Vec4ui mantissaMask(0x1FF, 0x1FF, 0x1FF, 0);
+    const Vec4i mantissa = (vInput >> mantissaShift) & mantissaMask;
+
+    const Vec4i exponent = (vInput >> 27);
+    const Vec4i base = Vec4i(0x33800000) + (exponent << 23);
+
+    return base.AsVec4f() * mantissa.ConvertToVec4f();
 }
 
 

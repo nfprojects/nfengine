@@ -3,8 +3,7 @@
 #include "BlockCompression.h"
 #include "../Common/Math/ColorHelpers.hpp"
 #include "../Common/Memory/MemoryHelpers.hpp"
-#include "../Common/Math/Packed.hpp"
-#include "../Common/Math/Vec4fLoad.hpp"
+#include "../Common/Math/PackedLoadVec4f.hpp"
 #include "../Common/Logger/Logger.hpp"
 #include "../Common/System/Timer.hpp"
 #include "../Common/System/Assertion.hpp"
@@ -378,22 +377,22 @@ const Vec4f Bitmap::GetPixel(uint32 x, uint32 y) const
 
     case Format::B5G6R5_UNorm:
     {
-        const uint16* source = reinterpret_cast<const uint16*>(rowData) + (size_t)x;
-        color = Vec4f_Load_B5G6R5_Norm(source);
+        const Packed_5_6_5* source = reinterpret_cast<const Packed_5_6_5*>(rowData);
+        color = LoadVec4fUNorm(source[x]);
         break;
     }
 
     case Format::B4G4R4A4_UNorm:
     {
-        const uint16* source = reinterpret_cast<const uint16*>(rowData) + (size_t)x;
-        color = Vec4f_Load_B4G4R4A4_Norm(source);
+        const Packed_4_4_4_4* source = reinterpret_cast<const Packed_4_4_4_4*>(rowData);
+        color = LoadVec4fUNorm(source[x]);
         break;
     }
 
     case Format::R10G10B10A2_UNorm:
     {
-        const uint32* source = reinterpret_cast<const uint32*>(rowData) + (size_t)x;
-        color = Vec4f_Load_R10G10B10A2_Norm(source);
+        const Packed_10_10_10_2* source = reinterpret_cast<const Packed_10_10_10_2*>(rowData);
+        color = LoadVec4fUNorm(source[x]);
         break;
     }
 
@@ -476,15 +475,15 @@ const Vec4f Bitmap::GetPixel(uint32 x, uint32 y) const
 
     case Format::R9G9B9E5_SharedExp:
     {
-        const SharedExpFloat3* source = reinterpret_cast<const SharedExpFloat3*>(rowData) + (size_t)x;
-        color = source->ToVector();
+        const PackedUFloat3_9_9_9_5* source = reinterpret_cast<const PackedUFloat3_9_9_9_5*>(rowData);
+        color = LoadVec4f(source[x]);
         break;
     }
 
     case Format::R11G11B10_Float:
     {
-        const PackedFloat3* source = reinterpret_cast<const PackedFloat3*>(rowData) + (size_t)x;
-        color = source->ToVector();
+        const PackedUFloat3_11_11_10* source = reinterpret_cast<const PackedUFloat3_11_11_10*>(rowData);
+        color = LoadVec4f(source[x]);
         break;
     }
 
@@ -605,38 +604,30 @@ void Bitmap::GetPixelBlock(const Vec4ui coords, Vec4f* outColors) const
     case Format::B5G6R5_UNorm:
     {
         const Vec4ui offsets = coords << 1; // offset = 2 * coords
-        const uint16* source0 = reinterpret_cast<const uint16*>(rowData0 + offsets.x);
-        const uint16* source1 = reinterpret_cast<const uint16*>(rowData0 + offsets.z);
-        const uint16* source2 = reinterpret_cast<const uint16*>(rowData1 + offsets.x);
-        const uint16* source3 = reinterpret_cast<const uint16*>(rowData1 + offsets.z);
-        color[0] = Vec4f_Load_B5G6R5_Norm(source0);
-        color[1] = Vec4f_Load_B5G6R5_Norm(source1);
-        color[2] = Vec4f_Load_B5G6R5_Norm(source2);
-        color[3] = Vec4f_Load_B5G6R5_Norm(source3);
+        color[0] = LoadVec4fUNorm(*reinterpret_cast<const Packed_5_6_5*>(rowData0 + offsets.x));
+        color[1] = LoadVec4fUNorm(*reinterpret_cast<const Packed_5_6_5*>(rowData0 + offsets.z));
+        color[2] = LoadVec4fUNorm(*reinterpret_cast<const Packed_5_6_5*>(rowData1 + offsets.x));
+        color[3] = LoadVec4fUNorm(*reinterpret_cast<const Packed_5_6_5*>(rowData1 + offsets.z));
         break;
     }
 
     case Format::B4G4R4A4_UNorm:
     {
         const Vec4ui offsets = coords << 1; // offset = 2 * coords
-        const uint16* source0 = reinterpret_cast<const uint16*>(rowData0 + offsets.x);
-        const uint16* source1 = reinterpret_cast<const uint16*>(rowData0 + offsets.z);
-        const uint16* source2 = reinterpret_cast<const uint16*>(rowData1 + offsets.x);
-        const uint16* source3 = reinterpret_cast<const uint16*>(rowData1 + offsets.z);
-        color[0] = Vec4f_Load_B4G4R4A4_Norm(source0);
-        color[1] = Vec4f_Load_B4G4R4A4_Norm(source1);
-        color[2] = Vec4f_Load_B4G4R4A4_Norm(source2);
-        color[3] = Vec4f_Load_B4G4R4A4_Norm(source3);
+        color[0] = LoadVec4fUNorm(*reinterpret_cast<const Packed_4_4_4_4*>(rowData0 + offsets.x));
+        color[1] = LoadVec4fUNorm(*reinterpret_cast<const Packed_4_4_4_4*>(rowData0 + offsets.z));
+        color[2] = LoadVec4fUNorm(*reinterpret_cast<const Packed_4_4_4_4*>(rowData1 + offsets.x));
+        color[3] = LoadVec4fUNorm(*reinterpret_cast<const Packed_4_4_4_4*>(rowData1 + offsets.z));
         break;
     }
 
     case Format::R10G10B10A2_UNorm:
     {
         const Vec4ui offsets = coords << 2; // offset = 4 * coords
-        color[0] = Vec4f_Load_R10G10B10A2_Norm(reinterpret_cast<const uint32*>(rowData0 + offsets.x));
-        color[1] = Vec4f_Load_R10G10B10A2_Norm(reinterpret_cast<const uint32*>(rowData0 + offsets.z));
-        color[2] = Vec4f_Load_R10G10B10A2_Norm(reinterpret_cast<const uint32*>(rowData1 + offsets.x));
-        color[3] = Vec4f_Load_R10G10B10A2_Norm(reinterpret_cast<const uint32*>(rowData1 + offsets.z));
+        color[0] = LoadVec4fUNorm(*reinterpret_cast<const Packed_10_10_10_2*>(rowData0 + offsets.x));
+        color[1] = LoadVec4fUNorm(*reinterpret_cast<const Packed_10_10_10_2*>(rowData0 + offsets.z));
+        color[2] = LoadVec4fUNorm(*reinterpret_cast<const Packed_10_10_10_2*>(rowData1 + offsets.x));
+        color[3] = LoadVec4fUNorm(*reinterpret_cast<const Packed_10_10_10_2*>(rowData1 + offsets.z));
         break;
     }
 
@@ -793,30 +784,20 @@ void Bitmap::GetPixelBlock(const Vec4ui coords, Vec4f* outColors) const
     case Format::R9G9B9E5_SharedExp:
     {
         const Vec4ui offsets = coords << 2; // offset = 4 * coords
-        const SharedExpFloat3* source0 = reinterpret_cast<const SharedExpFloat3*>(rowData0 + offsets.x);
-        const SharedExpFloat3* source1 = reinterpret_cast<const SharedExpFloat3*>(rowData0 + offsets.z);
-        const SharedExpFloat3* source2 = reinterpret_cast<const SharedExpFloat3*>(rowData1 + offsets.x);
-        const SharedExpFloat3* source3 = reinterpret_cast<const SharedExpFloat3*>(rowData1 + offsets.z);
-        // TODO vectorize
-        color[0] = source0->ToVector();
-        color[1] = source1->ToVector();
-        color[2] = source2->ToVector();
-        color[3] = source3->ToVector();
+        color[0] = LoadVec4f(*reinterpret_cast<const PackedUFloat3_9_9_9_5*>(rowData0 + offsets.x));
+        color[1] = LoadVec4f(*reinterpret_cast<const PackedUFloat3_9_9_9_5*>(rowData0 + offsets.z));
+        color[2] = LoadVec4f(*reinterpret_cast<const PackedUFloat3_9_9_9_5*>(rowData1 + offsets.x));
+        color[3] = LoadVec4f(*reinterpret_cast<const PackedUFloat3_9_9_9_5*>(rowData1 + offsets.z));
         break;
     }
 
     case Format::R11G11B10_Float:
     {
         const Vec4ui offsets = coords << 2; // offset = 4 * coords
-        const PackedFloat3* source0 = reinterpret_cast<const PackedFloat3*>(rowData0 + offsets.x);
-        const PackedFloat3* source1 = reinterpret_cast<const PackedFloat3*>(rowData0 + offsets.z);
-        const PackedFloat3* source2 = reinterpret_cast<const PackedFloat3*>(rowData1 + offsets.x);
-        const PackedFloat3* source3 = reinterpret_cast<const PackedFloat3*>(rowData1 + offsets.z);
-        // TODO vectorize
-        color[0] = source0->ToVector();
-        color[1] = source1->ToVector();
-        color[2] = source2->ToVector();
-        color[3] = source3->ToVector();
+        color[0] = LoadVec4f(*reinterpret_cast<const PackedUFloat3_11_11_10*>(rowData0 + offsets.x));
+        color[1] = LoadVec4f(*reinterpret_cast<const PackedUFloat3_11_11_10*>(rowData0 + offsets.z));
+        color[2] = LoadVec4f(*reinterpret_cast<const PackedUFloat3_11_11_10*>(rowData1 + offsets.x));
+        color[3] = LoadVec4f(*reinterpret_cast<const PackedUFloat3_11_11_10*>(rowData1 + offsets.z));
         break;
     }
 

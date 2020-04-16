@@ -620,7 +620,8 @@ const VecBool4f Vec4f::operator != (const Vec4f& b) const
 
 const Vec4f Vec4f::Dot2V(const Vec4f& v1, const Vec4f& v2)
 {
-    return _mm_dp_ps(v1, v2, 0x3F);
+    const Vec4f temp = v1 * v2;
+    return temp.SplatX() + temp.SplatY();
 }
 
 const Vec4f Vec4f::Dot3V(const Vec4f& v1, const Vec4f& v2)
@@ -635,7 +636,8 @@ const Vec4f Vec4f::Dot4V(const Vec4f& v1, const Vec4f& v2)
 
 float Vec4f::Dot2(const Vec4f& v1, const Vec4f& v2)
 {
-    return _mm_cvtss_f32(Dot2V(v1, v2));
+    const Vec4f temp = v1 * v2;
+    return temp.x + temp.y;
 }
 
 float Vec4f::Dot3(const Vec4f& v1, const Vec4f& v2)

@@ -102,7 +102,7 @@ public:
     NFE_FORCE_INLINE bool IsGenerated() const { return mLUT != nullptr; }
 
 private:
-    Math::Half4* mLUT = nullptr;
+    Math::PackedUFloat3_9_9_9_5* mLUT = nullptr;
     uint32 mSizeShift;
     float mScale;
     float mBias;

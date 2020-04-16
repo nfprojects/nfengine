@@ -1,6 +1,5 @@
 #include "PCH.h"
 #include "BitmapUtils.h"
-#include "../Common/Math/Vec4fLoad.hpp"
 #include "../Common/Logger/Logger.hpp"
 #include "../Common/System/Assertion.hpp"
 #include "../Common/Utils/TaskBuilder.hpp"

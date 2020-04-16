@@ -33,6 +33,7 @@ struct NFE_ALIGN(32) VecBool8i : public Common::Aligned<16>
 
 private:
     friend struct Vec8i;
+    friend struct Vec8ui;
 
 #ifdef NFE_USE_AVX2
     NFE_FORCE_INLINE VecBool8i(const __m256 other) : v(_mm256_castps_si256(other)) { }
@@ -49,14 +50,17 @@ private:
 // 8-element integer SIMD vector
 struct NFE_ALIGN(32) Vec8i : public Common::Aligned<32>
 {
+    friend struct Vec8ui;
+
     // constructors
     Vec8i() = default;
     NFE_FORCE_INLINE static const Vec8i Zero();
     NFE_FORCE_INLINE Vec8i(const Vec8i& other);
+    NFE_FORCE_INLINE explicit Vec8i(const Vec8ui& other);
     NFE_FORCE_INLINE Vec8i& operator = (const Vec8i& other);
     NFE_FORCE_INLINE Vec8i(const Vec4i& lo, const Vec4i& hi);
     NFE_FORCE_INLINE explicit Vec8i(const int32 scalar);
-    NFE_FORCE_INLINE explicit Vec8i(const uint32 scalar);
+    NFE_FORCE_INLINE explicit Vec8i(const int32* scalarPtr);
     NFE_FORCE_INLINE Vec8i(const int32 e0, const int32 e1, const int32 e2, const int32 e3, const int32 e4, const int32 e5, const int32 e6, const int32 e7);
 
 #ifdef NFE_USE_AVX
@@ -142,6 +146,91 @@ private:
             Vec4i high;
         };
     };
+};
+
+// 8-element integer SIMD vector
+struct NFE_ALIGN(32) Vec8ui : public Common::Aligned<32>
+{
+    friend struct Vec8i;
+
+    union
+    {
+        int32 i[8];
+        uint32 u[8];
+
+#ifdef NFE_USE_AVX
+        __m256 f;
+        __m256i v;
+#endif // NFE_USE_AVX
+
+        struct
+        {
+            Vec4i low;
+            Vec4i high;
+        };
+    };
+
+    // constructors
+    Vec8ui() = default;
+    NFE_FORCE_INLINE static const Vec8ui Zero();
+    NFE_FORCE_INLINE Vec8ui(const Vec8ui & other);
+    NFE_FORCE_INLINE explicit Vec8ui(const Vec8i & other);
+    NFE_FORCE_INLINE Vec8ui& operator = (const Vec8ui & other);
+    NFE_FORCE_INLINE Vec8ui(const Vec4ui & lo, const Vec4ui & hi);
+    NFE_FORCE_INLINE explicit Vec8ui(const uint32 scalar);
+    NFE_FORCE_INLINE explicit Vec8ui(const uint32* scalarPtr);
+    NFE_FORCE_INLINE Vec8ui(const uint32 e0, const uint32 e1, const uint32 e2, const uint32 e3, const uint32 e4, const uint32 e5, const uint32 e6, const uint32 e7);
+
+#ifdef NFE_USE_AVX
+    NFE_FORCE_INLINE Vec8ui(const __m256i & m);
+    NFE_FORCE_INLINE explicit Vec8ui(const __m256 & m);
+    NFE_FORCE_INLINE operator __m256i() const { return v; }
+    NFE_FORCE_INLINE operator __m256() const { return _mm256_castsi256_ps(v); }
+#endif // NFE_USE_AVX
+
+    NFE_FORCE_INLINE int32 operator[] (const uint32 index) const { return i[index]; }
+    NFE_FORCE_INLINE int32& operator[] (const uint32 index) { return i[index]; }
+
+    // bitwise logic operations
+    NFE_FORCE_INLINE const Vec8ui operator & (const Vec8ui & b) const;
+    NFE_FORCE_INLINE const Vec8ui operator | (const Vec8ui & b) const;
+    NFE_FORCE_INLINE const Vec8ui operator ^ (const Vec8ui & b) const;
+    NFE_FORCE_INLINE Vec8ui& operator &= (const Vec8ui & b);
+    NFE_FORCE_INLINE Vec8ui& operator |= (const Vec8ui & b);
+    NFE_FORCE_INLINE Vec8ui& operator ^= (const Vec8ui & b);
+
+    // simple arithmetics
+    NFE_FORCE_INLINE const Vec8ui operator + (const Vec8ui & b) const;
+    NFE_FORCE_INLINE const Vec8ui operator - (const Vec8ui & b) const;
+    NFE_FORCE_INLINE Vec8ui& operator += (const Vec8ui & b);
+    NFE_FORCE_INLINE Vec8ui& operator -= (const Vec8ui & b);
+    NFE_FORCE_INLINE const Vec8ui operator + (int32 b) const;
+    NFE_FORCE_INLINE const Vec8ui operator - (int32 b) const;
+    NFE_FORCE_INLINE Vec8ui& operator += (int32 b);
+    NFE_FORCE_INLINE Vec8ui& operator -= (int32 b);
+
+    // bit shifting
+    NFE_FORCE_INLINE const Vec8ui operator << (const Vec8ui & b) const;
+    NFE_FORCE_INLINE const Vec8ui operator >> (const Vec8ui & b) const;
+    NFE_FORCE_INLINE const Vec8ui operator << (int32 b) const;
+    NFE_FORCE_INLINE const Vec8ui operator >> (int32 b) const;
+
+    /// comparison operators
+    NFE_FORCE_INLINE const VecBool8i operator == (const Vec8ui & b) const;
+    NFE_FORCE_INLINE const VecBool8i operator != (const Vec8ui & b) const;
+
+    NFE_FORCE_INLINE static const Vec8ui Min(const Vec8ui & a, const Vec8ui & b);
+    NFE_FORCE_INLINE static const Vec8ui Max(const Vec8ui & a, const Vec8ui & b);
+    NFE_FORCE_INLINE const Vec8ui Clamped(const Vec8ui & min, const Vec8ui & max) const;
+
+    // cast from float vector (preserve bits)
+    NFE_FORCE_INLINE static const Vec8ui Cast(const Vec8f & v);
+
+    // convert to float vector
+    NFE_FORCE_INLINE const Vec8f AsVec8f() const;
+
+    // for each vector component, copy value from "a" if "sel" > 0.0f, or from "b" otherwise.
+    NFE_FORCE_INLINE static const Vec8ui SelectBySign(const Vec8ui & a, const Vec8ui & b, const VecBool8i & sel);
 };
 
 // gather 8 floats using base pointer and indices

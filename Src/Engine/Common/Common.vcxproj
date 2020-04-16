@@ -142,7 +142,7 @@
     <ClInclude Include="Math\Vec4fImpl.hpp" />
     <ClInclude Include="Math\Vec4fImplNaive.hpp" />
     <ClInclude Include="Math\Vec4fImplSSE.hpp" />
-    <ClInclude Include="Math\Vec4fLoad.hpp" />
+    <ClInclude Include="Math\PackedLoadVec4f.hpp" />
     <ClInclude Include="Math\Vec8f.hpp" />
     <ClInclude Include="Math\Vec8fImplAVX.hpp" />
     <ClInclude Include="Math\Vec8fImplCommon.hpp" />
@@ -150,6 +150,7 @@
     <ClInclude Include="Math\Vec4i.hpp" />
     <ClInclude Include="Math\Vec4iImplNaive.hpp" />
     <ClInclude Include="Math\Vec4iImplSSE.hpp" />
+    <ClInclude Include="Math\PackedLoadVec8f.hpp" />
     <ClInclude Include="Math\Vec8i.hpp" />
     <ClInclude Include="Math\Vec8iImplAVX2.hpp" />
     <ClInclude Include="Math\Vec8iImplNaive.hpp" />

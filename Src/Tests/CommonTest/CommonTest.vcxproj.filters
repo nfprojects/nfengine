@@ -205,9 +205,6 @@
     <ClCompile Include="TestCases\Math\MathPackedTest.cpp">
       <Filter>TestCases\Math</Filter>
     </ClCompile>
-    <ClCompile Include="TestCases\Math\MathVector4LoadTest.cpp">
-      <Filter>TestCases\Math</Filter>
-    </ClCompile>
     <ClCompile Include="TestCases\Reflection\ReflectionUniquePtrTest.cpp">
       <Filter>TestCases\Reflection</Filter>
     </ClCompile>

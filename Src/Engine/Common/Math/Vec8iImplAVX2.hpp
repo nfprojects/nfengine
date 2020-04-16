@@ -77,6 +77,10 @@ Vec8i::Vec8i(const Vec8i& other)
     : v(other.v)
 {}
 
+Vec8i::Vec8i(const Vec8ui& other)
+    : v(other.v)
+{}
+
 Vec8i& Vec8i::operator = (const Vec8i& other)
 {
     v = other.v;
@@ -109,12 +113,12 @@ Vec8i::Vec8i(const int32 e0, const int32 e1, const int32 e2, const int32 e3, con
     : v(_mm256_set_epi32(e7, e6, e5, e4, e3, e2, e1, e0))
 {}
 
-Vec8i::Vec8i(const int32 i)
-    : v(_mm256_set1_epi32(i))
+Vec8i::Vec8i(const int32 scalar)
+    : v(_mm256_set1_epi32(scalar))
 {}
 
-Vec8i::Vec8i(const uint32 u)
-    : v(_mm256_set1_epi32(u))
+Vec8i::Vec8i(const int32* scalarPtr)
+    : v(_mm256_loadu_si256(reinterpret_cast<const __m256i*>(scalarPtr)))
 {}
 
 const Vec8i Vec8i::SelectBySign(const Vec8i& a, const Vec8i& b, const VecBool8i& sel)
@@ -242,8 +246,6 @@ Vec8i& Vec8i::operator *= (int32 b)
     return *this;
 }
 
-//////////////////////////////////////////////////////////////////////////
-
 const VecBool8i Vec8i::operator == (const Vec8i& b) const
 {
     return _mm256_cmpeq_epi32(v, b.v);
@@ -263,7 +265,7 @@ const Vec8i Vec8i::operator << (const Vec8i& b) const
 
 const Vec8i Vec8i::operator >> (const Vec8i& b) const
 {
-    return _mm256_srlv_epi32(v, b);
+    return _mm256_srav_epi32(v, b);
 }
 
 const Vec8i Vec8i::operator << (int32 b) const
@@ -273,7 +275,7 @@ const Vec8i Vec8i::operator << (int32 b) const
 
 const Vec8i Vec8i::operator >> (int32 b) const
 {
-    return _mm256_srli_epi32(v, b);
+    return _mm256_srai_epi32(v, b);
 }
 
 const Vec8i Vec8i::Min(const Vec8i& a, const Vec8i& b)
@@ -285,6 +287,187 @@ const Vec8i Vec8i::Max(const Vec8i& a, const Vec8i& b)
 {
     return _mm256_max_epi32(a, b);
 }
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+
+const Vec8ui Vec8ui::Zero()
+{
+    return _mm256_setzero_si256();
+}
+
+Vec8ui::Vec8ui(const Vec8ui& other)
+    : v(other.v)
+{}
+
+Vec8ui::Vec8ui(const Vec8i& other)
+    : v(other.v)
+{}
+
+Vec8ui& Vec8ui::operator = (const Vec8ui& other)
+{
+    v = other.v;
+    return *this;
+}
+
+Vec8ui::Vec8ui(const __m256i& m)
+    : v(m)
+{}
+
+Vec8ui::Vec8ui(const __m256& m)
+    : f(m)
+{}
+
+Vec8ui::Vec8ui(const Vec4ui& lo, const Vec4ui& hi)
+    : v(_mm256_insertf128_si256(_mm256_castsi128_si256(lo), hi, 1u))
+{}
+
+const Vec8ui Vec8ui::Cast(const Vec8f& v)
+{
+    return _mm256_castps_si256(v);
+}
+
+const Vec8f Vec8ui::AsVec8f() const
+{
+    return _mm256_castsi256_ps(v);
+}
+
+Vec8ui::Vec8ui(const uint32 e0, const uint32 e1, const uint32 e2, const uint32 e3, const uint32 e4, const uint32 e5, const uint32 e6, const uint32 e7)
+    : v(_mm256_set_epi32(e7, e6, e5, e4, e3, e2, e1, e0))
+{}
+
+Vec8ui::Vec8ui(const uint32 scalar)
+    : v(_mm256_set1_epi32(static_cast<int32>(scalar)))
+{}
+
+Vec8ui::Vec8ui(const uint32* scalarPtr)
+    : v(_mm256_loadu_si256(reinterpret_cast<const __m256i*>(scalarPtr)))
+{}
+
+const Vec8ui Vec8ui::SelectBySign(const Vec8ui& a, const Vec8ui& b, const VecBool8i& sel)
+{
+    return Vec8ui(_mm256_blendv_ps(a.f, b.f, sel));
+}
+
+const Vec8ui Vec8ui::operator & (const Vec8ui& b) const
+{
+    return Vec8ui(_mm256_and_si256(v, b.v));
+}
+
+const Vec8ui Vec8ui::operator | (const Vec8ui& b) const
+{
+    return Vec8ui(_mm256_or_si256(v, b.v));
+}
+
+const Vec8ui Vec8ui::operator ^ (const Vec8ui& b) const
+{
+    return Vec8ui(_mm256_xor_si256(v, b.v));
+}
+
+Vec8ui& Vec8ui::operator &= (const Vec8ui& b)
+{
+    v = _mm256_and_si256(v, b.v);
+    return *this;
+}
+
+Vec8ui& Vec8ui::operator |= (const Vec8ui& b)
+{
+    v = _mm256_or_si256(v, b.v);
+    return *this;
+}
+
+Vec8ui& Vec8ui::operator ^= (const Vec8ui& b)
+{
+    v = _mm256_xor_si256(v, b.v);
+    return *this;
+}
+
+const Vec8ui Vec8ui::operator + (const Vec8ui& b) const
+{
+    return _mm256_add_epi32(v, b);
+}
+
+const Vec8ui Vec8ui::operator - (const Vec8ui& b) const
+{
+    return _mm256_sub_epi32(v, b);
+}
+
+Vec8ui& Vec8ui::operator += (const Vec8ui& b)
+{
+    v = _mm256_add_epi32(v, b);
+    return *this;
+}
+
+Vec8ui& Vec8ui::operator -= (const Vec8ui& b)
+{
+    v = _mm256_sub_epi32(v, b);
+    return *this;
+}
+
+const Vec8ui Vec8ui::operator + (int32 b) const
+{
+    return _mm256_add_epi32(v, _mm256_set1_epi32(b));
+}
+
+const Vec8ui Vec8ui::operator - (int32 b) const
+{
+    return _mm256_sub_epi32(v, _mm256_set1_epi32(b));
+}
+
+Vec8ui& Vec8ui::operator += (int32 b)
+{
+    v = _mm256_add_epi32(v, _mm256_set1_epi32(b));
+    return *this;
+}
+
+Vec8ui& Vec8ui::operator -= (int32 b)
+{
+    v = _mm256_sub_epi32(v, _mm256_set1_epi32(b));
+    return *this;
+}
+
+const VecBool8i Vec8ui::operator == (const Vec8ui& b) const
+{
+    return _mm256_cmpeq_epi32(v, b.v);
+}
+
+const VecBool8i Vec8ui::operator != (const Vec8ui& b) const
+{
+    // TODO may not be optimal, when used with selector later on
+    // idea: have VecNegBool or something
+    return _mm256_xor_si256(_mm256_set1_epi32(-1), _mm256_cmpeq_epi32(v, b.v));
+}
+
+const Vec8ui Vec8ui::operator << (const Vec8ui& b) const
+{
+    return _mm256_sllv_epi32(v, b);
+}
+
+const Vec8ui Vec8ui::operator >> (const Vec8ui& b) const
+{
+    return _mm256_srlv_epi32(v, b);
+}
+
+const Vec8ui Vec8ui::operator << (int32 b) const
+{
+    return _mm256_slli_epi32(v, b);
+}
+
+const Vec8ui Vec8ui::operator >> (int32 b) const
+{
+    return _mm256_srli_epi32(v, b);
+}
+
+const Vec8ui Vec8ui::Min(const Vec8ui& a, const Vec8ui& b)
+{
+    return _mm256_min_epu32(a, b);
+}
+
+const Vec8ui Vec8ui::Max(const Vec8ui& a, const Vec8ui& b)
+{
+    return _mm256_max_epu32(a, b);
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
 
 const Vec8f Gather8(const float* basePtr, const Vec8i& indices)
 {

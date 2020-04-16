@@ -536,9 +536,6 @@
     <ClInclude Include="Math\Vec4fImplSSE.hpp">
       <Filter>Math</Filter>
     </ClInclude>
-    <ClInclude Include="Math\Vec4fLoad.hpp">
-      <Filter>Math</Filter>
-    </ClInclude>
     <ClInclude Include="Math\Vec4i.hpp">
       <Filter>Math</Filter>
     </ClInclude>
@@ -593,6 +590,10 @@
     <ClInclude Include="Math\Vec3x8f.hpp">
       <Filter>Math</Filter>
     </ClInclude>
+    <ClInclude Include="Math\PackedLoadVec4f.hpp">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\PackedLoadVec8f.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="PCH.cpp" />

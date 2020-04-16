@@ -13,7 +13,7 @@
 #include "../Common/Math/Simd8Geometry.hpp"
 #include "../Common/Math/Distribution.hpp"
 #include "../Common/Math/SamplingHelpers.hpp"
-#include "../Common/Math/Vec4fLoad.hpp"
+#include "../Common/Math/PackedLoadVec4f.hpp"
 #include "../Common/Logger/Logger.hpp"
 #include "../Common/Reflection/ReflectionClassDefine.hpp"
 
