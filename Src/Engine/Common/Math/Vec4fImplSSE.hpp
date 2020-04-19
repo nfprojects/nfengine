@@ -652,12 +652,10 @@ float Vec4f::Dot4(const Vec4f& v1, const Vec4f& v2)
 
 const Vec4f Vec4f::Cross3(const Vec4f& v1, const Vec4f& v2)
 {
-    __m128 vTemp1 = _mm_shuffle_ps(v1, v1, _MM_SHUFFLE(3, 0, 2, 1));
-    __m128 vTemp2 = _mm_shuffle_ps(v2, v2, _MM_SHUFFLE(3, 1, 0, 2));
-    __m128 vResult = _mm_mul_ps(vTemp1, vTemp2);
-    vTemp1 = _mm_shuffle_ps(vTemp1, vTemp1, _MM_SHUFFLE(3, 0, 2, 1));
-    vTemp2 = _mm_shuffle_ps(vTemp2, vTemp2, _MM_SHUFFLE(3, 1, 0, 2));
-    return NegMulAndAdd(vTemp1, vTemp2, vResult);
+    __m128 tmp0 = _mm_shuffle_ps(v2, v2, _MM_SHUFFLE(3, 0, 2, 1));
+    __m128 tmp1 = _mm_shuffle_ps(v1, v1, _MM_SHUFFLE(3, 0, 2, 1));
+    __m128 tmp2 = _mm_sub_ps(_mm_mul_ps(tmp0, v1), _mm_mul_ps(tmp1, v2));
+    return _mm_shuffle_ps(tmp2, tmp2, _MM_SHUFFLE(3, 0, 2, 1));
 }
 
 float Vec4f::Length2() const

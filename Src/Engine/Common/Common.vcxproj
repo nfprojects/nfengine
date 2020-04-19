@@ -97,6 +97,7 @@
     <ClInclude Include="Math\Conversions.hpp" />
     <ClInclude Include="Math\Distribution.hpp" />
     <ClInclude Include="Math\EquationSolver.hpp" />
+    <ClInclude Include="Math\HilbertCurve.hpp" />
     <ClInclude Include="Math\Vec2f.hpp" />
     <ClInclude Include="Math\Vec2fImpl.hpp" />
     <ClInclude Include="Math\Vec3f.hpp" />
@@ -260,6 +261,7 @@
     <ClCompile Include="Math\Frustum.cpp" />
     <ClCompile Include="Math\Geometry.cpp" />
     <ClCompile Include="Math\HdrColor.cpp" />
+    <ClCompile Include="Math\HilbertCurve.cpp" />
     <ClCompile Include="Math\LdrColor.cpp" />
     <ClCompile Include="Math\Math.cpp" />
     <ClCompile Include="Math\MathTypes.cpp" />

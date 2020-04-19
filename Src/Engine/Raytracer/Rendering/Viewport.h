@@ -81,6 +81,12 @@ private:
         bool lutGenerationRequired = false;
     };
 
+    struct TileOffset
+    {
+        int8 x : 4;
+        int8 y : 4;
+    };
+
     void BuildInitialBlocksList();
 
     // compute average error (variance) in the image
@@ -103,6 +109,8 @@ private:
     // generate "front buffer" image from "sum" image
     void PostProcessTile(const Block& tile, uint32 threadID);
 
+    void PrepareHilbertCurve(uint32 tileSize);
+
     IRenderer* mRenderer;
 
     Math::Random mRandomGenerator;
@@ -117,6 +125,7 @@ private:
     Common::DynArray<Bitmap> mBlurredImages;    // blurred images for bloom
     Common::DynArray<uint32> mPassesPerPixel;
     Common::DynArray<Math::Vec2f> mPixelSalt; // salt value for each pixel
+    Common::DynArray<TileOffset> mTileOffsets;
 
     RenderingParams mParams;
     PostprocessParamsInternal mPostprocessParams;

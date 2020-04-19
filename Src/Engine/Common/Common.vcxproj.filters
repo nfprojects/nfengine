@@ -594,6 +594,7 @@
       <Filter>Math</Filter>
     </ClInclude>
     <ClInclude Include="Math\PackedLoadVec8f.hpp" />
+    <ClInclude Include="Math\HilbertCurve.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="PCH.cpp" />
@@ -836,6 +837,7 @@
     <ClCompile Include="Math\Vec4f.cpp">
       <Filter>Math</Filter>
     </ClCompile>
+    <ClCompile Include="Math\HilbertCurve.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Natvis Include="Math\Math.natvis">

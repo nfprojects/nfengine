@@ -24,9 +24,12 @@
     {
         "transform":
         {
-            "translation": [-2.4, 4.03, 3.49],
-            "orientation": [40.0, 158.0, 0.0]
+            "translation": [-3.8, 0.3, 4.1],
+            "orientation": [72.0, -178.0, 0.0]
         },
-        "fieldOfView": 50.0
+        "fieldOfView": 50.0,
+        "aperture": 0.32,
+        "focalPlaneDistance": 1.3,
+        "enableDOF": true
     }
 }

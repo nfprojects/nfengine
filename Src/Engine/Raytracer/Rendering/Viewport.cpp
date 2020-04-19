@@ -14,6 +14,7 @@
 #include "../Common/Math/Transcendental.hpp"
 #include "../Common/Math/LdrColor.hpp"
 #include "../Common/Math/ColorHelpers.hpp"
+#include "../Common/Math/HilbertCurve.hpp"
 #include "../Common/Logger/Logger.hpp"
 #include "../Common/Utils/ThreadPool.hpp"
 #include "../Common/Utils/Waitable.hpp"
@@ -34,6 +35,8 @@ Viewport::Viewport()
     InitThreadData();
 
     mBlurredImages.Resize(mPostprocessParams.params.bloom.elements.Size());
+
+    PrepareHilbertCurve(mParams.tileSize);
 }
 
 Viewport::~Viewport() = default;
@@ -167,12 +170,41 @@ bool Viewport::SetRenderer(IRenderer* renderer)
     return true;
 }
 
+void Viewport::PrepareHilbertCurve(uint32 tileSize)
+{
+    tileSize = NextPowerOfTwo(tileSize);
+    const uint32 numPixelsInTile = Sqr(tileSize);
+
+    if (numPixelsInTile != mTileOffsets.Size())
+    {
+        mTileOffsets.Resize(numPixelsInTile);
+
+        uint32 prevX = 0;
+        uint32 prevY = 0;
+
+        for (uint32 i = 0; i < numPixelsInTile; ++i)
+        {
+            uint32 x, y;
+            Math::HilbertIndexToCoords(i, x, y);
+
+            NFE_ASSERT(x < tileSize&& y < tileSize);
+            mTileOffsets[i].x = static_cast<int8>(x - prevX);
+            mTileOffsets[i].y = static_cast<int8>(y - prevY);
+
+            prevX = x;
+            prevY = y;
+        }
+    }
+}
+
 bool Viewport::SetRenderingParams(const RenderingParams& params)
 {
     NFE_ASSERT(params.antiAliasingSpread >= 0.0f);
     NFE_ASSERT(params.motionBlurStrength >= 0.0f && params.motionBlurStrength <= 1.0f);
 
     mParams = params;
+
+    PrepareHilbertCurve(mParams.tileSize);
 
     return true;
 }
@@ -332,53 +364,61 @@ void Viewport::RenderTile(const TileRenderingContext& tileContext, RenderingCont
 
     if (ctx.params->traversalMode == TraversalMode::Single)
     {
-        for (uint32 y = tile.minY; y < tile.maxY; ++y)
+        uint32 x = tile.minX;
+        uint32 y = tile.minY;
+
+        for (const TileOffset& tileOffset : mTileOffsets)
         {
+            x += tileOffset.x;
+            y += tileOffset.y;
+
+            if (x >= tile.maxX || y >= tile.maxY)
+            {
+                continue;
+            }
+
             const uint32 realY = GetHeight() - 1u - y;
 
-            for (uint32 x = tile.minX; x < tile.maxX; ++x)
-            {
 #ifndef NFE_CONFIGURATION_FINAL
-                if (ctx.pixelBreakpoint.x == x && ctx.pixelBreakpoint.y == y)
-                {
-                    NFE_BREAK();
-                }
+            if (ctx.pixelBreakpoint.x == x && ctx.pixelBreakpoint.y == y)
+            {
+                NFE_BREAK();
+            }
 #endif // NFE_CONFIGURATION_FINAL
 
-                const Vec4f coords = (Vec4f::FromIntegers(x, realY, 0, 0) + tileContext.sampleOffset) * invSize;
+            const Vec4f coords = (Vec4f::FromIntegers(x, realY, 0, 0) + tileContext.sampleOffset) * invSize;
 
-                ctx.sampler.ResetPixel(x, y);
-                ctx.time = ctx.randomGenerator.GetFloat() * ctx.params->motionBlurStrength;
+            ctx.sampler.ResetPixel(x, y);
+            ctx.time = ctx.randomGenerator.GetFloat() * ctx.params->motionBlurStrength;
 #ifdef NFE_ENABLE_SPECTRAL_RENDERING
-                ctx.wavelength.Randomize(ctx.sampler.GetFloat());
+            ctx.wavelength.Randomize(ctx.sampler.GetFloat());
 #endif // NFE_ENABLE_SPECTRAL_RENDERING
 
-                // generate primary ray
-                const Ray ray = tileContext.renderParam.camera.GenerateRay(coords, ctx);
+            // generate primary ray
+            const Ray ray = tileContext.renderParam.camera.GenerateRay(coords, ctx);
 
-                if (ctx.params->visualizeTimePerPixel)
-                {
-                    timer.Start();
-                }
+            if (ctx.params->visualizeTimePerPixel)
+            {
+                timer.Start();
+            }
 
-                RayColor color = tileContext.renderer.RenderPixel(ray, tileContext.renderParam, ctx);
-                NFE_ASSERT(color.IsValid());
+            RayColor color = tileContext.renderer.RenderPixel(ray, tileContext.renderParam, ctx);
+            NFE_ASSERT(color.IsValid());
 
-                if (ctx.params->visualizeTimePerPixel)
-                {
-                    const float timePerRay = 1000.0f * static_cast<float>(timer.Stop());
-                    color = RayColor(timePerRay);
-                }
+            if (ctx.params->visualizeTimePerPixel)
+            {
+                const float timePerRay = 1000.0f * static_cast<float>(timer.Stop());
+                color = RayColor(timePerRay);
+            }
 
-                const Vec4f sampleColor = color.ConvertToTristimulus(ctx.wavelength);
+            const Vec4f sampleColor = color.ConvertToTristimulus(ctx.wavelength);
 
 #ifndef NFE_ENABLE_SPECTRAL_RENDERING
-                // exception: in spectral rendering these values can get below zero due to RGB->Spectrum conversion
-                NFE_ASSERT((sampleColor >= Vec4f::Zero()).All());
+            // exception: in spectral rendering these values can get below zero due to RGB->Spectrum conversion
+            NFE_ASSERT((sampleColor >= Vec4f::Zero()).All());
 #endif // NFE_ENABLE_SPECTRAL_RENDERING
 
-                tileContext.renderParam.film.AccumulateColor(x, y, sampleColor);
-            }
+            tileContext.renderParam.film.AccumulateColor(x, y, sampleColor);
         }
     }
     else if (ctx.params->traversalMode == TraversalMode::Packet)
