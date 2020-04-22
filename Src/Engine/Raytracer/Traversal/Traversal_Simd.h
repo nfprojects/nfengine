@@ -6,7 +6,7 @@
 #include "Rendering/Counters.h"
 #include "../../Common/Math/Ray.hpp"
 #include "../../Common/Math/Geometry.hpp"
-#include "../../Common/Math/Simd8Geometry.hpp"
+#include "../../Common/Math/SimdGeometry.hpp"
 
 
 namespace NFE {

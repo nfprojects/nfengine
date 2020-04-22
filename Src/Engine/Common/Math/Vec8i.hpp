@@ -62,6 +62,7 @@ struct NFE_ALIGN(32) Vec8i : public Common::Aligned<32>
     NFE_FORCE_INLINE explicit Vec8i(const int32 scalar);
     NFE_FORCE_INLINE explicit Vec8i(const int32* scalarPtr);
     NFE_FORCE_INLINE Vec8i(const int32 e0, const int32 e1, const int32 e2, const int32 e3, const int32 e4, const int32 e5, const int32 e6, const int32 e7);
+    NFE_FORCE_INLINE static const Vec8i Iota(const int32 value);
 
 #ifdef NFE_USE_AVX
     NFE_FORCE_INLINE Vec8i(const __m256i & m);
@@ -70,8 +71,17 @@ struct NFE_ALIGN(32) Vec8i : public Common::Aligned<32>
     NFE_FORCE_INLINE operator __m256() const { return _mm256_castsi256_ps(v); }
 #endif // NFE_USE_AVX
 
-    NFE_FORCE_INLINE int32 operator[] (const uint32 index) const { return i[index]; }
-    NFE_FORCE_INLINE int32& operator[] (const uint32 index) { return i[index]; }
+    NFE_FORCE_INLINE int32 operator[] (const uint32 index) const
+    {
+        NFE_ASSERT(index < 8, "Index out of bounds (%u)", index);
+        return i[index];
+    }
+
+    NFE_FORCE_INLINE int32& operator[] (const uint32 index)
+    {
+        NFE_ASSERT(index < 8, "Index out of bounds (%u)", index);
+        return i[index];
+    }
 
     // bitwise logic operations
     NFE_FORCE_INLINE const Vec8i operator & (const Vec8i& b) const;
@@ -180,6 +190,7 @@ struct NFE_ALIGN(32) Vec8ui : public Common::Aligned<32>
     NFE_FORCE_INLINE explicit Vec8ui(const uint32 scalar);
     NFE_FORCE_INLINE explicit Vec8ui(const uint32* scalarPtr);
     NFE_FORCE_INLINE Vec8ui(const uint32 e0, const uint32 e1, const uint32 e2, const uint32 e3, const uint32 e4, const uint32 e5, const uint32 e6, const uint32 e7);
+    NFE_FORCE_INLINE static const Vec8ui Iota(const uint32 value);
 
 #ifdef NFE_USE_AVX
     NFE_FORCE_INLINE Vec8ui(const __m256i & m);
@@ -188,8 +199,17 @@ struct NFE_ALIGN(32) Vec8ui : public Common::Aligned<32>
     NFE_FORCE_INLINE operator __m256() const { return _mm256_castsi256_ps(v); }
 #endif // NFE_USE_AVX
 
-    NFE_FORCE_INLINE int32 operator[] (const uint32 index) const { return i[index]; }
-    NFE_FORCE_INLINE int32& operator[] (const uint32 index) { return i[index]; }
+    NFE_FORCE_INLINE int32 operator[] (const uint32 index) const
+    {
+        NFE_ASSERT(index < 8, "Index out of bounds (%u)", index);
+        return i[index];
+    }
+
+    NFE_FORCE_INLINE int32& operator[] (const uint32 index)
+    {
+        NFE_ASSERT(index < 8, "Index out of bounds (%u)", index);
+        return i[index];
+    }
 
     // bitwise logic operations
     NFE_FORCE_INLINE const Vec8ui operator & (const Vec8ui & b) const;

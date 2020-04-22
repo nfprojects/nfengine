@@ -74,6 +74,8 @@ struct NFE_ALIGN(16) Vec4f : public Common::Aligned<16>
 
 public:
 
+    using BoolType = VecBool4f;
+
     union
     {
         float f[4];
@@ -113,8 +115,18 @@ public:
     NFE_FORCE_INLINE static const Vec4f FromIntegers(int32 x, int32 y, int32 z, int32 w);
 
     NFE_FORCE_INLINE explicit operator float() const { return x; }
-    NFE_FORCE_INLINE float operator[] (uint32 index) const { return f[index]; }
-    NFE_FORCE_INLINE float& operator[] (uint32 index) { return f[index]; }
+
+    NFE_FORCE_INLINE float operator[] (uint32 index) const
+    {
+        NFE_ASSERT(index < 4, "Index out of bounds (%u)", index);
+        return f[index];
+    }
+
+    NFE_FORCE_INLINE float& operator[] (uint32 index)
+    {
+        NFE_ASSERT(index < 4, "Index out of bounds (%u)", index);
+        return f[index];
+    }
 
 #ifdef NFE_USE_SSE
     NFE_FORCE_INLINE Vec4f(const __m128& src);
@@ -140,12 +152,12 @@ public:
     // modulo 1
     NFE_FORCE_INLINE static const Vec4f Mod1(const Vec4f& x);
 
-    NFE_FORCE_INLINE const VecBool4f operator == (const Vec4f& b) const;
-    NFE_FORCE_INLINE const VecBool4f operator < (const Vec4f& b) const;
-    NFE_FORCE_INLINE const VecBool4f operator <= (const Vec4f& b) const;
-    NFE_FORCE_INLINE const VecBool4f operator > (const Vec4f& b) const;
-    NFE_FORCE_INLINE const VecBool4f operator >= (const Vec4f& b) const;
-    NFE_FORCE_INLINE const VecBool4f operator != (const Vec4f& b) const;
+    NFE_FORCE_INLINE const BoolType operator == (const Vec4f& b) const;
+    NFE_FORCE_INLINE const BoolType operator < (const Vec4f& b) const;
+    NFE_FORCE_INLINE const BoolType operator <= (const Vec4f& b) const;
+    NFE_FORCE_INLINE const BoolType operator > (const Vec4f& b) const;
+    NFE_FORCE_INLINE const BoolType operator >= (const Vec4f& b) const;
+    NFE_FORCE_INLINE const BoolType operator != (const Vec4f& b) const;
 
     // bitwise logic operations
     NFE_FORCE_INLINE const Vec4f operator& (const Vec4f& b) const;
@@ -212,7 +224,7 @@ public:
     NFE_FORCE_INLINE uint32 GetSignMask() const;
 
     // For each vector component, copy value from "a" if "sel" is "false", or from "b" otherwise
-    NFE_FORCE_INLINE static const Vec4f Select(const Vec4f& a, const Vec4f& b, const VecBool4f& sel);
+    NFE_FORCE_INLINE static const Vec4f Select(const Vec4f& a, const Vec4f& b, const BoolType& sel);
 
     template<uint32 selX, uint32 selY, uint32 selZ, uint32 selW>
     NFE_FORCE_INLINE static const Vec4f Select(const Vec4f& a, const Vec4f& b);
@@ -292,13 +304,13 @@ public:
     NFE_FORCE_INLINE static bool AlmostEqual(const Vec4f& v1, const Vec4f& v2, float epsilon = NFE_MATH_EPSILON);
 
     // Check if the vector is equal to zero
-    NFE_FORCE_INLINE const VecBool4f IsZero() const;
+    NFE_FORCE_INLINE const BoolType IsZero() const;
 
     // Check if any component is NaN
-    NFE_FORCE_INLINE const VecBool4f IsNaN() const;
+    NFE_FORCE_INLINE const BoolType IsNaN() const;
 
     // Check if any component is an infinity
-    NFE_FORCE_INLINE const VecBool4f IsInfinite() const;
+    NFE_FORCE_INLINE const BoolType IsInfinite() const;
 
     // Check if is not NaN or infinity
     NFE_FORCE_INLINE bool IsValid() const;

@@ -5,7 +5,6 @@
 #include "Vec2f.hpp"
 #include "Vec3f.hpp"
 #include "Vec4f.hpp"
-#include "Vec2x8f.hpp"
 #include "Vec4i.hpp"
 #include "Vec8i.hpp"
 
@@ -20,6 +19,9 @@ public:
 
     // initialize seeds with new values, very slow
     void Reset();
+
+    template<typename T>
+    const T Get();
 
     uint64 GetLong();
     uint32 GetInt();
@@ -38,7 +40,7 @@ public:
         return GetVec4f().ToVec3f();
     }
 
-    NFE_FORCE_INLINE const Vec3f GetVec4fU()
+    NFE_FORCE_INLINE const Vec4fU GetVec4fU()
     {
         return GetVec4f().ToVec4fU();
     }
@@ -107,6 +109,85 @@ private:
 
     uint64 mSeed[2];
 };
+
+
+template<>
+NFE_FORCE_INLINE const bool Random::Get()
+{
+    return GetInt() & 1;
+}
+
+template<>
+NFE_FORCE_INLINE const uint8 Random::Get()
+{
+    return static_cast<uint8>(GetInt());
+}
+
+template<>
+NFE_FORCE_INLINE const int8 Random::Get()
+{
+    return static_cast<int8>(GetInt());
+}
+
+template<>
+NFE_FORCE_INLINE const uint16 Random::Get()
+{
+    return static_cast<uint16>(GetInt());
+}
+
+template<>
+NFE_FORCE_INLINE const int16 Random::Get()
+{
+    return static_cast<int16>(GetInt());
+}
+
+template<>
+NFE_FORCE_INLINE const uint32 Random::Get()
+{
+    return GetInt();
+}
+
+template<>
+NFE_FORCE_INLINE const int32 Random::Get()
+{
+    return static_cast<int32>(GetInt());
+}
+
+template<>
+NFE_FORCE_INLINE const uint64 Random::Get()
+{
+    return GetLong();
+}
+
+template<>
+NFE_FORCE_INLINE const int64 Random::Get()
+{
+    return static_cast<int32>(GetLong());
+}
+
+template<>
+NFE_FORCE_INLINE const float Random::Get()
+{
+    return GetFloat();
+}
+
+template<>
+NFE_FORCE_INLINE const double Random::Get()
+{
+    return GetDouble();
+}
+
+template<>
+NFE_FORCE_INLINE const Vec4f Random::Get()
+{
+    return GetVec4f();
+}
+
+template<>
+NFE_FORCE_INLINE const Vec8f Random::Get()
+{
+    return GetVec8f();
+}
 
 } // namespace Math
 } // namespace NFE

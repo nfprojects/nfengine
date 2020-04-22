@@ -14,8 +14,8 @@ struct SingleTraversalContext
 
 struct SimdTraversalContext
 {
-    const Math::Ray_Simd8& ray;
-    HitPoint_Simd8& hitPoint;
+    const RayPacketTypes::Ray& ray;
+    SimdHitPoint& hitPoint;
     RenderingContext& context;
 };
 
@@ -24,7 +24,7 @@ struct PacketTraversalContext
     RayPacket& ray;
     RenderingContext& context;
 
-    void StoreIntersection(RayGroup& rayGroup, const Math::Vec8f& t, const Math::Vec8f& u, const Math::Vec8f& v, const Math::VecBool8f& mask, uint32 objectID, uint32 subObjectID = 0) const;
+    void StoreIntersection(RayGroup& rayGroup, const RayPacketTypes::Float& t, const RayPacketTypes::Float& u, const RayPacketTypes::Float& v, const RayPacketTypes::FloatMask& mask, uint32 objectID, uint32 subObjectID = 0) const;
 };
 
 } // namespace RT

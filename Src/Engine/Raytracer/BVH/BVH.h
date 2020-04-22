@@ -5,7 +5,7 @@
 #include "../../Common/Math/Vec4f.hpp"
 #include "../../Common/Math/Vec3f.hpp"
 #include "../../Common/Math/Box.hpp"
-#include "../../Common/Math/Simd8Box.hpp"
+#include "../../Common/Math/SimdBox.hpp"
 #include "../../Common/Containers/DynArray.hpp"
 
 namespace NFE {
@@ -33,17 +33,13 @@ public:
             return { Math::Vec4f(&min.x) & mask, Math::Vec4f(&max.x) & mask };
         }
 
-        NFE_FORCE_INLINE Math::Box_Simd8 GetBox_Simd8() const
+        template<typename VecType>
+        NFE_FORCE_INLINE const Math::SimdBox<VecType> GetSimdBox() const
         {
-            Math::Box_Simd8 ret;
+            Math::SimdBox<VecType> ret;
 
-            ret.min.x = Math::Vec8f(min.x);
-            ret.min.y = Math::Vec8f(min.y);
-            ret.min.z = Math::Vec8f(min.z);
-
-            ret.max.x = Math::Vec8f(max.x);
-            ret.max.y = Math::Vec8f(max.y);
-            ret.max.z = Math::Vec8f(max.z);
+            ret.min = VecType(min);
+            ret.max = VecType(max);
 
             return ret;
         }

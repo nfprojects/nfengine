@@ -97,6 +97,7 @@
     <ClInclude Include="Color\BlackBodyColor.h" />
     <ClInclude Include="Color\MonochromaticColor.h" />
     <ClInclude Include="..\..\..\nfEngineDeps\tinyexr\tinyexr.h" />
+    <ClInclude Include="Traversal\RayPacketTypes.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BVH\BVH.cpp" />

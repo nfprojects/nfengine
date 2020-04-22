@@ -50,7 +50,7 @@ public:
 
     NFE_RAYTRACER_API void EvaluateIntersection(const Math::Ray& ray, const HitPoint& hitPoint, const float time, IntersectionData& outIntersectionData) const;
 
-    void TraceRay_Simd8(const Math::Ray_Simd8& ray, RenderingContext& context, RayColor* outColors) const;
+    void TraceRay_Simd8(const RayPacketTypes::Ray& ray, RenderingContext& context, RayColor* outColors) const;
 
     void Traverse_Leaf(const SingleTraversalContext& context, const uint32 objectID, const BVH::Node& node) const;
     void Traverse_Leaf(const PacketTraversalContext& context, const uint32 objectID, const BVH::Node& node, uint32 numActiveGroups) const;

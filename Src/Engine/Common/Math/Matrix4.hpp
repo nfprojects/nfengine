@@ -42,7 +42,6 @@ public:
         rows[3] = r3;
     }
 
-
     NFE_FORCE_INLINE Matrix4(const Vec8f& v0, const Vec8f& v1)
     {
         vec[0] = v0;
@@ -143,12 +142,13 @@ public:
 
     // Multiply a 3D vector by a 4x4 matrix (affine transform).
     // Equivalent of a[0] * m.rows[0] + a[1] * m.rows[1] + a[2] * m.rows[2] + m.rows[3]
-    NFE_FORCE_INLINE const Vec4f TransformPoint(const Vec4f& a) const
+    template<typename T>
+    NFE_FORCE_INLINE const T TransformPoint(const T& a) const
     {
-        Vec4f t;
-        t = Vec4f::MulAndAdd(a.SplatX(), rows[0], rows[3]);
-        t = Vec4f::MulAndAdd(a.SplatY(), rows[1], t);
-        t = Vec4f::MulAndAdd(a.SplatZ(), rows[2], t);
+        T t;
+        t = T::MulAndAdd(T(rows[0]), a.x, T(rows[3]));
+        t = T::MulAndAdd(T(rows[1]), a.y, t);
+        t = T::MulAndAdd(T(rows[2]), a.z, t);
         return t;
     }
 
@@ -166,33 +166,23 @@ public:
         return t;
     }
 
-    NFE_FORCE_INLINE const Vec4f TransformVector(const Vec4f& a) const
+    template<typename T>
+    NFE_FORCE_INLINE const T TransformVector(const T& a) const
     {
-        Vec4f t = a.SplatX() * rows[0];
-        t = Vec4f::MulAndAdd(a.SplatY(), rows[1], t);
-        t = Vec4f::MulAndAdd(a.SplatZ(), rows[2], t);
+        T t = T(rows[0]) * a.x;
+        t = T::MulAndAdd(T(rows[1]), a.y, t);
+        t = T::MulAndAdd(T(rows[2]), a.z, t);
         return t;
     }
 
     // transform and negate a vector
     // Note: faster than TransformVector(-a)
-    NFE_FORCE_INLINE const Vec4f TransformVectorNeg(const Vec4f& a) const
+    template<typename T>
+    NFE_FORCE_INLINE const T TransformVectorNeg(const T& a) const
     {
-        Vec4f t = a.SplatX() * rows[0];
-        t = Vec4f::NegMulAndSub(a.SplatY(), rows[1], t);
-        t = Vec4f::NegMulAndAdd(a.SplatZ(), rows[2], t);
-        return t;
-    }
-
-    const Vec3x8f TransformVector(const Vec3x8f& a) const
-    {
-        const Vec3x8f row0(rows[0]);
-        const Vec3x8f row1(rows[1]);
-        const Vec3x8f row2(rows[2]);
-
-        Vec3x8f t = row0 * a.x;
-        t = Vec3x8f::MulAndAdd(row1, a.y, t);
-        t = Vec3x8f::MulAndAdd(row2, a.z, t);
+        T t = T(rows[0]) * a.x;
+        t = T::NegMulAndSub(T(rows[1]), a.y, t);
+        t = T::NegMulAndAdd(T(rows[2]), a.z, t);
         return t;
     }
 
@@ -247,11 +237,14 @@ public:
     NFE_FORCE_INLINE Matrix4& Transpose()
     {
 #ifdef NFE_USE_SSE
-        Vec4f& row0 = rows[0];
-        Vec4f& row1 = rows[1];
-        Vec4f& row2 = rows[2];
-        Vec4f& row3 = rows[3];
-        _MM_TRANSPOSE4_PS(row0, row1, row2, row3);
+        const __m128 t0 = _mm_unpacklo_ps(rows[0], rows[1]);
+        const __m128 t1 = _mm_unpacklo_ps(rows[2], rows[3]);
+        const __m128 t2 = _mm_unpackhi_ps(rows[0], rows[1]);
+        const __m128 t3 = _mm_unpackhi_ps(rows[2], rows[3]);
+        rows[0] = _mm_movelh_ps(t0, t1);
+        rows[1] = _mm_movehl_ps(t1, t0);
+        rows[2] = _mm_movelh_ps(t2, t3);
+        rows[3] = _mm_movehl_ps(t3, t2);
 #else // !NFE_USE_SSE
         std::swap(rows[0][1], rows[1][0]);
         std::swap(rows[0][2], rows[2][0]);
@@ -272,7 +265,14 @@ public:
         Vec4f row3 = rows[3];
 
 #ifdef NFE_USE_SSE
-        _MM_TRANSPOSE4_PS(row0, row1, row2, row3);
+        const __m128 t0 = _mm_unpacklo_ps(row0, row1);
+        const __m128 t1 = _mm_unpacklo_ps(row2, row3);
+        const __m128 t2 = _mm_unpackhi_ps(row0, row1);
+        const __m128 t3 = _mm_unpackhi_ps(row2, row3);
+        row0 = _mm_movelh_ps(t0, t1);
+        row1 = _mm_movehl_ps(t1, t0);
+        row2 = _mm_movelh_ps(t2, t3);
+        row3 = _mm_movehl_ps(t3, t2);
 #else // !NFE_USE_SSE
         std::swap(row0[1], row1[0]);
         std::swap(row0[2], row2[0]);

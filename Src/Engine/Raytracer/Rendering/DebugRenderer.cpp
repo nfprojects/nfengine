@@ -217,17 +217,17 @@ void DebugRenderer::Raytrace_Packet(RayPacket& packet, const RenderParam& param,
     const uint32 numGroups = packet.GetNumGroups();
     for (uint32 i = 0; i < numGroups; ++i)
     {
-        Vec4f weights[RayPacket::RaysPerGroup];
+        Vec4f weights[RayPacket::GroupSize];
         packet.rayWeights[i].Unpack(weights);
 
-        Vec4f rayOrigins[RayPacket::RaysPerGroup];
-        Vec4f rayDirs[RayPacket::RaysPerGroup];
+        Vec4f rayOrigins[RayPacket::GroupSize];
+        Vec4f rayDirs[RayPacket::GroupSize];
         packet.groups[i].rays[0].origin.Unpack(rayOrigins);
         packet.groups[i].rays[0].dir.Unpack(rayDirs);
 
-        for (uint32 j = 0; j < RayPacket::RaysPerGroup; ++j)
+        for (uint32 j = 0; j < RayPacket::GroupSize; ++j)
         {
-            const HitPoint& hitPoint = context.hitPoints[RayPacket::RaysPerGroup * i + j];
+            const HitPoint& hitPoint = context.hitPoints[RayPacket::GroupSize * i + j];
 
             Vec4f color = Vec4f::Zero();
 
@@ -292,7 +292,7 @@ void DebugRenderer::Raytrace_Packet(RayPacket& packet, const RenderParam& param,
             // clamp color
             color = Vec4f::Max(Vec4f::Zero(), color);
 
-            const ImageLocationInfo& imageLocation = packet.imageLocations[RayPacket::RaysPerGroup * i + j];
+            const ImageLocationInfo& imageLocation = packet.imageLocations[RayPacket::GroupSize * i + j];
             param.film.AccumulateColor(imageLocation.x, imageLocation.y, color);
         }
     }

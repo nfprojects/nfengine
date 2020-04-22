@@ -408,18 +408,6 @@
     <ClInclude Include="Math\SamplingHelpers.hpp">
       <Filter>Math</Filter>
     </ClInclude>
-    <ClInclude Include="Math\Simd8Box.hpp">
-      <Filter>Math</Filter>
-    </ClInclude>
-    <ClInclude Include="Math\Simd8Geometry.hpp">
-      <Filter>Math</Filter>
-    </ClInclude>
-    <ClInclude Include="Math\Simd8Ray.hpp">
-      <Filter>Math</Filter>
-    </ClInclude>
-    <ClInclude Include="Math\Simd8Triangle.hpp">
-      <Filter>Math</Filter>
-    </ClInclude>
     <ClInclude Include="Math\Sphere.hpp">
       <Filter>Math</Filter>
     </ClInclude>
@@ -584,17 +572,27 @@
     <ClInclude Include="Math\Vec4fUImpl.hpp">
       <Filter>Math</Filter>
     </ClInclude>
-    <ClInclude Include="Math\Vec2x8f.hpp">
-      <Filter>Math</Filter>
-    </ClInclude>
-    <ClInclude Include="Math\Vec3x8f.hpp">
-      <Filter>Math</Filter>
-    </ClInclude>
     <ClInclude Include="Math\PackedLoadVec4f.hpp">
       <Filter>Math</Filter>
     </ClInclude>
     <ClInclude Include="Math\PackedLoadVec8f.hpp" />
     <ClInclude Include="Math\HilbertCurve.hpp" />
+    <ClInclude Include="Math\SimdRay.hpp">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\SimdTriangle.hpp">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\SimdBox.hpp">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\SimdGeometry.hpp">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\Vec2x8f.hpp" />
+    <ClInclude Include="Math\Vec3x8f.hpp" />
+    <ClInclude Include="Math\Vec2x4f.hpp" />
+    <ClInclude Include="Math\Vec3x4f.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="PCH.cpp" />

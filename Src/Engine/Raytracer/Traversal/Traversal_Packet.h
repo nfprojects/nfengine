@@ -9,9 +9,9 @@
 #include "Rendering/RenderingContext.h"
 #include "../../Common/Math/Ray.hpp"
 #include "../../Common/Math/Geometry.hpp"
-#include "../../Common/Math/Simd8Geometry.hpp"
+#include "../../Common/Math/SimdGeometry.hpp"
 
-#define NFE_NO_RAY_REORDERING
+// #define NFE_NO_RAY_REORDERING
 
 namespace NFE {
 namespace RT {
@@ -26,7 +26,7 @@ NFE_FORCE_NOINLINE void ReorderRays(RenderingContext& context, uint32 numRays, u
 NFE_FORCE_NOINLINE uint32 TestRayPacket(RayPacket& packet, uint32 numGroups, const BVH::Node& node, RenderingContext& context, uint32 traversalDepth);
 
 template <typename ObjectType, uint32 traversalDepth>
-void GenericTraverse(const PacketTraversalContext& context, const uint32 objectID, const ObjectType* object, uint32 numActiveGroups)
+NFE_FORCE_NOINLINE void GenericTraverse(const PacketTraversalContext& context, const uint32 objectID, const ObjectType* object, uint32 numActiveGroups)
 {
     // all nodes
     const BVH::Node* __restrict nodes = object->GetBVH().GetNodes();
@@ -62,7 +62,7 @@ void GenericTraverse(const PacketTraversalContext& context, const uint32 objectI
         uint32 raysHit = TestRayPacket(context.ray, numGroups, *frame.node, context.context, traversalDepth);
 
 #ifdef NFE_ENABLE_INTERSECTION_COUNTERS
-        context.context.localCounters.numRayBoxTests += 8 * numGroups;
+        context.context.localCounters.numRayBoxTests += RayPacketTypes::GroupType * numGroups;
         context.context.localCounters.numPassedRayBoxTests += raysHit;
 #endif // NFE_ENABLE_INTERSECTION_COUNTERS
 
@@ -79,10 +79,10 @@ void GenericTraverse(const PacketTraversalContext& context, const uint32 objectI
 
 #ifndef NFE_NO_RAY_REORDERING
             // reorder rays to restore coherency
-            if ((numGroups > 1) && ((4 * numGroups) >= raysHit)) // 50% utilization
+            if ((numGroups > 1) && ((RayPacketTypes::GroupSize / 2u * numGroups) >= raysHit)) // 50% utilization
             {
-                ReorderRays(context.context, numGroups);
-                numGroups = (raysHit + 7) / 8;
+                ReorderRays(context.context, numGroups, traversalDepth);
+                numGroups = (raysHit + RayPacketTypes::GroupSize - 1u) / RayPacketTypes::GroupSize;
             }
 #endif // NFE_NO_RAY_REORDERING
         }

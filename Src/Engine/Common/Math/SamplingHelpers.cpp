@@ -6,7 +6,7 @@
 namespace NFE {
 namespace Math {
 
-const Vec2x8f SamplingHelpers::GetCircle_Simd8(const Vec2x8f& u)
+const Vec2x8f SamplingHelpers::GetCircle(const Vec2x8f& u)
 {
     // angle (uniform distribution)
     const Vec8f theta = u.x * (2.0f * NFE_MATH_PI);
@@ -16,6 +16,20 @@ const Vec2x8f SamplingHelpers::GetCircle_Simd8(const Vec2x8f& u)
 
     const Vec8f vSin = Sin(theta);
     const Vec8f vCos = Sin(theta + Vec8f(NFE_MATH_PI / 2.0f));
+
+    return { r * vSin, r * vCos };
+}
+
+const Vec2x4f SamplingHelpers::GetCircle(const Vec2x4f& u)
+{
+    // angle (uniform distribution)
+    const Vec4f theta = u.x * (2.0f * NFE_MATH_PI);
+
+    // radius (corrected distribution)
+    const Vec4f r = Vec4f::Sqrt(u.y);
+
+    const Vec4f vSin = Sin(theta);
+    const Vec4f vCos = Sin(theta + Vec4f(NFE_MATH_PI / 2.0f));
 
     return { r * vSin, r * vCos };
 }

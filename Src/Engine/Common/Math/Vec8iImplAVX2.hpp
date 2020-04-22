@@ -121,6 +121,11 @@ Vec8i::Vec8i(const int32* scalarPtr)
     : v(_mm256_loadu_si256(reinterpret_cast<const __m256i*>(scalarPtr)))
 {}
 
+const Vec8i Vec8i::Iota(const int32 value)
+{
+    return Vec8i(value) + Vec8i(0, 1, 2, 3, 4, 5, 6, 7);
+}
+
 const Vec8i Vec8i::SelectBySign(const Vec8i& a, const Vec8i& b, const VecBool8i& sel)
 {
     return Vec8i(_mm256_blendv_ps(a.f, b.f, sel));
@@ -342,6 +347,11 @@ Vec8ui::Vec8ui(const uint32 scalar)
 Vec8ui::Vec8ui(const uint32* scalarPtr)
     : v(_mm256_loadu_si256(reinterpret_cast<const __m256i*>(scalarPtr)))
 {}
+
+const Vec8ui Vec8ui::Iota(const uint32 value)
+{
+    return Vec8ui(value) + Vec8ui(0, 1, 2, 3, 4, 5, 6, 7);
+}
 
 const Vec8ui Vec8ui::SelectBySign(const Vec8ui& a, const Vec8ui& b, const VecBool8i& sel)
 {

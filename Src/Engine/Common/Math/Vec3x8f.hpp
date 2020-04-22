@@ -35,9 +35,10 @@ public:
     {}
 
     // splat value to all the components
-    NFE_FORCE_INLINE explicit Vec3x8f(const Vec8f& s)
-        : x(s), y(s), z(s)
-    {}
+    NFE_FORCE_INLINE static const Vec3x8f FromScalar(const Vec8f& s)
+    {
+        return Vec3x8f{ s, s, s };
+    }
 
     // splat single 3D vector
     NFE_FORCE_INLINE explicit Vec3x8f(const Vec4f& v)

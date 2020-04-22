@@ -2,7 +2,7 @@
 #include "VertexBuffer.h"
 #include "Material/Material.h"
 #include "Utils/Memory.h"
-#include "../Common/Math/Simd8Triangle.hpp"
+#include "../Common/Math/SimdTriangle.hpp"
 #include "../Common/Logger/Logger.hpp"
 
 namespace NFE {
@@ -203,12 +203,12 @@ const Material* VertexBuffer::GetMaterial(const uint32 materialIndex) const
     return materialBufferData[materialIndex];
 }
 
-void VertexBuffer::GetTriangle(const uint32 triangleIndex, Triangle_Simd8& outTriangle) const
+void VertexBuffer::GetTriangle(const uint32 triangleIndex, RayPacketTypes::Triangle& outTriangle) const
 {
     const ProcessedTriangle& tri = mPreprocessedTriangles[triangleIndex];
-    outTriangle.v0 = Vec3x8f(tri.v0);
-    outTriangle.edge1 = Vec3x8f(tri.edge1);
-    outTriangle.edge2 = Vec3x8f(tri.edge2);
+    outTriangle.v0 = RayPacketTypes::Vec3f(tri.v0);
+    outTriangle.edge1 = RayPacketTypes::Vec3f(tri.edge1);
+    outTriangle.edge2 = RayPacketTypes::Vec3f(tri.edge2);
 }
 
 void VertexBuffer::GetShadingData(const VertexIndices& indices, VertexShadingData& a, VertexShadingData& b, VertexShadingData& c) const

@@ -3,8 +3,8 @@
 #include "../nfCommon.hpp"
 
 #include "Vec4f.hpp"
+#include "Vec2x4f.hpp"
 #include "Vec2x8f.hpp"
-#include "Vec3x8f.hpp"
 
 namespace NFE {
 namespace Math {
@@ -19,7 +19,8 @@ public:
 
     // get point on a circle (radius = 1.0)
     NFCOMMON_API static const Vec4f GetCircle(const Vec2f u);
-    NFCOMMON_API static const Vec2x8f GetCircle_Simd8(const Vec2x8f& u);
+    NFCOMMON_API static const Vec2x4f GetCircle(const Vec2x4f& u);
+    NFCOMMON_API static const Vec2x8f GetCircle(const Vec2x8f& u);
 
     // get point on a regular hexagon
     // Note: 3 sample components are required

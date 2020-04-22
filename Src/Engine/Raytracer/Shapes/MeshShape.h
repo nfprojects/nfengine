@@ -8,7 +8,7 @@
 
 #include "../../Common/Math/Box.hpp"
 #include "../../Common/Math/Ray.hpp"
-#include "../../Common/Math/Simd8Ray.hpp"
+#include "../../Common/Math/SimdRay.hpp"
 #include "../../Common/Containers/String.hpp"
 
 

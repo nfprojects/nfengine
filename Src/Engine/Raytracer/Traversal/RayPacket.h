@@ -1,9 +1,7 @@
 #pragma once
 
+#include "RayPacketTypes.h"
 #include "../BVH/BVH.h"
-#include "../../Common/Math/Ray.hpp"
-#include "../../Common/Math/Simd8Ray.hpp"
-#include "../../Common/Math/Vec8i.hpp"
 
 
 namespace NFE {
@@ -27,21 +25,21 @@ struct NFE_ALIGN(4) ImageLocationInfo
 
 struct NFE_ALIGN(32) RayGroup
 {
-    Math::Ray_Simd8 rays[2];
-    Math::Vec8f maxDistances;
-    Math::Vec8i rayOffsets;
+    RayPacketTypes::Ray rays[2];
+    RayPacketTypes::Float maxDistances;
+    RayPacketTypes::Uint32 rayOffsets;
 };
 
-// packet of coherent rays (8-SIMD version)
+// packet of coherent rays
 struct NFE_ALIGN(32) RayPacket
 {
-    static constexpr uint32 RaysPerGroup = 8;
-    static constexpr uint32 MaxNumGroups = MaxRayPacketSize / RaysPerGroup;
+    static constexpr uint32 GroupSize = RayPacketTypes::GroupSize;
+    static constexpr uint32 MaxNumGroups = MaxRayPacketSize / GroupSize;
 
     RayGroup groups[MaxNumGroups];
 
     // rays influence on the image (e.g. 1.0 for primary rays)
-    Math::Vec3x8f rayWeights[MaxNumGroups];
+    RayPacketTypes::Vec3f rayWeights[MaxNumGroups];
 
     // corresponding image pixels
     ImageLocationInfo imageLocations[MaxRayPacketSize];
@@ -55,15 +53,15 @@ struct NFE_ALIGN(32) RayPacket
 
     NFE_FORCE_INLINE uint32 GetNumGroups() const
     {
-        return (numRays + RaysPerGroup - 1) / RaysPerGroup;
+        return (numRays + GroupSize - 1) / GroupSize;
     }
 
     NFE_FORCE_INLINE void PushRay(const Math::Ray& ray, const Math::Vec4f& weight, const ImageLocationInfo& location)
     {
         NFE_ASSERT(numRays < MaxRayPacketSize);
 
-        const uint32 groupIndex = numRays / RaysPerGroup;
-        const uint32 rayIndex = numRays % RaysPerGroup;
+        const uint32 groupIndex = numRays / GroupSize;
+        const uint32 rayIndex = numRays % GroupSize;
 
         RayGroup& group = groups[groupIndex];
         group.rays[0].dir.x[rayIndex] = ray.dir.x;
@@ -87,22 +85,21 @@ struct NFE_ALIGN(32) RayPacket
         numRays++;
     }
 
-    // TODO use non-temporal stores?
-    NFE_FORCE_INLINE void PushRays(const Math::Ray_Simd8& rays, const Math::Vec3x8f& weights, const ImageLocationInfo* locations)
+    void PushRays(const RayPacketTypes::Ray& rays, const RayPacketTypes::Vec3f& weights, const ImageLocationInfo* locations)
     {
-        NFE_ASSERT((numRays < MaxRayPacketSize) && (numRays % RaysPerGroup == 0));
+        NFE_ASSERT((numRays < MaxRayPacketSize) && (numRays % GroupSize == 0));
 
-        RayGroup& group = groups[numRays / RaysPerGroup];
+        RayGroup& group = groups[numRays / GroupSize];
         group.rays[0] = rays;
-        group.maxDistances = Math::VECTOR8_MAX;
-        group.rayOffsets = Math::Vec8i(numRays) + Math::Vec8i(0, 1, 2, 3, 4, 5, 6, 7);
+        group.maxDistances = RayPacketTypes::Float(FLT_MAX);
+        group.rayOffsets = RayPacketTypes::Uint32::Iota(numRays);
 
-        rayWeights[numRays / RaysPerGroup] = weights;
+        rayWeights[numRays / GroupSize] = weights;
 
         // Note: this should be replaced with a single MOVUPS instruction
-        memcpy(imageLocations + numRays, locations, sizeof(ImageLocationInfo) * 8);
+        memcpy(imageLocations + numRays, locations, sizeof(ImageLocationInfo) * GroupSize);
 
-        numRays += RaysPerGroup;
+        numRays += GroupSize;
     }
 
     NFE_FORCE_INLINE void Clear()
@@ -111,29 +108,6 @@ struct NFE_ALIGN(32) RayPacket
     }
 };
 
-/*
-struct NFE_ALIGN(64) RayStream
-{
-    float rayOriginX[MaxRayPacketSize];
-    float rayOriginY[MaxRayPacketSize];
-    float rayOriginZ[MaxRayPacketSize];
-
-    float rayDirX[MaxRayPacketSize];
-    float rayDirY[MaxRayPacketSize];
-    float rayDirZ[MaxRayPacketSize];
-
-    float distance[MaxRayPacketSize];
-};
-
-struct NFE_ALIGN(64) RayStreamHitData
-{
-    float distance[MaxRayPacketSize];
-    float u[MaxRayPacketSize];
-    float v[MaxRayPacketSize];
-    uint32 subObjectId[MaxRayPacketSize];
-    uint32 objectId[MaxRayPacketSize];
-};
-*/
 
 } // namespace RT
 } // namespace NFE

@@ -89,6 +89,11 @@ const Vec4i Vec4i::Zero()
     return _mm_setzero_si128();
 }
 
+const Vec4i Vec4i::Iota(const int32 value)
+{
+    return Vec4i(value) + Vec4i(0, 1, 2, 3);
+}
+
 Vec4i::Vec4i(const __m128i& m)
     : v(m)
 {}
@@ -443,6 +448,11 @@ Vec4ui::Vec4ui(const uint32 x, const uint32 y, const uint32 z, const uint32 w)
 Vec4ui::Vec4ui(const uint32 i)
     : v(_mm_set1_epi32(i))
 {}
+
+const Vec4ui Vec4ui::Iota(const uint32 value)
+{
+    return Vec4ui(value) + Vec4ui(0, 1, 2, 3);
+}
 
 const Vec4ui Vec4ui::Select(const Vec4ui& a, const Vec4ui& b, const VecBool4i& sel)
 {

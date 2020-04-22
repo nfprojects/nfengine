@@ -147,48 +147,48 @@ float Camera::PdfW(const Math::Vec4f& direction) const
 }
 
 
-const Ray_Simd8 Camera::GenerateRay_Simd8(const Vec2x8f& coords, RenderingContext& context) const
+const RayPacketTypes::Ray Camera::GenerateSimdRay(const RayPacketTypes::Vec2f& coords, RenderingContext& context) const
 {
     const Matrix4 transform = SampleTransform(context.time);
 
-    Vec3x8f origin(transform.GetTranslation());
-    Vec2x8f offsetedCoords = coords * 2.0f - Vec2x8f::One();
+    RayPacketTypes::Vec3f origin(transform.GetTranslation());
+    RayPacketTypes::Vec2f offsetedCoords = coords * 2.0f - RayPacketTypes::Vec2f::One();
 
     // barrel distortion
     if (enableBarellDistortion)
     {
-        Vec8f radius = Vec2x8f::Dot(offsetedCoords, offsetedCoords);
+        RayPacketTypes::Float radius = RayPacketTypes::Vec2f::Dot(offsetedCoords, offsetedCoords);
         radius *= (barrelDistortionConstFactor + barrelDistortionVariableFactor * context.randomGenerator.GetFloat());
         offsetedCoords += offsetedCoords * radius;
     }
 
-    const Vec3x8f screenSpaceRayDir =
+    const RayPacketTypes::Vec3f screenSpaceRayDir =
     {
         offsetedCoords.x * (mTanHalfFoV * mAspectRatio),
         offsetedCoords.y * mTanHalfFoV,
-        Vec8f(1.0f)
+        RayPacketTypes::Float(1.0f)
     };
 
     // calculate ray direction (ideal, without DoF)
-    Vec3x8f direction = transform.TransformVector(screenSpaceRayDir);
+    RayPacketTypes::Vec3f direction = transform.TransformVector(screenSpaceRayDir);
 
     // depth of field
     if (mDOF.enable)
     {
-        const Vec3x8f focusPoint = Vec3x8f::MulAndAdd(direction, Vec8f(mDOF.focalPlaneDistance), origin);
+        const RayPacketTypes::Vec3f focusPoint = RayPacketTypes::Vec3f::MulAndAdd(direction, RayPacketTypes::Float(mDOF.focalPlaneDistance), origin);
 
         const Vec4f right = transform[0];
         const Vec4f up = transform[1];
 
         // TODO different bokeh shapes, texture, etc.
-        const Vec2x8f randomPointOnCircle = GenerateBokeh_Simd8(context) * mDOF.aperture;
-        origin = Vec3x8f::MulAndAdd(Vec3x8f(randomPointOnCircle.x), Vec3x8f(right), origin);
-        origin = Vec3x8f::MulAndAdd(Vec3x8f(randomPointOnCircle.y), Vec3x8f(up), origin);
+        const RayPacketTypes::Vec2f randomPointOnCircle = GenerateSimdBokeh(context) * mDOF.aperture;
+        origin = RayPacketTypes::Vec3f::MulAndAdd(RayPacketTypes::Vec3f::FromScalar(randomPointOnCircle.x), RayPacketTypes::Vec3f(right), origin);
+        origin = RayPacketTypes::Vec3f::MulAndAdd(RayPacketTypes::Vec3f::FromScalar(randomPointOnCircle.y), RayPacketTypes::Vec3f(up), origin);
 
         direction = focusPoint - origin;
     }
 
-    return Ray_Simd8(origin, direction);
+    return RayPacketTypes::Ray(origin, direction);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -218,25 +218,27 @@ const Vec4f Camera::GenerateBokeh(const Math::Vec3f sample) const
     return Vec4f::Zero();
 }
 
-const Vec2x8f Camera::GenerateBokeh_Simd8(RenderingContext& context) const
+const RayPacketTypes::Vec2f Camera::GenerateSimdBokeh(RenderingContext& context) const
 {
-    const Vec2x8f u(context.randomGenerator.GetVec8f(), context.randomGenerator.GetVec8f());
+    const RayPacketTypes::Vec2f u(
+        context.randomGenerator.Get<RayPacketTypes::Float>(),
+        context.randomGenerator.Get<RayPacketTypes::Float>());
 
     switch (mDOF.bokehShape)
     {
         case BokehShape::Circle:
-            return SamplingHelpers::GetCircle_Simd8(u);
+            return SamplingHelpers::GetCircle(u);
         //case BokehShape::Hexagon:
         //    return SamplingHelpers::GetHexagon_Simd8(u, context.randomGenerator.GetVector8());
         case BokehShape::Square:
-            return 2.0f * u - Vec2x8f(1.0f);
+            return 2.0f * u - RayPacketTypes::Vec2f(1.0f);
         //TODO
         //case BokehShape::NGon:
         //    return context.randomGenerator.GetRegularPolygon_Simd8(mDOF.apertureBlades);
     }
 
     NFE_FATAL("Invalid bokeh type");
-    return Vec2x8f::Zero();
+    return RayPacketTypes::Vec2f::Zero();
 }
 
 } // namespace RT

@@ -433,28 +433,46 @@ void Viewport::RenderTile(const TileRenderingContext& tileContext, RenderingCont
 
         // TODO multisampling
         // TODO handle case where tile size does not fit ray group size
+
+#if (NFE_RT_RAY_GROUP_SIZE == 4)
+
         NFE_ASSERT((tile.maxY - tile.minY) % 2 == 0);
-        NFE_ASSERT((tile.maxX - tile.minX) % 4 == 0);
-        /*
-        for (uint32 y = tile.minY; y < tile.maxY; ++y)
+        NFE_ASSERT((tile.maxX - tile.minX) % 2 == 0);
+
+        constexpr uint32 rayGroupSizeX = 2;
+        constexpr uint32 rayGroupSizeY = 2;
+
+        for (uint32 y = tile.minY; y < tile.maxY; y += rayGroupSizeY)
         {
             const uint32 realY = GetHeight() - 1u - y;
 
-            for (uint32 x = tile.minX; x < tile.maxX; ++x)
+            for (uint32 x = tile.minX; x < tile.maxX; x += rayGroupSizeX)
             {
-                const Vec4f coords = (Vec4f::FromIntegers(x, realY, 0, 0) + tileContext.sampleOffset) * invSize;
+                // generate ray group with following layout:
+                //  0 1 2 3
+                //  4 5 6 7
+                Vec2x4f coords{ Vec4f::FromInteger(x), Vec4f::FromInteger(realY) };
+                coords.x += Vec4f(0.0f, 1.0f, 0.0f, 1.0f);
+                coords.y -= Vec4f(0.0f, 0.0f, 1.0f, 1.0f);
+                coords.x += Vec4f(tileContext.sampleOffset.x);
+                coords.y += Vec4f(tileContext.sampleOffset.y);
+                coords.x *= invSize.x;
+                coords.y *= invSize.y;
 
-                for (uint32 s = 0; s < samplesPerPixel; ++s)
+                const ImageLocationInfo locations[] =
                 {
-                    // generate primary ray
-                    const Ray ray = tileContext.camera.GenerateRay(coords, ctx);
+                    { x + 0, y + 0 }, { x + 1, y + 0 }, { x + 0, y + 1 }, { x + 1, y + 1 },
+                };
 
-                    const ImageLocationInfo location = { (uint16)x, (uint16)y };
-                    primaryPacket.PushRay(ray, Vec4f(sampleScale), location);
-                }
+                const RayPacketTypes::Ray simdRay = tileContext.renderParam.camera.GenerateSimdRay(coords, ctx);
+                primaryPacket.PushRays(simdRay, Vec3x4f(1.0f), locations);
             }
         }
-        */
+
+#elif (NFE_RT_RAY_GROUP_SIZE == 8)
+
+        NFE_ASSERT((tile.maxY - tile.minY) % 2 == 0);
+        NFE_ASSERT((tile.maxX - tile.minX) % 4 == 0);
 
         constexpr uint32 rayGroupSizeX = 4;
         constexpr uint32 rayGroupSizeY = 2;
@@ -482,10 +500,14 @@ void Viewport::RenderTile(const TileRenderingContext& tileContext, RenderingCont
                     { x + 0, y + 1 }, { x + 1, y + 1 }, { x + 2, y + 1 }, { x + 3, y + 1 },
                 };
 
-                const Ray_Simd8 simdRay = tileContext.renderParam.camera.GenerateRay_Simd8(coords, ctx);
+                const RayPacketTypes::Ray simdRay = tileContext.renderParam.camera.GenerateSimdRay(coords, ctx);
                 primaryPacket.PushRays(simdRay, Vec3x8f(1.0f), locations);
             }
         }
+
+#else
+    #error Unsupported ray group size
+#endif
 
         ctx.localCounters.Reset();
         tileContext.renderer.Raytrace_Packet(primaryPacket, tileContext.renderParam, ctx);

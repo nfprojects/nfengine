@@ -6,7 +6,7 @@
 #include "Traversal/TraversalContext.h"
 #include "Material/Material.h"
 #include "Medium/Medium.h"
-#include "../Common/Math/Simd8Geometry.hpp"
+#include "../Common/Math/SimdGeometry.hpp"
 #include "../Common/Reflection/Types/ReflectionSharedPtrType.hpp"
 #include "../Common/Reflection/ReflectionClassDefine.hpp"
 

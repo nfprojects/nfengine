@@ -90,14 +90,24 @@ struct NFE_ALIGN(16) Vec4i : public Common::Aligned<16>
     NFE_FORCE_INLINE Vec4i(const VecBool4i& other);
     NFE_FORCE_INLINE explicit Vec4i(const int32 scalar);
     NFE_FORCE_INLINE Vec4i(const int32 x, const int32 y, const int32 z, const int32 w);
+    NFE_FORCE_INLINE static const Vec4i Iota(const int32 value);
 
 #ifdef NFE_USE_SSE
     NFE_FORCE_INLINE Vec4i(const __m128i& m);
     NFE_FORCE_INLINE operator __m128i() const { return v; }
 #endif // NFE_USE_SSE
 
-    NFE_FORCE_INLINE int32 operator[] (const uint32 index) const { return i[index]; }
-    NFE_FORCE_INLINE int32& operator[] (const uint32 index) { return i[index]; }
+    NFE_FORCE_INLINE int32 operator[] (const uint32 index) const
+    {
+        NFE_ASSERT(index < 4, "Index out of bounds (%u)", index);
+        return i[index];
+    }
+
+    NFE_FORCE_INLINE int32& operator[] (const uint32 index)
+    {
+        NFE_ASSERT(index < 4, "Index out of bounds (%u)", index);
+        return i[index];
+    }
 
     // bitwise logic operations
     NFE_FORCE_INLINE const Vec4i operator & (const Vec4i& b) const;
@@ -204,14 +214,24 @@ struct NFE_ALIGN(16) Vec4ui : public Common::Aligned<16>
     NFE_FORCE_INLINE explicit Vec4ui(const Vec4i& other);
     NFE_FORCE_INLINE explicit Vec4ui(const uint32 scalar);
     NFE_FORCE_INLINE Vec4ui(const uint32 x, const uint32 y, const uint32 z, const uint32 w);
+    NFE_FORCE_INLINE static const Vec4ui Iota(const uint32 value);
 
 #ifdef NFE_USE_SSE
     NFE_FORCE_INLINE Vec4ui(const __m128i& m);
     NFE_FORCE_INLINE operator __m128i() const { return v; }
 #endif // NFE_USE_SSE
 
-    NFE_FORCE_INLINE uint32 operator[] (const uint32 index) const { return u[index]; }
-    NFE_FORCE_INLINE uint32& operator[] (const uint32 index) { return u[index]; }
+    NFE_FORCE_INLINE uint32 operator[] (const uint32 index) const
+    {
+        NFE_ASSERT(index < 4, "Index out of bounds (%u)", index);
+        return u[index];
+    }
+
+    NFE_FORCE_INLINE uint32& operator[] (const uint32 index)
+    {
+        NFE_ASSERT(index < 4, "Index out of bounds (%u)", index);
+        return u[index];
+    }
 
     // bitwise logic operations
     NFE_FORCE_INLINE const Vec4ui operator & (const Vec4ui& b) const;

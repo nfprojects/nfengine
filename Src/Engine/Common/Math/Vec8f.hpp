@@ -54,6 +54,8 @@ private:
  */
 struct NFE_ALIGN(32) Vec8f : public Common::Aligned<32>
 {
+    using BoolType = VecBool8f;
+
     // constructors
     NFE_FORCE_INLINE Vec8f();
     NFE_FORCE_INLINE Vec8f(const Vec8f& other);
@@ -80,8 +82,17 @@ struct NFE_ALIGN(32) Vec8f : public Common::Aligned<32>
     NFE_FORCE_INLINE operator __m256i() const { return reinterpret_cast<const __m256i*>(&v)[0]; }
 #endif // NFE_USE_AVX
 
-    NFE_FORCE_INLINE float operator[] (uint32 index) const { return f[index]; }
-    NFE_FORCE_INLINE float& operator[] (uint32 index) { return f[index]; }
+    NFE_FORCE_INLINE float operator[] (uint32 index) const
+    {
+        NFE_ASSERT(index < 8, "Index out of bounds (%u)", index);
+        return f[index];
+    }
+
+    NFE_FORCE_INLINE float& operator[] (uint32 index)
+    {
+        NFE_ASSERT(index < 8, "Index out of bounds (%u)", index);
+        return f[index];
+    }
 
     // extract lower lanes
     NFE_FORCE_INLINE const Vec4f Low() const;
@@ -105,12 +116,12 @@ struct NFE_ALIGN(32) Vec8f : public Common::Aligned<32>
     friend const Vec8f operator * (float a, const Vec8f& b);
 
     // comparison operators (returns true, if all the elements satisfy the equation)
-    NFE_FORCE_INLINE const VecBool8f operator == (const Vec8f& b) const;
-    NFE_FORCE_INLINE const VecBool8f operator < (const Vec8f& b) const;
-    NFE_FORCE_INLINE const VecBool8f operator <= (const Vec8f& b) const;
-    NFE_FORCE_INLINE const VecBool8f operator > (const Vec8f& b) const;
-    NFE_FORCE_INLINE const VecBool8f operator >= (const Vec8f& b) const;
-    NFE_FORCE_INLINE const VecBool8f operator != (const Vec8f& b) const;
+    NFE_FORCE_INLINE const BoolType operator == (const Vec8f& b) const;
+    NFE_FORCE_INLINE const BoolType operator < (const Vec8f& b) const;
+    NFE_FORCE_INLINE const BoolType operator <= (const Vec8f& b) const;
+    NFE_FORCE_INLINE const BoolType operator > (const Vec8f& b) const;
+    NFE_FORCE_INLINE const BoolType operator >= (const Vec8f& b) const;
+    NFE_FORCE_INLINE const BoolType operator != (const Vec8f& b) const;
 
     // bitwise logic operations
     NFE_FORCE_INLINE const Vec8f operator & (const Vec8f& b) const;
@@ -135,7 +146,7 @@ struct NFE_ALIGN(32) Vec8f : public Common::Aligned<32>
     NFE_FORCE_INLINE uint32 GetSignMask() const;
 
     // For each vector component, copy value from "a" if "sel" is "false", or from "b" otherwise.
-    NFE_FORCE_INLINE static const Vec8f Select(const Vec8f& a, const Vec8f& b, const VecBool8f& sel);
+    NFE_FORCE_INLINE static const Vec8f Select(const Vec8f& a, const Vec8f& b, const BoolType& sel);
 
     template<uint32 selX, uint32 selY, uint32 selZ, uint32 selW>
     NFE_FORCE_INLINE static const Vec8f Select(const Vec8f& a, const Vec8f& b);

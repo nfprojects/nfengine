@@ -10,7 +10,7 @@
 #include "Traversal/Traversal_Packet.h"
 
 #include "../Common/Math/Geometry.hpp"
-#include "../Common/Math/Simd8Geometry.hpp"
+#include "../Common/Math/SimdGeometry.hpp"
 #include "../Common/Math/Distribution.hpp"
 #include "../Common/Math/SamplingHelpers.hpp"
 #include "../Common/Math/PackedLoadVec4f.hpp"
@@ -312,7 +312,7 @@ void MeshShape::Traverse_Leaf_Simd8(const SimdTraversalContext& context, const u
 
     for (uint32 i = 0; i < node.numLeaves; ++i)
     {
-        HitPoint_Simd8& hitPoint = context.hitPoint;
+        SimdHitPoint& hitPoint = context.hitPoint;
         const uint32 triangleIndex = node.childIndex + i;
         const Vec8i triangleIndexVec(triangleIndex);
 
@@ -341,17 +341,16 @@ void MeshShape::Traverse_Leaf_Simd8(const SimdTraversalContext& context, const u
 
 void MeshShape::Traverse_Leaf(const PacketTraversalContext& context, const uint32 objectID, const BVH::Node& node, const uint32 numActiveGroups) const
 {
-    Vec8f distance, u, v;
-    Triangle_Simd8 tri;
+    RayPacketTypes::Float distance, u, v;
+    RayPacketTypes::Triangle tri;
 
 #ifdef NFE_ENABLE_INTERSECTION_COUNTERS
-    context.context.localCounters.numRayTriangleTests += 8 * node.numLeaves * numActiveGroups;
+    context.context.localCounters.numRayTriangleTests += RayPacketTypes::GroupSize * node.numLeaves * numActiveGroups;
 #endif // NFE_ENABLE_INTERSECTION_COUNTERS
 
     for (uint32 i = 0; i < node.numLeaves; ++i)
     {
         const uint32 triangleIndex = node.childIndex + i;
-        const Vec8f triangleIndexVec(triangleIndex);
 
         mVertexBuffer.GetTriangle(triangleIndex, tri);
 
@@ -359,7 +358,7 @@ void MeshShape::Traverse_Leaf(const PacketTraversalContext& context, const uint3
         {
             RayGroup& rayGroup = context.ray.groups[context.context.activeGroupsIndices[j]];
 
-            const VecBool8f mask = Intersect_TriangleRay_Simd8(rayGroup.rays[1].dir, rayGroup.rays[1].origin, tri, rayGroup.maxDistances, u, v, distance);
+            const auto mask = Simd<RayPacketTypes::GroupSize>::Intersect_TriangleRay(rayGroup.rays[1].dir, rayGroup.rays[1].origin, tri, rayGroup.maxDistances, u, v, distance);
 
             context.StoreIntersection(rayGroup, distance, u, v, mask, objectID, triangleIndex);
 

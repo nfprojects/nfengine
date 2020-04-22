@@ -409,6 +409,7 @@
     <ClInclude Include="Traversal\HitPoint.h" />
     <ClInclude Include="Traversal\Intersection.h" />
     <ClInclude Include="Traversal\RayPacket.h" />
+    <ClInclude Include="Traversal\RayPacketTypes.h" />
     <ClInclude Include="Traversal\RayStream.h" />
     <ClInclude Include="Traversal\TraversalContext.h" />
     <ClInclude Include="Traversal\Traversal_Packet.h" />

@@ -1,11 +1,11 @@
 #pragma once
 
-#include "../Raytracer.h"
+#include "../Traversal/RayPacketTypes.h"
 
 #include "../../Common/Math/Transform.hpp"
 #include "../../Common/Math/Ray.hpp"
 #include "../../Common/Math/Random.hpp"
-#include "../../Common/Math/Simd8Ray.hpp"
+#include "../../Common/Math/SimdRay.hpp"
 #include "../../Common/Math/Matrix4.hpp"
 #include "../../Common/Containers/SharedPtr.hpp"
 
@@ -69,10 +69,10 @@ public:
     // Generate ray for the camera for a given time
     // x and y coordinates should be in [0.0f, 1.0f) range.
     NFE_RAYTRACER_API NFE_FORCE_NOINLINE const Math::Ray GenerateRay(const Math::Vec4f& coords, RenderingContext& context) const;
-    NFE_FORCE_NOINLINE const Math::Ray_Simd8 GenerateRay_Simd8(const Math::Vec2x8f& coords, RenderingContext& context) const;
+    NFE_FORCE_NOINLINE const RayPacketTypes::Ray GenerateSimdRay(const RayPacketTypes::Vec2f& coords, RenderingContext& context) const;
 
     NFE_FORCE_INLINE const Math::Vec4f GenerateBokeh(const Math::Vec3f sample) const;
-    NFE_FORCE_INLINE const Math::Vec2x8f GenerateBokeh_Simd8(RenderingContext& context) const;
+    NFE_FORCE_INLINE const RayPacketTypes::Vec2f GenerateSimdBokeh(RenderingContext& context) const;
 
     // Convert world-space coordinates to film-space coordinates including camera projection (0...1 range)
     bool WorldToFilm(const Math::Vec4f& worldPosition, Math::Vec4f& outFilmCoords) const;

@@ -63,24 +63,26 @@ struct HitPoint
     }
 };
 
-// Ray-scene intersection data (SIMD-8)
-struct NFE_ALIGN(32) HitPoint_Simd8
+// Ray-scene intersection data
+struct NFE_ALIGN(32) SimdHitPoint
 {
-    Math::Vec8f distance;
-    Math::Vec8f u;
-    Math::Vec8f v;
-    Math::Vec8i objectId;
-    Math::Vec8i subObjectId;
+    RayPacketTypes::Float distance;
+    RayPacketTypes::Float u;
+    RayPacketTypes::Float v;
 
-    NFE_FORCE_INLINE HitPoint_Simd8()
-        : distance(Math::VECTOR8_MAX)
+    // TODO Uint32
+    RayPacketTypes::Int32 objectId;
+    RayPacketTypes::Int32 subObjectId;
+
+    NFE_FORCE_INLINE SimdHitPoint()
+        : distance(FLT_MAX)
         , objectId(HitPoint::InvalidObject)
     {}
 
     // extract single hit point
     NFE_FORCE_INLINE HitPoint Get(uint32 i) const
     {
-        NFE_ASSERT(i < 8);
+        NFE_ASSERT(i < RayPacketTypes::GroupSize);
 
         HitPoint result;
         result.distance = distance[i];

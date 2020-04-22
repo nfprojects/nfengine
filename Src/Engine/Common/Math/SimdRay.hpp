@@ -1,48 +1,36 @@
 #pragma once
 
-#include "Vec3x8f.hpp"
 #include "Ray.hpp"
 #include "../Utils/BitUtils.hpp"
 
 namespace NFE {
 namespace Math {
 
-/**
- * 4 rays (SIMD version).
- */
-class NFE_ALIGN(32) Ray_Simd8 : public Common::Aligned<32>
+template<typename VecType>
+class NFE_ALIGN(alignof(VecType)) SimdRay : public Common::Aligned<alignof(VecType)>
 {
 public:
-    Vec3x8f dir;
-    Vec3x8f origin;
-    Vec3x8f invDir; 
+    VecType dir;
+    VecType origin;
+    VecType invDir; 
 
-    Ray_Simd8() = default;
-    Ray_Simd8(const Ray_Simd8&) = default;
-    Ray_Simd8& operator = (const Ray_Simd8&) = default;
+    SimdRay() = default;
+    SimdRay(const SimdRay&) = default;
+    SimdRay& operator = (const SimdRay&) = default;
 
     // splat single ray
-    NFE_FORCE_INLINE explicit Ray_Simd8(const Ray& ray)
+    NFE_FORCE_INLINE explicit SimdRay(const Ray& ray)
         : dir(ray.dir)
         , origin(ray.origin)
         , invDir(ray.invDir)
     {
     }
 
-    // build SIMD ray from 8 rays
-    NFE_FORCE_INLINE Ray_Simd8(const Ray& ray0, const Ray& ray1, const Ray& ray2, const Ray& ray3,
-                              const Ray& ray4, const Ray& ray5, const Ray& ray6, const Ray& ray7)
-        : dir(ray0.dir, ray1.dir, ray2.dir, ray3.dir, ray4.dir, ray5.dir, ray6.dir, ray7.dir)
-        , origin(ray0.origin, ray1.origin, ray2.origin, ray3.origin, ray4.origin, ray5.origin, ray6.origin, ray7.origin)
-        , invDir(ray0.invDir, ray1.invDir, ray2.invDir, ray3.invDir, ray4.invDir, ray5.invDir, ray6.invDir, ray7.invDir)
-    {
-    }
-
-    NFE_FORCE_INLINE Ray_Simd8(const Vec3x8f& origin, const Vec3x8f& dir)
+    NFE_FORCE_INLINE SimdRay(const VecType& origin, const VecType& dir)
         : dir(dir.Normalized())
         , origin(origin)
     {
-        invDir = Vec3x8f::FastReciprocal(dir);
+        invDir = VecType::FastReciprocal(dir);
     }
 
     // return rays octant if all the rays are in the same on

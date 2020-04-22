@@ -223,7 +223,7 @@ void Scene::Traverse_Leaf(const PacketTraversalContext& context, const uint32 ob
             RayGroup& rayGroup = context.ray.groups[context.context.activeGroupsIndices[j]];
             rayGroup.rays[1].origin = invTransform.TransformPoint(rayGroup.rays[0].origin);
             rayGroup.rays[1].dir = invTransform.TransformVector(rayGroup.rays[0].dir);
-            rayGroup.rays[1].invDir = Vec3x8f::FastReciprocal(rayGroup.rays[1].dir);
+            rayGroup.rays[1].invDir = RayPacketTypes::Vec3f::FastReciprocal(rayGroup.rays[1].dir);
         }
 
         object->Traverse(context, objectIndex, numActiveGroups);
@@ -279,7 +279,7 @@ void Scene::Traverse(const PacketTraversalContext& context) const
     const uint32 numRayGroups = context.ray.GetNumGroups();
     for (uint32 i = 0; i < numRayGroups; ++i)
     {
-        context.ray.groups[i].maxDistances = VECTOR8_MAX;
+        context.ray.groups[i].maxDistances = RayPacketTypes::Float(FLT_MAX);
         context.context.activeGroupsIndices[i] = (uint16)i;
     }
 
@@ -303,7 +303,7 @@ void Scene::Traverse(const PacketTraversalContext& context) const
             RayGroup& rayGroup = context.ray.groups[context.context.activeGroupsIndices[j]];
             rayGroup.rays[1].origin = invTransform.TransformPoint(rayGroup.rays[0].origin);
             rayGroup.rays[1].dir = invTransform.TransformVector(rayGroup.rays[0].dir);
-            rayGroup.rays[1].invDir = Vec3x8f::FastReciprocal(rayGroup.rays[1].dir);
+            rayGroup.rays[1].invDir = RayPacketTypes::Vec3f::FastReciprocal(rayGroup.rays[1].dir);
         }
 
         mTraceableObjects.Front()->Traverse(context, 0, numRayGroups);

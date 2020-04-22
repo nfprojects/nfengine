@@ -7,7 +7,11 @@ namespace RT {
 
 using namespace Math;
 
-void PacketTraversalContext::StoreIntersection(RayGroup& rayGroup, const Vec8f& t, const Vec8f& u, const Vec8f& v, const VecBool8f& mask, uint32 objectID, uint32 subObjectID) const
+void PacketTraversalContext::StoreIntersection(
+    RayGroup& rayGroup,
+    const RayPacketTypes::Float& t, const RayPacketTypes::Float& u, const RayPacketTypes::Float& v,
+    const RayPacketTypes::FloatMask& mask,
+    uint32 objectID, uint32 subObjectID) const
 {
     const int intMask = mask.GetMask();
 
@@ -17,9 +21,9 @@ void PacketTraversalContext::StoreIntersection(RayGroup& rayGroup, const Vec8f& 
 
     if (intMask)
     {
-        rayGroup.maxDistances = Vec8f::Select(rayGroup.maxDistances, t, mask);
+        rayGroup.maxDistances = RayPacketTypes::Float::Select(rayGroup.maxDistances, t, mask);
 
-        for (uint32 k = 0; k < 8; ++k)
+        for (uint32 k = 0; k < RayPacketTypes::GroupSize; ++k)
         {
             if ((intMask >> k) & 1)
             {

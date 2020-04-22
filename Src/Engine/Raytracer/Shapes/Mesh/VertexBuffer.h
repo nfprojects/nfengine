@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../../Raytracer.h"
+#include "../../Traversal/RayPacketTypes.h"
 
 #include "VertexBufferDesc.h"
 
@@ -55,7 +55,7 @@ public:
         return mPreprocessedTriangles[triangleIndex];
     }
 
-    void GetTriangle(const uint32 triangleIndex, Math::Triangle_Simd8& outTriangle) const;
+    void GetTriangle(const uint32 triangleIndex, RayPacketTypes::Triangle& outTriangle) const;
 
     void GetShadingData(const VertexIndices& indices, VertexShadingData& a, VertexShadingData& b, VertexShadingData& c) const;
 
