@@ -1,14 +1,17 @@
 /**
  * @file
- * @author Witek902 (witek902@gmail.com)
+ * @author Witek902
  * @brief  Definitions of reflection system's ClassType class.
  */
 
 #include "PCH.hpp"
 #include "ReflectionClassType.hpp"
 #include "ReflectionPointerType.hpp"
-
-#include "../../Config/Config.hpp"
+#include "../SerializationContext.hpp"
+#include "../ReflectionTypeRegistry.hpp"
+#include "../../Config/ConfigInterface.hpp"
+#include "../../Utils/Stream/OutputStream.hpp"
+#include "../../Utils/Stream/InputStream.hpp"
 
 
 namespace NFE {
@@ -21,17 +24,24 @@ const StringView ClassType::TYPE_MARKER("__type");
 ClassType::ClassType(const ClassTypeInfo& info)
     : Type(info)
     , mParent(info.parent)
-    , mMembers(info.members)
 {
-#ifndef NFE_CONFIGURATION_FINAL
-    // verify members
-    for (const Member& member : mMembers)
+    mMembers.Reserve(info.members.Size());
+    for (const Member& member : info.members)
     {
+        NFE_ASSERT(nullptr == FindMember(StringView(member.GetName())),
+            "Duplicated member '%s' in class '%s'", member.GetName(), GetName().Str());
+
+        mMembers.PushBack(member);
+
         NFE_ASSERT(member.GetName(), "Member has no name");
         NFE_ASSERT(member.GetType(), "Member '%s' has invalid type", member.GetName());
         NFE_ASSERT(member.GetName() != TYPE_MARKER, "Name reserved");
     }
-#endif // NFE_CONFIGURATION_FINAL
+
+    std::sort(mMembers.Begin(), mMembers.End(), [] (const Member& a, const Member& b)
+    {
+        return a.GetOffset() < b.GetOffset();
+    });
 
     if (mParent)
     {
@@ -46,16 +56,14 @@ ClassType::ClassType(const ClassTypeInfo& info)
     {
         for (const Member& member : mMembers)
         {
-            const char* memberDataPtr = static_cast<const char*>(mDefaultObject) + member.GetOffset();
-
             if (member.GetMetadata().nonNull)
             {
                 // check if not null if member has "nonNull" flag on
                 if (member.GetType()->GetKind() == TypeKind::SharedPtr || member.GetType()->GetKind() == TypeKind::UniquePtr)
                 {
                     const PointerType* pointerType = static_cast<const PointerType*>(member.GetType());
-                    NFE_ASSERT(nullptr != pointerType->GetPointedType(memberDataPtr),
-                        "Property '%s' in class '%s was marked as non-null, but the default's object propery is nullptr",
+                    NFE_ASSERT(nullptr != pointerType->GetPointedDataType(member.GetMemberPtr(mDefaultObject)),
+                        "Property '%s' in class '%s' was marked as non-null, but the default's object propery is nullptr",
                         member.GetName(), this->GetName().Str());
                 }
             }
@@ -144,6 +152,8 @@ void ClassType::ListMembers(Members& outMembers) const
 
 const Member* ClassType::FindMember(const StringView name) const
 {
+    // TODO hashmap or binary search
+
     for (const Member& member : mMembers)
     {
         if (name == StringView(member.GetName()))
@@ -160,29 +170,51 @@ const Member* ClassType::FindMember(const StringView name) const
     return nullptr;
 }
 
-bool ClassType::SerializeDirectly(const void* object, Common::Config& config, Common::ConfigObject& outObject) const
+void ClassType::CollectDifferingMemberList(const void* objectA, const void* objectB, DynArray<const Member*>& outMemberList) const
+{
+    if (mParent)
+    {
+        mParent->CollectDifferingMemberList(objectA, objectB, outMemberList);
+    }
+
+    for (const Member& member : mMembers)
+    {
+        if (member.GetMetadata().NonSerialized())
+        {
+            continue;
+        }
+
+        if (member.GetType()->Compare(member.GetMemberPtr(objectA), member.GetMemberPtr(objectB)))
+        {
+            continue;
+        }
+
+        outMemberList.PushBack(&member);
+    }
+}
+
+bool ClassType::SerializeDirectly(const void* object, IConfig& config, ConfigObject& outObject, SerializationContext& context) const
 {
     // serialize members
     for (const Member& member : mMembers)
     {
         const Type* memberType = member.GetType();
-        const char* memberPtr = static_cast<const char*>(object) + member.GetOffset();
 
         ConfigValue memberValue;
-        if (!memberType->Serialize(memberPtr, config, memberValue))
+        if (!memberType->Serialize(member.GetMemberPtr(object), config, memberValue, context))
         {
             NFE_LOG_ERROR("Failed to serialize member '%s' in object of type '%s'", member.GetName(), GetName().Str());
             return false;
         }
 
-        // TODO Member::GetName should contain StringValu instead of const char* ?
+        // TODO Member::GetName should contain StringValue instead of const char* ?
         config.AddValue(outObject, StringView(member.GetName()), memberValue);
     }
 
     return true;
 }
 
-bool ClassType::Serialize(const void* object, Config& config, ConfigValue& outValue) const
+bool ClassType::Serialize(const void* object, IConfig& config, ConfigValue& outValue, SerializationContext& context) const
 {
     if (GetKind() == TypeKind::AbstractClass)
     {
@@ -202,14 +234,14 @@ bool ClassType::Serialize(const void* object, Config& config, ConfigValue& outVa
     // serialize derived members first
     if (mParent)
     {
-        if (!mParent->SerializeDirectly(object, config, root))
+        if (!mParent->SerializeDirectly(object, config, root, context))
         {
             NFE_LOG_ERROR("Failed to serialize parent class '%s' of object of type '%s'", mParent->GetName().Str(), GetName().Str());
             return false;
         }
     }
 
-    if (!SerializeDirectly(object, config, root))
+    if (!SerializeDirectly(object, config, root, context))
     {
         return false;
     }
@@ -218,7 +250,7 @@ bool ClassType::Serialize(const void* object, Config& config, ConfigValue& outVa
     return true;
 }
 
-bool ClassType::DeserializeMember(void* outObject, const StringView memberName, const Config& config, const ConfigValue& value) const
+bool ClassType::DeserializeMember(void* outObject, const StringView memberName, const IConfig& config, const ConfigValue& value, const SerializationContext& context) const
 {
     // find member with given name
     const Member* targetMember = FindMember(memberName);
@@ -226,15 +258,14 @@ bool ClassType::DeserializeMember(void* outObject, const StringView memberName, 
     // target member not found
     if (!targetMember)
     {
-        NFE_LOG_WARNING("Member '%.*s' not found in runtime type, but present in deserialized object",
-                        memberName.Length(), memberName.Data());
+        // TODO report missing member
+        NFE_LOG_WARNING("Member '%.*s' not found in runtime type, but present in deserialized object", memberName.Length(), memberName.Data());
         return true;
     }
 
     const Type* memberType = targetMember->GetType();
-    char* memberPtr = static_cast<char*>(outObject) + targetMember->GetOffset();
 
-    if (!memberType->Deserialize(memberPtr, config, value))
+    if (!memberType->Deserialize(targetMember->GetMemberPtr(outObject), config, value, context))
     {
         NFE_LOG_ERROR("Failed to deserialize member '%.*s'", memberName.Length(), memberName.Data());
         return false;
@@ -243,16 +274,18 @@ bool ClassType::DeserializeMember(void* outObject, const StringView memberName, 
     return true;
 }
 
-bool ClassType::Deserialize(void* outObject, const Config& config, const ConfigValue& value) const
+bool ClassType::Deserialize(void* outObject, const IConfig& config, const ConfigValue& value, const SerializationContext& context) const
 {
     if (GetKind() == TypeKind::AbstractClass)
     {
+        // TODO report type mismatch
         NFE_LOG_ERROR("Trying to deserialize abstract type '%s'", GetName().Str());
         return false;
     }
 
     if (!value.IsObject())
     {
+        // TODO report type mismatch
         NFE_LOG_ERROR("Expected object value");
         return false;
     }
@@ -265,6 +298,7 @@ bool ClassType::Deserialize(void* outObject, const Config& config, const ConfigV
         {
             if (!value.IsString())
             {
+                // TODO report type mismatch
                 NFE_LOG_ERROR("Marker type found - string expected");
                 success = false;
                 return false;
@@ -273,6 +307,7 @@ bool ClassType::Deserialize(void* outObject, const Config& config, const ConfigV
             const char* typeName = value.Get<const char*>();
             if (typeName != GetName())
             {
+                // TODO report type mismatch
                 NFE_LOG_ERROR("Invalid polymorphic type in marker: found '%s', expected '%s'", typeName, GetName().Str());
                 success = false;
                 return false;
@@ -281,7 +316,7 @@ bool ClassType::Deserialize(void* outObject, const Config& config, const ConfigV
             return true;
         }
 
-        if (!DeserializeMember(outObject, key, config, value))
+        if (!DeserializeMember(outObject, key, config, value, context))
         {
             success = false;
             return false;
@@ -292,6 +327,171 @@ bool ClassType::Deserialize(void* outObject, const Config& config, const ConfigV
 
     config.Iterate(configIteratorCallback, value.GetObj());
     return success;
+}
+
+bool ClassType::SerializeBinary(const void* object, OutputStream* stream, SerializationContext& context) const
+{
+    NFE_ASSERT(object, "Invalid object ptr");
+    NFE_ASSERT(GetKind() != TypeKind::AbstractClass, "Tring to serialize abstract class");
+
+    // collect list of members to serialize
+    // TODO get rid of dynamic allocation
+    Common::DynArray<const Member*> membersToSerialize;
+    CollectDifferingMemberList(object, mDefaultObject, membersToSerialize);
+
+    if (!context.IsMapping())
+    {
+        if (!stream->WriteCompressedUint(membersToSerialize.Size()))
+        {
+            return false;
+        }
+    }
+
+    for (const Member* member : membersToSerialize)
+    {
+        const Type* memberType = member->GetType();
+
+        // TODO instead of storing type names as strings use some compressed (symbolic) form?
+
+        const uint32 memberNameStrIndex = context.MapString(StringView(member->GetName()));
+        const uint32 typeNameStrIndex = context.MapString(memberType->GetName());
+
+        if (!context.IsMapping())
+        {
+            // write member name
+            if (!stream->WriteCompressedUint(memberNameStrIndex))
+            {
+                return false;
+            }
+
+            // write name of type of serialized member
+            if (!stream->WriteCompressedUint(typeNameStrIndex))
+            {
+                return false;
+            }
+
+            // TODO
+            uint32 memberPayloadSize = 1;
+            if (!stream->WriteCompressedPositiveInt(memberPayloadSize))
+            {
+                return false;
+            }
+        }
+
+        // deserialize the member if the type is correct
+        if (!memberType->SerializeBinary(member->GetMemberPtr(object), stream, context))
+        {
+            // TOOO skip current member
+            return false;
+        }
+
+        // TODO update payload size
+    }
+
+    return true;
+}
+
+bool ClassType::DeserializeBinary(void* outObject, InputStream& stream, const SerializationContext& context) const
+{
+    uint32 numMembers;
+    if (!stream.ReadCompressedUint(numMembers))
+    {
+        return false;
+    }
+
+    // TODO bulk deserialization of POD types
+
+    TypeRegistry& typeRegistry = TypeRegistry::GetInstance();
+
+    // patch serialized members only
+    for (uint32 i = 0; i < numMembers; ++i)
+    {
+        uint32 strIndex;
+
+        // TODO instead of storing type names as strings use some compressed (symbolic) form?
+
+        // read member name
+        if (!stream.ReadCompressedUint(strIndex))
+        {
+            NFE_LOG_ERROR("Deserialization failed. Corrupted data?");
+            return false;
+        }
+        StringView memberName;
+        if (!context.UnmapString(strIndex, memberName))
+        {
+            NFE_LOG_ERROR("Deserialization failed. Corrupted data?");
+            return false;
+        }
+
+        // read name of type of serialized member
+        if (!stream.ReadCompressedUint(strIndex))
+        {
+            NFE_LOG_ERROR("Deserialization failed. Corrupted data?");
+            return false;
+        }
+        StringView serializedTypeName;
+        if (!context.UnmapString(strIndex, serializedTypeName))
+        {
+            NFE_LOG_ERROR("Deserialization failed. Corrupted data?");
+            return false;
+        }
+
+        // read amount of bytes in the stream for this member
+        // note: this value will be positive
+        uint32 memberPayloadSize = 0;
+        if (!stream.ReadCompressedPositiveInt(memberPayloadSize))
+        {
+            NFE_LOG_ERROR("Deserialization failed. Corrupted data?");
+            return false;
+        }
+
+        // find member with given name
+        const Member* targetMember = FindMember(memberName);
+
+        // target member not found
+        if (!targetMember)
+        {
+            // TOOO skip current member
+            // TODO report missing member
+            // TODO deserialize to Config object so it can be used for migration to newer format
+            NFE_LOG_WARNING("Failed to deserialize member '%.*s' - it's not present in class %s. Probably it was removed from code.",
+                memberName.Length(), memberName.Data(), GetName().Str());
+            return false;
+        }
+
+        const Type* memberType = targetMember->GetType();
+        const Type* serializedType = typeRegistry.GetExistingType(serializedTypeName);
+
+        // serialized type not known
+        if (!serializedType)
+        {
+            // TOOO skip current member
+            // TODO report unknown type
+            NFE_LOG_WARNING("Failed to deserialize member '%.*s' of class %s. Type in data '%s' is not know. Probably the type was removed from code.",
+                memberName.Length(), memberName.Data(), GetName().Str(), serializedTypeName.Length(), serializedTypeName.Data());
+            return false;
+        }
+
+        if (memberType != serializedType)
+        {
+            // TOOO skip current member
+            // TODO report member type mismatch
+            // TODO perform automatic type conversions if possible (UniquePtr->SharedPtr, NativeArray->DynArray, int8->int32, etc.)
+            // TODO deserialize to Config object so it can be used for migration to newer format
+            NFE_LOG_WARNING("Failed to deserialize member '%.*s' of class %s. Type in data is '%s', it's expected to be '%s'",
+                memberName.Length(), memberName.Data(), GetName().Str(), serializedType->GetName().Str(), memberType->GetName().Str());
+            return false;
+        }
+
+        // deserialize the member if the type is correct
+        if (!memberType->DeserializeBinary(targetMember->GetMemberPtr(outObject), stream, context))
+        {
+            // TOOO skip current member
+            return false;
+        }
+    }
+
+    return true;
 }
 
 bool ClassType::Compare(const void* objectA, const void* objectB) const
@@ -307,11 +507,7 @@ bool ClassType::Compare(const void* objectA, const void* objectB) const
     // compare members
     for (const Member& member : mMembers)
     {
-        const Type* memberType = member.GetType();
-        const char* memberPtrA = static_cast<const char*>(objectA) + member.GetOffset();
-        const char* memberPtrB = static_cast<const char*>(objectB) + member.GetOffset();
-
-        if (!memberType->Compare(memberPtrA, memberPtrB))
+        if (!member.GetType()->Compare(member.GetMemberPtr(objectA), member.GetMemberPtr(objectB)))
         {
             return false;
         }
@@ -334,11 +530,7 @@ bool ClassType::Clone(void* destObject, const void* sourceObject) const
     for (const Member& member : mMembers)
     {
         const Type* memberType = member.GetType();
-
-        char* destMemberPtrA = static_cast<char*>(destObject) + member.GetOffset();
-        const char* srcMemberPtrB = static_cast<const char*>(sourceObject) + member.GetOffset();
-
-        success &= memberType->Clone(destMemberPtrA, srcMemberPtrB);
+        success &= memberType->Clone(member.GetMemberPtr(destObject), member.GetMemberPtr(sourceObject));
     }
 
     return success;

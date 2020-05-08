@@ -1,11 +1,12 @@
 /**
  * @file
- * @author Witek902 (witek902@gmail.com)
+ * @author Witek902
  * @brief  String definitions.
  */
 
 #include "PCH.hpp"
 #include "String.hpp"
+#include "StringView.hpp"
 #include "DynArray.hpp"
 
 
@@ -20,6 +21,11 @@ String::~String()
         NFE_FREE(mExternalData.data);
         mExternalData.data = nullptr;
     }
+}
+
+String::String(const char* string)
+    : String(StringView(string))
+{
 }
 
 String::String(String&& other)
@@ -42,6 +48,11 @@ String& String::operator=(String&& other)
     other.mInternalData = InternalData();
 
     return *this;
+}
+
+String::String(const String& string)
+    : String(string.ToView())
+{
 }
 
 String::String(const StringView& view)
@@ -97,6 +108,18 @@ String& String::operator=(char c)
     buffer[1] = '\0';
 
     SetLength(1);
+    return *this;
+}
+
+String& String::operator=(const char* string)
+{
+    *this = StringView(string);
+    return *this;
+}
+
+String& String::operator=(const String& other)
+{
+    *this = other.ToView();
     return *this;
 }
 
@@ -187,6 +210,18 @@ String& String::operator+=(char c)
     return *this;
 }
 
+String& String::operator+=(const char* string)
+{
+    *this += StringView(string);
+    return *this;
+}
+
+String& String::operator+=(const String& string)
+{
+    *this += string.ToView();
+    return *this;
+}
+
 String& String::operator+=(const StringView& view)
 {
     if (view.Empty())
@@ -210,6 +245,16 @@ String& String::operator+=(const StringView& view)
 }
 
 //////////////////////////////////////////////////////////////////////////
+
+String& String::Insert(uint32 index, const char* string)
+{
+    return Insert(index, StringView(string));
+}
+
+String& String::Insert(uint32 index, const String& string)
+{
+    return Insert(index, string.ToView());
+}
 
 String& String::Insert(uint32 index, const StringView& other)
 {
@@ -288,6 +333,16 @@ String& String::PopBack()
     return *this;
 }
 
+String& String::Replace(uint32 index, uint32 numCharacters, const char* string)
+{
+    return Replace(index, numCharacters, StringView(string));
+}
+
+String& String::Replace(uint32 index, uint32 numCharacters, const String& string)
+{
+    return Replace(index, numCharacters, string.ToView());
+}
+
 String& String::Replace(uint32 index, uint32 numCharacters, const StringView& other)
 {
     NFE_ASSERT(index <= Length(), "String index out of bounds");
@@ -326,6 +381,11 @@ String& String::Replace(uint32 index, uint32 numCharacters, char c)
     SetLength(targetLength);
 
     return *this;
+}
+
+String::operator StringView() const
+{
+    return ToView();
 }
 
 StringView String::ToView() const
@@ -497,6 +557,53 @@ String operator+(String&& lhs, String&& rhs)
     return result;
 }
 
+//////////////////////////////////////////////////////////////////////////
+
+String operator+(const String& lhs, const String& rhs)
+{
+    return lhs.ToView() + rhs.ToView();
+}
+
+String operator+(String&& lhs, const String& rhs)
+{
+    return std::move(lhs) + rhs.ToView();
+}
+
+String operator+(const String& lhs, String&& rhs)
+{
+    return lhs.ToView() + std::move(rhs);
+}
+
+String operator+(const String& lhs, char rhs)
+{
+    return lhs.ToView() + rhs;
+}
+
+String operator+(char lhs, const String& rhs)
+{
+    return lhs + rhs.ToView();
+}
+
+String operator+(const String& lhs, const char* rhs)
+{
+    return lhs.ToView() + StringView(rhs);
+}
+
+String operator+(const char* lhs, const String& rhs)
+{
+    return StringView(lhs) + rhs.ToView();
+}
+
+String operator+(String&& lhs, const char* rhs)
+{
+    return std::move(lhs) + StringView(rhs);
+}
+
+String operator+(const char* lhs, String&& rhs)
+{
+    return StringView(lhs) + std::move(rhs);
+}
+
 String operator+(const StringView& lhs, char rhs)
 {
     String result;
@@ -562,6 +669,109 @@ String operator+(char lhs, String&& rhs)
     buffer[targetLength] = '\0';
     result.SetLength(targetLength);
     return result;
+}
+
+//////////////////////////////////////////////////////////////////////////
+
+bool operator<(const String& lhs, const String& rhs)
+{
+    return lhs.ToView() < rhs.ToView();
+}
+
+bool operator<=(const String& lhs, const String& rhs)
+{
+    return lhs.ToView() <= rhs.ToView();
+}
+
+bool operator>(const String& lhs, const String& rhs)
+{
+    return lhs.ToView() > rhs.ToView();
+}
+
+bool operator>=(const String& lhs, const String& rhs)
+{
+    return lhs.ToView() >= rhs.ToView();
+}
+
+bool operator==(const String& lhs, const String& rhs)
+{
+    return lhs.ToView() == rhs.ToView();
+}
+
+bool operator!=(const String& lhs, const String& rhs)
+{
+    return lhs.ToView() != rhs.ToView();
+}
+
+//////////////////////////////////////////////////////////////////////////
+
+bool operator<(const String& lhs, const StringView& rhs)
+{
+    return lhs.ToView() < rhs;
+}
+
+bool operator<=(const String& lhs, const StringView& rhs)
+{
+    return lhs.ToView() <= rhs;
+}
+
+bool operator>(const String& lhs, const StringView& rhs)
+{
+    return lhs.ToView() > rhs;
+}
+
+bool operator>=(const String& lhs, const StringView& rhs)
+{
+    return lhs.ToView() >= rhs;
+}
+
+bool operator==(const String& lhs, const StringView& rhs)
+{
+    return lhs.ToView() == rhs;
+}
+
+bool operator!=(const String& lhs, const StringView& rhs)
+{
+    return lhs.ToView() != rhs;
+}
+
+//////////////////////////////////////////////////////////////////////////
+
+bool operator<(const StringView& lhs, const String& rhs)
+{
+    return lhs < rhs.ToView();
+}
+
+bool operator<=(const StringView& lhs, const String& rhs)
+{
+    return lhs <= rhs.ToView();
+}
+
+bool operator>(const StringView& lhs, const String& rhs)
+{
+    return lhs > rhs.ToView();
+}
+
+bool operator>=(const StringView& lhs, const String& rhs)
+{
+    return lhs >= rhs.ToView();
+}
+
+bool operator==(const StringView& lhs, const String& rhs)
+{
+    return lhs == rhs.ToView();
+}
+
+bool operator!=(const StringView& lhs, const String& rhs)
+{
+    return lhs != rhs.ToView();
+}
+
+//////////////////////////////////////////////////////////////////////////
+
+uint32 GetHash(const String& string)
+{
+    return GetHash(string.ToView());
 }
 
 } // namespace Common

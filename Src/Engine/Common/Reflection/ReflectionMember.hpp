@@ -19,6 +19,7 @@ enum MemberMetadataFlags
     MemberMetadata_HasMinRange  = 1 << 0,
     MemberMetadata_HasMaxRange  = 1 << 1,
     MemberMetadata_NoSlider     = 1 << 2,
+    MemberMetadata_NonSerialized   = 1 << 3,
     //MemberMetadata_ReadOnly     = 1 << 3,
 };
 
@@ -39,6 +40,7 @@ struct MemberMetadata
     bool HasMinRange() const { return (flags & MemberMetadata_HasMinRange) != 0; }
     bool HasMaxRange() const { return (flags & MemberMetadata_HasMaxRange) != 0; }
     bool HasNoSlider() const { return (flags & MemberMetadata_NoSlider) != 0; }
+    bool NonSerialized() const { return (flags & MemberMetadata_NonSerialized) != 0; }
 };
 
 /**
@@ -55,6 +57,16 @@ public:
     const char* GetDescriptiveName() const { return mMetadata.descriptiveName.Str(); }
     const Type* GetType() const { return mType; }
     uint32 GetOffset() const { return mOffset; }
+
+    void* GetMemberPtr(void* objectPtr) const
+    {
+        return static_cast<char*>(objectPtr) + GetOffset();
+    }
+
+    const void* GetMemberPtr(const void* objectPtr) const
+    {
+        return static_cast<const char*>(objectPtr) + GetOffset();
+    }
 
     const MemberMetadata& GetMetadata() const { return mMetadata; }
 

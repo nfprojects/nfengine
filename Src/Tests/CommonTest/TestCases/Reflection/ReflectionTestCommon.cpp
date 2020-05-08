@@ -1,6 +1,8 @@
 #include "PCH.hpp"
 #include "ReflectionTestCommon.hpp"
 #include "Engine/Common/Reflection/ReflectionClassDefine.hpp"
+#include "Engine/Common/Reflection/SerializationContext.hpp"
+#include "Engine/Common/Config/Config.hpp"
 
 
 using namespace NFE;
@@ -11,6 +13,12 @@ using namespace NFE::Common;
 //////////////////////////////////////////////////////////////////////////
 // Test types definitions
 //////////////////////////////////////////////////////////////////////////
+
+NFE_BEGIN_DEFINE_ENUM(TestEnum)
+    NFE_ENUM_OPTION(OptionA)
+    NFE_ENUM_OPTION(OptionB)
+    NFE_ENUM_OPTION(OptionC)
+NFE_END_DEFINE_ENUM()
 
 NFE_DEFINE_CLASS(TestClassWithFundamentalMembers)
 {
@@ -84,13 +92,22 @@ NFE_DEFINE_POLYMORPHIC_CLASS(TestBaseClass)
 NFE_END_DEFINE_CLASS()
 
 
-// Enum type
+// Serializer test classes:
 
-NFE_BEGIN_DEFINE_ENUM(TestEnum)
-    NFE_ENUM_OPTION(OptionA)
-    NFE_ENUM_OPTION(OptionB)
-    NFE_ENUM_OPTION(OptionC)
-NFE_END_DEFINE_ENUM()
+
+NFE_DEFINE_POLYMORPHIC_CLASS(SerializationTestClass)
+{
+    NFE_CLASS_MEMBER(i32);
+    NFE_CLASS_MEMBER(e);
+    NFE_CLASS_MEMBER(obj);
+    NFE_CLASS_MEMBER(arrayOfObj);
+    NFE_CLASS_MEMBER(dynArrayOfObj);
+    NFE_CLASS_MEMBER(uniquePtr);
+    NFE_CLASS_MEMBER(sharedPtrA);
+    NFE_CLASS_MEMBER(sharedPtrB);
+}
+NFE_END_DEFINE_CLASS()
+
 
 //////////////////////////////////////////////////////////////////////////
 
@@ -99,9 +116,11 @@ namespace helper {
 
 bool SerializeObject(const Type* type, const void* object, String& outString)
 {
+    SerializationContext context;
+
     Common::Config config;
     Common::ConfigValue value;
-    if (!type->Serialize(object, config, value))
+    if (!type->Serialize(object, config, value, context))
     {
         return false;
     }
@@ -114,14 +133,33 @@ bool SerializeObject(const Type* type, const void* object, String& outString)
     return true;
 }
 
+bool SerializeObject(const Type* type, const void* object, OutputStream& stream, SerializationContext& context)
+{
+    context.InitStage(SerializationContext::Stage::Mapping);
+    if (!type->SerializeBinary(object, nullptr, context))
+    {
+        return false;
+    }
+
+    context.InitStage(SerializationContext::Stage::Serialization);
+    if (!type->SerializeBinary(object, &stream, context))
+    {
+        return false;
+    }
+
+    return true;
+}
+
 bool DeserializeObject(const Type* type, void* outObject, const String& string)
 {
+    SerializationContext context;
+
     Common::Config config;
     config.Parse(string.Str());
     Common::ConfigGenericValue genericValue(&config);
     Common::ConfigValue value = genericValue["obj"];
 
-    return type->Deserialize(outObject, config, value);
+    return type->Deserialize(outObject, config, value, context);
 }
 
 } // namespace helper

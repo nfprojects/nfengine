@@ -79,7 +79,7 @@ void UniquePtrBase<T, Deleter>::Reset(T* newPtr)
 }
 
 template<typename T, typename Deleter>
-T* UniquePtrBase<T, Deleter>::Release()
+T* UniquePtrBase<T, Deleter>::ReleaseOwnership()
 {
     T* ptr = mPointer;
     mPointer = nullptr;
@@ -188,7 +188,7 @@ UniquePtr<T> MakeUniquePtr(Args&& ... args)
 template<typename T, typename U>
 UniquePtr<T> StaticCast(UniquePtr<U>&& source)
 {
-    T* pointer = static_cast<T*>(source.Release());
+    T* pointer = static_cast<T*>(source.ReleaseOwnership());
     return UniquePtr<T>(pointer);
 }
 

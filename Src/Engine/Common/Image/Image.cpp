@@ -465,7 +465,7 @@ bool Image::ConvertActual(ImageFormat destFormat)
     {
         uint32 width = mMipmaps[i].GetWidth();
         uint32 height = mMipmaps[i].GetHeight();
-        newMipmaps[i].mData.Create(width * height * BitsPerPixel(destFormat));
+        newMipmaps[i].mData.Resize(width * height * BitsPerPixel(destFormat));
         newMipmaps[i].mHeight = height;
         newMipmaps[i].mWidth = width;
 

@@ -1,13 +1,12 @@
 /**
  * @file
- * @author Witek902 (witek902@gmail.com)
+ * @author Witek902
  * @brief  Config parser declaration.
  */
 
 #pragma once
 
-#include "ConfigCommon.hpp"
-#include "ConfigValue.hpp"
+#include "ConfigInterface.hpp"
 #include "../Containers/DynArray.hpp"
 #include "../Containers/UniquePtr.hpp"
 #include "../Containers/String.hpp"
@@ -15,14 +14,13 @@
 #include <memory>
 #include <functional>
 
-
 namespace NFE {
 namespace Common {
 
 /**
  * The main class used for parsing and managing config structures.
  */
-class NFCOMMON_API Config
+class NFCOMMON_API Config : public IConfig
 {
     UniquePtr<char[]> mStringCopy;
 
@@ -57,78 +55,26 @@ public:
 
     Config();
 
-    /**
-     * Remove all data from the config tree and release resources.
-     */
-    void Clear();
+    virtual void Clear() override;
 
-    /**
-     * Parse config located in read-write string.
-     * @return True on success.
-     * @note Provided string will be modified.
-     */
-    bool ParseInPlace(char* string);
+    virtual bool ParseInPlace(char* string) override;
 
-    /**
-     * Parse config located in read-only string.
-     * @return True on success.
-     * @note This function is a little bit slower than @p ParseInPlace, because it
-     *       has to create local copy.
-     */
-    bool Parse(const char* string);
+    virtual bool Parse(const char* string) override;
 
-    /**
-     * Get root object node.
-     */
-    ConfigObjectNodePtr GetRootNode() const
+    virtual ConfigObjectNodePtr GetRootNode() const override
     {
         return mRootNode;
     }
 
-    /**
-     * Set new root
-     */
-    void SetRoot(const ConfigObject& rootObject);
+    virtual void SetRoot(const ConfigObject& rootObject) override;
 
-    /**
-     * Convert config to a string.
-     * @param format Enable human-readable formatting.
-     * @note When modifying parsed config, the original formatting won't be preserved
-     *       (intendation, comments, etc.).
-     * @return Config string.
-     */
-    String ToString(bool format = true) const;
+    virtual String ToString(bool format = true) const override;
 
-    /**
-     * Iterate through a config object.
-     * @param callback Callback function to be called for each object value.
-     * @param node     Starting node. Set to NULL if you want to iterate root node.
-     */
-    void Iterate(const ObjectIterator& callback,
-                 ConfigObjectNodePtr node = INVALID_NODE_PTR) const;
+    virtual void Iterate(const ObjectIterator& callback, ConfigObjectNodePtr node = INVALID_NODE_PTR) const override;
+    virtual void IterateArray(const ArrayIterator& callback, ConfigArrayNodePtr node) const override;
 
-    /**
-     * Iterate through a config array.
-     * @param callback Callback function to be called for each array value.
-     * @param node     Starting node.
-     */
-    void IterateArray(const ArrayIterator& callback, ConfigArrayNodePtr node) const;
-
-    /**
-     * Add a value to a config object.
-     * @param configObject Reference to helper ConfigObject object.
-     * @param key          Key string.
-     * @param val          Value.
-     * @remarks The function returns a reference to "this" so writing AddValue chains is possible.
-     */
-    Config& AddValue(ConfigObject& configObject, StringView key, const ConfigValue& val);
-
-    /**
-     * Add a value to a config array.
-     * @param configArray Reference to helper ConfigArray object.
-     * @param val         Value.
-     */
-    Config& AddValue(ConfigArray& configArray, const ConfigValue& val);
+    virtual Config& AddValue(ConfigObject& configObject, StringView key, const ConfigValue& val) override;
+    virtual Config& AddValue(ConfigArray& configArray, const ConfigValue& val) override;
 
     template <class T>
     bool TranslateConfigObject(ConfigObjectNodePtr node,

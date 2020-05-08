@@ -20,6 +20,7 @@
 #include "../Common/Utils/Waitable.hpp"
 #include "../Common/Reflection/Types/ReflectionClassType.hpp"
 #include "../Common/Reflection/Types/ReflectionUniquePtrType.hpp"
+#include "../Common/Reflection/ReflectionUtils.hpp"
 
 namespace NFE {
 namespace RT {

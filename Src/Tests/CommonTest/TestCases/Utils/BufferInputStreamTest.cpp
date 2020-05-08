@@ -1,5 +1,5 @@
 #include "PCH.hpp"
-#include "Engine/Common/Utils/InputStream.hpp"
+#include "Engine/Common/Utils/Stream/BufferInputStream.hpp"
 
 #include "Constants.hpp"
 

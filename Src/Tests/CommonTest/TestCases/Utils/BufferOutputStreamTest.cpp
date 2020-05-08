@@ -1,5 +1,6 @@
 #include "PCH.hpp"
-#include "Engine/Common/Utils/OutputStream.hpp"
+#include "Engine/Common/Utils/Stream/BufferOutputStream.hpp"
+#include "Engine/Common/Memory/Buffer.hpp"
 
 #include "Constants.hpp"
 
@@ -9,7 +10,8 @@ using namespace NFE::Common;
 TEST(BufferOutputStreamTest, ConstructorTest)
 {
     // Perform class methods on an empty stream
-    BufferOutputStream stream;
+    Buffer buffer;
+    BufferOutputStream stream(buffer);
     ASSERT_EQ(stream.GetSize(), 0u);
     ASSERT_EQ(stream.GetData(), nullptr);
     ASSERT_EQ(stream.Write(TEXT.Str(), 1), 1u);
@@ -18,7 +20,8 @@ TEST(BufferOutputStreamTest, ConstructorTest)
 TEST(BufferOutputStreamTest, WriteTest)
 {
     // Create stream and insert our TEXT
-    BufferOutputStream stream;
+    Buffer buffer;
+    BufferOutputStream stream(buffer);
     stream.Write(TEXT.Str(), TEXTSIZE);
 
     // Check if our data (TEXT) was inserted correctly
@@ -42,7 +45,8 @@ TEST(BufferOutputStreamTest, WriteTest)
 TEST(BufferOutputStreamTest, ClearTest)
 {
     // Create stream and insert our TEXT
-    BufferOutputStream stream;
+    Buffer buffer;
+    BufferOutputStream stream(buffer);
     size_t writeResult = stream.Write(TEXT.Str(), TEXTSIZE);
     ASSERT_EQ(TEXTSIZE, writeResult);
 

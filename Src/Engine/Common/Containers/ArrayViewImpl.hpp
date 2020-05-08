@@ -28,22 +28,22 @@ ArrayView<ElementType>::ArrayView(ElementType* elements, uint32 numElements)
 }
 
 template<typename ElementType>
-template<typename ElementType2>
-ArrayView<ElementType>::ArrayView(const ArrayView<ElementType2>& other)
+template<typename OtherElementType>
+ArrayView<ElementType>::ArrayView(const ArrayView<OtherElementType>& other)
 {
-    static_assert(std::is_same<typename std::remove_cv<ElementType>::type, ElementType2>::value,
-                  "Only (non-const -> const) ArrayView element type conversion is supported");
+    //static_assert(std::is_same<typename std::remove_cv<ElementType>::type, OtherElementType>::value,
+    //              "Only (non-const -> const) ArrayView element type conversion is supported");
 
     mElements = other.Data();
     mSize = other.Size();
 }
 
 template<typename ElementType>
-template<typename ElementType2>
-ArrayView<ElementType>& ArrayView<ElementType>::operator = (const ArrayView<ElementType2>& other)
+template<typename OtherElementType>
+ArrayView<ElementType>& ArrayView<ElementType>::operator = (const ArrayView<OtherElementType>& other)
 {
-    static_assert(std::is_same<typename std::remove_cv<ElementType>::type, ElementType2>::value,
-                  "Only (non-const -> const) ArrayView element type conversion is supported");
+    //static_assert(std::is_same<typename std::remove_cv<ElementType>::type, OtherElementType>::value,
+    //              "Only (non-const -> const) ArrayView element type conversion is supported");
 
     mElements = other.Data();
     mSize = other.Size();
@@ -65,13 +65,7 @@ bool ArrayView<ElementType>::Empty() const
 }
 
 template<typename ElementType>
-const ElementType* ArrayView<ElementType>::Data() const
-{
-    return mElements;
-}
-
-template<typename ElementType>
-ElementType* ArrayView<ElementType>::Data()
+ElementType* ArrayView<ElementType>::Data() const
 {
     return mElements;
 }

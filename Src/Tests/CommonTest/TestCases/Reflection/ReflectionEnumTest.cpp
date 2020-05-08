@@ -1,5 +1,10 @@
 #include "PCH.hpp"
 #include "ReflectionTestCommon.hpp"
+#include "Engine/Common/Config/Config.hpp"
+#include "Engine/Common/Reflection/SerializationContext.hpp"
+#include "Engine/Common/Utils/Stream/BufferOutputStream.hpp"
+#include "Engine/Common/Utils/Stream/BufferInputStream.hpp"
+#include "Engine/Common/Memory/Buffer.hpp"
 
 
 using namespace NFE;
@@ -21,42 +26,36 @@ TEST(ReflectionEnumTest, TestEnum_Verify)
     const auto& options = type->GetOptions();
     ASSERT_EQ(3u, options.Size());
 
-    EXPECT_STREQ("OptionA", options[0].name);
-    EXPECT_STREQ("OptionB", options[1].name);
-    EXPECT_STREQ("OptionC", options[2].name);
+    EXPECT_STREQ("OptionA", options[0].name.Data());
+    EXPECT_STREQ("OptionB", options[1].name.Data());
+    EXPECT_STREQ("OptionC", options[2].name.Data());
 
     EXPECT_EQ(0, options[0].value);
     EXPECT_EQ(3, options[1].value);
     EXPECT_EQ(123, options[2].value);
 }
 
-TEST(ReflectionEnumTest, TestEnum_ReadValue)
+TEST(ReflectionEnumTest, TestEnum_FindOptionByValue)
 {
     TestEnum value = TestEnum::OptionB;
 
-    uint32 index;
-
     const auto* type = GetType<TestEnum>();
-    ASSERT_TRUE(type->ReadValue(&value, index));
-    EXPECT_EQ(1u, index);
+    EXPECT_TRUE(type->FindOptionByValue(type->ReadRawValue(&value)) == "OptionB");
 }
 
-TEST(ReflectionEnumTest, TestEnum_ReadValue_Invalid)
+TEST(ReflectionEnumTest, TestEnum_FindOptionByValue_Invalid)
 {
-    TestEnum value = (TestEnum)77;
-
-    uint32 index;
+    TestEnum value = TestEnum::UnknownOption;
 
     const auto* type = GetType<TestEnum>();
-    EXPECT_FALSE(type->ReadValue(&value, index));
+    EXPECT_TRUE(type->FindOptionByValue(type->ReadRawValue(&value)).Empty());
 }
 
-TEST(ReflectionEnumTest, TestEnum_WriteValue)
+TEST(ReflectionEnumTest, TestEnum_WriteRawValue)
 {
     TestEnum value = TestEnum::OptionA;
 
-    const auto* type = GetType<TestEnum>();
-    ASSERT_TRUE(type->WriteValue(&value, 2));
+    GetType<TestEnum>()->WriteRawValue(&value, (uint64)TestEnum::OptionC);
     EXPECT_EQ(TestEnum::OptionC, value);
 }
 
@@ -67,18 +66,31 @@ TEST(ReflectionEnumTest, Deserialize_Valid)
 
     TestEnum obj = TestEnum::OptionA;
     const ConfigValue value("OptionB");
-    ASSERT_TRUE(type->Deserialize(&obj, Config(), value));
+    SerializationContext context;
+    ASSERT_TRUE(type->Deserialize(&obj, Config(), value, context));
     EXPECT_EQ(TestEnum::OptionB, obj);
 }
 
-TEST(ReflectionEnumTest, Deserialize_Invalid)
+TEST(ReflectionEnumTest, Deserialize_InvalidOption)
 {
     const auto* type = GetType<TestEnum>();
     ASSERT_NE(nullptr, type);
 
     TestEnum obj = TestEnum::OptionA;
     const ConfigValue value("NonExistentOption");
-    ASSERT_FALSE(type->Deserialize(&obj, Config(), value));
+    SerializationContext context;
+    ASSERT_FALSE(type->Deserialize(&obj, Config(), value, context));
+}
+
+TEST(ReflectionEnumTest, Deserialize_InvalidType)
+{
+    const auto* type = GetType<TestEnum>();
+    ASSERT_NE(nullptr, type);
+
+    TestEnum obj = TestEnum::OptionA;
+    const ConfigValue value(123);
+    SerializationContext context;
+    ASSERT_FALSE(type->Deserialize(&obj, Config(), value, context));
 }
 
 TEST(ReflectionEnumTest, Serialize_Valid)
@@ -100,6 +112,38 @@ TEST(ReflectionEnumTest, Serialize_Invalid)
     ASSERT_NE(nullptr, type);
 
     String str;
-    TestEnum obj = static_cast<TestEnum>(99); // non-mapped enum value
+    TestEnum obj = TestEnum::UnknownOption;
     ASSERT_FALSE(helper::SerializeObject(type, &obj, str));
+}
+
+TEST(ReflectionEnumTest, SerializeBinary_Valid)
+{
+    const auto* type = GetType<TestEnum>();
+
+    Buffer buffer;
+    SerializationContext context;
+    {
+        TestEnum obj = TestEnum::OptionC;
+        BufferOutputStream stream(buffer);
+        ASSERT_TRUE(helper::SerializeObject(type, &obj, stream, context));
+    }
+    {
+        TestEnum readObj = TestEnum::OptionA;
+        BufferInputStream stream(buffer);
+        ASSERT_TRUE(type->DeserializeBinary(&readObj, stream, context));
+        EXPECT_EQ(TestEnum::OptionC, readObj);
+    }
+}
+
+TEST(ReflectionEnumTest, SerializeBinary_InvalidOption)
+{
+    const auto* type = GetType<TestEnum>();
+
+    Buffer buffer;
+    SerializationContext context;
+    {
+        TestEnum obj = TestEnum::UnknownOption;
+        BufferOutputStream stream(buffer);
+        EXPECT_FALSE(helper::SerializeObject(type, &obj, stream, context));
+    }
 }

@@ -80,7 +80,7 @@
     <ClInclude Include="API\VertexLayout.hpp">
       <Filter>API</Filter>
     </ClInclude>
-    <ClInclude Include="Internal\Win\WinExtensions.hpp">
+    <ClInclude Include="InternalWindows\WinExtensions.hpp">
       <Filter>Internal\Win</Filter>
     </ClInclude>
   </ItemGroup>
@@ -144,13 +144,13 @@
     <ClCompile Include="API\VertexLayout.cpp">
       <Filter>API</Filter>
     </ClCompile>
-    <ClCompile Include="API\Win\WinBackbuffer.cpp">
+    <ClCompile Include="APIWindows\WinBackbuffer.cpp">
       <Filter>API\Win</Filter>
     </ClCompile>
-    <ClCompile Include="API\Win\WinDevice.cpp">
+    <ClCompile Include="APIWindows\WinDevice.cpp">
       <Filter>API\Win</Filter>
     </ClCompile>
-    <ClCompile Include="Internal\Win\WinExtensions.cpp">
+    <ClCompile Include="InternalWindows\WinExtensions.cpp">
       <Filter>Internal\Win</Filter>
     </ClCompile>
   </ItemGroup>

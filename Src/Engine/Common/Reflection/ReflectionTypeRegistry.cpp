@@ -41,14 +41,32 @@ const Type* TypeRegistry::GetExistingType(const char* name) const
     return GetExistingType(StringView(name));
 }
 
+struct LastAccessedType
+{
+    StringView name;
+    const Type* type = nullptr;
+};
+
+// TODO cache more than one?
+static thread_local LastAccessedType s_lastAccessedCache;
+
 const Type* TypeRegistry::GetExistingType(const StringView name) const
 {
+    // check if in cache (to avoid accessing this huge hash map below)
+    if (s_lastAccessedCache.name == name)
+    {
+        return s_lastAccessedCache.type;
+    }
+
     const auto iter = mTypesByName.Find(name);
 
     if (iter == mTypesByName.End())
     {
         return nullptr;
     }
+
+    s_lastAccessedCache.name = name;
+    s_lastAccessedCache.type = iter->second;
 
     return iter->second;
 }
@@ -58,12 +76,15 @@ const Type* TypeRegistry::RegisterType(size_t hash, Type* type)
     NFE_ASSERT(type, "Invalid type pointer");
 
     const auto iter = mTypesByHash.Find(hash);
-    NFE_ASSERT(iter == mTypesByHash.End(), "Type with given hash already exists (%s)", iter->second->GetName().Str());
+
+    if (iter != mTypesByHash.End())
+    {
+        const StringView name = iter->second->GetName();
+        NFE_FATAL("Type with given hash already exists (%.*s)", name.Length(), name.Data());
+    }
 
     mTypesByHash.Insert(hash, type);
     mTypesByName.Insert(StringView(type->GetName()), type);
-
-    type->PrintInfo();
 
     return type;
 }

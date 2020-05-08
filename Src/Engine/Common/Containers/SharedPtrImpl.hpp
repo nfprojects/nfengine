@@ -1,6 +1,6 @@
 /**
  * @file
- * @author  Witek902 (witek902@gmail.com)
+ * @author  Witek902
  * @brief   Shared pointer declaration
  */
 
@@ -15,7 +15,7 @@ namespace Common {
 
 template<typename T>
 SharedPtr<T>::SharedPtr(T* ptr, const DeleterFunc& deleter)
-    : SharedPtrBase<T>(ptr, nullptr)
+    : SharedPtrTypedBase<T>(ptr, nullptr)
 {
     if (this->mPointer)
     {
@@ -25,7 +25,7 @@ SharedPtr<T>::SharedPtr(T* ptr, const DeleterFunc& deleter)
 
 template<typename T>
 SharedPtr<T>::SharedPtr(const SharedPtr& rhs)
-    : SharedPtrBase<T>(rhs.mPointer, rhs.mData)
+    : SharedPtrTypedBase<T>(rhs.mPointer, rhs.mData)
 {
     if (this->mData)
     {
@@ -47,13 +47,13 @@ SharedPtr<T>::SharedPtr(SharedPtr&& rhs)
 template<typename T>
 template<typename SourceType>
 SharedPtr<T>::SharedPtr(UniquePtr<SourceType>&& rhs)
-    : SharedPtr(rhs.Release()) // TODO copy deleter from UniquePtr
+    : SharedPtr(rhs.ReleaseOwnership()) // TODO copy deleter from UniquePtr
 { }
 
 template<typename T>
 template<typename SourceType>
 SharedPtr<T>::SharedPtr(const SharedPtr<SourceType>& rhs)
-    : SharedPtrBase<T>(rhs.mPointer, rhs.mData)
+    : SharedPtrTypedBase<T>(rhs.mPointer, rhs.mData)
 {
     if (this->mData)
     {
@@ -107,7 +107,7 @@ template<typename SourceType>
 SharedPtr<T>& SharedPtr<T>::operator = (UniquePtr<SourceType>&& rhs)
 {
     // TODO copy deleter from UniquePtr
-    Reset(rhs.Release());
+    Reset(rhs.ReleaseOwnership());
     return *this;
 }
 
@@ -217,6 +217,18 @@ template<typename T>
 bool SharedPtr<T>::operator != (const T* other) const
 {
     return this->mPointer != other;
+}
+
+template<typename T>
+bool operator == (const T* lhs, const SharedPtr<T>& rhs)
+{
+    return rhs == lhs;
+}
+
+template<typename T>
+bool operator != (const T* lhs, const SharedPtr<T>& rhs)
+{
+    return rhs != lhs;
 }
 
 //////////////////////////////////////////////////////////////////////////

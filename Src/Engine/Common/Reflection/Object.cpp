@@ -5,6 +5,12 @@
 
 #include "PCH.hpp"
 #include "Object.hpp"
+#include "ReflectionClassDefine.hpp"
+
+
+NFE_DEFINE_POLYMORPHIC_CLASS(NFE::IObject)
+NFE_END_DEFINE_CLASS()
+
 
 namespace NFE {
 

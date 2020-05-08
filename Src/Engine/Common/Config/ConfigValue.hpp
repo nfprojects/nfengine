@@ -61,34 +61,35 @@ public:
     ConfigValue() : object(INVALID_NODE_PTR), type(Type::None) { }
 
     /// Constructors
-    ConfigValue(bool val) { type = Type::Bool; boolData = val; }
-    explicit ConfigValue(int8 val) { type = Type::Int8; intData8 = val; }
-    explicit ConfigValue(uint8 val) { type = Type::Uint8; uintData8 = val; }
-    explicit ConfigValue(int16 val) { type = Type::Int16; intData16 = val; }
-    explicit ConfigValue(uint16 val) { type = Type::Uint16; uintData16 = val; }
-    explicit ConfigValue(int32 val) { type = Type::Int32; intData32 = val; }
-    explicit ConfigValue(uint32 val) { type = Type::Uint32; uintData32 = val; }
-    explicit ConfigValue(int64 val) { type = Type::Int64; intData64 = val; }
-    explicit ConfigValue(uint64 val) { type = Type::Uint64; uintData64 = val; }
-    ConfigValue(float val) { type = Type::Float; floatData = val; }
-    ConfigValue(double val) { type = Type::Double; doubleData = val; }
-    ConfigValue(const char* val) { type = Type::String; stringData = val; }
-    ConfigValue(const ConfigObject& val) { type = Type::Object; object = val.mHead; }
-    ConfigValue(const ConfigArray& val) { type = Type::Array; array = val.mHead; }
+    NFE_FORCE_INLINE ConfigValue(bool val) { type = Type::Bool; boolData = val; }
+    NFE_FORCE_INLINE explicit ConfigValue(int8 val) { type = Type::Int8; intData8 = val; }
+    NFE_FORCE_INLINE explicit ConfigValue(uint8 val) { type = Type::Uint8; uintData8 = val; }
+    NFE_FORCE_INLINE explicit ConfigValue(int16 val) { type = Type::Int16; intData16 = val; }
+    NFE_FORCE_INLINE explicit ConfigValue(uint16 val) { type = Type::Uint16; uintData16 = val; }
+    NFE_FORCE_INLINE explicit ConfigValue(int32 val) { type = Type::Int32; intData32 = val; }
+    NFE_FORCE_INLINE explicit ConfigValue(uint32 val) { type = Type::Uint32; uintData32 = val; }
+    NFE_FORCE_INLINE explicit ConfigValue(int64 val) { type = Type::Int64; intData64 = val; }
+    NFE_FORCE_INLINE explicit ConfigValue(uint64 val) { type = Type::Uint64; uintData64 = val; }
+    NFE_FORCE_INLINE ConfigValue(float val) { type = Type::Float; floatData = val; }
+    NFE_FORCE_INLINE ConfigValue(double val) { type = Type::Double; doubleData = val; }
+    NFE_FORCE_INLINE ConfigValue(const char* val) { type = Type::String; stringData = val; }
+    NFE_FORCE_INLINE ConfigValue(const StringView val) { NFE_ASSERT(val.IsNullTerminated()); type = Type::String; stringData = val.Data(); }
+    NFE_FORCE_INLINE ConfigValue(const ConfigObject& val) { type = Type::Object; object = val.mHead; }
+    NFE_FORCE_INLINE ConfigValue(const ConfigArray& val) { type = Type::Array; array = val.mHead; }
 
     /// Checkers
     template <typename T>
     NFE_INLINE bool Is() const;
-    NFE_INLINE bool IsString() const { return type == Type::String; }
-    NFE_INLINE bool IsObject() const { return type == Type::Object; }
-    NFE_INLINE bool IsArray() const { return type == Type::Array; }
+    NFE_FORCE_INLINE bool IsString() const { return type == Type::String; }
+    NFE_FORCE_INLINE bool IsObject() const { return type == Type::Object; }
+    NFE_FORCE_INLINE bool IsArray() const { return type == Type::Array; }
 
     /// Getters
     template <typename T>
     NFE_INLINE T Get() const;
-    NFE_INLINE const char* GetString() const { return stringData; }
-    NFE_INLINE ConfigObjectNodePtr GetObj() const { return object; }
-    NFE_INLINE ConfigArrayNodePtr GetArray() const { return array; }
+    NFE_FORCE_INLINE const char* GetString() const { return stringData; }
+    NFE_FORCE_INLINE ConfigObjectNodePtr GetObj() const { return object; }
+    NFE_FORCE_INLINE ConfigArrayNodePtr GetArray() const { return array; }
 };
 
 // ConfigValue::Is<T>() template specializations
@@ -127,14 +128,14 @@ template<> NFE_INLINE const char* ConfigValue::Get<const char*>() const { return
  */
 class NFCOMMON_API ConfigGenericValue : public ConfigValue
 {
-    const Config* mConfig;
+    const IConfig* mConfig;
 
     // TODO: implement a map of object keys / array indicies to speed up lookup
 
 public:
     ConfigGenericValue() : ConfigValue(), mConfig(nullptr) { }
-    ConfigGenericValue(const Config* config);
-    ConfigGenericValue(const Config* config, const ConfigValue& val);
+    ConfigGenericValue(const IConfig* config);
+    ConfigGenericValue(const IConfig* config, const ConfigValue& val);
 
     /**
      * Check if a value with a given key exists in the object.

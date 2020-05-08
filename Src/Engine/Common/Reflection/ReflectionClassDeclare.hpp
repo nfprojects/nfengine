@@ -7,7 +7,6 @@
 #pragma once
 
 #include "Types/ReflectionClassType.hpp"
-#include "Object.hpp"
 
 // Declare occurrence of a non-polymorphic class. Must be placed inside class declaration.
 #define NFE_DECLARE_CLASS(T)                                                                \
@@ -25,3 +24,5 @@
     private:                                                                                \
         static const char* _GetName();                                                      \
         static bool _InitType(NFE::RTTI::ClassTypeInfo& typeInfo);
+
+#include "Object.hpp"

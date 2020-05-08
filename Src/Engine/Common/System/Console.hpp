@@ -7,7 +7,7 @@
 #include "../nfCommon.hpp"
 
 #if defined(WIN32)
-#include "Win/Console.hpp"
+#include "Windows/Console.hpp"
 #elif defined(__LINUX__) | defined(__linux__)
 #include "Linux/Console.hpp"
 #else

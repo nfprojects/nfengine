@@ -1,6 +1,6 @@
 /**
  * @file
- * @author Witek902 (witek902@gmail.com)
+ * @author Witek902
  * @brief  Declaration of reflection system's EnumType template class.
  */
 
@@ -10,7 +10,6 @@
 #include "ReflectionType.hpp"
 #include "../ReflectionMember.hpp"
 #include "../../Config/ConfigValue.hpp"
-#include "../../Containers/String.hpp"
 #include "../../Containers/DynArray.hpp"
 
 namespace NFE {
@@ -20,7 +19,7 @@ namespace RTTI {
 struct EnumOption
 {
     uint64 value;   // we must support 64-bit enums
-    const char* name;
+    Common::StringView name;
 
     EnumOption(uint64 value, const char* name)
         : value(value)
@@ -53,13 +52,17 @@ public:
     // list all the enum options
     const EnumOptions& GetOptions() const;
 
-    const char* FindOptionByValue(uint64 value) const;
-    bool WriteValue(void* object, uint32 enumOptionIndex) const;
-    bool ReadValue(const void* object, uint32& outEnumOptionIndex) const;
+    const Common::StringView FindOptionByValue(uint64 value) const;
+    bool FindOptionByName(const Common::StringView name, uint64& outValue) const;
+
+    void WriteRawValue(void* object, uint64 rawValue) const;
+    uint64 ReadRawValue(const void* object) const;
 
     void PrintInfo() const override;
-    bool Serialize(const void* object, Common::Config& config, Common::ConfigValue& outValue) const override;
-    bool Deserialize(void* outObject, const Common::Config& config, const Common::ConfigValue& value) const override;
+    bool Serialize(const void* object, Common::IConfig& config, Common::ConfigValue& outValue, SerializationContext& context) const override;
+    bool SerializeBinary(const void* object, Common::OutputStream* stream, SerializationContext& context) const override;
+    bool Deserialize(void* outObject, const Common::IConfig& config, const Common::ConfigValue& value, const SerializationContext& context) const override;
+    bool DeserializeBinary(void* outObject, Common::InputStream& stream, const SerializationContext& context) const override;
     bool Compare(const void* objectA, const void* objectB) const override;
     bool Clone(void* destObject, const void* sourceObject) const override;
 

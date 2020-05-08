@@ -1,15 +1,14 @@
 /**
  * @file
- * @author Witek902 (witek902@gmail.com)
+ * @author Witek902
  * @brief  Definition of NativeArrayType.
  */
 
 #pragma once
 
-#include "ReflectionType.hpp"
+#include "ReflectionArrayType.hpp"
 #include "../ReflectionTypeResolver.hpp"
-#include "../../Config/Config.hpp"
-#include "../../Config/ConfigValue.hpp"
+#include "../../Config/ConfigInterface.hpp"
 
 
 namespace NFE {
@@ -18,134 +17,35 @@ namespace RTTI {
 /**
  * Type information for T[N] types.
  */
-class NFCOMMON_API NativeArrayType : public Type
+class NFCOMMON_API NativeArrayType : public ArrayType
 {
     NFE_MAKE_NONCOPYABLE(NativeArrayType)
 
 public:
-    NFE_FORCE_INLINE NativeArrayType(const TypeInfo& info, uint32 arraySize)
-        : Type(info)
-        , mArraySize(arraySize)
-    { }
+    NativeArrayType(const TypeInfo& info, uint32 arraySize, const Type* underlyingType);
 
     // get number of array elements
     NFE_FORCE_INLINE uint32 GetArraySize() const { return mArraySize; }
-
-    // get type of the array element
-    virtual const Type* GetUnderlyingType() const = 0;
+    virtual uint32 GetArraySize(const void* arrayObject) const override final;
 
     virtual void PrintInfo() const override;
 
-    bool Compare(const void* objectA, const void* objectB) const override;
-    bool Clone(void* destObject, const void* sourceObject) const override;
+    virtual bool Serialize(const void* object, Common::IConfig& config, Common::ConfigValue& outValue, SerializationContext& context) const override;
+    virtual bool SerializeBinary(const void* object, Common::OutputStream* stream, SerializationContext& context) const override;
+    virtual bool DeserializeBinary(void* outObject, Common::InputStream& stream, const SerializationContext& context) const override;
+    virtual bool Deserialize(void* outObject, const Common::IConfig& config, const Common::ConfigValue& value, const SerializationContext& context) const override;
+
+    virtual bool Compare(const void* objectA, const void* objectB) const override;
+    virtual bool Clone(void* destObject, const void* sourceObject) const override;
+    virtual bool CanBeMemcopied() const override;
 
     // access element data
     void* GetElementPointer(void* arrayData, uint32 index) const;
     const void* GetElementPointer(const void* arrayData, uint32 index) const;
 
 protected:
-    // array size (in elements)
-    uint32 mArraySize;
+    uint32 mArraySize;              // array size (in elements)
 };
-
-/**
- * Specialized type information for T[N] types.
- */
-template<typename T>
-class NativeArrayTypeImpl final : public NativeArrayType
-{
-public:
-    NativeArrayTypeImpl(const TypeInfo& info, uint32 arraySize)
-        : NativeArrayType(info, arraySize)
-    { }
-
-    virtual const Type* GetUnderlyingType() const override
-    {
-        return GetType<T>();
-    }
-
-    bool Serialize(const void* object, Common::Config& config, Common::ConfigValue& outValue) const override
-    {
-        using namespace Common;
-
-        // extract serialization information
-        const Type* elementType = GetType<T>();
-        const T* typedArray = static_cast<const T*>(object);
-
-        // sanity checks
-        NFE_ASSERT(elementType, "Invalid native array element type");
-        NFE_ASSERT(object, "Trying to serialize nullptr");
-
-        // serialize array elements
-        ConfigArray configArray;
-        for (uint32 i = 0; i < mArraySize; ++i)
-        {
-            ConfigValue arrayElementValue;
-            const T& arrayElement = typedArray[i];
-            if (!elementType->Serialize(&arrayElement, config, arrayElementValue))
-            {
-                NFE_LOG_ERROR("Failed to serialize native array element (index %u/%u)", i, mArraySize);
-                return false;
-            }
-            config.AddValue(configArray, arrayElementValue);
-        }
-
-        // success
-        outValue = configArray;
-        return true;
-    }
-
-    bool Deserialize(void* outObject, const Common::Config& config, const Common::ConfigValue& value) const override
-    {
-        using namespace Common;
-
-        // extract serialization information
-        const Type* elementType = GetType<T>();
-        T* typedArray = static_cast<T*>(outObject);
-
-        // sanity checks
-        NFE_ASSERT(elementType, "Invalid native array element type");
-        NFE_ASSERT(outObject, "Trying to deserialize to nullptr");
-
-        if (!value.IsArray())
-        {
-            NFE_LOG_ERROR("Expected array type");
-            return false;
-        }
-
-        uint32 numDeserializedArrayElements = 0;
-        auto arrayIteratorCallback = [&](int index, const ConfigValue& arrayElement)
-        {
-            if (static_cast<uint32>(index) >= mArraySize)
-            {
-                NFE_LOG_WARNING("Deserialized native array object has too many elements (%u expected). "
-                            "Elements will be dropped", mArraySize);
-                return false;
-            }
-
-            if (!elementType->Deserialize(typedArray + index, config, arrayElement))
-            {
-                NFE_LOG_ERROR("Failed to parse native array element at index %i", index);
-                return false;
-            }
-
-            numDeserializedArrayElements++;
-            return true;
-        };
-
-        config.IterateArray(arrayIteratorCallback, value.GetArray());
-
-        if (numDeserializedArrayElements != mArraySize)
-        {
-            NFE_LOG_WARNING("Deserialized native array object has too few array elements (%u found, %u expected).",
-                        numDeserializedArrayElements, mArraySize);
-            // TODO initialize missing elements with default values (run default constructor)
-        }
-
-        return true;
-    }
-};
-
 
 /**
  * Generic type creator for T[N] array types.
@@ -156,13 +56,13 @@ class TypeCreator<T[N]>
     static_assert(N > 0, "Array size must be non-zero");
 
 public:
-    using TypeClass = NativeArrayTypeImpl<T>;
+    using TypeClass = NativeArrayType;
     using ObjectType = T[N];
 
     static Type* CreateType()
     {
-        const Type* templateArgumentType = GetType<T>();
-        const Common::String typeName = Common::String(templateArgumentType->GetName()) + "[]";
+        const Type* arrayElementType = GetType<T>();
+        const Common::String typeName = Common::String::Printf("%s[%u]", arrayElementType->GetName().Str(), N);
 
         TypeInfo typeInfo;
         typeInfo.kind = TypeKind::NativeArray;
@@ -172,7 +72,7 @@ public:
         typeInfo.constructor = []() { return new ObjectType; };
         typeInfo.arrayConstructor = [](uint32 num) { return new ObjectType[num]; };
 
-        return new TypeClass(typeInfo, N);
+        return new TypeClass(typeInfo, N, arrayElementType);
     }
 
     void FinishInitialization(TypeInfo& typeInfo)

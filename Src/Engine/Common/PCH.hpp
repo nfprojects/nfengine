@@ -61,6 +61,7 @@
 #include <stddef.h>
 
 /// STL
+#include <typeinfo>
 #include <string>
 #include <unordered_map>    // TODO remove
 #include <algorithm>

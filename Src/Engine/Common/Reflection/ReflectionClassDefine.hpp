@@ -81,7 +81,7 @@ NFE_FORCE_INLINE constexpr size_t OffsetOf(Member Class::*member)
     const NFE::RTTI::Type* T::GetDynamicType() const { return NFE::RTTI::GetType<T>(); }                        \
     bool T::_InitType(NFE::RTTI::ClassTypeInfo& typeInfo)                                                       \
     {                                                                                                           \
-        (void)typeInfo;                                                                                         \
+        typeInfo.parent = std::is_same_v<T, NFE::IObject> ? nullptr : NFE::RTTI::GetType<NFE::IObject>();       \
         using ClassType = T; /* ClassType can be used in other NFE_CLASS macros */
 
 
@@ -99,6 +99,7 @@ NFE_FORCE_INLINE constexpr size_t OffsetOf(Member Class::*member)
  */
 #define NFE_CLASS_PARENT(ParentType)   \
     static_assert(std::is_class_v<ParentType>, "Given type '" #ParentType "' is not a class");                                  \
+    static_assert(!std::is_same_v<ParentType, ClassType>, "Parent calss can't be the same as defined class '" #ParentType "'");   \
     static_assert(std::is_base_of_v<ParentType, ClassType>, "Given type '" #ParentType "' is not a parent of defined class");   \
     typeInfo.parent = NFE::RTTI::GetType<ParentType>();
 

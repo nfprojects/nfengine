@@ -6,6 +6,7 @@
 
 #include "PCH.hpp"
 #include "Engine/Common/Logger/LoggerImpl.hpp"
+#include "Engine/Common/Containers/StringView.hpp"
 
 
 using namespace NFE::Common;

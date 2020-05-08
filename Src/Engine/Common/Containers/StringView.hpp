@@ -29,11 +29,12 @@ public:
     NFE_INLINE StringView();
 
     // create view of C-like, null-terminated string
+    // TODO remove 'explicit'
     NFE_INLINE explicit StringView(const char* string);
 
     // create view of string with of given length
     // Null-termination is not expected, will cause assertion
-    NFE_INLINE explicit StringView(const char* string, uint32 length);
+    NFE_INLINE StringView(const char* string, uint32 length);
 
     // copy/move constructor/assignment
     StringView(const StringView& other) = default;
@@ -41,22 +42,39 @@ public:
     StringView(StringView&& other) = default;
     StringView& operator = (StringView&& other) = default;
 
+    // create view of String
+    explicit StringView(const String& string);
+    StringView& operator = (const String& other);
 
     /**
      * Get length of the string (in bytes).
      */
-    NFE_INLINE uint32 Length() const;
+    NFE_FORCE_INLINE uint32 Length() const
+    {
+        return mLength;
+    }
 
     /**
      * Get raw data pointed by the view.
      * @note    The string may not be null-terminated!
      */
-    NFE_INLINE const char* Data() const;
+    NFE_FORCE_INLINE const char* Data() const
+    {
+        return mData;
+    }
+
+    NFE_FORCE_INLINE bool IsNullTerminated() const
+    {
+        return mIsNullTerminated;
+    }
 
     /**
      * Check if the array is empty.
      */
-    NFE_INLINE bool Empty() const;
+    NFE_FORCE_INLINE bool Empty() const
+    {
+        return mLength == 0;
+    }
 
     /**
      * Character access operator.
@@ -69,7 +87,7 @@ public:
      * @param index Starting index.
      * @param size  Number of elements in range.
      */
-    NFE_INLINE StringView Range(uint32 index, uint32 length) const;
+    NFE_INLINE const StringView Range(uint32 index, uint32 length) const;
 
     /**
      * Find a substring in the view. Start search from the left side.
@@ -117,13 +135,17 @@ public:
     bool operator <= (const StringView& other) const;
     bool operator >= (const StringView& other) const;
 
-protected:
+private:
     // pointer to the string data
     // don't need to be null-terminated
     const char* mData;
 
     // number of bytes
     uint32 mLength;
+
+    // indicates whether byte after the string is null-terminator
+    // if so, it can be safely casted to 'const char*'
+    bool mIsNullTerminated;
 };
 
 

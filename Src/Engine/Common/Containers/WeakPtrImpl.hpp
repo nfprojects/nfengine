@@ -26,7 +26,7 @@ WeakPtr<T>::WeakPtr(WeakPtr<T>&& rhs)
 
 template<typename T>
 WeakPtr<T>::WeakPtr(const WeakPtr<T>& rhs)
-    : SharedPtrBase<T>(rhs.mPointer, rhs.mData)
+    : SharedPtrTypedBase<T>(rhs.mPointer, rhs.mData)
 {
     if (this->mData)
     {
@@ -36,7 +36,7 @@ WeakPtr<T>::WeakPtr(const WeakPtr<T>& rhs)
 
 template<typename T>
 WeakPtr<T>::WeakPtr(const SharedPtr<T>& rhs)
-    : SharedPtrBase<T>(rhs.mPointer, rhs.mData)
+    : SharedPtrTypedBase<T>(rhs.mPointer, rhs.mData)
 {
     if (this->mData)
     {
@@ -103,7 +103,7 @@ WeakPtr<T>& WeakPtr<T>::operator = (const WeakPtr<T>& rhs)
 template<typename T>
 template<typename SourceType>
 WeakPtr<T>::WeakPtr(const WeakPtr<SourceType>& rhs)
-    : SharedPtrBase<T>(rhs.mPointer, rhs.mData)
+    : SharedPtrTypedBase<T>(rhs.mPointer, rhs.mData)
 {
     if (this->mData)
     {

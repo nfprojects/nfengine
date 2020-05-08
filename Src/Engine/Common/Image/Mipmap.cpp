@@ -29,10 +29,10 @@ Mipmap::Mipmap(const void* data, uint32 width, uint32 height, size_t dataSize)
 }
 
 Mipmap::Mipmap(const Mipmap& other)
-    : mWidth(other.mWidth)
+    : mData(other.mData)
+    , mWidth(other.mWidth)
     , mHeight(other.mHeight)
 {
-    mData.Load(other.mData.GetData(), other.mData.GetSize());
 }
 
 Mipmap::Mipmap(Mipmap&& other)
@@ -48,8 +48,7 @@ Mipmap& Mipmap::operator=(const Mipmap& other)
     if (&other == this)
         return *this;
 
-    mData.Load(other.mData.GetData(), other.mData.GetSize());
-
+    mData = other.mData;
     mWidth = other.mWidth;
     mHeight = other.mHeight;
     return *this;
@@ -62,7 +61,7 @@ Mipmap::~Mipmap()
 
 void Mipmap::Release()
 {
-    if (!mData.GetData())
+    if (!mData.Data())
     {
         mData.Release();
     }
@@ -76,9 +75,9 @@ bool Mipmap::SetData(const void* data, uint32 width, uint32 height, size_t dataS
     Release();
     mWidth = width;
     mHeight = height;
-    mData.Load(data, dataSize);
+    mData.Resize(dataSize, data);
 
-    if (!mData.GetData())
+    if (!mData.Data())
     {
         NFE_LOG_ERROR("Allocation error for mData member.");
         return false;
@@ -89,7 +88,7 @@ bool Mipmap::SetData(const void* data, uint32 width, uint32 height, size_t dataS
 
 const void* Mipmap::GetData() const
 {
-    const void* data = mData.GetData();
+    const void* data = mData.Data();
     if (data)
         return data;
 
@@ -109,7 +108,7 @@ uint32 Mipmap::GetHeight() const
 
 size_t Mipmap::GetDataSize() const
 {
-    return mData.GetSize();
+    return mData.Size();
 }
 
 Color Mipmap::FilterBox(uint32 x, uint32 y, ImageFormat fmt) const
@@ -143,7 +142,7 @@ Color Mipmap::GetTexel(uint32 x, uint32 y, ImageFormat fmt) const
         case ImageFormat::A_UByte:
         {
             // TODO use function similar to VectorLoadUChar4
-            uint8* data = static_cast<uint8*>(mData.GetData());
+            uint8* data = static_cast<uint8*>(mData.Data());
             Vec4fU colors;
             colors.x = 1.0f;
             colors.y = 1.0f;
@@ -155,7 +154,7 @@ Color Mipmap::GetTexel(uint32 x, uint32 y, ImageFormat fmt) const
         case ImageFormat::R_UByte:
         {
             // TODO use function similar to VectorLoadUChar4
-            uint8* data = static_cast<uint8*>(mData.GetData());
+            uint8* data = static_cast<uint8*>(mData.Data());
             Vec4fU colors;
             colors.x = static_cast<float>(data[(y * mWidth + x)]) / 255.0f;
             colors.y = 0.0f;
@@ -167,7 +166,7 @@ Color Mipmap::GetTexel(uint32 x, uint32 y, ImageFormat fmt) const
         case ImageFormat::RGB_UByte:
         {
             // TODO use function similar to VectorLoadUChar4
-            uint8* data = static_cast<uint8*>(mData.GetData());
+            uint8* data = static_cast<uint8*>(mData.Data());
             Vec4fU colors;
             colors.x = static_cast<float>(data[3 * (y * mWidth + x)]    ) / 255.0f;
             colors.y = static_cast<float>(data[3 * (y * mWidth + x) + 1]) / 255.0f;
@@ -178,21 +177,21 @@ Color Mipmap::GetTexel(uint32 x, uint32 y, ImageFormat fmt) const
 
         case ImageFormat::RGBA_UByte:
         {
-            uint8* data = static_cast<uint8*>(mData.GetData());
+            uint8* data = static_cast<uint8*>(mData.Data());
             data += 4 * (y * mWidth + x);
             return Vec4f_Load_4xUint8(data) * VECTOR_INV_255;
         }
 
         case ImageFormat::R_Float:
         {
-            float* data = static_cast<float*>(mData.GetData());
+            float* data = static_cast<float*>(mData.Data());
             float r = data[y * mWidth + x];
             return Color(r, 0.0f, 0.0f, 1.0f);
         }
 
         case ImageFormat::RGBA_Float:
         {
-            Vec4fU* data = static_cast<Vec4fU*>(mData.GetData());
+            Vec4fU* data = static_cast<Vec4fU*>(mData.Data());
             data += (y * mWidth + x);
             return Color(*data);
         }
@@ -212,7 +211,7 @@ void Mipmap::SetTexel(const Color& v, uint32 x, uint32 y, ImageFormat fmt)
         case ImageFormat::A_UByte:
         {
             // TODO use function similar to VectorStoreUChar4
-            uint8* data = static_cast<uint8*>(mData.GetData());
+            uint8* data = static_cast<uint8*>(mData.Data());
             data[y * mWidth + x] = static_cast<uint8>(v.f[3] * 255.0f);
             break;
         }
@@ -220,7 +219,7 @@ void Mipmap::SetTexel(const Color& v, uint32 x, uint32 y, ImageFormat fmt)
         case ImageFormat::R_UByte:
         {
             // TODO use function similar to VectorStoreUChar4
-            uint8* data = static_cast<uint8*>(mData.GetData());
+            uint8* data = static_cast<uint8*>(mData.Data());
             data[y * mWidth + x] = static_cast<uint8>(v.f[0] * 255.0f);
             break;
         }
@@ -228,7 +227,7 @@ void Mipmap::SetTexel(const Color& v, uint32 x, uint32 y, ImageFormat fmt)
         case ImageFormat::RGB_UByte:
         {
             // TODO use function similar to VectorStoreUChar4
-            uint8* data = static_cast<uint8*>(mData.GetData());
+            uint8* data = static_cast<uint8*>(mData.Data());
             data[3 * (y * mWidth + x)    ] = static_cast<uint8>(v.f[0] * 255.0f);
             data[3 * (y * mWidth + x) + 1] = static_cast<uint8>(v.f[1] * 255.0f);
             data[3 * (y * mWidth + x) + 2] = static_cast<uint8>(v.f[2] * 255.0f);
@@ -237,7 +236,7 @@ void Mipmap::SetTexel(const Color& v, uint32 x, uint32 y, ImageFormat fmt)
 
         case ImageFormat::RGBA_UByte:
         {
-            uint8* data = static_cast<uint8*>(mData.GetData());
+            uint8* data = static_cast<uint8*>(mData.Data());
             data += 4 * (y * mWidth + x);
             *reinterpret_cast<uint32*>(data) = (v * 255.0f).ToBGR();
             break;
@@ -245,14 +244,14 @@ void Mipmap::SetTexel(const Color& v, uint32 x, uint32 y, ImageFormat fmt)
 
         case ImageFormat::R_Float:
         {
-            float* data = static_cast<float*>(mData.GetData());
+            float* data = static_cast<float*>(mData.Data());
             data[y * mWidth + x] = v.f[0];
             break;
         }
 
         case ImageFormat::RGBA_Float:
         {
-            Vec4fU* data = static_cast<Vec4fU*>(mData.GetData());
+            Vec4fU* data = static_cast<Vec4fU*>(mData.Data());
             data += (y * mWidth + x);
             *data = v.ToVec4fU();
             break;

@@ -1,8 +1,8 @@
 #include "PCH.hpp"
 #include "Engine/Common/Image/Image.hpp"
 #include "Engine/Common/Image/ImageType.hpp"
-#include "Engine/Common/Utils/InputStream.hpp"
-#include "Engine/Common/Utils/OutputStream.hpp"
+#include "Engine/Common/Utils/Stream/FileInputStream.hpp"
+#include "Engine/Common/Utils/Stream/FileOutputStream.hpp"
 #include "Engine/Common/FileSystem/FileSystem.hpp"
 #include "Engine/Common/Containers/String.hpp"
 

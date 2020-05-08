@@ -235,6 +235,12 @@
     <ClCompile Include="TestCases\Math\MathVec16fTest.cpp">
       <Filter>TestCases\Math</Filter>
     </ClCompile>
+    <ClCompile Include="TestCases\Reflection\ReflectionSerializerTest.cpp">
+      <Filter>TestCases\Reflection</Filter>
+    </ClCompile>
+    <ClCompile Include="TestCases\Utils\CompressedInt.cpp">
+      <Filter>TestCases\Utils</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="PCH.hpp" />

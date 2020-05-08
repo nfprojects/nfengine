@@ -50,7 +50,7 @@ public:
      *                              is performed. For debugging.
      * @return nullptr on error or valid memory block pointer.
      */
-    void* Malloc(size_t size, size_t alignment, const char* sourceFile, int sourceLine);
+    [[nodiscard]] void* Malloc(size_t size, size_t alignment, const char* sourceFile, int sourceLine);
 
     /**
      * Free the memory block allocated with @p Malloc method.

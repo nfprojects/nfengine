@@ -9,7 +9,7 @@
 #include "Image.hpp"
 #include "libpng/png.h"
 #include "Logger/Logger.hpp"
-#include "Utils/InputStream.hpp"
+#include "Utils/Stream/InputStream.hpp"
 #include "Reflection/ReflectionClassDefine.hpp"
 
 

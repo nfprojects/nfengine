@@ -43,6 +43,9 @@
     <Filter Include="Containers\Iterators">
       <UniqueIdentifier>{51fafc6d-ed35-48ef-8818-d037d9db3688}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Utils\Stream">
+      <UniqueIdentifier>{9f5875f6-f364-4661-95d5-dea0cdf282d3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="nfCommon.hpp" />
@@ -116,7 +119,7 @@
     <ClInclude Include="Logger\Backends\BackendXML.hpp">
       <Filter>Logger\Backends</Filter>
     </ClInclude>
-    <ClInclude Include="Logger\Backends\Win\BackendWindowsDebugger.hpp">
+    <ClInclude Include="Logger\Backends\Windows\BackendWindowsDebugger.hpp">
       <Filter>Logger\Backends</Filter>
     </ClInclude>
     <ClInclude Include="Memory\DefaultAllocator.hpp">
@@ -161,13 +164,13 @@
     <ClInclude Include="Utils\Latch.hpp">
       <Filter>Utils</Filter>
     </ClInclude>
-    <ClInclude Include="System\Win\AsyncQueueManager.hpp">
+    <ClInclude Include="System\Windows\AsyncQueueManager.hpp">
       <Filter>System</Filter>
     </ClInclude>
-    <ClInclude Include="System\Win\Common.hpp">
+    <ClInclude Include="System\Windows\Common.hpp">
       <Filter>System</Filter>
     </ClInclude>
-    <ClInclude Include="System\Win\Console.hpp">
+    <ClInclude Include="System\Windows\Console.hpp">
       <Filter>System</Filter>
     </ClInclude>
     <ClInclude Include="System\Assertion.hpp">
@@ -202,12 +205,6 @@
     </ClInclude>
     <ClInclude Include="System\Memory.hpp">
       <Filter>System</Filter>
-    </ClInclude>
-    <ClInclude Include="Utils\InputStream.hpp">
-      <Filter>Utils</Filter>
-    </ClInclude>
-    <ClInclude Include="Utils\OutputStream.hpp">
-      <Filter>Utils</Filter>
     </ClInclude>
     <ClInclude Include="Containers\Deque.hpp">
       <Filter>Containers</Filter>
@@ -300,19 +297,19 @@
     <ClInclude Include="System\RWLock.hpp">
       <Filter>System</Filter>
     </ClInclude>
-    <ClInclude Include="System\Win\RWLockImpl.hpp">
+    <ClInclude Include="System\Windows\RWLockImpl.hpp">
       <Filter>System</Filter>
     </ClInclude>
     <ClInclude Include="System\Mutex.hpp">
       <Filter>System</Filter>
     </ClInclude>
-    <ClInclude Include="System\Win\MutexImpl.hpp">
+    <ClInclude Include="System\Windows\MutexImpl.hpp">
       <Filter>System</Filter>
     </ClInclude>
     <ClInclude Include="System\ConditionVariable.hpp">
       <Filter>System</Filter>
     </ClInclude>
-    <ClInclude Include="System\Win\ConditionVariableImpl.hpp">
+    <ClInclude Include="System\Windows\ConditionVariableImpl.hpp">
       <Filter>System</Filter>
     </ClInclude>
     <ClInclude Include="Containers\SharedPtr.hpp">
@@ -647,6 +644,42 @@
     <ClInclude Include="Math\Vec16iImplNaive.hpp">
       <Filter>Math</Filter>
     </ClInclude>
+    <ClInclude Include="Config\ConfigInterface.hpp">
+      <Filter>Config</Filter>
+    </ClInclude>
+    <ClInclude Include="Reflection\SerializationContext.hpp">
+      <Filter>Reflection</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils\Stream\InputStream.hpp">
+      <Filter>Utils\Stream</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils\Stream\FileInputStream.hpp">
+      <Filter>Utils\Stream</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils\Stream\FileOutputStream.hpp">
+      <Filter>Utils\Stream</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils\CompressedInt.hpp">
+      <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils\Stream\OutputStream.hpp">
+      <Filter>Utils\Stream</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils\Stream\BufferOutputStream.hpp">
+      <Filter>Utils\Stream</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils\Stream\BufferInputStream.hpp">
+      <Filter>Utils\Stream</Filter>
+    </ClInclude>
+    <ClInclude Include="Reflection\Types\ReflectionArrayType.hpp">
+      <Filter>Reflection\Types</Filter>
+    </ClInclude>
+    <ClInclude Include="Reflection\Serializer.hpp">
+      <Filter>Reflection</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils\LanguageUtils.hpp">
+      <Filter>Utils</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="PCH.cpp" />
@@ -704,7 +737,7 @@
     <ClCompile Include="Logger\Backends\BackendXML.cpp">
       <Filter>Logger\Backends</Filter>
     </ClCompile>
-    <ClCompile Include="Logger\Backends\Win\BackendWindowsDebugger.cpp">
+    <ClCompile Include="Logger\Backends\Windows\BackendWindowsDebugger.cpp">
       <Filter>Logger\Backends</Filter>
     </ClCompile>
     <ClCompile Include="Memory\DefaultAllocator.cpp">
@@ -749,34 +782,34 @@
     <ClCompile Include="Utils\Latch.cpp">
       <Filter>Utils</Filter>
     </ClCompile>
-    <ClCompile Include="System\Win\AsyncQueueManager.cpp">
+    <ClCompile Include="System\Windows\AsyncQueueManager.cpp">
       <Filter>System</Filter>
     </ClCompile>
-    <ClCompile Include="System\Win\Common.cpp">
+    <ClCompile Include="System\Windows\Common.cpp">
       <Filter>System</Filter>
     </ClCompile>
-    <ClCompile Include="System\Win\Console.cpp">
+    <ClCompile Include="System\Windows\Console.cpp">
       <Filter>System</Filter>
     </ClCompile>
-    <ClCompile Include="System\Win\Library.cpp">
+    <ClCompile Include="System\Windows\Library.cpp">
       <Filter>System</Filter>
     </ClCompile>
-    <ClCompile Include="System\Win\Main.cpp">
+    <ClCompile Include="System\Windows\Main.cpp">
       <Filter>System</Filter>
     </ClCompile>
-    <ClCompile Include="System\Win\Memory.cpp">
+    <ClCompile Include="System\Windows\Memory.cpp">
       <Filter>System</Filter>
     </ClCompile>
-    <ClCompile Include="System\Win\SystemInfoPlatform.cpp">
+    <ClCompile Include="System\Windows\SystemInfoPlatform.cpp">
       <Filter>System</Filter>
     </ClCompile>
-    <ClCompile Include="System\Win\Thread.cpp">
+    <ClCompile Include="System\Windows\Thread.cpp">
       <Filter>System</Filter>
     </ClCompile>
-    <ClCompile Include="System\Win\Timer.cpp">
+    <ClCompile Include="System\Windows\Timer.cpp">
       <Filter>System</Filter>
     </ClCompile>
-    <ClCompile Include="System\Win\Window.cpp">
+    <ClCompile Include="System\Windows\Window.cpp">
       <Filter>System</Filter>
     </ClCompile>
     <ClCompile Include="System\Assertion.cpp">
@@ -784,12 +817,6 @@
     </ClCompile>
     <ClCompile Include="System\SystemInfo.cpp">
       <Filter>System</Filter>
-    </ClCompile>
-    <ClCompile Include="Utils\InputStream.cpp">
-      <Filter>Utils</Filter>
-    </ClCompile>
-    <ClCompile Include="Utils\OutputStream.cpp">
-      <Filter>Utils</Filter>
     </ClCompile>
     <ClCompile Include="Containers\StringView.cpp">
       <Filter>Containers</Filter>
@@ -907,6 +934,48 @@
     </ClCompile>
     <ClCompile Include="Math\MathTypes.cpp">
       <Filter>Math</Filter>
+    </ClCompile>
+    <ClCompile Include="Reflection\SerializationContext.cpp">
+      <Filter>Reflection</Filter>
+    </ClCompile>
+    <ClCompile Include="Utils\Stream\FileInputStream.cpp">
+      <Filter>Utils\Stream</Filter>
+    </ClCompile>
+    <ClCompile Include="Utils\Stream\FileOutputStream.cpp">
+      <Filter>Utils\Stream</Filter>
+    </ClCompile>
+    <ClCompile Include="Utils\Stream\InputStream.cpp">
+      <Filter>Utils\Stream</Filter>
+    </ClCompile>
+    <ClCompile Include="Utils\CompressedInt.cpp">
+      <Filter>Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="Utils\Stream\OutputStream.cpp">
+      <Filter>Utils\Stream</Filter>
+    </ClCompile>
+    <ClCompile Include="Utils\Stream\BufferInputStream.cpp">
+      <Filter>Utils\Stream</Filter>
+    </ClCompile>
+    <ClCompile Include="Utils\Stream\BufferOutputStream.cpp">
+      <Filter>Utils\Stream</Filter>
+    </ClCompile>
+    <ClCompile Include="Reflection\Types\ReflectionUniquePtrType.cpp">
+      <Filter>Reflection\Types</Filter>
+    </ClCompile>
+    <ClCompile Include="Reflection\Types\ReflectionSharedPtrType.cpp">
+      <Filter>Reflection\Types</Filter>
+    </ClCompile>
+    <ClCompile Include="Reflection\Types\ReflectionFundamentalType.cpp">
+      <Filter>Reflection\Types</Filter>
+    </ClCompile>
+    <ClCompile Include="Containers\SharedPtrBase.cpp">
+      <Filter>Containers</Filter>
+    </ClCompile>
+    <ClCompile Include="Containers\SharedPtrData.cpp">
+      <Filter>Containers</Filter>
+    </ClCompile>
+    <ClCompile Include="Reflection\Serializer.cpp">
+      <Filter>Reflection</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -1,12 +1,13 @@
 /**
  * @file
- * @author Witek902 (witek902@gmail.com)
+ * @author Witek902
  * @brief  Definitions of reflection system's Type class.
  */
 
 #include "PCH.hpp"
 #include "ReflectionType.hpp"
 #include "../../Logger/Logger.hpp"
+#include "../../Containers/StringView.hpp"
 
 
 namespace NFE {
@@ -22,8 +23,10 @@ const char* Type::TypeKindToString(const TypeKind kind)
     case TypeKind::Fundamental:         return "fundamental";
     case TypeKind::Enumeration:         return "enum";
     case TypeKind::NativeArray:         return "native array";
+    case TypeKind::String:              return "string";
     case TypeKind::DynArray:            return "dynamic array";
     case TypeKind::UniquePtr:           return "unique pointer";
+    case TypeKind::SharedPtr:           return "shared pointer";
     case TypeKind::SimpleClass:         return "simple class";
     case TypeKind::PolymorphicClass:    return "polymorphic class";
     case TypeKind::AbstractClass:       return "abstract class";
@@ -37,10 +40,9 @@ Type::~Type() = default;
 Type::Type(const TypeInfo& info)
     : mDefaultObject(nullptr)
 {
-    if (info.name)
-    {
-        mName = info.name;
-    }
+    NFE_ASSERT(info.name, "Invalid type name (nullptr)");
+    mName = StringView(info.name);
+    NFE_ASSERT(!mName.Empty(), "Invalid type name (empty string)");
 
     NFE_ASSERT(info.kind != TypeKind::Undefined, "Type kind cannot be undefined");
     mKind = info.kind;
@@ -61,6 +63,7 @@ Type::Type(const TypeInfo& info)
     if (mConstructor)
     {
         mDefaultObject = CreateRawObject();
+        NFE_ASSERT(mDefaultObject, "Failed to create default object for type %s", GetName().Str());
     }
 }
 
@@ -76,7 +79,14 @@ bool Type::IsA(const Type* baseType) const
 
 void* Type::CreateRawObject() const
 {
+    NFE_ASSERT(mConstructor, "Cannot create an object of type '%s'", GetName().Str());
+
     return mConstructor();
+}
+
+bool Type::CanBeMemcopied() const
+{
+    return false;
 }
 
 } // namespace RTTI

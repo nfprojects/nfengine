@@ -1,6 +1,6 @@
 /**
  * @file
- * @author  Witek902 (witek902@gmail.com)
+ * @author  Witek902
  * @brief   Shared pointer control data block declaration
  */
 
@@ -20,34 +20,29 @@ namespace Common {
 /**
 * Shared pointer control data block - contains reference counters and deleter.
 */
-class NFE_ALIGN(8) SharedPtrDataBase
+class NFE_ALIGN(8) SharedPtrData
 {
 public:
-    NFE_FORCE_INLINE SharedPtrDataBase()
-        : mStrongRefs(1)
-        , mWeakRefs(1)
-    { }
+    using RefCountType = int32;
 
-    NFE_FORCE_INLINE virtual ~SharedPtrDataBase()
-    {
-        NFE_ASSERT(mStrongRefs == 0, "Strong references counter expected to be equal to zero");
-        NFE_ASSERT(mWeakRefs == 0, "Weak references counter expected to be equal to zero");
-    }
+    NFCOMMON_API SharedPtrData();
 
-    std::atomic<int32> mStrongRefs;
-    std::atomic<int32> mWeakRefs;
+    NFCOMMON_API virtual ~SharedPtrData();
+
+    std::atomic<RefCountType> mStrongRefs;
+    std::atomic<RefCountType> mWeakRefs;
 };
 
 /**
  * Shared pointer control data block - contains reference counters and deleter.
  */
 template<typename T>
-class SharedPtrData final : public SharedPtrDataBase
+class SharedPtrTypedData final : public SharedPtrData
 {
 public:
     using DeleterFunc = std::function<void(T*)>;
 
-    NFE_FORCE_INLINE explicit SharedPtrData(T* pointer, const DeleterFunc& deleter)
+    NFE_FORCE_INLINE SharedPtrTypedData(T* pointer, const DeleterFunc& deleter)
         : mPointer(pointer)
         , mDeleter(deleter)
     { }

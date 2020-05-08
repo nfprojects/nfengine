@@ -1,6 +1,6 @@
 /**
  * @file
- * @author Witek902 (witek902@gmail.com)
+ * @author Witek902
  * @brief  Buffer class declaration.
  */
 
@@ -13,46 +13,45 @@ namespace NFE {
 namespace Common {
 
 /**
- * Simple static data buffer
+ * Dynamic data buffer
  */
 class NFCOMMON_API Buffer
 {
-private:
-    size_t mSize;
-    void* mData;
-
 public:
+
+    // TODO
+    const uint32 Alignment = 1;
+
     Buffer();
     Buffer(const Buffer& src);
-    Buffer(Buffer&& other); // move constructor
-    Buffer& operator= (const Buffer& src);
+    Buffer(Buffer&& other);
+    Buffer& operator = (const Buffer& src);
+    Buffer& operator = (Buffer&& src);
     ~Buffer();
 
-    /**
-     * Allocate memory
-     * @param size Number of bytes to allocate
-     */
-    // TODO: return something
-    void Create(size_t size);
+    NFE_FORCE_INLINE bool Empty() const { return mSize == 0; }
+    NFE_FORCE_INLINE size_t Size() const { return mSize; }
+    NFE_FORCE_INLINE size_t Capacity() const { return mCapacity; }
+    NFE_FORCE_INLINE void* Data() const { return mData; }
 
-    /**
-     * Allocate memory and load data
-     * @param pData Source pointer
-     * @param size Number of bytes to allocate and copy
-     */
-    void Load(const void* data, size_t size);
+    void Zero();
 
-    /**
-     * Free memory
-     */
+    // Resize bufer and optionaly copy data into it
+    bool Resize(size_t size, const void* data = nullptr);
+
+    // Reserve space
+    bool Reserve(size_t size, bool preserveData = true);
+
+    // Set size to zero
+    void Clear();
+
+    // Free memory
     void Release();
 
-    size_t GetSize() const;
-
-    /**
-     * @return NULL if not allocated
-     */
-    void* GetData() const;
+private:
+    void* mData;
+    size_t mSize;
+    size_t mCapacity;
 };
 
 } // namespace Common

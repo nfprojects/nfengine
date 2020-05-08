@@ -13,14 +13,14 @@
 namespace NFE {
 namespace Common {
 
-ConfigGenericValue::ConfigGenericValue(const Config* config)
+ConfigGenericValue::ConfigGenericValue(const IConfig* config)
     : ConfigValue(), mConfig(config)
 {
     type = Type::Object;
     object = mConfig->GetRootNode();
 }
 
-ConfigGenericValue::ConfigGenericValue(const Config* config, const ConfigValue& val)
+ConfigGenericValue::ConfigGenericValue(const IConfig* config, const ConfigValue& val)
     : ConfigValue(val), mConfig(config)
 {
 }

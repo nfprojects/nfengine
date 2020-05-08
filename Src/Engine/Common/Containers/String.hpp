@@ -7,7 +7,6 @@
 #pragma once
 
 #include "../nfCommon.hpp"
-#include "StringView.hpp"
 
 
 namespace NFE {
@@ -30,10 +29,10 @@ public:
 
     // constructors
     NFE_INLINE String();
-    NFE_INLINE String(char c);
-    String(const StringView& view);
-    NFE_INLINE String(const String& string);
-    NFE_INLINE String(const char* string);
+    NFE_INLINE String(char c); // TODO make explicit
+    String(const StringView& view); // TODO make explicit
+    String(const String& string);
+    String(const char* string); // TODO make explicit
     String(const char* str, uint32 length);
 
     // construct a string from a fixed-sized array
@@ -47,14 +46,14 @@ public:
     // assignment operators
     String& operator=(char c);
     String& operator=(const StringView& view);
-    NFE_INLINE String& operator=(const String& string);
-    NFE_INLINE String& operator=(const char* string);
+    String& operator=(const String& string);
+    String& operator=(const char* string);
 
     // append
     String& operator+=(char c);
     String& operator+=(const StringView& view);
-    NFE_INLINE String& operator+=(const String& string);
-    NFE_INLINE String& operator+=(const char* string);
+    String& operator+=(const String& string);
+    String& operator+=(const char* string);
 
     // base concatenation operators
     friend NFCOMMON_API String operator+(const StringView& lhs, const StringView& rhs);
@@ -96,8 +95,8 @@ public:
     // replace characters (works like combination of Erase and Insert)
     String& Replace(uint32 index, uint32 numCharacters, char c);
     String& Replace(uint32 index, uint32 numCharacters, const StringView& other);
-    NFE_INLINE String& Replace(uint32 index, uint32 numCharacters, const String& string);
-    NFE_INLINE String& Replace(uint32 index, uint32 numCharacters, const char* string);
+    String& Replace(uint32 index, uint32 numCharacters, const String& string);
+    String& Replace(uint32 index, uint32 numCharacters, const char* string);
 
     /**
      * Reserve memory for given string length (in characters, without null-termination).
@@ -108,7 +107,7 @@ public:
      * Get a view of this string.
      */
     StringView ToView() const;
-    NFE_INLINE operator StringView() const;
+    operator StringView() const;
 
     /**
      * Get length of the string (in bytes).
@@ -218,44 +217,44 @@ NFCOMMON_API String operator+(char lhs, const StringView& rhs);
 NFCOMMON_API String operator+(char lhs, String&& rhs);
 
 // other concatenation operators (const String&)
-NFE_INLINE String operator+(const String& lhs, const String& rhs);
-NFE_INLINE String operator+(String&& lhs, const String& rhs);
-NFE_INLINE String operator+(const String& lhs, String&& rhs);
-NFE_INLINE String operator+(const String& lhs, char rhs);
-NFE_INLINE String operator+(char lhs, const String& rhs);
+NFCOMMON_API String operator+(const String& lhs, const String& rhs);
+NFCOMMON_API String operator+(String&& lhs, const String& rhs);
+NFCOMMON_API String operator+(const String& lhs, String&& rhs);
+NFCOMMON_API String operator+(const String& lhs, char rhs);
+NFCOMMON_API String operator+(char lhs, const String& rhs);
 
 // other concatenation operators (const char*)
-NFE_INLINE String operator+(const String& lhs, const char* rhs);
-NFE_INLINE String operator+(const char* lhs, const String& rhs);
-NFE_INLINE String operator+(String&& lhs, const char* rhs);
-NFE_INLINE String operator+(const char* lhs, String&& rhs);
+NFCOMMON_API String operator+(const String& lhs, const char* rhs);
+NFCOMMON_API String operator+(const char* lhs, const String& rhs);
+NFCOMMON_API String operator+(String&& lhs, const char* rhs);
+NFCOMMON_API String operator+(const char* lhs, String&& rhs);
 
 // comparison operators (string vs. string)
-NFE_INLINE bool operator<(const String& lhs, const String& rhs);
-NFE_INLINE bool operator<=(const String& lhs, const String& rhs);
-NFE_INLINE bool operator>(const String& lhs, const String& rhs);
-NFE_INLINE bool operator>=(const String& lhs, const String& rhs);
-NFE_INLINE bool operator==(const String& lhs, const String& rhs);
-NFE_INLINE bool operator!=(const String& lhs, const String& rhs);
+NFCOMMON_API bool operator<(const String& lhs, const String& rhs);
+NFCOMMON_API bool operator<=(const String& lhs, const String& rhs);
+NFCOMMON_API bool operator>(const String& lhs, const String& rhs);
+NFCOMMON_API bool operator>=(const String& lhs, const String& rhs);
+NFCOMMON_API bool operator==(const String& lhs, const String& rhs);
+NFCOMMON_API bool operator!=(const String& lhs, const String& rhs);
 
 // comparison operators (string vs. view)
-NFE_INLINE bool operator<(const String& lhs, const StringView& rhs);
-NFE_INLINE bool operator<=(const String& lhs, const StringView& rhs);
-NFE_INLINE bool operator>(const String& lhs, const StringView& rhs);
-NFE_INLINE bool operator>=(const String& lhs, const StringView& rhs);
-NFE_INLINE bool operator==(const String& lhs, const StringView& rhs);
-NFE_INLINE bool operator!=(const String& lhs, const StringView& rhs);
+NFCOMMON_API bool operator<(const String& lhs, const StringView& rhs);
+NFCOMMON_API bool operator<=(const String& lhs, const StringView& rhs);
+NFCOMMON_API bool operator>(const String& lhs, const StringView& rhs);
+NFCOMMON_API bool operator>=(const String& lhs, const StringView& rhs);
+NFCOMMON_API bool operator==(const String& lhs, const StringView& rhs);
+NFCOMMON_API bool operator!=(const String& lhs, const StringView& rhs);
 
 // comparison operators (view vs. string)
-NFE_INLINE bool operator<(const StringView& lhs, const String& rhs);
-NFE_INLINE bool operator<=(const StringView& lhs, const String& rhs);
-NFE_INLINE bool operator>(const StringView& lhs, const String& rhs);
-NFE_INLINE bool operator>=(const StringView& lhs, const String& rhs);
-NFE_INLINE bool operator==(const StringView& lhs, const String& rhs);
-NFE_INLINE bool operator!=(const StringView& lhs, const String& rhs);
+NFCOMMON_API bool operator<(const StringView& lhs, const String& rhs);
+NFCOMMON_API bool operator<=(const StringView& lhs, const String& rhs);
+NFCOMMON_API bool operator>(const StringView& lhs, const String& rhs);
+NFCOMMON_API bool operator>=(const StringView& lhs, const String& rhs);
+NFCOMMON_API bool operator==(const StringView& lhs, const String& rhs);
+NFCOMMON_API bool operator!=(const StringView& lhs, const String& rhs);
 
 // hashing function for String class
-NFE_INLINE uint32 GetHash(const String& string);
+NFCOMMON_API uint32 GetHash(const String& string);
 
 } // namespace Common
 } // namespace NFE

@@ -44,12 +44,12 @@ public:
     ArrayView& operator = (ArrayView&& other) = default;
 
     // copy constructor from read-write-typed to const-typed
-    template<typename ElementType2>
-    ArrayView(const ArrayView<ElementType2>& other);
+    template<typename OtherElementType>
+    ArrayView(const ArrayView<OtherElementType>& other);
 
     // copy assignment from read-write-typed to const-typed
-    template<typename ElementType2>
-    ArrayView& operator = (const ArrayView<ElementType2>& other);
+    template<typename OtherElementType>
+    ArrayView& operator = (const ArrayView<OtherElementType>& other);
 
 
     /**
@@ -60,8 +60,7 @@ public:
     /**
      * Get raw data pointed by the view.
      */
-    NFE_INLINE const ElementType* Data() const;
-    NFE_INLINE ElementType* Data();
+    NFE_INLINE ElementType* Data() const;
 
     /**
      * Check if the array is empty.

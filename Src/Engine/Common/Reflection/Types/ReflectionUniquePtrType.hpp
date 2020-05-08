@@ -1,31 +1,47 @@
 /**
  * @file
- * @author Witek902 (witek902@gmail.com)
+ * @author Witek902
  * @brief  Definition of UniquePtrType.
  */
 
 #pragma once
 
 #include "ReflectionPointerType.hpp"
-#include "ReflectionClassType.hpp"
-#include "../../Config/Config.hpp"
+#include "ReflectionClassType.hpp" // TODO remove
+#include "../ReflectionTypeResolver.hpp"
+#include "../../Config/ConfigInterface.hpp"
 #include "../../Config/ConfigValue.hpp"
 #include "../../Containers/UniquePtr.hpp"
+
+// TODO remove
+#include "../../Logger/Logger.hpp"
 
 namespace NFE {
 namespace RTTI {
 
+
+// base class for all unique pointer types
+class NFCOMMON_API UniquePtrType : public PointerType
+{
+public:
+    NFE_FORCE_INLINE UniquePtrType(const TypeInfo& info) : PointerType(info) { }
+
+    virtual bool SerializeBinary(const void* object, Common::OutputStream* stream, SerializationContext& context) const override final;
+    virtual bool DeserializeBinary(void* outObject, Common::InputStream& stream, const SerializationContext& context) const override final;
+};
+
+
 template<typename T>
-class UniquePtrTypeImpl final : public PointerType
+class UniquePtrTypeImpl final : public UniquePtrType
 {
 public:
     using ObjectType = Common::UniquePtr<T>;
 
     UniquePtrTypeImpl(const TypeInfo& info)
-        : PointerType(info)
+        : UniquePtrType(info)
     {
-        mPointedType = GetType<T>();
-        NFE_ASSERT(mPointedType, "Invalid pointed type");
+        mUnderlyingType = GetType<T>();
+        NFE_ASSERT(mUnderlyingType, "Invalid pointed type");
     }
 
     virtual void* GetPointedData(const void* uniquePtrObject) const override
@@ -35,20 +51,20 @@ public:
         return typedObject.Get();
     }
 
-    virtual const Type* GetPointedType(const void* uniquePtrObject) const override
+    virtual const Type* GetPointedDataType(const void* uniquePtrObject) const override
     {
         NFE_ASSERT(uniquePtrObject, "Trying to access nullptr");
         const ObjectType& typedObject = *static_cast<const ObjectType*>(uniquePtrObject);
 
         if (typedObject)
         {
-            if (mPointedType->GetKind() == TypeKind::AbstractClass || mPointedType->GetKind() == TypeKind::PolymorphicClass)
+            if (mUnderlyingType->GetKind() == TypeKind::AbstractClass || mUnderlyingType->GetKind() == TypeKind::PolymorphicClass)
             {
-                return reinterpret_cast<const IObject*>(typedObject.Get())->GetDynamicType();
+                return BitCast<const IObject*>(typedObject.Get())->GetDynamicType();
             }
             else
             {
-                return mPointedType;
+                return mUnderlyingType;
             }
         }
 
@@ -69,14 +85,14 @@ public:
         }
     }
 
-    bool Serialize(const void* object, Common::Config& config, Common::ConfigValue& outValue) const override
+    bool Serialize(const void* object, Common::IConfig& config, Common::ConfigValue& outValue, SerializationContext& context) const override
     {
         NFE_ASSERT(object, "Trying to serialize nullptr");
         const ObjectType& typedObject = *static_cast<const ObjectType*>(object);
 
         if (typedObject)
         {
-            mPointedType->Serialize(typedObject.Get(), config, outValue);
+            mUnderlyingType->Serialize(typedObject.Get(), config, outValue, context);
         }
         else // null pointer
         {
@@ -86,7 +102,7 @@ public:
         return true;
     }
 
-    bool Deserialize(void* outObject, const Common::Config& config, const Common::ConfigValue& value) const override
+    bool Deserialize(void* outObject, const Common::IConfig& config, const Common::ConfigValue& value, const SerializationContext& context) const override
     {
         NFE_ASSERT(outObject, "Trying to deserialize to nullptr");
         ObjectType& typedObject = *static_cast<ObjectType*>(outObject);
@@ -136,18 +152,19 @@ public:
                     return false;
                 }
 
-                if (!targetType->IsA(mPointedType))
+                if (!targetType->IsA(mUnderlyingType))
                 {
-                    NFE_LOG_ERROR("Target type '%s' is not related with pointed type '%s'", typeName, mPointedType->GetName().Str());
+                    const Common::StringView name = mUnderlyingType->GetName();
+                    NFE_LOG_ERROR("Target type '%s' is not related with pointed type '%.*s'", typeName, name.Length(), name.Data());
                     return false;
                 }
             }
             else
             {
-                if (mPointedType->GetKind() != TypeKind::AbstractClass)
+                if (mUnderlyingType->GetKind() != TypeKind::AbstractClass)
                 {
                     NFE_LOG_WARNING("Type marker not found - using pointed type as a reference");
-                    targetType = mPointedType;
+                    targetType = mUnderlyingType;
                 }
                 else // pointed type is abstract class
                 {
@@ -171,7 +188,7 @@ public:
             }
 
             // deserialize the object
-            return targetType->Deserialize(typedObject.Get(), config, value);
+            return targetType->Deserialize(typedObject.Get(), config, value, context);
         }
 
         NFE_LOG_ERROR("Expected zero (nullptr) or an object");

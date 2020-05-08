@@ -19,19 +19,28 @@
 // Test types declarations
 //////////////////////////////////////////////////////////////////////////
 
+enum class TestEnum : NFE::uint8
+{
+    OptionA = 0,
+    OptionB = 3,
+    OptionC = 123,
+
+    UnknownOption = 222,
+};
+
+NFE_DECLARE_ENUM_TYPE(TestEnum)
+
 class TestClassWithFundamentalMembers
 {
     NFE_DECLARE_CLASS(TestClassWithFundamentalMembers)
 
 public:
-    NFE::int32 intValue;
-    float floatValue;
-    bool boolValue;
+    NFE::int32 intValue = 0;
+    float floatValue = 0.0f;
+    bool boolValue = false;
     NFE::Common::String strValue;
 
-    TestClassWithFundamentalMembers()
-        : intValue(0), floatValue(0.0f), boolValue(false), strValue()
-    {}
+    TestClassWithFundamentalMembers() = default;
 
     TestClassWithFundamentalMembers(NFE::int32 intValue, float floatValue, bool boolValue, const NFE::Common::String& strValue)
         : intValue(intValue), floatValue(floatValue), boolValue(boolValue), strValue(strValue)
@@ -132,14 +141,25 @@ public:
 };
 
 
-enum class TestEnum : NFE::uint8
+//////////////////////////////////////////////////////////////////////////
+
+
+class SerializationTestClass : public NFE::IObject
 {
-    OptionA = 0,
-    OptionB = 3,
-    OptionC = 123
+    NFE_DECLARE_POLYMORPHIC_CLASS(SerializationTestClass)
+
+public:
+    NFE::int32 i32 = 0;
+    float f32 = 0.0f;
+    TestEnum e = TestEnum::OptionA;
+    TestClassWithFundamentalMembers obj;
+    TestClassWithFundamentalMembers arrayOfObj[2];
+    NFE::Common::DynArray<TestClassWithFundamentalMembers> dynArrayOfObj;
+    NFE::Common::UniquePtr<NFE::IObject> uniquePtr;
+    NFE::Common::SharedPtr<NFE::IObject> sharedPtrA;
+    NFE::Common::SharedPtr<NFE::IObject> sharedPtrB;
 };
 
-NFE_DECLARE_ENUM_TYPE(TestEnum)
 
 //////////////////////////////////////////////////////////////////////////
 
@@ -148,6 +168,9 @@ namespace helper {
 
 // serialize object to string
 bool SerializeObject(const NFE::RTTI::Type* type, const void* object, NFE::Common::String& outString);
+
+// serialize object to binary stream
+bool SerializeObject(const NFE::RTTI::Type* type, const void* object, NFE::Common::OutputStream& outStream, NFE::RTTI::SerializationContext& context);
 
 // deserialize object from string
 bool DeserializeObject(const NFE::RTTI::Type* type, void* outObject, const NFE::Common::String& string);

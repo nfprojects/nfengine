@@ -1,6 +1,6 @@
 /**
  * @file
- * @author  Witek902 (witek902@gmail.com)
+ * @author  Witek902
  * @brief   Weak pointer declaration
  */
 
@@ -14,11 +14,11 @@ namespace Common {
 
 
 template<typename T>
-class WeakPtr final : public SharedPtrBase<T>
+class WeakPtr final : public SharedPtrTypedBase<T>
 {
 public:
-    using DeleterFunc = typename SharedPtrData<T>::DeleterFunc;
-    using SharedBlockType = SharedPtrData<T>;
+    using DeleterFunc = typename SharedPtrTypedData<T>::DeleterFunc;
+    using SharedBlockType = SharedPtrTypedData<T>;
 
     NFE_FORCE_INLINE WeakPtr() = default;
     NFE_FORCE_INLINE WeakPtr(std::nullptr_t) : WeakPtr() { }

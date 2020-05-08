@@ -1,6 +1,6 @@
 /**
  * @file
- * @author  Witek902 (witek902@gmail.com)
+ * @author  Witek902
  * @brief   Shared pointer declaration
  */
 
@@ -17,70 +17,47 @@ namespace Common {
 template<typename T>
 class WeakPtr;
 
+class SharedPtrBase
+{
+public:
+    NFE_FORCE_INLINE SharedPtrBase() = default;
+
+    NFE_FORCE_INLINE explicit SharedPtrBase(SharedPtrData* data)
+        : mData(data)
+    { }
+
+    // Get number of "strong" object references (number SharedPtr objects pointing to the target).
+    NFCOMMON_API uint32 RefCount() const;
+
+    // Get number of "weak" references (total number of SharedPtr and WeakPtr objects pointing to the target).
+    NFCOMMON_API uint32 WeakRefCount() const;
+
+protected:
+    // shared control block
+    SharedPtrData* mData = nullptr;
+};
+
 /**
  * Common base for SharedPtr and WeakPtr.
  */
 template<typename T>
-class SharedPtrBase
+class SharedPtrTypedBase : public SharedPtrBase
 {
 public:
-    NFE_FORCE_INLINE SharedPtrBase()
-        : mPointer(nullptr)
-        , mData(nullptr)
+    NFE_FORCE_INLINE SharedPtrTypedBase() = default;
+
+    NFE_FORCE_INLINE explicit SharedPtrTypedBase(T* pointer, SharedPtrData* data)
+        : SharedPtrBase(data)
+        , mPointer(pointer)
     { }
-
-    NFE_FORCE_INLINE explicit SharedPtrBase(T* pointer, SharedPtrDataBase* data)
-        : mPointer(pointer)
-        , mData(data)
-    { }
-
-    /**
-     * Get number of "strong" object references (number SharedPtr objects pointing to the target).
-     */
-    uint32 RefCount() const;
-
-    /**
-     * Get number of "weak" references (total number of SharedPtr and WeakPtr objects pointing to the target).
-     */
-    uint32 WeakRefCount() const;
 
 protected:
 
     // Pointed object (for fast access).
     // Note that this pointer may be different than mData->GetPointer(), for example after casting to parent
     // class type.
-    T* mPointer;
-
-    // shared control block
-    SharedPtrDataBase* mData;
+    T* mPointer = nullptr;
 };
-
-
-template<typename T>
-uint32 SharedPtrBase<T>::RefCount() const
-{
-    if (mData)
-    {
-        const uint32 numRefs = mData->mStrongRefs;
-        NFE_ASSERT(numRefs >= 0, "Invalid ref count");
-        return static_cast<uint32>(numRefs);
-    }
-
-    return 0;
-}
-
-template<typename T>
-uint32 SharedPtrBase<T>::WeakRefCount() const
-{
-    if (mData)
-    {
-        const uint32 numRefs = mData->mWeakRefs;
-        NFE_ASSERT(numRefs > 0, "Invalid ref count");
-        return static_cast<uint32>(numRefs);
-    }
-
-    return 0;
-}
 
 
 } // namespace Common

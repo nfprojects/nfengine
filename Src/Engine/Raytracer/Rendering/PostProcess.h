@@ -5,6 +5,7 @@
 #include "../../Common/Reflection/ReflectionClassDeclare.hpp"
 #include "../../Common/Reflection/ReflectionEnumMacros.hpp"
 #include "../../Common/Reflection/Types/ReflectionDynArrayType.hpp"
+#include "../../Common/Containers/UniquePtr.hpp"
 
 namespace NFE {
 namespace RT {

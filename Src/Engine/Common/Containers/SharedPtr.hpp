@@ -19,11 +19,11 @@ template<typename T>
 class WeakPtr;
 
 template<typename T>
-class SharedPtr final : public SharedPtrBase<T>
+class SharedPtr final : public SharedPtrTypedBase<T>
 {
 public:
-    using DeleterFunc = typename SharedPtrData<T>::DeleterFunc;
-    using SharedBlockType = SharedPtrData<T>;
+    using DeleterFunc = typename SharedPtrTypedData<T>::DeleterFunc;
+    using SharedBlockType = SharedPtrTypedData<T>;
 
     // Initialize with null pointer
     SharedPtr() { }
@@ -33,7 +33,7 @@ public:
      * Initialize with a raw pointer.
      * @remarks Use with caution! MakeSharedPtr is recommended.
      */
-    explicit SharedPtr(T* ptr, const DeleterFunc& deleter = SharedPtrData<T>::GetDefaultDeleter());
+    explicit SharedPtr(T* ptr, const DeleterFunc& deleter = SharedPtrTypedData<T>::GetDefaultDeleter());
 
     SharedPtr(const SharedPtr& rhs);
     SharedPtr(SharedPtr&& rhs);
@@ -67,7 +67,7 @@ public:
     /**
      * Set a new object.
      */
-    void Reset(T* newPtr = nullptr, const DeleterFunc& deleter = SharedPtrData<T>::GetDefaultDeleter());
+    void Reset(T* newPtr = nullptr, const DeleterFunc& deleter = SharedPtrTypedData<T>::GetDefaultDeleter());
 
     /**
      * Check if pointer is not null.
@@ -101,6 +101,11 @@ private:
     friend class WeakPtr;
 };
 
+template<typename T>
+NFE_FORCE_INLINE bool operator == (const T* lhs, const SharedPtr<T>& rhs);
+
+template<typename T>
+NFE_FORCE_INLINE bool operator != (const T* lhs, const SharedPtr<T>& rhs);
 
 /**
  * Create shared pointer.

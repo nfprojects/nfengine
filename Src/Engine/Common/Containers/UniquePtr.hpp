@@ -66,7 +66,7 @@ public:
      * Pass ownership to the callee.
      * @remarks Use with caution.
      */
-    T* Release();
+    [[nodiscard]] T* ReleaseOwnership();
 
     /**
      * Check if pointer is not null.

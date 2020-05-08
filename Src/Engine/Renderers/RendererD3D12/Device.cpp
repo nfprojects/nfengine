@@ -18,6 +18,7 @@
 #include "Translations.hpp"
 
 #include "Engine/Common/Utils/StringUtils.hpp"
+#include "Engine/Common/Utils/LanguageUtils.hpp"
 #include "Engine/Common/System/Timer.hpp"
 
 #include <thread> // TODO get rid of STL threads

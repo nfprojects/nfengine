@@ -14,8 +14,12 @@ namespace Common {
 // Containers
 class String;
 class StringView;
+template<typename T> class SharedPtr;
+template<typename T, typename Deleter> class UniquePtr;
+template<typename T> class DynArray;
 
 // Config
+class IConfig;
 class Config;
 class ConfigObject;
 class ConfigArray;
@@ -149,6 +153,7 @@ class HdrColorRGB;
 
 } // namespace Math
 
+class IObject;
 
 namespace RTTI {
 
@@ -156,8 +161,10 @@ enum class TypeKind : uint8;
 struct TypeInfo;
 struct ClassTypeInfo;
 class Type;
+class ClassType;
 class TypeRegistry;
 class Member;
+class SerializationContext;
 class ITypeSerializer;
 template<typename T> class TypeCreator;
 

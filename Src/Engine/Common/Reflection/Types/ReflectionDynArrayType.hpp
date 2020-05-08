@@ -1,16 +1,14 @@
 /**
  * @file
- * @author Witek902 (witek902@gmail.com)
+ * @author Witek902
  * @brief  Definition of DynArrayPtr.
  */
 
 #pragma once
 
-#include "ReflectionType.hpp"
+#include "ReflectionArrayType.hpp"
 #include "../ReflectionTypeResolver.hpp"
 #include "../../Containers/DynArray.hpp"
-#include "../../Config/Config.hpp"
-#include "../../Config/ConfigValue.hpp"
 
 
 namespace NFE {
@@ -19,30 +17,29 @@ namespace RTTI {
 /**
  * Type information for DynArray<T> types.
  */
-class NFCOMMON_API DynArrayType : public Type
+class NFCOMMON_API DynArrayType : public ArrayType
 {
     NFE_MAKE_NONCOPYABLE(DynArrayType)
 
 public:
-    NFE_FORCE_INLINE DynArrayType(const TypeInfo& info) : Type(info) { }
+    NFE_FORCE_INLINE DynArrayType(const TypeInfo& info, const Type* underlyingType)
+        : ArrayType(info, underlyingType)
+    { }
 
     // get number of array elements
     uint32 GetArraySize(const void* arrayObject) const;
 
-    // get type of the array element
-    virtual const Type* GetUnderlyingType() const = 0;
-
-    virtual void PrintInfo() const override;
-
-    bool Compare(const void* objectA, const void* objectB) const override;
-    bool Clone(void* destObject, const void* sourceObject) const override;
-
     // resize array object
     virtual bool ResizeArray(void* arrayObject, uint32 targetSize) const = 0;
 
-    // access element data
-    virtual void* GetElementPointer(void* arrayObject, uint32 index) const = 0;
-    virtual const void* GetElementPointer(const void* arrayObject, uint32 index) const = 0;
+    // Type interface implementation
+    virtual void PrintInfo() const override final;
+    virtual bool Serialize(const void* object, Common::IConfig& config, Common::ConfigValue& outValue, SerializationContext& context) const override final;
+    virtual bool Deserialize(void* outObject, const Common::IConfig& config, const Common::ConfigValue& value, const SerializationContext& context) const override final;
+    virtual bool SerializeBinary(const void* object, Common::OutputStream* stream, SerializationContext& context) const override final;
+    virtual bool DeserializeBinary(void* outObject, Common::InputStream& stream, const SerializationContext& context) const override final;
+    virtual bool Compare(const void* objectA, const void* objectB) const override final;
+    virtual bool Clone(void* destObject, const void* sourceObject) const override final;
 };
 
 /**
@@ -54,96 +51,34 @@ class DynArrayTypeImpl final : public DynArrayType
     NFE_MAKE_NONCOPYABLE(DynArrayTypeImpl)
 
 public:
-    NFE_FORCE_INLINE DynArrayTypeImpl(const TypeInfo& info) : DynArrayType(info) { }
+    using ObjectType = Common::DynArray<T>;
 
-    virtual const Type* GetUnderlyingType() const override
-    {
-        return GetType<T>();
-    }
+    NFE_FORCE_INLINE DynArrayTypeImpl(const TypeInfo& info)
+        : DynArrayType(info, GetType<T>())
+    { }
 
     virtual bool ResizeArray(void* arrayObject, uint32 targetSize) const override
     {
-        Common::DynArray<T>& typedObject = *static_cast<Common::DynArray<T>*>(arrayObject);
+        NFE_ASSERT(arrayObject, "Invalid array object");
+
+        ObjectType& typedObject = *static_cast<ObjectType*>(arrayObject);
         return typedObject.Resize(targetSize);
     }
 
-    virtual void* GetElementPointer(void* arrayData, uint32 index) const override
+    virtual void* GetElementPointer(void* arrayObject, uint32 index) const override
     {
-        Common::DynArray<T>& typedObject = *static_cast<Common::DynArray<T>*>(arrayData);
+        NFE_ASSERT(arrayObject, "Invalid array object");
+
+        ObjectType& typedObject = *static_cast<ObjectType*>(arrayObject);
         return &typedObject[index];
     }
 
-    virtual const void* GetElementPointer(const void* arrayData, uint32 index) const override
+    virtual const void* GetElementPointer(const void* arrayObject, uint32 index) const override
     {
-        const Common::DynArray<T>& typedObject = *static_cast<const Common::DynArray<T>*>(arrayData);
+        NFE_ASSERT(arrayObject, "Invalid array object");
+
+        const ObjectType& typedObject = *static_cast<const ObjectType*>(arrayObject);
         return &typedObject[index];
-    }
-
-    bool Serialize(const void* object, Common::Config& config, Common::ConfigValue& outValue) const override
-    {
-        using namespace Common;
-
-        const Type* elementType = GetType<T>();
-        const DynArray<T>& typedObject = *static_cast<const DynArray<T>*>(object);
-        const uint32 arraySize = typedObject.Size();
-
-        NFE_ASSERT(elementType, "Invalid DynArray element type");
-        NFE_ASSERT(object, "Trying to serialize nullptr");
-
-        // serialize array elements
-        ConfigArray configArray;
-        for (uint32 i = 0; i < arraySize; ++i)
-        {
-            ConfigValue arrayElementValue;
-            const T& arrayElement = typedObject[i];
-            if (!elementType->Serialize(&arrayElement, config, arrayElementValue))
-            {
-                NFE_LOG_ERROR("Failed to serialize DynArray element (index %u/%u)", i, arraySize);
-                return false;
-            }
-            config.AddValue(configArray, arrayElementValue);
-        }
-
-        // success
-        outValue = configArray;
-        return true;
-    }
-
-    bool Deserialize(void* outObject, const Common::Config& config, const Common::ConfigValue& value) const override
-    {
-        using namespace Common;
-
-        const Type* elementType = GetType<T>();
-        DynArray<T>& typedObject = *static_cast<DynArray<T>*>(outObject);
-
-        NFE_ASSERT(elementType, "Invalid native array element type");
-        NFE_ASSERT(outObject, "Trying to deserialize to nullptr");
-
-        if (!value.IsArray())
-        {
-            NFE_LOG_ERROR("Expected array type");
-            return false;
-        }
-
-        uint32 numDeserializedArrayElements = 0;
-        auto arrayIteratorCallback = [&](int index, const ConfigValue& arrayElement)
-        {
-            // TODO deserialize directly to the DynArray
-            T temp;
-            if (!elementType->Deserialize(&temp, config, arrayElement))
-            {
-                NFE_LOG_ERROR("Failed to parse native array element at index %i", index);
-                return false;
-            }
-
-            typedObject.PushBack(std::move(temp));
-
-            numDeserializedArrayElements++;
-            return true;
-        };
-
-        config.IterateArray(arrayIteratorCallback, value.GetArray());
-        return true;
     }
 };
 

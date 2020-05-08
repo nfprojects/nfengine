@@ -7,6 +7,7 @@
 
 #include "Types/ReflectionType.hpp"
 #include "../System/Assertion.hpp"
+#include "../Utils/LanguageUtils.hpp"
 
 #include <type_traits>
 #include <functional>
@@ -95,18 +96,13 @@ const Type* ResolveType()
     return existingType;
 }
 
-template<typename T, typename = void>
-constexpr bool IsTypeDefined = false;
-
-template<typename T>
-constexpr bool IsTypeDefined<T, decltype(typeid(T), void())> = true;
-
 /**
  * Get NFE::RTTI::Type object from a C++ type.
  */
 template<typename T>
 const typename TypeCreator<T>::TypeClass* GetType()
 {
+    static_assert(!std::is_const_v<T> && !std::is_volatile_v<T>, "Type should not have any qualifiers");
     static_assert(IsTypeDefined<T>, "Type is not defined");
     static_assert(IsTypeDefined<TypeCreator<T>>, "Type is not defined");
 
@@ -115,36 +111,6 @@ const typename TypeCreator<T>::TypeClass* GetType()
 
     // TODO this cast could be done in TypeCreator already
     return static_cast<const typename TypeCreator<T>::TypeClass*>(type);
-}
-
-
-/**
- * Get default object for a given C++ type.
- * Note: returns nullptr if the type is not default-constructible.
- */
-template<typename T>
-const T* GetDefaultObject()
-{
-    static_assert(std::is_default_constructible_v<T>, "Given type is not default-constructible");
-
-    if (const Type* type = GetType<T>())
-    {
-        return type->GetDefaultObject<T>();
-    }
-
-    return nullptr;
-}
-
-/**
- * Compare two objects.
- */
-template<typename T>
-bool Compare(const T& objectA, const T& objectB)
-{
-    const Type* type = GetType<T>();
-    NFE_ASSERT(type, "Unknown type");
-
-    return type->Compare(&objectA, &objectB);
 }
 
 

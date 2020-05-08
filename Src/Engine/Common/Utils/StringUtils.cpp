@@ -6,6 +6,8 @@
 #include "PCH.hpp"
 #include "StringUtils.hpp"
 #include "BitUtils.hpp"
+#include "../Containers/String.hpp"
+#include "../Containers/StringView.hpp"
 
 
 namespace NFE {

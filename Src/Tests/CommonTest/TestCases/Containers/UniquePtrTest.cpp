@@ -123,7 +123,7 @@ TEST(UniquePtr, Release)
     ASSERT_TRUE(pointer);
 
     // release - don't destroy TestClass
-    TestClass* releasedPtr = pointer.Release();
+    TestClass* releasedPtr = pointer.ReleaseOwnership();
 
     ASSERT_EQ(pointer, nullptr);
     ASSERT_FALSE(pointer);

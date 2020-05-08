@@ -1,11 +1,14 @@
 /**
  * @file
- * @author Witek902 (witek902@gmail.com)
+ * @author Witek902
  * @brief  Definitions of reflection system's EnumType class.
  */
 
 #include "PCH.hpp"
 #include "ReflectionEnumType.hpp"
+#include "../SerializationContext.hpp"
+#include "../../Utils/Stream/OutputStream.hpp"
+#include "../../Utils/Stream/InputStream.hpp"
 
 
 namespace NFE {
@@ -22,15 +25,21 @@ EnumType::EnumType(const EnumTypeInfo& info)
 
     for (uint32 i = 0; i < mOptions.Size(); ++i)
     {
+        NFE_ASSERT(!mOptions[i].name.Empty());
+
         for (uint32 j = i + 1; j < mOptions.Size(); ++j)
         {
-            NFE_ASSERT(strcmp(mOptions[i].name, mOptions[j].name) != 0,
-                       "Duplicated '%s' enum option in type '%s'. Fix enum type definition macros.",
-                       mOptions[i].name, GetName().Str());
+            NFE_ASSERT(mOptions[i].name != mOptions[j].name,
+                "Duplicated '%.*s' enum option in type '%s'. Fix enum type definition macros.",
+                mOptions[i].name.Length(), mOptions[i].name.Data(),
+                GetName().Str());
 
             NFE_ASSERT(mOptions[i].value != mOptions[j].value,
-                       "'%s' and '%s' enum options in type '%s' have the same value. This is not supported by the reflection system.",
-                       mOptions[i].name, mOptions[j].name, GetName().Str());
+                "'%.*s' and '%.*s' enum options in type '%.*s' have the same value (%llu). This is not supported by the reflection system.",
+                mOptions[i].name.Length(), mOptions[i].name.Data(),
+                mOptions[j].name.Length(), mOptions[j].name.Data(),
+                GetName().Str(),
+                mOptions[i].value);
         }
     }
 }
@@ -44,7 +53,7 @@ void EnumType::PrintInfo() const
 #ifdef _DEBUG
     for (const EnumOption& option : mOptions)
     {
-        NFE_LOG_DEBUG("    option '%s'='%llu'", option.name, option.value);
+        NFE_LOG_DEBUG("    option '%.*s'=%llu", option.name.Length(), option.name.Data(), option.value);
     }
 #endif // _DEBUG
 }
@@ -54,43 +63,16 @@ const EnumOptions& EnumType::GetOptions() const
     return mOptions;
 }
 
-bool EnumType::Serialize(const void* object, Common::Config& config, Common::ConfigValue& outValue) const
+bool EnumType::Serialize(const void* object, Common::IConfig& config, Common::ConfigValue& outValue, SerializationContext& context) const
 {
     // no need to access Config object itself
     NFE_UNUSED(config);
+    NFE_UNUSED(context);
 
-    uint64 integerValue = 0;
-    switch (GetSize())
-    {
-    case 1:
-        integerValue = *static_cast<const uint8*>(object);
-        break;
-    case 2:
-        integerValue = *static_cast<const uint16*>(object);
-        break;
-    case 4:
-        integerValue = *static_cast<const uint32*>(object);
-        break;
-    case 8:
-        integerValue = *static_cast<const uint64*>(object);
-        break;
-    default:
-        NFE_ASSERT(false, "Invalid enum type size");
-        return false;
-    }
+    const uint64 integerValue = ReadRawValue(object);
+    const StringView enumOptionName = FindOptionByValue(integerValue);
 
-    // TODO introduce hash map / binary search if the lookup is too slow
-    const char* enumOptionName = nullptr;
-    for (const EnumOption& option : mOptions)
-    {
-        if (option.value == integerValue)
-        {
-            enumOptionName = option.name;
-            break;
-        }
-    }
-
-    if (enumOptionName)
+    if (!enumOptionName.Empty())
     {
         outValue = Common::ConfigValue(enumOptionName);
         return true;
@@ -100,90 +82,102 @@ bool EnumType::Serialize(const void* object, Common::Config& config, Common::Con
     return false;
 }
 
-bool EnumType::Deserialize(void* outObject, const Common::Config& config, const Common::ConfigValue& value) const
+bool EnumType::Deserialize(void* outObject, const Common::IConfig& config, const Common::ConfigValue& value, const SerializationContext& context) const
 {
     NFE_UNUSED(config);
+    NFE_UNUSED(context);
 
     if (value.Is<const char*>())
     {
         const char* optionName = value.Get<const char*>();
+
         uint64 integerValue = 0;
-        bool enumOptionFound = false;
-        // TODO introduce hash map / binary search if the lookup is too slow
-        for (const EnumOption& option : mOptions)
+        if (!FindOptionByName(StringView(optionName), integerValue))
         {
-            if (strcmp(option.name, optionName) == 0)
-            {
-                integerValue = option.value;
-                enumOptionFound = true;
-                break;
-            }
-        }
-
-        if (!enumOptionFound)
-        {
-            NFE_LOG_ERROR("Could not find enum option for type '%s', name=%llu", GetName().Str(), optionName);
+            // TODO report missing enum
+            NFE_LOG_ERROR("Could not find enum option for type '%s', name=%s", GetName().Str(), optionName);
             return false;
         }
 
-        switch (GetSize())
-        {
-        case 1:
-            *static_cast<uint8*>(outObject) = static_cast<uint8>(integerValue);
-            break;
-        case 2:
-            *static_cast<uint16*>(outObject) = static_cast<uint16>(integerValue);
-            break;
-        case 4:
-            *static_cast<uint32*>(outObject) = static_cast<uint32>(integerValue);
-            break;
-        case 8:
-            *static_cast<uint64*>(outObject) = static_cast<uint64>(integerValue);
-            break;
-        default:
-            NFE_ASSERT(false, "Invalid enum type size");
-            return false;
-        }
-
+        WriteRawValue(outObject, integerValue);
         return true;
     }
 
+    // TODO report type mismatch
     NFE_LOG_ERROR("Expected string in the config");
     return false;
 }
 
-bool EnumType::Compare(const void* objectA, const void* objectB) const
+bool EnumType::SerializeBinary(const void* object, OutputStream* stream, SerializationContext& context) const
 {
-    switch (GetSize())
+    // always serialize enums as strings
+
+    const uint64 integerValue = ReadRawValue(object);
+    const StringView enumOptionName = FindOptionByValue(integerValue);
+
+    if (enumOptionName.Empty())
     {
-    case 1: return *static_cast<const uint8*>(objectA) == *static_cast<const uint8*>(objectB);
-    case 2: return *static_cast<const uint16*>(objectA) == *static_cast<const uint16*>(objectB);
-    case 4: return *static_cast<const uint32*>(objectA) == *static_cast<const uint32*>(objectB);
-    case 8: return *static_cast<const uint64*>(objectA) == *static_cast<const uint64*>(objectB);
-    default:
-        NFE_ASSERT(false, "Invalid enum type size");
+        NFE_LOG_ERROR("Could not find enum option for type '%s', value=%llu", GetName().Str(), integerValue);
         return false;
     }
+
+    uint32 strIndex = context.MapString(enumOptionName);
+    if (strIndex == SerializationContext::InvalidIndex)
+    {
+        return false;
+    }
+
+    if (context.IsMapping())
+    {
+        // don't serialize anything in mapping stage
+        return true;
+    }
+
+    return stream->WriteCompressedUint(strIndex);
+}
+
+bool EnumType::DeserializeBinary(void* outObject, InputStream& stream, const SerializationContext& context) const
+{
+    uint32 strIndex;
+    if (!stream.ReadCompressedUint(strIndex))
+    {
+        NFE_LOG_ERROR("Deserialization failed. Corrupted data?");
+        return false;
+    }
+    StringView enumOptionName;
+    if (!context.UnmapString(strIndex, enumOptionName))
+    {
+        NFE_LOG_ERROR("Deserialization failed. Corrupted data?");
+        return false;
+    }
+
+    uint64 integerValue = 0;
+    if (!FindOptionByName(enumOptionName, integerValue))
+    {
+        // TODO report missing enum
+        NFE_LOG_ERROR("Could not find enum option for type '%s', name=%s", GetName().Str(), enumOptionName.Length(), enumOptionName.Data());
+        return false;
+    }
+
+    WriteRawValue(outObject, integerValue);
+    return true;
+}
+
+bool EnumType::Compare(const void* objectA, const void* objectB) const
+{
+    return ReadRawValue(objectA) == ReadRawValue(objectB);
 }
 
 bool EnumType::Clone(void* destObject, const void* sourceObject) const
 {
-    switch (GetSize())
-    {
-    case 1: *static_cast<uint8*>(destObject) = *static_cast<const uint8*>(sourceObject); break;
-    case 2: *static_cast<uint16*>(destObject) = *static_cast<const uint16*>(sourceObject); break;
-    case 4: *static_cast<uint32*>(destObject) = *static_cast<const uint32*>(sourceObject); break;
-    case 8: *static_cast<uint64*>(destObject) = *static_cast<const uint64*>(sourceObject); break;
-    default:
-        NFE_ASSERT(false, "Invalid enum type size");
-        return false;
-    }
-
+    WriteRawValue(destObject, ReadRawValue(sourceObject));
     return true;
 }
 
-const char* EnumType::FindOptionByValue(uint64 value) const
+const StringView EnumType::FindOptionByValue(uint64 value) const
 {
+    // TODO introduce hash map / binary search if the lookup is too slow
+
     for (const EnumOption& option : mOptions)
     {
         if (option.value == value)
@@ -192,84 +186,83 @@ const char* EnumType::FindOptionByValue(uint64 value) const
         }
     }
 
-    return nullptr;
+    return StringView();
 }
 
-bool EnumType::WriteValue(void* object, uint32 enumOptionIndex) const
+bool EnumType::FindOptionByName(const Common::StringView name, uint64& outValue) const
+{
+    // TODO introduce hash map / binary search if the lookup is too slow
+
+    for (const EnumOption& option : mOptions)
+    {
+        if (name == option.name)
+        {
+            outValue = option.value;
+            return true;
+        }
+    }
+
+    return false;
+}
+
+void EnumType::WriteRawValue(void* object, uint64 rawValue) const
 {
     NFE_ASSERT(object, "Invalid object");
-    NFE_ASSERT(enumOptionIndex < mOptions.Size(), "Invalid enum option index");
 
     const size_t size = GetSize();
     if (size == 1u)
     {
         uint8* typedObject = reinterpret_cast<uint8*>(object);
-        *typedObject = static_cast<uint8>(mOptions[enumOptionIndex].value);
+        *typedObject = static_cast<uint8>(rawValue);
     }
     else if (size == 2u)
     {
         uint16* typedObject = reinterpret_cast<uint16*>(object);
-        *typedObject = static_cast<uint16>(mOptions[enumOptionIndex].value);
+        *typedObject = static_cast<uint16>(rawValue);
     }
     else if (size == 4u)
     {
         uint32* typedObject = reinterpret_cast<uint32*>(object);
-        *typedObject = static_cast<uint32>(mOptions[enumOptionIndex].value);
+        *typedObject = static_cast<uint32>(rawValue);
     }
     else if (size == 8u)
     {
         uint64* typedObject = reinterpret_cast<uint64*>(object);
-        *typedObject = static_cast<uint64>(mOptions[enumOptionIndex].value);
+        *typedObject = static_cast<uint64>(rawValue);
     }
     else
     {
         NFE_FATAL("Invalid enum type size: %zu", size);
-        return false;
     }
-
-    return true;
 }
 
-bool EnumType::ReadValue(const void* object, uint32& outEnumOptionIndex) const
+uint64 EnumType::ReadRawValue(const void* object) const
 {
     NFE_ASSERT(object, "Invalid object");
-
-    uint64 value = 0;
 
     const size_t size = GetSize();
     if (size == 1u)
     {
-        value = *reinterpret_cast<const uint8*>(object);
+        return *reinterpret_cast<const uint8*>(object);
     }
     else if (size == 2u)
     {
-        value = *reinterpret_cast<const uint16*>(object);
+        return *reinterpret_cast<const uint16*>(object);
     }
     else if (size == 4u)
     {
-        value = *reinterpret_cast<const uint32*>(object);
+        return *reinterpret_cast<const uint32*>(object);
     }
     else if (size == 8u)
     {
-        value = *reinterpret_cast<const uint64*>(object);
+        return *reinterpret_cast<const uint64*>(object);
     }
     else
     {
         NFE_FATAL("Invalid enum type size: %zu", size);
-        return false;
     }
 
-    for (uint32 i = 0; i < mOptions.Size(); ++i)
-    {
-        if (mOptions[i].value == value)
-        {
-            outEnumOptionIndex = i;
-            return true;
-        }
-    }
-
-    // enum option not found
-    return false;
+    return UINT64_MAX;
 }
 
 } // namespace RTTI

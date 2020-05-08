@@ -17,7 +17,7 @@
 #define NOMINMAX
 #include <Windows.h>
 
-#include "../System/Win/Common.hpp"
+#include "../System/Windows/Common.hpp"
 
 #endif
 

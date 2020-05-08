@@ -1,13 +1,12 @@
 /**
  * @file
- * @author Witek902 (witek902@gmail.com)
+ * @author Witek902
  * @brief  Declaration of reflection system's ClassType class.
  */
 
 #pragma once
 
 #include "../../nfCommon.hpp"
-#include "../../Containers/StringView.hpp"
 #include "../../Containers/DynArray.hpp"
 #include "ReflectionType.hpp"
 #include "../ReflectionTypeResolver.hpp"
@@ -66,13 +65,18 @@ public:
      */
     const Member* FindMember(const Common::StringView name) const;
 
+    // Compare members in two objects and return list of differing ones
+    void CollectDifferingMemberList(const void* objectA, const void* objectB, Common::DynArray<const Member*>& outMemberList) const;
+
     // Type interface implementation
-    void PrintInfo() const override;
-    bool IsA(const Type* baseType) const override;
-    bool Serialize(const void* object, Common::Config& config, Common::ConfigValue& outValue) const override;
-    bool Deserialize(void* outObject, const Common::Config& config, const Common::ConfigValue& value) const override;
-    bool Compare(const void* objectA, const void* objectB) const override;
-    bool Clone(void* destObject, const void* sourceObject) const override;
+    virtual void PrintInfo() const override;
+    virtual bool IsA(const Type* baseType) const override;
+    virtual bool Serialize(const void* object, Common::IConfig& config, Common::ConfigValue& outValue, SerializationContext& context) const override;
+    virtual bool SerializeBinary(const void* object, Common::OutputStream* stream, SerializationContext& context) const override;
+    virtual bool Deserialize(void* outObject, const Common::IConfig& config, const Common::ConfigValue& value, const SerializationContext& context) const override;
+    virtual bool DeserializeBinary(void* outObject, Common::InputStream& stream, const SerializationContext& context) const override;
+    virtual bool Compare(const void* objectA, const void* objectB) const override;
+    virtual bool Clone(void* destObject, const void* sourceObject) const override;
 
 private:
     // parent class type
@@ -85,10 +89,10 @@ private:
     Members mMembers;
 
     // serialize directly to an existing ConfigObject structure
-    bool SerializeDirectly(const void* object, Common::Config& config, Common::ConfigObject& outObject) const;
+    bool SerializeDirectly(const void* object, Common::IConfig& config, Common::ConfigObject& outObject, SerializationContext& context) const;
 
     // deserialize member of this class (or derived one) by name
-    bool DeserializeMember(void* outObject, const Common::StringView memberName, const Common::Config& config, const Common::ConfigValue& value) const;
+    bool DeserializeMember(void* outObject, const Common::StringView memberName, const Common::IConfig& config, const Common::ConfigValue& value, const SerializationContext& context) const;
 };
 
 

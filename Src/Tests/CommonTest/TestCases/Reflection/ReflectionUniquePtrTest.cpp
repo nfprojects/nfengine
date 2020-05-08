@@ -1,5 +1,9 @@
 #include "PCH.hpp"
 #include "ReflectionTestCommon.hpp"
+#include "Engine/Common/Reflection/SerializationContext.hpp"
+#include "Engine/Common/Utils/Stream/BufferOutputStream.hpp"
+#include "Engine/Common/Utils/Stream/BufferInputStream.hpp"
+#include "Engine/Common/Memory/Buffer.hpp"
 
 
 using namespace NFE;
@@ -14,18 +18,18 @@ using TestUniquePtr = UniquePtr<TestBaseClass>;
 } // namespace
 
 
-TEST(ReflectionClassTest, UniquePtr_Verify)
+TEST(ReflectionUniquePtrTest, Verify)
 {
     const auto* type = GetType<TestUniquePtr>();
     ASSERT_NE(nullptr, type);
 
-    EXPECT_EQ("NFE::Common::UniquePtr<TestBaseClass>", type->GetName());
+    EXPECT_TRUE("NFE::Common::UniquePtr<TestBaseClass>" == type->GetName());
     EXPECT_EQ(TypeKind::UniquePtr, type->GetKind());
     EXPECT_EQ(sizeof(TestUniquePtr), type->GetSize());
     EXPECT_EQ(alignof(TestUniquePtr), type->GetAlignment());
 }
 
-TEST(ReflectionClassTest, UniquePtr_Compare)
+TEST(ReflectionUniquePtrTest, Compare)
 {
     const auto* type = GetType<TestUniquePtr>();
 
@@ -44,7 +48,7 @@ TEST(ReflectionClassTest, UniquePtr_Compare)
     EXPECT_FALSE(type->Compare(&ptrA, &ptrB));
 }
 
-TEST(ReflectionClassTest, UniquePtr_Clone)
+TEST(ReflectionUniquePtrTest, Clone)
 {
     const auto* type = GetType<TestUniquePtr>();
 
@@ -56,11 +60,12 @@ TEST(ReflectionClassTest, UniquePtr_Clone)
 
     EXPECT_TRUE(type->Clone(&ptrB, &ptrA));
     ASSERT_TRUE(ptrB);
+    EXPECT_NE(ptrA.Get(), ptrB.Get());
 
     EXPECT_TRUE(type->Compare(&ptrA, &ptrB));
 }
 
-TEST(ReflectionClassTest, UniquePtr_Serialize_Nullptr)
+TEST(ReflectionUniquePtrTest, Serialize_Nullptr)
 {
     const auto* type = GetType<TestUniquePtr>();
 
@@ -70,7 +75,7 @@ TEST(ReflectionClassTest, UniquePtr_Serialize_Nullptr)
     EXPECT_STREQ("obj=0", str.Str());
 }
 
-TEST(ReflectionClassTest, UniquePtr_Serialize_Base)
+TEST(ReflectionUniquePtrTest, Serialize_Base)
 {
     const auto* type = GetType<TestUniquePtr>();
 
@@ -83,7 +88,7 @@ TEST(ReflectionClassTest, UniquePtr_Serialize_Base)
     EXPECT_STREQ("obj={__type=\"TestBaseClass\" intVal=321 floatVal=123 mPrivateBool=false}", str.Str());
 }
 
-TEST(ReflectionClassTest, UniquePtr_Deserialize_Nullptr)
+TEST(ReflectionUniquePtrTest, Deserialize_Nullptr)
 {
     const auto* type = GetType<TestUniquePtr>();
 
@@ -92,7 +97,7 @@ TEST(ReflectionClassTest, UniquePtr_Deserialize_Nullptr)
     EXPECT_TRUE(obj == nullptr);
 }
 
-TEST(ReflectionClassTest, UniquePtr_Deserialize_InvalidType)
+TEST(ReflectionUniquePtrTest, Deserialize_InvalidType)
 {
     const auto* type = GetType<TestUniquePtr>();
 
@@ -100,7 +105,7 @@ TEST(ReflectionClassTest, UniquePtr_Deserialize_InvalidType)
     ASSERT_FALSE(helper::DeserializeObject(type, &obj, "obj={__type=\"InvalidTypeName\"}"));
 }
 
-TEST(ReflectionClassTest, UniquePtr_Deserialize_NonRelatedType)
+TEST(ReflectionUniquePtrTest, Deserialize_NonRelatedType)
 {
     const auto* type = GetType<TestUniquePtr>();
 
@@ -108,7 +113,7 @@ TEST(ReflectionClassTest, UniquePtr_Deserialize_NonRelatedType)
     ASSERT_FALSE(helper::DeserializeObject(type, &obj, "obj={__type=\"TestClassWithFundamentalMembers\"}"));
 }
 
-TEST(ReflectionClassTest, UniquePtr_Deserialize_Base)
+TEST(ReflectionUniquePtrTest, Deserialize_Base)
 {
     static_assert(std::is_constructible<TestBaseClass>::value, "TestBaseClass must be constructible");
     const auto* type = GetType<TestUniquePtr>();
@@ -123,7 +128,7 @@ TEST(ReflectionClassTest, UniquePtr_Deserialize_Base)
     EXPECT_EQ(true, obj->GetBool());
 }
 
-TEST(ReflectionClassTest, UniquePtr_Deserialize_Child)
+TEST(ReflectionUniquePtrTest, Deserialize_Child)
 {
     static_assert(std::is_constructible<TestChildClassA>::value, "TestChildClassA must be constructible");
     const auto* type = GetType<TestUniquePtr>();
@@ -143,3 +148,46 @@ TEST(ReflectionClassTest, UniquePtr_Deserialize_Child)
     EXPECT_EQ(567, typedPtr->foo);
 }
 
+TEST(ReflectionUniquePtrTest, SerializeBinary_Nullptr)
+{
+    const auto* type = GetType<TestUniquePtr>();
+
+    Buffer buffer;
+    SerializationContext context;
+    {
+        TestUniquePtr obj;
+        BufferOutputStream stream(buffer);
+        ASSERT_TRUE(helper::SerializeObject(type, &obj, stream, context));
+    }
+    {
+        TestUniquePtr readObj;
+        BufferInputStream stream(buffer);
+        ASSERT_TRUE(type->DeserializeBinary(&readObj, stream, context));
+        EXPECT_EQ(nullptr, readObj.Get());
+    }
+}
+
+TEST(ReflectionUniquePtrTest, SerializeBinary)
+{
+    const auto* type = GetType<TestUniquePtr>();
+
+    TestUniquePtr obj = MakeUniquePtr<TestBaseClass>();
+    obj->floatVal = 123.0f;
+    obj->intVal = 321;
+
+    Buffer buffer;
+    SerializationContext context;
+    {
+        BufferOutputStream stream(buffer);
+        ASSERT_TRUE(helper::SerializeObject(type, &obj, stream, context));
+    }
+    {
+        TestUniquePtr readObj;
+        BufferInputStream stream(buffer);
+        ASSERT_TRUE(type->DeserializeBinary(&readObj, stream, context));
+        EXPECT_NE(nullptr, readObj.Get());
+        EXPECT_NE(obj.Get(), readObj.Get());
+        EXPECT_EQ(123.0f, readObj->floatVal);
+        EXPECT_EQ(321, readObj->intVal);
+    }
+}

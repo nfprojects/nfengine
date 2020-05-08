@@ -7,7 +7,7 @@
 #include "PCH.hpp"
 #include "../DirectoryWatch.hpp"
 #include "Logger/Logger.hpp"
-#include "System/Win/Common.hpp"
+#include "System/Windows/Common.hpp"
 #include "System/Assertion.hpp"
 #include "Utils/ScopedLock.hpp"
 #include "Containers/UniquePtr.hpp"

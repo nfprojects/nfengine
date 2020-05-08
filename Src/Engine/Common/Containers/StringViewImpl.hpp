@@ -18,12 +18,13 @@ namespace Common {
 StringView::StringView()
     : mData(nullptr)
     , mLength(0)
+    , mIsNullTerminated(false)
 {
-
 }
 
 StringView::StringView(const char* string)
     : mData(string)
+    , mIsNullTerminated(true)
 {
     NFE_ASSERT(string, "Invalid string pointer");
 
@@ -34,6 +35,7 @@ StringView::StringView(const char* string)
 StringView::StringView(const char* string, uint32 length)
     : mData(string)
     , mLength(length)
+    , mIsNullTerminated(false)
 {
     NFE_ASSERT(string, "Invalid string pointer");
 
@@ -45,28 +47,13 @@ StringView::StringView(const char* string, uint32 length)
     }
 }
 
-uint32 StringView::Length() const
-{
-    return mLength;
-}
-
-const char* StringView::Data() const
-{
-    return mData;
-}
-
-bool StringView::Empty() const
-{
-    return mLength == 0;
-}
-
 char StringView::operator[](uint32 index) const
 {
     NFE_ASSERT(index < mLength, "StringView index out of bounds");
     return mData[index];
 }
 
-StringView StringView::Range(uint32 index, uint32 length) const
+const StringView StringView::Range(uint32 index, uint32 length) const
 {
     // empty string view case
     if (Empty() && length == 0)

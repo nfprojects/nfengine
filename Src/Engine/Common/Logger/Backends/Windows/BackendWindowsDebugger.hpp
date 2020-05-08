@@ -9,7 +9,7 @@
 #include "../../LoggerBackend.hpp"
 #include "../../../Containers/DynArray.hpp"
 #include "../../../Containers/String.hpp"
-#include "../../../System/Win/Common.hpp"
+#include "../../../System/Windows/Common.hpp"
 
 namespace NFE {
 namespace Common {

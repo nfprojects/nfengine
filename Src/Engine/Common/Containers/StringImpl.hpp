@@ -1,7 +1,7 @@
 /**
  * @file
- * @author Witek902 (witek902@gmail.com)
- * @brief  StringView inline functions definitions.
+ * @author Witek902
+ * @brief  String inline functions definitions.
  */
 
 #pragma once
@@ -47,16 +47,6 @@ String::String(char c)
 {
 }
 
-String::String(const String& string)
-    : String(string.ToView())
-{
-}
-
-String::String(const char* string)
-    : String(StringView(string))
-{
-}
-
 template<uint32 N>
 String String::ConstructFromFixedArray(const char(&str)[N], const uint32 length)
 {
@@ -75,50 +65,6 @@ String String::ConstructFromFixedArray(const char(&str)[N], const uint32 length)
     buffer[length] = '\0';
 
     return result;
-}
-
-String& String::operator=(const String& other)
-{
-    *this = other.ToView();
-    return *this;
-}
-
-String& String::operator=(const char* string)
-{
-    *this = StringView(string);
-    return *this;
-}
-
-String& String::operator+=(const String& string)
-{
-    *this += string.ToView();
-    return *this;
-}
-
-String& String::operator+=(const char* string)
-{
-    *this += StringView(string);
-    return *this;
-}
-
-String& String::Insert(uint32 index, const String& string)
-{
-    return Insert(index, string.ToView());
-}
-
-String& String::Insert(uint32 index, const char* string)
-{
-    return Insert(index, StringView(string));
-}
-
-String& String::Replace(uint32 index, uint32 numCharacters, const String& string)
-{
-    return Replace(index, numCharacters, string.ToView());
-}
-
-String& String::Replace(uint32 index, uint32 numCharacters, const char* string)
-{
-    return Replace(index, numCharacters, StringView(string));
 }
 
 uint32 String::Length() const
@@ -202,166 +148,11 @@ char String::Back() const
         return mExternalData.data[len - 1];
 }
 
-
 void String::SetLength(uint32 length)
 {
     mInternalData.length = length;
 }
 
-String::operator StringView() const
-{
-    return ToView();
-}
-
-//////////////////////////////////////////////////////////////////////////
-
-NFE_INLINE String operator+(const String& lhs, const String& rhs)
-{
-    return lhs.ToView() + rhs.ToView();
-}
-
-NFE_INLINE String operator+(String&& lhs, const String& rhs)
-{
-    return std::move(lhs) + rhs.ToView();
-}
-
-NFE_INLINE String operator+(const String& lhs, String&& rhs)
-{
-    return lhs.ToView() + std::move(rhs);
-}
-
-NFE_INLINE String operator+(const String& lhs, char rhs)
-{
-    return lhs.ToView() + rhs;
-}
-
-NFE_INLINE String operator+(char lhs, const String& rhs)
-{
-    return lhs + rhs.ToView();
-}
-
-NFE_INLINE String operator+(const String& lhs, const char* rhs)
-{
-    return lhs.ToView() + StringView(rhs);
-}
-
-NFE_INLINE String operator+(const char* lhs, const String& rhs)
-{
-    return StringView(lhs) + rhs.ToView();
-}
-
-NFE_INLINE String operator+(String&& lhs, const char* rhs)
-{
-    return std::move(lhs) + StringView(rhs);
-}
-
-NFE_INLINE String operator+(const char* lhs, String&& rhs)
-{
-    return StringView(lhs) + std::move(rhs);
-}
-
-//////////////////////////////////////////////////////////////////////////
-
-bool operator<(const String& lhs, const String& rhs)
-{
-    return lhs.ToView() < rhs.ToView();
-}
-
-bool operator<=(const String& lhs, const String& rhs)
-{
-    return lhs.ToView() <= rhs.ToView();
-}
-
-bool operator>(const String& lhs, const String& rhs)
-{
-    return lhs.ToView() > rhs.ToView();
-}
-
-bool operator>=(const String& lhs, const String& rhs)
-{
-    return lhs.ToView() >= rhs.ToView();
-}
-
-bool operator==(const String& lhs, const String& rhs)
-{
-    return lhs.ToView() == rhs.ToView();
-}
-
-bool operator!=(const String& lhs, const String& rhs)
-{
-    return lhs.ToView() != rhs.ToView();
-}
-
-//////////////////////////////////////////////////////////////////////////
-
-bool operator<(const String& lhs, const StringView& rhs)
-{
-    return lhs.ToView() < rhs;
-}
-
-bool operator<=(const String& lhs, const StringView& rhs)
-{
-    return lhs.ToView() <= rhs;
-}
-
-bool operator>(const String& lhs, const StringView& rhs)
-{
-    return lhs.ToView() > rhs;
-}
-
-bool operator>=(const String& lhs, const StringView& rhs)
-{
-    return lhs.ToView() >= rhs;
-}
-
-bool operator==(const String& lhs, const StringView& rhs)
-{
-    return lhs.ToView() == rhs;
-}
-
-bool operator!=(const String& lhs, const StringView& rhs)
-{
-    return lhs.ToView() != rhs;
-}
-
-//////////////////////////////////////////////////////////////////////////
-
-bool operator<(const StringView& lhs, const String& rhs)
-{
-    return lhs < rhs.ToView();
-}
-
-bool operator<=(const StringView& lhs, const String& rhs)
-{
-    return lhs <= rhs.ToView();
-}
-
-bool operator>(const StringView& lhs, const String& rhs)
-{
-    return lhs > rhs.ToView();
-}
-
-bool operator>=(const StringView& lhs, const String& rhs)
-{
-    return lhs >= rhs.ToView();
-}
-
-bool operator==(const StringView& lhs, const String& rhs)
-{
-    return lhs == rhs.ToView();
-}
-
-bool operator!=(const StringView& lhs, const String& rhs)
-{
-    return lhs != rhs.ToView();
-}
-
-//////////////////////////////////////////////////////////////////////////
-
-uint32 GetHash(const String& string)
-{
-    return GetHash(string.ToView());
-}
 
 } // namespace Common
 } // namespace NFE

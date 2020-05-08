@@ -9,7 +9,7 @@
 #include "ImageDDS.hpp"
 #include "Image.hpp"
 #include "Logger/Logger.hpp"
-#include "Utils/InputStream.hpp"
+#include "Utils/Stream/InputStream.hpp"
 #include "Reflection/ReflectionClassDefine.hpp"
 
 

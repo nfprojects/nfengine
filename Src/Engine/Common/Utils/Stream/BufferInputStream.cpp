@@ -1,52 +1,12 @@
-/**
- * @file
- * @author Witek902 (witek902@gmail.com)
- * @author mkkulagowski (mkulagowski(at)gmail.com)
- * @brief  Definition of InputStream class for reading files, buffers, etc.
- */
-
 #include "PCH.hpp"
-#include "InputStream.hpp"
+#include "BufferInputStream.hpp"
 #include "System/Memory.hpp"
+#include "Memory/Buffer.hpp"
 #include "Logger/Logger.hpp"
 
 
 namespace NFE {
 namespace Common {
-
-//-----------------------------------------------------------
-// FileInputStream
-//-----------------------------------------------------------
-
-FileInputStream::FileInputStream(const String& path)
-{
-    mFile.Open(path, AccessMode::Read, false);
-}
-
-FileInputStream::~FileInputStream()
-{
-    mFile.Close();
-}
-
-uint64 FileInputStream::GetSize()
-{
-    return mFile.GetSize();
-}
-
-bool FileInputStream::Seek(uint64 position)
-{
-    return mFile.Seek(position, SeekMode::Begin);
-}
-
-size_t FileInputStream::Read(void* buffer, size_t num)
-{
-    return mFile.Read(buffer, num);
-}
-
-
-//-----------------------------------------------------------
-// BufferInputStream
-//-----------------------------------------------------------
 
 BufferInputStream::BufferInputStream(const void* data, size_t dataSize)
 {
@@ -62,6 +22,10 @@ BufferInputStream::BufferInputStream(const void* data, size_t dataSize)
     mPos = 0;
 }
 
+BufferInputStream::BufferInputStream(const Buffer& buffer)
+    : BufferInputStream(buffer.Data(), buffer.Size())
+{ }
+
 uint64 BufferInputStream::GetSize()
 {
     return mSize;
@@ -70,11 +34,18 @@ uint64 BufferInputStream::GetSize()
 bool BufferInputStream::Seek(uint64 position)
 {
     if (!mData)
+    {
         return false;
+    }
+
+    if (position > (uint64)std::numeric_limits<size_t>::max())
+    {
+        return false;
+    }
 
     if (position < mSize)
     {
-        mPos = position;
+        mPos = (size_t)position;
         return true;
     }
 
@@ -84,7 +55,9 @@ bool BufferInputStream::Seek(uint64 position)
 size_t BufferInputStream::Read(void* buffer, size_t num)
 {
     if (!mData)
+    {
         return 0;
+    }
 
     if (mPos + num > mSize)
     {

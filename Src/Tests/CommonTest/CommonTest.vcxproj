@@ -293,6 +293,7 @@
     </ClCompile>
     <ClCompile Include="TestCases\Reflection\ReflectionEnumTest.cpp" />
     <ClCompile Include="TestCases\Reflection\ReflectionFundamentalTypesTest.cpp" />
+    <ClCompile Include="TestCases\Reflection\ReflectionSerializerTest.cpp" />
     <ClCompile Include="TestCases\Reflection\ReflectionSharedPtrTest.cpp" />
     <ClCompile Include="TestCases\Reflection\ReflectionUniquePtrTest.cpp" />
     <ClCompile Include="TestCases\Reflection\ReflectionPolymorphicClassTest.cpp">
@@ -322,6 +323,7 @@
     <ClCompile Include="TestCases\Utils\BufferInputStreamTest.cpp" />
     <ClCompile Include="TestCases\Utils\BufferOutputStreamTest.cpp" />
     <ClCompile Include="TestCases\Utils\BVHTest.cpp" />
+    <ClCompile Include="TestCases\Utils\CompressedInt.cpp" />
     <ClCompile Include="TestCases\Utils\ConfigTest.cpp" />
     <ClCompile Include="TestCases\Utils\EnumIteratorTest.cpp" />
     <ClCompile Include="TestCases\Utils\ImageTest.cpp" />

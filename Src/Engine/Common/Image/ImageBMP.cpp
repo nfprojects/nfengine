@@ -10,7 +10,7 @@
 #include "Image.hpp"
 #include "Logger/Logger.hpp"
 #include "Utils/BitUtils.hpp"
-#include "Utils/InputStream.hpp"
+#include "Utils/Stream/InputStream.hpp"
 #include "Containers/DynArray.hpp"
 #include "Reflection/ReflectionClassDefine.hpp"
 

@@ -80,7 +80,7 @@ private:
 
 
 #if defined(WIN32)
-#include "Win/RWLockImpl.hpp"
+#include "Windows/RWLockImpl.hpp"
 #elif defined(__LINUX__) | defined(__linux__)
 #include "Linux/RWLockImpl.hpp"
 #endif

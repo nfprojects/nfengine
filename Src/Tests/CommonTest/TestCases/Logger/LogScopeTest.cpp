@@ -7,6 +7,7 @@
 #include "PCH.hpp"
 #include "Engine/Common/Logger/LogScope.hpp"
 #include "Engine/Common/Logger/LoggerImpl.hpp"
+#include "Engine/Common/Containers/StringView.hpp"
 
 
 

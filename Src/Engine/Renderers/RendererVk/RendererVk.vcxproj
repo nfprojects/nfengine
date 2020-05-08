@@ -41,7 +41,7 @@
     <ClInclude Include="Internal\RingBuffer.hpp" />
     <ClInclude Include="Internal\SemaphorePool.hpp" />
     <ClInclude Include="Internal\Translations.hpp" />
-    <ClInclude Include="Internal\Win\WinExtensions.hpp" />
+    <ClInclude Include="InternalWindows\WinExtensions.hpp" />
     <ClInclude Include="PCH.hpp" />
   </ItemGroup>
   <ItemGroup>
@@ -57,8 +57,8 @@
     <ClCompile Include="API\Shader.cpp" />
     <ClCompile Include="API\Texture.cpp" />
     <ClCompile Include="API\VertexLayout.cpp" />
-    <ClCompile Include="API\Win\WinBackbuffer.cpp" />
-    <ClCompile Include="API\Win\WinDevice.cpp" />
+    <ClCompile Include="APIWindows\WinBackbuffer.cpp" />
+    <ClCompile Include="APIWindows\WinDevice.cpp" />
     <ClCompile Include="Internal\Debugger.cpp" />
     <ClCompile Include="Internal\Extensions.cpp" />
     <ClCompile Include="Internal\Instance.cpp" />
@@ -66,7 +66,7 @@
     <ClCompile Include="Internal\RingBuffer.cpp" />
     <ClCompile Include="Internal\SemaphorePool.cpp" />
     <ClCompile Include="Internal\Translations.cpp" />
-    <ClCompile Include="Internal\Win\WinExtensions.cpp" />
+    <ClCompile Include="InternalWindows\WinExtensions.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="PCH.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

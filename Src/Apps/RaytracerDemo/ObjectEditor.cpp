@@ -214,7 +214,8 @@ static bool EditObject_EnumItemGetter(void* data, int idx, const char** outText)
     const EnumOption* options = reinterpret_cast<const EnumOption*>(data);
     if (outText)
     {
-        *outText = options[idx].name;
+        NFE_ASSERT(options[idx].name.IsNullTerminated());
+        *outText = options[idx].name.Data();
     }
     return true;
 }
@@ -234,14 +235,23 @@ static bool EditObject_Internal_Enum(const EditPropertyContext& ctx)
     const EnumType* type = static_cast<const EnumType*>(ctx.type);
     const EnumOptions& options = type->GetOptions();
 
-    int32 currentItem = 0;
-    type->ReadValue(ctx.data, (uint32&)currentItem);
+    const uint64 enumValue = type->ReadRawValue(ctx.data);
+
+    int32 currentItem = -1;
+    for (uint32 i = 0; i < options.Size(); ++i)
+    {
+        if (enumValue == options[i].value)
+        {
+            currentItem = (int32)i;
+            break;
+        }
+    }
 
     changed = ImGui::Combo("##value", &currentItem, EditObject_EnumItemGetter, (void*)options.Data(), options.Size());
 
-    if (changed)
+    if (changed && currentItem >= 0)
     {
-        type->WriteValue(ctx.data, currentItem);
+        type->WriteRawValue(ctx.data, options[currentItem].value);
     }
 
     ImGui::NextColumn();
@@ -319,7 +329,15 @@ static bool EditObject_TypeGetter(void* data, int idx, const char** outText)
     if (outText)
     {
         const Type* type = types[idx];
-        *outText = type ? types[idx]->GetName().Str() : "<Empty>";
+
+        if (type)
+        {
+            *outText = type->GetName().Str();
+        }
+        else
+        {
+            *outText = "<Empty>";
+        }
     }
     return true;
 }
@@ -347,7 +365,7 @@ static bool EditObject_Internal_Pointer(const EditPropertyContext& ctx)
         typesList.PushBack(nullptr);
     }
 
-    const Type* pointedType = type->GetPointedType();
+    const Type* pointedType = type->GetUnderlyingType();
     if (pointedType->GetKind() == TypeKind::AbstractClass || pointedType->GetKind() == TypeKind::PolymorphicClass)
     {
         static_cast<const ClassType*>(pointedType)->ListSubtypes([&typesList] (const ClassType* type)
@@ -366,7 +384,7 @@ static bool EditObject_Internal_Pointer(const EditPropertyContext& ctx)
     int32 currentItem = -1;
     for (uint32 i = 0; i < typesList.Size(); ++i)
     {
-        if (typesList[i] == type->GetPointedType(ctx.data))
+        if (typesList[i] == type->GetPointedDataType(ctx.data))
         {
             currentItem = i;
         }

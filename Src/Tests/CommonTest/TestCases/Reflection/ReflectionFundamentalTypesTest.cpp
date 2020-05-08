@@ -1,5 +1,11 @@
 #include "PCH.hpp"
 #include "ReflectionTestCommon.hpp"
+#include "Engine/Common/Config/Config.hpp"
+#include "Engine/Common/Reflection/SerializationContext.hpp"
+#include "Engine/Common/Reflection/ReflectionUtils.hpp"
+#include "Engine/Common/Utils/Stream/BufferOutputStream.hpp"
+#include "Engine/Common/Utils/Stream/BufferInputStream.hpp"
+#include "Engine/Common/Memory/Buffer.hpp"
 
 
 using namespace NFE;
@@ -214,6 +220,26 @@ TEST(ReflectionFundamentalTypeTest, SerializeBool_True)
     EXPECT_EQ(REFERENCE_CONFIG_STRING, str);
 }
 
+TEST(ReflectionFundamentalTypeTest, SerializeBinaryBool)
+{
+    const auto* type = GetType<bool>();
+
+    Buffer buffer;
+    SerializationContext context;
+    {
+        bool obj = false;
+        BufferOutputStream stream(buffer);
+        ASSERT_TRUE(helper::SerializeObject(type, &obj, stream, context));
+        EXPECT_EQ(1u, buffer.Size());
+    }
+    {
+        bool readObj = true;
+        BufferInputStream stream(buffer);
+        ASSERT_TRUE(type->DeserializeBinary(&readObj, stream, context));
+        EXPECT_EQ(false, readObj);
+    }
+}
+
 TEST(ReflectionFundamentalTypeTest, SerializeInt8)
 {
     const auto* type = GetType<int8>();
@@ -245,6 +271,26 @@ TEST(ReflectionFundamentalTypeTest, SerializeInt32)
     ASSERT_TRUE(helper::SerializeObject(type, &obj, str));
     const char* REFERENCE_CONFIG_STRING = "obj=-1415365";
     EXPECT_EQ(REFERENCE_CONFIG_STRING, str);
+}
+
+TEST(ReflectionFundamentalTypeTest, SerializeBinaryInt32)
+{
+    const auto* type = GetType<int32>();
+
+    Buffer buffer;
+    SerializationContext context;
+    {
+        int32 obj = -1415365;
+        BufferOutputStream stream(buffer);
+        ASSERT_TRUE(helper::SerializeObject(type, &obj, stream, context));
+        EXPECT_EQ(4u, buffer.Size());
+    }
+    {
+        int32 readObj = 19246194;
+        BufferInputStream stream(buffer);
+        ASSERT_TRUE(type->DeserializeBinary(&readObj, stream, context));
+        EXPECT_EQ(-1415365, readObj);
+    }
 }
 
 TEST(ReflectionFundamentalTypeTest, SerializeInt64)
@@ -363,7 +409,8 @@ TEST(ReflectionFundamentalTypeTest, DeserializeBool_False)
 
     bool obj;
     const ConfigValue value(false);
-    ASSERT_TRUE(type->Deserialize(&obj, Config(), value));
+    SerializationContext context;
+    ASSERT_TRUE(type->Deserialize(&obj, Config(), value, context));
     EXPECT_EQ(false, obj);
 }
 
@@ -373,7 +420,8 @@ TEST(ReflectionFundamentalTypeTest, DeserializeBool_True)
 
     bool obj;
     const ConfigValue value(true);
-    ASSERT_TRUE(type->Deserialize(&obj, Config(), value));
+    SerializationContext context;
+    ASSERT_TRUE(type->Deserialize(&obj, Config(), value, context));
     EXPECT_EQ(true, obj);
 }
 
@@ -383,7 +431,8 @@ TEST(ReflectionFundamentalTypeTest, DeserializeInt8)
 
     int8 obj;
     const ConfigValue value(static_cast<int8>(-35));
-    ASSERT_TRUE(type->Deserialize(&obj, Config(), value));
+    SerializationContext context;
+    ASSERT_TRUE(type->Deserialize(&obj, Config(), value, context));
     EXPECT_EQ(-35, obj);
 }
 
@@ -393,7 +442,8 @@ TEST(ReflectionFundamentalTypeTest, DeserializeInt16)
 
     int16 obj;
     const ConfigValue value(static_cast<int16>(-3255));
-    ASSERT_TRUE(type->Deserialize(&obj, Config(), value));
+    SerializationContext context;
+    ASSERT_TRUE(type->Deserialize(&obj, Config(), value, context));
     EXPECT_EQ(-3255, obj);
 }
 
@@ -403,7 +453,8 @@ TEST(ReflectionFundamentalTypeTest, DeserializeInt32)
 
     int32 obj;
     const ConfigValue value(-3253625);
-    ASSERT_TRUE(type->Deserialize(&obj, Config(), value));
+    SerializationContext context;
+    ASSERT_TRUE(type->Deserialize(&obj, Config(), value, context));
     EXPECT_EQ(-3253625, obj);
 }
 
@@ -413,7 +464,8 @@ TEST(ReflectionFundamentalTypeTest, DeserializeInt64)
 
     int64 obj;
     const ConfigValue value(static_cast<int64>(-10184017501ll));
-    ASSERT_TRUE(type->Deserialize(&obj, Config(), value));
+    SerializationContext context;
+    ASSERT_TRUE(type->Deserialize(&obj, Config(), value, context));
     EXPECT_EQ(-10184017501, obj);
 }
 
@@ -423,7 +475,8 @@ TEST(ReflectionFundamentalTypeTest, DeserializeUInt8)
 
     uint8 obj;
     const ConfigValue value(static_cast<uint8>(35u));
-    ASSERT_TRUE(type->Deserialize(&obj, Config(), value));
+    SerializationContext context;
+    ASSERT_TRUE(type->Deserialize(&obj, Config(), value, context));
     EXPECT_EQ(35u, obj);
 }
 
@@ -433,7 +486,8 @@ TEST(ReflectionFundamentalTypeTest, DeserializeUInt16)
 
     uint16 obj;
     const ConfigValue value(static_cast<uint16>(3255u));
-    ASSERT_TRUE(type->Deserialize(&obj, Config(), value));
+    SerializationContext context;
+    ASSERT_TRUE(type->Deserialize(&obj, Config(), value, context));
     EXPECT_EQ(3255u, obj);
 }
 
@@ -443,7 +497,8 @@ TEST(ReflectionFundamentalTypeTest, DeserializeUInt32)
 
     uint32 obj;
     const ConfigValue value(3253625u);
-    ASSERT_TRUE(type->Deserialize(&obj, Config(), value));
+    SerializationContext context;
+    ASSERT_TRUE(type->Deserialize(&obj, Config(), value, context));
     EXPECT_EQ(3253625u, obj);
 }
 
@@ -453,7 +508,8 @@ TEST(ReflectionFundamentalTypeTest, DeserializeUInt64)
 
     uint64 obj;
     const ConfigValue value(static_cast<uint64>(10184017501ull));
-    ASSERT_TRUE(type->Deserialize(&obj, Config(), value));
+    SerializationContext context;
+    ASSERT_TRUE(type->Deserialize(&obj, Config(), value, context));
     EXPECT_EQ(10184017501ull, obj);
 }
 
@@ -464,7 +520,8 @@ TEST(ReflectionFundamentalTypeTest, DeserializeFloat)
 
     float obj;
     const ConfigValue value(1234.0f);
-    ASSERT_TRUE(type->Deserialize(&obj, Config(), value));
+    SerializationContext context;
+    ASSERT_TRUE(type->Deserialize(&obj, Config(), value, context));
     EXPECT_EQ(1234.0f, obj);
 }
 
@@ -474,7 +531,8 @@ TEST(ReflectionFundamentalTypeTest, DeserializeDouble)
 
     double obj;
     const ConfigValue value(1234.0);
-    ASSERT_TRUE(type->Deserialize(&obj, Config(), value));
+    SerializationContext context;
+    ASSERT_TRUE(type->Deserialize(&obj, Config(), value, context));
     EXPECT_EQ(1234.0, obj);
 }
 
@@ -484,6 +542,7 @@ TEST(ReflectionFundamentalTypeTest, DeserializeString)
 
     String obj;
     const ConfigValue value("abcd");
-    ASSERT_TRUE(type->Deserialize(&obj, Config(), value));
+    SerializationContext context;
+    ASSERT_TRUE(type->Deserialize(&obj, Config(), value, context));
     EXPECT_EQ("abcd", obj);
 }

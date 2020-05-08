@@ -6,57 +6,80 @@
 #pragma once
 
 #include "ReflectionPointerType.hpp"
-#include "../../Config/Config.hpp"
-#include "../../Config/ConfigValue.hpp"
+#include "../ReflectionTypeResolver.hpp"
 #include "../../Containers/SharedPtr.hpp"
 
 namespace NFE {
 namespace RTTI {
 
+
+// base class for all shared pointer types
+class NFCOMMON_API SharedPtrType : public PointerType
+{
+public:
+    SharedPtrType(const TypeInfo& info, const Type* underlyingType);
+
+    // reset with an existing IObject
+    virtual void Assign(void* sharedPtrObject, const Common::SharedPtr<IObject>& newPtr) const = 0;
+
+    virtual bool Serialize(const void* object, Common::IConfig& config, Common::ConfigValue& outValue, SerializationContext& context) const override final;
+    virtual bool Deserialize(void* outObject, const Common::IConfig& config, const Common::ConfigValue& value, const SerializationContext& context) const override final;
+    virtual bool SerializeBinary(const void* object, Common::OutputStream* stream, SerializationContext& context) const override final;
+    virtual bool DeserializeBinary(void* outObject, Common::InputStream& stream, const SerializationContext& context) const override final;
+};
+
+
 template<typename T>
-class SharedPtrTypeImpl final : public PointerType
+class SharedPtrTypeImpl final : public SharedPtrType
 {
 public:
     using ObjectType = Common::SharedPtr<T>;
 
-    SharedPtrTypeImpl(const TypeInfo& info)
-        : PointerType(info)
-    {
-        mPointedType = GetType<T>();
-        NFE_ASSERT(mPointedType, "Invalid pointed type");
-    }
+    static_assert(std::is_base_of_v<IObject, T>, "Reflection: SharedPtr must point to IObject-based class");
 
-    virtual void* GetPointedData(const void* sharedPtrObject) const override
+    SharedPtrTypeImpl(const TypeInfo& info)
+        : SharedPtrType(info, GetType<T>())
+    { }
+
+    virtual void* GetPointedData(const void* ptrObject) const override
     {
-        NFE_ASSERT(sharedPtrObject, "Trying to access nullptr");
-        const ObjectType& typedObject = *static_cast<const ObjectType*>(sharedPtrObject);
+        NFE_ASSERT(ptrObject, "Trying to access nullptr");
+        const ObjectType& typedObject = *static_cast<const ObjectType*>(ptrObject);
         return typedObject.Get();
     }
 
-    virtual const Type* GetPointedType(const void* sharedPtrObject) const override
+    virtual const Type* GetPointedDataType(const void* ptrObject) const override
     {
-        NFE_ASSERT(sharedPtrObject, "Trying to access nullptr");
-        const ObjectType& typedObject = *static_cast<const ObjectType*>(sharedPtrObject);
+        NFE_ASSERT(ptrObject, "Trying to access nullptr");
+        const ObjectType& typedObject = *static_cast<const ObjectType*>(ptrObject);
 
         if (typedObject)
         {
-            if (mPointedType->GetKind() == TypeKind::AbstractClass || mPointedType->GetKind() == TypeKind::PolymorphicClass)
+            if (mUnderlyingType->GetKind() == TypeKind::AbstractClass || mUnderlyingType->GetKind() == TypeKind::PolymorphicClass)
             {
-                return reinterpret_cast<const IObject*>(typedObject.Get())->GetDynamicType();
+                return typedObject.Get()->GetDynamicType();
             }
             else
             {
-                return mPointedType;
+                return mUnderlyingType;
             }
         }
 
         return nullptr;
     }
 
-    virtual void Reset(void* sharedPtrObject, const Type* newDataType) const override
+    virtual void Assign(void* sharedPtrObject, const Common::SharedPtr<IObject>& newPtr) const
     {
         NFE_ASSERT(sharedPtrObject, "Trying to access nullptr");
+
         ObjectType& typedObject = *static_cast<ObjectType*>(sharedPtrObject);
+        typedObject = newPtr;
+    }
+
+    virtual void Reset(void* ptrObject, const Type* newDataType) const override
+    {
+        NFE_ASSERT(ptrObject, "Trying to access nullptr");
+        ObjectType& typedObject = *static_cast<ObjectType*>(ptrObject);
         if (newDataType)
         {
             typedObject.Reset(newDataType->CreateObject<T>());
@@ -65,32 +88,6 @@ public:
         {
             typedObject.Reset();
         }
-    }
-
-    bool Serialize(const void* object, Common::Config& config, Common::ConfigValue& outValue) const override
-    {
-        NFE_ASSERT(object, "Trying to serialize nullptr");
-
-        NFE_UNUSED(object);
-        NFE_UNUSED(config);
-        NFE_UNUSED(outValue);
-
-        NFE_ASSERT(false, "Not implemented!");
-
-        return false;
-    }
-
-    bool Deserialize(void* outObject, const Common::Config& config, const Common::ConfigValue& value) const override
-    {
-        NFE_ASSERT(outObject, "Trying to deserialize to nullptr");
-
-        NFE_UNUSED(outObject);
-        NFE_UNUSED(config);
-        NFE_UNUSED(value);
-
-        NFE_ASSERT(false, "Not implemented!");
-
-        return false;
     }
 };
 

@@ -7,6 +7,7 @@
 #include "../PCH.hpp"
 #include "Scene.hpp"
 #include "Engine/Common/nfCommon.hpp"
+#include "Engine/Common/Utils/LanguageUtils.hpp"
 
 
 using namespace NFE;

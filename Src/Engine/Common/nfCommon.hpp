@@ -190,14 +190,6 @@ static_assert(sizeof(uint64) == 8, "'uint64' type must have 8 bytes");
 static_assert(sizeof(int64) == 8, "'int64' type must have 8 bytes");
 
 
-// return size of an array
-template<class T, size_t N>
-size_t ArraySize(const T(&)[N])
-{
-    return N;
-}
-
-
 namespace Common {
 
 /**

@@ -1,5 +1,9 @@
 #include "PCH.hpp"
 #include "ReflectionTestCommon.hpp"
+#include "Engine/Common/Reflection/SerializationContext.hpp"
+#include "Engine/Common/Utils/Stream/BufferOutputStream.hpp"
+#include "Engine/Common/Utils/Stream/BufferInputStream.hpp"
+#include "Engine/Common/Memory/Buffer.hpp"
 
 
 using namespace NFE;
@@ -86,6 +90,37 @@ TEST(ReflectionClassTest, TestClassWithFundamentalMembers_Deserialization)
     EXPECT_EQ("blah", obj.strValue);
 }
 
+TEST(ReflectionClassTest, TestClassWithFundamentalMembers_BinarySerialization)
+{
+    const auto* type = GetType<TestClassWithFundamentalMembers>();
+    ASSERT_NE(nullptr, type);
+
+    Buffer buffer;
+    SerializationContext context;
+
+    {
+        TestClassWithFundamentalMembers obj;
+        obj.intValue = 42;
+        obj.floatValue = 1.234f;
+        obj.boolValue = true;
+        obj.strValue = "test";
+
+        BufferOutputStream stream(buffer);
+        ASSERT_TRUE(helper::SerializeObject(type, &obj, stream, context));
+    }
+
+    {
+        TestClassWithFundamentalMembers readObj;
+        BufferInputStream stream(buffer);
+        ASSERT_TRUE(type->DeserializeBinary(&readObj, stream, context));
+
+        EXPECT_EQ(42, readObj.intValue);
+        EXPECT_EQ(1.234f, readObj.floatValue);
+        EXPECT_EQ(true, readObj.boolValue);
+        EXPECT_STREQ("test", readObj.strValue.Str());
+    }
+}
+
 
 //////////////////////////////////////////////////////////////////////////
 
@@ -155,6 +190,17 @@ TEST(ReflectionClassTest, TestClassWithNestedType_Deserialization)
     EXPECT_EQ(true, obj.foo.boolValue);
 }
 
+TEST(ReflectionClassTest, TestClassWithNestedType_Dererialize_Invalid)
+{
+    const auto* type = GetType<TestClassWithNestedType>();
+    ASSERT_NE(nullptr, type);
+
+    TestClassWithNestedType obj;
+    EXPECT_FALSE(helper::DeserializeObject(type, &obj, ""));
+    EXPECT_FALSE(helper::DeserializeObject(type, &obj, "obj=123"));
+    EXPECT_FALSE(helper::DeserializeObject(type, &obj, "obj=\"abc\""));
+    EXPECT_FALSE(helper::DeserializeObject(type, &obj, "obj=false"));
+}
 
 //////////////////////////////////////////////////////////////////////////
 
@@ -261,6 +307,43 @@ TEST(ReflectionClassTest, TestClassWithArrayType_Deserialization_TooLong)
     EXPECT_EQ(321.0f, obj.foo);
 }
 
+TEST(ReflectionClassTest, TestClassWithArrayType_BinarySerialization)
+{
+    const Type* type = GetType<TestClassWithArrayType>();
+    ASSERT_NE(nullptr, type);
+
+    Buffer buffer;
+    SerializationContext context;
+
+    {
+        TestClassWithArrayType obj;
+        obj.arrayOfInts[0] = 10;
+        obj.arrayOfInts[1] = 20;
+        obj.arrayOfInts[2] = 30;
+        obj.arrayOfInts[3] = 40;
+        obj.arrayOfInts[4] = 50;
+        obj.foo = 123.0f;
+
+        BufferOutputStream stream(buffer);
+        ASSERT_TRUE(helper::SerializeObject(type, &obj, stream, context));
+    }
+
+    {
+        TestClassWithArrayType readObj;
+        memset(&readObj, 0, sizeof(readObj));
+
+        BufferInputStream stream(buffer);
+        ASSERT_TRUE(type->DeserializeBinary(&readObj, stream, context));
+
+        EXPECT_EQ(10, readObj.arrayOfInts[0]);
+        EXPECT_EQ(20, readObj.arrayOfInts[1]);
+        EXPECT_EQ(30, readObj.arrayOfInts[2]);
+        EXPECT_EQ(40, readObj.arrayOfInts[3]);
+        EXPECT_EQ(50, readObj.arrayOfInts[4]);
+        EXPECT_EQ(123.0f, readObj.foo);
+    }
+}
+
 
 //////////////////////////////////////////////////////////////////////////
 
@@ -362,6 +445,57 @@ TEST(ReflectionClassTest, TestClassWithArrayType_Deserialization_NonEmpty)
     EXPECT_EQ(321, obj.arrayOfObjects[0].intValue);
     EXPECT_EQ(10.0f, obj.arrayOfObjects[0].floatValue);
     EXPECT_EQ(true, obj.arrayOfObjects[0].boolValue);
+}
+
+TEST(ReflectionClassTest, TestClassWithDynArrayType_BinarySerialization)
+{
+    const auto* type = GetType<TestClassWithDynArrayType>();
+    ASSERT_NE(nullptr, type);
+
+    Buffer buffer;
+    SerializationContext context;
+
+    TestClassWithDynArrayType obj;
+    {
+        obj.arrayOfInts.PushBack(10);
+        obj.arrayOfInts.PushBack(20);
+        obj.arrayOfInts.PushBack(30);
+
+        obj.arrayOfObjects.PushBack(TestClassWithFundamentalMembers(1, 1.0f, false, "aaa"));
+        obj.arrayOfObjects.PushBack(TestClassWithFundamentalMembers(15, 15.0f, true, "bbb"));
+    }
+
+    {
+        BufferOutputStream stream(buffer);
+        ASSERT_TRUE(helper::SerializeObject(type, &obj, stream, context));
+    }
+
+    {
+        TestClassWithDynArrayType readObj;
+
+        BufferInputStream stream(buffer);
+        ASSERT_TRUE(type->DeserializeBinary(&readObj, stream, context));
+
+        EXPECT_EQ(3u, readObj.arrayOfInts.Size());
+        {
+            EXPECT_EQ(10, readObj.arrayOfInts[0]);
+            EXPECT_EQ(20, readObj.arrayOfInts[1]);
+            EXPECT_EQ(30, readObj.arrayOfInts[2]);
+        }
+
+        EXPECT_EQ(2u, readObj.arrayOfObjects.Size());
+        {
+            EXPECT_EQ(1,            readObj.arrayOfObjects[0].intValue);
+            EXPECT_EQ(1.0f,         readObj.arrayOfObjects[0].floatValue);
+            EXPECT_EQ(false,        readObj.arrayOfObjects[0].boolValue);
+            EXPECT_TRUE("aaa" ==    readObj.arrayOfObjects[0].strValue);
+
+            EXPECT_EQ(15,           readObj.arrayOfObjects[1].intValue);
+            EXPECT_EQ(15.0f,        readObj.arrayOfObjects[1].floatValue);
+            EXPECT_EQ(true,         readObj.arrayOfObjects[1].boolValue);
+            EXPECT_TRUE("bbb" ==    readObj.arrayOfObjects[1].strValue);
+        }
+    }
 }
 
 //////////////////////////////////////////////////////////////////////////

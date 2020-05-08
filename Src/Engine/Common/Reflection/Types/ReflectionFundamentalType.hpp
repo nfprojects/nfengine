@@ -1,6 +1,6 @@
 /**
  * @file
- * @author Witek902 (witek902@gmail.com)
+ * @author Witek902
  * @brief  Declaration of reflection system's FundamentalType template class.
  */
 
@@ -8,41 +8,58 @@
 
 #include "../../nfCommon.hpp"
 #include "ReflectionType.hpp"
-#include "../ReflectionMember.hpp"
 #include "../../Config/ConfigValue.hpp"
+#include "../../Utils/Stream/InputStream.hpp"
+#include "../../Utils/Stream/OutputStream.hpp"
 
 
 namespace NFE {
 namespace RTTI {
 
+
+// base class for all fundamental types
+class NFCOMMON_API FundamentalType : public Type
+{
+public:
+    NFE_FORCE_INLINE FundamentalType(const TypeInfo& info) : Type(info) { }
+
+    virtual bool SerializeBinary(const void* object, Common::OutputStream* stream, SerializationContext& context) const override final;
+    virtual bool DeserializeBinary(void* outObject, Common::InputStream& stream, const SerializationContext& context) const override final;
+    virtual bool CanBeMemcopied() const override final { return true; }
+};
+
+
 /**
  * Fundamental C++ types (bool, integers, floating point).
  */
 template<typename T>
-class FundamentalType final : public Type
+class FundamentalTypeImpl final : public FundamentalType
 {
-    NFE_MAKE_NONCOPYABLE(FundamentalType)
+    NFE_MAKE_NONCOPYABLE(FundamentalTypeImpl)
 
 public:
-    FundamentalType(const TypeInfo& info)
-        : Type(info)
+    FundamentalTypeImpl(const TypeInfo& info)
+        : FundamentalType(info)
     { }
 
-    bool Serialize(const void* object, Common::Config& config, Common::ConfigValue& outValue) const override
+    virtual bool Serialize(const void* object, Common::IConfig& config, Common::ConfigValue& outValue, SerializationContext& context) const override
     {
         // no need to access Config object itself, all the data for fundamental types is contained in ConfigValue
         NFE_UNUSED(config);
+        NFE_UNUSED(context);
 
         const T* typedObject = static_cast<const T*>(object);
         outValue = Common::ConfigValue(*typedObject);
         return true;
     }
 
-    bool Deserialize(void* outObject, const Common::Config& config, const Common::ConfigValue& value) const override
+    virtual bool Deserialize(void* outObject, const Common::IConfig& config, const Common::ConfigValue& value, const SerializationContext& context) const override
     {
         NFE_UNUSED(config);
+        NFE_UNUSED(context);
 
         // TODO type casting (with check if there is no overflow)
+        // TODO handle type mismatch
         if (value.Is<T>())
         {
             T* typedObject = static_cast<T*>(outObject);
@@ -53,14 +70,14 @@ public:
         return false;
     }
 
-    bool Compare(const void* objectA, const void* objectB) const override
+    virtual bool Compare(const void* objectA, const void* objectB) const override
     {
         const T* typedObjectA = static_cast<const T*>(objectA);
         const T* typedObjectB = static_cast<const T*>(objectB);
         return (*typedObjectA) == (*typedObjectB);
     }
 
-    bool Clone(void* destObject, const void* sourceObject) const override
+    virtual bool Clone(void* destObject, const void* sourceObject) const override
     {
         *static_cast<T*>(destObject) = *static_cast<const T*>(sourceObject);
         return true;
@@ -85,7 +102,7 @@ public:
         class TypeCreator<T>                                                            \
         {                                                                               \
         public:                                                                         \
-            using TypeClass = FundamentalType<T>;                                       \
+            using TypeClass = FundamentalTypeImpl<T>;                                   \
             using TypeInfoClass = TypeInfo;                                             \
             static Type* CreateType()                                                   \
             {                                                                           \
@@ -96,7 +113,7 @@ public:
                 typeInfo.alignment = alignof(T);                                        \
                 typeInfo.constructor = []() { return new T(); };                        \
                 typeInfo.arrayConstructor = [](uint32 num) { return new T[num](); };    \
-                return new FundamentalType<T>(typeInfo);                                \
+                return new TypeClass(typeInfo);                                         \
             }                                                                           \
         };                                                                              \
     } } /* namespace NFE::RTTI */

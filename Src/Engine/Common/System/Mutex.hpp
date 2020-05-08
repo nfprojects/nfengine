@@ -69,7 +69,7 @@ private:
 
 
 #if defined(WIN32)
-#include "Win/MutexImpl.hpp"
+#include "Windows/MutexImpl.hpp"
 #elif defined(__LINUX__) | defined(__linux__)
 #include "Linux/MutexImpl.hpp"
 #endif

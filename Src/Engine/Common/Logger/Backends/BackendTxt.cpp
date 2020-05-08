@@ -8,6 +8,7 @@
 #include "../LoggerImpl.hpp"
 #include "BackendTxt.hpp"
 #include "BackendCommon.hpp"
+#include "../../Containers/StringView.hpp"
 
 
 namespace NFE {

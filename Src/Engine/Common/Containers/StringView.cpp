@@ -6,10 +6,24 @@
 
 #include "PCH.hpp"
 #include "StringView.hpp"
+#include "String.hpp"
 
 
 namespace NFE {
 namespace Common {
+
+StringView::StringView(const String& string)
+    : mData(string.Str())
+    , mLength(string.Length())
+{
+}
+
+StringView& StringView::operator = (const String& other)
+{
+    mData = other.Str();
+    mLength = other.Length();
+    return *this;
+}
 
 uint32 StringView::FindFirst(const StringView& subString) const
 {
@@ -156,7 +170,7 @@ bool StringView::EndsWith(const StringView& subString) const
 
 //////////////////////////////////////////////////////////////////////////
 
-
+NFE_FORCE_NOINLINE
 bool StringView::operator == (const StringView& other) const
 {
     if (mLength != other.mLength)
@@ -165,13 +179,7 @@ bool StringView::operator == (const StringView& other) const
     if (mData == other.mData)
         return true;
 
-    for (uint32 i = 0; i < mLength; ++i)
-    {
-        if (mData[i] != other.mData[i])
-            return false;
-    }
-
-    return true;
+    return 0 == memcmp(mData, other.mData, mLength);
 }
 
 bool StringView::operator != (const StringView& other) const
@@ -182,13 +190,7 @@ bool StringView::operator != (const StringView& other) const
     if (mData == other.mData)
         return false;
 
-    for (uint32 i = 0; i < mLength; ++i)
-    {
-        if (mData[i] != other.mData[i])
-            return true;
-    }
-
-    return false;
+    return 0 != memcmp(mData, other.mData, mLength);
 }
 
 bool StringView::operator < (const StringView& other) const

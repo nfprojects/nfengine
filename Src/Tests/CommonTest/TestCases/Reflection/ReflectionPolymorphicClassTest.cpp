@@ -19,7 +19,7 @@ TEST(ReflectionClassTest, BaseClass_Verify)
     EXPECT_EQ(TypeKind::PolymorphicClass, type->GetKind());
     EXPECT_LE(minSize, type->GetSize());
     EXPECT_LE(sizeof(size_t), type->GetAlignment());
-    EXPECT_EQ(nullptr, type->GetParent());
+    EXPECT_EQ(GetType<IObject>(), type->GetParent());
 
     // vtable offset
     const size_t initialOffset = sizeof(size_t);
@@ -185,7 +185,7 @@ TEST(ReflectionClassTest, AbstractClass_Verify)
     EXPECT_EQ(TypeKind::AbstractClass, type->GetKind());
     EXPECT_LE(minSize, type->GetSize());
     EXPECT_LE(sizeof(size_t), type->GetAlignment());
-    EXPECT_EQ(nullptr, type->GetParent());
+    EXPECT_EQ(GetType<IObject>(), type->GetParent());
 
     // vtable offset
     const size_t initialOffset = sizeof(size_t);

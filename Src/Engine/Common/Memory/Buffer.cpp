@@ -7,28 +7,35 @@
 #include "PCH.hpp"
 #include "Buffer.hpp"
 #include "Memory/DefaultAllocator.hpp"
-
+#include "Math/Math.hpp"
 
 namespace NFE {
 namespace Common {
 
 Buffer::Buffer()
+    : mData(nullptr)
+    , mSize(0)
+    , mCapacity(0)
 {
-    mData = nullptr;
-    mSize = 0;
 }
 
-Buffer::Buffer(const Buffer& src)
+Buffer::Buffer(const Buffer& other)
+    : mData(nullptr)
+    , mSize(0)
+    , mCapacity(0)
 {
-    *this = src;
+    *this = other;
 }
 
 Buffer::Buffer(Buffer&& other)
 {
     mSize = other.mSize;
+    mCapacity = other.mCapacity;
     mData = other.mData;
+
     other.mData = nullptr;
     other.mSize = 0;
+    other.mCapacity = 0;
 }
 
 Buffer::~Buffer()
@@ -36,65 +43,101 @@ Buffer::~Buffer()
     Release();
 }
 
-Buffer& Buffer::operator=(const Buffer& src)
+Buffer& Buffer::operator = (const Buffer& other)
 {
-    if (this != &src)
+    if (this != &other)
     {
-        Release();
-
-        if (src.mSize)
-        {
-            mData = NFE_MALLOC(src.mSize, 1);
-            if (!mData)
-                return *this;
-            memcpy(mData, src.mData, src.mSize);
-        }
-
-        mSize = src.mSize;
+        Resize(other.Size(), other.Data());
     }
 
     return *this;
 }
 
-void Buffer::Create(size_t size)
+Buffer& Buffer::operator = (Buffer&& other)
 {
-    mSize = size;
-    mData = NFE_MALLOC(size, 1);
+    if (this != &other)
+    {
+        Release();
+
+        mSize = other.mSize;
+        mCapacity = other.mCapacity;
+        mData = other.mData;
+
+        other.mData = nullptr;
+        other.mSize = 0;
+        other.mCapacity = 0;
+    }
+
+    return *this;
 }
 
-void Buffer::Load(const void* data, size_t size)
+void Buffer::Zero()
 {
-    Release();
-
-    if (size > 0)
+    if (mSize)
     {
-        mData = NFE_MALLOC(size, 1);
-        if (!mData)
-            return;
+        NFE_ASSERT(mData);
+        memset(mData, 0, mSize);
+    }
+}
 
-        memcpy(mData, data, size);
+bool Buffer::Resize(size_t size, const void* newData)
+{
+    if (!Reserve(size, newData == nullptr))
+    {
+        return false;
+    }
+
+    if (size > 0 && newData)
+    {
+        memcpy(mData, newData, size);
         mSize = size;
     }
+
+    mSize = size;
+    return true;
+}
+
+bool Buffer::Reserve(size_t size, bool preserveData)
+{
+    if (size > mCapacity)
+    {
+        size_t newCapacity = mCapacity;
+        while (size > newCapacity)
+        {
+            // grow by 50%
+            newCapacity += Math::Max<size_t>(1u, newCapacity / 2);
+        }
+
+        void* newBuffer = NFE_MALLOC(newCapacity, Alignment);
+        if (!newBuffer)
+        {
+            // memory allocation failed
+            return false;
+        }
+
+        if (preserveData && mData)
+        {
+            memcpy(newBuffer, mData, mSize);
+        }
+
+        NFE_FREE(mData);
+        mData = newBuffer;
+        mCapacity = newCapacity;
+    }
+
+    return true;
+}
+
+void Buffer::Clear()
+{
+    mSize = 0;
 }
 
 void Buffer::Release()
 {
+    NFE_FREE(mData);
     mSize = 0;
-    if (nullptr != mData)
-    {
-        NFE_FREE(mData);
-        mData = nullptr;
-    }
-}
-
-size_t Buffer::GetSize() const
-{
-    return mSize;
-}
-
-void* Buffer::GetData() const
-{
-    return mData;
+    mCapacity = 0;
 }
 
 } // namespace Common
