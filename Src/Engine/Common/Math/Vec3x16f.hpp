@@ -108,7 +108,7 @@ public:
 
         for (uint32 i = 0; i < 16; ++i)
         {
-            output[i] = Vec4f(x[i], y[i], z[i]);
+            out[i] = Vec4f(x[i], y[i], z[i]);
         }
 
 #endif // !NFE_USE_AVX512

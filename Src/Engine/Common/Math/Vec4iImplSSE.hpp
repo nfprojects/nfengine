@@ -163,28 +163,30 @@ const Vec4i Vec4i::Swizzle() const
     static_assert(iz < 4, "Invalid Z element index");
     static_assert(iw < 4, "Invalid W element index");
 
-    if (ix == 0 && iy == 1 && iz == 2 && iw == 3)
+    if constexpr (ix == 0 && iy == 1 && iz == 2 && iw == 3)
     {
         return *this;
     }
-    else if (ix == 0 && iy == 0 && iz == 1 && iw == 1)
+    else if constexpr (ix == 0 && iy == 0 && iz == 1 && iw == 1)
     {
         return _mm_unpacklo_epi32(v, v);
     }
-    else if (ix == 2 && iy == 2 && iz == 3 && iw == 3)
+    else if constexpr (ix == 2 && iy == 2 && iz == 3 && iw == 3)
     {
         return _mm_unpackhi_epi32(v, v);
     }
-    else if (ix == 0 && iy == 1 && iz == 0 && iw == 1)
+    else if constexpr (ix == 0 && iy == 1 && iz == 0 && iw == 1)
     {
         return _mm_unpacklo_epi64(v, v);
     }
-    else if (ix == 2 && iy == 3 && iz == 2 && iw == 3)
+    else if constexpr (ix == 2 && iy == 3 && iz == 2 && iw == 3)
     {
         return _mm_unpackhi_epi64(v, v);
     }
-
-    return _mm_shuffle_epi32(v, _MM_SHUFFLE(iw, iz, iy, ix));
+    else
+    {
+        return _mm_shuffle_epi32(v, _MM_SHUFFLE(iw, iz, iy, ix));
+    }
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -467,28 +469,30 @@ const Vec4ui Vec4ui::Swizzle() const
     static_assert(iz < 4, "Invalid Z element index");
     static_assert(iw < 4, "Invalid W element index");
 
-    if (ix == 0 && iy == 1 && iz == 2 && iw == 3)
+    if constexpr (ix == 0 && iy == 1 && iz == 2 && iw == 3)
     {
         return *this;
     }
-    else if (ix == 0 && iy == 0 && iz == 1 && iw == 1)
+    else if constexpr (ix == 0 && iy == 0 && iz == 1 && iw == 1)
     {
         return _mm_unpacklo_epi32(v, v);
     }
-    else if (ix == 2 && iy == 2 && iz == 3 && iw == 3)
+    else if constexpr (ix == 2 && iy == 2 && iz == 3 && iw == 3)
     {
         return _mm_unpackhi_epi32(v, v);
     }
-    else if (ix == 0 && iy == 1 && iz == 0 && iw == 1)
+    else if constexpr (ix == 0 && iy == 1 && iz == 0 && iw == 1)
     {
         return _mm_unpacklo_epi64(v, v);
     }
-    else if (ix == 2 && iy == 3 && iz == 2 && iw == 3)
+    else if constexpr (ix == 2 && iy == 3 && iz == 2 && iw == 3)
     {
         return _mm_unpackhi_epi64(v, v);
     }
-
-    return _mm_shuffle_epi32(v, _MM_SHUFFLE(iw, iz, iy, ix));
+    else
+    {
+        return _mm_shuffle_epi32(v, _MM_SHUFFLE(iw, iz, iy, ix));
+    }
 }
 
 //////////////////////////////////////////////////////////////////////////

@@ -641,6 +641,12 @@
     <ClInclude Include="Math\Vec16iImplAVX512.hpp">
       <Filter>Math</Filter>
     </ClInclude>
+    <ClInclude Include="Math\Vec16fImplNaive.hpp">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\Vec16iImplNaive.hpp">
+      <Filter>Math</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="PCH.cpp" />

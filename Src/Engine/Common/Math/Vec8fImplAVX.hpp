@@ -3,6 +3,15 @@
 namespace NFE {
 namespace Math {
 
+VecBool8f::VecBool8f(bool scalar)
+{
+#ifdef NFE_USE_AVX512
+    mask = _cvtu32_mask8(scalar ? 0xFFFF : 0);
+#else
+    v = _mm256_castsi256_ps(_mm256_set1_epi32(scalar ? 0xFFFFFFFF : 0));
+#endif
+}
+
 VecBool8f::VecBool8f(bool e0, bool e1, bool e2, bool e3, bool e4, bool e5, bool e6, bool e7)
 {
 #ifdef NFE_USE_AVX512

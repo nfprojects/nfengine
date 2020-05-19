@@ -14,8 +14,9 @@ struct Vec8f;
 struct NFE_ALIGN(32) VecBool8i : public Common::Aligned<16>
 {
     VecBool8i() = default;
-
-    NFE_FORCE_INLINE explicit VecBool8i(bool e0, bool e1, bool e2, bool e3, bool e4, bool e5, bool e6, bool e7);
+    VecBool8i(const VecBool8i& other) = default;
+    NFE_FORCE_INLINE VecBool8i(const VecBool8f& other);
+    NFE_FORCE_INLINE VecBool8i(bool e0, bool e1, bool e2, bool e3, bool e4, bool e5, bool e6, bool e7);
 
     template<uint32 index>
     NFE_FORCE_INLINE bool Get() const;
@@ -28,19 +29,24 @@ struct NFE_ALIGN(32) VecBool8i : public Common::Aligned<16>
     NFE_FORCE_INLINE const VecBool8i operator | (const VecBool8i rhs) const;
     NFE_FORCE_INLINE const VecBool8i operator ^ (const VecBool8i rhs) const;
 
-    NFE_FORCE_INLINE bool operator == (const VecBool8i & other) const;
-    NFE_FORCE_INLINE bool operator != (const VecBool8i & other) const;
+    NFE_FORCE_INLINE bool operator == (const VecBool8i& other) const;
+    NFE_FORCE_INLINE bool operator != (const VecBool8i& other) const;
 
 private:
     friend struct Vec8i;
     friend struct Vec8ui;
 
-#ifdef NFE_USE_AVX2
+#if defined(NFE_USE_AVX512)
+    __mmask8 mask;
+    NFE_FORCE_INLINE VecBool8i(const __mmask8 other) : mask(other) { }
+    NFE_FORCE_INLINE explicit VecBool8i(const __m256 other) : mask(_mm256_movepi32_mask(_mm256_castps_si256(other))) { }
+    NFE_FORCE_INLINE explicit VecBool8i(const __m256i other) : mask(_mm256_movepi32_mask(other)) { }
+    NFE_FORCE_INLINE operator __mmask8() const { return mask; }
+#elif defined(NFE_USE_AVX)
     NFE_FORCE_INLINE VecBool8i(const __m256 other) : v(_mm256_castps_si256(other)) { }
     NFE_FORCE_INLINE VecBool8i(const __m256i other) : v(other) { }
     NFE_FORCE_INLINE operator __m256() const { return _mm256_castsi256_ps(v); }
     NFE_FORCE_INLINE operator __m256i() const { return v; }
-
     __m256i v;
 #else
     bool b[8];

@@ -25,6 +25,9 @@
 // "structure was padded due to alignment specifier"
 #pragma warning(disable: 4324)
 
+// 'if constexpr' is a C++17 language extension
+#pragma warning(disable: 4984)
+
 // "C++ nonstandard extension: nameless struct"
 #pragma warning(disable : 4201)
 

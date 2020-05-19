@@ -2,6 +2,7 @@
 
 #include "Math.hpp"
 #include "Vec8f.hpp"
+#include "Vec8i.hpp"
 
 namespace NFE {
 namespace Math {
@@ -14,20 +15,24 @@ struct NFE_ALIGN(32) VecBool16 : public Common::Aligned<32>
     VecBool16() = default;
 
     NFE_FORCE_INLINE explicit VecBool16(bool scalar);
+    NFE_FORCE_INLINE VecBool16(const VecBool8f& low, const VecBool8f& high);
+    NFE_FORCE_INLINE VecBool16(const VecBool8i& low, const VecBool8i& high);
 
     NFE_FORCE_INLINE explicit VecBool16(
         bool e0, bool e1, bool e2, bool e3, bool e4, bool e5, bool e6, bool e7,
         bool e8, bool e9, bool e10, bool e11, bool e12, bool e13, bool e14, bool e15);
 
+#ifdef NFE_USE_AVX512
     NFE_FORCE_INLINE VecBool16(const __mmask16 other) : mask(other) { }
     NFE_FORCE_INLINE explicit VecBool16(const __m512 other) : mask(_mm512_movepi32_mask(_mm512_castps_si512(other))) { }
     NFE_FORCE_INLINE explicit VecBool16(const __m512i other) : mask(_mm512_movepi32_mask(other)) { }
     NFE_FORCE_INLINE operator __mmask16() const { return mask; }
+#endif // NFE_USE_AVX512
 
     template<uint32 index>
     NFE_FORCE_INLINE bool Get() const;
 
-    NFE_FORCE_INLINE uint16 GetMask() const;
+    NFE_FORCE_INLINE uint32 GetMask() const;
 
     NFE_FORCE_INLINE bool All() const;
     NFE_FORCE_INLINE bool None() const;
@@ -41,8 +46,26 @@ struct NFE_ALIGN(32) VecBool16 : public Common::Aligned<32>
 
 private:
     friend struct Vec16f;
+    friend struct Vec16i;
+    friend struct Vec16ui;
 
+#ifdef NFE_USE_AVX512
     __mmask16 mask;
+#else
+    union
+    {
+        struct
+        {
+            VecBool8i ilow;
+            VecBool8i ihigh;
+        };
+        struct
+        {
+            VecBool8f low;
+            VecBool8f high;
+        };
+    };
+#endif // NFE_USE_AVX512
 };
 
 /**
@@ -71,7 +94,7 @@ struct NFE_ALIGN(64) Vec16f : public Common::Aligned<64>
     NFE_FORCE_INLINE Vec16f(const __m512 & m);
     NFE_FORCE_INLINE operator __m512() const { return v; }
     NFE_FORCE_INLINE operator __m512i() const { return reinterpret_cast<const __m512i*>(&v)[0]; }
-#endif // NFE_USE_AVX
+#endif // NFE_USE_AVX512
 
     NFE_FORCE_INLINE float operator[] (uint32 index) const
     {
@@ -173,12 +196,10 @@ struct NFE_ALIGN(64) Vec16f : public Common::Aligned<64>
     NFE_FORCE_INLINE static const Vec16f NegMulAndSub(const Vec16f& a, const Vec16f& b, const Vec16f& c);
     NFE_FORCE_INLINE static const Vec16f NegMulAndSub(const Vec16f& a, const float b, const Vec16f& c) { return NegMulAndSub(a, Vec16f(b), c); }
 
-    // transpose 8x8 matrix
-    //NFE_FORCE_INLINE static void Transpose8x8(Vec16f& v0, Vec16f& v1, Vec16f& v2, Vec16f& v3, Vec16f& v4, Vec16f& v5, Vec16f& v6, Vec16f& v7);
-
 private:
 
-    friend struct Vec8i;
+    friend struct Vec16i;
+    friend struct Vec16u;
 
     union
     {
@@ -190,8 +211,8 @@ private:
 #else
         struct
         {
-            Vec16f low;
-            Vec16f high;
+            Vec8f low;
+            Vec8f high;
         };
 #endif // NFE_USE_AVX512
     };

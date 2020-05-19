@@ -98,8 +98,10 @@
     <ClInclude Include="Math\Distribution.hpp" />
     <ClInclude Include="Math\EquationSolver.hpp" />
     <ClInclude Include="Math\HilbertCurve.hpp" />
+    <ClInclude Include="Math\Vec16fImplNaive.hpp" />
     <ClInclude Include="Math\Vec16i.hpp" />
     <ClInclude Include="Math\Vec16iImplAVX512.hpp" />
+    <ClInclude Include="Math\Vec16iImplNaive.hpp" />
     <ClInclude Include="Math\Vec2f.hpp" />
     <ClInclude Include="Math\Vec2fImpl.hpp" />
     <ClInclude Include="Math\Vec2x16f.hpp" />

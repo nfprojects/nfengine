@@ -8,12 +8,12 @@
   </PropertyGroup>
   <ItemDefinitionGroup>
     <ClCompile>
-      <PreprocessorDefinitions>NFE_USE_SSE;NFE_USE_SSE4;NFE_USE_AVX;NFE_USE_AVX2;NFE_USE_AVX512;NFE_USE_FMA;NFE_USE_FP16C;NFE_ROOT_DIRECTORY=LR"($(SolutionDir))";TRACY_ENABLE;TRACY_ON_DEMAND;_HAS_EXCEPTIONS=0;_CRT_NONSTDC_NO_DEPRECATE;_CRT_SECURE_NO_WARNINGS;WIN32;_WINDLL;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NFE_USE_SSE;NFE_USE_SSE4;NFE_USE_AVX;NFE_USE_AVX2;NFE_USE_FMA;NFE_USE_FP16C;NFE_ROOT_DIRECTORY=LR"($(SolutionDir))";TRACY_ENABLE;TRACY_ON_DEMAND;_HAS_EXCEPTIONS=0;_CRT_NONSTDC_NO_DEPRECATE;_CRT_SECURE_NO_WARNINGS;WIN32;_WINDLL;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <WarningLevel>Level4</WarningLevel>
       <TreatWarningAsError>true</TreatWarningAsError>
       <StringPooling>true</StringPooling>
       <ExceptionHandling>false</ExceptionHandling>
-      <EnableEnhancedInstructionSet>AdvancedVectorExtensions512</EnableEnhancedInstructionSet>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
       <MinimalRebuild>false</MinimalRebuild>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <UseFullPaths>true</UseFullPaths>

@@ -25,7 +25,7 @@ bool VecBool16::Get() const
     return (uint32(mask) & (1 << index)) != 0;
 }
 
-uint16 VecBool16::GetMask() const
+uint32 VecBool16::GetMask() const
 {
     return mask;
 }

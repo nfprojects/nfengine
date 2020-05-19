@@ -27,32 +27,34 @@ const VecBool4f VecBool4f::Swizzle() const
     static_assert(iz < 4, "Invalid Z element index");
     static_assert(iw < 4, "Invalid W element index");
 
-    if (ix == 0 && iy == 0 && iz == 1 && iw == 1)
+    if constexpr (ix == 0 && iy == 0 && iz == 1 && iw == 1)
     {
         return _mm_unpacklo_ps(v, v);
     }
-    else if (ix == 2 && iy == 2 && iz == 3 && iw == 3)
+    else if constexpr (ix == 2 && iy == 2 && iz == 3 && iw == 3)
     {
         return _mm_unpackhi_ps(v, v);
     }
-    else if (ix == 0 && iy == 1 && iz == 0 && iw == 1)
+    else if constexpr (ix == 0 && iy == 1 && iz == 0 && iw == 1)
     {
         return _mm_movelh_ps(v, v);
     }
-    else if (ix == 2 && iy == 3 && iz == 2 && iw == 3)
+    else if constexpr (ix == 2 && iy == 3 && iz == 2 && iw == 3)
     {
         return _mm_movehl_ps(v, v);
     }
-    else if (ix == 0 && iy == 0 && iz == 2 && iw == 2)
+    else if constexpr (ix == 0 && iy == 0 && iz == 2 && iw == 2)
     {
         return _mm_moveldup_ps(v);
     }
-    else if (ix == 1 && iy == 1 && iz == 3 && iw == 3)
+    else if constexpr (ix == 1 && iy == 1 && iz == 3 && iw == 3)
     {
         return _mm_movehdup_ps(v);
     }
-
-    return _mm_shuffle_ps(v, v, _MM_SHUFFLE(iw, iz, iy, ix));
+    else
+    {
+        return _mm_shuffle_ps(v, v, _MM_SHUFFLE(iw, iz, iy, ix));
+    }
 }
 
 // combine into 4-bit mask
@@ -261,17 +263,19 @@ const Half4 Vec4f::ToHalf4() const
 template<uint32 flipX, uint32 flipY, uint32 flipZ, uint32 flipW>
 const Vec4f Vec4f::ChangeSign() const
 {
-    if (!(flipX || flipY || flipZ || flipW))
+    if constexpr (!(flipX || flipY || flipZ || flipW))
     {
         // no operation
         return *this;
     }
+    else
+    {
+        // generate bit negation mask
+        const Vec4f mask{ flipX ? 0x80000000 : 0, flipY ? 0x80000000 : 0, flipZ ? 0x80000000 : 0, flipW ? 0x80000000 : 0 };
 
-    // generate bit negation mask
-    const Vec4f mask{ flipX ? 0x80000000 : 0, flipY ? 0x80000000 : 0, flipZ ? 0x80000000 : 0, flipW ? 0x80000000 : 0 };
-
-    // flip sign bits
-    return _mm_xor_ps(v, mask);
+        // flip sign bits
+        return _mm_xor_ps(v, mask);
+    }
 }
 
 const Vec4f Vec4f::ChangeSign(const VecBool4f& flip) const
@@ -297,42 +301,44 @@ const Vec4f Vec4f::Swizzle() const
     static_assert(iz < 4, "Invalid Z element index");
     static_assert(iw < 4, "Invalid W element index");
 
-    if (ix == 0 && iy == 1 && iz == 2 && iw == 3)
+    if constexpr (ix == 0 && iy == 1 && iz == 2 && iw == 3)
     {
         return *this;
     }
-    else if (ix == 0 && iy == 0 && iz == 1 && iw == 1)
+    else if constexpr (ix == 0 && iy == 0 && iz == 1 && iw == 1)
     {
         return _mm_unpacklo_ps(v, v);
     }
-    else if (ix == 2 && iy == 2 && iz == 3 && iw == 3)
+    else if constexpr (ix == 2 && iy == 2 && iz == 3 && iw == 3)
     {
         return _mm_unpackhi_ps(v, v);
     }
-    else if (ix == 0 && iy == 1 && iz == 0 && iw == 1)
+    else if constexpr (ix == 0 && iy == 1 && iz == 0 && iw == 1)
     {
         return _mm_movelh_ps(v, v);
     }
-    else if (ix == 2 && iy == 3 && iz == 2 && iw == 3)
+    else if constexpr (ix == 2 && iy == 3 && iz == 2 && iw == 3)
     {
         return _mm_movehl_ps(v, v);
     }
-    else if (ix == 0 && iy == 0 && iz == 2 && iw == 2)
+    else if constexpr (ix == 0 && iy == 0 && iz == 2 && iw == 2)
     {
         return _mm_moveldup_ps(v);
     }
-    else if (ix == 1 && iy == 1 && iz == 3 && iw == 3)
+    else if constexpr (ix == 1 && iy == 1 && iz == 3 && iw == 3)
     {
         return _mm_movehdup_ps(v);
     }
 #ifdef NFE_USE_AVX2
-    else if (ix == 0 && iy == 0 && iz == 0 && iw == 0)
+    else if constexpr (ix == 0 && iy == 0 && iz == 0 && iw == 0)
     {
         return _mm_broadcastss_ps(v);
     }
 #endif // NFE_USE_AVX2
-
-    return _mm_shuffle_ps(v, v, _MM_SHUFFLE(iw, iz, iy, ix));
+    else
+    {
+        return _mm_shuffle_ps(v, v, _MM_SHUFFLE(iw, iz, iy, ix));
+    }
 }
 
 const Vec4f Vec4f::Swizzle(uint32 ix, uint32 iy, uint32 iz, uint32 iw) const
@@ -352,16 +358,18 @@ const Vec4f Vec4f::Shuffle(const Vec4f& a, const Vec4f& b)
     static_assert(iz < 4, "Invalid Z element index");
     static_assert(iw < 4, "Invalid W element index");
 
-    if (ix == 0 && iy == 1 && iz == 0 && iw == 1)
+    if constexpr (ix == 0 && iy == 1 && iz == 0 && iw == 1)
     {
         return _mm_movelh_ps(a, b);
     }
-    else if (ix == 2 && iy == 3 && iz == 2 && iw == 3)
+    else if constexpr(ix == 2 && iy == 3 && iz == 2 && iw == 3)
     {
         return _mm_movehl_ps(b, a);
     }
-
-    return _mm_shuffle_ps(a, b, ix | (iy << 2) | (iz << 4) | (iw << 6));
+    else
+    {
+        return _mm_shuffle_ps(a, b, ix | (iy << 2) | (iz << 4) | (iw << 6));
+    }
 }
 
 const Vec4f Vec4f::Select(const Vec4f& a, const Vec4f& b, const VecBool4f& sel)

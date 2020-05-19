@@ -18,6 +18,7 @@ struct NFE_ALIGN(64) Vec16i : public Common::Aligned<64>
     Vec16i() = default;
     NFE_FORCE_INLINE static const Vec16i Zero();
     NFE_FORCE_INLINE Vec16i(const Vec16i& other);
+    NFE_FORCE_INLINE Vec16i(const Vec8i& low, const Vec8i& high);
     NFE_FORCE_INLINE explicit Vec16i(const Vec16ui& other);
     NFE_FORCE_INLINE Vec16i& operator = (const Vec16i& other);
     NFE_FORCE_INLINE explicit Vec16i(const int32 scalar);
@@ -106,8 +107,10 @@ private:
     {
         int32 i[16];
         uint32 u[16];
-        __m512 f;
+
+#ifdef NFE_USE_AVX512
         __m512i v;
+#endif // NFE_USE_AVX512
 
         struct
         {
@@ -126,8 +129,10 @@ struct NFE_ALIGN(64) Vec16ui : public Common::Aligned<64>
     {
         int32 i[8];
         uint32 u[8];
-        __m512 f;
+
+#ifdef NFE_USE_AVX512
         __m512i v;
+#endif // NFE_USE_AVX512
 
         struct
         {
@@ -141,6 +146,7 @@ struct NFE_ALIGN(64) Vec16ui : public Common::Aligned<64>
     NFE_FORCE_INLINE static const Vec16ui Zero();
     NFE_FORCE_INLINE Vec16ui(const Vec16ui& other);
     NFE_FORCE_INLINE explicit Vec16ui(const Vec16i& other);
+    NFE_FORCE_INLINE Vec16ui(const Vec8ui& low, const Vec8ui& high);
     NFE_FORCE_INLINE Vec16ui& operator = (const Vec16ui& other);
     NFE_FORCE_INLINE explicit Vec16ui(const uint32 scalar);
     NFE_FORCE_INLINE explicit Vec16ui(const uint32* scalarPtr);
@@ -181,16 +187,16 @@ struct NFE_ALIGN(64) Vec16ui : public Common::Aligned<64>
     NFE_FORCE_INLINE const Vec16ui operator - (const Vec16ui & b) const;
     NFE_FORCE_INLINE Vec16ui& operator += (const Vec16ui & b);
     NFE_FORCE_INLINE Vec16ui& operator -= (const Vec16ui & b);
-    NFE_FORCE_INLINE const Vec16ui operator + (int32 b) const;
-    NFE_FORCE_INLINE const Vec16ui operator - (int32 b) const;
-    NFE_FORCE_INLINE Vec16ui& operator += (int32 b);
-    NFE_FORCE_INLINE Vec16ui& operator -= (int32 b);
+    NFE_FORCE_INLINE const Vec16ui operator + (uint32 b) const;
+    NFE_FORCE_INLINE const Vec16ui operator - (uint32 b) const;
+    NFE_FORCE_INLINE Vec16ui& operator += (uint32 b);
+    NFE_FORCE_INLINE Vec16ui& operator -= (uint32 b);
 
     // bit shifting
     NFE_FORCE_INLINE const Vec16ui operator << (const Vec16ui & b) const;
     NFE_FORCE_INLINE const Vec16ui operator >> (const Vec16ui & b) const;
-    NFE_FORCE_INLINE const Vec16ui operator << (int32 b) const;
-    NFE_FORCE_INLINE const Vec16ui operator >> (int32 b) const;
+    NFE_FORCE_INLINE const Vec16ui operator << (uint32 b) const;
+    NFE_FORCE_INLINE const Vec16ui operator >> (uint32 b) const;
 
     /// comparison operators
     NFE_FORCE_INLINE const VecBool16 operator == (const Vec16ui & b) const;
@@ -218,5 +224,5 @@ struct NFE_ALIGN(64) Vec16ui : public Common::Aligned<64>
 #ifdef NFE_USE_AVX512
 #include "Vec16iImplAVX512.hpp"
 #else
-#error Not implemented
+#include "Vec16iImplNaive.hpp"
 #endif // NFE_USE_AVX512

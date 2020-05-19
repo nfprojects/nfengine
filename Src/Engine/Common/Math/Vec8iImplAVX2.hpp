@@ -5,8 +5,19 @@
 namespace NFE {
 namespace Math {
 
+VecBool8i::VecBool8i(const VecBool8f& other)
+#ifdef NFE_USE_AVX512
+    : mask(other.mask)
+#else
+    : v(_mm256_castps_si256(other.v))
+#endif
+{}
+
 VecBool8i::VecBool8i(bool e0, bool e1, bool e2, bool e3, bool e4, bool e5, bool e6, bool e7)
 {
+#ifdef NFE_USE_AVX512
+    mask = _cvtu32_mask8(uint16(e0) | e1 << 1 | e2 << 2 | e3 << 3 | e4 << 4 | e5 << 5 | e6 << 6 | e7 << 7);
+#else
     v = _mm256_set_epi32(
         e7 ? -1 : 0,
         e6 ? -1 : 0,
@@ -17,53 +28,90 @@ VecBool8i::VecBool8i(bool e0, bool e1, bool e2, bool e3, bool e4, bool e5, bool 
         e1 ? -1 : 0,
         e0 ? -1 : 0
     );
+#endif
 }
 
 template<uint32 index>
 bool VecBool8i::Get() const
 {
     static_assert(index < 8, "Invalid index");
+#ifdef NFE_USE_AVX512
+    return (uint32(mask) & (1 << index)) != 0;
+#else
     return _mm256_extract_epi32(v, index) != 0;
+#endif
 }
 
 bool VecBool8i::All() const
 {
+#ifdef NFE_USE_AVX512
+    return mask == 0xFF;
+#else
     return _mm256_testc_si256(v, _mm256_set1_epi32(-1));
+#endif
 }
 
 bool VecBool8i::None() const
 {
+#ifdef NFE_USE_AVX512
+    return _mm512_testz_or_mask8(mask, mask) != 0;
+#else
     return _mm256_testz_si256(v, v) != 0;
+#endif
 }
 
 bool VecBool8i::Any() const
 {
+#ifdef NFE_USE_AVX512
+    return _mm512_testz_or_mask8(mask, mask) == 0;
+#else
     return _mm256_testz_si256(v, v) == 0;
+#endif
 }
 
 const VecBool8i VecBool8i::operator & (const VecBool8i rhs) const
 {
+#ifdef NFE_USE_AVX512
+    return _kand_mask8(mask, rhs.mask);
+#else
     return _mm256_and_si256(v, rhs.v);
+#endif
 }
 
 const VecBool8i VecBool8i::operator | (const VecBool8i rhs) const
 {
+#ifdef NFE_USE_AVX512
+    return _kor_mask8(mask, rhs.mask);
+#else
     return _mm256_or_si256(v, rhs.v);
+#endif
 }
 
 const VecBool8i VecBool8i::operator ^ (const VecBool8i rhs) const
 {
+#ifdef NFE_USE_AVX512
+    return _kxor_mask8(mask, rhs.mask);
+#else
     return _mm256_xor_si256(v, rhs.v);
+#endif
 }
 
 bool VecBool8i::operator == (const VecBool8i& other) const
 {
+#ifdef NFE_USE_AVX512
+    return mask == other.mask;
+#else
     return _mm256_testc_si256(v, other.v) != 0;
+#endif
 }
 
 bool VecBool8i::operator != (const VecBool8i& other) const
 {
+#ifdef NFE_USE_AVX512
+    return mask != other.mask;
+#else
     return _mm256_testc_si256(v, other.v) == 0;
+#endif
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -128,7 +176,11 @@ const Vec8i Vec8i::Iota(const int32 value)
 
 const Vec8i Vec8i::SelectBySign(const Vec8i& a, const Vec8i& b, const VecBool8i& sel)
 {
+#if defined(NFE_USE_AVX512)
+    return _mm256_mask_blend_epi32(sel, a, b);
+#else
     return Vec8i(_mm256_blendv_ps(a.f, b.f, sel));
+#endif
 }
 
 const Vec8i Vec8i::operator & (const Vec8i& b) const
@@ -253,14 +305,22 @@ Vec8i& Vec8i::operator *= (int32 b)
 
 const VecBool8i Vec8i::operator == (const Vec8i& b) const
 {
+#ifdef NFE_USE_AVX512
+    return _mm256_cmp_epi32_mask(v, b.v, _MM_CMPINT_EQ);
+#else
     return _mm256_cmpeq_epi32(v, b.v);
+#endif
 }
 
 const VecBool8i Vec8i::operator != (const Vec8i& b) const
 {
+#ifdef NFE_USE_AVX512
+    return _mm256_cmp_epi32_mask(v, b.v, _MM_CMPINT_NE);
+#else
     // TODO may not be optimal, when used with selector later on
     // idea: have VecNegBool or something
     return _mm256_xor_si256(_mm256_set1_epi32(-1), _mm256_cmpeq_epi32(v, b.v));
+#endif
 }
 
 const Vec8i Vec8i::operator << (const Vec8i& b) const
@@ -355,7 +415,11 @@ const Vec8ui Vec8ui::Iota(const uint32 value)
 
 const Vec8ui Vec8ui::SelectBySign(const Vec8ui& a, const Vec8ui& b, const VecBool8i& sel)
 {
+#if defined(NFE_USE_AVX512)
+    return _mm256_mask_blend_epi32(sel, a, b);
+#else
     return Vec8ui(_mm256_blendv_ps(a.f, b.f, sel));
+#endif
 }
 
 const Vec8ui Vec8ui::operator & (const Vec8ui& b) const
@@ -437,14 +501,22 @@ Vec8ui& Vec8ui::operator -= (int32 b)
 
 const VecBool8i Vec8ui::operator == (const Vec8ui& b) const
 {
+#ifdef NFE_USE_AVX512
+    return _mm256_cmp_epi32_mask(v, b.v, _MM_CMPINT_EQ);
+#else
     return _mm256_cmpeq_epi32(v, b.v);
+#endif
 }
 
 const VecBool8i Vec8ui::operator != (const Vec8ui& b) const
 {
+#ifdef NFE_USE_AVX512
+    return _mm256_cmp_epi32_mask(v, b.v, _MM_CMPINT_NE);
+#else
     // TODO may not be optimal, when used with selector later on
     // idea: have VecNegBool or something
     return _mm256_xor_si256(_mm256_set1_epi32(-1), _mm256_cmpeq_epi32(v, b.v));
+#endif
 }
 
 const Vec8ui Vec8ui::operator << (const Vec8ui& b) const
