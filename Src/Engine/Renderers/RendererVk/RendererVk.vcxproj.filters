@@ -150,8 +150,6 @@
     <ClCompile Include="API\Win\WinDevice.cpp">
       <Filter>API\Win</Filter>
     </ClCompile>
-    <ClCompile Include="InternalWindows\WinExtensions.cpp">
-      <Filter>Internal\Win</Filter>
-    </ClCompile>
+    <ClCompile Include="Internal\Win\WinExtensions.cpp" />
   </ItemGroup>
 </Project>

@@ -30,6 +30,7 @@ protected:
     VkImageView mImageView;
     VkImageLayout mImageLayout;
     VkDeviceMemory mImageMemory;
+    VkImageSubresourceRange mImageSubresRange;
 
     // tempshit to support double-buffering
     uint32 mBuffersNum;
