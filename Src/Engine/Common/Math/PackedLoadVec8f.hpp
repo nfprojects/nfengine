@@ -26,9 +26,9 @@ static const Vec8f LoadVec8f(const PackedUFloat3_9_9_9_5* input)
 
     const Vec8ui mantissaShift(0, 9, 18, 0, 0, 9, 18, 0);
     const Vec8ui mantissaMask(0x1FF);
-    const Vec8i mantissa = (vInput >> mantissaShift) & mantissaMask;
+    const Vec8i mantissa((vInput >> mantissaShift) & mantissaMask);
 
-    const Vec8i exponent = (vInput >> 27);
+    const Vec8i exponent(vInput >> 27);
     const Vec8i base = Vec8i(0x33800000) + (exponent << 23);
 
     return base.AsVec8f() * mantissa.ConvertToVec8f();

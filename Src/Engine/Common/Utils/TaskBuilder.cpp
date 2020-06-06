@@ -112,7 +112,7 @@ void TaskBuilder::ParallelFor(const char* debugName, uint32 arraySize, const Par
 
     struct NFE_ALIGN(64) ThreadData
     {
-        uint32 elementOffset = 0;; // base element
+        uint32 elementOffset = 0; // base element
         uint32 numElements = 0;
         std::atomic<int32> counter = 0;
         uint32 threadDataIndex = 0;

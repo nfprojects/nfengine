@@ -197,7 +197,7 @@ const char* EnumType::FindOptionByValue(uint64 value) const
 
 bool EnumType::WriteValue(void* object, uint32 enumOptionIndex) const
 {
-    NFE_ASSERT(object);
+    NFE_ASSERT(object, "Invalid object");
     NFE_ASSERT(enumOptionIndex < mOptions.Size(), "Invalid enum option index");
 
     const size_t size = GetSize();
@@ -232,7 +232,7 @@ bool EnumType::WriteValue(void* object, uint32 enumOptionIndex) const
 
 bool EnumType::ReadValue(const void* object, uint32& outEnumOptionIndex) const
 {
-    NFE_ASSERT(object);
+    NFE_ASSERT(object, "Invalid object");
 
     uint64 value = 0;
 

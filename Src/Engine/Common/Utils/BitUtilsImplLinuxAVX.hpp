@@ -21,7 +21,7 @@ namespace Common {
 
 
 template<>
-NFE_FORCE_INLINE size_t BitUtils<uint64>::CountBits(uint64 x)
+NFE_FORCE_INLINE uint32 BitUtils<uint64>::CountBits(uint64 x)
 {
 #if defined(_M_X64) || defined(__amd64__)
     return __builtin_popcountll(x);
@@ -31,19 +31,19 @@ NFE_FORCE_INLINE size_t BitUtils<uint64>::CountBits(uint64 x)
 }
 
 template<>
-NFE_FORCE_INLINE size_t BitUtils<uint32>::CountBits(uint32 x)
+NFE_FORCE_INLINE uint32 BitUtils<uint32>::CountBits(uint32 x)
 {
     return __builtin_popcountl(x);
 }
 
 template<>
-NFE_FORCE_INLINE size_t BitUtils<uint16>::CountBits(uint16 x)
+NFE_FORCE_INLINE uint32 BitUtils<uint16>::CountBits(uint16 x)
 {
     return __builtin_popcountl(static_cast<int>(x));
 }
 
 template<>
-NFE_FORCE_INLINE size_t BitUtils<uint8>::CountBits(uint8 x)
+NFE_FORCE_INLINE uint32 BitUtils<uint8>::CountBits(uint8 x)
 {
     return __builtin_popcountl(static_cast<int>(x));
 }
@@ -53,7 +53,7 @@ NFE_FORCE_INLINE size_t BitUtils<uint8>::CountBits(uint8 x)
 
 
 template<>
-NFE_FORCE_INLINE size_t BitUtils<uint64>::CountLeadingZeros(uint64 x)
+NFE_FORCE_INLINE uint32 BitUtils<uint64>::CountLeadingZeros(uint64 x)
 {
 #if defined(_M_X64) || defined(__amd64__)
     return __builtin_clzll(x);
@@ -75,20 +75,20 @@ NFE_FORCE_INLINE size_t BitUtils<uint64>::CountLeadingZeros(uint64 x)
 }
 
 template<>
-NFE_FORCE_INLINE size_t BitUtils<uint32>::CountLeadingZeros(uint32 x)
+NFE_FORCE_INLINE uint32 BitUtils<uint32>::CountLeadingZeros(uint32 x)
 {
     return __builtin_clz(x);
 }
 
 template<>
-NFE_FORCE_INLINE size_t BitUtils<uint16>::CountLeadingZeros(uint16 x)
+NFE_FORCE_INLINE uint32 BitUtils<uint16>::CountLeadingZeros(uint16 x)
 {
     const uint32 xExtended = (static_cast<uint32>(x) << 16) | 0x0000FFFFu;
     return __builtin_clz(xExtended);
 }
 
 template<>
-NFE_FORCE_INLINE size_t BitUtils<uint8>::CountLeadingZeros(uint8 x)
+NFE_FORCE_INLINE uint32 BitUtils<uint8>::CountLeadingZeros(uint8 x)
 {
     const uint32 xExtended = (static_cast<uint32>(x) << 24) | 0x00FFFFFFu;
     return __builtin_clz(xExtended);
@@ -99,7 +99,7 @@ NFE_FORCE_INLINE size_t BitUtils<uint8>::CountLeadingZeros(uint8 x)
 
 
 template<>
-NFE_FORCE_INLINE size_t BitUtils<uint64>::CountTrailingZeros(const uint64 x)
+NFE_FORCE_INLINE uint32 BitUtils<uint64>::CountTrailingZeros(const uint64 x)
 {
 #if defined(_M_X64) || defined(__amd64__)
     return __builtin_ctzll(x);
@@ -121,19 +121,19 @@ NFE_FORCE_INLINE size_t BitUtils<uint64>::CountTrailingZeros(const uint64 x)
 }
 
 template<>
-NFE_FORCE_INLINE size_t BitUtils<uint32>::CountTrailingZeros(const uint32 x)
+NFE_FORCE_INLINE uint32 BitUtils<uint32>::CountTrailingZeros(const uint32 x)
 {
     return __builtin_ctzl(x);
 }
 
 template<>
-NFE_FORCE_INLINE size_t BitUtils<uint16>::CountTrailingZeros(const uint16 x)
+NFE_FORCE_INLINE uint32 BitUtils<uint16>::CountTrailingZeros(const uint16 x)
 {
     return __builtin_ctzl(x);
 }
 
 template<>
-NFE_FORCE_INLINE size_t BitUtils<uint8>::CountTrailingZeros(const uint8 x)
+NFE_FORCE_INLINE uint32 BitUtils<uint8>::CountTrailingZeros(const uint8 x)
 {
     return __builtin_ctzl(x);
 }

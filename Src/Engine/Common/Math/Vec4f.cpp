@@ -19,8 +19,6 @@ const Vec4f Vec4f::Refract3(const Vec4f& i, const Vec4f& n, float eta)
     }
 
     Vec4f transmitted = Vec4f::NegMulAndAdd(Vec4f(eta * NdotV + sqrtf(k)), n, i * eta);
-    NFE_ASSERT(Math::Abs(1.0f - transmitted.Length3()) < 0.01f);
-
     if (NdotV > 0.0f)
     {
         transmitted.z = -transmitted.z;

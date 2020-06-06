@@ -5,7 +5,8 @@
 
 #pragma once
 
-#include "../nfCommon.hpp"
+#include "Types/ReflectionType.hpp"
+#include "../System/Assertion.hpp"
 
 #include <type_traits>
 #include <functional>
@@ -126,7 +127,7 @@ const T* GetDefaultObject()
 {
     static_assert(std::is_default_constructible_v<T>, "Given type is not default-constructible");
 
-    if (const auto* type = GetType<T>())
+    if (const Type* type = GetType<T>())
     {
         return type->GetDefaultObject<T>();
     }

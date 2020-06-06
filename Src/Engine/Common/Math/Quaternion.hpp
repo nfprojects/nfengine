@@ -10,7 +10,7 @@ namespace Math {
  */
 struct NFE_ALIGN(16) Quaternion final : public Common::Aligned<16>
 {
-    NFE_DECLARE_CLASS(Quaternion);
+    NFE_DECLARE_CLASS(Quaternion)
 
 public:
 

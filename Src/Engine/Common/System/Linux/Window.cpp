@@ -9,9 +9,7 @@
 #include "../Window.hpp"
 #include "Logger/Logger.hpp"
 
-#if 0
-#include <GL/glx.h>
-#endif
+#include <xcb/xcb_image.h>
 
 
 namespace NFE {
@@ -57,6 +55,7 @@ Window::Window()
     , mScreen(nullptr)
     , mDeleteReply(nullptr)
     , mConnScreen(0)
+    , mGraphicsContext(0u)
     , mClosed(true)
     , mFullscreen(false)
     , mInvisible(false)
@@ -313,7 +312,22 @@ bool Window::Open()
     free(wmProtReply);
 
     if (!mInvisible)
+    {
         xcb_map_window(mConnection, mWindow);
+    }
+    
+    const int32_t gcValueMask = XCB_GC_BACKGROUND | XCB_GC_FOREGROUND | XCB_GC_GRAPHICS_EXPOSURES;
+    const uint32_t gcValue[] = { mScreen->white_pixel, mScreen->black_pixel, 0 };
+
+    mGraphicsContext = xcb_generate_id(mConnection);
+    cookie = xcb_create_gc(mConnection, mGraphicsContext, mWindow, gcValueMask, gcValue);
+    err = xcb_request_check(mConnection, cookie);
+    if (err)
+    {
+        NFE_LOG_ERROR("Failed to create graphics context: X11 protocol error: %s", TranslateErrorCodeToStr(err->error_code));
+        free(err);
+        return false;
+    }
 
     mClosed = false;
     return true;
@@ -322,16 +336,26 @@ bool Window::Open()
 bool Window::Close()
 {
     if (mClosed)
+    {
         return false;
+    }
+
+    if (mGraphicsContext)
+    {
+        xcb_free_gc(mConnection, mGraphicsContext);
+        mGraphicsContext = 0;
+    }
 
     if (!mInvisible)
+    {
         xcb_unmap_window(mConnection, mWindow);
+    }
 
     mClosed = true;
     return true;
 }
 
-void Window::MouseDown(uint32 button, int x, int y)
+void Window::MouseDown(MouseButton button, int x, int y)
 {
     xcb_grab_pointer_cookie_t grab = xcb_grab_pointer(mConnection, 1, mWindow, 0,
                                                       XCB_GRAB_MODE_ASYNC, XCB_GRAB_MODE_ASYNC,
@@ -339,16 +363,16 @@ void Window::MouseDown(uint32 button, int x, int y)
     xcb_grab_pointer_reply_t* grabReply = xcb_grab_pointer_reply(mConnection, grab, nullptr);
     free(grabReply);
 
-    mMouseButtons[button] = true;
-    mMousePos[button] = x;
-    mMousePos[button] = y;
+    mMouseButtons[static_cast<uint32>(button)] = true;
+    mMousePos[static_cast<uint32>(button)] = x;
+    mMousePos[static_cast<uint32>(button)] = y;
 
     OnMouseDown(button, x, y);
 }
 
-void Window::MouseUp(uint32 button)
+void Window::MouseUp(MouseButton button)
 {
-    mMouseButtons[button] = false;
+    mMouseButtons[static_cast<uint32>(button)] = false;
 
     bool ButtonsReleased = true;
     for (int i = 0; i < 3; i++)
@@ -417,7 +441,7 @@ void Window::ProcessMessages()
                 xcb_button_press_event_t* bp = reinterpret_cast<xcb_button_press_event_t*>(event);
 
                 if (bp->detail < 4) // 1-3 MBtns, 4-5 MWheel
-                    this->MouseDown(bp->detail - 1, bp->event_x, bp->event_y);
+                    this->MouseDown(static_cast<MouseButton>(bp->detail - 1), bp->event_x, bp->event_y);
                 else if (bp->detail == 4)
                     this->OnScroll(1); // btn==4 is UP,
                 else
@@ -427,7 +451,7 @@ void Window::ProcessMessages()
             case XCB_BUTTON_RELEASE:
             {
                 xcb_button_release_event_t* br = reinterpret_cast<xcb_button_release_event_t*>(event);
-                this->MouseUp(br->detail - 1);
+                this->MouseUp(static_cast<MouseButton>(br->detail - 1));
                 break;
             }
             case XCB_FOCUS_OUT:
@@ -457,11 +481,41 @@ void Window::ProcessMessages()
     }
 }
 
+bool Window::DrawPixels(const uint8* data, uint32 width, uint32 height, uint32 stride)
+{
+    NFE_ASSERT(stride == 4u * width);
+
+    xcb_image_t* img = xcb_image_create_native(mConnection,
+                                               width, height,
+                                               XCB_IMAGE_FORMAT_Z_PIXMAP,
+                                               mScreen->root_depth, nullptr,
+                                               4u * width * height,
+                                               (uint8_t*)data);
+    if (!img)
+    {
+        NFE_LOG_ERROR("Failed to create temporary image");
+        return false;
+    }
+
+    xcb_void_cookie_t c = xcb_image_put(mConnection, mWindow, mGraphicsContext, img, 0, 0, 0);
+    xcb_generic_error_t* err = xcb_request_check(mConnection, c);
+    if (err)
+    {
+        NFE_LOG_ERROR("Failed to put image on window: X11 protocol error: %s", TranslateErrorCodeToStr(err->error_code));
+        free(err);
+        return false;
+    }
+
+    xcb_image_destroy(img);
+
+    return true;
+}
+
 void Window::LostFocus()
 {
-    MouseUp(0);
-    MouseUp(1);
-    MouseUp(2);
+    MouseUp(MouseButton::Left);
+    MouseUp(MouseButton::Middle);
+    MouseUp(MouseButton::Right);
 
     for (int i = 0; i < NFE_WINDOW_KEYS_NUM; i++)
     {
@@ -542,7 +596,7 @@ void Window::OnScroll(int delta)
     NFE_UNUSED(delta);
 }
 
-void Window::OnMouseDown(uint32 button, int x, int y)
+void Window::OnMouseDown(MouseButton button, int x, int y)
 {
     NFE_UNUSED(button);
     NFE_UNUSED(x);
@@ -557,9 +611,14 @@ void Window::OnMouseMove(int x, int y, int deltaX, int deltaY)
     NFE_UNUSED(deltaY);
 }
 
-void Window::OnMouseUp(uint32 button)
+void Window::OnMouseUp(MouseButton button)
 {
     NFE_UNUSED(button);
+}
+
+void Window::OnFileDrop(const String& filePath)
+{
+    NFE_UNUSED(filePath);
 }
 
 } // namespace Common

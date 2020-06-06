@@ -40,7 +40,7 @@ const Vec4f BitmapTexture::Evaluate(const Vec4f& coords) const
     }
 
     // bitmap size
-    const Vec4i size = bitmapPtr->GetSize().Swizzle<0,1,0,1>();
+    const Vec4i size(bitmapPtr->GetSize().Swizzle<0,1,0,1>());
 
     // wrap to 0..1 range
     const Vec4f warpedCoords = Vec4f::Mod1(coords);

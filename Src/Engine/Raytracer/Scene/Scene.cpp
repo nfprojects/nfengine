@@ -498,7 +498,7 @@ const IMedium* Scene::GetMediumAtPoint(const RenderingContext& context, const Ma
         const Matrix4 invTransform = object->GetInverseTransform(context.time);
         const Vec4f localPoint = invTransform.TransformPoint(p);
 
-        if (object->GetShape()->Intersect(p))
+        if (object->GetShape()->Intersect(localPoint))
         {
             return medium;
         }

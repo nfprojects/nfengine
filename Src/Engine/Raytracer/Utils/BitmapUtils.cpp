@@ -135,7 +135,7 @@ bool BitmapUtils::GaussianBlur(Bitmap& targetBitmap, const Bitmap& sourceBitmap,
 
     // vertical blur
     const uint32 numTasksForVerticalBlur = (width + NumColumnsPerTask - 1) / NumColumnsPerTask;
-    taskBuilder.ParallelFor("BitmapUtils::GaussianBlur/Vertical", numTasksForVerticalBlur, [=, &sourceBitmap, &targetBitmap] (const TaskContext&, const uint32 columnGroupIndex)
+    taskBuilder.ParallelFor("BitmapUtils::GaussianBlur/Vertical", numTasksForVerticalBlur, [=, &targetBitmap] (const TaskContext&, const uint32 columnGroupIndex)
     {
         // Note: in opossite to horizontal blur, vertical blur is done in batches of few columns to improve cache performance
 

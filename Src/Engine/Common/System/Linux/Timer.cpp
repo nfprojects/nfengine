@@ -32,6 +32,16 @@ double Timer::Stop()
     return result;
 }
 
+double Timer::Restart()
+{
+    struct timespec previousTime = mStart;
+    clock_gettime(CLOCK_MONOTONIC, &mStart);
+
+    time_t sec_result = (mStart.tv_sec - previousTime.tv_sec) * 1000000000;
+    double result = (double)(sec_result + (mStart.tv_nsec - previousTime.tv_nsec)) * 1e-9;
+    return result;
+}
+
 } // namespace Common
 } // namespace NFE
 

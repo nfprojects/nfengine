@@ -5,7 +5,6 @@
 
 #include <stdlib.h>
 #include <malloc.h>
-#include <Windows.h>
 
 namespace NFE {
 namespace RT {

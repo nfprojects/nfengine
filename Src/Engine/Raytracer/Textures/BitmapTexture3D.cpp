@@ -37,7 +37,7 @@ const Vec4f BitmapTexture3D::Evaluate(const Vec4f& coords) const
     }
 
     // bitmap size
-    const Vec4i size = bitmapPtr->GetSize();
+    const Vec4i size(bitmapPtr->GetSize());
 
     // wrap to 0..1 range
     const Vec4f warpedCoords = Vec4f::Mod1(coords * Vec4f(0.5f/1.25f, 0.5f/0.85f, 0.5f/1.53f) + Vec4f(0.5f, 0.5f, 0.5f));

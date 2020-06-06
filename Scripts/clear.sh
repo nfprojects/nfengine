@@ -7,11 +7,8 @@ echo -n "Current directory is "; pwd
 
 # remove CMake files
 echo -n "Removing CMake-related files... "
-rm -rf CMakeFiles CMakeCache.txt cmake_install.cmake Makefile
-rm -rf Core/CMakeFiles
-rm -rf Demo/CMakeFiles
-rm -rf Tests/CMakeFiles
-rm -rf Benchmark/CMakeFiles
+rm -rf CMakeCache.txt cmake_install.cmake Makefile
+find . -type d -name CMakeFiles -prune -exec rm -rf {} \;
 echo "DONE"
 
 echo -n "Removing compilation results... "

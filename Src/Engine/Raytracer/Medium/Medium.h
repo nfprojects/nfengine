@@ -34,7 +34,7 @@ class IMedium
     : public Common::Aligned<16>
     , public IObject
 {
-    NFE_DECLARE_POLYMORPHIC_CLASS(IMedium);
+    NFE_DECLARE_POLYMORPHIC_CLASS(IMedium)
 public:
     virtual ~IMedium();
 
@@ -47,7 +47,7 @@ public:
 
 class HomogenousEmissiveMedium : public IMedium
 {
-    NFE_DECLARE_POLYMORPHIC_CLASS(HomogenousEmissiveMedium);
+    NFE_DECLARE_POLYMORPHIC_CLASS(HomogenousEmissiveMedium)
 public:
     NFE_RAYTRACER_API HomogenousEmissiveMedium(const Math::HdrColorRGB emissionCoeff = 0.0f);
     NFE_RAYTRACER_API virtual const RayColor Sample(const Math::Ray& ray, float minDistance, float maxDistance, MediumScatteringEvent& outScatteringEvent, RenderingContext& context) const override;
@@ -59,7 +59,7 @@ protected:
 
 class HomogenousAbsorptiveMedium : public IMedium
 {
-    NFE_DECLARE_POLYMORPHIC_CLASS(HomogenousAbsorptiveMedium);
+    NFE_DECLARE_POLYMORPHIC_CLASS(HomogenousAbsorptiveMedium)
 public:
     NFE_RAYTRACER_API HomogenousAbsorptiveMedium(const Math::HdrColorRGB exctinctionCoeff = 0.5f);
     NFE_RAYTRACER_API virtual const RayColor Sample(const Math::Ray& ray, float minDistance, float maxDistance, MediumScatteringEvent& outScatteringEvent, RenderingContext& context) const override;
@@ -73,7 +73,7 @@ protected:
 
 class HeterogeneousAbsorptiveMedium : public IMedium
 {
-    NFE_DECLARE_POLYMORPHIC_CLASS(HeterogeneousAbsorptiveMedium);
+    NFE_DECLARE_POLYMORPHIC_CLASS(HeterogeneousAbsorptiveMedium)
 public:
     NFE_RAYTRACER_API HeterogeneousAbsorptiveMedium(const TexturePtr& densityTexture, const Math::HdrColorRGB exctinctionCoeff = Math::HdrColorRGB(1.0f, 1.0f, 1.0f));
     NFE_RAYTRACER_API virtual const RayColor Sample(const Math::Ray& ray, float minDistance, float maxDistance, MediumScatteringEvent& outScatteringEvent, RenderingContext& context) const override;
@@ -88,7 +88,7 @@ protected:
 
 class HomogenousScatteringMedium : public HomogenousAbsorptiveMedium
 {
-    NFE_DECLARE_POLYMORPHIC_CLASS(HomogenousScatteringMedium);
+    NFE_DECLARE_POLYMORPHIC_CLASS(HomogenousScatteringMedium)
 public:
     NFE_RAYTRACER_API HomogenousScatteringMedium(const Math::HdrColorRGB exctinctionCoeff, const Math::HdrColorRGB scatteringAlbedo);
     NFE_RAYTRACER_API virtual const RayColor Sample(const Math::Ray& ray, float minDistance, float maxDistance, MediumScatteringEvent& outScatteringEvent, RenderingContext& context) const override;
@@ -99,7 +99,7 @@ private:
 
 class HeterogeneousScatteringMedium : public HeterogeneousAbsorptiveMedium
 {
-    NFE_DECLARE_POLYMORPHIC_CLASS(HeterogeneousScatteringMedium);
+    NFE_DECLARE_POLYMORPHIC_CLASS(HeterogeneousScatteringMedium)
 public:
     NFE_RAYTRACER_API HeterogeneousScatteringMedium(const TexturePtr& densityTexture, const Math::HdrColorRGB exctinctionCoeff, const Math::HdrColorRGB scatteringAlbedo);
     NFE_RAYTRACER_API virtual const RayColor Sample(const Math::Ray& ray, float minDistance, float maxDistance, MediumScatteringEvent& outScatteringEvent, RenderingContext& context) const override;

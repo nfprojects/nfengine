@@ -10,7 +10,7 @@ namespace RT {
 // Represents spectral power distribution (SPD)
 class NFE_RAYTRACER_API IColor : public IObject
 {
-    NFE_DECLARE_POLYMORPHIC_CLASS(IColor);
+    NFE_DECLARE_POLYMORPHIC_CLASS(IColor)
 
 public:
     virtual ~IColor() = default;

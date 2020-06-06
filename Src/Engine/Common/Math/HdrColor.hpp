@@ -12,7 +12,7 @@ class LdrColorRGB;
 // sRGB (Rec. 709) color space, linear
 class HdrColorRGB 
 {
-    NFE_DECLARE_CLASS(HdrColorRGB);
+    NFE_DECLARE_CLASS(HdrColorRGB)
 
 public:
     float r;

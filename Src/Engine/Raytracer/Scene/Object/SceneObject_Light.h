@@ -9,7 +9,7 @@ using LightPtr = Common::UniquePtr<ILight>;
 
 class LightSceneObject : public ITraceableSceneObject
 {
-    NFE_DECLARE_POLYMORPHIC_CLASS(LightSceneObject);
+    NFE_DECLARE_POLYMORPHIC_CLASS(LightSceneObject)
 
 public:
     NFE_RAYTRACER_API explicit LightSceneObject(LightPtr light);

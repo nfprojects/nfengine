@@ -76,7 +76,7 @@ const Vec4f SamplingHelpers::GetHexagon(const Vec3f u)
     };
 
     const uint32 x = static_cast<uint32>(3.0f * u.z);
-    NFE_ASSERT(x < 3);
+    NFE_ASSERT(x < 3, "Invalid index");
 
     const Vec2f a = hexVectors[x];
     const Vec2f b = hexVectors[x + 1];

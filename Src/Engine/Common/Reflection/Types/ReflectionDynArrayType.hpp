@@ -7,6 +7,7 @@
 #pragma once
 
 #include "ReflectionType.hpp"
+#include "../ReflectionTypeResolver.hpp"
 #include "../../Containers/DynArray.hpp"
 #include "../../Config/Config.hpp"
 #include "../../Config/ConfigValue.hpp"

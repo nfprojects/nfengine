@@ -39,8 +39,8 @@ void Profiler::Collect(DynArray<ProfilerResult>& outResult)
     {
         ProfilerResult result;
         result.scopeName = iter.first;
-        result.avgTime = iter.second.accumulatedTicks * Timer::gPeriod / iter.second.count;
-        result.minTime = iter.second.minTick * Timer::gPeriod;
+        result.avgTime = iter.second.accumulatedTime/ iter.second.count;
+        result.minTime = iter.second.minTick;
         result.count = iter.second.count;
         outResult.PushBack(result);
         //NFE_LOG_INFO("Profiler: %s count=%llu, avg=%.3f us, min=%.3fus, ", iter.first, data.count, avgTime, minTime);

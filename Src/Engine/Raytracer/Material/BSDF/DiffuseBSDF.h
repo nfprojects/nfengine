@@ -8,7 +8,7 @@ namespace RT {
 // simplest Lambertian diffuse
 class DiffuseBSDF : public BSDF
 {
-    NFE_DECLARE_POLYMORPHIC_CLASS(DiffuseBSDF);
+    NFE_DECLARE_POLYMORPHIC_CLASS(DiffuseBSDF)
 
 public:
     virtual const char* GetShortName() const override { return "diffuse"; }

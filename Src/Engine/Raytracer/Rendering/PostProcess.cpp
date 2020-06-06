@@ -90,9 +90,9 @@ ColorGradingParams::ColorGradingParams()
 PostprocessParams::PostprocessParams()
     : exposure(0.0f)
     , filmGrainStrength(0.0f)
+    , tonemapper(Common::MakeUniquePtr<ApproxACESTonemapper>())
     , useDithering(true)
     , colorSpace(ColorSpace::Rec709)
-    , tonemapper(Common::MakeUniquePtr<ApproxACESTonemapper>())
 {
 }
 
@@ -211,8 +211,6 @@ bool PostprocessLUT::Generate(const PostprocessParams& params)
 
     return true;
 }
-
-#pragma optimize("",off)
 
 const Vec4f PostprocessLUT::Sample(const Vec4f& inputColor) const
 {

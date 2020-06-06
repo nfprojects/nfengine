@@ -10,7 +10,7 @@ namespace Math {
 // Class representing 3D transformation (translation + rotation).
 class NFE_ALIGN(16) Transform final : public Common::Aligned<16>
 {
-    NFE_DECLARE_CLASS(Transform);
+    NFE_DECLARE_CLASS(Transform)
 
 public:
     NFE_FORCE_INLINE Transform()

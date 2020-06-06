@@ -20,7 +20,7 @@ namespace Common {
 /**
 * Shared pointer control data block - contains reference counters and deleter.
 */
-class SharedPtrDataBase
+class NFE_ALIGN(8) SharedPtrDataBase
 {
 public:
     NFE_FORCE_INLINE SharedPtrDataBase()

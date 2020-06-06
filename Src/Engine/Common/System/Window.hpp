@@ -40,6 +40,7 @@ private:
     xcb_screen_t* mScreen;
     xcb_intern_atom_reply_t* mDeleteReply;
     int mConnScreen;
+    uint32_t mGraphicsContext;
 #else
 #error "Target not supported!" // TODO Consider supporting Wayland as well
 #endif // defined(WIN32)

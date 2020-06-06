@@ -8,7 +8,7 @@ namespace RT {
 // Rough metal (conductor) BRDF.
 class RoughMetalBSDF : public BSDF
 {
-    NFE_DECLARE_POLYMORPHIC_CLASS(RoughMetalBSDF);
+    NFE_DECLARE_POLYMORPHIC_CLASS(RoughMetalBSDF)
 
 public:
     virtual const char* GetShortName() const override { return "roughMetal"; }

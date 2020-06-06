@@ -7,6 +7,7 @@
 #pragma once
 
 #include "ReflectionPointerType.hpp"
+#include "ReflectionClassType.hpp"
 #include "../../Config/Config.hpp"
 #include "../../Config/ConfigValue.hpp"
 #include "../../Containers/UniquePtr.hpp"

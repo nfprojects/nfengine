@@ -7,7 +7,7 @@ namespace RT {
 
 class DirectionalLight : public ILight
 {
-    NFE_DECLARE_POLYMORPHIC_CLASS(DirectionalLight);
+    NFE_DECLARE_POLYMORPHIC_CLASS(DirectionalLight)
 
 public:
     NFE_RAYTRACER_API DirectionalLight() = default;

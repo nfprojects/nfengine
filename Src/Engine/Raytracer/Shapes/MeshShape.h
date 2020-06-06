@@ -23,7 +23,7 @@ struct MeshDesc
 
 class NFE_ALIGN(16) MeshShape : public IShape
 {
-    NFE_DECLARE_POLYMORPHIC_CLASS(MeshShape);
+    NFE_DECLARE_POLYMORPHIC_CLASS(MeshShape)
 
 public:
     NFE_RAYTRACER_API MeshShape();

@@ -1,1 +1,3 @@
-ADD_SUBDIRECTORY("RaytracerBenchmark")
+SET(NFE_BENCHMARKS_DIRECTORY ${NFE_SRC_DIRECTORY}/Benchmarks)
+
+# ADD_SUBDIRECTORY("RaytracerBenchmark")

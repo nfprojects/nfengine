@@ -13,7 +13,7 @@ using TexturePtr = Common::SharedPtr<ITexture>;
 
 class AreaLight : public ILight
 {
-    NFE_DECLARE_POLYMORPHIC_CLASS(AreaLight);
+    NFE_DECLARE_POLYMORPHIC_CLASS(AreaLight)
 
 public:
     NFE_RAYTRACER_API AreaLight();

@@ -8,7 +8,7 @@ namespace RT {
 // Smooth transparent dielectic BSDF (e.g. polished glass or surface of water).
 class DielectricBSDF : public BSDF
 {
-    NFE_DECLARE_POLYMORPHIC_CLASS(DielectricBSDF);
+    NFE_DECLARE_POLYMORPHIC_CLASS(DielectricBSDF)
 
 public:
     virtual const char* GetShortName() const override { return "dielectric"; }

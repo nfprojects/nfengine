@@ -104,9 +104,9 @@ public:
     NFE::int32 intVal;
     float floatVal;
     TestBaseClass()
-        : mPrivateBool(false)
-        , intVal(0)
+        : intVal(0)
         , floatVal(0.0f)
+        , mPrivateBool(false)
     {}
     virtual ~TestBaseClass() { }
     bool GetBool() const { return mPrivateBool; };

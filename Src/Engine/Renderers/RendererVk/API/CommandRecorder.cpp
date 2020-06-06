@@ -12,7 +12,7 @@
 
 #include "Internal/Translations.hpp"
 
-#include "Engine/Common/Math/Vector4.hpp"
+#include "Engine/Common/Math/Vec4fU.hpp"
 
 #include <string.h>
 
@@ -315,9 +315,19 @@ void CommandRecorder::CopyTexture(const TexturePtr& src, const TexturePtr& dest)
 {
     NFE_UNUSED(src);
     NFE_UNUSED(dest);
+
+    NFE_FATAL("Not implemented!");
 }
 
-void CommandRecorder::Clear(uint32 flags, uint32 numTargets, const uint32* slots, const Math::Float4* colors, float depthValue, uint8 stencilValue)
+void CommandRecorder::CopyTexture(const TexturePtr& src, const BackbufferPtr& dest)
+{
+    NFE_UNUSED(src);
+    NFE_UNUSED(dest);
+
+    NFE_FATAL("Not implemented!");
+}
+
+void CommandRecorder::Clear(uint32 flags, uint32 numTargets, const uint32* slots, const Math::Vec4fU* colors, float depthValue, uint8 stencilValue)
 {
     if (!mRenderTarget)
         return;

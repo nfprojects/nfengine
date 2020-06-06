@@ -10,7 +10,7 @@
 #include <cstdarg>
 #include <cstdio>
 
-#include "nfCommon/Containers/DynArray.hpp"
+#include "Containers/DynArray.hpp"
 
 
 namespace NFE {

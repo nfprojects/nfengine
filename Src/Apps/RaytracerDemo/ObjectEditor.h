@@ -17,6 +17,7 @@ typename std::enable_if<std::is_base_of_v<IObject, T>, const RTTI::Type*>::type 
 template <typename T>
 typename std::enable_if<!std::is_base_of_v<IObject, T>, const RTTI::Type*>::type GetEditedObjectType(const T& object)
 {
+    NFE_UNUSED(object);
     return RTTI::GetType<T>();
 }
 

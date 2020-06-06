@@ -32,13 +32,13 @@ constexpr Vec3f::Vec3f(float x, float y, float z)
 
 float Vec3f::Get(uint32 index) const
 {
-    NFE_ASSERT(index < 3);
+    NFE_ASSERT(index < 3, "Invalid index");
     return (&x)[index];
 }
 
 float& Vec3f::Get(uint32 index)
 {
-    NFE_ASSERT(index < 3);
+    NFE_ASSERT(index < 3, "Invalid index");
     return (&x)[index];
 }
 
@@ -72,13 +72,13 @@ constexpr const Vec3f Vec3f::Blend(const Vec3f& a, const Vec3f& b)
                   iz == 0 ? a.z : b.z);
 }
 
-template<bool x, bool y, bool z>
+template<bool changeX, bool changeY, bool changeZ>
 constexpr const Vec3f Vec3f::ChangeSign() const
 {
     return Vec3f(
-        x ? -f[0] : f[0],
-        y ? -f[1] : f[1],
-        z ? -f[2] : f[2]
+        changeX ? -x : x,
+        changeY ? -y : y,
+        changeZ ? -z : z
     );
 }
 
@@ -137,9 +137,9 @@ constexpr const Vec3f Vec3f::operator* (const Vec3f& b) const
 const Vec3f Vec3f::operator/ (const Vec3f& b) const
 {
     // TODO make it constexpr
-    NFE_ASSERT(Math::Abs(b.x) > FLT_EPSILON);
-    NFE_ASSERT(Math::Abs(b.y) > FLT_EPSILON);
-    NFE_ASSERT(Math::Abs(b.z) > FLT_EPSILON);
+    NFE_ASSERT(Math::Abs(b.x) > FLT_EPSILON, "Division by zero");
+    NFE_ASSERT(Math::Abs(b.y) > FLT_EPSILON, "Division by zero");
+    NFE_ASSERT(Math::Abs(b.z) > FLT_EPSILON, "Division by zero");
 
     return Vec3f(x / b.x, y / b.y, z / b.z);
 }
@@ -152,7 +152,7 @@ constexpr const Vec3f Vec3f::operator* (float b) const
 const Vec3f Vec3f::operator/ (float b) const
 {
     // TODO make it constexpr
-    NFE_ASSERT(Math::Abs(b) > FLT_EPSILON);
+    NFE_ASSERT(Math::Abs(b) > FLT_EPSILON, "Division by zero");
 
     return Vec3f(x / b, y / b, z / b);
 }
@@ -190,9 +190,9 @@ Vec3f& Vec3f::operator*= (const Vec3f& b)
 
 Vec3f& Vec3f::operator/= (const Vec3f& b)
 {
-    NFE_ASSERT(Math::Abs(b.x) > FLT_EPSILON);
-    NFE_ASSERT(Math::Abs(b.y) > FLT_EPSILON);
-    NFE_ASSERT(Math::Abs(b.z) > FLT_EPSILON);
+    NFE_ASSERT(Math::Abs(b.x) > FLT_EPSILON, "Division by zero");
+    NFE_ASSERT(Math::Abs(b.y) > FLT_EPSILON, "Division by zero");
+    NFE_ASSERT(Math::Abs(b.z) > FLT_EPSILON, "Division by zero");
 
     x /= b.x;
     y /= b.y;
@@ -210,7 +210,7 @@ Vec3f& Vec3f::operator*= (float b)
 
 Vec3f& Vec3f::operator/= (float b)
 {
-    NFE_ASSERT(Math::Abs(b) > FLT_EPSILON);
+    NFE_ASSERT(Math::Abs(b) > FLT_EPSILON, "Division by zero");
 
     x /= b;
     y /= b;
@@ -227,18 +227,18 @@ const Vec3f Vec3f::Floor(const Vec3f& v)
 
 const Vec3f Vec3f::Sqrt(const Vec3f& v)
 {
-    NFE_ASSERT(v.x >= 0.0f);
-    NFE_ASSERT(v.y >= 0.0f);
-    NFE_ASSERT(v.z >= 0.0f);
+    NFE_ASSERT(v.x >= 0.0f, "Sqrt of negative");
+    NFE_ASSERT(v.y >= 0.0f, "Sqrt of negative");
+    NFE_ASSERT(v.z >= 0.0f, "Sqrt of negative");
 
     return Vec3f(sqrtf(v.x), sqrtf(v.y), sqrtf(v.z));
 }
 
 const Vec3f Vec3f::Reciprocal(const Vec3f& v)
 {
-    NFE_ASSERT(Math::Abs(v.x) > FLT_EPSILON);
-    NFE_ASSERT(Math::Abs(v.y) > FLT_EPSILON);
-    NFE_ASSERT(Math::Abs(v.z) > FLT_EPSILON);
+    NFE_ASSERT(Math::Abs(v.x) > FLT_EPSILON, "Division by zero");
+    NFE_ASSERT(Math::Abs(v.y) > FLT_EPSILON, "Division by zero");
+    NFE_ASSERT(Math::Abs(v.z) > FLT_EPSILON, "Division by zero");
 
     // this checks are required to avoid "potential divide by 0" warning
     return Vec3f(v.x != 0.0f ? 1.0f / v.x : INFINITY,
@@ -348,7 +348,7 @@ float Vec3f::Length() const
 const Vec3f Vec3f::Normalized() const
 {
     const float len = Length();
-    NFE_ASSERT(len > FLT_EPSILON);
+    NFE_ASSERT(len > FLT_EPSILON, "Normalizing near-zero-length vector");
 
     const float lenInv = 1.0f / len;
     return *this * lenInv;
@@ -357,7 +357,7 @@ const Vec3f Vec3f::Normalized() const
 Vec3f& Vec3f::Normalize()
 {
     const float len = Length();
-    NFE_ASSERT(len > FLT_EPSILON);
+    NFE_ASSERT(len > FLT_EPSILON, "Normalizing near-zero-length vector");
 
     const float lenInv = 1.0f / len;
     *this *= lenInv;

@@ -26,17 +26,15 @@
 #include <xmmintrin.h>
 #endif // NFE_USE_SSE
 
-#ifdef NFE_USE_SSE4
-#include <smmintrin.h>
-#endif // NFE_USE_SSE4
-
 #if defined(NFE_USE_AVX2) | defined(NFE_USE_AVX) | defined(NFE_USE_FMA)
 #include <immintrin.h>
 #endif // defined(NFE_USE_AVX2) | defined(NFE_USE_AVX) | defined(NFE_USE_FMA)
 
 
 #if defined(__LINUX__) | defined(__linux__)
+#ifndef _LARGEFILE64_SOURCE
 #define _LARGEFILE64_SOURCE
+#endif
 #include <sys/syscall.h>
 #include <sys/eventfd.h>
 #include <sys/types.h>

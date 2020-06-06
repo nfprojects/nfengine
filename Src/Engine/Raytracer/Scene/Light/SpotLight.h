@@ -7,7 +7,7 @@ namespace RT {
 
 class SpotLight : public ILight
 {
-    NFE_DECLARE_POLYMORPHIC_CLASS(SpotLight);
+    NFE_DECLARE_POLYMORPHIC_CLASS(SpotLight)
 
 public:
     NFE_RAYTRACER_API SpotLight(const Math::HdrColorRGB& color, const float angle);

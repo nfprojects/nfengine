@@ -81,7 +81,7 @@ const RayColor LightTracer::RenderPixel(const Ray&, const RenderParam& param, Re
         }
 
         const ITraceableSceneObject* sceneObject = param.scene.GetHitObject(hitPoint.objectId);
-        if (sceneObject->IsA<LightSceneObject>())
+        if (sceneObject->GetDynamicType()->IsA(RTTI::GetType<LightSceneObject>()))
         {
             break; // we hit a light directly
         }

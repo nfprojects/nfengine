@@ -20,7 +20,7 @@ enum class ColorSpace : uint8
 
 class BloomElement
 {
-    NFE_DECLARE_CLASS(BloomElement);
+    NFE_DECLARE_CLASS(BloomElement)
 public:
 
     float weight = 0.0f;
@@ -30,7 +30,7 @@ public:
 
 class BloomParams
 {
-    NFE_DECLARE_CLASS(BloomParams);
+    NFE_DECLARE_CLASS(BloomParams)
 public:
 
     float factor; // bloom multiplier
@@ -41,7 +41,7 @@ public:
 
 class PostprocessLutParams
 {
-    NFE_DECLARE_CLASS(PostprocessLutParams);
+    NFE_DECLARE_CLASS(PostprocessLutParams)
 public:
     uint32 sizeShift = 6;
     float minValue = 1.0e-4f;
@@ -50,7 +50,7 @@ public:
 
 class ColorGradingParams
 {
-    NFE_DECLARE_CLASS(ColorGradingParams);
+    NFE_DECLARE_CLASS(ColorGradingParams)
 public:
     Math::HdrColorRGB gain;
     Math::HdrColorRGB contrast;
@@ -63,7 +63,7 @@ public:
 
 class NFE_ALIGN(16) PostprocessParams : public Common::Aligned<16>
 {
-    NFE_DECLARE_CLASS(PostprocessParams);
+    NFE_DECLARE_CLASS(PostprocessParams)
 
 public:
 
@@ -113,4 +113,4 @@ private:
 } // namespace RT
 } // namespace NFE
 
-NFE_DECLARE_ENUM_TYPE(NFE::RT::ColorSpace);
+NFE_DECLARE_ENUM_TYPE(NFE::RT::ColorSpace)

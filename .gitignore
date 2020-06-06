@@ -5,11 +5,15 @@
 # Documentation
 /Doc
 
+# Visual Studio Code
+.vscode
+
 # CMake intermediate files
 CMakeFiles
 CMakeCache.txt
 cmake_install.cmake
 Makefile
+*.cmake
 
 # Visual Studio precompiled headers
 /ipch

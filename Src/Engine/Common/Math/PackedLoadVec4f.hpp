@@ -32,7 +32,7 @@ NFE_FORCE_INLINE const Vec4f Vec4f_Load_Vec3f_Unsafe(const Vec3f& src)
 NFE_FORCE_INLINE const Vec4f Vec4f_Load_Half2(const Half2& src)
 {
 #ifdef NFE_USE_FP16C
-    const __m128i v = _mm_loadu_si32(&src.packed);
+    const __m128i v = _mm_set1_epi32(src.packed);
     return _mm_cvtph_ps(v);
 #else // NFE_USE_FP16C
     return Vec4f(src.x.ToFloat(), src.y.ToFloat(), 0.0f, 0.0f);
@@ -298,9 +298,9 @@ NFE_INLINE const Vec4f LoadVec4f(const PackedUFloat3_9_9_9_5& src)
 
     const Vec4ui mantissaShift(0, 9, 18, 0);
     const Vec4ui mantissaMask(0x1FF, 0x1FF, 0x1FF, 0);
-    const Vec4i mantissa = (vInput >> mantissaShift) & mantissaMask;
+    const Vec4i mantissa((vInput >> mantissaShift) & mantissaMask);
 
-    const Vec4i exponent = (vInput >> 27);
+    const Vec4i exponent(vInput >> 27);
     const Vec4i base = Vec4i(0x33800000) + (exponent << 23);
 
     return base.AsVec4f() * mantissa.ConvertToVec4f();

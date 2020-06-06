@@ -35,14 +35,14 @@ private:
 
 struct ScopedEntryData
 {
-    uint64 minTick = UINT64_MAX;
-    uint64 accumulatedTicks = 0;
+    double minTick = std::numeric_limits<double>::max();
+    double accumulatedTime = 0.0;
     uint64 count = 0;
 
     ScopedEntryData& operator += (const ScopedEntryData& other)
     {
-        minTick = Math::Min(minTick, other.accumulatedTicks);
-        accumulatedTicks += other.accumulatedTicks;
+        minTick = Math::Min(minTick, other.accumulatedTime);
+        accumulatedTime += other.accumulatedTime;
         count += other.count;
         return *this;
     }
@@ -58,7 +58,8 @@ public:
     ScopedEntryData data;
 };
 
-
+// TODO
+/*
 class NFE_RAYTRACER_API ScopedTimer
 {
 public:
@@ -89,11 +90,14 @@ private:
     LARGE_INTEGER mStart;
     ScopedEntry& mEntry;
 };
+*/
 
 } // namespace RT
 } // namespace NFE
 
 
-#define NFE_SCOPED_TIMER(name) \
-    thread_local ScopedEntry entry##name(#name); \
-    ScopedTimer scopedTimer(entry##name);
+// TODO
+#define NFE_SCOPED_TIMER(name)
+// #define NFE_SCOPED_TIMER(name) \
+//     thread_local ScopedEntry entry##name(#name); \
+//     ScopedTimer scopedTimer(entry##name);

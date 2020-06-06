@@ -10,7 +10,7 @@ namespace RT {
 // Note: this renderer is unable to sample "delta" lights (point and directional lights) 
 class PathTracer : public IRenderer
 {
-    NFE_DECLARE_POLYMORPHIC_CLASS(PathTracer);
+    NFE_DECLARE_POLYMORPHIC_CLASS(PathTracer)
 
 public:
     PathTracer();

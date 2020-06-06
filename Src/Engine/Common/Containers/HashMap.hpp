@@ -48,7 +48,6 @@ public:
     };
 
     // hash policy that takes first pair element into account
-    template<typename HashPolicy>
     struct InternalHashPolicy
     {
         NFE_FORCE_INLINE uint32 operator() (const InternalKey& in) const
@@ -58,7 +57,6 @@ public:
         }
     };
 
-    template<typename EqualsPolicy>
     struct InternalEqualsPolicy
     {
         NFE_FORCE_INLINE bool operator() (const InternalKey& lhs, const InternalKey& rhs) const
@@ -68,7 +66,7 @@ public:
         }
     };
 
-    using InternalSet = HashSet<InternalKey, InternalHashPolicy<HashPolicy>, InternalEqualsPolicy<EqualsPolicy>>;
+    using InternalSet = HashSet<InternalKey, InternalHashPolicy, InternalEqualsPolicy>;
     using InsertResult = typename InternalSet::InsertResult;
     using ConstIterator = typename InternalSet::ConstIterator;
     using Iterator = typename InternalSet::Iterator;

@@ -67,7 +67,7 @@ MemberMetadataBuilder& MemberMetadataBuilder::Name(const char* name)
 
 MemberMetadataBuilder& MemberMetadataBuilder::Min(double min)
 {
-    NFE_ASSERT(Math::IsValid(min));
+    NFE_ASSERT(Math::IsValid(min), "Invalid min value");
 
     if (mMember.mType == GetType<uint8>())
     {
@@ -109,7 +109,7 @@ MemberMetadataBuilder& MemberMetadataBuilder::Min(double min)
 
 MemberMetadataBuilder& MemberMetadataBuilder::Max(double max)
 {
-    NFE_ASSERT(Math::IsValid(max));
+    NFE_ASSERT(Math::IsValid(max), "Invalid max value");
 
     if (mMember.mType == GetType<uint8>())
     {
@@ -151,7 +151,7 @@ MemberMetadataBuilder& MemberMetadataBuilder::Max(double max)
 
 MemberMetadataBuilder& MemberMetadataBuilder::LogScale(float power)
 {
-    NFE_ASSERT(Math::IsValid(power));
+    NFE_ASSERT(Math::IsValid(power), "Invalid power value");
 
     if (mMember.mType != GetType<double>() && mMember.mType != GetType<float>())
     {

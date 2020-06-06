@@ -8,6 +8,8 @@
 #include "../Common/Math/Box.hpp"
 #include "../Common/Containers/DynArray.hpp"
 
+#include <numeric>
+
 namespace NFE {
 namespace RT {
 
@@ -34,9 +36,9 @@ public:
     template<typename ParticleType>
     NFE_FORCE_NOINLINE void Build(Common::DynArray<ParticleType>& particles)
     {
-        Timer timer;
+        Common::Timer timer;
 
-        DynArray<uint32> indices;
+        Common::DynArray<uint32> indices;
         indices.Resize(particles.Size());
         std::iota(std::begin(indices), std::end(indices), 0);
 

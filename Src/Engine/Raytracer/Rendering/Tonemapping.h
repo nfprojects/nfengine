@@ -10,14 +10,14 @@ namespace RT {
 
 class ITonemapper : public IObject
 {
-    NFE_DECLARE_POLYMORPHIC_CLASS(ITonemapper);
+    NFE_DECLARE_POLYMORPHIC_CLASS(ITonemapper)
 public:
     virtual const Math::Vec4f Apply(const Math::Vec4f hdrColor) const = 0;
 };
 
 class DebugTonemapper : public ITonemapper
 {
-    NFE_DECLARE_POLYMORPHIC_CLASS(DebugTonemapper);
+    NFE_DECLARE_POLYMORPHIC_CLASS(DebugTonemapper)
 public:
     DebugTonemapper();
     virtual const Math::Vec4f Apply(const Math::Vec4f hdrColor) const override;
@@ -29,14 +29,14 @@ private:
 // simple linear tonemapper, clamps values to 0-1 range
 class ClampedTonemapper : public ITonemapper
 {
-    NFE_DECLARE_POLYMORPHIC_CLASS(ClampedTonemapper);
+    NFE_DECLARE_POLYMORPHIC_CLASS(ClampedTonemapper)
 public:
     virtual const Math::Vec4f Apply(const Math::Vec4f hdrColor) const override;
 };
 
 class ReinhardTonemapper : public ITonemapper
 {
-    NFE_DECLARE_POLYMORPHIC_CLASS(ReinhardTonemapper);
+    NFE_DECLARE_POLYMORPHIC_CLASS(ReinhardTonemapper)
 public:
     virtual const Math::Vec4f Apply(const Math::Vec4f hdrColor) const override;
 };
@@ -45,7 +45,7 @@ public:
 // based on: http://filmicworlds.com/blog/filmic-tonemapping-operators/
 class FilmicTonemapper : public ITonemapper
 {
-    NFE_DECLARE_POLYMORPHIC_CLASS(FilmicTonemapper);
+    NFE_DECLARE_POLYMORPHIC_CLASS(FilmicTonemapper)
 public:
     virtual const Math::Vec4f Apply(const Math::Vec4f hdrColor) const override;
 };
@@ -54,7 +54,7 @@ public:
 // based on: https://knarkowicz.wordpress.com/2016/01/06/aces-filmic-tone-mapping-curve/
 class ApproxACESTonemapper : public ITonemapper
 {
-    NFE_DECLARE_POLYMORPHIC_CLASS(ApproxACESTonemapper);
+    NFE_DECLARE_POLYMORPHIC_CLASS(ApproxACESTonemapper)
 public:
     virtual const Math::Vec4f Apply(const Math::Vec4f hdrColor) const override;
 };

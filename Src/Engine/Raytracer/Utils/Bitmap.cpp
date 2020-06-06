@@ -14,8 +14,6 @@ namespace RT {
 using namespace Common;
 using namespace Math;
 
-static_assert(sizeof(Bitmap) <= 64, "Bitmap size has changed");
-
 uint8 Bitmap::BitsPerPixel(Format format)
 {
     switch (format)

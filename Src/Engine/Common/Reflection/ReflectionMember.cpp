@@ -20,7 +20,7 @@ Member::Member(const char* name, size_t offset, const Type* type)
     // validate name
     {
         const size_t len = strlen(name);
-        NFE_ASSERT(len > 0);
+        NFE_ASSERT(len > 0, "Member name cannot be empty");
 
         NFE_ASSERT(isalpha(name[0]), "Invalid member name: '%s'. Must start with a letter", name);
 

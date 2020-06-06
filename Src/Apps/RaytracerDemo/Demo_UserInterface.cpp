@@ -31,19 +31,6 @@ static bool EditEulerAngles(const char* name, Vec3f& angles)
     return false;
 }
 
-static bool EditRotation(const char* name, Quaternion& quat)
-{
-    Vec3f orientation = quat.ToEulerAngles();
-    orientation *= 180.0f / NFE_MATH_PI;
-    if (ImGui::InputFloat3(name, &orientation.x, 3, ImGuiInputTextFlags_EnterReturnsTrue))
-    {
-        orientation *= NFE_MATH_PI / 180.0f;
-        quat = Quaternion::FromEulerAngles(orientation);
-        return true;
-    }
-    return false;
-}
-
 void DemoWindow::RenderUI_Stats()
 {
     const RenderingProgress& progress = mViewport->GetProgress();
@@ -115,7 +102,7 @@ static void ImGuiPrintTime(double t)
 {
     if (t == 0)
     {
-        ImGui::Text("0.0 s", t);
+        ImGui::Text("0.0 s");
     }
     else if (t > 1.0)
     {
@@ -165,7 +152,7 @@ void DemoWindow::RenderUI_Profiler()
         }
         ImGui::NextColumn();
 
-        ImGui::Text("%llu", result.count); ImGui::NextColumn();
+        ImGui::Text("%lu", result.count); ImGui::NextColumn();
         ImGuiPrintTime(result.avgTime); ImGui::NextColumn();
         ImGuiPrintTime(result.minTime); ImGui::NextColumn();
     }

@@ -18,7 +18,7 @@ namespace RT {
 // coefficients of Sellmeier dispersion equation
 class NFE_RAYTRACER_API DispersionParams
 {
-    NFE_DECLARE_CLASS(DispersionParams);
+    NFE_DECLARE_CLASS(DispersionParams)
 
 public:
     bool enable;
@@ -33,7 +33,7 @@ using MaterialPtr = Common::SharedPtr<Material>;
 // simple PBR material
 class NFE_ALIGN(16) Material : public Common::Aligned<16>
 {
-    NFE_DECLARE_CLASS(Material);
+    NFE_DECLARE_CLASS(Material)
 
 public:
     NFE_RAYTRACER_API Material(const char* debugName = "<unnamed>");

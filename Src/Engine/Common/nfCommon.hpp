@@ -38,6 +38,13 @@
 #endif // _MSC_VER
 
 
+#if defined(__GNUC__)
+#define NFE_UNNAMED_STRUCT __extension__
+#else
+#define NFE_UNNAMED_STRUCT
+#endif
+
+
 // detect CPU architecture
 #if defined(_M_X64) || defined(__amd64__) || defined(_M_AMD64)
 #define NFE_ARCH_X64
@@ -83,7 +90,7 @@
 
 // macro forcing a function to be inlined
 #if defined(__LINUX__) | defined(__linux__)
-#define NFE_INLINE inline __attribute__((always_inline))
+#define NFE_FORCE_INLINE inline __attribute__((always_inline))
 #elif defined(WIN32)
 #define NFE_FORCE_INLINE __forceinline
 #endif // defined(__LINUX__) | defined(__linux__)
@@ -159,23 +166,15 @@
 
 namespace NFE {
 
-// Linux datatypes workaround
-#if defined(__LINUX__) | defined(__linux__)
-typedef uint64_t __uint64;
-typedef int64_t __int64;
-#elif defined(WIN32)
-typedef unsigned __int64 __uint64;
-#endif // defined(__LINUX__) | defined(__linux__)
-
 // define basic data types
-typedef __uint64 uint64;
-typedef __int64 int64;
-typedef unsigned int uint32;
-typedef signed int int32;
-typedef unsigned short uint16;
-typedef signed short int16;
-typedef unsigned char uint8;
-typedef signed char int8;
+typedef uint64_t uint64;
+typedef int64_t int64;
+typedef uint32_t uint32;
+typedef int32_t int32;
+typedef uint16_t uint16;
+typedef int16_t int16;
+typedef uint8_t uint8;
+typedef int8_t int8;
 
 
 // verify types sizes

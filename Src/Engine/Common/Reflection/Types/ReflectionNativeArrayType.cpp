@@ -18,13 +18,13 @@ void NativeArrayType::PrintInfo() const
 
 void* NativeArrayType::GetElementPointer(void* arrayData, uint32 index) const
 {
-    NFE_ASSERT(index < mArraySize);
+    NFE_ASSERT(index < mArraySize, "Invalid array index %u, array size is %u", index, mArraySize);
     return reinterpret_cast<uint8*>(arrayData) + index * GetUnderlyingType()->GetSize();
 }
 
 const void* NativeArrayType::GetElementPointer(const void* arrayData, uint32 index) const
 {
-    NFE_ASSERT(index < mArraySize);
+    NFE_ASSERT(index < mArraySize, "Invalid array index %u, array size is %u", index, mArraySize);
     return reinterpret_cast<const uint8*>(arrayData) + index * GetUnderlyingType()->GetSize();
 }
 

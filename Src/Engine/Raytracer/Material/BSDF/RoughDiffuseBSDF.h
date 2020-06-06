@@ -7,7 +7,7 @@ namespace RT {
 
 class RoughDiffuseBSDF : public BSDF
 {
-    NFE_DECLARE_POLYMORPHIC_CLASS(RoughDiffuseBSDF);
+    NFE_DECLARE_POLYMORPHIC_CLASS(RoughDiffuseBSDF)
 
 public:
     virtual const char* GetShortName() const override { return "roughDiffuse"; }

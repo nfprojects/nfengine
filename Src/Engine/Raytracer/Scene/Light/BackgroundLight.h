@@ -11,7 +11,7 @@ using TexturePtr = Common::SharedPtr<ITexture>;
 
 class BackgroundLight : public ILight
 {
-    NFE_DECLARE_POLYMORPHIC_CLASS(BackgroundLight);
+    NFE_DECLARE_POLYMORPHIC_CLASS(BackgroundLight)
 
 public:
     NFE_RAYTRACER_API BackgroundLight();

@@ -75,7 +75,6 @@ private:
     double mTotalRenderTime;
 
     Common::String mSceneFileName;
-    time_t mSceneFileModificationTime;
 
     RT::RendererPtr mRenderer;
 

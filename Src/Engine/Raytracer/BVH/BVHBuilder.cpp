@@ -22,10 +22,10 @@ void BVHBuilder::ThreadData::Init(uint32 numLeaves)
 //////////////////////////////////////////////////////////////////////////
 
 BVHBuilder::BVHBuilder(BVH& targetBVH)
-    : mLeafBoxes(nullptr)
+    : mTarget(targetBVH)
+    , mLeafBoxes(nullptr)
     , mNumLeaves(0)
     , mNumGeneratedNodes(0)
-    , mTarget(targetBVH)
 {
 }
 
@@ -138,7 +138,7 @@ void BVHBuilder::SubdivideNode(ThreadData& threadData, const WorkSet& workSet,
     // TODO could be parallelized (only nodes near root)
     for (uint32 axis = 0; axis < NumAxes; ++axis)
     {
-        NFE_ASSERT(workSet.sortedLeavesIndicesCache[axis].Size() == workSet.numLeaves);
+        NFE_ASSERT(workSet.sortedLeavesIndicesCache[axis].Size() == workSet.numLeaves, "Invalid size");
 
         const uint32* sortedIndices = workSet.sortedLeavesIndicesCache[axis].Data();
 

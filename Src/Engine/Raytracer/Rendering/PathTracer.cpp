@@ -66,7 +66,6 @@ const RayColor PathTracer::EvaluateGlobalLights(const Scene& scene, const Ray& r
             lightSpaceRay,
         };
 
-        const float cosAtLight = 1.0f;
         RayColor lightContribution = globalLight.GetRadiance(param);
         NFE_ASSERT(lightContribution.IsValid());
 

@@ -54,9 +54,7 @@ public:
     {
 #ifdef NFE_USE_SSE
         __m128 tmp0 = _mm_shuffle_ps(v0, v1, 0x44);
-        __m128 tmp2 = _mm_shuffle_ps(v0, v1, 0xEE);
         __m128 tmp1 = _mm_shuffle_ps(v2, v3, 0x44);
-        __m128 tmp3 = _mm_shuffle_ps(v2, v3, 0xEE);
         x = _mm_shuffle_ps(tmp0, tmp1, 0x88);
         y = _mm_shuffle_ps(tmp0, tmp1, 0xDD);
 #else // NFE_USE_SSE

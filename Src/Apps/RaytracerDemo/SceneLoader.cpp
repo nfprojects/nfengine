@@ -18,6 +18,7 @@
 #include "Engine/Raytracer/Textures/BitmapTexture.h"
 #include "Engine/Raytracer/Textures/NoiseTexture.h"
 #include "Engine/Raytracer/Textures/MixTexture.h"
+#include "Engine/Raytracer/Medium/Medium.h"
 
 #include "Engine/Common/Logger/Logger.hpp"
 
@@ -447,7 +448,7 @@ static MaterialPtr ParseMaterial(const rapidjson::Value& value, const TexturesMa
         }
         else
         {
-            return false;
+            return nullptr;
         }
     }
 
@@ -459,7 +460,7 @@ static MaterialPtr ParseMaterial(const rapidjson::Value& value, const TexturesMa
         }
         else
         {
-            return false;
+            return nullptr;
         }
     }
 
@@ -471,7 +472,7 @@ static MaterialPtr ParseMaterial(const rapidjson::Value& value, const TexturesMa
         }
         else
         {
-            return false;
+            return nullptr;
         }
     }
 
@@ -483,7 +484,7 @@ static MaterialPtr ParseMaterial(const rapidjson::Value& value, const TexturesMa
         }
         else
         {
-            return false;
+            return nullptr;
         }
     }
 
@@ -504,14 +505,14 @@ static MaterialPtr ParseMaterial(const rapidjson::Value& value, const TexturesMa
     return material;
 }
 
-static ShapePtr ParseShape(const rapidjson::Value& value, Scene& scene, MaterialsMap& materials = MaterialsMap())
+static ShapePtr ParseShape(const rapidjson::Value& value, MaterialsMap& materials)
 {
     ShapePtr shape;
 
     if (!value.HasMember("type"))
     {
         NFE_LOG_ERROR("Object is missing 'type' field");
-        return false;
+        return nullptr;
     }
 
     // parse type
@@ -521,7 +522,7 @@ static ShapePtr ParseShape(const rapidjson::Value& value, Scene& scene, Material
         float radius = 1.0f;
         if (!TryParseFloat(value, "radius", false, radius))
         {
-            return false;
+            return nullptr;
         }
 
         shape = MakeUniquePtr<SphereShape>(radius);
@@ -531,7 +532,7 @@ static ShapePtr ParseShape(const rapidjson::Value& value, Scene& scene, Material
         Vec4f size;
         if (!TryParseVector3(value, "size", false, size))
         {
-            return false;
+            return nullptr;
         }
 
         shape = MakeUniquePtr<BoxShape>(size);
@@ -541,12 +542,12 @@ static ShapePtr ParseShape(const rapidjson::Value& value, Scene& scene, Material
         Vec4f size(FLT_MAX);
         if (!TryParseVector2(value, "size", false, size))
         {
-            return false;
+            return nullptr;
         }
         Vec4f textureScale(1.0f);
         if (!TryParseVector2(value, "textureScale", true, textureScale))
         {
-            return false;
+            return nullptr;
         }
 
         shape = MakeUniquePtr<RectShape>(size.ToVec2f(), textureScale.ToVec2f());
@@ -561,19 +562,19 @@ static ShapePtr ParseShape(const rapidjson::Value& value, Scene& scene, Material
         if (!value.HasMember("path"))
         {
             NFE_LOG_ERROR("Missing 'path' property");
-            return false;
+            return nullptr;
         }
 
         if (!value["path"].IsString())
         {
             NFE_LOG_ERROR("Mesh path must be a string");
-            return false;
+            return nullptr;
         }
 
         float scale = 1.0f;
         if (!TryParseFloat(value, "scale", true, scale))
         {
-            return false;
+            return nullptr;
         }
 
         const String path = gOptions.dataPath + value["path"].GetString();
@@ -619,7 +620,8 @@ static bool ParseLight(const rapidjson::Value& value, Scene& scene, const Textur
             return false;
         }
 
-        ShapePtr shape = ParseShape(value["shape"], scene);
+        MaterialsMap materials;
+        ShapePtr shape = ParseShape(value["shape"], materials);
         auto areaLight = MakeUniquePtr<AreaLight>(std::move(shape), lightColor);
 
         if (!TryParseTextureName(value, "texture", textures, areaLight->mTexture))
@@ -714,7 +716,7 @@ static bool ParseObject(const rapidjson::Value& value, Scene& scene, MaterialsMa
         return false;
     }
 
-    ShapePtr shape = ParseShape(value, scene, materials);
+    ShapePtr shape = ParseShape(value, materials);
     if (!shape)
     {
         return false;

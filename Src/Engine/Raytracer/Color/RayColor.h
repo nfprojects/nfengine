@@ -99,7 +99,7 @@ struct RayColor
 
     NFE_FORCE_INLINE float operator[](const uint32 index) const
     {
-        NFE_ASSERT(index < Wavelength::NumComponents);
+        NFE_ASSERT(index < Wavelength::NumComponents, "Invalid index");
         return value[index];
     }
 

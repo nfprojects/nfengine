@@ -153,16 +153,7 @@ void DemoWindow::CheckSceneFileModificationTime()
 {
     if (!mSceneFileName.Empty())
     {
-        // read modification time
-        struct stat fileStat;
-        if (stat(mSceneFileName.Str(), &fileStat) == 0)
-        {
-            if (mSceneFileModificationTime != fileStat.st_mtime)
-            {
-                NFE_LOG_INFO("Scene file '%s' modified, reloading", mSceneFileName.Str());
-                SwitchScene(mSceneFileName);
-            }
-        }
+        // TODO
     }
 }
 
@@ -175,13 +166,6 @@ void DemoWindow::SwitchScene(const String& sceneName)
         if (helpers::LoadScene(sceneName, *mScene, mCamera))
         {
             mSceneFileName = sceneName;
-
-            // read modification time
-            struct stat fileStat;
-            if (stat(sceneName.Str(), &fileStat) == 0)
-            {
-                mSceneFileModificationTime = fileStat.st_mtime;
-            }
         }
         else
         {
@@ -317,7 +301,7 @@ void DemoWindow::OnMouseDown(MouseButton button, int x, int y)
         {
             mSelectedObject = const_cast<ITraceableSceneObject*>(mScene->GetHitObject(hitPoint.objectId));
 
-            if (mSelectedObject->IsA<ShapeSceneObject>())
+            if (mSelectedObject->GetDynamicType()->IsA(RTTI::GetType<ShapeSceneObject>()))
             {
                 IntersectionData intersectionData;
                 mScene->EvaluateIntersection(ray, hitPoint, renderingContext->time, intersectionData);

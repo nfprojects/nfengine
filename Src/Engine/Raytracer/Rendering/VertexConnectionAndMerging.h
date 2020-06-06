@@ -35,7 +35,7 @@ enum class VertexMergingKernel : uint8
 //
 class VertexConnectionAndMerging : public IRenderer
 {
-    NFE_DECLARE_POLYMORPHIC_CLASS(VertexConnectionAndMerging);
+    NFE_DECLARE_POLYMORPHIC_CLASS(VertexConnectionAndMerging)
 
 public:
     VertexConnectionAndMerging();
@@ -45,22 +45,6 @@ public:
 
     virtual void PreRender(Common::TaskBuilder& builder, const RenderParam& renderParams, Common::ArrayView<RenderingContext> contexts) override;
     virtual const RayColor RenderPixel(const Math::Ray& ray, const RenderParam& param, RenderingContext& ctx) const override;
-
-    // for debugging
-    Math::LdrColorRGB mBSDFSamplingWeight;
-    Math::LdrColorRGB mLightSamplingWeight;
-    Math::LdrColorRGB mVertexConnectingWeight;
-    Math::LdrColorRGB mVertexMergingWeight;
-    Math::LdrColorRGB mCameraConnectingWeight;
-
-    uint32 mMaxPathLength;
-    float mInitialMergingRadius;
-    float mMinMergingRadius;
-    float mMergingRadiusMultiplier;
-
-    bool mUseVertexConnection;
-    bool mUseVertexMerging;
-    VertexMergingKernel mVertexMergingKernel;
 
     struct LightVertex
     {
@@ -150,6 +134,15 @@ private:
 
     uint32 mLightPathsCount;
 
+    uint32 mMaxPathLength;
+    float mInitialMergingRadius;
+    float mMinMergingRadius;
+    float mMergingRadiusMultiplier;
+
+    bool mUseVertexConnection;
+    bool mUseVertexMerging;
+    VertexMergingKernel mVertexMergingKernel;
+
     float mMergingRadiusVC;
     float mMergingRadiusVM;
     float mInvSqrMergingRadiusVM;
@@ -173,9 +166,16 @@ private:
 
     // summed counts of photons from each thread context
     Common::DynArray<uint32> mPhotonCountPrefixSum;
+
+    // for debugging
+    Math::LdrColorRGB mBSDFSamplingWeight;
+    Math::LdrColorRGB mLightSamplingWeight;
+    Math::LdrColorRGB mVertexConnectingWeight;
+    Math::LdrColorRGB mCameraConnectingWeight;
+    Math::LdrColorRGB mVertexMergingWeight;
 };
 
 } // namespace RT
 } // namespace NFE
 
-NFE_DECLARE_ENUM_TYPE(NFE::RT::VertexMergingKernel);
+NFE_DECLARE_ENUM_TYPE(NFE::RT::VertexMergingKernel)

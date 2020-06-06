@@ -266,7 +266,6 @@ const RayColor VertexConnectionAndMerging::RenderPixel(const Math::Ray& ray, con
         // we hit a light directly
         if (const LightSceneObject* lightObject = RTTI::Cast<LightSceneObject>(sceneObject))
         {
-            const float cosAtLight = -shadingData.intersection.CosTheta(pathState.ray.dir);
             const RayColor lightColor = EvaluateLight(param.iteration, lightObject, &shadingData.intersection, pathState, ctx);
             NFE_ASSERT(lightColor.IsValid());
             resultColor.MulAndAccumulate(pathState.throughput, lightColor);
@@ -383,7 +382,7 @@ void VertexConnectionAndMerging::TraceLightPath(const RenderParam& param, Render
         }
 
         const ITraceableSceneObject* sceneObject = param.scene.GetHitObject(hitPoint.objectId);
-        if (sceneObject->IsA<LightSceneObject>())
+        if (sceneObject->GetDynamicType()->IsA(RTTI::GetType<LightSceneObject>()))
         {
             break; // we hit a light directly
         }

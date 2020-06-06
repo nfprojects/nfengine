@@ -18,7 +18,7 @@ enum class CsgOperator : uint8
 
 class CsgShape : public IShape
 {
-    NFE_DECLARE_POLYMORPHIC_CLASS(CsgShape);
+    NFE_DECLARE_POLYMORPHIC_CLASS(CsgShape)
 
 public:
     NFE_RAYTRACER_API CsgShape();

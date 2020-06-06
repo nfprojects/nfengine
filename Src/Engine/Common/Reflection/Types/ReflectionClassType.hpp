@@ -10,6 +10,7 @@
 #include "../../Containers/StringView.hpp"
 #include "../../Containers/DynArray.hpp"
 #include "ReflectionType.hpp"
+#include "../ReflectionTypeResolver.hpp"
 #include "../ReflectionMember.hpp"
 
 

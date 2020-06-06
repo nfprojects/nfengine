@@ -12,7 +12,7 @@ namespace RT {
 // Uses MIS (Multiple Importance Sampling)
 class PathTracerMIS : public IRenderer
 {
-    NFE_DECLARE_POLYMORPHIC_CLASS(PathTracerMIS);
+    NFE_DECLARE_POLYMORPHIC_CLASS(PathTracerMIS)
 
 public:
     PathTracerMIS();

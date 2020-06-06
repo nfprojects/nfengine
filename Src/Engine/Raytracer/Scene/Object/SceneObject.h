@@ -21,7 +21,7 @@ class ISceneObject
     : public Common::Aligned<16>
     , public IObject
 {
-    NFE_DECLARE_POLYMORPHIC_CLASS(ISceneObject);
+    NFE_DECLARE_POLYMORPHIC_CLASS(ISceneObject)
 
 public:
 

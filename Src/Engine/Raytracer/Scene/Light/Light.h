@@ -20,7 +20,7 @@ class NFE_ALIGN(16) ILight
     : public Common::Aligned<16>
     , public IObject
 {
-    NFE_DECLARE_POLYMORPHIC_CLASS(ILight);
+    NFE_DECLARE_POLYMORPHIC_CLASS(ILight)
 
 public:
     static constexpr const float BackgroundLightDistance = std::numeric_limits<float>::max();

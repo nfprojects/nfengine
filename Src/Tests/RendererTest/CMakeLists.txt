@@ -1,8 +1,10 @@
 # @file
 # @author LKostyra (costyrra.xl@gmail.com)
-# @brief  CMake for nfRendererTest
+# @brief  CMake for RendererTest
 
-MESSAGE("Generating Makefile for nfRendererTest")
+MESSAGE("Generating Makefile for RendererTest")
+
+SET(NFE_RENDERER_TEST_DIRECTORY ${NFE_TESTS_DIRECTORY}/RendererTest)
 
 FILE(GLOB NFRENDERERTEST_SOURCES *.cpp)
 FILE(GLOB NFRENDERERTEST_HEADERS *.hpp)
@@ -13,22 +15,19 @@ PKG_CHECK_MODULES(NFRENDERERTEST_DEPS REQUIRED
 
 # setup directories
 INCLUDE_DIRECTORIES(${NFE_ROOT_DIRECTORY}/nfEngineDeps/
-                    ${NFENGINE_DIRECTORY}/
+                    ${NFE_SRC_DIRECTORY}
                     ${NFE_ROOT_DIRECTORY}/nfEngineDeps/gtest/include
                     ${NFRENDERERTEST_DEPS_INCLUDE_DIRS})
 LINK_DIRECTORIES(${NFEDEPS_LIB_DIRECTORY}
                  ${NFE_OUTPUT_DIRECTORY}
                  ${NFRENDERERTEST_DEPS_LIBRARY_DIRS})
 
-ADD_EXECUTABLE(nfRendererTest ${NFRENDERERTEST_SOURCES} ${NFRENDERERTEST_HEADERS})
-SET_TARGET_PROPERTIES(nfRendererTest PROPERTIES
-                      LINK_FLAGS "-pthread"
-                      COTIRE_CXX_PREFIX_HEADER_INIT "PCH.hpp")
+ADD_EXECUTABLE(RendererTest ${NFRENDERERTEST_SOURCES} ${NFRENDERERTEST_HEADERS})
+SET_TARGET_PROPERTIES(RendererTest PROPERTIES
+                      LINK_FLAGS "-pthread")
 
-ADD_DEPENDENCIES(nfRendererTest nfCommon)
-TARGET_LINK_LIBRARIES(nfRendererTest nfCommon gtest png squish jpeg dl
-                      ${NFRENDERERTEST_DEPS_LIBRARIES})
-ADD_CUSTOM_COMMAND(TARGET nfRendererTest POST_BUILD COMMAND
-                   ${CMAKE_COMMAND} -E copy $<TARGET_FILE:nfRendererTest> ${NFE_OUTPUT_DIRECTORY}/${targetfile})
+ADD_DEPENDENCIES(RendererTest Common)
+TARGET_LINK_LIBRARIES(RendererTest Common gtest dl ${NFRENDERERTEST_DEPS_LIBRARIES})
 
-cotire(nfRendererTest)
+ADD_CUSTOM_COMMAND(TARGET RendererTest POST_BUILD COMMAND
+                   ${CMAKE_COMMAND} -E copy $<TARGET_FILE:RendererTest> ${NFE_OUTPUT_DIRECTORY}/${targetfile})

@@ -15,7 +15,7 @@ enum class BlendingMode
 
 class DecalSceneObject : public ISceneObject
 {
-    NFE_DECLARE_POLYMORPHIC_CLASS(DecalSceneObject);
+    NFE_DECLARE_POLYMORPHIC_CLASS(DecalSceneObject)
 
 public:
     NFE_RAYTRACER_API explicit DecalSceneObject();

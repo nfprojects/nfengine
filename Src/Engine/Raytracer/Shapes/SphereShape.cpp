@@ -23,8 +23,8 @@ using namespace Math;
 
 SphereShape::SphereShape(const float radius)
     : mRadius(radius)
-    , mRadiusD(radius)
     , mInvRadius(1.0f / radius)
+    , mRadiusD(radius)
 {
     NFE_ASSERT(mRadius > 0.0f);
 }

@@ -199,7 +199,7 @@ private:
 
     friend struct Vec8i;
 
-    union
+    NFE_UNNAMED_STRUCT union
     {
         float f[8];
         int32 i[8];
@@ -207,7 +207,7 @@ private:
 #ifdef NFE_USE_AVX
         __m256 v;
 #else
-        struct
+        NFE_UNNAMED_STRUCT struct
         {
             Vec4f low;
             Vec4f high;

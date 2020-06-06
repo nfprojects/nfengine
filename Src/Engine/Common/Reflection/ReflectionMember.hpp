@@ -27,8 +27,8 @@ struct MemberMetadata
     Common::String descriptiveName;
 
     // allowed values range
-    double min = -DBL_MAX;
-    double max = DBL_MAX;
+    double min = -std::numeric_limits<double>::max();
+    double max = std::numeric_limits<double>::max();
 
     MemberMetadataFlags flags = MemberMetadataFlags(0);
 

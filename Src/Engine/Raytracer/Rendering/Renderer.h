@@ -21,7 +21,7 @@ class NFE_ALIGN(16) IRenderer
     : public Common::Aligned<16>
     , public IObject
 {
-    NFE_DECLARE_POLYMORPHIC_CLASS(IRenderer);
+    NFE_DECLARE_POLYMORPHIC_CLASS(IRenderer)
 
 public:
     struct RenderParam

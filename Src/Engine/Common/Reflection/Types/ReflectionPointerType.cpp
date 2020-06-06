@@ -18,8 +18,8 @@ bool PointerType::Compare(const void* objectA, const void* objectB) const
         const Type* pointedTypeA = GetPointedType(objectA);
         const Type* pointedTypeB = GetPointedType(objectB);
 
-        NFE_ASSERT(pointedTypeA);
-        NFE_ASSERT(pointedTypeB);
+        NFE_ASSERT(pointedTypeA, "Invalid type");
+        NFE_ASSERT(pointedTypeB, "Invalid type");
 
         if (pointedTypeA != pointedTypeB)
         {
@@ -50,8 +50,8 @@ bool PointerType::Clone(void* destObject, const void* sourceObject) const
         void* pointedDestObject = GetPointedData(destObject);
         const void* pointedSrcObject = GetPointedData(sourceObject);
 
-        NFE_ASSERT(pointedDestObject);
-        NFE_ASSERT(pointedSrcObject);
+        NFE_ASSERT(pointedDestObject, "Invalid object");
+        NFE_ASSERT(pointedSrcObject, "Invalid object");
 
         return pointedSrcType->Clone(pointedDestObject, pointedSrcObject);
     }

@@ -7,7 +7,7 @@ namespace RT {
 
 class NFE_RAYTRACER_API BlackBodyColor : public IColor
 {
-    NFE_DECLARE_POLYMORPHIC_CLASS(BlackBodyColor);
+    NFE_DECLARE_POLYMORPHIC_CLASS(BlackBodyColor)
 
 public:
 

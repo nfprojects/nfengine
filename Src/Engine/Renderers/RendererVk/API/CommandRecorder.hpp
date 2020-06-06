@@ -44,6 +44,7 @@ public:
     void UnmapBuffer(const BufferPtr& buffer) override;
     bool WriteBuffer(const BufferPtr& buffer, size_t offset, size_t size, const void* data) override;
     void CopyTexture(const TexturePtr& src, const TexturePtr& dest) override;
+    void CopyTexture(const TexturePtr& src, const BackbufferPtr& dest) override;
     CommandListID Finish() override;
 
     /// Graphics pipeline methods
@@ -57,7 +58,7 @@ public:
     void SetStencilRef(unsigned char ref) override;
     void SetViewport(float left, float width, float top, float height, float minDepth, float maxDepth) override;
     void SetScissors(int32 left, int32 top, int32 right, int32 bottom) override;
-    void Clear(uint32 flags, uint32 numTargets, const uint32* slots, const Math::Float4* colors, float depthValue, uint8 stencilValue) override;
+    void Clear(uint32 flags, uint32 numTargets, const uint32* slots, const Math::Vec4fU* colors, float depthValue, uint8 stencilValue) override;
     void Draw(uint32 vertexNum, uint32 instancesNum, uint32 vertexOffset, uint32 instanceOffset) override;
     void DrawIndexed(uint32 indexNum, uint32 instancesNum, uint32 indexOffset, int32 vertexOffset, uint32 instanceOffset) override;
 

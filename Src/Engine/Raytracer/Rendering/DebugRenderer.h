@@ -41,7 +41,7 @@ enum class DebugRenderingMode : uint8
 // Debug renderer for visualizing normals, tangents, base color, etc.
 class DebugRenderer : public IRenderer
 {
-    NFE_DECLARE_POLYMORPHIC_CLASS(DebugRenderer);
+    NFE_DECLARE_POLYMORPHIC_CLASS(DebugRenderer)
 
 public:
     DebugRenderer();
@@ -57,4 +57,4 @@ private:
 } // namespace RT
 } // namespace NFE
 
-NFE_DECLARE_ENUM_TYPE(NFE::RT::DebugRenderingMode);
+NFE_DECLARE_ENUM_TYPE(NFE::RT::DebugRenderingMode)

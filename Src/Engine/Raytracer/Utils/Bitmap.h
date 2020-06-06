@@ -87,7 +87,7 @@ public:
         NFE_ASSERT(BitsPerPixel(mFormat) / 8 == sizeof(T));
 
         const size_t row = y + static_cast<size_t>(GetHeight()) * static_cast<size_t>(z);
-        const size_t rowOffset = mStride * row;
+        const size_t rowOffset = GetStride() * row;
         return *reinterpret_cast<T*>(mData + rowOffset + sizeof(T) * x);
     }
 

@@ -8,7 +8,7 @@ namespace RT {
 // single-wavelength color
 class NFE_RAYTRACER_API MonochromaticColor : public IColor
 {
-    NFE_DECLARE_POLYMORPHIC_CLASS(MonochromaticColor);
+    NFE_DECLARE_POLYMORPHIC_CLASS(MonochromaticColor)
 
 public:
     MonochromaticColor();

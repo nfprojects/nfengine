@@ -45,7 +45,8 @@ SharedPtr<T>::SharedPtr(SharedPtr&& rhs)
 }
 
 template<typename T>
-SharedPtr<T>::SharedPtr(UniquePtr<T>&& rhs)
+template<typename SourceType>
+SharedPtr<T>::SharedPtr(UniquePtr<SourceType>&& rhs)
     : SharedPtr(rhs.Release()) // TODO copy deleter from UniquePtr
 { }
 
@@ -102,7 +103,8 @@ SharedPtr<T>& SharedPtr<T>::operator = (SharedPtr&& rhs)
 }
 
 template<typename T>
-SharedPtr<T>& SharedPtr<T>::operator = (UniquePtr<T>&& rhs)
+template<typename SourceType>
+SharedPtr<T>& SharedPtr<T>::operator = (UniquePtr<SourceType>&& rhs)
 {
     // TODO copy deleter from UniquePtr
     Reset(rhs.Release());

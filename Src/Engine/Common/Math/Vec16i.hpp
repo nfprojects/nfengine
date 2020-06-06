@@ -103,7 +103,8 @@ struct NFE_ALIGN(64) Vec16i : public Common::Aligned<64>
     NFE_FORCE_INLINE static const Vec16i SelectBySign(const Vec16i& a, const Vec16i& b, const VecBool16& sel);
 
 private:
-    union
+
+    NFE_UNNAMED_STRUCT union
     {
         int32 i[16];
         uint32 u[16];
@@ -112,7 +113,7 @@ private:
         __m512i v;
 #endif // NFE_USE_AVX512
 
-        struct
+        NFE_UNNAMED_STRUCT struct
         {
             Vec8i low;
             Vec8i high;
@@ -125,7 +126,7 @@ struct NFE_ALIGN(64) Vec16ui : public Common::Aligned<64>
 {
     friend struct Vec16i;
 
-    union
+    NFE_UNNAMED_STRUCT union
     {
         int32 i[8];
         uint32 u[8];
@@ -134,7 +135,7 @@ struct NFE_ALIGN(64) Vec16ui : public Common::Aligned<64>
         __m512i v;
 #endif // NFE_USE_AVX512
 
-        struct
+        NFE_UNNAMED_STRUCT struct
         {
             Vec8ui low;
             Vec8ui high;

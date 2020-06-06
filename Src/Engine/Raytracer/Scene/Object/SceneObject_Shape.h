@@ -13,7 +13,7 @@ using MediumPtr = Common::SharedPtr<IMedium>;
 
 class ShapeSceneObject : public ITraceableSceneObject
 {
-    NFE_DECLARE_POLYMORPHIC_CLASS(ShapeSceneObject);
+    NFE_DECLARE_POLYMORPHIC_CLASS(ShapeSceneObject)
 
 public:
     NFE_RAYTRACER_API ShapeSceneObject(const ShapePtr& shape);

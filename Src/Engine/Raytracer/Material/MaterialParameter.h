@@ -11,7 +11,7 @@ using ColorPtr = Common::SharedPtr<IColor>;
 
 class MaterialParameter
 {
-    NFE_DECLARE_CLASS(MaterialParameter);
+    NFE_DECLARE_CLASS(MaterialParameter)
 
 public:
 
@@ -37,7 +37,7 @@ public:
 
 class ColorMaterialParameter
 {
-    NFE_DECLARE_CLASS(ColorMaterialParameter);
+    NFE_DECLARE_CLASS(ColorMaterialParameter)
 
 public:
 

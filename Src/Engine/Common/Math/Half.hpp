@@ -28,11 +28,11 @@ public:
     NFE_INLINE float ToFloat() const;
 
 private:
-    union
+    NFE_UNNAMED_STRUCT union
     {
         uint16 value;
 
-        struct
+        NFE_UNNAMED_STRUCT struct
         {
             uint16 mantissa : 10;
             uint16 exponent : 5;
@@ -53,11 +53,11 @@ struct Half2
         return *this;
     }
 
-    union
+    NFE_UNNAMED_STRUCT union
     {
         uint32 packed;
 
-        struct
+        NFE_UNNAMED_STRUCT struct
         {
             Half x;
             Half y;
@@ -85,11 +85,11 @@ struct Half4
         return *this;
     }
 
-    union
+    NFE_UNNAMED_STRUCT union
     {
         uint64 packed;
 
-        struct
+        NFE_UNNAMED_STRUCT struct
         {
             Half x;
             Half y;

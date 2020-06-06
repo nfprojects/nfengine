@@ -21,19 +21,22 @@ void NFCOMMON_API HandleFatalAssertion(const char* expressionStr, const char* fu
 
 #ifndef NFE_CONFIGURATION_FINAL
 
-#define NFE_ASSERT(expression, ...)                                                                     \
-do {                                                                                                    \
-    if (!(expression))                                                                                  \
-    {                                                                                                   \
-        NFE_BREAK();                                                                                    \
-        NFE::Common::HandleFatalAssertion(#expression, __FUNCTION__, __FILE__, __LINE__, __VA_ARGS__);  \
-    }                                                                                                   \
+// https://stackoverflow.com/a/5897216
+#define NFE_VA_ARGS(...) , ##__VA_ARGS__
+
+#define NFE_ASSERT(expression, ...)                                                                                 \
+do {                                                                                                                \
+    if (!(expression))                                                                                              \
+    {                                                                                                               \
+        NFE_BREAK();                                                                                                \
+        NFE::Common::HandleFatalAssertion(#expression, __FUNCTION__, __FILE__, __LINE__ NFE_VA_ARGS(__VA_ARGS__));  \
+    }                                                                                                               \
 } while (0)
 
-#define NFE_FATAL(...)                                                                                  \
-do {                                                                                                    \
-    NFE_BREAK();                                                                                        \
-    NFE::Common::HandleFatalAssertion("", __FUNCTION__, __FILE__, __LINE__, __VA_ARGS__);               \
+#define NFE_FATAL(...)                                                                                              \
+do {                                                                                                                \
+    NFE_BREAK();                                                                                                    \
+    NFE::Common::HandleFatalAssertion("", __FUNCTION__, __FILE__, __LINE__ NFE_VA_ARGS(__VA_ARGS__));               \
 } while (0)
 
 #else // NFE_CONFIGURATION_FINAL

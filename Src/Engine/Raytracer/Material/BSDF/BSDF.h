@@ -18,7 +18,7 @@ namespace RT {
 // NOTE: it's not called "BRDF", because it handles transmission as well
 class BSDF : public Common::Aligned<16>, public IObject
 {
-    NFE_DECLARE_POLYMORPHIC_CLASS(BSDF);
+    NFE_DECLARE_POLYMORPHIC_CLASS(BSDF)
 
 public:
     enum EventType : uint8

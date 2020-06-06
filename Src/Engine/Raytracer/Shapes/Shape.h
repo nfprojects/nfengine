@@ -38,7 +38,7 @@ class IShape
     : public Common::Aligned<16>
     , public IObject
 {
-    NFE_DECLARE_POLYMORPHIC_CLASS(IShape);
+    NFE_DECLARE_POLYMORPHIC_CLASS(IShape)
 
 public:
     NFE_RAYTRACER_API IShape();

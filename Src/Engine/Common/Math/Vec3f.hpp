@@ -11,15 +11,15 @@ namespace Math {
  */
 struct Vec3f
 {
-    NFE_DECLARE_CLASS(Vec3f);
+    NFE_DECLARE_CLASS(Vec3f)
 
 public:
 
-    union
+    NFE_UNNAMED_STRUCT union
     {
         float f[3];
 
-        struct
+        NFE_UNNAMED_STRUCT struct
         {
             float x;
             float y;
@@ -48,7 +48,7 @@ public:
     NFE_INLINE constexpr const Vec3f SplatZ() const;
     NFE_INLINE static constexpr const Vec3f Splat(float f);
 
-    template<bool x, bool y, bool z>
+    template<bool changeX, bool changeY, bool changeZ>
     NFE_INLINE constexpr const Vec3f ChangeSign() const;
 
     template<uint32 ix, uint32 iy, uint32 iz>

@@ -10,7 +10,7 @@ namespace Math {
  */
 class NFE_ALIGN(16) Box : public Common::Aligned<16>
 {
-    NFE_DECLARE_CLASS(Box);
+    NFE_DECLARE_CLASS(Box)
 
 public:
 
@@ -103,7 +103,7 @@ public:
 
     NFE_FORCE_INLINE const Vec4f GetVertex(uint32 index) const
     {
-        NFE_ASSERT(index < 8);
+        NFE_ASSERT(index < 8, "Invalid vertex index");
         return Vec4f
         {
             (index & (1 << 0)) ? max.x : min.x,
@@ -117,7 +117,7 @@ public:
         return ((min == rhs.min) & (max == rhs.max)).All3();
     }
 
-    NFE_FORCE_INLINE bool Box::operator != (const Box& rhs) const
+    NFE_FORCE_INLINE bool operator != (const Box& rhs) const
     {
         return !operator==(rhs);
     }

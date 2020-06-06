@@ -23,21 +23,6 @@ const float INT8_MAX_FLOAT = static_cast<float>(INT8_MAX);
 const float INT16_MAX_FLOAT = static_cast<float>(INT16_MAX);
 const float INT32_MAX_FLOAT = static_cast<float>(INT32_MAX);
 
-const int32 HALF_SHIFT = 13;
-const int32 HALF_SHIFT_SIGN = 16;
-const int32 FLOAT_POS_INF = 0x7F800000; // flt32 infinity
-const int32 HALF_MAX_NORM_AS_32 = 0x477FE000; // max flt16 normal as a flt32
-const int32 HALF_MIN_NORM_AS_32 = 0x38800000; // min flt16 normal as a flt32
-const int32 FLOAT_SIGN_BIT = 0x80000000; // flt32 sign bit
-const int32 HALF_MIN_NAN_AS_32 = ((FLOAT_POS_INF >> HALF_SHIFT) + 1) << HALF_SHIFT; // minimum flt16 nan as a flt32
-const int32 HALF_MAX_NORM = HALF_MAX_NORM_AS_32 >> HALF_SHIFT;
-const int32 HALF_MIN_NORM = HALF_MIN_NORM_AS_32 >> HALF_SHIFT;
-const int32 HALF_SIGN_BIT = FLOAT_SIGN_BIT >> HALF_SHIFT_SIGN; // flt16 sign bit
-const int32 FLOAT_MAX_SUBNORM_AS_16 = 0x003FF; // max flt32 subnormal down shifted
-const int32 FLOAT_MIN_NORM_AS_16 = 0x00400; // min flt32 normal down shifted
-const int32 HALF_MAX_DENORM = (FLOAT_POS_INF >> HALF_SHIFT) - HALF_MAX_NORM - 1;
-const int32 HALF_MIN_DENORM = HALF_MIN_NORM - FLOAT_MAX_SUBNORM_AS_16 - 1;
-
 } // namespace anonymous
 
 

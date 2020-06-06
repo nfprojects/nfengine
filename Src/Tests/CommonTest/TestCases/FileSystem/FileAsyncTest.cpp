@@ -35,7 +35,7 @@ const uint32 expectedOperations = 0x3FF;             //< Expected state of read/
 
 const StringView testPath("./testFile.async");
 
-NFE::Math::Random random;
+static Math::Random gRandom;
 
 // Callback for read & write operations
 void TestCallback(void* obj, FileAsync* filePtr, size_t bytesProcessed, bool isRead)
@@ -43,7 +43,7 @@ void TestCallback(void* obj, FileAsync* filePtr, size_t bytesProcessed, bool isR
     NFE_UNUSED(bytesProcessed);
     NFE_UNUSED(filePtr);
 
-    int shift = *reinterpret_cast<NFE::uint8*>(obj);
+    int shift = *reinterpret_cast<uint8*>(obj);
 
     if (isRead)
     {
@@ -68,7 +68,7 @@ void TestCallback(void* obj, FileAsync* filePtr, size_t bytesProcessed, bool isR
 class FileAsyncTest : public testing::Test
 {
 public:
-    NFE::uint8 mBufferExpected[bufferSize];
+    uint8 mBufferExpected[bufferSize];
 
     void SetUp()
     {
@@ -80,7 +80,7 @@ public:
 
         // Fill buffer with random data
         for (int i = 0; i < bufferSize; i++)
-            mBufferExpected[i] = static_cast<NFE::uint8>(random.GetInt());
+            mBufferExpected[i] = static_cast<uint8>(gRandom.GetInt());
     }
 
     void TearDown()
@@ -110,7 +110,7 @@ TEST_F(FileAsyncTest, Constructors)
 
 TEST_F(FileAsyncTest, Read)
 {
-    NFE::uint8 bufferActual[bufferSize];
+    uint8 bufferActual[bufferSize];
     for (int i = 0; i < bufferSize; i++)
         bufferActual[i] = 0;
 
@@ -131,7 +131,7 @@ TEST_F(FileAsyncTest, Read)
     size_t readSize = bufferSize / operationsUpperLimit;
     for (int i = 0; i < operationsUpperLimit; i++)
     {
-        NFE::uint64 shift = i * readSize;
+        uint64 shift = i * readSize;
         ASSERT_TRUE(testAsyncFile.Read(bufferActual + shift, readSize, shift,
                                        reinterpret_cast<void*>(&shiftArray[i])));
     }
@@ -157,7 +157,7 @@ TEST_F(FileAsyncTest, Read)
 
 TEST_F(FileAsyncTest, Write)
 {
-    NFE::uint8 bufferActual[bufferSize];
+    uint8 bufferActual[bufferSize];
     for (int i = 0; i < bufferSize; i++)
         bufferActual[i] = 0;
 
@@ -172,7 +172,7 @@ TEST_F(FileAsyncTest, Write)
     size_t writeSize = bufferSize / operationsUpperLimit;
     for (int i = 0; i < operationsUpperLimit; i++)
     {
-        NFE::uint64 shift = i * writeSize;
+        uint64 shift = i * writeSize;
         testAsyncFile.Write(mBufferExpected + shift, writeSize, shift,
                             reinterpret_cast<void*>(&shiftArray[i]));
     }

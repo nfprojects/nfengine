@@ -8,7 +8,7 @@ namespace RT {
 // BSDF that absorbs all the light
 class NullBSDF : public BSDF
 {
-    NFE_DECLARE_POLYMORPHIC_CLASS(NullBSDF);
+    NFE_DECLARE_POLYMORPHIC_CLASS(NullBSDF)
 
 public:
     virtual const char* GetShortName() const override { return "null"; }

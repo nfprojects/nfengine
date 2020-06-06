@@ -109,12 +109,16 @@ void Logger::LogBuildInfo() const
     instructionSet.PushBack("SSE");
 #endif // NFE_USE_SSE
 
-#ifdef NFE_USE_SSE4
-    instructionSet.PushBack("SSE4");
-#endif // NFE_USE_SSE4
-
 #ifdef NFE_USE_AVX
     instructionSet.PushBack("AVX");
+#endif // NFE_USE_AVX
+
+#ifdef NFE_USE_AVX2
+    instructionSet.PushBack("AVX2");
+#endif // NFE_USE_AVX
+
+#ifdef NFE_USE_AVX512
+    instructionSet.PushBack("AVX-512");
 #endif // NFE_USE_AVX
 
 #ifdef NFE_USE_FMA

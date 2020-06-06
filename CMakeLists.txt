@@ -8,9 +8,6 @@ PROJECT(nfEngine)
 
 MESSAGE("Generating Makefile for nfEngine project")
 
-SET(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/nfEngineDeps/cotire")
-
-INCLUDE(cotire)
 INCLUDE(FindPkgConfig)
 
 # Pre-define Release build
@@ -25,8 +22,8 @@ IF(NOT DEFINED BUILD_PLATFORM)
 ENDIF(NOT DEFINED BUILD_PLATFORM)
 
 # Set required variables
-SET(CMAKE_CXX_FLAGS       "${CMAKE_CXX_FLAGS} -O2 -std=c++1y")
-SET(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -D_DEBUG -O0 -g -std=c++1y")
+SET(CMAKE_CXX_FLAGS       "${CMAKE_CXX_FLAGS} -O2 -std=c++17")
+SET(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -D_DEBUG -O0 -g -std=c++17")
 
 # Sanitizer build (clang or gcc >= 4.8 required)
 IF(DEFINED SANITIZE)
@@ -39,39 +36,21 @@ ENDIF(DEFINED SANITIZE)
 # If any macros specific to project are needed, prefix them with NFE_
 SET(NFE_ROOT_DIRECTORY ${CMAKE_SOURCE_DIR})
 SET(NFE_OUTPUT_DIRECTORY ${NFE_ROOT_DIRECTORY}/Bin/${BUILD_PLATFORM}/${CMAKE_BUILD_TYPE})
-SET(NFEDEPS_LIB_DIRECTORY ${NFE_ROOT_DIRECTORY}/nfEngineDeps/Bin/${BUILD_PLATFORM}/${CMAKE_BUILD_TYPE})
-SET(NFENGINE_DIRECTORY ${NFE_ROOT_DIRECTORY}/nfEngine)
-SET(NFCOMMON_DIRECTORY ${NFENGINE_DIRECTORY}/nfCommon)
-SET(NFCOMMONTEST_DIRECTORY ${NFENGINE_DIRECTORY}/nfCommonTest)
-SET(NFCOMMONPERFTEST_DIRECTORY ${NFENGINE_DIRECTORY}/nfCommonPerfTest)
-SET(RENDERERS_DIRECTORY ${NFENGINE_DIRECTORY}/Renderers)
-SET(NFRENDERERVK_DIRECTORY ${RENDERERS_DIRECTORY}/nfRendererVk)
+SET(NFEDEPS_LIB_DIRECTORY ${NFE_ROOT_DIRECTORY}/nfEngineDeps/Bin/${BUILD_PLATFORM})
+SET(NFE_SRC_DIRECTORY ${NFE_ROOT_DIRECTORY}/Src)
 
-# TODO below macros should not be used - -mavx option messes with Cotire and PCH on Linux.
-#      Investigate and fix.
-IF(DEFINED CMAKE_BUILD_USE_SSE)
-    MESSAGE("Using SSE instructions")
-    SET(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -msse -DNFE_USE_SSE")
-ENDIF(DEFINED CMAKE_BUILD_USE_SSE)
+SET(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -msse4.1 -mpclmul -DNFE_USE_SSE")
+SET(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -mavx -mbmi2 -DNFE_USE_AVX")
+SET(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -mavx2 -DNFE_USE_AVX2")
+SET(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -mfma -DNFE_USE_FMA")
+SET(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -mf16c -DNFE_USE_FP16C")
 
-IF(DEFINED CMAKE_BUILD_USE_SSE4)
-    MESSAGE("Using SSE4.1 instructions")
-    SET(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -msse4.1 -DNFE_USE_SSE4")
-ENDIF(DEFINED CMAKE_BUILD_USE_SSE4)
-
-IF(DEFINED CMAKE_BUILD_USE_AVX)
-    MESSAGE("Using AVX instructions")
-    ADD_DEFINITIONS("-mavx -DNFE_USE_AVX")
-ENDIF(DEFINED CMAKE_BUILD_USE_AVX)
-
-IF(DEFINED CMAKE_BUILD_USE_FMA)
-    MESSAGE("Using FMA instructions")
-    ADD_DEFINITIONS("-mfma -DNFE_USE_FMA")
-ENDIF(DEFINED CMAKE_BUILD_USE_FMA)
+# allow anonymous structs and unions
+SET(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -fms-extensions")
 
 # disable C++ exceptions
-SET(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -fno-exceptions")
-
+# TODO some external libs require this, fix it
+#SET(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -fno-exceptions")
 
 # Enable all warnings and make them errors
 SET(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -Wall -Wpedantic -Wextra -Wno-sign-compare -Werror")
@@ -84,6 +63,10 @@ SET(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -Wno-unused-private-field")
 SET(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -Wno-four-char-constants")
 SET(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -Wno-unused-local-typedefs")
 SET(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -Wno-inconsistent-missing-override")
+SET(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -Wno-ignored-qualifiers")
+SET(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -Wno-gnu-zero-variadic-macro-arguments")
+SET(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -Wno-gnu-anonymous-struct -Wno-nested-anon-types")
+SET(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -Wno-format-security")
 
 ADD_DEFINITIONS(-DNFE_ROOT_DIRECTORY="${NFE_ROOT_DIRECTORY}/")
 ADD_DEFINITIONS(-DNFE_COMPILER="${CMAKE_CXX_COMPILER_ID}")

@@ -9,8 +9,8 @@ namespace Math {
 // (piecewise constant)
 class NFCOMMON_API Distribution
 {
-    NFE_MAKE_NONCOPYABLE(Distribution);
-    NFE_MAKE_NONMOVEABLE(Distribution);
+    NFE_MAKE_NONCOPYABLE(Distribution)
+    NFE_MAKE_NONMOVEABLE(Distribution)
 
 public:
     Distribution();

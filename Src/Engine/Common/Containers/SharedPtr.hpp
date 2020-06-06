@@ -37,21 +37,23 @@ public:
 
     SharedPtr(const SharedPtr& rhs);
     SharedPtr(SharedPtr&& rhs);
-    SharedPtr(UniquePtr<T>&& rhs);
     SharedPtr& operator = (const SharedPtr& rhs);
     SharedPtr& operator = (SharedPtr&& rhs);
-    SharedPtr& operator = (UniquePtr<T>&& rhs);
     ~SharedPtr();
 
-    /**
-     * Implicit conversion constructor.
-     */
+    // implicit conversion constructor from UniquePtr
+    template<typename SourceType>
+    SharedPtr(UniquePtr<SourceType>&& rhs);
+
+    // implicit conversion assignment from UniquePtr
+    template<typename SourceType>
+    SharedPtr& operator = (UniquePtr<SourceType>&& rhs);
+
+    // implicit conversion constructor
     template<typename SourceType>
     SharedPtr(const SharedPtr<SourceType>& rhs);
 
-    /**
-     * Implicit conversion assignment.
-     */
+    // implicit conversion assignment
     template<typename SourceType>
     SharedPtr& operator = (const SharedPtr<SourceType>& rhs);
 

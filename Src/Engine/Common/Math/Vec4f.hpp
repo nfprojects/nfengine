@@ -70,13 +70,13 @@ private:
  */
 struct NFE_ALIGN(16) Vec4f : public Common::Aligned<16>
 {
-    NFE_DECLARE_CLASS(Vec4f);
+    NFE_DECLARE_CLASS(Vec4f)
 
 public:
 
     using BoolType = VecBool4f;
 
-    union
+    NFE_UNNAMED_STRUCT union
     {
         float f[4];
         int32 i[4];
@@ -87,7 +87,7 @@ public:
         __m128i vi;
 #endif // NFE_USE_SSE
 
-        struct
+        NFE_UNNAMED_STRUCT struct
         {
             float x;
             float y;

@@ -5,6 +5,7 @@
 #include "../Utils/FundamentalTypesUnion.hpp"
 
 #include <math.h>
+#include <float.h>
 
 #ifdef NFE_USE_SSE
 #include <xmmintrin.h>
@@ -125,6 +126,7 @@ NFE_FORCE_INLINE constexpr const T Cube(const T x)
 template<uint32 N, typename T>
 NFE_FORCE_INLINE static constexpr typename std::enable_if_t<(N == 0), const T> Pow(const T m)
 {
+    NFE_UNUSED(m);
     return T(1);
 }
 

@@ -10,7 +10,7 @@ namespace RT {
 // basic RGB color implementation
 class NFE_RAYTRACER_API ColorRGB : public IColor
 {
-    NFE_DECLARE_POLYMORPHIC_CLASS(ColorRGB);
+    NFE_DECLARE_POLYMORPHIC_CLASS(ColorRGB)
 
 public:
     NFE_FORCE_INLINE ColorRGB()

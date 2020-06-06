@@ -19,7 +19,7 @@ namespace {
 const uint32 bufferSize = 1000;                              //< Size of the test buffer
 const NFE::uint8 operationsUpperLimit = 10;               //< Number of operations to perform on the buffer
 const String testPath("./testFile.buffered");
-NFE::Math::Random random;
+static NFE::Math::Random gRandom;
 } // namespace
 
 class FileBufferedTest : public testing::Test
@@ -29,7 +29,7 @@ public:
 
     void SetUp()
     {
-        // Fill buffer with random data
+        // Fill buffer with gRandom data
         for (int i = 0; i < bufferSize; i++)
             mBufferExpected[i] = static_cast<NFE::uint8>(i);// mRand.GetInt());
     }
@@ -101,29 +101,29 @@ TEST_F(FileBufferedTest, ReadSeek)
     // Do tha read, yo!
     for (int i = 0; i < operationsUpperLimit; i++)
     {
-        // Roll a random number for Seek
-        float rand = random.GetFloat();
+        // Roll a gRandom number for Seek
+        float rand = gRandom.GetFloat();
 
         // Scale it to range (0; bufferSize/2)
-        NFE::int64 randomShift = static_cast<NFE::int64>((rand * bufferSize) / 2);
+        NFE::int64 gRandomShift = static_cast<NFE::int64>((rand * bufferSize) / 2);
 
-        // Roll a random number for read size
-        rand = random.GetFloat();
+        // Roll a gRandom number for read size
+        rand = gRandom.GetFloat();
 
         // Scale it to range (0; bufferSize)
-        size_t randomSize = static_cast<size_t>((rand * bufferSize));
+        size_t gRandomSize = static_cast<size_t>((rand * bufferSize));
 
-        // Make random Seek
-        ASSERT_TRUE(testBufferedFile.Seek(randomShift, SeekMode::Begin));
+        // Make gRandom Seek
+        ASSERT_TRUE(testBufferedFile.Seek(gRandomShift, SeekMode::Begin));
 
-        // Read random number of bytes from file
-        size_t bytesRead = testBufferedFile.Read(bufferActual, randomSize);
+        // Read gRandom number of bytes from file
+        size_t bytesRead = testBufferedFile.Read(bufferActual, gRandomSize);
 
-        // It should be greater then 0, yet with random reads we can't tell
+        // It should be greater then 0, yet with gRandom reads we can't tell
         EXPECT_GT(bytesRead, static_cast<size_t>(0));
 
         // Check that data has been read successfully
-        ASSERT_EQ(0, memcmp(mBufferExpected + randomShift, bufferActual, bytesRead));
+        ASSERT_EQ(0, memcmp(mBufferExpected + gRandomShift, bufferActual, bytesRead));
     }
     testBufferedFile.Close();
 }

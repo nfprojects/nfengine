@@ -93,7 +93,7 @@ const RayColor DebugRenderer::RenderPixel(const Math::Ray& ray, const RenderPara
     }
 
     const ITraceableSceneObject* sceneObject = param.scene.GetHitObject(hitPoint.objectId);
-    if (sceneObject->IsA<LightSceneObject>())
+    if (sceneObject->GetDynamicType()->IsA(RTTI::GetType<LightSceneObject>()))
     {
         // ray hit a light
         const Vec4f lightColor{ 1.0, 1.0f, 0.0f };

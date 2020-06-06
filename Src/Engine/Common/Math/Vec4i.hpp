@@ -64,7 +64,7 @@ private:
  */
 struct NFE_ALIGN(16) Vec4i : public Common::Aligned<16>
 {
-    union
+    NFE_UNNAMED_STRUCT union
     {
         int32 i[4];
         int64 i64[2];
@@ -74,7 +74,7 @@ struct NFE_ALIGN(16) Vec4i : public Common::Aligned<16>
         __m128i v;
 #endif // NFE_USE_SSE
 
-        struct
+        NFE_UNNAMED_STRUCT struct
         {
             int32 x;
             int32 y;
@@ -188,7 +188,7 @@ struct NFE_ALIGN(16) Vec4i : public Common::Aligned<16>
  */
 struct NFE_ALIGN(16) Vec4ui : public Common::Aligned<16>
 {
-    union
+    NFE_UNNAMED_STRUCT union
     {
         uint32 u[4];
         uint64 u64[2];
@@ -198,7 +198,7 @@ struct NFE_ALIGN(16) Vec4ui : public Common::Aligned<16>
         __m128i v;
 #endif // NFE_USE_SSE
 
-        struct
+        NFE_UNNAMED_STRUCT struct
         {
             uint32 x;
             uint32 y;

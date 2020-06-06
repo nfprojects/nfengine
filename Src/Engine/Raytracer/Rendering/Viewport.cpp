@@ -21,8 +21,6 @@
 #include "../Common/Reflection/Types/ReflectionClassType.hpp"
 #include "../Common/Reflection/Types/ReflectionUniquePtrType.hpp"
 
-#pragma optimize("",off)
-
 namespace NFE {
 namespace RT {
 

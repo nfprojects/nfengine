@@ -7,7 +7,7 @@ namespace RT {
 
 class BoxShape : public IShape
 {
-    NFE_DECLARE_POLYMORPHIC_CLASS(BoxShape);
+    NFE_DECLARE_POLYMORPHIC_CLASS(BoxShape)
 
 public:
     NFE_RAYTRACER_API BoxShape(const Math::Vec4f& size = Math::Vec4f(0.5f, 0.5f, 0.5f));

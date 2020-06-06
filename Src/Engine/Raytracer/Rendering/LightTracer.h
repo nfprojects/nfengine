@@ -12,7 +12,7 @@ namespace RT {
 // Note: This renderer is unable to render specular materials viewed by the camera directly
 class LightTracer : public IRenderer
 {
-    NFE_DECLARE_POLYMORPHIC_CLASS(LightTracer);
+    NFE_DECLARE_POLYMORPHIC_CLASS(LightTracer)
 
 public:
     LightTracer();

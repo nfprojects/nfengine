@@ -1,8 +1,10 @@
 # @file
 # @author LKostyra (costyrra.xl@gmail.com)
-# @brief  CMake for nfRendererVk
+# @brief  CMake for RendererVk
 
-MESSAGE("Generating Makefile for nfRendererVk")
+MESSAGE("Generating Makefile for RendererVk")
+
+SET(NFE_RENDERERVK_DIRECTORY ${NFE_RENDERERS_DIRECTORY}/RendererVk)
 
 FILE(GLOB NFRENDERERVK_INTERNAL_SOURCES        Internal/*.cpp)
 FILE(GLOB NFRENDERERVK_INTERNAL_HEADERS        Internal/*.hpp)
@@ -18,26 +20,23 @@ SET(NFRENDERERVK_MAIN_SOURCES PCH.cpp)
 SET(NFRENDERERVK_MAIN_HEADERS PCH.hpp)
 
 INCLUDE_DIRECTORIES(${NFE_ROOT_DIRECTORY}/nfEngineDeps/
-                    ${NFENGINE_DIRECTORY}
+                    ${NFE_SRC_DIRECTORY}
                     ${VULKAN_SDK}/include
-                    ${NFRENDERERVK_DIRECTORY})
+                    ${NFE_RENDERERVK_DIRECTORY})
 LINK_DIRECTORIES(${NFEDEPS_LIB_DIRECTORY})
 
 # To enable XCB-specific Vulkan extensions
 ADD_DEFINITIONS(-DVK_USE_PLATFORM_XCB_KHR)
 
-ADD_LIBRARY(nfRendererVk SHARED
+ADD_LIBRARY(RendererVk SHARED
             ${NFRENDERERVK_INTERNAL_SOURCES} ${NFRENDERERVK_INTERNAL_HEADERS}
             ${NFRENDERERVK_INTERNAL_LINUX_SOURCES} ${NFRENDERERVK_INTERNAL_LINUX_HEADERS}
             ${NFRENDERERVK_API_SOURCES} ${NFRENDERERVK_API_HEADERS}
             ${NFRENDERERVK_API_LINUX_SOURCES} ${NFRENDERERVK_API_LINUX_HEADERS}
             ${NFRENDERERVK_MAIN_SOURCES} ${NFRENDERERVK_MAIN_HEADERS})
 
-SET_TARGET_PROPERTIES(nfRendererVk PROPERTIES COTIRE_CXX_PREFIX_HEADER_INIT "PCH.hpp")
+TARGET_LINK_LIBRARIES(RendererVk vulkan glslang hlsl SPIRV OGLCompiler OSDependent)
 
-TARGET_LINK_LIBRARIES(nfRendererVk vulkan glslang hlsl SPIRV OGLCompiler OSDependent)
+ADD_CUSTOM_COMMAND(TARGET RendererVk POST_BUILD COMMAND
+                   ${CMAKE_COMMAND} -E copy $<TARGET_FILE:RendererVk> ${NFE_OUTPUT_DIRECTORY}/${targetfile})
 
-ADD_CUSTOM_COMMAND(TARGET nfRendererVk POST_BUILD COMMAND
-                   ${CMAKE_COMMAND} -E copy $<TARGET_FILE:nfRendererVk> ${NFE_OUTPUT_DIRECTORY}/${targetfile})
-
-cotire(nfRendererVk)

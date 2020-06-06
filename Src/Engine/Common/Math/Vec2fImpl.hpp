@@ -28,13 +28,13 @@ constexpr Vec2f::Vec2f(float x, float y)
 
 float Vec2f::Get(uint32 index) const
 {
-    NFE_ASSERT(index < 2);
+    NFE_ASSERT(index < 2, "Invalid index");
     return (&x)[index];
 }
 
 float& Vec2f::Get(uint32 index)
 {
-    NFE_ASSERT(index < 2);
+    NFE_ASSERT(index < 2, "Invalid index");
     return (&x)[index];
 }
 
@@ -60,10 +60,10 @@ constexpr const Vec2f Vec2f::Blend(const Vec2f& a, const Vec2f& b)
     return Vec2f(ix == 0 ? a.x : b.x, iy == 0 ? a.y : b.y);
 }
 
-template<bool x, bool y>
+template<bool changeX, bool changeY>
 constexpr const Vec2f Vec2f::ChangeSign() const
 {
-    return Vec2f(x ? -f[0] : f[0], y ? -f[1] : f[1]);
+    return Vec2f(changeX ? -x : x, changeY ? -y : y);
 }
 
 const Vec2f Vec2f::SelectBySign(const Vec2f& a, const Vec2f& b, const Vec2f& sel)
@@ -111,8 +111,8 @@ constexpr const Vec2f Vec2f::operator* (const Vec2f& b) const
 const Vec2f Vec2f::operator/ (const Vec2f& b) const
 {
     // TODO make it constexpr
-    NFE_ASSERT(Math::Abs(b.x) > FLT_EPSILON);
-    NFE_ASSERT(Math::Abs(b.y) > FLT_EPSILON);
+    NFE_ASSERT(Math::Abs(b.x) > FLT_EPSILON, "Division by zero");
+    NFE_ASSERT(Math::Abs(b.y) > FLT_EPSILON, "Division by zero");
 
     return Vec2f(x / b.x, y / b.y);
 }
@@ -125,7 +125,7 @@ constexpr const Vec2f Vec2f::operator* (float b) const
 const Vec2f Vec2f::operator/ (float b) const
 {
     // TODO make it constexpr
-    NFE_ASSERT(Math::Abs(b) > FLT_EPSILON);
+    NFE_ASSERT(Math::Abs(b) > FLT_EPSILON, "Division by zero");
 
     return Vec2f(x / b, y / b);
 }
@@ -160,8 +160,8 @@ Vec2f& Vec2f::operator*= (const Vec2f& b)
 
 Vec2f& Vec2f::operator/= (const Vec2f& b)
 {
-    NFE_ASSERT(Math::Abs(b.x) > FLT_EPSILON);
-    NFE_ASSERT(Math::Abs(b.y) > FLT_EPSILON);
+    NFE_ASSERT(Math::Abs(b.x) > FLT_EPSILON, "Division by zero");
+    NFE_ASSERT(Math::Abs(b.y) > FLT_EPSILON, "Division by zero");
 
     x /= b.x;
     y /= b.y;
@@ -177,7 +177,7 @@ Vec2f& Vec2f::operator*= (float b)
 
 Vec2f& Vec2f::operator/= (float b)
 {
-    NFE_ASSERT(Math::Abs(b) > FLT_EPSILON);
+    NFE_ASSERT(Math::Abs(b) > FLT_EPSILON, "Division by zero");
 
     x /= b;
     y /= b;
@@ -193,16 +193,16 @@ const Vec2f Vec2f::Floor(const Vec2f& v)
 
 const Vec2f Vec2f::Sqrt(const Vec2f& v)
 {
-    NFE_ASSERT(v.x >= 0.0f);
-    NFE_ASSERT(v.y >= 0.0f);
+    NFE_ASSERT(v.x >= 0.0f, "Sqrt of negative value");
+    NFE_ASSERT(v.y >= 0.0f, "Sqrt of negative value");
 
     return Vec2f(sqrtf(v.x), sqrtf(v.y));
 }
 
 const Vec2f Vec2f::Reciprocal(const Vec2f& v)
 {
-    NFE_ASSERT(Math::Abs(v.x) > FLT_EPSILON);
-    NFE_ASSERT(Math::Abs(v.y) > FLT_EPSILON);
+    NFE_ASSERT(Math::Abs(v.x) > FLT_EPSILON, "Division by zero");
+    NFE_ASSERT(Math::Abs(v.y) > FLT_EPSILON, "Division by zero");
 
     // this checks are required to avoid "potential divide by 0" warning
     return Vec2f(v.x != 0.0f ? 1.0f / v.x : INFINITY,
@@ -291,7 +291,7 @@ float Vec2f::Length() const
 const Vec2f Vec2f::Normalized() const
 {
     const float len = Length();
-    NFE_ASSERT(len > FLT_EPSILON);
+    NFE_ASSERT(len > FLT_EPSILON, "Division by zero");
 
     const float lenInv = 1.0f / len;
     return *this * lenInv;
@@ -300,7 +300,7 @@ const Vec2f Vec2f::Normalized() const
 Vec2f& Vec2f::Normalize()
 {
     const float len = Length();
-    NFE_ASSERT(len > FLT_EPSILON);
+    NFE_ASSERT(len > FLT_EPSILON, "Division by zero");
 
     const float lenInv = 1.0f / len;
     *this *= lenInv;

@@ -52,14 +52,14 @@ private:
 #ifdef NFE_USE_AVX512
     __mmask16 mask;
 #else
-    union
+    NFE_UNNAMED_STRUCT union
     {
-        struct
+        NFE_UNNAMED_STRUCT struct
         {
             VecBool8i ilow;
             VecBool8i ihigh;
         };
-        struct
+        NFE_UNNAMED_STRUCT struct
         {
             VecBool8f low;
             VecBool8f high;
@@ -201,7 +201,7 @@ private:
     friend struct Vec16i;
     friend struct Vec16u;
 
-    union
+    NFE_UNNAMED_STRUCT union
     {
         float f[16];
         int32 i[16];
@@ -209,7 +209,7 @@ private:
 #ifdef NFE_USE_AVX512
         __m512 v;
 #else
-        struct
+        NFE_UNNAMED_STRUCT struct
         {
             Vec8f low;
             Vec8f high;

@@ -8,7 +8,7 @@ namespace RT {
 // Rough transparent dielectic BSDF (e.g. ground glass).
 class RoughDielectricBSDF : public BSDF
 {
-    NFE_DECLARE_POLYMORPHIC_CLASS(RoughDielectricBSDF);
+    NFE_DECLARE_POLYMORPHIC_CLASS(RoughDielectricBSDF)
 
 public:
     virtual const char* GetShortName() const override { return "roughDielectric"; }

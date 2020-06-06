@@ -7,7 +7,7 @@ namespace RT {
 
 class PointLight : public ILight
 {
-    NFE_DECLARE_POLYMORPHIC_CLASS(PointLight);
+    NFE_DECLARE_POLYMORPHIC_CLASS(PointLight)
 
 public:
     NFE_RAYTRACER_API PointLight(const Math::HdrColorRGB& color = Math::HdrColorRGB(1.0f));

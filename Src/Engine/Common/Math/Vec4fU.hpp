@@ -29,7 +29,7 @@ namespace Math {
  */
 struct Vec4fU
 {
-    NFE_DECLARE_CLASS(Vec4fU);
+    NFE_DECLARE_CLASS(Vec4fU)
 
 public:
 

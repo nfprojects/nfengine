@@ -8,7 +8,7 @@ namespace RT {
 // Smooth plastic-like BSDF
 class PlasticBSDF : public BSDF
 {
-    NFE_DECLARE_POLYMORPHIC_CLASS(PlasticBSDF);
+    NFE_DECLARE_POLYMORPHIC_CLASS(PlasticBSDF)
 
 public:
     virtual const char* GetShortName() const override { return "plastic"; }

@@ -7,7 +7,7 @@ namespace RT {
 
 class SphereShape : public IShape
 {
-    NFE_DECLARE_POLYMORPHIC_CLASS(SphereShape);
+    NFE_DECLARE_POLYMORPHIC_CLASS(SphereShape)
 
 public:
     NFE_RAYTRACER_API SphereShape(const float radius = 1.0f);
@@ -24,9 +24,9 @@ private:
 
     virtual bool OnPropertyChanged(const Common::StringView propertyName) override;
 
-    double mRadiusD;
     float mRadius;
     float mInvRadius;
+    double mRadiusD;
 };
 
 } // namespace RT
