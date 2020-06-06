@@ -93,8 +93,6 @@ bool Scene::Init(IDevice* rendererDevice, void* winHandle)
         }
     }
 
-    mBackbufferFormat = ElementFormat::R8G8B8A8_U_Norm;
-
     if (!OnInit(winHandle))
         return false;
 
