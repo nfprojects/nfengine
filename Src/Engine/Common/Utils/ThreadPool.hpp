@@ -55,6 +55,7 @@ class WorkerThread
     friend class ThreadPool;
 
     NFE_MAKE_NONCOPYABLE(WorkerThread);
+    NFE_MAKE_NONMOVEABLE(WorkerThread)
 
     std::thread mThread;
     uint32 mId;                     // thread number
@@ -63,8 +64,6 @@ class WorkerThread
 public:
     WorkerThread(ThreadPool* pool, uint32 id);
     ~WorkerThread();
-    WorkerThread(WorkerThread&&) = default;
-    WorkerThread& operator = (WorkerThread&&) = default;
 };
 
 using WorkerThreadPtr = UniquePtr<WorkerThread>;
