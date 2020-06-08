@@ -32,17 +32,12 @@ protected:
     VkDeviceMemory mImageMemory;
     VkImageSubresourceRange mImageSubresRange;
 
-    // tempshit to support double-buffering
-    uint32 mBuffersNum;
-    uint32 mCurrentBuffer;
-    Common::DynArray<VkImage> mBuffers;
-    Common::DynArray<VkImageView> mBufferViews;
-    bool mFromSwapchain;
-
 public:
     Texture();
     virtual ~Texture();
     bool Init(const TextureDesc& desc);
+
+    void Transition(VkCommandBuffer cb, VkImageLayout dstLayout);
 };
 
 } // namespace Renderer

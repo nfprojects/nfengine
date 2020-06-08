@@ -113,6 +113,7 @@ bool Scene::Init(IDevice* rendererDevice, void* winHandle)
         }
     }
 
+    mCurrentSubScene = mHighestAvailableSubScene;
     return true;
 }
 

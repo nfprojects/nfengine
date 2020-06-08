@@ -13,7 +13,7 @@ namespace NFE {
 namespace Renderer {
 
 
-class Backbuffer : public IBackbuffer, public Texture
+class Backbuffer : public IBackbuffer
 {
     friend class CommandRecorder;
 
@@ -27,14 +27,28 @@ class Backbuffer : public IBackbuffer, public Texture
 #error Target platform not supported.
 #endif
 
+    struct ImageExtraData
+    {
+        // to keep some data related to transitioning layouts
+        VkImageLayout layout;
+    };
+
+    uint32 mWidth;
+    uint32 mHeight;
+    VkFormat mFormat;
+    uint32 mImageNum;
+    uint32 mCurrentImage;
+    Common::DynArray<VkImage> mImages;
+    Common::DynArray<ImageExtraData> mImageExtraDatas;
+    VkImageSubresourceRange mImageSubresRange;
+
     VkColorSpaceKHR mColorSpace;
     uint32 mPresentQueueIndex;
     VkQueue mPresentQueue;
     VkSurfaceCapabilitiesKHR mSurfaceCapabilities;
     VkSwapchainKHR mSwapchain;
     VkPresentModeKHR mSwapPresentMode;
-    Common::DynArray<VkCommandBuffer> mPresentCommandBuffers;
-    Common::DynArray<VkCommandBuffer> mPostPresentCommandBuffers;
+    VkFence mAcquireNextImageFence;
 
     // platform-specific surface creator
     bool CreateSurface(const BackbufferDesc& desc);
@@ -47,8 +61,7 @@ class Backbuffer : public IBackbuffer, public Texture
     bool SelectPresentMode(const BackbufferDesc& desc);
     bool SelectBufferCount();
     bool CreateSwapchain(const BackbufferDesc& desc);
-    bool CreateSwapchainImageViews();
-    bool BuildPresentCommandBuffers();
+    bool CreateNextImageFence();
     bool AcquireNextImage();
 
 public:
@@ -59,6 +72,8 @@ public:
 
     bool Resize(int newWidth, int newHeight) override;
     bool Present() override;
+
+    void Transition(VkCommandBuffer cb, VkImageLayout dstLayout);
 };
 
 } // namespace Renderer

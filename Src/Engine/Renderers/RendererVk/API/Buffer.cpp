@@ -38,7 +38,7 @@ bool Buffer::Init(const BufferDesc& desc)
     VkBuffer stagingBuffer = VK_NULL_HANDLE;
 
     // Temporary early leave until below types are implemented
-    if (desc.mode == BufferMode::GPUOnly || desc.mode == BufferMode::Readback)
+    if (desc.mode == BufferMode::Volatile || desc.mode == BufferMode::GPUOnly || desc.mode == BufferMode::Readback)
     {
         NFE_LOG_ERROR("Requested unsupported buffer mode");
         return false;
@@ -134,7 +134,7 @@ bool Buffer::Init(const BufferDesc& desc)
 
         VkBufferCopy region;
         VK_ZERO_MEMORY(region);
-        region.size = deviceMemReqs.size;
+        region.size = desc.size;
         vkCmdCopyBuffer(copyCmdBuffer, stagingBuffer, mBuffer, 1, &region);
 
         result = vkEndCommandBuffer(copyCmdBuffer);

@@ -9,6 +9,9 @@
 #include "CommandRecorder.hpp"
 #include "Device.hpp"
 #include "ResourceBinding.hpp"
+#include "Buffer.hpp"
+#include "Texture.hpp"
+#include "Backbuffer.hpp"
 
 #include "Internal/Translations.hpp"
 
@@ -139,8 +142,7 @@ void CommandRecorder::BindVolatileCBuffer(uint32 slot, const BufferPtr& buffer)
 void CommandRecorder::SetResourceBindingLayout(const ResourceBindingLayoutPtr& layout)
 {
     mResourceBindingLayout = dynamic_cast<ResourceBindingLayout*>(layout.Get());
-    if (!mResourceBindingLayout)
-        NFE_LOG_ERROR("Incorrect binding layout provided");
+    NFE_ASSERT(mResourceBindingLayout != nullptr, "Incorrect binding layout provided");
 }
 
 void CommandRecorder::SetRenderTarget(const RenderTargetPtr& renderTarget)
@@ -152,17 +154,16 @@ void CommandRecorder::SetRenderTarget(const RenderTargetPtr& renderTarget)
     }
 
     mRenderTarget = dynamic_cast<RenderTarget*>(renderTarget.Get());
-    if (!mRenderTarget)
-    {
-        NFE_LOG_ERROR("Incorrect Render Target pointer.");
-        return;
-    }
+    NFE_ASSERT(mRenderTarget != nullptr, "Invalid Render Target pointer provided");
+
+    mRenderTarget->TransitionColorAttachments(mCommandBuffer, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL);
+    mRenderTarget->TransitionDSAttachment(mCommandBuffer, VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL);
 
     VkRenderPassBeginInfo rpBeginInfo;
     VK_ZERO_MEMORY(rpBeginInfo);
     rpBeginInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
     rpBeginInfo.renderPass = mRenderTarget->mRenderPass;
-    rpBeginInfo.framebuffer = mRenderTarget->GetCurrentFramebuffer();
+    rpBeginInfo.framebuffer = mRenderTarget->mFramebuffer;
     rpBeginInfo.renderArea.offset = { 0, 0 };
     rpBeginInfo.renderArea.extent = { static_cast<uint32>(mRenderTarget->mWidth),
                                       static_cast<uint32>(mRenderTarget->mHeight) };
@@ -248,7 +249,7 @@ bool CommandRecorder::WriteDynamicBuffer(Buffer* b, size_t offset, size_t size, 
         VK_ZERO_MEMORY(rpBeginInfo);
         rpBeginInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
         rpBeginInfo.renderPass = mRenderTarget->mRenderPass;
-        rpBeginInfo.framebuffer = mRenderTarget->GetCurrentFramebuffer();
+        rpBeginInfo.framebuffer = mRenderTarget->mFramebuffer;
         rpBeginInfo.renderArea.offset = { 0, 0 };
         rpBeginInfo.renderArea.extent = { static_cast<uint32>(mRenderTarget->mWidth),
                                           static_cast<uint32>(mRenderTarget->mHeight) };
@@ -321,10 +322,39 @@ void CommandRecorder::CopyTexture(const TexturePtr& src, const TexturePtr& dest)
 
 void CommandRecorder::CopyTexture(const TexturePtr& src, const BackbufferPtr& dest)
 {
-    NFE_UNUSED(src);
-    NFE_UNUSED(dest);
+    Texture* s = dynamic_cast<Texture*>(src.Get());
+    Backbuffer* d = dynamic_cast<Backbuffer*>(dest.Get());
 
-    NFE_FATAL("Not implemented!");
+    NFE_ASSERT(s != nullptr, "Invalid source texture provided");
+    NFE_ASSERT(d != nullptr, "Invalid destination backbuffer provided");
+
+    if (mRenderTarget)
+    {
+        vkCmdEndRenderPass(mCommandBuffer);
+        mRenderTarget = nullptr;
+    }
+
+    s->Transition(mCommandBuffer, VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL);
+    d->Transition(mCommandBuffer, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
+
+    VkImageCopy copyRegion;
+    VK_ZERO_MEMORY(copyRegion);
+    copyRegion.srcSubresource.aspectMask = s->mImageSubresRange.aspectMask;
+    copyRegion.srcSubresource.baseArrayLayer = s->mImageSubresRange.baseArrayLayer;
+    copyRegion.srcSubresource.layerCount = s->mImageSubresRange.layerCount;
+    copyRegion.srcSubresource.mipLevel = 0;
+    copyRegion.dstSubresource.aspectMask = d->mImageSubresRange.aspectMask;
+    copyRegion.dstSubresource.baseArrayLayer = d->mImageSubresRange.baseArrayLayer;
+    copyRegion.dstSubresource.layerCount = d->mImageSubresRange.layerCount;
+    copyRegion.dstSubresource.mipLevel = 0;
+    copyRegion.extent.width = s->mWidth;
+    copyRegion.extent.height = s->mHeight;
+    vkCmdCopyImage(mCommandBuffer,
+                   s->mImage, VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL,
+                   d->mImages[d->mCurrentImage], VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
+                   1, &copyRegion);
+
+    d->Transition(mCommandBuffer, VK_IMAGE_LAYOUT_PRESENT_SRC_KHR);
 }
 
 void CommandRecorder::Clear(uint32 flags, uint32 numTargets, const uint32* slots, const Math::Vec4fU* colors, float depthValue, uint8 stencilValue)

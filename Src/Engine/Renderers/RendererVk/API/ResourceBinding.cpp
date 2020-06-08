@@ -94,7 +94,6 @@ bool ResourceBindingSet::Init(const ResourceBindingSetDesc& desc)
 
 ResourceBindingLayout::ResourceBindingLayout()
     : mPipelineLayout(VK_NULL_HANDLE)
-    , mDescriptorPool(VK_NULL_HANDLE)
     , mVolatileBufferSet(VK_NULL_HANDLE)
     , mVolatileBufferLayout(VK_NULL_HANDLE)
     , mVolatileSetSlot(UINT16_MAX)
@@ -103,13 +102,6 @@ ResourceBindingLayout::ResourceBindingLayout()
 
 ResourceBindingLayout::~ResourceBindingLayout()
 {
-    // there is no need to free separate descriptor sets when pool is freed
-    // we can just free the pool and sets will follow with it
-    if (mDescriptorPool != VK_NULL_HANDLE)
-    {
-        vkResetDescriptorPool(gDevice->GetDevice(), mDescriptorPool, 0);
-        vkDestroyDescriptorPool(gDevice->GetDevice(), mDescriptorPool, nullptr);
-    }
     if (mPipelineLayout != VK_NULL_HANDLE)
         vkDestroyPipelineLayout(gDevice->GetDevice(), mPipelineLayout, nullptr);
     if (mVolatileBufferLayout != VK_NULL_HANDLE)
@@ -243,24 +235,12 @@ bool ResourceBindingLayout::Init(const ResourceBindingLayoutDesc& desc)
     // perform set allocation, but only when there is something to allocate
     if (desc.numBindingSets + desc.numVolatileCBuffers > 0)
     {
-        // allocate pool for descriptors
-        VkDescriptorPoolCreateInfo poolInfo;
-        VK_ZERO_MEMORY(poolInfo);
-        poolInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
-        poolInfo.maxSets = desc.numBindingSets;
-        if (desc.numVolatileCBuffers)
-            poolInfo.maxSets++; // plus one Volatile Buffer set
-        poolInfo.poolSizeCount = poolSizes.Size();
-        poolInfo.pPoolSizes = poolSizes.Data();
-        result = vkCreateDescriptorPool(gDevice->GetDevice(), &poolInfo, nullptr, &mDescriptorPool);
-        CHECK_VKRESULT(result, "Failed to create descriptor pool");
-
         // now allocate sets from pool
         // TODO it would be faster to allocate all sets at once
         VkDescriptorSetAllocateInfo allocInfo;
         VK_ZERO_MEMORY(allocInfo);
         allocInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
-        allocInfo.descriptorPool = mDescriptorPool;
+        allocInfo.descriptorPool = gDevice->GetDescriptorPool();
 
         for (auto rbs : setPtrs)
         {

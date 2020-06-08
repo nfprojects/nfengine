@@ -44,7 +44,6 @@ class ResourceBindingLayout : public IResourceBindingLayout
     friend class PipelineState;
 
     VkPipelineLayout mPipelineLayout;
-    VkDescriptorPool mDescriptorPool;
     VkDescriptorSet mVolatileBufferSet;
     VkDescriptorSetLayout mVolatileBufferLayout;
     uint16 mVolatileSetSlot;

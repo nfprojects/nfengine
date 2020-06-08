@@ -15,13 +15,19 @@ namespace NFE {
 namespace Renderer {
 
 Backbuffer::Backbuffer()
-    : Texture()
-    , mSurface(VK_NULL_HANDLE)
+    : mSurface(VK_NULL_HANDLE)
+    , mWidth(0)
+    , mHeight(0)
+    , mFormat(VK_FORMAT_UNDEFINED)
+    , mImageNum(0)
+    , mCurrentImage(0)
+    , mImages()
+    , mImageExtraDatas()
     , mColorSpace(VK_COLORSPACE_SRGB_NONLINEAR_KHR)
     , mPresentQueueIndex(UINT32_MAX)
     , mPresentQueue(VK_NULL_HANDLE)
     , mSwapchain(VK_NULL_HANDLE)
-    , mSwapPresentMode(VK_PRESENT_MODE_MAILBOX_KHR)
+    , mSwapPresentMode(VK_PRESENT_MODE_IMMEDIATE_KHR)
 {
 }
 
@@ -29,11 +35,8 @@ Backbuffer::~Backbuffer()
 {
     vkQueueWaitIdle(mPresentQueue);
 
-    if (mPostPresentCommandBuffers.Size())
-        vkFreeCommandBuffers(gDevice->GetDevice(), gDevice->GetCommandPool(), mBuffersNum, mPostPresentCommandBuffers.Data());
-    if (mPresentCommandBuffers.Size())
-        vkFreeCommandBuffers(gDevice->GetDevice(), gDevice->GetCommandPool(), mBuffersNum, mPresentCommandBuffers.Data());
-
+    if (mAcquireNextImageFence != VK_NULL_HANDLE)
+        vkDestroyFence(gDevice->GetDevice(), mAcquireNextImageFence, nullptr);
     if (mSwapchain != VK_NULL_HANDLE)
         vkDestroySwapchainKHR(gDevice->GetDevice(), mSwapchain, nullptr);
     if (mSurface != VK_NULL_HANDLE)
@@ -90,7 +93,7 @@ bool Backbuffer::SelectSurfaceFormat(const BackbufferDesc& desc)
     // get surface's format
     uint32_t formatCount;
     VkResult result = vkGetPhysicalDeviceSurfaceFormatsKHR(gDevice->GetPhysicalDevice(), mSurface,
-                                                  &formatCount, nullptr);
+                                                           &formatCount, nullptr);
     CHECK_VKRESULT(result, "Unable to retrieve surface format count.");
 
     if (formatCount == 0)
@@ -175,24 +178,24 @@ bool Backbuffer::SelectBufferCount()
     CHECK_VKRESULT(result, "Failed to acquire surface's capabilities");
 
     // Ideally we should be able to double-buffer, but for safety check this against caps
-    mBuffersNum = 2;
+    mImageNum = 2;
     if (mSurfaceCapabilities.maxImageCount > 0)
     {
-        if (mBuffersNum > mSurfaceCapabilities.maxImageCount)
+        if (mImageNum > mSurfaceCapabilities.maxImageCount)
         {
             NFE_LOG_WARNING("Requested %d swapchain image count exceeds max limit %d - reducing",
-                        mBuffersNum, mSurfaceCapabilities.maxImageCount);
-            mBuffersNum = mSurfaceCapabilities.maxImageCount;
+                        mImageNum, mSurfaceCapabilities.maxImageCount);
+            mImageNum = mSurfaceCapabilities.maxImageCount;
         }
     }
 
     if (mSurfaceCapabilities.minImageCount > 0)
     {
-        if (mBuffersNum < mSurfaceCapabilities.minImageCount)
+        if (mImageNum < mSurfaceCapabilities.minImageCount)
         {
             NFE_LOG_WARNING("Requested %d swapchain image count exceeds minimum limit %d - increasing",
-                        mBuffersNum, mSurfaceCapabilities.minImageCount);
-            mBuffersNum = mSurfaceCapabilities.minImageCount;
+                        mImageNum, mSurfaceCapabilities.minImageCount);
+            mImageNum = mSurfaceCapabilities.minImageCount;
         }
     }
 
@@ -206,12 +209,12 @@ bool Backbuffer::CreateSwapchain(const BackbufferDesc& desc)
     VK_ZERO_MEMORY(swapInfo);
     swapInfo.sType = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR;
     swapInfo.surface = mSurface;
-    swapInfo.minImageCount = mBuffersNum;
+    swapInfo.minImageCount = mImageNum;
     swapInfo.imageFormat = mFormat;
     swapInfo.imageColorSpace = mColorSpace;
     swapInfo.imageExtent.width = desc.width;
     swapInfo.imageExtent.height = desc.height;
-    swapInfo.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
+    swapInfo.imageUsage = VK_IMAGE_USAGE_TRANSFER_DST_BIT;
     swapInfo.preTransform = mSurfaceCapabilities.currentTransform;
     swapInfo.imageArrayLayers = 1;
     swapInfo.imageSharingMode = VK_SHARING_MODE_EXCLUSIVE;
@@ -222,135 +225,48 @@ bool Backbuffer::CreateSwapchain(const BackbufferDesc& desc)
     VkResult result = vkCreateSwapchainKHR(gDevice->GetDevice(), &swapInfo, nullptr, &mSwapchain);
     CHECK_VKRESULT(result, "Failed to create a swapchain");
 
-    return true;
-}
-
-bool Backbuffer::CreateSwapchainImageViews()
-{
     uint32 swapImageCount = 0;
-    VkResult result = vkGetSwapchainImagesKHR(gDevice->GetDevice(), mSwapchain, &swapImageCount, nullptr);
+    result = vkGetSwapchainImagesKHR(gDevice->GetDevice(), mSwapchain, &swapImageCount, nullptr);
     CHECK_VKRESULT(result, "Failed to get swapchain image count");
-    if (swapImageCount < mBuffersNum)
+    if (swapImageCount < mImageNum)
     {
-        NFE_LOG_ERROR("Not enough swap images created (%d, requested %d)", swapImageCount, mBuffersNum);
+        NFE_LOG_ERROR("Not enough swap images created (%d, requested %d)", swapImageCount, mImageNum);
         return false;
     }
-    else if (swapImageCount > mBuffersNum)
-        NFE_LOG_WARNING("Created more swapchain images than requested (%d, requested %d)", swapImageCount, mBuffersNum);
+    else if (swapImageCount > mImageNum)
+        NFE_LOG_WARNING("Created more swapchain images than requested (%d, requested %d)", swapImageCount, mImageNum);
 
-    mBuffersNum = swapImageCount;
+    mImageNum = swapImageCount;
 
-    mBuffers.Resize(mBuffersNum);
-    mBufferViews.Resize(mBuffersNum);
+    mImages.Resize(mImageNum);
+    mImageExtraDatas.Resize(mImageNum);
 
-    result = vkGetSwapchainImagesKHR(gDevice->GetDevice(), mSwapchain, &mBuffersNum, mBuffers.Data());
+    result = vkGetSwapchainImagesKHR(gDevice->GetDevice(), mSwapchain, &mImageNum, mImages.Data());
     CHECK_VKRESULT(result, "Failed to get swapchain images");
 
-    NFE_LOG_DEBUG("%d swapchain buffers acquired", mBuffersNum);
-    for (mCurrentBuffer = 0; mCurrentBuffer < mBuffersNum; mCurrentBuffer++)
+    for (auto& d: mImageExtraDatas)
     {
-        VkImageViewCreateInfo ivInfo;
-        VK_ZERO_MEMORY(ivInfo);
-        ivInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
-        ivInfo.image = mBuffers[mCurrentBuffer];
-        ivInfo.format = mFormat;
-        ivInfo.viewType = VK_IMAGE_VIEW_TYPE_2D;
-        ivInfo.components = {
-            // order of variables in VkComponentMapping is r, g, b, a
-            VK_COMPONENT_SWIZZLE_R,
-            VK_COMPONENT_SWIZZLE_G,
-            VK_COMPONENT_SWIZZLE_B,
-            VK_COMPONENT_SWIZZLE_A,
-        };
-        ivInfo.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
-        ivInfo.subresourceRange.baseMipLevel = 0;
-        ivInfo.subresourceRange.levelCount = 1;
-        ivInfo.subresourceRange.baseArrayLayer = 0;
-        ivInfo.subresourceRange.layerCount = 1;
-        result = vkCreateImageView(gDevice->GetDevice(), &ivInfo, nullptr, &mBufferViews[mCurrentBuffer]);
-        CHECK_VKRESULT(result, "Failed to generate Image View from Swapchain image");
+        d.layout = VK_IMAGE_LAYOUT_UNDEFINED;
     }
+
+    mImageSubresRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+    mImageSubresRange.baseArrayLayer = 0;
+    mImageSubresRange.baseMipLevel = 0;
+    mImageSubresRange.layerCount = 1;
+    mImageSubresRange.levelCount = 1;
+
+    NFE_LOG_DEBUG("%d swapchain buffers acquired", mImageNum);
 
     return true;
 }
 
-bool Backbuffer::BuildPresentCommandBuffers()
+bool Backbuffer::CreateNextImageFence()
 {
-    mPresentCommandBuffers.Resize(mBuffersNum);
-    mPostPresentCommandBuffers.Resize(mBuffersNum);
-
-    VkResult result = VK_SUCCESS;
-    VkCommandBufferAllocateInfo buffInfo = {};
-    VK_ZERO_MEMORY(buffInfo);
-    buffInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
-    buffInfo.commandPool = gDevice->GetCommandPool();
-    buffInfo.commandBufferCount = mBuffersNum;
-    buffInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
-    result = vkAllocateCommandBuffers(gDevice->GetDevice(), &buffInfo, mPresentCommandBuffers.Data());
-    CHECK_VKRESULT(result, "Unable to allocate present command buffer");
-    result = vkAllocateCommandBuffers(gDevice->GetDevice(), &buffInfo, mPostPresentCommandBuffers.Data());
-    CHECK_VKRESULT(result, "Unable to allocate post present command buffer");
-
-    // Build present and post-present command buffers
-    // These will contain only a PipelineBarrier which will convert our image through layouts
-    VkImageMemoryBarrier presentBarrier;
-    VK_ZERO_MEMORY(presentBarrier);
-    presentBarrier.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
-    presentBarrier.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
-    presentBarrier.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
-    presentBarrier.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
-    presentBarrier.subresourceRange.baseMipLevel = 0;
-    presentBarrier.subresourceRange.levelCount = 1;
-    presentBarrier.subresourceRange.baseArrayLayer = 0;
-    presentBarrier.subresourceRange.layerCount = 1;
-
-    VkCommandBufferBeginInfo cmdBeginInfo;
-    VK_ZERO_MEMORY(cmdBeginInfo);
-    cmdBeginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
-
-    // layout conversion before present (color attachment -> present source)
-    presentBarrier.srcAccessMask = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
-    presentBarrier.dstAccessMask = VK_ACCESS_MEMORY_READ_BIT;
-    presentBarrier.oldLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
-    presentBarrier.newLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
-    for (uint32 i = 0; i < mBuffersNum; ++i)
-    {
-        result = vkBeginCommandBuffer(mPresentCommandBuffers[i], &cmdBeginInfo);
-        CHECK_VKRESULT(result, "Failed to start recording present command buffer");
-
-        presentBarrier.image = mBuffers[i];
-
-        vkCmdPipelineBarrier(mPresentCommandBuffers[i], VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
-                             VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT, 0,
-                             0, nullptr, 0, nullptr,
-                             1, &presentBarrier);
-
-        result = vkEndCommandBuffer(mPresentCommandBuffers[i]);
-        CHECK_VKRESULT(result, "Error during present command buffer recording");
-    }
-
-    // layout conversion after present (whatever -> color attachment)
-    // here we don't care about source access and old layout, because we'll use this
-    // command buffer in initialization stage as well
-    presentBarrier.srcAccessMask = 0;
-    presentBarrier.dstAccessMask = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
-    presentBarrier.oldLayout = VK_IMAGE_LAYOUT_UNDEFINED;
-    presentBarrier.newLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
-    for (uint32 i = 0; i < mBuffersNum; ++i)
-    {
-        result = vkBeginCommandBuffer(mPostPresentCommandBuffers[i], &cmdBeginInfo);
-        CHECK_VKRESULT(result, "Failed to start recording post present command buffer");
-
-        presentBarrier.image = mBuffers[i];
-
-        vkCmdPipelineBarrier(mPostPresentCommandBuffers[i], VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT,
-                             VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT, 0,
-                             0, nullptr, 0, nullptr,
-                             1, &presentBarrier);
-
-        result = vkEndCommandBuffer(mPostPresentCommandBuffers[i]);
-        CHECK_VKRESULT(result, "Error during post present command buffer recording");
-    }
+    VkFenceCreateInfo info;
+    VK_ZERO_MEMORY(info);
+    info.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO;
+    VkResult result = vkCreateFence(gDevice->GetDevice(), &info, nullptr, &mAcquireNextImageFence);
+    CHECK_VKRESULT(result, "Failed to create next image fence");
 
     return true;
 }
@@ -359,25 +275,14 @@ bool Backbuffer::AcquireNextImage()
 {
     // TODO handle VK_ERROR_OUT_OF_DATE (happens ex. during resize)
     VkResult result = vkAcquireNextImageKHR(gDevice->GetDevice(), mSwapchain, UINT64_MAX,
-                                            gDevice->mPresentSemaphore, VK_NULL_HANDLE, &mCurrentBuffer);
+                                            VK_NULL_HANDLE, mAcquireNextImageFence, &mCurrentImage);
     CHECK_VKRESULT(result, "Failed to acquire next image");
 
-    // Submit a pipeline barrier call to ensure our buffer is a color attachment
-    VkPipelineStageFlags pipelineStages = VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT;
-    VkSubmitInfo submitInfo;
-    VK_ZERO_MEMORY(submitInfo);
-    submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
-    submitInfo.commandBufferCount = 1;
-    submitInfo.pCommandBuffers = &mPostPresentCommandBuffers[mCurrentBuffer];
-    submitInfo.waitSemaphoreCount = 1;
-    submitInfo.pWaitSemaphores = &gDevice->mPresentSemaphore;
-    submitInfo.pWaitDstStageMask = &pipelineStages;
-    submitInfo.signalSemaphoreCount = 1;
-    submitInfo.pSignalSemaphores = &gDevice->mPostPresentSemaphore;
-    result = vkQueueSubmit(mPresentQueue, 1, &submitInfo, VK_NULL_HANDLE);
-    CHECK_VKRESULT(result, "Failed to submit post present operations");
+    result = vkWaitForFences(gDevice->GetDevice(), 1, &mAcquireNextImageFence, VK_TRUE, UINT64_MAX);
+    CHECK_VKRESULT(result, "Failed to wait for next image");
 
-    gDevice->SignalPresent();
+    result = vkResetFences(gDevice->GetDevice(), 1, &mAcquireNextImageFence);
+    CHECK_VKRESULT(result, "Failed to reset next image fence");
 
     return true;
 }
@@ -395,14 +300,11 @@ bool Backbuffer::Init(const BackbufferDesc& desc)
     if (!SelectPresentMode(desc)) return false;
     if (!SelectBufferCount()) return false;
     if (!CreateSwapchain(desc)) return false;
-    if (!CreateSwapchainImageViews()) return false;
+    if (!CreateNextImageFence()) return false;
 
     mWidth = desc.width;
     mHeight = desc.height;
-    mType = TextureType::Texture2D;
-    mFromSwapchain = true;
 
-    if (!BuildPresentCommandBuffers()) return false;
     if (!AcquireNextImage()) return false;
 
     NFE_LOG_INFO("Backbuffer initialized successfully.");
@@ -420,44 +322,49 @@ bool Backbuffer::Resize(int newWidth, int newHeight)
 
 bool Backbuffer::Present()
 {
-    // our semaphore to wait for will be the last used from SemaphorePool
-    VkSemaphore renderSem = gDevice->GetSemaphorePool()->GetCurrentSemaphore();
-    // TODO maybe all present semaphores should belong to Backbuffer
+    VkResult result = VK_SUCCESS;
 
-    // Submit a pipeline barrier call to ensure our buffer is a present source
-    VkPipelineStageFlags pipelineStages = VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT;
-    VkSubmitInfo submitInfo;
-    VK_ZERO_MEMORY(submitInfo);
-    submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
-    submitInfo.commandBufferCount = 1;
-    submitInfo.pCommandBuffers = &mPresentCommandBuffers[mCurrentBuffer];
-    submitInfo.waitSemaphoreCount = 1;
-    submitInfo.pWaitSemaphores = &renderSem;
-    submitInfo.pWaitDstStageMask = &pipelineStages;
-    submitInfo.signalSemaphoreCount = 1;
-    submitInfo.pSignalSemaphores = &gDevice->mPrePresentSemaphore;
-    VkResult result = vkQueueSubmit(mPresentQueue, 1, &submitInfo, VK_NULL_HANDLE);
-    CHECK_VKRESULT(result, "Failed to submit post present operations");
-
-    // Present whatever was drawn (only if render semaphore is signalled)
     VkPresentInfoKHR presentInfo;
     VK_ZERO_MEMORY(presentInfo);
     presentInfo.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
     presentInfo.swapchainCount = 1;
     presentInfo.pSwapchains = &mSwapchain;
-    presentInfo.pImageIndices = &mCurrentBuffer;
-    presentInfo.waitSemaphoreCount = 1;
-    presentInfo.pWaitSemaphores = &gDevice->mPrePresentSemaphore;
+    presentInfo.pImageIndices = &mCurrentImage;
     presentInfo.pResults = &result;
     vkQueuePresentKHR(mPresentQueue, &presentInfo);
-    //CHECK_VKRESULT(result, "Failed to present image on current swap chain");
-    if (result != VK_SUCCESS)
-    {
-        NFE_LOG_ERROR("Failed to present image on current swap chain: %d (%s)", result,
-                  TranslateVkResultToString(result));
-    }
+    CHECK_VKRESULT(result, "Failed to present image on current swap chain");
 
     return AcquireNextImage();
+}
+
+void Backbuffer::Transition(VkCommandBuffer cb, VkImageLayout dstLayout)
+{
+    VkImage& img = mImages[mCurrentImage];
+    ImageExtraData& data = mImageExtraDatas[mCurrentImage];
+
+    // no need to transition if destination is the same
+    if (dstLayout == data.layout)
+        return;
+
+    // TODO take access masks and pipeline stages into account
+    VkImageMemoryBarrier imageBarrier;
+    VK_ZERO_MEMORY(imageBarrier);
+    imageBarrier.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
+    imageBarrier.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+    imageBarrier.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+    imageBarrier.srcAccessMask = 0;
+    imageBarrier.dstAccessMask = 0;
+    imageBarrier.oldLayout = data.layout;
+    imageBarrier.newLayout = dstLayout;
+    imageBarrier.image = img;
+    imageBarrier.subresourceRange = mImageSubresRange;
+
+    // assume all barriers are full blocking, like in D3D12 renderer
+    vkCmdPipelineBarrier(cb,
+                         VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT, VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT, 0,
+                         0, nullptr, 0, nullptr, 1, &imageBarrier);
+
+    data.layout = dstLayout;
 }
 
 } // namespace Renderer

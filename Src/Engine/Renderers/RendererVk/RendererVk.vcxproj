@@ -35,7 +35,11 @@
     <ClInclude Include="Internal\RenderPassDesc.hpp" />
     <ClInclude Include="Internal\RenderPassManager.hpp" />
     <ClInclude Include="Internal\RingBuffer.hpp" />
-    <ClInclude Include="Internal\SemaphorePool.hpp" />
+    <ClInclude Include="Internal\SemaphorePool.hpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Final|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="Internal\Translations.hpp" />
     <ClInclude Include="Internal\Win\WinExtensions.hpp" />
     <ClInclude Include="PCH.hpp" />
@@ -65,7 +69,11 @@
     <ClCompile Include="Internal\Instance.cpp" />
     <ClCompile Include="Internal\RenderPassManager.cpp" />
     <ClCompile Include="Internal\RingBuffer.cpp" />
-    <ClCompile Include="Internal\SemaphorePool.cpp" />
+    <ClCompile Include="Internal\SemaphorePool.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Final|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="Internal\Translations.cpp" />
     <ClCompile Include="Internal\Win\WinExtensions.cpp" />
     <ClCompile Include="Main.cpp" />

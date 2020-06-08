@@ -102,7 +102,7 @@ VkRenderPass RenderPassManager::ConstructRenderPass(const RenderPassDesc& desc)
 VkRenderPass RenderPassManager::GetRenderPass(const RenderPassDesc& desc)
 {
     // TODO uncomment when NFE_ASSERT is done right
-    //NFE_ASSERT(desc.colorFormatCount <= MAX_RENDER_TARGETS, "Too many color formats requested (max is 8)");
+    NFE_ASSERT(desc.colorFormats.Size() <= MAX_RENDER_TARGETS, "Too many color formats requested (max is 8)");
 
     auto rp = mRenderPasses.Find(desc);
     if (rp == mRenderPasses.End())

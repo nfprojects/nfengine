@@ -114,14 +114,20 @@ bool Shader::Init(const ShaderDesc& desc)
         NFE_LOG_ERROR("Memory allocation failed");
         return false;
     }
+
+    // set environment
+    mShaderGlslang->setEnvInput(glslang::EShSourceGlsl, lang, glslang::EShClientVulkan, DEFAULT_VERSION);
+    mShaderGlslang->setEnvClient(glslang::EShClientVulkan, glslang::EShTargetVulkan_1_1);
+    mShaderGlslang->setEnvTarget(glslang::EShTargetSpv, glslang::EShTargetSpv_1_1);
+
+    // input shader strings
     const char * shaderStrs[] = { shaderHead.c_str(), code };
     mShaderGlslang->setStrings(shaderStrs, 2);
     mShaderGlslang->setEntryPoint("main");
 
-    // TODO we might want to enable includes, so this includer is useless for later on
-    glslang::TShader::ForbidIncluder includer;
+    // parse to glslang's AST
     EShMessages msg = static_cast<EShMessages>(EShMsgDefault | EShMsgVulkanRules);
-    if (!mShaderGlslang->parse(&glslang::DefaultTBuiltInResource, DEFAULT_VERSION, ENoProfile, false, false, msg, includer))
+    if (!mShaderGlslang->parse(&glslang::DefaultTBuiltInResource, DEFAULT_VERSION, ENoProfile, false, false, msg))
     {
         NFE_LOG_ERROR("Failed to parse shader file %s:\n%s", desc.path, mShaderGlslang->getInfoLog());
         return false;

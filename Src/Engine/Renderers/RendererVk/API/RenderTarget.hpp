@@ -9,7 +9,8 @@
 #include "../Interface/RenderTarget.hpp"
 #include "Texture.hpp"
 #include "Defines.hpp"
-#include "Engine/Common/Containers/DynArray.hpp"
+
+#include <Engine/Common/Containers/StaticArray.hpp>
 
 
 namespace NFE {
@@ -19,23 +20,31 @@ class RenderTarget : public IRenderTarget
 {
     friend class CommandRecorder;
 
-    int mWidth;
-    int mHeight;
-
+    uint32 mWidth;
+    uint32 mHeight;
+    Common::StaticArray<Texture*, MAX_RENDER_TARGETS> mAttachments;
+    Texture* mDepthAttachment;
     VkRenderPass mRenderPass;
-    Common::DynArray<Texture*> mTex;
-    Texture* mDepthTex;
-
-    Common::DynArray<VkFramebuffer> mFramebuffers;
+    VkFramebuffer mFramebuffer;
 
 public:
     RenderTarget();
     ~RenderTarget();
 
-    void GetDimensions(int& width, int& height);
-    bool Init(const RenderTargetDesc& desc);
+    void GetDimensions(int& width, int& height) override;
+    bool Init(const RenderTargetDesc& desc) override;
 
-    const VkFramebuffer& GetCurrentFramebuffer() const;
+    NFE_INLINE void TransitionColorAttachments(VkCommandBuffer cmd, VkImageLayout dstLayout)
+    {
+        for (const auto& a: mAttachments)
+            a->Transition(cmd, dstLayout);
+    }
+
+    NFE_INLINE void TransitionDSAttachment(VkCommandBuffer cmd, VkImageLayout dstLayout)
+    {
+        if (mDepthAttachment)
+            mDepthAttachment->Transition(cmd, dstLayout);
+    }
 };
 
 } // namespace Renderer
