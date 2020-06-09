@@ -149,9 +149,9 @@ Vec8i Random::GetVec8i()
 
 #else
 
-Vec8i Random::GetIntVector8()
+Vec8i Random::GetVec8i()
 {
-    return Vec8i{ GetIntVec4f(), GetIntVec4f() };
+    return Vec8i{ GetVec4i(), GetVec4i() };
 }
 
 #endif // NFE_USE_AVX2

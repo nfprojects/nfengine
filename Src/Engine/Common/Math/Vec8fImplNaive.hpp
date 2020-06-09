@@ -3,100 +3,74 @@
 namespace NFE {
 namespace Math {
 
+VecBool8f::VecBool8f(bool scalar)
+    : low{ scalar }
+    , high{ scalar }
+{}
+
 VecBool8f::VecBool8f(bool e0, bool e1, bool e2, bool e3, bool e4, bool e5, bool e6, bool e7)
-    : b{ e0, e1, e2, e3, e4, e5, e6, e7 }
+    : low{ e0, e1, e2, e3 }
+    , high{ e4, e5, e6, e7 }
 {}
 
 VecBool8f::VecBool8f(const VecBool4f& low, const VecBool4f& high)
-    : b{ low.Get<0>(), low.Get<1>(), low.Get<2>(), low.Get<3>(),
-         high.Get<0>(), high.Get<1>(), high.Get<2>(), high.Get<3>() }
+    : low{ low }
+    , high{ high }
 {}
 
 template<uint32 index>
 bool VecBool8f::Get() const
 {
-    static_assert(index < 8, "Invalid index");
-    return b[index];
+    static_assert(index < 8u, "Invalid index");
+
+    if constexpr (index < 4)
+    {
+        return low.Get<index>();
+    }
+    else
+    {
+        return high.Get<index - 4u>();
+    }
 }
 
-int VecBool8f::GetMask() const
+uint32 VecBool8f::GetMask() const
 {
-    int32 ret = 0;
-    for (uint32 i = 0; i < 8; ++i)
-    {
-        ret |= b[i] ? (1 << i) : 0;
-    }
-    return ret;
+    return low.GetMask() | (high.GetMask() << 4u);
 }
 
 bool VecBool8f::All() const
 {
-    bool ret = true;
-    for (uint32 i = 0; i < 8; ++i)
-    {
-        ret &= b[i];
-    }
-    return ret;
+    return low.All() && high.All();
 }
 
 bool VecBool8f::None() const
 {
-    bool ret = true;
-    for (uint32 i = 0; i < 8; ++i)
-    {
-        ret &= !(b[i]);
-    }
-    return ret;
+    return low.None() && high.None();
 }
 
 bool VecBool8f::Any() const
 {
-    bool ret = false;
-    for (uint32 i = 0; i < 8; ++i)
-    {
-        ret |= (b[i]);
-    }
-    return ret;
+    return low.Any() || high.Any();
 }
 
 const VecBool8f VecBool8f::operator & (const VecBool8f rhs) const
 {
-    VecBool8f ret;
-    for (uint32 i = 0; i < 8; ++i)
-    {
-        ret.b[i] = b[i] && rhs.b[i];
-    }
-    return ret;
+    return { low & rhs.low, high & rhs.high };
 }
 
 const VecBool8f VecBool8f::operator | (const VecBool8f rhs) const
 {
-    VecBool8f ret;
-    for (uint32 i = 0; i < 8; ++i)
-    {
-        ret.b[i] = b[i] || rhs.b[i];
-    }
-    return ret;
+    return { low | rhs.low, high | rhs.high };
 }
 
 const VecBool8f VecBool8f::operator ^ (const VecBool8f rhs) const
 {
-    VecBool8f ret;
-    for (uint32 i = 0; i < 8; ++i)
-    {
-        ret.b[i] = b[i] ^ rhs.b[i];
-    }
-    return ret;
+    return { low ^ rhs.low, high ^ rhs.high };
 }
 
 bool VecBool8f::operator == (const VecBool8f rhs) const
 {
-    bool ret = true;
-    for (uint32 i = 0; i < 8; ++i)
-    {
-        ret &= b[i] == rhs.b[i];
-    }
-    return ret;
+    return low == rhs.low && high == rhs.high;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -122,15 +96,18 @@ Vec8f::Vec8f(const Vec4f& lo, const Vec4f& hi)
 {}
 
 Vec8f::Vec8f(float e0, float e1, float e2, float e3, float e4, float e5, float e6, float e7)
-    : f{ e0, e1, e2, e3, e4, e5, e6, e7 }
+    : low{ e0, e1, e2, e3 }
+    , high{ e4, e5, e6, e7 }
 {}
 
 Vec8f::Vec8f(int32 e0, int32 e1, int32 e2, int32 e3, int32 e4, int32 e5, int32 e6, int32 e7)
-    : i{ e0, e1, e2, e3, e4, e5, e6, e7 }
+    : low{ e0, e1, e2, e3 }
+    , high{ e4, e5, e6, e7 }
 {}
 
 Vec8f::Vec8f(uint32 e0, uint32 e1, uint32 e2, uint32 e3, uint32 e4, uint32 e5, uint32 e6, uint32 e7)
-    : u{ e0, e1, e2, e3, e4, e5, e6, e7 }
+    : low{ e0, e1, e2, e3 }
+    , high{ e4, e5, e6, e7 }
 {}
 
 Vec8f::Vec8f(const float* src)
@@ -172,17 +149,7 @@ Vec8f& Vec8f::operator = (const Vec8f& other)
 
 const Vec8f Vec8f::Select(const Vec8f& a, const Vec8f& b, const VecBool8f& sel)
 {
-    return
-    {
-        sel.Get<0>() ? b.f[0] : a.f[0],
-        sel.Get<1>() ? b.f[1] : a.f[1],
-        sel.Get<2>() ? b.f[2] : a.f[2],
-        sel.Get<3>() ? b.f[3] : a.f[3],
-        sel.Get<4>() ? b.f[3] : a.f[4],
-        sel.Get<5>() ? b.f[4] : a.f[5],
-        sel.Get<6>() ? b.f[5] : a.f[6],
-        sel.Get<7>() ? b.f[6] : a.f[7],
-    };
+    return { Vec4f::Select(a.low, b.low, sel.low), Vec4f::Select(a.high, b.high, sel.high) };
 }
 
 template<uint32 selX, uint32 selY, uint32 selZ, uint32 selW>

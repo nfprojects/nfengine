@@ -174,7 +174,7 @@ const Vec8i Vec8i::Iota(const int32 value)
     return Vec8i(value) + Vec8i(0, 1, 2, 3, 4, 5, 6, 7);
 }
 
-const Vec8i Vec8i::SelectBySign(const Vec8i& a, const Vec8i& b, const VecBool8i& sel)
+const Vec8i Vec8i::Select(const Vec8i& a, const Vec8i& b, const VecBool8i& sel)
 {
 #if defined(NFE_USE_AVX512)
     return _mm256_mask_blend_epi32(sel, a, b);
@@ -277,12 +277,6 @@ const Vec8i Vec8i::operator - (int32 b) const
 const Vec8i Vec8i::operator * (int32 b) const
 {
     return _mm256_mullo_epi32(v, _mm256_set1_epi32(b));
-}
-
-const Vec8i Vec8i::operator % (int32 b) const
-{
-    // TODO
-    return Vec8i(i[0] % b, i[1] % b, i[2] % b, i[3] % b, i[4] % b, i[5] % b, i[6] % b, i[7] % b);
 }
 
 Vec8i& Vec8i::operator += (int32 b)
@@ -413,7 +407,7 @@ const Vec8ui Vec8ui::Iota(const uint32 value)
     return Vec8ui(value) + Vec8ui(0, 1, 2, 3, 4, 5, 6, 7);
 }
 
-const Vec8ui Vec8ui::SelectBySign(const Vec8ui& a, const Vec8ui& b, const VecBool8i& sel)
+const Vec8ui Vec8ui::Select(const Vec8ui& a, const Vec8ui& b, const VecBool8i& sel)
 {
 #if defined(NFE_USE_AVX512)
     return _mm256_mask_blend_epi32(sel, a, b);

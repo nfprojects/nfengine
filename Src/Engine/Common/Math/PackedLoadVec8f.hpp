@@ -14,7 +14,7 @@ NFE_FORCE_INLINE const Vec8f LoadVec8f(const Half4* src)
     return _mm256_cvtph_ps(_mm_loadu_si128(reinterpret_cast<const __m128i*>(src)));
 #else // NFE_USE_FP16C
     return Vec8f(
-        src[0],x.ToFloat(), src[0].y.ToFloat(), src[0].z.ToFloat(), src[0].w.ToFloat(),
+        src[0].x.ToFloat(), src[0].y.ToFloat(), src[0].z.ToFloat(), src[0].w.ToFloat(),
         src[1].x.ToFloat(), src[1].y.ToFloat(), src[1].z.ToFloat(), src[1].w.ToFloat()
     );
 #endif // NFE_USE_FP16C

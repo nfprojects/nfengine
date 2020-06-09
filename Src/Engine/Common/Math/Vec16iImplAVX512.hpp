@@ -61,7 +61,7 @@ const Vec16i Vec16i::Iota(const int32 value)
     return Vec16i(value) + Vec16i(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15);
 }
 
-const Vec16i Vec16i::SelectBySign(const Vec16i& a, const Vec16i& b, const VecBool16& sel)
+const Vec16i Vec16i::Select(const Vec16i& a, const Vec16i& b, const VecBool16& sel)
 {
     return Vec16i(_mm512_mask_blend_epi32(sel, a, b));
 }
@@ -277,7 +277,7 @@ const Vec16ui Vec16ui::Iota(const uint32 value)
     return Vec16ui(value) + Vec16ui(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15);
 }
 
-const Vec16ui Vec16ui::SelectBySign(const Vec16ui& a, const Vec16ui& b, const VecBool16& sel)
+const Vec16ui Vec16ui::Select(const Vec16ui& a, const Vec16ui& b, const VecBool16& sel)
 {
     return Vec16ui(_mm512_mask_blend_epi32(sel, a, b));
 }

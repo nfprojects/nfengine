@@ -5,6 +5,95 @@
 namespace NFE {
 namespace Math {
 
+VecBool4f::VecBool4f(bool scalar)
+    : b{ scalar, scalar, scalar, scalar}
+{}
+
+VecBool4f::VecBool4f(bool x, bool y, bool z, bool w)
+    : b{ x, y, z, w }
+{}
+
+template<uint32 index>
+bool VecBool4f::Get() const
+{
+    static_assert(index < 4, "Invalid index");
+    return b[index];
+}
+
+template<uint32 ix, uint32 iy, uint32 iz, uint32 iw>
+const VecBool4f VecBool4f::Swizzle() const
+{
+    static_assert(ix < 4, "Invalid X element index");
+    static_assert(iy < 4, "Invalid Y element index");
+    static_assert(iz < 4, "Invalid Z element index");
+    static_assert(iw < 4, "Invalid W element index");
+
+    return { b[ix], b[iy], b[iz], b[iw] };
+}
+
+// combine into 4-bit mask
+int32 VecBool4f::GetMask() const
+{
+    int32 result = 0;
+    result |= b[0] ? 1 : 0;
+    result |= b[1] ? 2 : 0;
+    result |= b[2] ? 4 : 0;
+    result |= b[3] ? 8 : 0;
+    return result;
+}
+
+bool VecBool4f::All() const
+{
+    return b[0] && b[1] && b[2] && b[3];
+}
+
+bool VecBool4f::None() const
+{
+    return !b[0] && !b[1] && !b[2] && !b[3];
+}
+
+bool VecBool4f::Any() const
+{
+    return b[0] || b[1] || b[2] || b[3];
+}
+
+bool VecBool4f::All3() const
+{
+    return b[0] && b[1] && b[2];
+}
+
+bool VecBool4f::None3() const
+{
+    return !b[0] && !b[1] && !b[2];
+}
+
+bool VecBool4f::Any3() const
+{
+    return b[0] || b[1] || b[2];
+}
+
+const VecBool4f VecBool4f::operator & (const VecBool4f rhs) const
+{
+    return VecBool4f{ b[0] && rhs.b[0], b[1] && rhs.b[1], b[2] && rhs.b[2], b[3] && rhs.b[3] };
+}
+
+const VecBool4f VecBool4f::operator | (const VecBool4f rhs) const
+{
+    return VecBool4f{ b[0] || rhs.b[0], b[1] || rhs.b[1], b[2] || rhs.b[2], b[3] || rhs.b[3] };
+}
+
+const VecBool4f VecBool4f::operator ^ (const VecBool4f rhs) const
+{
+    return VecBool4f{ b[0] ^ rhs.b[0], b[1] ^ rhs.b[1], b[2] ^ rhs.b[2], b[3] ^ rhs.b[3] };
+}
+
+bool VecBool4f::operator == (const VecBool4f rhs) const
+{
+    return b[0] == rhs.b[0] && b[1] == rhs.b[1] && b[2] == rhs.b[2] && b[3] == rhs.b[3];
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+
 const Vec4f Vec4f::Zero()
 {
     return { 0.0f, 0.0f, 0.0f, 0.0f };
@@ -84,11 +173,6 @@ Vec4f& Vec4f::operator = (const Vec4f& other)
     z = other.z;
     w = other.w;
     return *this;
-}
-
-const Vec4f Vec4f::FromHalf4(const Half4& halfs)
-{
-    return Vec4f(halfs.x.ToFloat(), halfs.y.ToFloat(), halfs.z.ToFloat(), halfs.w.ToFloat());
 }
 
 const Vec4f Vec4f::FromInteger(int32 x)
@@ -177,6 +261,12 @@ const Vec4f Vec4f::Swizzle() const
 const Vec4f Vec4f::Swizzle(uint32 ix, uint32 iy, uint32 iz, uint32 iw) const
 {
     return Vec4f{ f[ix], f[iy], f[iz], f[iw] };
+}
+
+template<uint32 ix, uint32 iy, uint32 iz, uint32 iw>
+const Vec4f Vec4f::Shuffle(const Vec4f& a, const Vec4f& b)
+{
+    return Vec4f{ a[ix], a[iy], b[iz], b[iw] };
 }
 
 const Vec4f Vec4f::Select(const Vec4f& a, const Vec4f& b, const VecBool4f& sel)
@@ -609,22 +699,6 @@ void Vec4f::Transpose3(Vec4f& a, Vec4f& b, Vec4f& c)
     std::swap(a.y, b.x);
     std::swap(a.z, c.x);
     std::swap(b.z, c.y);
-}
-
-const Vec4f Vec4f::Orthogonalize(const Vec4f& v, const Vec4f& reference)
-{
-    // Gram–Schmidt process
-    return Vec4f::NegMulAndAdd(Vec4f::Dot3V(v, reference), reference, v);
-}
-
-const Vec4f BipolarToUnipolar(const Vec4f& x)
-{
-    return Vec4f::MulAndAdd(x, VECTOR_HALVES, VECTOR_HALVES);
-}
-
-const Vec4f UnipolarToBipolar(const Vec4f& x)
-{
-    return Vec4f::MulAndSub(x, 2.0f, VECTOR_ONE);
 }
 
 } // namespace Math

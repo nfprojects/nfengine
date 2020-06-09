@@ -68,9 +68,9 @@ const Vec16i Vec16i::Iota(const int32 value)
     return Vec16i(value) + Vec16i(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15);
 }
 
-const Vec16i Vec16i::SelectBySign(const Vec16i& a, const Vec16i& b, const VecBool16& sel)
+const Vec16i Vec16i::Select(const Vec16i& a, const Vec16i& b, const VecBool16& sel)
 {
-    return { Vec8i::SelectBySign(a.low, b.low, sel.low), Vec8i::SelectBySign(a.high, b.high, sel.high) };
+    return { Vec8i::Select(a.low, b.low, sel.low), Vec8i::Select(a.high, b.high, sel.high) };
 }
 
 const Vec16i Vec16i::operator & (const Vec16i& b) const
@@ -300,9 +300,9 @@ const Vec16ui Vec16ui::Iota(const uint32 value)
     return Vec16ui(value) + Vec16ui(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15);
 }
 
-const Vec16ui Vec16ui::SelectBySign(const Vec16ui& a, const Vec16ui& b, const VecBool16& sel)
+const Vec16ui Vec16ui::Select(const Vec16ui& a, const Vec16ui& b, const VecBool16& sel)
 {
-    return { Vec8ui::SelectBySign(a.low, b.low, sel.low), Vec8ui::SelectBySign(a.high, b.high, sel.high) };
+    return { Vec8ui::Select(a.low, b.low, sel.low), Vec8ui::Select(a.high, b.high, sel.high) };
 }
 
 const Vec16ui Vec16ui::operator & (const Vec16ui& b) const

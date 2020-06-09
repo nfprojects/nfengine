@@ -99,13 +99,13 @@ struct NFE_ALIGN(64) Vec16f : public Common::Aligned<64>
     NFE_FORCE_INLINE float operator[] (uint32 index) const
     {
         NFE_ASSERT(index < 16, "Index out of bounds (%u)", index);
-        return f[index];
+        return reinterpret_cast<const float*>(this)[index];
     }
 
     NFE_FORCE_INLINE float& operator[] (uint32 index)
     {
         NFE_ASSERT(index < 16, "Index out of bounds (%u)", index);
-        return f[index];
+        return reinterpret_cast<float*>(this)[index];
     }
 
     // extract lower lanes
@@ -201,22 +201,15 @@ private:
     friend struct Vec16i;
     friend struct Vec16u;
 
-    NFE_UNNAMED_STRUCT union
-    {
-        float f[16];
-        int32 i[16];
-        uint32 u[16];
 #ifdef NFE_USE_AVX512
-        __m512 v;
+    __m512 v;
 #else
-        NFE_UNNAMED_STRUCT struct
-        {
-            Vec8f low;
-            Vec8f high;
-        };
+    Vec8f low;
+    Vec8f high;
 #endif // NFE_USE_AVX512
-    };
 };
+
+static_assert(sizeof(Vec16f) == sizeof(float) * 16, "Invalid sizeof Vec8f");
 
 // like Vec16f::operator * (float)
 NFE_FORCE_INLINE const Vec16f operator*(float a, const Vec16f& b);

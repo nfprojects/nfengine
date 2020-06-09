@@ -96,13 +96,12 @@ NFE_FORCE_INLINE const Vec4f LoadVec4fUNorm(const Packed_10_10_10_2& src)
     vTemp = _mm_add_ps(vTemp, unsignedOffset);
     return _mm_mul_ps(vTemp, scale);
 #else
-    const uint32 value = *src;
     return Vec4f
     {
-        static_cast<float>(src->x) / 1023.0f,
-        static_cast<float>(src->y) / 1023.0f,
-        static_cast<float>(src->z) / 1023.0f,
-        static_cast<float>(src->w) / 3.0f,
+        static_cast<float>(src.x) / 1023.0f,
+        static_cast<float>(src.y) / 1023.0f,
+        static_cast<float>(src.z) / 1023.0f,
+        static_cast<float>(src.w) / 3.0f,
     };
 #endif // NFE_USE_SSE
 }

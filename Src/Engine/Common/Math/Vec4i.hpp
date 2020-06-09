@@ -15,7 +15,9 @@ struct NFE_ALIGN(16) VecBool4i : public Common::Aligned<16>
 {
     VecBool4i() = default;
 
-    NFE_FORCE_INLINE explicit VecBool4i(bool x, bool y, bool z, bool w);
+    NFE_FORCE_INLINE explicit VecBool4i(bool scalar);
+    NFE_FORCE_INLINE VecBool4i(bool x, bool y, bool z, bool w);
+    NFE_FORCE_INLINE VecBool4i(int32 x, int32 y, int32 z, int32 w);
 
     NFE_FORCE_INLINE VecBool4i(const VecBool4f& other);
     NFE_FORCE_INLINE operator VecBool4f();
@@ -29,6 +31,8 @@ struct NFE_ALIGN(16) VecBool4i : public Common::Aligned<16>
 
     template<uint32 index>
     NFE_FORCE_INLINE bool Get() const;
+
+    NFE_FORCE_INLINE int32 GetMask() const;
 
     NFE_FORCE_INLINE bool All() const;
     NFE_FORCE_INLINE bool None() const;
@@ -44,6 +48,9 @@ struct NFE_ALIGN(16) VecBool4i : public Common::Aligned<16>
 
     NFE_FORCE_INLINE bool operator == (const VecBool4i& other) const;
     NFE_FORCE_INLINE bool operator != (const VecBool4i& other) const;
+
+    template<uint32 ix, uint32 iy, uint32 iz, uint32 iw>
+    NFE_FORCE_INLINE const VecBool4i Swizzle() const;
 
 private:
     friend struct Vec4i;
@@ -87,8 +94,10 @@ struct NFE_ALIGN(16) Vec4i : public Common::Aligned<16>
     NFE_FORCE_INLINE Vec4i() = default;
     NFE_FORCE_INLINE static const Vec4i Zero();
     NFE_FORCE_INLINE Vec4i(const Vec4i& other);
+    NFE_FORCE_INLINE explicit Vec4i(const Vec4ui& other);
     NFE_FORCE_INLINE Vec4i(const VecBool4i& other);
     NFE_FORCE_INLINE explicit Vec4i(const int32 scalar);
+    NFE_FORCE_INLINE explicit Vec4i(const int32* scalarPtr);
     NFE_FORCE_INLINE Vec4i(const int32 x, const int32 y, const int32 z, const int32 w);
     NFE_FORCE_INLINE static const Vec4i Iota(const int32 value);
     
@@ -213,8 +222,10 @@ struct NFE_ALIGN(16) Vec4ui : public Common::Aligned<16>
     NFE_FORCE_INLINE Vec4ui() = default;
     NFE_FORCE_INLINE static const Vec4ui Zero();
     NFE_FORCE_INLINE Vec4ui(const Vec4ui& other);
+    NFE_FORCE_INLINE Vec4ui(const VecBool4i& other);
     NFE_FORCE_INLINE explicit Vec4ui(const Vec4i& other);
     NFE_FORCE_INLINE explicit Vec4ui(const uint32 scalar);
+    NFE_FORCE_INLINE explicit Vec4ui(const uint32* scalarPtr);
     NFE_FORCE_INLINE Vec4ui(const uint32 x, const uint32 y, const uint32 z, const uint32 w);
     NFE_FORCE_INLINE static const Vec4ui Iota(const uint32 value);
 
@@ -285,6 +296,15 @@ struct NFE_ALIGN(16) Vec4ui : public Common::Aligned<16>
     NFE_FORCE_INLINE static const Vec4ui Max(const Vec4ui& a, const Vec4ui& b);
 
     NFE_FORCE_INLINE const Vec4ui Clamped(const Vec4ui& min, const Vec4ui& max) const;
+
+    // convert from float vector to integer vector (with rounding)
+    NFE_FORCE_INLINE static const Vec4ui Convert(const Vec4f& v);
+
+    // convert from float vector to integer vector (with truncation towards zero)
+    NFE_FORCE_INLINE static const Vec4ui TruncateAndConvert(const Vec4f& v);
+
+    // convert to float vector
+    NFE_FORCE_INLINE const Vec4f ConvertToVec4f() const;
 
     // cast from float vector (preserve bits)
     NFE_FORCE_INLINE static const Vec4ui Cast(const Vec4f& v);

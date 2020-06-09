@@ -19,7 +19,8 @@ struct NFE_ALIGN(16) VecBool4f : public Common::Aligned<16>
 {
     VecBool4f() = default;
 
-    NFE_FORCE_INLINE explicit VecBool4f(bool x, bool y, bool z, bool w);
+    NFE_FORCE_INLINE explicit VecBool4f(bool scalar);
+    NFE_FORCE_INLINE VecBool4f(bool x, bool y, bool z, bool w);
 
 #ifdef NFE_USE_SSE
     NFE_FORCE_INLINE VecBool4f(const __m128 other) : v(other) { }
@@ -346,6 +347,8 @@ public:
     // Compute fmodf(x, 1.0f)
     NFE_FORCE_INLINE static const Vec4f Fmod1(const Vec4f& v);
 };
+
+static_assert(sizeof(Vec4f) == sizeof(float) * 4, "Invalid sizeof Vec8f");
 
 // like Vec4f::operator * (float)
 NFE_FORCE_INLINE const Vec4f operator*(float a, const Vec4f& b);

@@ -7,6 +7,11 @@
 namespace NFE {
 namespace Math {
 
+VecBool4f::VecBool4f(bool scalar)
+{
+    v = _mm_castsi128_ps(_mm_set1_epi32(scalar ? 0xFFFFFFFF : 0));
+}
+
 VecBool4f::VecBool4f(bool x, bool y, bool z, bool w)
 {
     v = _mm_castsi128_ps(_mm_set_epi32(w ? 0xFFFFFFFF : 0, z ? 0xFFFFFFFF : 0, y ? 0xFFFFFFFF : 0, x ? 0xFFFFFFFF : 0));
@@ -252,10 +257,10 @@ const Half4 Vec4f::ToHalf4() const
 #elif defined(NFE_ARCH_X86)
 #endif
 #else // NFE_USE_FP16C
-    halfs.x = Half{ other.x };
-    halfs.y = Half{ other.y };
-    halfs.z = Half{ other.z };
-    halfs.w = Half{ other.w };
+    halfs.x = Half{ x };
+    halfs.y = Half{ y };
+    halfs.z = Half{ z };
+    halfs.w = Half{ w };
 #endif // NFE_USE_FP16C
     return halfs;
 }

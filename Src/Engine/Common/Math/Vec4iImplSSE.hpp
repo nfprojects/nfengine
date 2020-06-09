@@ -102,6 +102,10 @@ Vec4i::Vec4i(const Vec4i& other)
     : v(other.v)
 {}
 
+Vec4i::Vec4i(const Vec4ui& other)
+    : v(other.v)
+{}
+
 Vec4i::Vec4i(const VecBool4i& other)
     : v(other.v)
 {}
@@ -128,6 +132,10 @@ Vec4i::Vec4i(const int32 x, const int32 y, const int32 z, const int32 w)
 
 Vec4i::Vec4i(const int32 i)
     : v(_mm_set1_epi32(i))
+{}
+
+Vec4i::Vec4i(const int32* i)
+    : v(_mm_load_epi32(i))
 {}
 
 const Vec4i Vec4i::Convert(const Vec4f& v)
@@ -455,12 +463,34 @@ const Vec4f Vec4ui::AsVec4f() const
     return _mm_castsi128_ps(v);
 }
 
+const Vec4ui Vec4ui::Convert(const Vec4f& v)
+{
+    // TODO this is not correct
+    return _mm_cvtps_epi32(v);
+}
+
+const Vec4ui Vec4ui::TruncateAndConvert(const Vec4f& v)
+{
+    // TODO this is not correct
+    return _mm_cvttps_epi32(v);
+}
+
+const Vec4f Vec4ui::ConvertToVec4f() const
+{
+    // TODO this is not correct
+    return _mm_cvtepi32_ps(v);
+}
+
 Vec4ui::Vec4ui(const uint32 x, const uint32 y, const uint32 z, const uint32 w)
     : v(_mm_set_epi32(w, z, y, x))
 {}
 
 Vec4ui::Vec4ui(const uint32 i)
     : v(_mm_set1_epi32(i))
+{}
+
+Vec4ui::Vec4ui(const uint32* i)
+    : v(_mm_load_epi32(i))
 {}
 
 const Vec4ui Vec4ui::Iota(const uint32 value)

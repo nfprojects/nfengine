@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Half.hpp"
+#include "../Utils/LanguageUtils.hpp"
 
 namespace NFE {
 namespace Math {
@@ -21,10 +22,7 @@ Half::Half(const float other)
 #else
     uint32 result;
 
-    Bits32 bits;
-    bits.f = other;
-
-    uint32 iValue = bits.ui;
+    uint32 iValue = BitCast<uint32>(other);
     uint32 sign = (iValue & 0x80000000U) >> 16U;
     iValue = iValue & 0x7FFFFFFFU;
 
@@ -100,9 +98,8 @@ float Half::ToFloat() const
         exponent = static_cast<uint32>(-112);
     }
 
-    Math::Bits32 result;
-    result.ui = ((static_cast<uint32>(value) & 0x8000) << 16) | ((exponent + 112) << 23) | (mantissa << 13);
-    return result.f;
+    uint32 result = ((static_cast<uint32>(value) & 0x8000) << 16) | ((exponent + 112) << 23) | (mantissa << 13);
+    return BitCast<float>(result);
 #endif // NFE_USE_FP16C
 }
 

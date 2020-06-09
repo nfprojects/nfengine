@@ -4,8 +4,9 @@
 namespace NFE {
 namespace Math {
 
-void HilbertIndexToCoords(const uint32 index, uint32& x, uint32& y)
+void HilbertIndexToCoords(uint32 index, uint32& x, uint32& y)
 {
+#ifdef NFE_USE_AVX
     // source: http://threadlocalmutex.com/?p=188
 
     uint32 i0 = _pext_u32(index, 0x55555555);
@@ -21,6 +22,19 @@ void HilbertIndexToCoords(const uint32 index, uint32& x, uint32& y)
 
     x = (a ^ i1);
     y = (a ^ i0 ^ i1);
+#else
+    x = y = 0;
+    uint32 k = 0;
+    do
+    {
+        uint32 rx = (index >> 1) & 1u;
+        uint32 ry = (index ^ (index >> 1)) & 1u;
+        x += rx << k;
+        y += ry << k;
+        index >>= 2;
+    }
+    while (index > 0u);
+#endif
 }
 
 } // namespace Math

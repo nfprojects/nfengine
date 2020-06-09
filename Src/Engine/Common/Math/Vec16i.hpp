@@ -38,13 +38,13 @@ struct NFE_ALIGN(64) Vec16i : public Common::Aligned<64>
     NFE_FORCE_INLINE int32 operator[] (const uint32 index) const
     {
         NFE_ASSERT(index < 16, "Index out of bounds (%u)", index);
-        return i[index];
+        return reinterpret_cast<const int32*>(this)[index];
     }
 
     NFE_FORCE_INLINE int32& operator[] (const uint32 index)
     {
         NFE_ASSERT(index < 16, "Index out of bounds (%u)", index);
-        return i[index];
+        return reinterpret_cast<int32*>(this)[index];
     }
 
     // bitwise logic operations
@@ -99,48 +99,23 @@ struct NFE_ALIGN(64) Vec16i : public Common::Aligned<64>
     // build mask of sign bits.
     NFE_FORCE_INLINE uint32 GetSignMask() const;
 
-    // for each vector component, copy value from "a" if "sel" > 0.0f, or from "b" otherwise.
-    NFE_FORCE_INLINE static const Vec16i SelectBySign(const Vec16i& a, const Vec16i& b, const VecBool16& sel);
+    // for each vector component, copy value from "a" if "sel" is false, or from "b" otherwise.
+    NFE_FORCE_INLINE static const Vec16i Select(const Vec16i& a, const Vec16i& b, const VecBool16& sel);
 
 private:
 
-    NFE_UNNAMED_STRUCT union
-    {
-        int32 i[16];
-        uint32 u[16];
-
 #ifdef NFE_USE_AVX512
-        __m512i v;
+    __m512i v;
+#else
+    Vec8i low;
+    Vec8i high;
 #endif // NFE_USE_AVX512
-
-        NFE_UNNAMED_STRUCT struct
-        {
-            Vec8i low;
-            Vec8i high;
-        };
-    };
 };
 
 // 8-element integer SIMD vector
 struct NFE_ALIGN(64) Vec16ui : public Common::Aligned<64>
 {
     friend struct Vec16i;
-
-    NFE_UNNAMED_STRUCT union
-    {
-        int32 i[8];
-        uint32 u[8];
-
-#ifdef NFE_USE_AVX512
-        __m512i v;
-#endif // NFE_USE_AVX512
-
-        NFE_UNNAMED_STRUCT struct
-        {
-            Vec8ui low;
-            Vec8ui high;
-        };
-    };
 
     // constructors
     Vec16ui() = default;
@@ -163,16 +138,16 @@ struct NFE_ALIGN(64) Vec16ui : public Common::Aligned<64>
     NFE_FORCE_INLINE operator __m512i() const { return v; }
 #endif // NFE_USE_AVX512
 
-    NFE_FORCE_INLINE int32 operator[] (const uint32 index) const
+    NFE_FORCE_INLINE uint32 operator[] (const uint32 index) const
     {
         NFE_ASSERT(index < 16, "Index out of bounds (%u)", index);
-        return i[index];
+        return reinterpret_cast<const uint32*>(this)[index];
     }
 
-    NFE_FORCE_INLINE int32& operator[] (const uint32 index)
+    NFE_FORCE_INLINE uint32& operator[] (const uint32 index)
     {
         NFE_ASSERT(index < 16, "Index out of bounds (%u)", index);
-        return i[index];
+        return reinterpret_cast<uint32*>(this)[index];
     }
 
     // bitwise logic operations
@@ -213,8 +188,17 @@ struct NFE_ALIGN(64) Vec16ui : public Common::Aligned<64>
     // convert to float vector
     NFE_FORCE_INLINE const Vec16f AsVec16f() const;
 
-    // for each vector component, copy value from "a" if "sel" > 0.0f, or from "b" otherwise.
-    NFE_FORCE_INLINE static const Vec16ui SelectBySign(const Vec16ui & a, const Vec16ui & b, const VecBool16 & sel);
+    // for each vector component, copy value from "a" if "sel" is false, or from "b" otherwise.
+    NFE_FORCE_INLINE static const Vec16ui Select(const Vec16ui & a, const Vec16ui & b, const VecBool16 & sel);
+
+private:
+
+#ifdef NFE_USE_AVX512
+    __m512i v;
+#else
+    Vec8ui low;
+    Vec8ui high;
+#endif // NFE_USE_AVX512
 };
 
 

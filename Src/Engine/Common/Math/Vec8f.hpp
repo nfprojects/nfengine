@@ -15,6 +15,7 @@ struct NFE_ALIGN(32) VecBool8f : public Common::Aligned<32>
 
     NFE_FORCE_INLINE explicit VecBool8f(bool scalar);
     NFE_FORCE_INLINE explicit VecBool8f(bool e0, bool e1, bool e2, bool e3, bool e4, bool e5, bool e6, bool e7);
+    NFE_FORCE_INLINE VecBool8f(const VecBool4f& low, const VecBool4f& high);
 
     template<uint32 index>
     NFE_FORCE_INLINE bool Get() const;
@@ -49,7 +50,8 @@ private:
     NFE_FORCE_INLINE operator __m256() const { return v; }
     NFE_FORCE_INLINE operator __m256i() const { return _mm256_castps_si256(v); }
 #else
-    bool b[8];
+    VecBool4f low;
+    VecBool4f high;
 #endif // NFE_USE_AVX
 };
 
@@ -89,13 +91,13 @@ struct NFE_ALIGN(32) Vec8f : public Common::Aligned<32>
     NFE_FORCE_INLINE float operator[] (uint32 index) const
     {
         NFE_ASSERT(index < 8, "Index out of bounds (%u)", index);
-        return f[index];
+        return reinterpret_cast<const float*>(this)[index];
     }
 
     NFE_FORCE_INLINE float& operator[] (uint32 index)
     {
         NFE_ASSERT(index < 8, "Index out of bounds (%u)", index);
-        return f[index];
+        return reinterpret_cast<float*>(this)[index];
     }
 
     // extract lower lanes
@@ -199,22 +201,21 @@ private:
 
     friend struct Vec8i;
 
+#ifdef NFE_USE_AVX
     NFE_UNNAMED_STRUCT union
     {
         float f[8];
         int32 i[8];
         uint32 u[8];
-#ifdef NFE_USE_AVX
         __m256 v;
-#else
-        NFE_UNNAMED_STRUCT struct
-        {
-            Vec4f low;
-            Vec4f high;
-        };
-#endif // NFE_USE_AVX
     };
+#else
+    Vec4f low;
+    Vec4f high;
+#endif // NFE_USE_AVX
 };
+
+static_assert(sizeof(Vec8f) == sizeof(float) * 8, "Invalid sizeof Vec8f");
 
 // like Vec8f::operator * (float)
 NFE_FORCE_INLINE const Vec8f operator*(float a, const Vec8f& b);
