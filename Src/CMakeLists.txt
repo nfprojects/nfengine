@@ -22,6 +22,7 @@ SET(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -Wno-ignored-qualifiers")
 SET(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -Wno-gnu-zero-variadic-macro-arguments")
 SET(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -Wno-gnu-anonymous-struct -Wno-nested-anon-types")
 SET(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -Wno-format-security")
+SET(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -Wno-self-assign-overloaded")
 
 ADD_SUBDIRECTORY("Engine")
 ADD_SUBDIRECTORY("Tests")

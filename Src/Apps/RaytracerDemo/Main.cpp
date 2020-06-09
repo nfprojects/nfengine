@@ -4,7 +4,7 @@
 #include "Engine/Common/Logger/Logger.hpp"
 #include "Engine/Common/FileSystem/FileSystem.hpp"
 
-#include "../nfEngineDeps/cxxopts.hpp"
+#include <cxxopts/cxxopts.hpp>
 
 
 namespace NFE {
