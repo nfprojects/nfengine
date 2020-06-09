@@ -106,6 +106,12 @@ Vec4i::Vec4i(const VecBool4i& other)
     : v(other.v)
 {}
 
+Vec4i& Vec4i::operator = (const Vec4i& other)
+{
+    v = other.v;
+    return *this;
+}
+
 const Vec4i Vec4i::Cast(const Vec4f& v)
 {
     return _mm_castps_si128(v);
@@ -432,6 +438,12 @@ Vec4ui::Vec4ui(const Vec4ui& other)
 Vec4ui::Vec4ui(const Vec4i& other)
     : v(other.v)
 {}
+
+Vec4ui& Vec4ui::operator = (const Vec4ui& other)
+{
+    v = other.v;
+    return *this;
+}
 
 const Vec4ui Vec4ui::Cast(const Vec4f& v)
 {
