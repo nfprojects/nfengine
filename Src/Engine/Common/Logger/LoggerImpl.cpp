@@ -62,7 +62,8 @@ bool Logger::Init()
         return false;
     }
 
-    mTimer.Start();
+    // Transition Logger state to mark the beginning of initialization
+    mInitialized.store(InitStage::Initializing);
 
 #ifdef WIN32
     wchar_t* wideRootDir = NFE_ROOT_DIRECTORY;
@@ -84,8 +85,6 @@ bool Logger::Init()
     // Initialize all backends, so they create log files in the Logs dir
     {
         NFE_SCOPED_LOCK(mResetMutex);
-        // Change mInitialized, to avoid Logging while backends are resetting
-        mInitialized.store(InitStage::Initializing);
 
         // Initialize backends - not all have to successfully initialize.
         // Some backends will always initialize (ex. Console, WindowsDebugger).
@@ -105,10 +104,13 @@ bool Logger::Init()
             }
         }
 
+        mTimer.Start();
+
         // Backends are done initializing - allow full logging
         mInitialized.store(InitStage::Initialized);
 
-        // Print initial info on all backends
+        // Print initial info
+        NFE_LOG_INFO("Logger initialized");
         LogBuildInfo();
         LogRunTime();
         LogSysInfo();
@@ -220,7 +222,7 @@ const LoggerBackendMap& Logger::ListBackends()
 
 void Logger::EarlyLog(LogType type, const char* srcFile, int line, const char* str)
 {
-    printf("[%-7s] %s:%i: %s\n", LogTypeToString(type), srcFile, line, str);
+    printf("EARLY  [%-7s] %s:%i: %s\n", LogTypeToString(type), srcFile, line, str);
 }
 
 void Logger::Log(LogType type, const char* srcFile, int line, const char* str, ...)
