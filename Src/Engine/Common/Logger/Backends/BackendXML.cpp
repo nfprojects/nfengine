@@ -19,10 +19,9 @@ bool gLoggerBackendXMLRegistered = Logger::RegisterBackend(StringView("XML"), Ma
 
 LoggerBackendXML::LoggerBackendXML()
 {
-    Reset();
 }
 
-void LoggerBackendXML::Reset()
+bool LoggerBackendXML::Init()
 {
     /**
      * TODO: move intro, outro and the other XML code templates to another file, so the logger
@@ -40,10 +39,17 @@ void LoggerBackendXML::Reset()
     {
         // this will be handled by other logger
         NFE_LOG_ERROR("Failed to create XML log file");
-        return;
+        return false;
     }
 
-    mFile.Write(gLogIntro.Data(), gLogIntro.Length());
+    size_t written = mFile.Write(gLogIntro.Data(), gLogIntro.Length());
+    if (written != gLogIntro.Length())
+    {
+        NFE_LOG_ERROR("Failed to write XML backend's intro: wrote %zu bytes", written);
+        return false;
+    }
+
+    return true;
 }
 
 LoggerBackendXML::~LoggerBackendXML()

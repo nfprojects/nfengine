@@ -19,10 +19,9 @@ bool gLoggerBackendHTMLRegistered = Logger::RegisterBackend(StringView("HTML"), 
 
 LoggerBackendHTML::LoggerBackendHTML()
 {
-    Reset();
 }
 
-void LoggerBackendHTML::Reset()
+bool LoggerBackendHTML::Init()
 {
     /**
      * TODO: move intro, outro and the other HTML code templates to another file, so the logger
@@ -77,10 +76,17 @@ void LoggerBackendHTML::Reset()
     {
         // this will be handled by other logger
         NFE_LOG_ERROR("Failed to create HTML log file");
-        return;
+        return false;
     }
 
-    mFile.Write(gLogIntro.Str(), gLogIntro.Length());
+    size_t written = mFile.Write(gLogIntro.Str(), gLogIntro.Length());
+    if (written != gLogIntro.Length())
+    {
+        NFE_LOG_ERROR("Failed to write HTML backend's intro: wrote %zd bytes", written);
+        return false;
+    }
+
+    return true;
 }
 
 LoggerBackendHTML::~LoggerBackendHTML()

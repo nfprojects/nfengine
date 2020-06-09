@@ -14,6 +14,8 @@ using namespace NFE::Common;
 
 int main(int argc, char* argv[])
 {
+    NFE::Common::InitSubsystems();
+
     testing::InitGoogleTest(&argc, argv);
 
     const StringView logsDirPath("Logs/PerfTests");

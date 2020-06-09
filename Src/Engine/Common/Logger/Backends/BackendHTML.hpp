@@ -26,7 +26,7 @@ public:
     LoggerBackendHTML();
     ~LoggerBackendHTML();
 
-    void Reset() override;
+    bool Init() override;
     void Log(LogType type, const char* srcFile, int line, const char* str, double timeElapsed) override;
 };
 

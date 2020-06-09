@@ -33,41 +33,19 @@ Logger::~Logger()
 Logger* Logger::GetInstance()
 {
     static Logger mInstance;
-
-    // Double check, because we don't want uninit variable and compare_exchange every GetInstance call
-    if (mInstance.mInitialized != InitStage::Initialized)
-    {
-        InitStage uninit = InitStage::Uninitialized;
-        if (mInstance.mInitialized.compare_exchange_strong(uninit, InitStage::Initializing))
-            mInstance.LogInit();
-    }
     return &mInstance;
 }
 
 void Logger::Shutdown()
 {
-    NFE_SCOPED_LOCK(mResetMutex);
-
-    mBackends().Clear();
-}
-
-void Logger::Reset()
-{
-    if (mInitialized == InitStage::Uninitialized)
-        return;
+    if (mInitialized != InitStage::Initialized)
+        return; // already shut down
 
     NFE_SCOPED_LOCK(mResetMutex);
-    // Change mInitialized, to avoid Logging while backends are resetting
-    mInitialized.store(InitStage::Initializing);
+
+    mInitialized.store(InitStage::Uninitialized);
 
     mBackends().Clear();
-
-    // Backends are done resetting - allow logging
-    mInitialized.store(InitStage::Initialized);
-
-    LogBuildInfo();
-    LogRunTime();
-    LogSysInfo();
 }
 
 LoggerBackendMap& Logger::mBackends()
@@ -76,8 +54,14 @@ LoggerBackendMap& Logger::mBackends()
     return mBackend;
 }
 
-void Logger::LogInit()
+bool Logger::Init()
 {
+    if (mInitialized == InitStage::Initialized)
+    {
+        NFE_LOG_ERROR("Logger already initialized!");
+        return false;
+    }
+
     mTimer.Start();
 
 #ifdef WIN32
@@ -91,11 +75,46 @@ void Logger::LogInit()
     String execPath = NFE::Common::FileSystem::GetExecutablePath();
     String execDir = NFE::Common::FileSystem::GetParentDir(execPath);
     mLogsDirectory = execDir + "/../../../Logs";
-    FileSystem::CreateDir(mLogsDirectory);
+    if (!FileSystem::CreateDir(mLogsDirectory))
+    {
+        NFE_LOG_ERROR("Failed to create a directory for logs");
+        return false;
+    }
 
-    // Reset all backends, so they recreate log files now, that the Logs dir is created.
-    // Reset() methods will change mInitialize to Initialized state after resetting backends.
-    Reset();
+    // Initialize all backends, so they create log files now, that the Logs dir is created.
+    {
+        NFE_SCOPED_LOCK(mResetMutex);
+        // Change mInitialized, to avoid Logging while backends are resetting
+        mInitialized.store(InitStage::Initializing);
+
+        // Initialize backends - not all have to successfully initialize.
+        // Some backends will always initialize (ex. Console, WindowsDebugger).
+        // If more sopthisticated backends fail, these will always serve as backup.
+        for (const auto& backend: mBackends())
+        {
+            if (!backend.ptr->Init())
+            {
+                // TODO it might be a good idea to purge disabled backends here or later on
+                NFE_LOG_ERROR("%s logger backend failed to initialize", backend.name.Str());
+                backend.ptr->Enable(false);
+            }
+            else
+            {
+                NFE_LOG_INFO("%s logger backend enabled", backend.name.Str());
+                backend.ptr->Enable(true);
+            }
+        }
+
+        // Backends are done initializing - allow logging
+        mInitialized.store(InitStage::Initialized);
+
+        // Print initial info on all backends
+        LogBuildInfo();
+        LogRunTime();
+        LogSysInfo();
+    }
+
+    return true;
 }
 
 void Logger::LogBuildInfo() const

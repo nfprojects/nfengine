@@ -193,6 +193,13 @@ static_assert(sizeof(int64) == 8, "'int64' type must have 8 bytes");
 namespace Common {
 
 /**
+ * Safely initialize all NFE Common subsystems.
+ * @remarks This should be called right after entering main(). Otherwise, some NFE Common modules
+ *          might not work correctly.
+ */
+NFCOMMON_API bool InitSubsystems();
+
+/**
  * Safely shutdown all the subsystems: RTTI, logger, memory, etc.
  * @remarks This must be called just before returning from main().
  *          Otherwise application will crash, because of non-deterministic global variables destruction.
