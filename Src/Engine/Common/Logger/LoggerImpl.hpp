@@ -54,6 +54,9 @@ class NFCOMMON_API Logger : public ILogger
     void LogRunTime() const;
     void LogSysInfo() const;
 
+    // Simplified logging routines used before Logger is fully loaded
+    void EarlyLog(LogType type, const char* srcFile, int line, const char* str);
+
 public:
     /**
      * Register backend to be used for logging.

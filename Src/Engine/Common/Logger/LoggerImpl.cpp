@@ -75,7 +75,7 @@ bool Logger::Init()
     String execPath = NFE::Common::FileSystem::GetExecutablePath();
     String execDir = NFE::Common::FileSystem::GetParentDir(execPath);
     mLogsDirectory = execDir + "/../../../Logs";
-    if (!FileSystem::CreateDir(mLogsDirectory))
+    if (!FileSystem::CreateDirIfNotExist(mLogsDirectory))
     {
         NFE_LOG_ERROR("Failed to create a directory for logs");
         return false;
@@ -105,7 +105,7 @@ bool Logger::Init()
             }
         }
 
-        // Backends are done initializing - allow logging
+        // Backends are done initializing - allow full logging
         mInitialized.store(InitStage::Initialized);
 
         // Print initial info on all backends
@@ -218,17 +218,16 @@ const LoggerBackendMap& Logger::ListBackends()
     return mBackends();
 }
 
+void Logger::EarlyLog(LogType type, const char* srcFile, int line, const char* str)
+{
+    printf("[%-7s] %s:%i: %s\n", LogTypeToString(type), srcFile, line, str);
+}
+
 void Logger::Log(LogType type, const char* srcFile, int line, const char* str, ...)
 {
-    if (mBackends().Empty() || mInitialized != InitStage::Initialized)
-        return;
-
     /// keep shorter strings on the stack for performance
     const int SHORT_MESSAGE_LENGTH = 1024;
     char stackBuffer[SHORT_MESSAGE_LENGTH];
-
-    // TODO: consider logging local time instead of time elapsed since Logger initialization
-    double logTime = mTimer.Stop();
 
     // empty string
     if (str == nullptr)
@@ -269,6 +268,16 @@ void Logger::Log(LogType type, const char* srcFile, int line, const char* str, .
     if (len < 0 || !formattedStr)
         return;
 
+    if (mBackends().Empty() || mInitialized != InitStage::Initialized)
+    {
+        // early log and exit since backends are not yet ready
+        EarlyLog(type, srcFile, line, formattedStr);
+        return;
+    }
+
+    // TODO: consider logging local time instead of time elapsed since Logger initialization
+    double logTime = mTimer.Stop();
+
     NFE_SCOPED_LOCK(mLogMutex);
     for (const auto& backend : mBackends())
     {
@@ -282,7 +291,11 @@ void Logger::Log(LogType type, const char* srcFile, int line, const char* str, .
 void Logger::Log(LogType type, const char* srcFile, const char* str, int line)
 {
     if (mBackends().Empty() || mInitialized != InitStage::Initialized)
+    {
+        // early log and exit since backends are not yet ready
+        EarlyLog(type, srcFile, line, str);
         return;
+    }
 
     // TODO: consider logging local time instead of time elapsed since Logger initialization
     double logTime = mTimer.Stop();

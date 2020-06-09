@@ -100,6 +100,12 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 {
     using namespace NFE;
 
+    if (!Common::InitSubsystems())
+    {
+        NFE::Common::ShutdownSubsystems();
+        return -1;
+    }
+
     const Common::String execPath = Common::FileSystem::GetExecutablePath();
     const Common::String execDir = Common::FileSystem::GetParentDir(execPath);
     Common::FileSystem::ChangeDirectory(execDir + "/../../..");
