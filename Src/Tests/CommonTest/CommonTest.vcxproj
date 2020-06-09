@@ -151,9 +151,6 @@
     <ClCompile Include="TestCases\FileSystem\FileBufferedTest.cpp" />
     <ClCompile Include="TestCases\FileSystem\FileSystemTest.cpp" />
     <ClCompile Include="TestCases\FileSystem\FileTest.cpp" />
-    <ClCompile Include="TestCases\Logger\LoggerTest.cpp" />
-    <ClCompile Include="TestCases\Logger\LogGrouperTest.cpp" />
-    <ClCompile Include="TestCases\Logger\LogScopeTest.cpp" />
     <ClCompile Include="TestCases\Math\MathBoxTest.cpp" />
     <ClCompile Include="TestCases\Math\MathDistributionTest.cpp" />
     <ClCompile Include="TestCases\Math\MathEquationSolverTest.cpp" />

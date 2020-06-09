@@ -97,15 +97,6 @@
     <ClCompile Include="TestCases\FileSystem\FileBufferedTest.cpp">
       <Filter>TestCases\FileSystem</Filter>
     </ClCompile>
-    <ClCompile Include="TestCases\Logger\LogGrouperTest.cpp">
-      <Filter>TestCases\Logger</Filter>
-    </ClCompile>
-    <ClCompile Include="TestCases\Logger\LogScopeTest.cpp">
-      <Filter>TestCases\Logger</Filter>
-    </ClCompile>
-    <ClCompile Include="TestCases\Logger\LoggerTest.cpp">
-      <Filter>TestCases\Logger</Filter>
-    </ClCompile>
     <ClCompile Include="TestCases\Memory\MemoryTest.cpp">
       <Filter>TestCases\Memory</Filter>
     </ClCompile>
@@ -268,9 +259,6 @@
     </Filter>
     <Filter Include="TestCases\Utils">
       <UniqueIdentifier>{b9815eb8-3ea2-4fcb-b443-b585a70e951d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="TestCases\Logger">
-      <UniqueIdentifier>{c5569081-7c29-458f-b81c-629d2e3d6cf9}</UniqueIdentifier>
     </Filter>
     <Filter Include="TestCases\FileSystem">
       <UniqueIdentifier>{2ed6bbb0-90bf-40ec-b4b1-8822e5a26f1a}</UniqueIdentifier>
