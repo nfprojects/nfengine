@@ -10,6 +10,12 @@ const NFE::Common::String CARD_ID_ARG_NAME = "--card_id";
 
 int main(int argc, char* argv[])
 {
+    if (!NFE::Common::InitSubsystems())
+    {
+        NFE::Common::ShutdownSubsystems();
+        return -1;
+    }
+
     testing::InitGoogleTest(&argc, argv);
 
     const NFE::Common::String execPath = NFE::Common::FileSystem::GetExecutablePath();

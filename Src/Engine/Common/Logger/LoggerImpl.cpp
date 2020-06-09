@@ -81,7 +81,7 @@ bool Logger::Init()
         return false;
     }
 
-    // Initialize all backends, so they create log files now, that the Logs dir is created.
+    // Initialize all backends, so they create log files in the Logs dir
     {
         NFE_SCOPED_LOCK(mResetMutex);
         // Change mInitialized, to avoid Logging while backends are resetting
