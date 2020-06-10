@@ -98,13 +98,13 @@ TEST(ReflectionClassTest, TestClassWithFundamentalMembers_BinarySerialization)
     Buffer buffer;
     SerializationContext context;
 
-    {
-        TestClassWithFundamentalMembers obj;
-        obj.intValue = 42;
-        obj.floatValue = 1.234f;
-        obj.boolValue = true;
-        obj.strValue = "test";
+    TestClassWithFundamentalMembers obj;
+    obj.intValue = 42;
+    obj.floatValue = 1.234f;
+    obj.boolValue = true;
+    obj.strValue = "test";
 
+    {
         BufferOutputStream stream(buffer);
         ASSERT_TRUE(helper::SerializeObject(type, &obj, stream, context));
     }
