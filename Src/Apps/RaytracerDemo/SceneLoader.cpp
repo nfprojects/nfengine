@@ -24,7 +24,7 @@
 
 #include "rapidjson/document.h"
 #include "rapidjson/reader.h"
-#include "rapidjson/filestream.h"
+#include "rapidjson/filereadstream.h"
 
 namespace NFE {
 namespace helpers {
@@ -789,7 +789,8 @@ bool LoadScene(const String& path, Scene& scene, RT::Camera& camera)
         return false;
     }
 
-    rapidjson::FileStream is(fp);
+    char readBuffer[65536];
+    rapidjson::FileReadStream is(fp, readBuffer, sizeof(readBuffer));
     rapidjson::Document d;
     d.ParseStream<0>(is);
     fclose(fp);

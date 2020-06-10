@@ -66,7 +66,7 @@ IMedium::~IMedium() = default;
 HomogenousEmissiveMedium::HomogenousEmissiveMedium(const HdrColorRGB emissionCoeff)
     : mEmissionCoeff(emissionCoeff)
 {
-    NFE_ASSERT(mEmissionCoeff.IsValid());
+    NFE_ASSERT(mEmissionCoeff.IsValid(), "");
 }
 
 const RayColor HomogenousEmissiveMedium::Sample(const Ray& ray, float minDistance, float maxDistance, MediumScatteringEvent& outScatteringEvent, RenderingContext& ctx) const
@@ -102,7 +102,7 @@ const RayColor HomogenousEmissiveMedium::Transmittance(const Vec4f&, const Vec4f
 HomogenousAbsorptiveMedium::HomogenousAbsorptiveMedium(const HdrColorRGB exctinctionCoeff)
     : mExctinctionCoeff(exctinctionCoeff)
 {
-    NFE_ASSERT(exctinctionCoeff.IsValid());
+    NFE_ASSERT(exctinctionCoeff.IsValid(), "");
 }
 
 const RayColor HomogenousAbsorptiveMedium::Sample(const Ray& ray, float minDistance, float maxDistance, MediumScatteringEvent& outScatteringEvent, RenderingContext& ctx) const
@@ -140,8 +140,8 @@ HeterogeneousAbsorptiveMedium::HeterogeneousAbsorptiveMedium(const TexturePtr& d
     : mDensityTexture(densityTexture)
     , mExctinctionCoeff(exctinctionCoeff)
 {
-    NFE_ASSERT(exctinctionCoeff.IsValid());
-    NFE_ASSERT(densityTexture);
+    NFE_ASSERT(exctinctionCoeff.IsValid(), "");
+    NFE_ASSERT(densityTexture, "");
 
     // TODO include texture
     mInvMaxDensity = 1.0f;
@@ -189,8 +189,8 @@ const RayColor HeterogeneousAbsorptiveMedium::Transmittance(const Vec4f& startPo
         }
     }
 
-    NFE_ASSERT(transmittance.IsValid());
-    NFE_ASSERT((transmittance >= Vec4f::Zero()).All());
+    NFE_ASSERT(transmittance.IsValid(), "");
+    NFE_ASSERT((transmittance >= Vec4f::Zero()).All(), "");
 
     const HdrColorRGB density = transmittance;
 
@@ -203,17 +203,17 @@ HomogenousScatteringMedium::HomogenousScatteringMedium(const HdrColorRGB exctinc
     : HomogenousAbsorptiveMedium(exctinctionCoeff)
     , mScatteringAlbedo(scatteringAlbedo)
 {
-    NFE_ASSERT(mScatteringAlbedo.IsValid());
-    //NFE_ASSERT((mScatteringAlbedo >= Vec4f::Zero()).All());
-    //NFE_ASSERT((mScatteringAlbedo <= Vec4f(1.0f)).All());
+    NFE_ASSERT(mScatteringAlbedo.IsValid(), "");
+    //NFE_ASSERT((mScatteringAlbedo >= Vec4f::Zero()).All(), "");
+    //NFE_ASSERT((mScatteringAlbedo <= Vec4f(1.0f)).All(), "");
 }
 
 const RayColor HomogenousScatteringMedium::Sample(const Ray& ray, float minDistance, float maxDistance, MediumScatteringEvent& outScatteringEvent, RenderingContext& ctx) const
 {
-    NFE_ASSERT(mScatteringAlbedo.IsValid());
+    NFE_ASSERT(mScatteringAlbedo.IsValid(), "");
 
     const float totalDistance = maxDistance - minDistance;
-    NFE_ASSERT(totalDistance >= 0.0f);
+    NFE_ASSERT(totalDistance >= 0.0f, "");
 
     // TODO spectral renderinghttps://cs.dartmouth.edu/~wjarosz/publications/novak14residual.pdf#cite.Carter72
     // find unbounded scatter location
@@ -258,14 +258,14 @@ HeterogeneousScatteringMedium::HeterogeneousScatteringMedium(const TexturePtr& d
     : HeterogeneousAbsorptiveMedium(densityTexture, exctinctionCoeff)
     , mScatteringAlbedo(scatteringAlbedo)
 {
-    //NFE_ASSERT(mScatteringAlbedo.IsValid());
-    //NFE_ASSERT((mScatteringAlbedo >= Vec4f::Zero()).All());
-    //NFE_ASSERT((mScatteringAlbedo <= Vec4f(1.0f)).All());
+    //NFE_ASSERT(mScatteringAlbedo.IsValid(), "");
+    //NFE_ASSERT((mScatteringAlbedo >= Vec4f::Zero()).All(), "");
+    //NFE_ASSERT((mScatteringAlbedo <= Vec4f(1.0f)).All(), "");
 }
 
 const RayColor HeterogeneousScatteringMedium::Sample(const Ray& ray, float minDistance, float maxDistance, MediumScatteringEvent& outScatteringEvent, RenderingContext& ctx) const
 {
-    NFE_ASSERT(mScatteringAlbedo.IsValid());
+    NFE_ASSERT(mScatteringAlbedo.IsValid(), "");
 
     // TODO emissive medium
     outScatteringEvent.radiance = RayColor::Zero();

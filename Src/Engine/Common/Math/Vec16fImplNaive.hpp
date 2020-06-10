@@ -3,22 +3,17 @@
 namespace NFE {
 namespace Math {
 
-VecBool16::VecBool16(bool scalar)
+VecBool16f::VecBool16f(bool scalar)
     : low(scalar)
     , high(scalar)
 {}
 
-VecBool16::VecBool16(const VecBool8f& low, const VecBool8f& high)
+VecBool16f::VecBool16f(const VecBool8f& low, const VecBool8f& high)
     : low(low)
     , high(high)
 {}
 
-VecBool16::VecBool16(const VecBool8i& low, const VecBool8i& high)
-    : ilow(low)
-    , ihigh(high)
-{}
-
-VecBool16::VecBool16(
+VecBool16f::VecBool16f(
     bool e0, bool e1, bool e2, bool e3, bool e4, bool e5, bool e6, bool e7,
     bool e8, bool e9, bool e10, bool e11, bool e12, bool e13, bool e14, bool e15)
     : low{ e0, e1, e2, e3, e4, e5, e6, e7 }
@@ -26,7 +21,7 @@ VecBool16::VecBool16(
 {}
 
 template<uint32 index>
-bool VecBool16::Get() const
+bool VecBool16f::Get() const
 {
     static_assert(index < 16u, "Invalid index");
 
@@ -40,42 +35,42 @@ bool VecBool16::Get() const
     }
 }
 
-uint32 VecBool16::GetMask() const
+uint32 VecBool16f::GetMask() const
 {
     return low.GetMask() | (high.GetMask() << 8u);
 }
 
-bool VecBool16::All() const
+bool VecBool16f::All() const
 {
     return low.All() && high.All();
 }
 
-bool VecBool16::None() const
+bool VecBool16f::None() const
 {
     return low.None() && high.None();
 }
 
-bool VecBool16::Any() const
+bool VecBool16f::Any() const
 {
     return low.Any() || high.Any();
 }
 
-const VecBool16 VecBool16::operator & (const VecBool16 rhs) const
+const VecBool16f VecBool16f::operator & (const VecBool16f rhs) const
 {
-    return VecBool16{ low & rhs.low, high & rhs.high };
+    return VecBool16f{ low & rhs.low, high & rhs.high };
 }
 
-const VecBool16 VecBool16::operator | (const VecBool16 rhs) const
+const VecBool16f VecBool16f::operator | (const VecBool16f rhs) const
 {
-    return VecBool16{ low | rhs.low, high | rhs.high };
+    return VecBool16f{ low | rhs.low, high | rhs.high };
 }
 
-const VecBool16 VecBool16::operator ^ (const VecBool16 rhs) const
+const VecBool16f VecBool16f::operator ^ (const VecBool16f rhs) const
 {
-    return VecBool16{ low ^ rhs.low, high ^ rhs.high };
+    return VecBool16f{ low ^ rhs.low, high ^ rhs.high };
 }
 
-bool VecBool16::operator == (const VecBool16 rhs) const
+bool VecBool16f::operator == (const VecBool16f rhs) const
 {
     return (low == rhs.low) && (high == rhs.high);
 }
@@ -138,7 +133,7 @@ Vec16f& Vec16f::operator = (const Vec16f& other)
     return *this;
 }
 
-const Vec16f Vec16f::Select(const Vec16f& a, const Vec16f& b, const VecBool16& sel)
+const Vec16f Vec16f::Select(const Vec16f& a, const Vec16f& b, const VecBool16f& sel)
 {
     return { Vec8f::Select(a.low, b.low, sel.low), Vec8f::Select(a.high, b.high, sel.high) };
 }
@@ -348,32 +343,32 @@ uint32 Vec16f::GetSignMask() const
     return low.GetSignMask() | (high.GetSignMask() << 8u);
 }
 
-const VecBool16 Vec16f::operator == (const Vec16f& b) const
+const VecBool16f Vec16f::operator == (const Vec16f& b) const
 {
     return { low == b.low, high == b.high };
 }
 
-const VecBool16 Vec16f::operator < (const Vec16f& b) const
+const VecBool16f Vec16f::operator < (const Vec16f& b) const
 {
     return { low < b.low, high < b.high };
 }
 
-const VecBool16 Vec16f::operator <= (const Vec16f& b) const
+const VecBool16f Vec16f::operator <= (const Vec16f& b) const
 {
     return { low <= b.low, high <= b.high };
 }
 
-const VecBool16 Vec16f::operator > (const Vec16f& b) const
+const VecBool16f Vec16f::operator > (const Vec16f& b) const
 {
     return { low > b.low, high > b.high };
 }
 
-const VecBool16 Vec16f::operator >= (const Vec16f& b) const
+const VecBool16f Vec16f::operator >= (const Vec16f& b) const
 {
     return { low >= b.low, high >= b.high };
 }
 
-const VecBool16 Vec16f::operator != (const Vec16f& b) const
+const VecBool16f Vec16f::operator != (const Vec16f& b) const
 {
     return { low != b.low, high != b.high };
 }

@@ -32,7 +32,7 @@ const VecBool4f VecBool4f::Swizzle() const
 }
 
 // combine into 4-bit mask
-int32 VecBool4f::GetMask() const
+uint32 VecBool4f::GetMask() const
 {
     int32 result = 0;
     result |= b[0] ? 1 : 0;
@@ -84,7 +84,7 @@ const VecBool4f VecBool4f::operator | (const VecBool4f rhs) const
 
 const VecBool4f VecBool4f::operator ^ (const VecBool4f rhs) const
 {
-    return VecBool4f{ b[0] ^ rhs.b[0], b[1] ^ rhs.b[1], b[2] ^ rhs.b[2], b[3] ^ rhs.b[3] };
+    return VecBool4f{ b[0] != rhs.b[0], b[1] != rhs.b[1], b[2] != rhs.b[2], b[3] != rhs.b[3] };
 }
 
 bool VecBool4f::operator == (const VecBool4f rhs) const

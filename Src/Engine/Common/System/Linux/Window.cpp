@@ -483,7 +483,7 @@ void Window::ProcessMessages()
 
 bool Window::DrawPixels(const uint8* data, uint32 width, uint32 height, uint32 stride)
 {
-    NFE_ASSERT(stride == 4u * width);
+    NFE_ASSERT(stride == 4u * width, "Invalid image stride");
 
     xcb_image_t* img = xcb_image_create_native(mConnection,
                                                width, height,

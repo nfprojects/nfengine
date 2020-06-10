@@ -23,7 +23,7 @@ class CORE_API InputSystem final
     : public ISystem
 {
     NFE_DECLARE_POLYMORPHIC_CLASS(InputSystem)
-    NFE_MAKE_NONCOPYABLE(InputSystem);
+    NFE_MAKE_NONCOPYABLE(InputSystem)
 
 public:
     static const int ID = 2;

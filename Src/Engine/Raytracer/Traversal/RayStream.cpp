@@ -13,7 +13,7 @@ RayStream::~RayStream() = default;
 
 void RayStream::PushRay(const Math::Ray& ray, const Math::Vec4f& weight, const ImageLocationInfo& imageLocation)
 {
-    NFE_ASSERT(mNumRays < MaxRays);
+    NFE_ASSERT(mNumRays < MaxRays, "");
 
     PendingRay& pendingRay = mRays[mNumRays];
     pendingRay.rayWeight = weight;

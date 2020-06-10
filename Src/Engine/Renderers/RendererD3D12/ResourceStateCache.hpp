@@ -44,7 +44,7 @@ NFE_INLINE uint32 GetHash(const ResourceStateCacheKey& key)
 
 class ResourceStateCache final
 {
-    NFE_MAKE_NONCOPYABLE(ResourceStateCache);
+    NFE_MAKE_NONCOPYABLE(ResourceStateCache)
 
 public:
     ResourceStateCache();

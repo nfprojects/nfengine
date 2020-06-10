@@ -67,7 +67,7 @@ const RayColor PathTracer::EvaluateGlobalLights(const Scene& scene, const Ray& r
         };
 
         RayColor lightContribution = globalLight.GetRadiance(param);
-        NFE_ASSERT(lightContribution.IsValid());
+        NFE_ASSERT(lightContribution.IsValid(), "");
 
         result += lightContribution;
     }
@@ -105,7 +105,7 @@ const RayColor PathTracer::RenderPixel(const Math::Ray& primaryRay, const Render
         {
             MediumScatteringEvent event;
             const RayColor mediumWeight = currentMedium->Sample(ray, 0.0f, hitPoint.distance, event, context);
-            NFE_ASSERT(mediumWeight.IsValid());
+            NFE_ASSERT(mediumWeight.IsValid(), "");
 
             // HACK
             if (event.radiance.IsValid())
@@ -157,7 +157,7 @@ const RayColor PathTracer::RenderPixel(const Math::Ray& primaryRay, const Render
         }
 
         const ISceneObject* sceneObject = param.scene.GetHitObject(hitPoint.objectId);
-        NFE_ASSERT(sceneObject);
+        NFE_ASSERT(sceneObject, "");
 
         // fill up structure with shading data
         param.scene.EvaluateIntersection(ray, hitPoint, context.time, shadingData.intersection);
@@ -193,7 +193,7 @@ const RayColor PathTracer::RenderPixel(const Math::Ray& primaryRay, const Render
         if (const LightSceneObject* lightObject = RTTI::Cast<LightSceneObject>(sceneObject))
         {
             const RayColor lightColor = EvaluateLight(lightObject, ray, shadingData.intersection, context);
-            NFE_ASSERT(lightColor.IsValid());
+            NFE_ASSERT(lightColor.IsValid(), "");
             resultColor.MulAndAccumulate(throughput, lightColor);
 
             pathTerminationReason = PathTerminationReason::HitLight;
@@ -203,9 +203,9 @@ const RayColor PathTracer::RenderPixel(const Math::Ray& primaryRay, const Render
         param.scene.EvaluateShadingData(shadingData, context);
 
         // accumulate emission color
-        NFE_ASSERT(shadingData.materialParams.emissionColor.IsValid());
+        NFE_ASSERT(shadingData.materialParams.emissionColor.IsValid(), "");
         resultColor.MulAndAccumulate(throughput, shadingData.materialParams.emissionColor);
-        NFE_ASSERT(resultColor.IsValid());
+        NFE_ASSERT(resultColor.IsValid(), "");
 
         // check if the ray depth won't be exeeded in the next iteration
         if (depth >= context.params->maxRayDepth)
@@ -232,7 +232,7 @@ const RayColor PathTracer::RenderPixel(const Math::Ray& primaryRay, const Render
             }
 
             throughput *= 1.0f / threshold;
-            NFE_ASSERT(throughput.IsValid());
+            NFE_ASSERT(throughput.IsValid(), "");
         }
 
         // sample BSDF
@@ -246,7 +246,7 @@ const RayColor PathTracer::RenderPixel(const Math::Ray& primaryRay, const Render
             break;
         }
 
-        NFE_ASSERT(bsdfValue.IsValid());
+        NFE_ASSERT(bsdfValue.IsValid(), "");
         throughput *= bsdfValue;
 
         // ray is not visible anymore

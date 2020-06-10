@@ -17,7 +17,7 @@ uint32 SharedPtrBase::RefCount() const
 {
     if (mData)
     {
-        const uint32 numRefs = mData->mStrongRefs;
+        const int32 numRefs = mData->mStrongRefs;
         NFE_ASSERT(numRefs >= 0, "Invalid ref count");
         return static_cast<uint32>(numRefs);
     }

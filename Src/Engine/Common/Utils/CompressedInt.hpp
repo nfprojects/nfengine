@@ -36,7 +36,7 @@ struct CompressedUint
         }
         outputBuffer[outputSize++] = static_cast<uint8>(value) & 0x7Fu;
 
-        NFE_ASSERT(outputSize <= MaxBufferLength);
+        NFE_ASSERT(outputSize <= MaxBufferLength, "Output buffer is too short");
         return outputSize;
     }
 

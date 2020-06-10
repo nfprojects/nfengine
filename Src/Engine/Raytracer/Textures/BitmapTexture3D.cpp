@@ -87,7 +87,7 @@ const Vec4f BitmapTexture3D::Evaluate(const Vec4f& coords) const
         result = Vec4f::Zero();
     }
 
-    NFE_ASSERT(result.IsValid());
+    NFE_ASSERT(result.IsValid(), "");
 
     return result;
 }

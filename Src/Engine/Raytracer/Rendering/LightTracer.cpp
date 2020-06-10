@@ -59,7 +59,7 @@ const RayColor LightTracer::RenderPixel(const Ray&, const RenderParam& param, Re
     }
 
     emitResult.emissionPdfW *= lightPickingProbability;
-    NFE_ASSERT(emitResult.emissionPdfW > 0.0f);
+    NFE_ASSERT(emitResult.emissionPdfW > 0.0f, "");
 
     emitResult.position += emitResult.direction * 0.0005f;
     Ray ray = Ray(emitResult.position, emitResult.direction);
@@ -92,7 +92,7 @@ const RayColor LightTracer::RenderPixel(const Ray&, const RenderParam& param, Re
             param.scene.EvaluateIntersection(ray, hitPoint, ctx.time, shadingData.intersection);
             shadingData.outgoingDirWorldSpace = -ray.dir;
 
-            NFE_ASSERT(shadingData.intersection.material != nullptr);
+            NFE_ASSERT(shadingData.intersection.material != nullptr, "");
             shadingData.intersection.material->EvaluateShadingData(ctx.wavelength, shadingData);
         }
 
@@ -134,7 +134,7 @@ const RayColor LightTracer::RenderPixel(const Ray&, const RenderParam& param, Re
             // calculate BSDF contribution
             float bsdfPdfW;
             const RayColor cameraFactor = shadingData.intersection.material->Evaluate(ctx.wavelength, shadingData, -dirToCamera, &bsdfPdfW);
-            NFE_ASSERT(cameraFactor.IsValid());
+            NFE_ASSERT(cameraFactor.IsValid(), "");
 
             if (!cameraFactor.AlmostZero())
             {
@@ -162,7 +162,7 @@ const RayColor LightTracer::RenderPixel(const Ray&, const RenderParam& param, Re
         Vec4f incomingDirWorldSpace;
         const RayColor bsdfValue = shadingData.intersection.material->Sample(ctx.wavelength, incomingDirWorldSpace, shadingData, ctx.randomGenerator.GetVec3f());
 
-        NFE_ASSERT(bsdfValue.IsValid());
+        NFE_ASSERT(bsdfValue.IsValid(), "");
         throughput *= bsdfValue;
 
         // ray is not visible anymore

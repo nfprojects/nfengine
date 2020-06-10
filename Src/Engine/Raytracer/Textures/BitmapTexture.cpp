@@ -88,7 +88,7 @@ const Vec4f BitmapTexture::Evaluate(const Vec4f& coords) const
         result = Vec4f::Zero();
     }
 
-    NFE_ASSERT(result.IsValid());
+    NFE_ASSERT(result.IsValid(), "");
 
     return result;
 }
@@ -106,8 +106,8 @@ const Vec4f BitmapTexture::Sample(const Vec2f u, Vec4f& outCoords, float* outPdf
     // TODO get rid of division
     const uint32 x = pixelIndex % width;
     const uint32 y = pixelIndex / width;
-    NFE_ASSERT(x < width);
-    NFE_ASSERT(y < height);
+    NFE_ASSERT(x < width, "");
+    NFE_ASSERT(y < height, "");
 
     // TODO this is redundant, because BitmapTexture::Evaluate multiplies coords by size again...
     outCoords = Vec4f::FromIntegers(x, y, 0, 0) / mBitmap->mFloatSize;

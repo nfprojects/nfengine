@@ -27,7 +27,7 @@ void NativeArrayType::PrintInfo() const
 
 uint32 NativeArrayType::GetArraySize(const void* arrayObject) const
 {
-    NFE_ASSERT(arrayObject);
+    NFE_ASSERT(arrayObject, "Invalid array object");
     NFE_UNUSED(arrayObject);
     return mArraySize;
 }

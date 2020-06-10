@@ -12,8 +12,8 @@ CheckerboardTexture::CheckerboardTexture(const Math::Vec4f& colorA, const Math::
     , mColorB(colorB)
     , mPdf(0.5f)
 {
-    NFE_ASSERT(colorA.IsValid());
-    NFE_ASSERT(colorB.IsValid());
+    NFE_ASSERT(colorA.IsValid(), "");
+    NFE_ASSERT(colorB.IsValid(), "");
 
     // compute probability of sampling color A
     const float colorWeightA = Vec4f::Dot3(colorA, c_rgbIntensityWeights);

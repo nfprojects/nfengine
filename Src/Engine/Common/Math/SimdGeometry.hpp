@@ -42,7 +42,7 @@ template<>
 struct SimdTraits<16>
 {
     using Float = Math::Vec16f;
-    using FloatMask = Math::VecBool16;
+    using FloatMask = Math::VecBool16f;
     using Int32 = Math::Vec16i;
     using Uint32 = Math::Vec16ui;
     using Vec2f = Math::Vec2x16f;

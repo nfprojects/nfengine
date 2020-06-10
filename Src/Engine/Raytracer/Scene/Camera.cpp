@@ -22,7 +22,7 @@ Camera::Camera()
 
 void Camera::SetTransform(const Math::Transform& transform)
 {
-    NFE_ASSERT(transform.IsValid());
+    NFE_ASSERT(transform.IsValid(), "");
 
     mTransform = transform;
     mLocalToWorld = transform.ToMatrix();
@@ -30,8 +30,8 @@ void Camera::SetTransform(const Math::Transform& transform)
 
 void Camera::SetPerspective(float aspectRatio, float FoV)
 {
-    NFE_ASSERT(IsValid(aspectRatio) && aspectRatio > 0.0f);
-    NFE_ASSERT(IsValid(FoV) && aspectRatio > 0.0f && FoV < NFE_MATH_PI);
+    NFE_ASSERT(IsValid(aspectRatio) && aspectRatio > 0.0f, "");
+    NFE_ASSERT(IsValid(FoV) && aspectRatio > 0.0f && FoV < NFE_MATH_PI, "");
 
     mAspectRatio = aspectRatio;
     mFieldOfView = FoV;
@@ -56,7 +56,7 @@ void Camera::SetAngularVelocity(const Math::Quaternion& quat)
     // TODO
     //mAngularVelocity = quat.Normalized();
     //mAngularVelocityIsZero = Quaternion::AlmostEqual(mAngularVelocity, Quaternion::Identity());
-    //NFE_ASSERT(mAngularVelocity.IsValid());
+    //NFE_ASSERT(mAngularVelocity.IsValid(), "");
 }
 
 const Matrix4 Camera::SampleTransform(const float time) const

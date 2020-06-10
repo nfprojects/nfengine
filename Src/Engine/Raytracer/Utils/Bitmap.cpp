@@ -259,7 +259,7 @@ bool Bitmap::Copy(Bitmap& target, const Bitmap& source)
 
     if (target.GetStride() == source.GetStride())
     {
-        NFE_ASSERT(target.GetDataSize() == source.GetDataSize());
+        NFE_ASSERT(target.GetDataSize() == source.GetDataSize(), "");
         memcpy(target.GetData(), source.GetData(), source.GetDataSize());
     }
     else
@@ -323,7 +323,7 @@ bool Bitmap::Load(const char* path)
 
 const Vec4f Bitmap::GetPixel(uint32 x, uint32 y) const
 {
-    NFE_ASSERT((x < GetWidth()) && (y < GetHeight()));
+    NFE_ASSERT((x < GetWidth()) && (y < GetHeight()), "");
 
     const size_t rowOffset = static_cast<size_t>(GetStride()) * static_cast<size_t>(y);
     const uint8* rowData = mData + rowOffset;
@@ -519,7 +519,7 @@ const Vec4f Bitmap::GetPixel(uint32 x, uint32 y) const
 void Bitmap::GetPixelBlock(const Vec4ui coords, Vec4f* outColors) const
 {
     const Vec4ui size2D = mSize.Swizzle<0,1,0,1>();
-    NFE_ASSERT((coords < size2D).All());
+    NFE_ASSERT((coords < size2D).All(), "");
 
     const uint8* rowData0 = mData + GetStride() * static_cast<size_t>(coords.y);
     const uint8* rowData1 = mData + GetStride() * static_cast<size_t>(coords.w);
@@ -846,9 +846,9 @@ void Bitmap::GetPixelBlock(const Vec4ui coords, Vec4f* outColors) const
 
 const Vec4f Bitmap::GetPixel3D(uint32 x, uint32 y, uint32 z) const
 {
-    NFE_ASSERT(x < GetWidth());
-    NFE_ASSERT(y < GetHeight());
-    NFE_ASSERT(z < GetDepth());
+    NFE_ASSERT(x < GetWidth(), "");
+    NFE_ASSERT(y < GetHeight(), "");
+    NFE_ASSERT(z < GetDepth(), "");
 
     const size_t row = y + static_cast<size_t>(GetHeight()) * static_cast<size_t>(z);
     const uint8* rowData = mData + GetStride() * row;
@@ -886,8 +886,8 @@ const Vec4f Bitmap::GetPixel3D(uint32 x, uint32 y, uint32 z) const
 
 void Bitmap::GetPixelBlock3D(const Vec4ui coordsA, const Vec4ui coordsB, Vec4f* outColors) const
 {
-    NFE_ASSERT((coordsA < mSize).All3());
-    NFE_ASSERT((coordsB < mSize).All3());
+    NFE_ASSERT((coordsA < mSize).All3(), "");
+    NFE_ASSERT((coordsB < mSize).All3(), "");
 
     const size_t row0 = coordsA.y + static_cast<size_t>(GetHeight()) * static_cast<size_t>(coordsA.z);
     const size_t row1 = coordsB.y + static_cast<size_t>(GetHeight()) * static_cast<size_t>(coordsA.z);

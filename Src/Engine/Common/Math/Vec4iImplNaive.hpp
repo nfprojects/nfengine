@@ -40,7 +40,7 @@ const VecBool4i VecBool4i::Swizzle() const
 }
 
 // combine into 4-bit mask
-int32 VecBool4i::GetMask() const
+uint32 VecBool4i::GetMask() const
 {
     int32 ret = 0;
     ret |= b[0] ? (1 << 0) : 0;

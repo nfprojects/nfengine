@@ -62,7 +62,7 @@ static thread_local TempLineType gTempLineB;
 
 bool BitmapUtils::GaussianBlur(Bitmap& targetBitmap, const Bitmap& sourceBitmap, const GaussianBlurParams params, Common::TaskBuilder& taskBuilder)
 {
-    NFE_ASSERT(params.numPasses > 0);
+    NFE_ASSERT(params.numPasses > 0, "");
 
     if (targetBitmap.mFormat != Bitmap::Format::R32G32B32_Float)
     {

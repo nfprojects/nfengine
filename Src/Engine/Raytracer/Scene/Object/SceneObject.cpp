@@ -28,7 +28,7 @@ bool ISceneObject::OnPropertyChanged(const Common::StringView propertyName)
 {
     if (propertyName == "mTransform")
     {
-        NFE_ASSERT(mTransform.IsValid());
+        NFE_ASSERT(mTransform.IsValid(), "");
         mBaseTransform = mTransform.ToMatrix();
         mInverseTranform = mTransform.Inverted().ToMatrix();
         return true;
@@ -39,7 +39,7 @@ bool ISceneObject::OnPropertyChanged(const Common::StringView propertyName)
 
 void ISceneObject::SetTransform(const Math::Matrix4& matrix)
 {
-    NFE_ASSERT(matrix.IsValid());
+    NFE_ASSERT(matrix.IsValid(), "");
 
     mTransform = Transform::FromMatrix(matrix);
 
@@ -52,7 +52,7 @@ void ISceneObject::SetTransform(const Math::Matrix4& matrix)
 const Matrix4 ISceneObject::GetTransform(const float t) const
 {
     NFE_UNUSED(t);
-    NFE_ASSERT(t >= 0.0f && t <= 1.0f);
+    NFE_ASSERT(t >= 0.0f && t <= 1.0f, "");
 
     // TODO motion blur
 
@@ -62,7 +62,7 @@ const Matrix4 ISceneObject::GetTransform(const float t) const
 const Matrix4 ISceneObject::GetInverseTransform(const float t) const
 {
     NFE_UNUSED(t);
-    NFE_ASSERT(t >= 0.0f && t <= 1.0f);
+    NFE_ASSERT(t >= 0.0f && t <= 1.0f, "");
 
     // TODO motion blur
 

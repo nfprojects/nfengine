@@ -33,7 +33,7 @@ ColorMaterialParameter::ColorMaterialParameter()
 
 ColorMaterialParameter::ColorMaterialParameter(const HdrColorRGB& baseValue)
 {
-    NFE_ASSERT(baseValue.IsValid());
+    NFE_ASSERT(baseValue.IsValid(), "");
     mBaseValue = Common::MakeSharedPtr<ColorRGB>(baseValue);
 }
 
@@ -42,11 +42,11 @@ ColorMaterialParameter::~ColorMaterialParameter() = default;
 bool ColorMaterialParameter::IsValid() const
 {
     return mBaseValue && mBaseValue->IsValid();
-};
+}
 
 void ColorMaterialParameter::SetBaseValue(const ColorPtr& baseValueColor)
 {
-    NFE_ASSERT(baseValueColor && baseValueColor->IsValid());
+    NFE_ASSERT(baseValueColor && baseValueColor->IsValid(), "");
     mBaseValue = baseValueColor;
 }
 
@@ -66,7 +66,7 @@ const RayColor ColorMaterialParameter::Evaluate(const Vec4f& uv, const Wavelengt
     }
 
     return color;
-};
+}
 
 } // namespace RT
 } // namespace NFE

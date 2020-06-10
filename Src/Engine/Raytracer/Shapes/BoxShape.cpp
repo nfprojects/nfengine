@@ -116,9 +116,9 @@ bool BoxShape::OnPropertyChanged(const Common::StringView propertyName)
 
 void BoxShape::OnSizeChanged()
 {
-    NFE_ASSERT(mSize.x > 0.0f);
-    NFE_ASSERT(mSize.y > 0.0f);
-    NFE_ASSERT(mSize.z > 0.0f);
+    NFE_ASSERT(mSize.x > 0.0f, "");
+    NFE_ASSERT(mSize.y > 0.0f, "");
+    NFE_ASSERT(mSize.z > 0.0f, "");
 
     mInvSize = VECTOR_ONE / mSize;
 

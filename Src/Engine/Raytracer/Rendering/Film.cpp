@@ -26,8 +26,8 @@ Film::Film(Bitmap& sum, Bitmap* secondarySum)
 {
     if (mSecondarySum)
     {
-        NFE_ASSERT(mSecondarySum->GetWidth() == mWidth);
-        NFE_ASSERT(mSecondarySum->GetHeight() == mHeight);
+        NFE_ASSERT(mSecondarySum->GetWidth() == mWidth, "");
+        NFE_ASSERT(mSecondarySum->GetHeight() == mHeight, "");
     }
 }
 

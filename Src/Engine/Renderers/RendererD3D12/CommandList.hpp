@@ -23,7 +23,7 @@ class CommandListManager;
  */
 class CommandList final
 {
-    NFE_MAKE_NONCOPYABLE(CommandList);
+    NFE_MAKE_NONCOPYABLE(CommandList)
 
     friend class CommandListManager;
 

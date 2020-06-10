@@ -58,7 +58,7 @@ struct RayPacket
 
     NFE_FORCE_INLINE void PushRay(const Math::Ray& ray, const Math::Vec4f& weight, const ImageLocationInfo& location)
     {
-        NFE_ASSERT(numRays < MaxRayPacketSize);
+        NFE_ASSERT(numRays < MaxRayPacketSize, "");
 
         const uint32 groupIndex = numRays / GroupSize;
         const uint32 rayIndex = numRays % GroupSize;
@@ -87,7 +87,7 @@ struct RayPacket
 
     void PushRays(const RayPacketTypes::Ray& rays, const RayPacketTypes::Vec3f& weights, const ImageLocationInfo* locations)
     {
-        NFE_ASSERT((numRays < MaxRayPacketSize) && (numRays % GroupSize == 0));
+        NFE_ASSERT((numRays < MaxRayPacketSize) && (numRays % GroupSize == 0), "");
 
         RayGroup& group = groups[numRays / GroupSize];
         group.rays[0] = rays;

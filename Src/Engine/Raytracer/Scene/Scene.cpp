@@ -318,9 +318,9 @@ void Scene::EvaluateIntersection(const Ray& ray, const HitPoint& hitPoint, const
 {
     //NFE_SCOPED_TIMER(Scene_EvaluateIntersection);
 
-    NFE_ASSERT(hitPoint.distance >= 0.0f && hitPoint.distance < FLT_MAX);
-    NFE_ASSERT(hitPoint.u >= 0.0f && hitPoint.u <= 1.0f);
-    NFE_ASSERT(hitPoint.v >= 0.0f && hitPoint.v <= 1.0f);
+    NFE_ASSERT(hitPoint.distance >= 0.0f && hitPoint.distance < FLT_MAX, "");
+    NFE_ASSERT(hitPoint.u >= 0.0f && hitPoint.u <= 1.0f, "");
+    NFE_ASSERT(hitPoint.v >= 0.0f && hitPoint.v <= 1.0f, "");
 
     const ITraceableSceneObject* object = mTraceableObjects[hitPoint.objectId];
 
@@ -333,11 +333,11 @@ void Scene::EvaluateIntersection(const Ray& ray, const HitPoint& hitPoint, const
     // calculate normal, tangent, tex coord, etc. from intersection data
     object->EvaluateIntersection(hitPoint, outData);
     {
-        NFE_ASSERT(outData.texCoord.IsValid());
-        NFE_ASSERT(outData.frame[0].IsValid());
-        NFE_ASSERT(outData.frame[2].IsValid());
-        NFE_ASSERT(Abs(1.0f - outData.frame[0].SqrLength3()) < 0.001f);
-        NFE_ASSERT(Abs(1.0f - outData.frame[2].SqrLength3()) < 0.001f);
+        NFE_ASSERT(outData.texCoord.IsValid(), "");
+        NFE_ASSERT(outData.frame[0].IsValid(), "");
+        NFE_ASSERT(outData.frame[2].IsValid(), "");
+        NFE_ASSERT(Abs(1.0f - outData.frame[0].SqrLength3()) < 0.001f, "");
+        NFE_ASSERT(Abs(1.0f - outData.frame[2].SqrLength3()) < 0.001f, "");
     }
 
     Vec4f localSpaceTangent = outData.frame[0];
@@ -370,18 +370,18 @@ void Scene::EvaluateIntersection(const Ray& ray, const HitPoint& hitPoint, const
     // make sure the frame is orthonormal
     {
         // validate length
-        NFE_ASSERT(Abs(1.0f - outData.frame[0].SqrLength3()) < 0.001f);
-        NFE_ASSERT(Abs(1.0f - outData.frame[1].SqrLength3()) < 0.001f);
-        NFE_ASSERT(Abs(1.0f - outData.frame[2].SqrLength3()) < 0.001f);
+        NFE_ASSERT(Abs(1.0f - outData.frame[0].SqrLength3()) < 0.001f, "");
+        NFE_ASSERT(Abs(1.0f - outData.frame[1].SqrLength3()) < 0.001f, "");
+        NFE_ASSERT(Abs(1.0f - outData.frame[2].SqrLength3()) < 0.001f, "");
 
         // validate perpendicularity
-        NFE_ASSERT(Vec4f::Dot3(outData.frame[1], outData.frame[0]) < 0.001f);
-        //NFE_ASSERT(Vec4f::Dot3(outData.frame[1], outData.frame[2]) < 0.001f);
-        //NFE_ASSERT(Vec4f::Dot3(outData.frame[2], outData.frame[0]) < 0.001f);
+        NFE_ASSERT(Vec4f::Dot3(outData.frame[1], outData.frame[0]) < 0.001f, "");
+        //NFE_ASSERT(Vec4f::Dot3(outData.frame[1], outData.frame[2]) < 0.001f, "");
+        //NFE_ASSERT(Vec4f::Dot3(outData.frame[2], outData.frame[0]) < 0.001f, "");
 
         // validate headness
         //const Vec4f computedNormal = Vec4f::Cross3(outData.frame[0], outData.frame[1]);
-        //NFE_ASSERT((computedNormal - outData.frame[2]).SqrLength3() < 0.001f);
+        //NFE_ASSERT((computedNormal - outData.frame[2]).SqrLength3() < 0.001f, "");
     }
 }
 
@@ -427,7 +427,7 @@ void Scene::EvaluateDecals(ShadingData& shadingData, RenderingContext& context) 
 
             for (uint32 i = 0; i < numLeaves; ++i)
             {
-                NFE_ASSERT(numOverlappingDecals < maxOverlappingDecals);
+                NFE_ASSERT(numOverlappingDecals < maxOverlappingDecals, "");
                 decals[numOverlappingDecals++] = mDecals[firstChild + i];
             }
         }
@@ -492,7 +492,7 @@ const IMedium* Scene::GetMediumAtPoint(const RenderingContext& context, const Ma
     for (const ShapeSceneObject* object : mMediumObjects)
     {
         const IMedium* medium = object->GetMedium();
-        NFE_ASSERT(medium);
+        NFE_ASSERT(medium, "");
 
         // transform point to local-space
         const Matrix4 invTransform = object->GetInverseTransform(context.time);

@@ -47,7 +47,7 @@ bool PlasticBSDF::Sample(SamplingContext& ctx) const
     }
     else // diffuse reflection
     {
-        NFE_ASSERT(diffuseProbability > 0.0f);
+        NFE_ASSERT(diffuseProbability > 0.0f, "");
 
         ctx.outIncomingDir = SamplingHelpers::GetHemishpereCos(ctx.sample);
         const float NdotL = ctx.outIncomingDir.z;

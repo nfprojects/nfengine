@@ -11,7 +11,7 @@ using namespace Math;
 
 void Wavelength::InitRange(uint32 binId, uint32 numBins)
 {
-    NFE_ASSERT(binId < numBins);
+    NFE_ASSERT(binId < numBins, "");
 
     float offset = 1.0f / static_cast<float>(numBins * NumComponents);
 

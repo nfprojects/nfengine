@@ -10,6 +10,11 @@ VecBool4i::VecBool4i(bool x, bool y, bool z, bool w)
     v = _mm_set_epi32(w ? 0xFFFFFFFF : 0, z ? 0xFFFFFFFF : 0, y ? 0xFFFFFFFF : 0, x ? 0xFFFFFFFF : 0);
 }
 
+VecBool4i::VecBool4i(int32 x, int32 y, int32 z, int32 w)
+{
+    v = _mm_set_epi32(w > 0 ? 0xFFFFFFFF : 0, z > 0 ? 0xFFFFFFFF : 0, y > 0 ? 0xFFFFFFFF : 0, x > 0 ? 0xFFFFFFFF : 0);
+}
+
 VecBool4i::VecBool4i(const VecBool4f& other)
 {
     v = _mm_castps_si128(other.v);
@@ -24,7 +29,7 @@ template<uint32 index>
 bool VecBool4i::Get() const
 {
     static_assert(index < 4, "Invalid index");
-    return _mm_extract_ps(v, index) != 0;
+    return _mm_extract_epi32(v, index) != 0;
 }
 
 bool VecBool4i::All() const
@@ -135,7 +140,7 @@ Vec4i::Vec4i(const int32 i)
 {}
 
 Vec4i::Vec4i(const int32* i)
-    : v(_mm_load_epi32(i))
+    : v(_mm_loadu_si128(reinterpret_cast<const __m128i*>(i)))
 {}
 
 const Vec4i Vec4i::Convert(const Vec4f& v)
@@ -490,7 +495,7 @@ Vec4ui::Vec4ui(const uint32 i)
 {}
 
 Vec4ui::Vec4ui(const uint32* i)
-    : v(_mm_load_epi32(i))
+    : v(_mm_loadu_si128(reinterpret_cast<const __m128i*>(i)))
 {}
 
 const Vec4ui Vec4ui::Iota(const uint32 value)

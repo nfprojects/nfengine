@@ -9,9 +9,9 @@ namespace RT {
 // Ray-scene intersection data (non-SIMD)
 struct HitPoint
 {
-    union
+    NFE_UNNAMED_STRUCT union
     {
-        struct
+        NFE_UNNAMED_STRUCT struct
         {
             uint32 objectId;
             uint32 subObjectId;
@@ -22,9 +22,9 @@ struct HitPoint
 
     float distance;
 
-    union
+    NFE_UNNAMED_STRUCT union
     {
-        struct
+        NFE_UNNAMED_STRUCT struct
         {
             float u;
             float v;
@@ -82,7 +82,7 @@ struct SimdHitPoint
     // extract single hit point
     NFE_FORCE_INLINE HitPoint Get(uint32 i) const
     {
-        NFE_ASSERT(i < RayPacketTypes::GroupSize);
+        NFE_ASSERT(i < RayPacketTypes::GroupSize, "");
 
         HitPoint result;
         result.distance = distance[i];

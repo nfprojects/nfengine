@@ -16,6 +16,11 @@ VecBool8i::VecBool8i(const VecBool4i& low, const VecBool4i& high)
     , high(high)
 {}
 
+VecBool8i::VecBool8i(bool scalar)
+    : low(scalar)
+    , high(scalar)
+{}
+
 VecBool8i::VecBool8i(bool e0, bool e1, bool e2, bool e3, bool e4, bool e5, bool e6, bool e7)
     : low(e0, e1, e2, e3)
     , high(e4, e5, e6, e7)
@@ -34,6 +39,11 @@ bool VecBool8i::Get() const
     {
         return high.Get<index - 4u>();
     }
+}
+
+uint32 VecBool8i::GetMask() const
+{
+    return low.GetMask() | (high.GetMask() << 4u);
 }
 
 bool VecBool8i::All() const

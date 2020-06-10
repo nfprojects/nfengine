@@ -28,7 +28,7 @@ void SerializationContext::InitStage(Stage newStage)
 
 uint32 SerializationContext::MapString(const StringView str)
 {
-    NFE_ASSERT(mStage == Stage::Mapping || mStage == Stage::Serialization);
+    NFE_ASSERT(mStage == Stage::Mapping || mStage == Stage::Serialization, "Invalid stage");
 
     const auto iter = mStringsMap.Find(str);
     if (iter != mStringsMap.End())
@@ -51,7 +51,7 @@ uint32 SerializationContext::MapString(const StringView str)
 
     mStringsTable.PushBack(str);
     mStringsMap.Insert(str, newMappingInfo);
-    NFE_ASSERT(mStringsTable.Size() == mStringsMap.Size());
+    NFE_ASSERT(mStringsTable.Size() == mStringsMap.Size(), "Invalid string table size");
 
     return newMappingInfo.index;
 }
@@ -59,7 +59,7 @@ uint32 SerializationContext::MapString(const StringView str)
 uint32 SerializationContext::MapObject(const ObjectPtr& object)
 {
     NFE_ASSERT(object, "Tring to map nullptr");
-    NFE_ASSERT(mStage == Stage::Mapping || mStage == Stage::Serialization);
+    NFE_ASSERT(mStage == Stage::Mapping || mStage == Stage::Serialization, "Invalid stage");
 
     const auto iter = mObjectsMap.Find(object.Get());
     if (iter != mObjectsMap.End())
@@ -82,7 +82,7 @@ uint32 SerializationContext::MapObject(const ObjectPtr& object)
 
     mObjectsTable.PushBack(object);
     mObjectsMap.Insert(object.Get(), newMappingInfo);
-    NFE_ASSERT(mObjectsTable.Size() == mObjectsMap.Size());
+    NFE_ASSERT(mObjectsTable.Size() == mObjectsMap.Size(), "Invalid object map size");
 
     return newMappingInfo.index;
 }
@@ -90,7 +90,7 @@ uint32 SerializationContext::MapObject(const ObjectPtr& object)
 bool SerializationContext::IsObjectMapped(const IObject* object) const
 {
     NFE_ASSERT(object, "Tring to map nullptr");
-    NFE_ASSERT(mStage == Stage::Mapping || mStage == Stage::Serialization);
+    NFE_ASSERT(mStage == Stage::Mapping || mStage == Stage::Serialization, "Invalid stage");
 
     return mObjectsMap.Exists(object);
 }

@@ -70,9 +70,9 @@ TEST(MathTest, Vec16f_ConstructorHiLow)
     EXPECT_EQ(16.0f, v[15]);
 }
 
-TEST(MathTest, VecBool16_Get)
+TEST(MathTest, VecBool16f_Get)
 {
-    const VecBool16 vec(
+    const VecBool16f vec(
         true, false, false, false, true, true, false, true,
         false, true, true, true, false, false, false, true);
 

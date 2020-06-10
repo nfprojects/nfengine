@@ -38,12 +38,12 @@ struct NFE_RAYTRACER_API SpectrumDebugData
  */
 struct NFE_ALIGN(64) RenderingContext : public Common::Aligned<64>
 {
-    NFE_MAKE_NONCOPYABLE(RenderingContext);
-    NFE_MAKE_NONMOVEABLE(RenderingContext);
+    NFE_MAKE_NONCOPYABLE(RenderingContext)
 
 public:
 
     NFE_RAYTRACER_API RenderingContext();
+    NFE_RAYTRACER_API RenderingContext(RenderingContext&& other) = default;
 
     const Camera* camera = nullptr;
 

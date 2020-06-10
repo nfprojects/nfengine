@@ -25,7 +25,7 @@ EnumType::EnumType(const EnumTypeInfo& info)
 
     for (uint32 i = 0; i < mOptions.Size(); ++i)
     {
-        NFE_ASSERT(!mOptions[i].name.Empty());
+        NFE_ASSERT(!mOptions[i].name.Empty(), "Enum option cannot be empty");
 
         for (uint32 j = i + 1; j < mOptions.Size(); ++j)
         {

@@ -99,8 +99,8 @@ bool BVHBuilder::Build(const Box* data, const uint32 numLeaves,
     }
     waitable.Wait();
 
-    NFE_ASSERT(mNumGeneratedLeaves == mNumLeaves); // Number of generated leaves is invalid
-    NFE_ASSERT(mNumGeneratedNodes <= 2 * mNumLeaves); // Number of generated nodes is invalid
+    NFE_ASSERT(mNumGeneratedLeaves == mNumLeaves, ""); // Number of generated leaves is invalid
+    NFE_ASSERT(mNumGeneratedNodes <= 2 * mNumLeaves, ""); // Number of generated nodes is invalid
 
     // shrink BVH nodes array
     mTarget.mNumNodes = mNumGeneratedNodes;
@@ -181,7 +181,7 @@ void BVHBuilder::SubdivideNode(ThreadData& threadData, const WorkSet& workSet,
             }
             else
             {
-                NFE_FATAL();
+                NFE_FATAL("Invalid heuristics");
             }
 
             const uint32 leftCount = splitPos + 1;
@@ -207,10 +207,10 @@ void BVHBuilder::SubdivideNode(ThreadData& threadData, const WorkSet& workSet,
 
 void BVHBuilder::BuildNode(ThreadData& threadData, WorkSet& workSet, BVH::Node& targetNode)
 {
-    NFE_ASSERT(workSet.numLeaves <= mNumLeaves);
-    NFE_ASSERT(workSet.numLeaves > 0);
-    NFE_ASSERT(workSet.depth < mNumLeaves);
-    NFE_ASSERT(workSet.depth <= BVH::MaxDepth);
+    NFE_ASSERT(workSet.numLeaves <= mNumLeaves, "");
+    NFE_ASSERT(workSet.numLeaves > 0, "");
+    NFE_ASSERT(workSet.depth < mNumLeaves, "");
+    NFE_ASSERT(workSet.depth <= BVH::MaxDepth, "");
 
     targetNode.min = workSet.box.min.ToVec3f();
     targetNode.max = workSet.box.max.ToVec3f();
@@ -280,10 +280,10 @@ void BVHBuilder::BuildNode_Threaded(const WorkSetPtr& workSet, BVH::Node& target
         return;
     }
 
-    NFE_ASSERT(workSet->numLeaves <= mNumLeaves);
-    NFE_ASSERT(workSet->numLeaves > 0);
-    NFE_ASSERT(workSet->depth < mNumLeaves);
-    NFE_ASSERT(workSet->depth <= BVH::MaxDepth);
+    NFE_ASSERT(workSet->numLeaves <= mNumLeaves, "");
+    NFE_ASSERT(workSet->numLeaves > 0, "");
+    NFE_ASSERT(workSet->depth < mNumLeaves, "");
+    NFE_ASSERT(workSet->depth <= BVH::MaxDepth, "");
 
     targetNode.min = workSet->box.min.ToVec3f();
     targetNode.max = workSet->box.max.ToVec3f();
@@ -373,7 +373,7 @@ void BVHBuilder::SortLeavesInAxis(Indices& indicesToSort, uint32 axis) const
 
 void BVHBuilder::SortLeaves(WorkSet& workSet) const
 {
-    NFE_ASSERT(workSet.leafIndices.Size() == workSet.numLeaves);
+    NFE_ASSERT(workSet.leafIndices.Size() == workSet.numLeaves, "");
 
     for (uint32 axis = 0; axis < NumAxes; ++axis)
     {
@@ -396,7 +396,7 @@ void BVHBuilder::SortLeaves(WorkSet& workSet) const
 
 void BVHBuilder::SortLeaves_Threaded(const WorkSetPtr& workSet, TaskBuilder& taskBuilder) const
 {
-    NFE_ASSERT(workSet->leafIndices.Size() == workSet->numLeaves);
+    NFE_ASSERT(workSet->leafIndices.Size() == workSet->numLeaves, "");
 
     for (uint32 axis = 0; axis < NumAxes; ++axis)
     {

@@ -62,8 +62,7 @@ const VecBool4f VecBool4f::Swizzle() const
     }
 }
 
-// combine into 4-bit mask
-int VecBool4f::GetMask() const
+uint32 VecBool4f::GetMask() const
 {
     return _mm_movemask_ps(v);
 }
@@ -253,8 +252,13 @@ const Half4 Vec4f::ToHalf4() const
     Half4 halfs;
 #ifdef NFE_USE_FP16C
 #if defined(NFE_ARCH_X64)
-    halfs.packed = static_cast<uint64>(_mm_cvtsi128_si64(_mm_cvtps_ph(v, 0)));
+    const uint64 val = _mm_cvtsi128_si64(_mm_cvtps_ph(v, 0));
+    halfs.x = (uint16)(val >> 0);
+    halfs.y = (uint16)(val >> 16);
+    halfs.z = (uint16)(val >> 32);
+    halfs.w = (uint16)(val>> 24);
 #elif defined(NFE_ARCH_X86)
+#error "Not defined"
 #endif
 #else // NFE_USE_FP16C
     halfs.x = Half{ x };

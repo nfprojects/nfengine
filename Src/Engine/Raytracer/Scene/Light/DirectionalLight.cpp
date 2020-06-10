@@ -26,7 +26,7 @@ static constexpr const float SceneRadius = 30.0f; // TODO
 DirectionalLight::DirectionalLight(const Math::HdrColorRGB& color, const float angle)
     : ILight(color)
 {
-    NFE_ASSERT(angle >= 0.0f && angle < NFE_MATH_2PI);
+    NFE_ASSERT(angle >= 0.0f && angle < NFE_MATH_2PI, "");
     mCosAngle = cosf(angle);
     mIsDelta = mCosAngle > CosEpsilon;
 }
@@ -62,7 +62,7 @@ const Vec4f DirectionalLight::SampleDirection(const Vec2f sample, float& outPdf)
         sampledDirection.z = cosTheta;
         sampledDirection.Normalize3();
 
-        NFE_ASSERT(sampledDirection.IsValid());
+        NFE_ASSERT(sampledDirection.IsValid(), "");
     }
 
     return sampledDirection;

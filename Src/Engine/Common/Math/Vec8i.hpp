@@ -17,10 +17,14 @@ struct NFE_ALIGN(32) VecBool8i : public Common::Aligned<16>
     VecBool8i(const VecBool8i& other) = default;
     NFE_FORCE_INLINE VecBool8i(const VecBool8f& other);
     NFE_FORCE_INLINE VecBool8i(const VecBool4i& low, const VecBool4i& high);
+    NFE_FORCE_INLINE explicit VecBool8i(bool scalar);
     NFE_FORCE_INLINE VecBool8i(bool e0, bool e1, bool e2, bool e3, bool e4, bool e5, bool e6, bool e7);
 
     template<uint32 index>
     NFE_FORCE_INLINE bool Get() const;
+
+    // combine into 8-bit mask
+    NFE_FORCE_INLINE uint32 GetMask() const;
 
     NFE_FORCE_INLINE bool All() const;
     NFE_FORCE_INLINE bool None() const;

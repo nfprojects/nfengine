@@ -23,7 +23,7 @@ class CORE_API EntitySystem final
     : public ISystem
 {
     NFE_DECLARE_POLYMORPHIC_CLASS(EntitySystem)
-    NFE_MAKE_NONCOPYABLE(EntitySystem);
+    NFE_MAKE_NONCOPYABLE(EntitySystem)
 
 public:
     static const int ID = 0;

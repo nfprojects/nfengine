@@ -13,6 +13,15 @@ VecBool8i::VecBool8i(const VecBool8f& other)
 #endif
 {}
 
+VecBool8i::VecBool8i(bool scalar)
+{
+#ifdef NFE_USE_AVX512
+    mask = _cvtu32_mask8(scalar ? 0xFF : 0);
+#else
+    v = _mm256_set1_epi32(scalar ? -1 : 0);
+#endif
+}
+
 VecBool8i::VecBool8i(bool e0, bool e1, bool e2, bool e3, bool e4, bool e5, bool e6, bool e7)
 {
 #ifdef NFE_USE_AVX512
@@ -39,6 +48,15 @@ bool VecBool8i::Get() const
     return (uint32(mask) & (1 << index)) != 0;
 #else
     return _mm256_extract_epi32(v, index) != 0;
+#endif
+}
+
+uint32 VecBool8i::GetMask() const
+{
+#ifdef NFE_USE_AVX512
+    return uint32(mask);
+#else
+    return _mm256_movemask_ps(_mm256_castsi256_ps(v));
 #endif
 }
 

@@ -73,8 +73,8 @@ public:
     template<typename T>
     NFE_FORCE_INLINE T& GetPixelRef(uint32 x, uint32 y)
     {
-        NFE_ASSERT(x < GetWidth() && y < GetHeight());
-        NFE_ASSERT(BitsPerPixel(mFormat) / 8 == sizeof(T));
+        NFE_ASSERT(x < GetWidth() && y < GetHeight(), "");
+        NFE_ASSERT(BitsPerPixel(mFormat) / 8 == sizeof(T), "");
 
         const size_t rowOffset = GetStride() * static_cast<size_t>(y);
         return *reinterpret_cast<T*>(mData + rowOffset + sizeof(T) * x);
@@ -83,8 +83,8 @@ public:
     template<typename T>
     NFE_FORCE_INLINE T& GetPixelRef(uint32 x, uint32 y, uint32 z)
     {
-        NFE_ASSERT(x < GetWidth() && y < GetHeight() && z < GetDepth());
-        NFE_ASSERT(BitsPerPixel(mFormat) / 8 == sizeof(T));
+        NFE_ASSERT(x < GetWidth() && y < GetHeight() && z < GetDepth(), "");
+        NFE_ASSERT(BitsPerPixel(mFormat) / 8 == sizeof(T), "");
 
         const size_t row = y + static_cast<size_t>(GetHeight()) * static_cast<size_t>(z);
         const size_t rowOffset = GetStride() * row;
@@ -94,8 +94,8 @@ public:
     template<typename T>
     NFE_FORCE_INLINE const T& GetPixelRef(uint32 x, uint32 y) const
     {
-        NFE_ASSERT(x < GetWidth() && y < GetHeight());
-        NFE_ASSERT(BitsPerPixel(mFormat) / 8 == sizeof(T));
+        NFE_ASSERT(x < GetWidth() && y < GetHeight(), "");
+        NFE_ASSERT(BitsPerPixel(mFormat) / 8 == sizeof(T), "");
 
         const size_t rowOffset = GetStride() * static_cast<size_t>(y);
         return *reinterpret_cast<const T*>(mData + rowOffset + sizeof(T) * x);

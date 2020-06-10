@@ -15,8 +15,8 @@ namespace Common {
 // True random number generator (slow)
 class NFCOMMON_API Entropy
 {
-    NFE_MAKE_NONCOPYABLE(Entropy);
-    NFE_MAKE_NONMOVEABLE(Entropy);
+    NFE_MAKE_NONCOPYABLE(Entropy)
+    NFE_MAKE_NONMOVEABLE(Entropy)
 
 public:
     Entropy();

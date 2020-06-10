@@ -10,8 +10,8 @@ namespace Common {
 // helper class that allows easy task-graph building
 class NFCOMMON_API TaskBuilder
 {
-    NFE_MAKE_NONCOPYABLE(TaskBuilder);
-    NFE_MAKE_NONMOVEABLE(TaskBuilder);
+    NFE_MAKE_NONCOPYABLE(TaskBuilder)
+    NFE_MAKE_NONMOVEABLE(TaskBuilder)
 
 public:
     static constexpr uint32 MaxTasks = 128;

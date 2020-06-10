@@ -10,22 +10,21 @@ namespace Math {
 /**
  * Boolean vector for Vec16f type.
  */
-struct NFE_ALIGN(32) VecBool16 : public Common::Aligned<32>
+struct NFE_ALIGN(32) VecBool16f : public Common::Aligned<32>
 {
-    VecBool16() = default;
+    VecBool16f() = default;
 
-    NFE_FORCE_INLINE explicit VecBool16(bool scalar);
-    NFE_FORCE_INLINE VecBool16(const VecBool8f& low, const VecBool8f& high);
-    NFE_FORCE_INLINE VecBool16(const VecBool8i& low, const VecBool8i& high);
+    NFE_FORCE_INLINE explicit VecBool16f(bool scalar);
+    NFE_FORCE_INLINE VecBool16f(const VecBool8f& low, const VecBool8f& high);
 
-    NFE_FORCE_INLINE explicit VecBool16(
+    NFE_FORCE_INLINE explicit VecBool16f(
         bool e0, bool e1, bool e2, bool e3, bool e4, bool e5, bool e6, bool e7,
         bool e8, bool e9, bool e10, bool e11, bool e12, bool e13, bool e14, bool e15);
 
 #ifdef NFE_USE_AVX512
-    NFE_FORCE_INLINE VecBool16(const __mmask16 other) : mask(other) { }
-    NFE_FORCE_INLINE explicit VecBool16(const __m512 other) : mask(_mm512_movepi32_mask(_mm512_castps_si512(other))) { }
-    NFE_FORCE_INLINE explicit VecBool16(const __m512i other) : mask(_mm512_movepi32_mask(other)) { }
+    NFE_FORCE_INLINE VecBool16f(const __mmask16 other) : mask(other) { }
+    NFE_FORCE_INLINE explicit VecBool16f(const __m512 other) : mask(_mm512_movepi32_mask(_mm512_castps_si512(other))) { }
+    NFE_FORCE_INLINE explicit VecBool16f(const __m512i other) : mask(_mm512_movepi32_mask(other)) { }
     NFE_FORCE_INLINE operator __mmask16() const { return mask; }
 #endif // NFE_USE_AVX512
 
@@ -38,33 +37,20 @@ struct NFE_ALIGN(32) VecBool16 : public Common::Aligned<32>
     NFE_FORCE_INLINE bool None() const;
     NFE_FORCE_INLINE bool Any() const;
 
-    NFE_FORCE_INLINE const VecBool16 operator & (const VecBool16 rhs) const;
-    NFE_FORCE_INLINE const VecBool16 operator | (const VecBool16 rhs) const;
-    NFE_FORCE_INLINE const VecBool16 operator ^ (const VecBool16 rhs) const;
+    NFE_FORCE_INLINE const VecBool16f operator & (const VecBool16f rhs) const;
+    NFE_FORCE_INLINE const VecBool16f operator | (const VecBool16f rhs) const;
+    NFE_FORCE_INLINE const VecBool16f operator ^ (const VecBool16f rhs) const;
 
-    NFE_FORCE_INLINE bool operator == (const VecBool16 rhs) const;
+    NFE_FORCE_INLINE bool operator == (const VecBool16f rhs) const;
 
 private:
     friend struct Vec16f;
-    friend struct Vec16i;
-    friend struct Vec16ui;
 
 #ifdef NFE_USE_AVX512
     __mmask16 mask;
 #else
-    NFE_UNNAMED_STRUCT union
-    {
-        NFE_UNNAMED_STRUCT struct
-        {
-            VecBool8i ilow;
-            VecBool8i ihigh;
-        };
-        NFE_UNNAMED_STRUCT struct
-        {
-            VecBool8f low;
-            VecBool8f high;
-        };
-    };
+    VecBool8f low;
+    VecBool8f high;
 #endif // NFE_USE_AVX512
 };
 
@@ -130,12 +116,12 @@ struct NFE_ALIGN(64) Vec16f : public Common::Aligned<64>
     friend const Vec16f operator * (float a, const Vec16f& b);
 
     // comparison operators (returns true, if all the elements satisfy the equation)
-    NFE_FORCE_INLINE const VecBool16 operator == (const Vec16f& b) const;
-    NFE_FORCE_INLINE const VecBool16 operator < (const Vec16f& b) const;
-    NFE_FORCE_INLINE const VecBool16 operator <= (const Vec16f& b) const;
-    NFE_FORCE_INLINE const VecBool16 operator > (const Vec16f& b) const;
-    NFE_FORCE_INLINE const VecBool16 operator >= (const Vec16f& b) const;
-    NFE_FORCE_INLINE const VecBool16 operator != (const Vec16f& b) const;
+    NFE_FORCE_INLINE const VecBool16f operator == (const Vec16f& b) const;
+    NFE_FORCE_INLINE const VecBool16f operator < (const Vec16f& b) const;
+    NFE_FORCE_INLINE const VecBool16f operator <= (const Vec16f& b) const;
+    NFE_FORCE_INLINE const VecBool16f operator > (const Vec16f& b) const;
+    NFE_FORCE_INLINE const VecBool16f operator >= (const Vec16f& b) const;
+    NFE_FORCE_INLINE const VecBool16f operator != (const Vec16f& b) const;
 
     // bitwise logic operations
     NFE_FORCE_INLINE const Vec16f operator & (const Vec16f& b) const;
@@ -160,7 +146,7 @@ struct NFE_ALIGN(64) Vec16f : public Common::Aligned<64>
     NFE_FORCE_INLINE uint32 GetSignMask() const;
 
     // For each vector component, copy value from "a" if "sel" is "false", or from "b" otherwise.
-    NFE_FORCE_INLINE static const Vec16f Select(const Vec16f& a, const Vec16f& b, const VecBool16& sel);
+    NFE_FORCE_INLINE static const Vec16f Select(const Vec16f& a, const Vec16f& b, const VecBool16f& sel);
 
     template<uint32 selX, uint32 selY, uint32 selZ, uint32 selW>
     NFE_FORCE_INLINE static const Vec16f Select(const Vec16f& a, const Vec16f& b);

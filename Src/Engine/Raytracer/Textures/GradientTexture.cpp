@@ -14,10 +14,10 @@ GradientTexture::GradientTexture(const Vec4f& colorA, const Vec4f& colorB, const
     , mPlane(plane)
     , mDistance(planeDistance)
 {
-    NFE_ASSERT(colorA.IsValid());
-    NFE_ASSERT(colorB.IsValid());
-    NFE_ASSERT(plane.IsValid());
-    NFE_ASSERT(planeDistance > 0.0f);
+    NFE_ASSERT(colorA.IsValid(), "");
+    NFE_ASSERT(colorB.IsValid(), "");
+    NFE_ASSERT(plane.IsValid(), "");
+    NFE_ASSERT(planeDistance > 0.0f, "");
 
     mInvDistance = 1.0f / planeDistance;
 }

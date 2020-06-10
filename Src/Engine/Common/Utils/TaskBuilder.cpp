@@ -116,6 +116,14 @@ void TaskBuilder::ParallelFor(const char* debugName, uint32 arraySize, const Par
         uint32 numElements = 0;
         std::atomic<int32> counter = 0;
         uint32 threadDataIndex = 0;
+
+        ThreadData() = default;
+        ThreadData(const ThreadData& other)
+            : elementOffset(other.elementOffset)
+            , numElements(other.numElements)
+            , counter(other.counter.load())
+            , threadDataIndex(other.threadDataIndex)
+        {}
     };
 
     // TODO get rid of dynamic allocation, e.g. by using some kind of pool

@@ -9,7 +9,7 @@ using namespace Math;
 ConstTexture::ConstTexture(const Math::Vec4f& color)
     : mColor(color)
 {
-    NFE_ASSERT(mColor.IsValid());
+    NFE_ASSERT(mColor.IsValid(), "");
 }
 
 const char* ConstTexture::GetName() const

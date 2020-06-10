@@ -11,12 +11,12 @@ namespace Math {
 // Carlos Urena, Marcos Fajardo and Alan King
 struct SphericalQuad : public Common::Aligned<16>
 {
-    Vec4f o, x, y, z; // local reference system ’R’
+    Vec4f o, x, y, z; // local reference system ï¿½Rï¿½
     float z0; //
-    float x0, y0; // rectangle coords in ’R’
+    float x0, y0; // rectangle coords in ï¿½Rï¿½
     float x1, y1; //
     float b0, b1, k; // misc precomputed constants
-    float S; // solid angle of ’Q’
+    float S; // solid angle of ï¿½Qï¿½
 
     NFE_INLINE void Init(const Vec4f& s, const Vec4f& ex, const Vec4f& ey, const Vec4f& o);
     NFE_INLINE const Vec4f Sample(float u, float v, float& outPdf) const;
@@ -26,14 +26,14 @@ void SphericalQuad::Init(const Vec4f& s, const Vec4f& ex, const Vec4f& ey, const
 {
     o = ref;
     float exl = ex.Length3(), eyl = ey.Length3();
-    // compute local reference system ’R’
+    // compute local reference system ï¿½Rï¿½
     x = ex / exl;
     y = ey / eyl;
     z = Vec4f::Cross3(x, y);
     // compute rectangle coords in local reference system
     Vec4f d = s - ref;
     z0 = Vec4f::Dot3(d, z);
-    // flip ’z’ to make it point against ’Q’
+    // flip ï¿½zï¿½ to make it point against ï¿½Qï¿½
     if (z0 > 0.0f)
     {
         z *= -1.0f;
@@ -66,20 +66,19 @@ void SphericalQuad::Init(const Vec4f& s, const Vec4f& ex, const Vec4f& ey, const
     S = g0 + g1 - k;
 }
 
-NFE_FORCE_NOINLINE
 const Vec4f SphericalQuad::Sample(float u, float v, float& outPdf) const
 {
     outPdf = 1.0f / Max(NFE_MATH_EPSILON, S);
 
-    // 1. compute ’cu’
+    // 1. compute ï¿½cuï¿½
     float au = u * S + k;
     float fu = (cosf(au) * b0 - b1) / sinf(au);
     float cu = 1.0f / sqrtf(fu * fu + b0 * b0) * (fu > 0.0f ? 1.0f : -1.0f);
     cu = Clamp(cu, -1.0f, 1.0f); // avoid NaNs
-    // 2. compute ’xu’
+    // 2. compute ï¿½xuï¿½
     float xu = -(cu * z0) / sqrtf(1.0f - cu * cu);
     xu = Clamp(xu, x0, x1); // avoid Infs
-    // 3. compute ’yv’
+    // 3. compute ï¿½yvï¿½
     float d = sqrtf(xu * xu + z0 * z0);
     float h0 = y0 / sqrtf(d * d + y0 * y0);
     float h1 = y1 / sqrtf(d * d + y1 * y1);

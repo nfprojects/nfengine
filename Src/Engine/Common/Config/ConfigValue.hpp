@@ -73,7 +73,7 @@ public:
     NFE_FORCE_INLINE ConfigValue(float val) { type = Type::Float; floatData = val; }
     NFE_FORCE_INLINE ConfigValue(double val) { type = Type::Double; doubleData = val; }
     NFE_FORCE_INLINE ConfigValue(const char* val) { type = Type::String; stringData = val; }
-    NFE_FORCE_INLINE ConfigValue(const StringView val) { NFE_ASSERT(val.IsNullTerminated()); type = Type::String; stringData = val.Data(); }
+    NFE_FORCE_INLINE ConfigValue(const StringView val) { NFE_ASSERT(val.IsNullTerminated(), "String must be null-terminated"); type = Type::String; stringData = val.Data(); }
     NFE_FORCE_INLINE ConfigValue(const ConfigObject& val) { type = Type::Object; object = val.mHead; }
     NFE_FORCE_INLINE ConfigValue(const ConfigArray& val) { type = Type::Array; array = val.mHead; }
 

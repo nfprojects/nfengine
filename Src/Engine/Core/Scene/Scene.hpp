@@ -32,8 +32,8 @@ struct SceneUpdateInfo
  */
 class CORE_API Scene final
 {
-    NFE_MAKE_NONCOPYABLE(Scene);
-    NFE_MAKE_NONMOVEABLE(Scene);
+    NFE_MAKE_NONCOPYABLE(Scene)
+    NFE_MAKE_NONMOVEABLE(Scene)
 
 public:
     static constexpr int MaxSystems = 8;

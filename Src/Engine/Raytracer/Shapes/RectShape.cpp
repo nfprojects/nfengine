@@ -28,8 +28,8 @@ RectShape::RectShape(const Vec2f size, const Vec2f texScale)
     , mTextureScale(texScale)
     , mEnableSolidAngleSampling(false)
 {
-    NFE_ASSERT(mSize.x > 0.0f);
-    NFE_ASSERT(mSize.y > 0.0f);
+    NFE_ASSERT(mSize.x > 0.0f, "");
+    NFE_ASSERT(mSize.y > 0.0f, "");
 }
 
 const Box RectShape::GetBoundingBox() const

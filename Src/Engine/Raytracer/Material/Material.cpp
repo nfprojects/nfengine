@@ -97,13 +97,13 @@ Material& Material::operator = (Material&&) = default;
 
 void Material::Compile()
 {
-    NFE_ASSERT(emission.IsValid());
-    NFE_ASSERT(baseColor.IsValid());
-    NFE_ASSERT(IsValid(roughness.baseValue));
-    NFE_ASSERT(IsValid(metalness.baseValue));
-    NFE_ASSERT(IsValid(normalMapStrength) && normalMapStrength >= 0.0f);
-    NFE_ASSERT(IsValid(IoR) && IoR >= 0.0f);
-    NFE_ASSERT(IsValid(K) && K >= 0.0f);
+    NFE_ASSERT(emission.IsValid(), "");
+    NFE_ASSERT(baseColor.IsValid(), "");
+    NFE_ASSERT(IsValid(roughness.baseValue), "");
+    NFE_ASSERT(IsValid(metalness.baseValue), "");
+    NFE_ASSERT(IsValid(normalMapStrength) && normalMapStrength >= 0.0f, "");
+    NFE_ASSERT(IsValid(IoR) && IoR >= 0.0f, "");
+    NFE_ASSERT(IsValid(K) && K >= 0.0f, "");
 }
 
 const Vec4f Material::GetNormalVector(const Vec4f& uv) const
@@ -203,10 +203,10 @@ const RayColor Material::Sample(
         return RayColor::Zero();
     }
 
-    NFE_ASSERT(IsValid(samplingContext.outPdf));
-    NFE_ASSERT(samplingContext.outPdf >= 0.0f);
-    NFE_ASSERT(samplingContext.outIncomingDir.IsValid());
-    NFE_ASSERT(samplingContext.outColor.IsValid());
+    NFE_ASSERT(IsValid(samplingContext.outPdf), "");
+    NFE_ASSERT(samplingContext.outPdf >= 0.0f, "");
+    NFE_ASSERT(samplingContext.outIncomingDir.IsValid(), "");
+    NFE_ASSERT(samplingContext.outColor.IsValid(), "");
 
     // convert incoming light direction back to world space
     outIncomingDirWorldSpace = shadingData.intersection.LocalToWorld(samplingContext.outIncomingDir);

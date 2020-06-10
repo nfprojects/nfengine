@@ -21,7 +21,7 @@ namespace Scene {
  */
 class CORE_API IEntityController
 {
-    NFE_MAKE_NONCOPYABLE(IEntityController);
+    NFE_MAKE_NONCOPYABLE(IEntityController)
 
 public:
     IEntityController();

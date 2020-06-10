@@ -34,7 +34,7 @@ bool UniquePtrType::SerializeBinary(const void* object, Common::OutputStream* st
     if (pointedDataType)
     {
         const void* pointedData = GetPointedData(object);
-        NFE_ASSERT(pointedData);
+        NFE_ASSERT(pointedData, "Pointed data is expected to be valide if type is not null");
 
         if (!pointedDataType->SerializeBinary(pointedData, stream, context))
         {

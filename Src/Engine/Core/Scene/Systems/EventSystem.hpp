@@ -23,7 +23,7 @@ class CORE_API EventSystem final
     : public ISystem
 {
     NFE_DECLARE_POLYMORPHIC_CLASS(EventSystem)
-    NFE_MAKE_NONCOPYABLE(EventSystem);
+    NFE_MAKE_NONCOPYABLE(EventSystem)
 
 public:
     static const int ID = 1;

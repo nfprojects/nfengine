@@ -7,12 +7,11 @@
 
 namespace NFE {
 
-
 // Check if a type is defined
-template<typename T, typename = void>
+template<typename, typename = void>
 constexpr bool IsTypeDefined = false;
 template<typename T>
-constexpr bool IsTypeDefined<T, decltype(typeid(T), void())> = true;
+constexpr bool IsTypeDefined<T, std::void_t<decltype(sizeof(T))>> = true;
 
 
 // Return size of an array

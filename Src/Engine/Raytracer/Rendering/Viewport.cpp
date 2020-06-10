@@ -120,7 +120,7 @@ bool Viewport::Resize(uint32 width, uint32 height)
     {
         return false;
     }
-    NFE_ASSERT(GetFrontBuffer().GetFormat() == Bitmap::Format::B8G8R8A8_UNorm);
+    NFE_ASSERT(GetFrontBuffer().GetFormat() == Bitmap::Format::B8G8R8A8_UNorm, "");
 
     mPassesPerPixel.Resize(width * height);
 
@@ -186,9 +186,9 @@ void Viewport::PrepareHilbertCurve(uint32 tileSize)
         for (uint32 i = 0; i < numPixelsInTile; ++i)
         {
             uint32 x, y;
-            Math::HilbertIndexToCoords(i, x, y);
+            Math::HilbertIndexToCoords(tileSize, i, x, y);
 
-            NFE_ASSERT(x < tileSize&& y < tileSize);
+            NFE_ASSERT(x < tileSize&& y < tileSize, "");
             mTileOffsets[i].x = static_cast<int8>(x - prevX);
             mTileOffsets[i].y = static_cast<int8>(y - prevY);
 
@@ -200,8 +200,8 @@ void Viewport::PrepareHilbertCurve(uint32 tileSize)
 
 bool Viewport::SetRenderingParams(const RenderingParams& params)
 {
-    NFE_ASSERT(params.antiAliasingSpread >= 0.0f);
-    NFE_ASSERT(params.motionBlurStrength >= 0.0f && params.motionBlurStrength <= 1.0f);
+    NFE_ASSERT(params.antiAliasingSpread >= 0.0f, "");
+    NFE_ASSERT(params.motionBlurStrength >= 0.0f && params.motionBlurStrength <= 1.0f, "");
 
     mParams = params;
 
@@ -355,10 +355,10 @@ void Viewport::RenderTile(const TileRenderingContext& tileContext, RenderingCont
 
     Timer timer;
 
-    NFE_ASSERT(tile.minX < tile.maxX);
-    NFE_ASSERT(tile.minY < tile.maxY);
-    NFE_ASSERT(tile.maxX <= GetWidth());
-    NFE_ASSERT(tile.maxY <= GetHeight());
+    NFE_ASSERT(tile.minX < tile.maxX, "");
+    NFE_ASSERT(tile.minY < tile.maxY, "");
+    NFE_ASSERT(tile.maxX <= GetWidth(), "");
+    NFE_ASSERT(tile.maxY <= GetHeight(), "");
 
     const Vec4f filmSize = Vec4f::FromIntegers(GetWidth(), GetHeight(), 1, 1);
     const Vec4f invSize = VECTOR_ONE2 / filmSize;
@@ -404,7 +404,7 @@ void Viewport::RenderTile(const TileRenderingContext& tileContext, RenderingCont
             }
 
             RayColor color = tileContext.renderer.RenderPixel(ray, tileContext.renderParam, ctx);
-            NFE_ASSERT(color.IsValid());
+            NFE_ASSERT(color.IsValid(), "");
 
             if (ctx.params->visualizeTimePerPixel)
             {
@@ -416,7 +416,7 @@ void Viewport::RenderTile(const TileRenderingContext& tileContext, RenderingCont
 
 #ifndef NFE_ENABLE_SPECTRAL_RENDERING
             // exception: in spectral rendering these values can get below zero due to RGB->Spectrum conversion
-            NFE_ASSERT((sampleColor >= Vec4f::Zero()).All());
+            NFE_ASSERT((sampleColor >= Vec4f::Zero()).All(), "");
 #endif // NFE_ENABLE_SPECTRAL_RENDERING
 
             tileContext.renderParam.film.AccumulateColor(x, y, sampleColor);
@@ -437,8 +437,8 @@ void Viewport::RenderTile(const TileRenderingContext& tileContext, RenderingCont
 
 #if (NFE_RT_RAY_GROUP_SIZE == 4)
 
-        NFE_ASSERT((tile.maxY - tile.minY) % 2 == 0);
-        NFE_ASSERT((tile.maxX - tile.minX) % 2 == 0);
+        NFE_ASSERT((tile.maxY - tile.minY) % 2 == 0, "");
+        NFE_ASSERT((tile.maxX - tile.minX) % 2 == 0, "");
 
         constexpr uint32 rayGroupSizeX = 2;
         constexpr uint32 rayGroupSizeY = 2;
@@ -472,8 +472,8 @@ void Viewport::RenderTile(const TileRenderingContext& tileContext, RenderingCont
 
 #elif (NFE_RT_RAY_GROUP_SIZE == 8)
 
-        NFE_ASSERT((tile.maxY - tile.minY) % 2 == 0);
-        NFE_ASSERT((tile.maxX - tile.minX) % 4 == 0);
+        NFE_ASSERT((tile.maxY - tile.minY) % 2 == 0, "");
+        NFE_ASSERT((tile.maxX - tile.minX) % 4 == 0, "");
 
         constexpr uint32 rayGroupSizeX = 4;
         constexpr uint32 rayGroupSizeY = 2;
@@ -508,8 +508,8 @@ void Viewport::RenderTile(const TileRenderingContext& tileContext, RenderingCont
 
 #elif (NFE_RT_RAY_GROUP_SIZE == 16)
 
-        NFE_ASSERT((tile.maxY - tile.minY) % 4 == 0);
-        NFE_ASSERT((tile.maxX - tile.minX) % 4 == 0);
+        NFE_ASSERT((tile.maxY - tile.minY) % 4 == 0, "");
+        NFE_ASSERT((tile.maxX - tile.minX) % 4 == 0, "");
 
         constexpr uint32 rayGroupSizeX = 4;
         constexpr uint32 rayGroupSizeY = 4;
@@ -778,13 +778,13 @@ void Viewport::GenerateRenderingTiles()
         {
             tile.minY = block.minY + j * tileSize;
             tile.maxY = Min(block.maxY, block.minY + j * tileSize + tileSize);
-            NFE_ASSERT(tile.maxY > tile.minY);
+            NFE_ASSERT(tile.maxY > tile.minY, "");
 
             for (uint32 i = 0; i < columns; ++i)
             {
                 tile.minX = block.minX + i * tileSize;
                 tile.maxX = Min(block.maxX, block.minX + i * tileSize + tileSize);
-                NFE_ASSERT(tile.maxX > tile.minX);
+                NFE_ASSERT(tile.maxX > tile.minX, "");
 
                 mRenderingTiles.PushBack(tile);
             }
@@ -808,13 +808,13 @@ void Viewport::BuildInitialBlocksList()
 
         block.minY = j * blockSize;
         block.maxY = Min(GetHeight(), (j + 1) * blockSize);
-        NFE_ASSERT(block.maxY > block.minY);
+        NFE_ASSERT(block.maxY > block.minY, "");
 
         for (uint32 i = 0; i < columns; ++i)
         {
             block.minX = i * blockSize;
             block.maxX = Min(GetWidth(), (i + 1) * blockSize);
-            NFE_ASSERT(block.maxX > block.minX);
+            NFE_ASSERT(block.maxX > block.minX, "");
 
             mBlocks.PushBack(block);
         }

@@ -26,14 +26,14 @@ SphereShape::SphereShape(const float radius)
     , mInvRadius(1.0f / radius)
     , mRadiusD(radius)
 {
-    NFE_ASSERT(mRadius > 0.0f);
+    NFE_ASSERT(mRadius > 0.0f, "");
 }
 
 bool SphereShape::OnPropertyChanged(const Common::StringView propertyName)
 {
     if (propertyName == "mRadius")
     {
-        NFE_ASSERT(mRadius > 0.0f);
+        NFE_ASSERT(mRadius > 0.0f, "");
         mRadiusD = mRadius;
         mInvRadius = 1.0f / mRadius;
         return true;

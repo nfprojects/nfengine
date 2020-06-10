@@ -177,7 +177,7 @@ const RayColor RoughDielectricBSDF::Evaluate(const EvaluationContext& ctx, float
         color = RayColor(Abs(VdotH * LdotH) * (1.0f - F) * G * D / (denom * Abs(NdotV)));
     }
 
-    NFE_ASSERT(pdf >= 0.0f);
+    NFE_ASSERT(pdf >= 0.0f, "");
 
     if (outDirectPdfW)
     {

@@ -36,7 +36,7 @@ struct NFE_ALIGN(16) VecBool4f : public Common::Aligned<16>
     NFE_FORCE_INLINE const VecBool4f Swizzle() const;
 
     // combine into 4-bit mask
-    NFE_FORCE_INLINE int32 GetMask() const;
+    NFE_FORCE_INLINE uint32 GetMask() const;
 
     NFE_FORCE_INLINE bool All() const;
     NFE_FORCE_INLINE bool None() const;

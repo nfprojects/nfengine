@@ -46,7 +46,7 @@ const RayColor BackgroundLight::GetBackgroundColor(const Vec4f& dir, const Wavel
     if (mTexture)
     {
         const Vec4f coords = CartesianToSphericalCoordinates(dir);
-        NFE_ASSERT(coords.IsValid());
+        NFE_ASSERT(coords.IsValid(), "");
 
         const Vec4f textureColor = Vec4f::Max(Vec4f::Zero(), mTexture->Evaluate(coords));
 

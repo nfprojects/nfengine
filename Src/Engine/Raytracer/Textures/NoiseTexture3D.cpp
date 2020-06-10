@@ -16,9 +16,9 @@ NoiseTexture3D::NoiseTexture3D(const Math::Vec4f& colorA, const Math::Vec4f& col
     , mColorB(colorB)
     , mNumOctaves(numOctaves)
 {
-    NFE_ASSERT(colorA.IsValid());
-    NFE_ASSERT(colorB.IsValid());
-    NFE_ASSERT(numOctaves > 0 && numOctaves <= 20);
+    NFE_ASSERT(colorA.IsValid(), "");
+    NFE_ASSERT(colorB.IsValid(), "");
+    NFE_ASSERT(numOctaves > 0 && numOctaves <= 20, "");
 
     // 1/sum(1 / 2^n), n = 0 ... mNumOctaves-1
     mScale = 1.0f / (2.0f - powf(2.0f, 1.0f - mNumOctaves));
@@ -80,7 +80,7 @@ float NoiseTexture3D::EvaluateInternal(const Math::Vec4f& coords)
 
     // 3. return the sum of the four surflets
     const float v = Vec4f::Dot4(d, Vec4f(52.0f));
-    NFE_ASSERT(IsValid(v));
+    NFE_ASSERT(IsValid(v), "");
 
     return v;
 }

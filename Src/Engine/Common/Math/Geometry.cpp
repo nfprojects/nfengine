@@ -277,15 +277,13 @@ bool Intersect(const Frustum& frustum, const Sphere& sphere)
 
     // find the nearest point on frustum's edges to the sphere center
     // TODO: optimize - each ClosestPointOnSegment() call does division
-    Vec4f nearest;
+    Vec4f nearest = Vec4f::Zero();
     float dist = std::numeric_limits<float>::max();
 
     auto check = [&] (const int i, const int j)
     {
-        Vec4f tmpNearest;
-        float tmpDist;
-        tmpDist = ClosestPointOnSegment(sphere.origin, frustum.verticies[i], frustum.verticies[j],
-            tmpNearest);
+        Vec4f tmpNearest = Vec4f::Zero();
+        float tmpDist = ClosestPointOnSegment(sphere.origin, frustum.verticies[i], frustum.verticies[j], tmpNearest);
         if (tmpDist < dist)
         {
             dist = tmpDist;

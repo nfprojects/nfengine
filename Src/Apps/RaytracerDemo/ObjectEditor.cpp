@@ -214,7 +214,7 @@ static bool EditObject_EnumItemGetter(void* data, int idx, const char** outText)
     const EnumOption* options = reinterpret_cast<const EnumOption*>(data);
     if (outText)
     {
-        NFE_ASSERT(options[idx].name.IsNullTerminated());
+        NFE_ASSERT(options[idx].name.IsNullTerminated(), "");
         *outText = options[idx].name.Data();
     }
     return true;

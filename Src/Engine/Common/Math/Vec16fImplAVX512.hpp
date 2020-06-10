@@ -3,12 +3,12 @@
 namespace NFE {
 namespace Math {
 
-VecBool16::VecBool16(bool scalar)
+VecBool16f::VecBool16f(bool scalar)
 {
     mask = _cvtu32_mask16(scalar ? 0xFFFF : 0);
 }
 
-VecBool16::VecBool16(
+VecBool16f::VecBool16f(
     bool e0, bool e1, bool e2, bool e3, bool e4, bool e5, bool e6, bool e7,
     bool e8, bool e9, bool e10, bool e11, bool e12, bool e13, bool e14, bool e15)
 {
@@ -19,48 +19,48 @@ VecBool16::VecBool16(
 }
 
 template<uint32 index>
-bool VecBool16::Get() const
+bool VecBool16f::Get() const
 {
     static_assert(index < 16, "Invalid index");
     return (uint32(mask) & (1 << index)) != 0;
 }
 
-uint32 VecBool16::GetMask() const
+uint32 VecBool16f::GetMask() const
 {
     return mask;
 }
 
-bool VecBool16::All() const
+bool VecBool16f::All() const
 {
     return GetMask() == 0xFFFF;
 }
 
-bool VecBool16::None() const
+bool VecBool16f::None() const
 {
     return _mm512_testz_or_mask16(mask, mask) != 0;
 }
 
-bool VecBool16::Any() const
+bool VecBool16f::Any() const
 {
     return _mm512_testz_or_mask16(mask, mask) == 0;
 }
 
-const VecBool16 VecBool16::operator & (const VecBool16 rhs) const
+const VecBool16f VecBool16f::operator & (const VecBool16f rhs) const
 {
     return _kand_mask16(mask, rhs.mask);
 }
 
-const VecBool16 VecBool16::operator | (const VecBool16 rhs) const
+const VecBool16f VecBool16f::operator | (const VecBool16f rhs) const
 {
     return _kor_mask16(mask, rhs.mask);
 }
 
-const VecBool16 VecBool16::operator ^ (const VecBool16 rhs) const
+const VecBool16f VecBool16f::operator ^ (const VecBool16f rhs) const
 {
     return _kxor_mask16(mask, rhs.mask);
 }
 
-bool VecBool16::operator == (const VecBool16 rhs) const
+bool VecBool16f::operator == (const VecBool16f rhs) const
 {
     return GetMask() == rhs.GetMask();
 }
@@ -119,7 +119,7 @@ Vec16f& Vec16f::operator = (const Vec16f& other)
     return *this;
 }
 
-const Vec16f Vec16f::Select(const Vec16f& a, const Vec16f& b, const VecBool16& sel)
+const Vec16f Vec16f::Select(const Vec16f& a, const Vec16f& b, const VecBool16f& sel)
 {
     return _mm512_mask_blend_ps(sel, a, b);
 }
@@ -351,32 +351,32 @@ uint32 Vec16f::GetSignMask() const
 
 // Comparison functions ===========================================================================
 
-const VecBool16 Vec16f::operator == (const Vec16f& b) const
+const VecBool16f Vec16f::operator == (const Vec16f& b) const
 {
     return _mm512_cmp_ps_mask(v, b.v, _CMP_EQ_OQ);
 }
 
-const VecBool16 Vec16f::operator < (const Vec16f& b) const
+const VecBool16f Vec16f::operator < (const Vec16f& b) const
 {
     return _mm512_cmp_ps_mask(v, b.v, _CMP_LT_OQ);
 }
 
-const VecBool16 Vec16f::operator <= (const Vec16f& b) const
+const VecBool16f Vec16f::operator <= (const Vec16f& b) const
 {
     return _mm512_cmp_ps_mask(v, b.v, _CMP_LE_OQ);
 }
 
-const VecBool16 Vec16f::operator > (const Vec16f& b) const
+const VecBool16f Vec16f::operator > (const Vec16f& b) const
 {
     return _mm512_cmp_ps_mask(v, b.v, _CMP_GT_OQ);
 }
 
-const VecBool16 Vec16f::operator >= (const Vec16f& b) const
+const VecBool16f Vec16f::operator >= (const Vec16f& b) const
 {
     return _mm512_cmp_ps_mask(v, b.v, _CMP_GE_OQ);
 }
 
-const VecBool16 Vec16f::operator != (const Vec16f& b) const
+const VecBool16f Vec16f::operator != (const Vec16f& b) const
 {
     return _mm512_cmp_ps_mask(v, b.v, _CMP_NEQ_OQ);
 }

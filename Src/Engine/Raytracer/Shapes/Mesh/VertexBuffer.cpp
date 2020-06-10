@@ -189,7 +189,7 @@ bool VertexBuffer::Initialize(const VertexBufferDesc& desc)
 
 void VertexBuffer::GetVertexIndices(const uint32 triangleIndex, VertexIndices& indices) const
 {
-    NFE_ASSERT(triangleIndex < mNumTriangles);
+    NFE_ASSERT(triangleIndex < mNumTriangles, "");
 
     const VertexIndices* buffer = reinterpret_cast<const VertexIndices*>(mBuffer + mVertexIndexBufferOffset);
     indices = buffer[triangleIndex];
@@ -197,7 +197,7 @@ void VertexBuffer::GetVertexIndices(const uint32 triangleIndex, VertexIndices& i
 
 const Material* VertexBuffer::GetMaterial(const uint32 materialIndex) const
 {
-    NFE_ASSERT(materialIndex < mMaterials.Size());
+    NFE_ASSERT(materialIndex < mMaterials.Size(), "");
 
     const Material** materialBufferData = reinterpret_cast<const Material**>(mBuffer + mMaterialBufferOffset);
     return materialBufferData[materialIndex];

@@ -224,7 +224,7 @@ const Vec4f PostprocessLUT::Sample(const Vec4f& inputColor) const
     const Vec4f scaledCoords = coord * static_cast<float>(lutSize - 1u);
 
     Vec4i coords = Vec4i::TruncateAndConvert(scaledCoords);
-    NFE_ASSERT(((coords >= Vec4i::Zero()) & (coords < Vec4i(lutSize))).All3());
+    NFE_ASSERT(((coords >= Vec4i::Zero()) & (coords < Vec4i(lutSize))).All3(), "");
     coords = Vec4i::Min(coords, Vec4i(lutSize - 2)); // clamp to LUT size
 
     const PackedUFloat3_9_9_9_5* rowData0 = mLUT + (coords.y      + ((coords.z     ) << mSizeShift)) * lutSizeX;

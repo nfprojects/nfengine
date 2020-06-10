@@ -54,7 +54,7 @@ class WorkerThread
 {
     friend class ThreadPool;
 
-    NFE_MAKE_NONCOPYABLE(WorkerThread);
+    NFE_MAKE_NONCOPYABLE(WorkerThread)
     NFE_MAKE_NONMOVEABLE(WorkerThread)
 
     std::thread mThread;
@@ -77,7 +77,7 @@ class NFCOMMON_API ThreadPool final
 {
     friend class WorkerThread;
 
-    NFE_MAKE_NONCOPYABLE(ThreadPool);
+    NFE_MAKE_NONCOPYABLE(ThreadPool)
 
 public:
 

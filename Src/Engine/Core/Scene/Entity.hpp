@@ -39,7 +39,7 @@ namespace Scene {
 class CORE_API NFE_ALIGN(16) Entity final
     : public Common::Aligned<16>
 {
-    NFE_MAKE_NONCOPYABLE(Entity);
+    NFE_MAKE_NONCOPYABLE(Entity)
 
 public:
     // this will be called only by the Entity System

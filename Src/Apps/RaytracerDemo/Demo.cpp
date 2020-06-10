@@ -80,9 +80,9 @@ bool DemoWindow::Initialize()
 
     NFE_LOG_INFO("%p", &mViewport->GetFrontBuffer());
 
-    NFE_ASSERT(mViewport->GetFrontBuffer().GetWidth() == gOptions.windowWidth);
-    NFE_ASSERT(mViewport->GetFrontBuffer().GetHeight() == gOptions.windowHeight);
-    NFE_ASSERT(mViewport->GetFrontBuffer().GetFormat() == Bitmap::Format::B8G8R8A8_UNorm);
+    NFE_ASSERT(mViewport->GetFrontBuffer().GetWidth() == gOptions.windowWidth, "");
+    NFE_ASSERT(mViewport->GetFrontBuffer().GetHeight() == gOptions.windowHeight, "");
+    NFE_ASSERT(mViewport->GetFrontBuffer().GetFormat() == Bitmap::Format::B8G8R8A8_UNorm, "");
 
     Bitmap::InitData initData;
     initData.linearSpace = false;

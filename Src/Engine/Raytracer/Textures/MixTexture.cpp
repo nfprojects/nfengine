@@ -11,9 +11,9 @@ MixTexture::MixTexture(const TexturePtr& textureA, const TexturePtr& textureB, c
     , mTextureB(textureB)
     , mTextureMask(textureMask)
 {
-    NFE_ASSERT(mTextureA);
-    NFE_ASSERT(mTextureB);
-    NFE_ASSERT(mTextureMask);
+    NFE_ASSERT(mTextureA, "");
+    NFE_ASSERT(mTextureB, "");
+    NFE_ASSERT(mTextureMask, "");
 }
 
 const char* MixTexture::GetName() const

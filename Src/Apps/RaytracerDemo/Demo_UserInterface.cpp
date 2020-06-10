@@ -301,7 +301,8 @@ void DemoWindow::RenderUI_Debugging_Color()
     uint32 width, height;
     GetSize(width, height);
 
-    Vec4f hdrColor, ldrColor;
+    Vec4f hdrColor = Vec4f::Zero();
+    Vec4f ldrColor = Vec4f::Zero();
     if (x >= 0 && y >= 0 && (uint32)x < width && (uint32)y < height)
     {
         // TODO this is incorrect, each pixel can have different number of samples

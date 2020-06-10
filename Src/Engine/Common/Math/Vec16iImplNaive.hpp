@@ -6,6 +6,80 @@
 namespace NFE {
 namespace Math {
 
+VecBool16i::VecBool16i(bool scalar)
+    : low(scalar)
+    , high(scalar)
+{}
+
+VecBool16i::VecBool16i(const VecBool8i& low, const VecBool8i& high)
+    : low(low)
+    , high(high)
+{}
+
+VecBool16i::VecBool16i(
+    bool e0, bool e1, bool e2, bool e3, bool e4, bool e5, bool e6, bool e7,
+    bool e8, bool e9, bool e10, bool e11, bool e12, bool e13, bool e14, bool e15)
+    : low{ e0, e1, e2, e3, e4, e5, e6, e7 }
+    , high{ e8, e9, e10, e11, e12, e13, e14, e15 }
+{}
+
+template<uint32 index>
+bool VecBool16i::Get() const
+{
+    static_assert(index < 16u, "Invalid index");
+
+    if constexpr (index < 8)
+    {
+        return low.Get<index>();
+    }
+    else
+    {
+        return high.Get<index - 8>();
+    }
+}
+
+uint32 VecBool16i::GetMask() const
+{
+    return low.GetMask() | (high.GetMask() << 8u);
+}
+
+bool VecBool16i::All() const
+{
+    return low.All() && high.All();
+}
+
+bool VecBool16i::None() const
+{
+    return low.None() && high.None();
+}
+
+bool VecBool16i::Any() const
+{
+    return low.Any() || high.Any();
+}
+
+const VecBool16i VecBool16i::operator & (const VecBool16i rhs) const
+{
+    return VecBool16i{ low & rhs.low, high & rhs.high };
+}
+
+const VecBool16i VecBool16i::operator | (const VecBool16i rhs) const
+{
+    return VecBool16i{ low | rhs.low, high | rhs.high };
+}
+
+const VecBool16i VecBool16i::operator ^ (const VecBool16i rhs) const
+{
+    return VecBool16i{ low ^ rhs.low, high ^ rhs.high };
+}
+
+bool VecBool16i::operator == (const VecBool16i rhs) const
+{
+    return (low == rhs.low) && (high == rhs.high);
+}
+
+///
+
 const Vec16i Vec16i::Zero()
 {
     return Vec16i{ 0 };
@@ -68,7 +142,7 @@ const Vec16i Vec16i::Iota(const int32 value)
     return Vec16i(value) + Vec16i(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15);
 }
 
-const Vec16i Vec16i::Select(const Vec16i& a, const Vec16i& b, const VecBool16& sel)
+const Vec16i Vec16i::Select(const Vec16i& a, const Vec16i& b, const VecBool16i& sel)
 {
     return { Vec8i::Select(a.low, b.low, sel.low), Vec8i::Select(a.high, b.high, sel.high) };
 }
@@ -196,12 +270,12 @@ Vec16i& Vec16i::operator *= (int32 b)
     return *this;
 }
 
-const VecBool16 Vec16i::operator == (const Vec16i& b) const
+const VecBool16i Vec16i::operator == (const Vec16i& b) const
 {
     return { low == b.low, high == b.high };
 }
 
-const VecBool16 Vec16i::operator != (const Vec16i& b) const
+const VecBool16i Vec16i::operator != (const Vec16i& b) const
 {
     return { low != b.low, high != b.high };
 }
@@ -300,7 +374,7 @@ const Vec16ui Vec16ui::Iota(const uint32 value)
     return Vec16ui(value) + Vec16ui(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15);
 }
 
-const Vec16ui Vec16ui::Select(const Vec16ui& a, const Vec16ui& b, const VecBool16& sel)
+const Vec16ui Vec16ui::Select(const Vec16ui& a, const Vec16ui& b, const VecBool16i& sel)
 {
     return { Vec8ui::Select(a.low, b.low, sel.low), Vec8ui::Select(a.high, b.high, sel.high) };
 }
@@ -390,12 +464,12 @@ Vec16ui& Vec16ui::operator -= (uint32 b)
     return *this;
 }
 
-const VecBool16 Vec16ui::operator == (const Vec16ui& b) const
+const VecBool16i Vec16ui::operator == (const Vec16ui& b) const
 {
     return { low == b.low, high == b.high };
 }
 
-const VecBool16 Vec16ui::operator != (const Vec16ui& b) const
+const VecBool16i Vec16ui::operator != (const Vec16ui& b) const
 {
     return { low != b.low, high != b.high };
 }

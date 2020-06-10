@@ -59,7 +59,7 @@ union PackedUFloat3_9_9_9_5
 
     NFCOMMON_API static const PackedUFloat3_9_9_9_5 FromVector(const Vec4f& vec);
 
-    struct
+    NFE_UNNAMED_STRUCT struct
     {
         uint32 mx : 9; // 'x' mantissa
         uint32 my : 9; // 'y' mantissa

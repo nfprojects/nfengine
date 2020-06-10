@@ -19,7 +19,7 @@ using namespace Math;
 
 ILight::ILight(const Math::HdrColorRGB& color)
 {
-    NFE_ASSERT(color.IsValid());
+    NFE_ASSERT(color.IsValid(), "");
     mColor = Common::MakeSharedPtr<ColorRGB>(color);
 }
 

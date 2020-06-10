@@ -23,7 +23,7 @@ SpotLight::SpotLight(const Math::HdrColorRGB& color, const float angle)
     : ILight(color)
     , mAngle(angle)
 {
-    NFE_ASSERT(angle >= 0.0f && angle < NFE_MATH_2PI);
+    NFE_ASSERT(angle >= 0.0f && angle < NFE_MATH_2PI, "");
 
     mCosAngle = cosf(angle);
     mIsDelta = mCosAngle > CosEpsilon;

@@ -203,7 +203,7 @@ public:
 
                 // compute per-face normal
                 const Vec4f faceNormal = Vec4f::Cross3(verts[1] - verts[0], verts[2] - verts[0]).Normalized3();
-                NFE_ASSERT(faceNormal.IsValid());
+                NFE_ASSERT(faceNormal.IsValid(), "");
 
                 for (size_t i = 0; i < 3; i++)
                 {
@@ -254,9 +254,9 @@ public:
             }
         }
 
-        NFE_ASSERT(mVertexPositions.Size() == mUniqueIndices.Size());
-        NFE_ASSERT(mVertexPositions.Size() == mVertexNormals.Size());
-        NFE_ASSERT(mVertexPositions.Size() == mVertexTexCoords.Size());
+        NFE_ASSERT(mVertexPositions.Size() == mUniqueIndices.Size(), "");
+        NFE_ASSERT(mVertexPositions.Size() == mVertexNormals.Size(), "");
+        NFE_ASSERT(mVertexPositions.Size() == mVertexTexCoords.Size(), "");
 
         ComputeTangentVectors();
 
@@ -293,8 +293,7 @@ public:
         mVertexTangents.Resize(mVertexNormals.Size());
 
         DynArray<Vec4f> bitangents;
-        bitangents.Resize(mVertexNormals.Size());
-        memset(bitangents.Data(), 0, bitangents.Size() * sizeof(Vec4f));
+        bitangents.Resize(mVertexNormals.Size(), Vec4f::Zero());
 
         uint32 numTriangles = mVertexIndices.Size() / 3;
         for (uint32 i = 0; i < numTriangles; ++i)
@@ -330,8 +329,8 @@ public:
             const Vec4f sdir = (t2 * e1 - t1 * e2) * r;
             const Vec4f tdir = (s1 * e2 - s2 * e1) * r;
 
-            NFE_ASSERT(sdir.IsValid());
-            NFE_ASSERT(tdir.IsValid());
+            NFE_ASSERT(sdir.IsValid(), "");
+            NFE_ASSERT(tdir.IsValid(), "");
 
             mVertexTangents[i0] += sdir.ToVec3f();
             mVertexTangents[i1] += sdir.ToVec3f();
@@ -349,9 +348,9 @@ public:
             Vec4f normal(mVertexNormals[i]);
             Vec4f bitangent(bitangents[i]);
 
-            NFE_ASSERT(tangent.IsValid());
-            NFE_ASSERT(normal.IsValid());
-            NFE_ASSERT(bitangent.IsValid());
+            NFE_ASSERT(tangent.IsValid(), "");
+            NFE_ASSERT(normal.IsValid(), "");
+            NFE_ASSERT(bitangent.IsValid(), "");
 
             bool tangentIsValid = false;
             if (tangent.SqrLength3() > 0.1f)
@@ -370,7 +369,7 @@ public:
             }
             tangent.Normalize3();
 
-            NFE_ASSERT(tangent.IsValid());
+            NFE_ASSERT(tangent.IsValid(), "");
             NFE_ASSERT(Abs(Vec4f::Dot3(normal, tangent)) < 0.0001f, "Normal and tangent vectors are not orthogonal");
 
             // Calculate handedness

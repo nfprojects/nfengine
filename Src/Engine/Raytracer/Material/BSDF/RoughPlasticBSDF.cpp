@@ -38,7 +38,7 @@ bool RoughPlasticBSDF::Sample(SamplingContext& ctx) const
 
     const float specularWeight = Fi;
     const float diffuseWeight = (1.0f - Fi) * ctx.materialParam.baseColor.Max();
-    NFE_ASSERT(diffuseWeight >= 0.0f && diffuseWeight <= 1.0f);
+    NFE_ASSERT(diffuseWeight >= 0.0f && diffuseWeight <= 1.0f, "");
 
     // importance sample specular reflectivity
     const float specularProbability = specularWeight / (specularWeight + diffuseWeight);
@@ -71,8 +71,8 @@ bool RoughPlasticBSDF::Sample(SamplingContext& ctx) const
         ctx.outColor = RayColor(VdotH * F * G * D / (pdf * NdotV * specularProbability));
         ctx.outEventType = GlossyReflectionEvent;
 
-        NFE_ASSERT(ctx.outPdf > 0.0f);
-        NFE_ASSERT(ctx.outColor.IsValid());
+        NFE_ASSERT(ctx.outPdf > 0.0f, "");
+        NFE_ASSERT(ctx.outColor.IsValid(), "");
     }
     else // diffuse reflection
     {
@@ -115,7 +115,7 @@ const RayColor RoughPlasticBSDF::Evaluate(const EvaluationContext& ctx, float* o
 
     const float specularWeight = Fi;
     const float diffuseWeight = (1.0f - Fi) * ctx.materialParam.baseColor.Max();
-    NFE_ASSERT(diffuseWeight >= 0.0f && diffuseWeight <= 1.0f);
+    NFE_ASSERT(diffuseWeight >= 0.0f && diffuseWeight <= 1.0f, "");
 
     const float specularProbability = specularWeight / (specularWeight + diffuseWeight);
     const float diffuseProbability = 1.0f - specularProbability;
@@ -180,7 +180,7 @@ float RoughPlasticBSDF::Pdf(const EvaluationContext& ctx, PdfDirection dir) cons
 
     const float specularWeight = Fi;
     const float diffuseWeight = (1.0f - Fi) * ctx.materialParam.baseColor.Max();
-    NFE_ASSERT(diffuseWeight >= 0.0f && diffuseWeight <= 1.0f);
+    NFE_ASSERT(diffuseWeight >= 0.0f && diffuseWeight <= 1.0f, "");
 
     const float specularProbability = specularWeight / (specularWeight + diffuseWeight);
     const float diffuseProbability = 1.0f - specularProbability;

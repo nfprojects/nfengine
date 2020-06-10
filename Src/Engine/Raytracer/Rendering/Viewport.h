@@ -32,8 +32,8 @@ struct RenderingProgress
 
 class NFE_ALIGN(32) Viewport : public Common::Aligned<32>
 {
-    NFE_MAKE_NONCOPYABLE(Viewport);
-    NFE_MAKE_NONMOVEABLE(Viewport);
+    NFE_MAKE_NONCOPYABLE(Viewport)
+    NFE_MAKE_NONMOVEABLE(Viewport)
 
 public:
     NFE_RAYTRACER_API Viewport();

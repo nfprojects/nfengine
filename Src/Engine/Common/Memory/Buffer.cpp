@@ -75,7 +75,7 @@ void Buffer::Zero()
 {
     if (mSize)
     {
-        NFE_ASSERT(mData);
+        NFE_ASSERT(mData, "Invalid buffer");
         memset(mData, 0, mSize);
     }
 }

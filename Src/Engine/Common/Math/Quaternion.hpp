@@ -14,20 +14,9 @@ struct NFE_ALIGN(16) Quaternion final : public Common::Aligned<16>
 
 public:
 
-    union
-    {
-        // XYZ - vector part, W - scalar part:
-        // q = f[3] + i * q[0] + j * q[1] + k * q[2]
-        Vec4f q;
-
-        struct
-        {
-            float i;
-            float j;
-            float k;
-            float r;
-        };
-    };
+    // XYZ - vector part, W - scalar part:
+    // q = f[3] + i * q[0] + j * q[1] + k * q[2]
+    Vec4f q;
 
     NFE_FORCE_INLINE Quaternion() : q(0.0f, 0.0f, 0.0f, 1.0f) { }
     NFE_FORCE_INLINE Quaternion(const Quaternion& rhs) : q(rhs.q) { }

@@ -14,8 +14,8 @@ namespace Common {
  */
 class NFCOMMON_API Waitable final
 {
-    NFE_MAKE_NONCOPYABLE(Waitable);
-    NFE_MAKE_NONMOVEABLE(Waitable);
+    NFE_MAKE_NONCOPYABLE(Waitable)
+    NFE_MAKE_NONMOVEABLE(Waitable)
 
 public:
     Waitable();

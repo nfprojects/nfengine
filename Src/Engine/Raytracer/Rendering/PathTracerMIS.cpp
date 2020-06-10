@@ -63,29 +63,29 @@ const RayColor PathTracerMIS::SampleLight(const Scene& scene, const LightSceneOb
     // calculate light contribution
     ILight::IlluminateResult illuminateResult;
     const RayColor radiance = light.Illuminate(illuminateParam, illuminateResult);
-    NFE_ASSERT(radiance.IsValid());
+    NFE_ASSERT(radiance.IsValid(), "");
 
     if (radiance.AlmostZero())
     {
         return RayColor::Zero();
     }
 
-    NFE_ASSERT(IsValid(illuminateResult.directPdfW) && illuminateResult.directPdfW >= 0.0f);
-    NFE_ASSERT(IsValid(illuminateResult.distance) && illuminateResult.distance >= 0.0f);
-    NFE_ASSERT(IsValid(illuminateResult.cosAtLight) && illuminateResult.cosAtLight >= 0.0f);
-    NFE_ASSERT(illuminateResult.directionToLight.IsValid());
+    NFE_ASSERT(IsValid(illuminateResult.directPdfW) && illuminateResult.directPdfW >= 0.0f, "");
+    NFE_ASSERT(IsValid(illuminateResult.distance) && illuminateResult.distance >= 0.0f, "");
+    NFE_ASSERT(IsValid(illuminateResult.cosAtLight) && illuminateResult.cosAtLight >= 0.0f, "");
+    NFE_ASSERT(illuminateResult.directionToLight.IsValid(), "");
 
     // calculate BSDF contribution
     float bsdfPdfW;
     const RayColor factor = shadingData.intersection.material->Evaluate(context.wavelength, shadingData, -illuminateResult.directionToLight, &bsdfPdfW);
-    NFE_ASSERT(factor.IsValid());
+    NFE_ASSERT(factor.IsValid(), "");
 
     if (factor.AlmostZero())
     {
         return RayColor::Zero();
     }
 
-    NFE_ASSERT(bsdfPdfW >= 0.0f && IsValid(bsdfPdfW));
+    NFE_ASSERT(bsdfPdfW >= 0.0f && IsValid(bsdfPdfW), "");
 
     // cast shadow ray
     {
@@ -124,7 +124,7 @@ const RayColor PathTracerMIS::SampleLight(const Scene& scene, const LightSceneOb
     }
 
     const RayColor result = (radiance * factor) * FastDivide(weight, lightPickProbability * illuminateResult.directPdfW);
-    NFE_ASSERT(result.IsValid());
+    NFE_ASSERT(result.IsValid(), "");
 
     return result;
 }
@@ -197,14 +197,14 @@ const RayColor PathTracerMIS::EvaluateLight(const LightSceneObject* lightObject,
 
     float directPdfA;
     RayColor lightContribution = light.GetRadiance(param, &directPdfA);
-    NFE_ASSERT(lightContribution.IsValid());
+    NFE_ASSERT(lightContribution.IsValid(), "");
 
     if (lightContribution.AlmostZero())
     {
         return RayColor::Zero();
     }
 
-    NFE_ASSERT(directPdfA > 0.0f && IsValid(directPdfA));
+    NFE_ASSERT(directPdfA > 0.0f && IsValid(directPdfA), "");
 
     float misWeight = 1.0f;
     if (pathState.depth > 0 && !pathState.lastSpecular)
@@ -237,11 +237,11 @@ const RayColor PathTracerMIS::EvaluateGlobalLights(const Scene& scene, const Ray
 
         float directPdfW;
         RayColor lightContribution = light.GetRadiance(param, &directPdfW);
-        NFE_ASSERT(lightContribution.IsValid());
+        NFE_ASSERT(lightContribution.IsValid(), "");
 
         if (!lightContribution.AlmostZero())
         {
-            NFE_ASSERT(directPdfW > 0.0f && IsValid(directPdfW));
+            NFE_ASSERT(directPdfW > 0.0f && IsValid(directPdfW), "");
 
             float misWeight = 1.0f;
             if (pathState.depth > 0 && !pathState.lastSpecular)
@@ -300,7 +300,7 @@ const RayColor PathTracerMIS::RenderPixel(const Math::Ray& primaryRay, const Ren
         if (const LightSceneObject* lightObject = RTTI::Cast<LightSceneObject>(objectHit))
         {
             const RayColor lightColor = EvaluateLight(lightObject, ray, hitPoint.distance, shadingData.intersection, pathState, context, lightPickProbability);
-            NFE_ASSERT(lightColor.IsValid());
+            NFE_ASSERT(lightColor.IsValid(), "");
             resultColor.MulAndAccumulate(throughput, lightColor);
 
             pathTerminationReason = PathTerminationReason::HitLight;
@@ -314,12 +314,12 @@ const RayColor PathTracerMIS::RenderPixel(const Math::Ray& primaryRay, const Ren
         // accumulate emission color
         {
             RayColor emissionColor = shadingData.materialParams.emissionColor;
-            NFE_ASSERT(emissionColor.IsValid());
+            NFE_ASSERT(emissionColor.IsValid(), "");
 
             emissionColor *= RayColor::ResolveRGB(context.wavelength, BSDFSamplingWeight);
 
             resultColor.MulAndAccumulate(throughput, emissionColor);
-            NFE_ASSERT(resultColor.IsValid());
+            NFE_ASSERT(resultColor.IsValid(), "");
         }
 
         // sample lights directly (a.k.a. next event estimation)
@@ -349,7 +349,7 @@ const RayColor PathTracerMIS::RenderPixel(const Math::Ray& primaryRay, const Ren
                 break;
             }
             throughput *= 1.0f / threshold;
-            NFE_ASSERT(throughput.IsValid());
+            NFE_ASSERT(throughput.IsValid(), "");
         }
 
         // sample BSDF
@@ -364,7 +364,7 @@ const RayColor PathTracerMIS::RenderPixel(const Math::Ray& primaryRay, const Ren
             break;
         }
 
-        NFE_ASSERT(bsdfValue.IsValid());
+        NFE_ASSERT(bsdfValue.IsValid(), "");
         throughput *= bsdfValue;
 
         // ray is not visible anymore
@@ -374,7 +374,7 @@ const RayColor PathTracerMIS::RenderPixel(const Math::Ray& primaryRay, const Ren
             break;
         }
 
-        NFE_ASSERT(pdf >= 0.0f);
+        NFE_ASSERT(pdf >= 0.0f, "");
         pathState.lastSpecular = (lastSampledBsdfEvent & BSDF::SpecularEvent) != 0;
         pathState.lastPdfW = pdf;
 

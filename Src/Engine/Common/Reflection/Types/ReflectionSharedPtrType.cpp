@@ -159,7 +159,7 @@ bool SharedPtrType::DeserializeBinary(void* outObject, InputStream& stream, cons
 
     Assign(outObject, unmappedObject);
 
-    NFE_ASSERT(GetPointedData(outObject) == unmappedObject.Get());
+    NFE_ASSERT(GetPointedData(outObject) == unmappedObject.Get(), "Assignment failed");
 
     return true;
 }

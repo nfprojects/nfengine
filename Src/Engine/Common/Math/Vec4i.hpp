@@ -32,7 +32,7 @@ struct NFE_ALIGN(16) VecBool4i : public Common::Aligned<16>
     template<uint32 index>
     NFE_FORCE_INLINE bool Get() const;
 
-    NFE_FORCE_INLINE int32 GetMask() const;
+    NFE_FORCE_INLINE uint32 GetMask() const;
 
     NFE_FORCE_INLINE bool All() const;
     NFE_FORCE_INLINE bool None() const;

@@ -110,10 +110,10 @@ RendererContextPtr VertexConnectionAndMerging::CreateContext() const
 
 void VertexConnectionAndMerging::PreRender(Common::TaskBuilder& builder, const RenderParam& renderParams, Common::ArrayView<RenderingContext> contexts)
 {
-    NFE_ASSERT(mInitialMergingRadius >= mMinMergingRadius);
-    NFE_ASSERT(mMergingRadiusMultiplier > 0.0f);
-    NFE_ASSERT(mMergingRadiusMultiplier <= 1.0f);
-    NFE_ASSERT(mMaxPathLength > 0);
+    NFE_ASSERT(mInitialMergingRadius >= mMinMergingRadius, "");
+    NFE_ASSERT(mMergingRadiusMultiplier > 0.0f, "");
+    NFE_ASSERT(mMergingRadiusMultiplier <= 1.0f, "");
+    NFE_ASSERT(mMaxPathLength > 0, "");
 
     mLightPathsCount = renderParams.film.GetHeight() * renderParams.film.GetWidth();
 
@@ -236,7 +236,7 @@ const RayColor VertexConnectionAndMerging::RenderPixel(const Math::Ray& ray, con
 
     for (;;)
     {
-        NFE_ASSERT(pathState.ray.IsValid());
+        NFE_ASSERT(pathState.ray.IsValid(), "");
 
         hitPoint.Reset();
         param.scene.Traverse({ pathState.ray, hitPoint, ctx });
@@ -267,20 +267,20 @@ const RayColor VertexConnectionAndMerging::RenderPixel(const Math::Ray& ray, con
         if (const LightSceneObject* lightObject = RTTI::Cast<LightSceneObject>(sceneObject))
         {
             const RayColor lightColor = EvaluateLight(param.iteration, lightObject, &shadingData.intersection, pathState, ctx);
-            NFE_ASSERT(lightColor.IsValid());
+            NFE_ASSERT(lightColor.IsValid(), "");
             resultColor.MulAndAccumulate(pathState.throughput, lightColor);
             break;
         }
 
         // fill up structure with shading data
-        NFE_ASSERT(shadingData.intersection.material != nullptr);
+        NFE_ASSERT(shadingData.intersection.material != nullptr, "");
         shadingData.outgoingDirWorldSpace = -pathState.ray.dir;
         shadingData.intersection.material->EvaluateShadingData(ctx.wavelength, shadingData);
 
         // accumulate material emission color
         // Note: no importance sampling for this
         {
-            NFE_ASSERT(shadingData.materialParams.emissionColor.IsValid());
+            NFE_ASSERT(shadingData.materialParams.emissionColor.IsValid(), "");
             resultColor.MulAndAccumulate(pathState.throughput, shadingData.materialParams.emissionColor);
         }
 
@@ -297,7 +297,7 @@ const RayColor VertexConnectionAndMerging::RenderPixel(const Math::Ray& ray, con
         if (!isDeltaBsdf && mUseVertexConnection)
         {
             const RayColor lightColor = SampleLights(param.scene, shadingData, pathState, ctx);
-            NFE_ASSERT(lightColor.IsValid());
+            NFE_ASSERT(lightColor.IsValid(), "");
             resultColor.MulAndAccumulate(pathState.throughput, lightColor);
         }
 
@@ -322,7 +322,7 @@ const RayColor VertexConnectionAndMerging::RenderPixel(const Math::Ray& ray, con
             }
 
             vertexConnectionColor *= RayColor::ResolveRGB(ctx.wavelength, mVertexConnectingWeight);
-            NFE_ASSERT(vertexConnectionColor.IsValid());
+            NFE_ASSERT(vertexConnectionColor.IsValid(), "");
             resultColor.MulAndAccumulate(pathState.throughput, vertexConnectionColor);
         }
 
@@ -330,7 +330,7 @@ const RayColor VertexConnectionAndMerging::RenderPixel(const Math::Ray& ray, con
         if (!isDeltaBsdf && mUseVertexMerging && param.iteration > 0)
         {
             RayColor vertexMergingColor = MergeVertices(pathState, shadingData, ctx);
-            NFE_ASSERT(vertexMergingColor.IsValid());
+            NFE_ASSERT(vertexMergingColor.IsValid(), "");
             vertexMergingColor *= RayColor::ResolveRGB(ctx.wavelength, mVertexMergingWeight);
             resultColor.MulAndAccumulate(pathState.throughput * vertexMergingColor, mVertexMergingNormalizationFactor);
         }
@@ -354,7 +354,7 @@ const RayColor VertexConnectionAndMerging::RenderPixel(const Math::Ray& ray, con
 
 void VertexConnectionAndMerging::TraceLightPath(const RenderParam& param, RenderingContext& ctx) const
 {
-    NFE_ASSERT(ctx.rendererContext);
+    NFE_ASSERT(ctx.rendererContext, "");
     VertexConnectionAndMergingContext& rendererContext = *static_cast<VertexConnectionAndMergingContext*>(ctx.rendererContext.Get());
 
     rendererContext.numLightVertices = 0;
@@ -371,7 +371,7 @@ void VertexConnectionAndMerging::TraceLightPath(const RenderParam& param, Render
 
     for (;;)
     {
-        NFE_ASSERT(pathState.ray.IsValid());
+        NFE_ASSERT(pathState.ray.IsValid(), "");
 
         hitPoint.Reset();
         param.scene.Traverse({ pathState.ray, hitPoint, ctx });
@@ -387,7 +387,7 @@ void VertexConnectionAndMerging::TraceLightPath(const RenderParam& param, Render
             break; // we hit a light directly
         }
 
-        NFE_ASSERT(rendererContext.numLightVertices < g_MaxLightVertices);
+        NFE_ASSERT(rendererContext.numLightVertices < g_MaxLightVertices, "");
         LightVertex& vertex = rendererContext.lightVertices[rendererContext.numLightVertices];
 
         // fill up structure with shading data
@@ -396,7 +396,7 @@ void VertexConnectionAndMerging::TraceLightPath(const RenderParam& param, Render
             param.scene.EvaluateIntersection(pathState.ray, hitPoint, ctx.time, shadingData.intersection);
 
             shadingData.outgoingDirWorldSpace = -pathState.ray.dir;
-            NFE_ASSERT(shadingData.intersection.material != nullptr);
+            NFE_ASSERT(shadingData.intersection.material != nullptr, "");
             shadingData.intersection.material->EvaluateShadingData(ctx.wavelength, shadingData);
         }
 
@@ -492,7 +492,7 @@ bool VertexConnectionAndMerging::GenerateLightSample(const Scene& scene, PathSta
         return false;
     }
 
-    NFE_ASSERT(emitResult.emissionPdfW > 0.0f);
+    NFE_ASSERT(emitResult.emissionPdfW > 0.0f, "");
 
     emitResult.directPdfA *= lightPickProbability;
     emitResult.emissionPdfW *= lightPickProbability;
@@ -538,9 +538,9 @@ bool VertexConnectionAndMerging::AdvancePath(PathState& path, const ShadingData&
         sample = ctx.randomGenerator.GetVec3f();
     }
 
-    NFE_ASSERT(sample.x >= 0.0f && sample.x < 1.0f);
-    NFE_ASSERT(sample.y >= 0.0f && sample.y < 1.0f);
-    NFE_ASSERT(sample.z >= 0.0f && sample.z < 1.0f);
+    NFE_ASSERT(sample.x >= 0.0f && sample.x < 1.0f, "");
+    NFE_ASSERT(sample.y >= 0.0f && sample.y < 1.0f, "");
+    NFE_ASSERT(sample.z >= 0.0f && sample.z < 1.0f, "");
 
     // sample BSDF
     Vec4f incomingDirWorldSpace;
@@ -555,7 +555,7 @@ bool VertexConnectionAndMerging::AdvancePath(PathState& path, const ShadingData&
         return false;
     }
 
-    NFE_ASSERT(bsdfValue.IsValid());
+    NFE_ASSERT(bsdfValue.IsValid(), "");
 
     path.throughput *= bsdfValue;
     if (path.throughput.AlmostZero())
@@ -563,13 +563,13 @@ bool VertexConnectionAndMerging::AdvancePath(PathState& path, const ShadingData&
         return false;
     }
 
-    NFE_ASSERT(bsdfDirPdf >= 0.0f);
-    NFE_ASSERT(IsValid(bsdfDirPdf));
+    NFE_ASSERT(bsdfDirPdf >= 0.0f, "");
+    NFE_ASSERT(IsValid(bsdfDirPdf), "");
 
     // generate secondary ray
     path.ray = Ray(shadingData.intersection.frame.GetTranslation(), incomingDirWorldSpace);
     path.ray.origin += path.ray.dir * 0.001f;
-    NFE_ASSERT(path.ray.IsValid());
+    NFE_ASSERT(path.ray.IsValid(), "");
 
     path.lastSampledBsdfEvent = sampledEvent;
     path.length++;
@@ -605,9 +605,9 @@ bool VertexConnectionAndMerging::AdvancePath(PathState& path, const ShadingData&
         path.lastSpecular = false;
     }
 
-    NFE_ASSERT(IsValid(path.dVC) && path.dVC >= 0.0f);
-    NFE_ASSERT(IsValid(path.dVM) && path.dVM >= 0.0f);
-    NFE_ASSERT(IsValid(path.dVCM) && path.dVCM >= 0.0f);
+    NFE_ASSERT(IsValid(path.dVC) && path.dVC >= 0.0f, "");
+    NFE_ASSERT(IsValid(path.dVM) && path.dVM >= 0.0f, "");
+    NFE_ASSERT(IsValid(path.dVCM) && path.dVCM >= 0.0f, "");
 
     return true;
 }
@@ -632,15 +632,15 @@ const RayColor VertexConnectionAndMerging::EvaluateLight(uint32 iteration, const
 
     float directPdfA, emissionPdfW;
     RayColor lightContribution = light.GetRadiance(param, &directPdfA, &emissionPdfW);
-    NFE_ASSERT(lightContribution.IsValid());
+    NFE_ASSERT(lightContribution.IsValid(), "");
 
     if (lightContribution.AlmostZero())
     {
         return RayColor::Zero();
     }
 
-    NFE_ASSERT(directPdfA >= 0.0f && IsValid(directPdfA));
-    NFE_ASSERT(emissionPdfW >= 0.0f && IsValid(emissionPdfW));
+    NFE_ASSERT(directPdfA >= 0.0f && IsValid(directPdfA), "");
+    NFE_ASSERT(emissionPdfW >= 0.0f && IsValid(emissionPdfW), "");
 
     // no weighting required for directly visible lights
     if (pathState.length > 1)
@@ -660,7 +660,7 @@ const RayColor VertexConnectionAndMerging::EvaluateLight(uint32 iteration, const
             // compute MIS weight
             const float wCamera = Mis(directPdfA) * pathState.dVCM + Mis(emissionPdfW) * pathState.dVC;
             const float misWeight = 1.0f / (1.0f + wCamera);
-            NFE_ASSERT(misWeight >= 0.0f);
+            NFE_ASSERT(misWeight >= 0.0f, "");
 
             lightContribution *= misWeight;
         }
@@ -693,23 +693,23 @@ const RayColor VertexConnectionAndMerging::SampleLight(const Scene& scene, const
         return RayColor::Zero();
     }
 
-    NFE_ASSERT(radiance.IsValid());
-    NFE_ASSERT(IsValid(illuminateResult.directPdfW) && illuminateResult.directPdfW >= 0.0f);
-    NFE_ASSERT(IsValid(illuminateResult.emissionPdfW) && illuminateResult.emissionPdfW >= 0.0f);
-    NFE_ASSERT(IsValid(illuminateResult.distance) && illuminateResult.distance >= 0.0f);
-    NFE_ASSERT(IsValid(illuminateResult.cosAtLight) && illuminateResult.cosAtLight >= 0.0f);
+    NFE_ASSERT(radiance.IsValid(), "");
+    NFE_ASSERT(IsValid(illuminateResult.directPdfW) && illuminateResult.directPdfW >= 0.0f, "");
+    NFE_ASSERT(IsValid(illuminateResult.emissionPdfW) && illuminateResult.emissionPdfW >= 0.0f, "");
+    NFE_ASSERT(IsValid(illuminateResult.distance) && illuminateResult.distance >= 0.0f, "");
+    NFE_ASSERT(IsValid(illuminateResult.cosAtLight) && illuminateResult.cosAtLight >= 0.0f, "");
 
     // calculate BSDF contribution
     float bsdfPdfW, bsdfRevPdfW;
     const RayColor bsdfFactor = shadingData.intersection.material->Evaluate(ctx.wavelength, shadingData, -illuminateResult.directionToLight, &bsdfPdfW, &bsdfRevPdfW);
-    NFE_ASSERT(bsdfFactor.IsValid());
+    NFE_ASSERT(bsdfFactor.IsValid(), "");
 
     if (bsdfFactor.AlmostZero())
     {
         return RayColor::Zero();
     }
 
-    NFE_ASSERT(bsdfPdfW > 0.0f && IsValid(bsdfPdfW));
+    NFE_ASSERT(bsdfPdfW > 0.0f && IsValid(bsdfPdfW), "");
 
     // cast shadow ray
     {
@@ -746,7 +746,7 @@ const RayColor VertexConnectionAndMerging::SampleLight(const Scene& scene, const
     const float wLight = Mis(bsdfPdfW / (lightPickProbability * illuminateResult.directPdfW));
     const float wCamera = Mis(illuminateResult.emissionPdfW * cosToLight / (illuminateResult.directPdfW * illuminateResult.cosAtLight)) * (mMisVertexMergingWeightFactorVC + pathState.dVCM + pathState.dVC * Mis(bsdfRevPdfW));
     const float misWeight = 1.0f / (wLight + 1.0f + wCamera);
-    NFE_ASSERT(misWeight >= 0.0f);
+    NFE_ASSERT(misWeight >= 0.0f, "");
 
     return (radiance * bsdfFactor) * (misWeight / (lightPickProbability * illuminateResult.directPdfW));
 }
@@ -802,7 +802,7 @@ const RayColor VertexConnectionAndMerging::ConnectVertices(const Scene& scene, P
     // evaluate BSDF at camera vertex
     float cameraBsdfPdfW, cameraBsdfRevPdfW;
     const RayColor cameraFactor = shadingData.intersection.material->Evaluate(ctx.wavelength, shadingData, -lightDir, &cameraBsdfPdfW, &cameraBsdfRevPdfW);
-    NFE_ASSERT(cameraFactor.IsValid());
+    NFE_ASSERT(cameraFactor.IsValid(), "");
     if (cameraFactor.AlmostZero())
     {
         return RayColor::Zero();
@@ -811,7 +811,7 @@ const RayColor VertexConnectionAndMerging::ConnectVertices(const Scene& scene, P
     // evaluate BSDF at light vertex
     float lightBsdfPdfW, lightBsdfRevPdfW;
     const RayColor lightFactor = lightVertex.shadingData.intersection.material->Evaluate(ctx.wavelength, lightVertex.shadingData, lightDir, &lightBsdfPdfW, &lightBsdfRevPdfW);
-    NFE_ASSERT(lightFactor.IsValid());
+    NFE_ASSERT(lightFactor.IsValid(), "");
     if (lightFactor.AlmostZero())
     {
         return RayColor::Zero();
@@ -842,16 +842,16 @@ const RayColor VertexConnectionAndMerging::ConnectVertices(const Scene& scene, P
     const float lightBsdfPdfA = PdfWtoA(lightBsdfPdfW, distance, cosCameraVertex);
 
     const float wLight = Mis(cameraBsdfPdfA) * (mMisVertexMergingWeightFactorVC + lightVertex.dVCM + lightVertex.dVC * Mis(lightBsdfRevPdfW));
-    NFE_ASSERT(IsValid(wLight) && wLight >= 0.0f);
+    NFE_ASSERT(IsValid(wLight) && wLight >= 0.0f, "");
 
     const float wCamera = Mis(lightBsdfPdfA) * (mMisVertexMergingWeightFactorVC + cameraPathState.dVCM + cameraPathState.dVC * Mis(cameraBsdfRevPdfW));
-    NFE_ASSERT(IsValid(wCamera) && wCamera >= 0.0f);
+    NFE_ASSERT(IsValid(wCamera) && wCamera >= 0.0f, "");
 
     const float misWeight = 1.0f / (wLight + 1.0f + wCamera);
-    NFE_ASSERT(misWeight >= 0.0f);
+    NFE_ASSERT(misWeight >= 0.0f, "");
 
     const RayColor contribution = (cameraFactor * lightFactor) * (geometryTerm * misWeight);
-    NFE_ASSERT(contribution.IsValid());
+    NFE_ASSERT(contribution.IsValid(), "");
 
     return contribution;
 }
@@ -894,7 +894,7 @@ const RayColor VertexConnectionAndMerging::MergeVertices(PathState& cameraPathSt
 
         // decompress light incoming direction in world coordinates
         const Vec4f lightDirection = LoadVec4f(photon.direction);
-        NFE_ASSERT(lightDirection.IsValid());
+        NFE_ASSERT(lightDirection.IsValid(), "");
 
         const float cosToLight = shadingData.intersection.CosTheta(lightDirection);
         if (cosToLight < FLT_EPSILON)
@@ -904,7 +904,7 @@ const RayColor VertexConnectionAndMerging::MergeVertices(PathState& cameraPathSt
 
         float cameraBsdfDirPdfW, cameraBsdfRevPdfW;
         const RayColor cameraBsdfFactor = shadingData.intersection.material->Evaluate(ctx.wavelength, shadingData, -lightDirection, &cameraBsdfDirPdfW, &cameraBsdfRevPdfW);
-        NFE_ASSERT(cameraBsdfFactor.IsValid());
+        NFE_ASSERT(cameraBsdfFactor.IsValid(), "");
 
         if (cameraBsdfFactor.AlmostZero())
         {
@@ -913,7 +913,7 @@ const RayColor VertexConnectionAndMerging::MergeVertices(PathState& cameraPathSt
 
         // decompress photon throughput
         const RayColor throughput = RayColor::ResolveRGB(ctx.wavelength, LoadVec4f(photon.throughput));
-        NFE_ASSERT(throughput.IsValid());
+        NFE_ASSERT(throughput.IsValid(), "");
 
         // TODO russian roulette
         //cameraBsdfDirPdfW *= mCameraBsdf.ContinuationProb();
@@ -926,8 +926,8 @@ const RayColor VertexConnectionAndMerging::MergeVertices(PathState& cameraPathSt
         const float wCamera = cameraPathState.dVCM * mMisVertexConnectionWeightFactorVM + cameraPathState.dVM * Mis(cameraBsdfRevPdfW);
         const float misWeight = 1.0f / (wLight + 1.0f + wCamera);
         const float weight = kernelWeight * misWeight / cosToLight;
-        NFE_ASSERT(IsValid(weight));
-        NFE_ASSERT(weight >= 0.0f);
+        NFE_ASSERT(IsValid(weight), "");
+        NFE_ASSERT(weight >= 0.0f, "");
 
         contribution.MulAndAccumulate(cameraBsdfFactor * throughput, weight);
     };
@@ -956,7 +956,7 @@ void VertexConnectionAndMerging::ConnectToCamera(const RenderParam& renderParams
     // calculate BSDF contribution
     float bsdfPdfW, bsdfRevPdfW;
     const RayColor cameraFactor = lightVertex.shadingData.intersection.material->Evaluate(ctx.wavelength, lightVertex.shadingData, -dirToCamera, &bsdfPdfW, &bsdfRevPdfW);
-    NFE_ASSERT(cameraFactor.IsValid());
+    NFE_ASSERT(cameraFactor.IsValid(), "");
 
     if (cameraFactor.AlmostZero())
     {
@@ -994,7 +994,7 @@ void VertexConnectionAndMerging::ConnectToCamera(const RenderParam& renderParams
     // compute MIS weight
     const float wLight = Mis(cameraPdfA) * (mMisVertexMergingWeightFactorVC + lightVertex.dVCM + lightVertex.dVC * Mis(bsdfRevPdfW));
     const float misWeight = 1.0f / (wLight + 1.0f);
-    NFE_ASSERT(misWeight >= 0.0f);
+    NFE_ASSERT(misWeight >= 0.0f, "");
 
     RayColor contribution = (cameraFactor * lightVertex.throughput) * (misWeight * cameraPdfA / (cosToCamera));
     contribution *= RayColor::ResolveRGB(ctx.wavelength, mCameraConnectingWeight);

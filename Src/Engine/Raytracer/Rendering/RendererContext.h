@@ -11,8 +11,8 @@ namespace RT {
 // per-thread renderer-specific context
 class IRendererContext
 {
-    NFE_MAKE_NONCOPYABLE(IRendererContext);
-    NFE_MAKE_NONMOVEABLE(IRendererContext);
+    NFE_MAKE_NONCOPYABLE(IRendererContext)
+    NFE_MAKE_NONMOVEABLE(IRendererContext)
 
 public:
     IRendererContext();

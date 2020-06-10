@@ -84,8 +84,8 @@ const RayColor AreaLight::Illuminate(const IlluminateParam& param, IlluminateRes
         outResult.cosAtLight = sampleResult.cosAtSurface;
         outResult.directPdfW = sampleResult.pdf;
 
-        NFE_ASSERT(IsValid(outResult.directPdfW));
-        NFE_ASSERT(outResult.directPdfW >= 0.0f);
+        NFE_ASSERT(IsValid(outResult.directPdfW), "");
+        NFE_ASSERT(outResult.directPdfW >= 0.0f, "");
     }
     else
     {

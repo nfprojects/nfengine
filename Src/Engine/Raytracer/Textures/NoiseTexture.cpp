@@ -45,9 +45,9 @@ NoiseTexture::NoiseTexture(const Math::Vec4f& colorA, const Math::Vec4f& colorB,
     , mColorB(colorB)
     , mNumOctaves(numOctaves)
 {
-    NFE_ASSERT(colorA.IsValid());
-    NFE_ASSERT(colorB.IsValid());
-    NFE_ASSERT(numOctaves > 0 && numOctaves <= 20);
+    NFE_ASSERT(colorA.IsValid(), "");
+    NFE_ASSERT(colorB.IsValid(), "");
+    NFE_ASSERT(numOctaves > 0 && numOctaves <= 20, "");
 }
 
 const char* NoiseTexture::GetName() const
@@ -146,7 +146,7 @@ float NoiseTexture::EvaluateInternal(const Math::Vec4f& coords) const
     // Add contributions from each corner to get the final noise value.
     // The result is scaled to return values in the interval [-1,1].
     const float v = Clamp(0.5f + 22.615325f * (n0 + n1 + n2), 0.0f, 1.0f);
-    NFE_ASSERT(IsValid(v));
+    NFE_ASSERT(IsValid(v), "");
 
     return v;
 }

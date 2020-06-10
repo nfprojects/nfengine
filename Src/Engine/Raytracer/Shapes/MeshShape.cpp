@@ -99,7 +99,7 @@ bool MeshShape::Initialize(const MeshDesc& desc)
         for (uint32 i = 0; i < desc.vertexBufferDesc.numTriangles; ++i)
         {
             const uint32 newTriangleIndex = newTrianglesOrder[i];
-            NFE_ASSERT(newTriangleIndex < desc.vertexBufferDesc.numTriangles);
+            NFE_ASSERT(newTriangleIndex < desc.vertexBufferDesc.numTriangles, "");
 
             newIndexBuffer[3 * i] = indexBuffer[3 * newTriangleIndex];
             newIndexBuffer[3 * i + 1] = indexBuffer[3 * newTriangleIndex + 1];
@@ -163,7 +163,7 @@ const Vec4f MeshShape::Sample(const Vec3f& u, Vec4f* outNormal, float* outPdf) c
 
     float pdf = 0.0f;
     const uint32 triangleIndex = mImportanceMap->SampleDiscrete(u.z, pdf);
-    NFE_ASSERT(triangleIndex < mVertexBuffer.GetNumTriangles());
+    NFE_ASSERT(triangleIndex < mVertexBuffer.GetNumTriangles(), "");
 
     const ProcessedTriangle& tri = mVertexBuffer.GetTriangle(triangleIndex);
     const Vec4f uv = SamplingHelpers::GetTriangle(u);
@@ -396,7 +396,7 @@ void MeshShape::EvaluateIntersection(const HitPoint& hitPoint, IntersectionData&
     texCoord = Vec4f::MulAndAdd(coeff2, texCoord2, texCoord);
     texCoord = Vec4f::MulAndAdd(coeff0, texCoord0, texCoord);
     texCoord = texCoord.Swizzle<0,1,0,1>();
-    NFE_ASSERT(texCoord.IsValid());
+    NFE_ASSERT(texCoord.IsValid(), "");
     outData.texCoord = texCoord;
 
     const Vec4f tangent0 = Vec4f_Load_Vec3f_Unsafe(vertexShadingData[0].tangent);
@@ -407,7 +407,7 @@ void MeshShape::EvaluateIntersection(const HitPoint& hitPoint, IntersectionData&
     tangent = Vec4f::MulAndAdd(coeff0, tangent0, tangent);
     tangent.FastNormalize3();
     tangent = tangent.Swizzle<0, 1, 2, 0>();
-    NFE_ASSERT(tangent.IsValid());
+    NFE_ASSERT(tangent.IsValid(), "");
     outData.frame[0] = tangent;
 
     const Vec4f normal0 = Vec4f_Load_Vec3f_Unsafe(vertexShadingData[0].normal);
@@ -418,7 +418,7 @@ void MeshShape::EvaluateIntersection(const HitPoint& hitPoint, IntersectionData&
     normal = Vec4f::MulAndAdd(coeff0, normal0, normal);
     normal.Normalize3();
     normal = normal.Swizzle<0, 1, 2, 0>();
-    NFE_ASSERT(normal.IsValid());
+    NFE_ASSERT(normal.IsValid(), "");
     outData.frame[2] = normal;
 }
 

@@ -98,6 +98,6 @@ private:
 
 // TODO
 #define NFE_SCOPED_TIMER(name)
-// #define NFE_SCOPED_TIMER(name) \
-//     thread_local ScopedEntry entry##name(#name); \
+// #define NFE_SCOPED_TIMER(name)
+//     thread_local ScopedEntry entry##name(#name);
 //     ScopedTimer scopedTimer(entry##name);
