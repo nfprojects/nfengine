@@ -37,6 +37,8 @@ ADD_LIBRARY(RendererVk SHARED
 
 TARGET_LINK_LIBRARIES(RendererVk vulkan glslang hlsl SPIRV OGLCompiler OSDependent)
 
+TARGET_PRECOMPILE_HEADERS(RendererVk PRIVATE PCH.hpp)
+
 ADD_CUSTOM_COMMAND(TARGET RendererVk POST_BUILD COMMAND
                    ${CMAKE_COMMAND} -E copy $<TARGET_FILE:RendererVk> ${NFE_OUTPUT_DIRECTORY}/${targetfile})
 

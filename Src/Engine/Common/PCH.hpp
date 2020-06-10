@@ -24,11 +24,10 @@
 
 #ifdef NFE_USE_SSE
 #include <xmmintrin.h>
-#endif // NFE_USE_SSE
-
-#if defined(NFE_USE_AVX2) | defined(NFE_USE_AVX) | defined(NFE_USE_FMA)
+#include <smmintrin.h>
 #include <immintrin.h>
-#endif // defined(NFE_USE_AVX2) | defined(NFE_USE_AVX) | defined(NFE_USE_FMA)
+#include <emmintrin.h>
+#endif // NFE_USE_SSE
 
 
 #if defined(__LINUX__) | defined(__linux__)
@@ -55,6 +54,7 @@
 #include <stdio.h>
 #include <time.h>
 #include <math.h>
+#include <float.h>
 #include <string.h>
 #include <inttypes.h>
 #include <stdarg.h>

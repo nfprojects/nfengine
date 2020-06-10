@@ -26,6 +26,7 @@ SET_TARGET_PROPERTIES(RaytracerDemo PROPERTIES LINK_FLAGS "-pthread")
 
 ADD_DEPENDENCIES(RaytracerDemo Raytracer)
 TARGET_LINK_LIBRARIES(RaytracerDemo Raytracer)
+TARGET_PRECOMPILE_HEADERS(RaytracerDemo PRIVATE PCH.h)
 
 ADD_CUSTOM_COMMAND(TARGET RaytracerDemo POST_BUILD COMMAND
                    ${CMAKE_COMMAND} -E copy $<TARGET_FILE:RaytracerDemo> ${NFE_OUTPUT_DIRECTORY}/${targetfile})

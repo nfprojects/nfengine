@@ -28,6 +28,7 @@ SET_TARGET_PROPERTIES(CommonTest PROPERTIES
                       LINK_FLAGS "-pthread")
 ADD_DEPENDENCIES(CommonTest Common testCalcLib)
 TARGET_LINK_LIBRARIES(CommonTest Common gtest dl ${NFCOMMONTEST_DEPS_LIBRARIES})
+TARGET_PRECOMPILE_HEADERS(CommonTest PRIVATE PCH.hpp)
 
 ADD_CUSTOM_COMMAND(TARGET CommonTest POST_BUILD COMMAND
                    ${CMAKE_COMMAND} -E copy $<TARGET_FILE:CommonTest> ${NFE_OUTPUT_DIRECTORY}/${targetfile})
