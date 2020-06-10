@@ -48,8 +48,6 @@ public:
     {
         if (mFile.is_open())
             mFile.close();
-
-        NFE::Common::Logger::GetInstance()->Reset();
     }
 
     virtual const std::string GetName() const

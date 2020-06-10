@@ -51,7 +51,7 @@ Makefile
 .vs/
 
 # Build results on Linux
-/build-*
+/build*
 
 # Smart Commandline Arguments plugin
 *.args.json

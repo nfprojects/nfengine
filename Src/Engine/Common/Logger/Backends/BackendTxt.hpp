@@ -25,7 +25,7 @@ class NFCOMMON_API LoggerBackendTxt final : public ILoggerBackend
 public:
     LoggerBackendTxt();
 
-    void Reset() override;
+    bool Init() override;
     void Log(LogType type, const char* srcFile, int line, const char* str, double timeElapsed) override;
 };
 

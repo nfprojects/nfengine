@@ -61,6 +61,12 @@ using namespace NFE;
 
 int main(int argc, char* argv[])
 {
+    if (!NFE::Common::InitSubsystems())
+    {
+        NFE::Common::ShutdownSubsystems();
+        return -1;
+    }
+
     const NFE::Common::String execPath = NFE::Common::FileSystem::GetExecutablePath();
     const NFE::Common::String execDir = NFE::Common::FileSystem::GetParentDir(execPath);
     NFE::Common::FileSystem::ChangeDirectory(execDir + "/../../..");

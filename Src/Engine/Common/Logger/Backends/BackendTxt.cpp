@@ -19,10 +19,9 @@ bool gLoggerBackendTxtRegistered = Logger::RegisterBackend(StringView("TXT"), Ma
 
 LoggerBackendTxt::LoggerBackendTxt()
 {
-    Reset();
 }
 
-void LoggerBackendTxt::Reset()
+bool LoggerBackendTxt::Init()
 {
     const static StringView gLogIntro("nfEngine - log file\n"
         "[Seconds elapsed] [LogType] [SourceFile]:[LineOfCode]: [Message]\n");
@@ -33,12 +32,19 @@ void LoggerBackendTxt::Reset()
     const String logFilePath = Logger::GetInstance()->GetLogsDirectory() + '/' + logFileName;
     if (!mFile.Open(logFilePath, AccessMode::Write, true))
     {
-        // this will be handled by other logger
+        // this will be handled by early print
         NFE_LOG_ERROR("Failed to create raw txt log file.");
-        return;
+        return false;
     }
 
-    mFile.Write(gLogIntro.Data(), gLogIntro.Length());
+    size_t written = mFile.Write(gLogIntro.Data(), gLogIntro.Length());
+    if (written != gLogIntro.Length())
+    {
+        NFE_LOG_ERROR("Failed to write TXT backend's intro: wrote %zd bytes", written);
+        return false;
+    }
+
+    return true;
 }
 
 void LoggerBackendTxt::Log(LogType type, const char* srcFile, int line, const char* str,

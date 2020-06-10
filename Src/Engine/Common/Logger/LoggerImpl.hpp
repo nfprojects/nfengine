@@ -50,10 +50,12 @@ class NFCOMMON_API Logger : public ILogger
     Logger(const Logger&) = delete;
     Logger& operator= (const Logger&) = delete;
 
-    void LogInit();
     void LogBuildInfo() const;
     void LogRunTime() const;
     void LogSysInfo() const;
+
+    // Simplified logging routines used before Logger is fully loaded
+    void EarlyLog(LogType type, const char* srcFile, int line, const char* str);
 
 public:
     /**
@@ -95,14 +97,14 @@ public:
     void Log(LogType type, const char* srcFile, const char* str, int line);
 
     /**
+     * Initialize Logger and its backends.
+     */
+    bool Init();
+
+    /**
      * Flush the log and destroy all the backends.
      */
     void Shutdown();
-
-    /**
-     * Reset all backends that save to a file
-     */
-    void Reset();
 
     /**
      * Get pre-calculated file path prefix (nfEngine root directory).

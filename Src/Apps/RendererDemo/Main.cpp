@@ -422,6 +422,12 @@ int InnerMain(int argc, char* argv[])
 
 int main(int argc, char* argv[])
 {
+    if (!NFE::Common::InitSubsystems())
+    {
+        NFE::Common::ShutdownSubsystems();
+        return -1;
+    }
+
     int ret = InnerMain(argc, argv);
 
     NFE::Common::ShutdownSubsystems();

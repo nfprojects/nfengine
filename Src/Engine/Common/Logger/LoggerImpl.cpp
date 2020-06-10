@@ -33,41 +33,19 @@ Logger::~Logger()
 Logger* Logger::GetInstance()
 {
     static Logger mInstance;
-
-    // Double check, because we don't want uninit variable and compare_exchange every GetInstance call
-    if (mInstance.mInitialized != InitStage::Initialized)
-    {
-        InitStage uninit = InitStage::Uninitialized;
-        if (mInstance.mInitialized.compare_exchange_strong(uninit, InitStage::Initializing))
-            mInstance.LogInit();
-    }
     return &mInstance;
 }
 
 void Logger::Shutdown()
 {
-    NFE_SCOPED_LOCK(mResetMutex);
-
-    mBackends().Clear();
-}
-
-void Logger::Reset()
-{
-    if (mInitialized == InitStage::Uninitialized)
-        return;
+    if (mInitialized != InitStage::Initialized)
+        return; // already shut down
 
     NFE_SCOPED_LOCK(mResetMutex);
-    // Change mInitialized, to avoid Logging while backends are resetting
-    mInitialized.store(InitStage::Initializing);
+
+    mInitialized.store(InitStage::Uninitialized);
 
     mBackends().Clear();
-
-    // Backends are done resetting - allow logging
-    mInitialized.store(InitStage::Initialized);
-
-    LogBuildInfo();
-    LogRunTime();
-    LogSysInfo();
 }
 
 LoggerBackendMap& Logger::mBackends()
@@ -76,9 +54,16 @@ LoggerBackendMap& Logger::mBackends()
     return mBackend;
 }
 
-void Logger::LogInit()
+bool Logger::Init()
 {
-    mTimer.Start();
+    if (mInitialized == InitStage::Initialized)
+    {
+        NFE_LOG_ERROR("Logger already initialized!");
+        return false;
+    }
+
+    // Transition Logger state to mark the beginning of initialization
+    mInitialized.store(InitStage::Initializing);
 
 #ifdef WIN32
     wchar_t* wideRootDir = NFE_ROOT_DIRECTORY;
@@ -91,11 +76,47 @@ void Logger::LogInit()
     String execPath = NFE::Common::FileSystem::GetExecutablePath();
     String execDir = NFE::Common::FileSystem::GetParentDir(execPath);
     mLogsDirectory = execDir + "/../../../Logs";
-    FileSystem::CreateDir(mLogsDirectory);
+    if (!FileSystem::CreateDirIfNotExist(mLogsDirectory))
+    {
+        NFE_LOG_ERROR("Failed to create a directory for logs");
+        return false;
+    }
 
-    // Reset all backends, so they recreate log files now, that the Logs dir is created.
-    // Reset() methods will change mInitialize to Initialized state after resetting backends.
-    Reset();
+    // Initialize all backends, so they create log files in the Logs dir
+    {
+        NFE_SCOPED_LOCK(mResetMutex);
+
+        // Initialize backends - not all have to successfully initialize.
+        // Some backends will always initialize (ex. Console, WindowsDebugger).
+        // If more sopthisticated backends fail, these will always serve as backup.
+        for (const auto& backend: mBackends())
+        {
+            if (!backend.ptr->Init())
+            {
+                // TODO it might be a good idea to purge disabled backends here or later on
+                NFE_LOG_ERROR("%s logger backend failed to initialize", backend.name.Str());
+                backend.ptr->Enable(false);
+            }
+            else
+            {
+                NFE_LOG_INFO("%s logger backend enabled", backend.name.Str());
+                backend.ptr->Enable(true);
+            }
+        }
+
+        mTimer.Start();
+
+        // Backends are done initializing - allow full logging
+        mInitialized.store(InitStage::Initialized);
+
+        // Print initial info
+        NFE_LOG_INFO("Logger initialized");
+        LogBuildInfo();
+        LogRunTime();
+        LogSysInfo();
+    }
+
+    return true;
 }
 
 void Logger::LogBuildInfo() const
@@ -199,17 +220,16 @@ const LoggerBackendMap& Logger::ListBackends()
     return mBackends();
 }
 
+void Logger::EarlyLog(LogType type, const char* srcFile, int line, const char* str)
+{
+    printf("EARLY  [%-7s] %s:%i: %s\n", LogTypeToString(type), srcFile, line, str);
+}
+
 void Logger::Log(LogType type, const char* srcFile, int line, const char* str, ...)
 {
-    if (mBackends().Empty() || mInitialized != InitStage::Initialized)
-        return;
-
     /// keep shorter strings on the stack for performance
     const int SHORT_MESSAGE_LENGTH = 1024;
     char stackBuffer[SHORT_MESSAGE_LENGTH];
-
-    // TODO: consider logging local time instead of time elapsed since Logger initialization
-    double logTime = mTimer.Stop();
 
     // empty string
     if (str == nullptr)
@@ -250,6 +270,16 @@ void Logger::Log(LogType type, const char* srcFile, int line, const char* str, .
     if (len < 0 || !formattedStr)
         return;
 
+    if (mBackends().Empty() || mInitialized != InitStage::Initialized)
+    {
+        // early log and exit since backends are not yet ready
+        EarlyLog(type, srcFile, line, formattedStr);
+        return;
+    }
+
+    // TODO: consider logging local time instead of time elapsed since Logger initialization
+    double logTime = mTimer.Stop();
+
     NFE_SCOPED_LOCK(mLogMutex);
     for (const auto& backend : mBackends())
     {
@@ -263,7 +293,11 @@ void Logger::Log(LogType type, const char* srcFile, int line, const char* str, .
 void Logger::Log(LogType type, const char* srcFile, const char* str, int line)
 {
     if (mBackends().Empty() || mInitialized != InitStage::Initialized)
+    {
+        // early log and exit since backends are not yet ready
+        EarlyLog(type, srcFile, line, str);
         return;
+    }
 
     // TODO: consider logging local time instead of time elapsed since Logger initialization
     double logTime = mTimer.Stop();

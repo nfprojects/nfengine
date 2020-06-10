@@ -12,6 +12,14 @@ namespace NFE {
 namespace Common {
 
 
+bool InitSubsystems()
+{
+    if (!Logger::GetInstance()->Init())
+        return false;
+
+    return true;
+}
+
 void ShutdownSubsystems()
 {
     // cleanup registered RTTI types

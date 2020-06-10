@@ -13,14 +13,15 @@ namespace Common {
 
 
 ILoggerBackend::ILoggerBackend()
-    : mIsEnabled(true)
+    : mIsEnabled(false)
 {
 }
 
 ILoggerBackend::~ILoggerBackend() = default;
 
-void ILoggerBackend::Reset()
+bool ILoggerBackend::Init()
 {
+    return true;
 }
 
 
