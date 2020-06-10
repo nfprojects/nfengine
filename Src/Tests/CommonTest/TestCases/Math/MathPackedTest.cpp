@@ -10,8 +10,7 @@ using namespace NFE::Math;
 
 void TestUnitVector(const Vec4f& v, float maxError)
 {
-    PackedUnitVector3 packed;
-    packed.FromVector(v);
+    PackedUnitVector3 packed = PackedUnitVector3::FromVector(v);
     const Vec4f decompressed = LoadVec4f(packed);
 
     SCOPED_TRACE("x=[" + std::to_string(v.x) + ',' + std::to_string(v.y) + ',' + std::to_string(v.z) + ']');
@@ -61,8 +60,7 @@ TEST(MathPacked, UnitVector)
 
 void TestColorRgbHdr(const Vec4f& color, float maxError)
 {
-    PackedColorRgbHdr packed;
-    packed.FromVector(color);
+    PackedColorRgbHdr packed = PackedColorRgbHdr::FromVector(color);
     const Vec4f decompressed = LoadVec4f(packed);
 
     SCOPED_TRACE("color=[" + std::to_string(color.x) + ',' + std::to_string(color.y) + ',' + std::to_string(color.z) + ']');

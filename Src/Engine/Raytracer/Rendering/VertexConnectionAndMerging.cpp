@@ -440,8 +440,8 @@ void VertexConnectionAndMerging::TraceLightPath(const RenderParam& param, Render
                 Photon& photon = rendererContext.photons.Back();
 
                 photon.position = shadingData.intersection.frame[3].ToVec3f();
-                photon.direction.FromVector(shadingData.outgoingDirWorldSpace);
-                photon.throughput.FromVector(pathState.throughput.ConvertToTristimulus(ctx.wavelength));
+                photon.direction = PackedUnitVector3::FromVector(shadingData.outgoingDirWorldSpace);
+                photon.throughput = PackedColorRgbHdr::FromVector(pathState.throughput.ConvertToTristimulus(ctx.wavelength));
                 photon.dVM = pathState.dVM;
                 photon.dVCM = pathState.dVCM;
                 //photon.pathLength = uint8(pathState.length);
