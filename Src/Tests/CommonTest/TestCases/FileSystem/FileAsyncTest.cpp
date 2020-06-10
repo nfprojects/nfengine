@@ -33,7 +33,7 @@ Latch* operationsLatch;                              //< Latch to wait for opera
 const uint32 expectedOperations = 0x3FF;             //< Expected state of read/writeOperations variables
                                                      //  after all operations succeed
 
-const StringView testPath("./testFile.async");
+const String testPath("./testFile.async");
 
 static Math::Random gRandom;
 
@@ -95,7 +95,7 @@ TEST_F(FileAsyncTest, Constructors)
     auto simpleCallback = [](void*, FileAsync*, size_t, bool) ->void { return; };
 
     // Due to a bogus path, no file will be open for Read operation, but it shouldn't throw
-    const StringView path("./some/path");
+    const String path("./some/path");
     FileAsync();
     // FileAsync(simpleCallback);
     FileAsync(nullptr);

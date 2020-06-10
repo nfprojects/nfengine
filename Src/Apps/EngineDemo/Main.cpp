@@ -107,7 +107,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
     }
 
     const Common::String execPath = Common::FileSystem::GetExecutablePath();
-    const Common::String execDir = Common::FileSystem::GetParentDir(execPath);
+    const Common::StringView execDir = Common::FileSystem::GetParentDir(execPath);
     Common::FileSystem::ChangeDirectory(execDir + "/../../..");
 
     // spawn default window

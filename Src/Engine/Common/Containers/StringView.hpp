@@ -29,21 +29,18 @@ public:
     NFE_INLINE StringView();
 
     // create view of C-like, null-terminated string
-    // TODO remove 'explicit'
-    NFE_INLINE explicit StringView(const char* string);
+    NFE_INLINE StringView(const char* string);
 
     // create view of string with of given length
     // Null-termination is not expected, will cause assertion
     NFE_INLINE StringView(const char* string, uint32 length);
 
-    // copy/move constructor/assignment
+    // copy constructor/assignment
     StringView(const StringView& other) = default;
     StringView& operator = (const StringView& other) = default;
-    StringView(StringView&& other) = default;
-    StringView& operator = (StringView&& other) = default;
 
     // create view of String
-    explicit StringView(const String& string);
+    StringView(const String& string);
     StringView& operator = (const String& other);
 
     /**
@@ -58,10 +55,7 @@ public:
      * Get raw data pointed by the view.
      * @note    The string may not be null-terminated!
      */
-    NFE_FORCE_INLINE const char* Data() const
-    {
-        return mData;
-    }
+    NFE_FORCE_INLINE const char* Data() const { return mData; }
 
     NFE_FORCE_INLINE bool IsNullTerminated() const
     {
@@ -128,12 +122,12 @@ public:
      * Comparison operators.
      * Lexicographic order is preserved.
      */
-    bool operator == (const StringView& other) const;
-    bool operator != (const StringView& other) const;
-    bool operator < (const StringView& other) const;
-    bool operator > (const StringView& other) const;
-    bool operator <= (const StringView& other) const;
-    bool operator >= (const StringView& other) const;
+    friend NFCOMMON_API bool operator == (const StringView& lhs, const StringView& rhs);
+    friend NFCOMMON_API bool operator != (const StringView& lhs, const StringView& rhs);
+    friend NFCOMMON_API bool operator < (const StringView& lhs, const StringView& rhs);
+    friend NFCOMMON_API bool operator > (const StringView& lhs, const StringView& rhs);
+    friend NFCOMMON_API bool operator <= (const StringView& lhs, const StringView& rhs);
+    friend NFCOMMON_API bool operator >= (const StringView& lhs, const StringView& rhs);
 
 private:
     // pointer to the string data
@@ -147,6 +141,40 @@ private:
     // if so, it can be safely casted to 'const char*'
     bool mIsNullTerminated;
 };
+
+
+/**
+ * A helper class that allows for easy and fast StringView -> const char* (C-style) string conversion
+ */
+class StringViewToCStringHelper
+{
+public:
+    static constexpr uint32 stackBufferSize = 1024;
+
+    NFCOMMON_API StringViewToCStringHelper(const StringView stringView);
+
+        NFE_FORCE_INLINE const char* Str() const
+    {
+        return ptr;
+    }
+
+    NFE_FORCE_INLINE operator const char* () const
+    {
+        return ptr;
+    }
+
+private:
+    const char* ptr = nullptr;
+    char buffer[stackBufferSize];
+};
+
+
+NFE_FORCE_INLINE bool operator == (const char* lhs, const StringView& rhs) { return StringView(lhs) == rhs;}
+NFE_FORCE_INLINE bool operator != (const char* lhs, const StringView& rhs) { return StringView(lhs) != rhs;}
+NFE_FORCE_INLINE bool operator < (const char* lhs, const StringView& rhs) { return StringView(lhs) < rhs;}
+NFE_FORCE_INLINE bool operator > (const char* lhs, const StringView& rhs) { return StringView(lhs) > rhs;}
+NFE_FORCE_INLINE bool operator <= (const char* lhs, const StringView& rhs) { return StringView(lhs) <= rhs;}
+NFE_FORCE_INLINE bool operator >= (const char* lhs, const StringView& rhs) { return StringView(lhs) >= rhs;}
 
 
 /**

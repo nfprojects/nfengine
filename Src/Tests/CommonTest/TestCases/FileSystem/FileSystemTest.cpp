@@ -72,7 +72,7 @@ TEST(FileSystemTest, ExtractExtension)
 
 TEST(FileSystemTest, DirectoryAndRemove)
 {
-    const String testDir = "testDir1";
+    const String testDir{ "testDir1" };
     const String testDir2 = testDir + "/testDir2";
 
     ASSERT_TRUE(FileSystem::CreateDir(testDir));
@@ -92,7 +92,7 @@ TEST(FileSystemTest, DirectoryAndRemove)
 
 TEST(FileSystemTest, TouchFile)
 {
-    const String filePath = "touch_test_file";
+    const String filePath{ "touch_test_file" };
 
     ASSERT_EQ(PathType::Invalid, FileSystem::GetPathType(filePath));
     ASSERT_TRUE(FileSystem::TouchFile(filePath));
@@ -103,7 +103,7 @@ TEST(FileSystemTest, TouchFile)
 
 TEST(FileSystemTest, Iterate)
 {
-    const String root = "test_dir";
+    const String root{ "test_dir" };
 
     const std::vector<String> test_dirs =
     {

@@ -274,8 +274,7 @@ static bool TryParseTextureName(const rapidjson::Value& value, const char* name,
         return false;
     }
 
-    const char* textureName = value[name].GetString();
-
+    const String textureName{ value[name].GetString() };
     const auto iter = textures.Find(textureName);
     if (iter != textures.End())
     {
@@ -300,7 +299,7 @@ static bool TryParseMaterialName(const MaterialsMap& materials, const rapidjson:
         return false;
     }
 
-    const String materialName = value[name].GetString();
+    const String materialName{ value[name].GetString() };
     const auto iter = materials.Find(materialName);
     if (iter == materials.end())
     {
@@ -326,7 +325,7 @@ static TexturePtr ParseTexture(const rapidjson::Value& value, const TexturesMap&
         return nullptr;
     }
 
-    const String name = value["name"].GetString();
+    const String name{ value["name"].GetString() };
     if (name.Empty())
     {
         NFE_LOG_ERROR("Texture name cannot be empty");
@@ -340,7 +339,7 @@ static TexturePtr ParseTexture(const rapidjson::Value& value, const TexturesMap&
         return nullptr;
     }
 
-    const String type = value["type"].GetString();
+    const String type{ value["type"].GetString() };
     if (type.Empty())
     {
         NFE_LOG_ERROR("Texture type cannot be empty");
@@ -355,7 +354,7 @@ static TexturePtr ParseTexture(const rapidjson::Value& value, const TexturesMap&
             return nullptr;
         }
 
-        const String path = value["path"].GetString();
+        const String path{ value["path"].GetString() };
         if (type.Empty())
         {
             NFE_LOG_ERROR("Texture path cannot be empty");
@@ -421,14 +420,14 @@ static MaterialPtr ParseMaterial(const rapidjson::Value& value, const TexturesMa
         return nullptr;
     }
 
-    const String name = value["name"].GetString();
+    const String name{ value["name"].GetString() };
     if (name.Empty())
     {
         NFE_LOG_ERROR("Material name cannot be empty");
         return nullptr;
     }
 
-    String bsdfName = Material::DefaultBsdfName;
+    String bsdfName{ Material::DefaultBsdfName };
     if (value.HasMember("bsdf"))
     {
         bsdfName = value["bsdf"].GetString();
@@ -516,7 +515,7 @@ static ShapePtr ParseShape(const rapidjson::Value& value, MaterialsMap& material
     }
 
     // parse type
-    const String typeStr = value["type"].GetString();
+    const String typeStr{ value["type"].GetString() };
     if (typeStr == "sphere")
     {
         float radius = 1.0f;
@@ -611,7 +610,7 @@ static bool ParseLight(const rapidjson::Value& value, Scene& scene, const Textur
     LightPtr light;
 
     // parse type
-    const String typeStr = value["type"].GetString();
+    const String typeStr{ value["type"].GetString() };
     if (typeStr == "area")
     {
         if (!value.HasMember("shape"))

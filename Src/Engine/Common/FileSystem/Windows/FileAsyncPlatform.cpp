@@ -38,7 +38,7 @@ FileAsync::FileAsync(CallbackFuncRef callback)
 {
 }
 
-FileAsync::FileAsync(const String& path, AccessMode mode, CallbackFuncRef callback, bool overwrite)
+FileAsync::FileAsync(const StringView& path, AccessMode mode, CallbackFuncRef callback, bool overwrite)
     : mFile(INVALID_HANDLE_VALUE)
     , mMode(AccessMode::No)
     , mCallback(callback)
@@ -68,7 +68,7 @@ bool FileAsync::IsOpened() const
     return mFile != INVALID_HANDLE_VALUE;
 }
 
-bool FileAsync::Open(const String& path, AccessMode access, bool overwrite)
+bool FileAsync::Open(const StringView& path, AccessMode access, bool overwrite)
 {
     Close();
 
@@ -109,7 +109,7 @@ bool FileAsync::Open(const String& path, AccessMode access, bool overwrite)
 
     if (!IsOpened())
     {
-        NFE_LOG_ERROR("Failed to open file '%s': %s", path.Str(), GetLastErrorString().Str());
+        NFE_LOG_ERROR("Failed to open file '%.*s': %s", path.Length(), path.Data(), GetLastErrorString().Str());
         mMode = AccessMode::No;
         return false;
     }

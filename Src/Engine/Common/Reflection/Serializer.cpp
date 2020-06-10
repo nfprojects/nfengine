@@ -56,7 +56,7 @@ bool Serialize(const ArrayView<const ObjectPtr> rootObjects, OutputStream& outpu
             }
 
             // map root object and it's type name
-            serializationContext.MapString(objectClassType->GetName().ToView());
+            serializationContext.MapString(objectClassType->GetName());
             const uint32 objectIndex = serializationContext.MapObject(rootObjectPtr);
 
             rootObjectMappedIndices.PushBack(objectIndex);
@@ -114,7 +114,7 @@ bool Serialize(const ArrayView<const ObjectPtr> rootObjects, OutputStream& outpu
         for (const ObjectPtr& objectPtr : objectTable)
         {
             const Type* objectClassType = objectPtr->GetDynamicType();
-            const StringView pointedDataTypeName = objectClassType->GetName().ToView();
+            const StringView pointedDataTypeName = objectClassType->GetName();
 
             // serialize object type name
             const uint32 typeNameStrIndex = serializationContext.MapString(pointedDataTypeName);

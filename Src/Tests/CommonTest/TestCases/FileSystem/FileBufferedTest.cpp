@@ -44,7 +44,7 @@ public:
 TEST_F(FileBufferedTest, Constructors)
 {
     // Due to a bogus path, no file will be open for Read operation, but it shouldn't throw
-    const StringView path("./some/path");
+    const String path("./some/path");
     FileBuffered();
     FileBuffered(path, AccessMode::Read);
     FileBuffered(path, AccessMode::Read, true);

@@ -173,6 +173,6 @@ bool SerializeObject(const NFE::RTTI::Type* type, const void* object, NFE::Commo
 bool SerializeObject(const NFE::RTTI::Type* type, const void* object, NFE::Common::OutputStream& outStream, NFE::RTTI::SerializationContext& context);
 
 // deserialize object from string
-bool DeserializeObject(const NFE::RTTI::Type* type, void* outObject, const NFE::Common::String& string);
+bool DeserializeObject(const NFE::RTTI::Type* type, void* outObject, const NFE::Common::StringView& string);
 
 } // namespace helper

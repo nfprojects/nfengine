@@ -56,7 +56,7 @@ MaterialPtr Material::Create()
     return MaterialPtr(new Material);
 }
 
-void Material::SetBsdf(const String& bsdfName)
+void Material::SetBsdf(const StringView& bsdfName)
 {
     DynArray<const RTTI::ClassType*> types;
     RTTI::GetType<BSDF>()->ListSubtypes(types);
@@ -74,7 +74,7 @@ void Material::SetBsdf(const String& bsdfName)
         }
     }
 
-    NFE_LOG_ERROR("Unknown BSDF name: '%s'", bsdfName.Str());
+    NFE_LOG_ERROR("Unknown BSDF name: '%.*s'", bsdfName.Length(), bsdfName.Data());
 }
 
 static UniquePtr<Material> CreateDefaultMaterial()

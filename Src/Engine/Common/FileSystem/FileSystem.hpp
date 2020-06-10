@@ -6,7 +6,6 @@
 
 #pragma once
 
-#include "../nfCommon.hpp"
 #include "../Containers/StringView.hpp"
 
 #include <functional>
@@ -37,12 +36,12 @@ public:
     /**
      * Get parent directory of a given path.
      */
-    static StringView GetParentDir(const StringView path);
+    static StringView GetParentDir(const StringView& path);
 
     /**
      * Extract extension from path (without dot).
      */
-    static StringView GetExtension(const StringView path);
+    static StringView GetExtension(const StringView& path);
 
     /**
      * Get location of the executable.
@@ -52,34 +51,34 @@ public:
     /**
      * Set current working directory.
      */
-    static bool ChangeDirectory(const String& path);
+    static bool ChangeDirectory(const StringView& path);
 
     /**
      * Create an empty file if not exists.
      */
-    static bool TouchFile(const String& path);
+    static bool TouchFile(const StringView& path);
 
     /**
      * Check if a path is a file, directory or does not exist.
      */
-    static PathType GetPathType(const String& path);
+    static PathType GetPathType(const StringView& path);
 
     /**
      * Create a directory.
      */
-    static bool CreateDir(const String& path);
+    static bool CreateDir(const StringView& path);
 
     /**
      * Create a directory. Won't generate error if the directory already exists.
      */
-    static bool CreateDirIfNotExist(const String& path);
+    static bool CreateDirIfNotExist(const StringView& path);
 
     /**
      * Remove a file or a directory.
      * @param path
      * @param recursive Removes all elements in a directory recursively
      */
-    static bool Remove(const String& path, bool recursive = false);
+    static bool Remove(const StringView& path, bool recursive = false);
 
     /**
      * Copy a file or a directory.
@@ -87,21 +86,21 @@ public:
      * @param destPath  Destination path
      * @param overwrite Overwrite destination path
      */
-    static bool Copy(const String& srcPath, const String& destPath, bool overwrite = false);
+    static bool Copy(const StringView& srcPath, const StringView& destPath, bool overwrite = false);
 
     /**
      * Move a file or a directory to another location.
      * @param srcPath   Source path
      * @param destPath  Destination path
      */
-    static bool Move(const String& srcPath, const String& destPath);
+    static bool Move(const StringView& srcPath, const StringView& destPath);
 
     /**
      * Iterate through files and directories in a specified path.
      * @param path
      * @param callback Callback function called for each found object
      */
-    static bool Iterate(const String& path, const DirIterateCallback& callback);
+    static bool Iterate(const StringView& path, const DirIterateCallback& callback);
 };
 
 } // namespace Common

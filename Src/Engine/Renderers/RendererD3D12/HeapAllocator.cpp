@@ -16,7 +16,7 @@ namespace Renderer {
 
 namespace {
 
-Common::String GetHeapName(HeapAllocator::Type type)
+const char* GetHeapName(HeapAllocator::Type type)
 {
     switch (type)
     {
@@ -62,7 +62,7 @@ void HeapAllocator::Release()
     mBitmap.Clear();
 
     if (allocatedDescriptors > 0)
-        NFE_LOG_WARNING("There are still %u descriptors allocated in %s heap", allocatedDescriptors, GetHeapName(mType).Str());
+        NFE_LOG_WARNING("There are still %u descriptors allocated in %s heap", allocatedDescriptors, GetHeapName(mType));
 }
 
 bool HeapAllocator::Init()
@@ -97,7 +97,7 @@ bool HeapAllocator::Init()
     mCpuHandle = mHeap->GetCPUDescriptorHandleForHeapStart();
     mGpuHandle = mHeap->GetGPUDescriptorHandleForHeapStart();
     mDescriptorSize = gDevice->GetDevice()->GetDescriptorHandleIncrementSize(heapDesc.Type);
-    NFE_LOG_DEBUG("%s descriptor heap handle increment: %u", GetHeapName(mType).Str(), mDescriptorSize);
+    NFE_LOG_DEBUG("%s descriptor heap handle increment: %u", GetHeapName(mType), mDescriptorSize);
 
     return true;
 }

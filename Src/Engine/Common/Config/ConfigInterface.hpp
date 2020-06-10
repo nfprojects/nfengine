@@ -46,7 +46,7 @@ public:
      * @note This function is a little bit slower than @p ParseInPlace, because it
      *       has to create local copy.
      */
-    virtual bool Parse(const char* string) = 0;
+    virtual bool Parse(const StringView& string) = 0;
     
     /**
      * Get root object node.

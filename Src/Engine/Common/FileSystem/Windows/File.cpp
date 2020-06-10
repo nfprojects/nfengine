@@ -19,7 +19,7 @@ File::File()
 {
 }
 
-File::File(const String& path, AccessMode mode, bool overwrite)
+File::File(const StringView& path, AccessMode mode, bool overwrite)
     : mFile(INVALID_HANDLE_VALUE)
     , mMode(AccessMode::No)
 {
@@ -45,7 +45,7 @@ bool File::IsOpened() const
 }
 
 // TODO: access sharing flags
-bool File::Open(const String& path, AccessMode access, bool overwrite)
+bool File::Open(const StringView& path, AccessMode access, bool overwrite)
 {
     Close();
 
@@ -86,7 +86,7 @@ bool File::Open(const String& path, AccessMode access, bool overwrite)
 
     if (mFile == INVALID_HANDLE_VALUE)
     {
-        NFE_LOG_ERROR("Failed to open file '%s': %s", path.Str(), GetLastErrorString().Str());
+        NFE_LOG_ERROR("Failed to open file '%.*s': %s", path.Length(), path.Data(), GetLastErrorString().Str());
         mMode = AccessMode::No;
         return false;
     }

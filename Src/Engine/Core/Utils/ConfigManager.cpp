@@ -17,7 +17,7 @@ namespace NFE {
 
 using namespace Common;
 
-const String gMainConfigFilePath = "engineConfig.cfg";
+const String gMainConfigFilePath{ "engineConfig.cfg" };
 
 ConfigManager::ConfigManager()
     : mNumVariables(0)

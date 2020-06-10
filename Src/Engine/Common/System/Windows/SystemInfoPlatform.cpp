@@ -31,7 +31,7 @@ bool GetVersion(OSVERSIONINFOEX* os)
     OSVERSIONINFOEXW* osw = &o;
 #endif
 
-    if (lib.Open(StringView("ntdll.dll")))
+    if (lib.Open("ntdll.dll"))
     {
         if(!lib.GetSymbol("RtlGetVersion", func))
         {

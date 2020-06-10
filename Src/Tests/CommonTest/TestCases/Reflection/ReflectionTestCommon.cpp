@@ -150,12 +150,12 @@ bool SerializeObject(const Type* type, const void* object, OutputStream& stream,
     return true;
 }
 
-bool DeserializeObject(const Type* type, void* outObject, const String& string)
+bool DeserializeObject(const Type* type, void* outObject, const StringView& string)
 {
     SerializationContext context;
 
     Common::Config config;
-    config.Parse(string.Str());
+    config.Parse(string);
     Common::ConfigGenericValue genericValue(&config);
     Common::ConfigValue value = genericValue["obj"];
 

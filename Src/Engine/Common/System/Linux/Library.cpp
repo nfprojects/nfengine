@@ -20,7 +20,7 @@ Library::Library()
 {
 }
 
-Library::Library(const String& path)
+Library::Library(const StringView& path)
     : Library()
 {
     Open(path);
@@ -52,13 +52,13 @@ bool Library::IsOpened() const
     return mModule != nullptr;
 }
 
-bool Library::Open(const String& path)
+bool Library::Open(const StringView& path)
 {
     Close();
 
     String pathExt = "lib" + path;
     const StringView libExt(".so");
-    if (!path.ToView().EndsWith(libExt))
+    if (!path.EndsWith(libExt))
     {
         pathExt += libExt;
     }
@@ -84,18 +84,20 @@ void Library::Close()
     }
 }
 
-void* Library::GetSymbol(const String& name)
+void* Library::GetSymbol(const StringView& name)
 {
     if (mModule == nullptr)
         return nullptr;
 
+    const StringViewToCStringHelper nameCString(name);
+
     // it is recommended to clear dlerror first, because nullptr value returned CAN be valid
     dlerror();
-    void* ptr = dlsym(mModule, name.Str());
+    void* ptr = dlsym(mModule, nameCString);
     char* errorMsg = dlerror();
     if (errorMsg != nullptr)
     {
-        NFE_LOG_ERROR("Failed to get pointer to symbol '%s': %s", name.Str(), errorMsg);
+        NFE_LOG_ERROR("Failed to get pointer to symbol '%s': %s", nameCString, errorMsg);
         return nullptr;
     }
 

@@ -17,7 +17,7 @@ struct Options
     Common::String dataPath;
 
     bool enablePacketTracing = false;
-    Common::String rendererName = "Path Tracer";
+    Common::String rendererName{ "Path Tracer" };
 
     Common::String sceneName;
 };

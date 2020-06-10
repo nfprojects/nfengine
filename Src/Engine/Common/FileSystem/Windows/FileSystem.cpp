@@ -111,20 +111,20 @@ String FileSystem::GetExecutablePath()
     if (len >= maxPathWide)
     {
         NFE_LOG_ERROR("Failed to resolve executable's path : %s", GetLastErrorString().Str());
-        return "";
+        return String();
     }
 
     String execPathStr;
     if (!UTF16ToUTF8(Utf16String(execPath.Data()), execPathStr))
     {
         NFE_LOG_ERROR("UTF conversion of executable's path failed : %s", GetLastErrorString().Str());
-        return "";
+        return String();
     }
 
     return execPathStr;
 }
 
-bool FileSystem::ChangeDirectory(const String& path)
+bool FileSystem::ChangeDirectory(const StringView& path)
 {
     Utf16String widePath;
     if (!UTF8ToUTF16(path, widePath))
@@ -132,15 +132,15 @@ bool FileSystem::ChangeDirectory(const String& path)
 
     if (::SetCurrentDirectory(widePath.c_str()) == 0)
     {
-        NFE_LOG_ERROR("Failed to change directory to '%s': %s", path.Str(), GetLastErrorString().Str());
+        NFE_LOG_ERROR("Failed to change directory to '%.*s': %s", path.Length(), path.Data(), GetLastErrorString().Str());
         return false;
     }
 
-    NFE_LOG_INFO("Current directory changed to: '%s'", path.Str());
+    NFE_LOG_INFO("Current directory changed to: '%.*s'", path.Length(), path.Data());
     return true;
 }
 
-bool FileSystem::TouchFile(const String& path)
+bool FileSystem::TouchFile(const StringView& path)
 {
     Utf16String widePath;
     if (!UTF8ToUTF16(path, widePath))
@@ -149,7 +149,7 @@ bool FileSystem::TouchFile(const String& path)
     HANDLE fileHandle = ::CreateFile(widePath.c_str(), 0, 0, NULL, CREATE_NEW, FILE_ATTRIBUTE_NORMAL, 0);
     if (fileHandle == INVALID_HANDLE_VALUE)
     {
-        NFE_LOG_ERROR("Failed to create file '%s': %s", path.Str(), GetLastErrorString().Str());
+        NFE_LOG_ERROR("Failed to create file '%.*s': %s", path.Length(), path.Data(), GetLastErrorString().Str());
         return false;
     }
 
@@ -157,7 +157,7 @@ bool FileSystem::TouchFile(const String& path)
     return true;
 }
 
-PathType FileSystem::GetPathType(const String& path)
+PathType FileSystem::GetPathType(const StringView& path)
 {
     Utf16String widePath;
     if (!UTF8ToUTF16(path, widePath))
@@ -173,7 +173,7 @@ PathType FileSystem::GetPathType(const String& path)
     return PathType::File;
 }
 
-bool FileSystem::CreateDir(const String& path)
+bool FileSystem::CreateDir(const StringView& path)
 {
     Utf16String widePath;
     if (!UTF8ToUTF16(path, widePath))
@@ -181,15 +181,15 @@ bool FileSystem::CreateDir(const String& path)
 
     if (::CreateDirectory(widePath.c_str(), nullptr) == 0)
     {
-        NFE_LOG_ERROR("Failed to create directory '%s': %s", path.Str(), GetLastErrorString().Str());
+        NFE_LOG_ERROR("Failed to create directory '%.*s': %s", path.Length(), path.Data(), GetLastErrorString().Str());
         return false;
     }
 
-    NFE_LOG_INFO("Created directory '%s'", path.Str());
+    NFE_LOG_INFO("Created directory '%.*s'", path.Length(), path.Data());
     return true;
 }
 
-bool FileSystem::Remove(const String& path, bool recursive)
+bool FileSystem::Remove(const StringView& path, bool recursive)
 {
     Utf16String widePath;
     if (!UTF8ToUTF16(path, widePath))
@@ -198,7 +198,7 @@ bool FileSystem::Remove(const String& path, bool recursive)
     const DWORD attrs = GetFileAttributes(widePath.c_str());
     if (INVALID_FILE_ATTRIBUTES == attrs)
     {
-        NFE_LOG_INFO("Failed to retrieve attributes for path '%s': %s", path.Str(), GetLastErrorString().Str());
+        NFE_LOG_INFO("Failed to retrieve attributes for path '%.*s': %s", path.Length(), path.Data(), GetLastErrorString().Str());
         return false;
     }
 
@@ -213,7 +213,7 @@ bool FileSystem::Remove(const String& path, bool recursive)
         }
         else if (::RemoveDirectory(widePath.c_str()) == FALSE)
         {
-            NFE_LOG_ERROR("Failed to remove '%s': %s", path.Str(), GetLastErrorString().Str());
+            NFE_LOG_ERROR("Failed to remove '%.*s': %s", path.Length(), path.Data(), GetLastErrorString().Str());
             return false;
         }
     }
@@ -222,16 +222,16 @@ bool FileSystem::Remove(const String& path, bool recursive)
         BOOL result = ::DeleteFile(widePath.c_str());
         if (result == FALSE)
         {
-            NFE_LOG_ERROR("Failed to delete file '%s': %s", path.Str(), GetLastErrorString().Str());
+            NFE_LOG_ERROR("Failed to delete file '%.*s': %s", path.Length(), path.Data(), GetLastErrorString().Str());
             return false;
         }
     }
 
-    NFE_LOG_INFO("Removed '%s'", path.Str());
+    NFE_LOG_INFO("Removed '%.*s'", path.Length(), path.Data());
     return true;
 }
 
-bool FileSystem::Copy(const String& srcPath, const String& destPath, bool overwrite)
+bool FileSystem::Copy(const StringView& srcPath, const StringView& destPath, bool overwrite)
 {
     Utf16String wideSrcPath, wideDestPath;
     if (!UTF8ToUTF16(srcPath, wideSrcPath) || !UTF8ToUTF16(destPath, wideDestPath))
@@ -239,15 +239,18 @@ bool FileSystem::Copy(const String& srcPath, const String& destPath, bool overwr
 
     if (::CopyFile(wideSrcPath.c_str(), wideDestPath.c_str(), !overwrite) == 0)
     {
-        NFE_LOG_ERROR("Failed to copy file '%s' to '%s': %s", srcPath.Str(), destPath.Str(), GetLastErrorString().Str());
+        NFE_LOG_ERROR("Failed to copy file '%.*s' to '%.*s': %s",
+            srcPath.Length(), srcPath.Data(),
+            destPath.Length(), destPath.Data(),
+            GetLastErrorString().Str());
         return false;
     }
 
-    NFE_LOG_INFO("File '%s' copied to '%s'", srcPath.Str(), destPath.Str());
+    NFE_LOG_INFO("File '%.*s' copied to '%.*s'", srcPath.Length(), srcPath.Data(), destPath.Length(), destPath.Data());
     return true;
 }
 
-bool FileSystem::Move(const String& srcPath, const String& destPath)
+bool FileSystem::Move(const StringView& srcPath, const StringView& destPath)
 {
     Utf16String wideSrcPath, wideDestPath;
     if (!UTF8ToUTF16(srcPath, wideSrcPath) || !UTF8ToUTF16(destPath, wideDestPath))
@@ -255,15 +258,15 @@ bool FileSystem::Move(const String& srcPath, const String& destPath)
 
     if (::MoveFile(wideSrcPath.c_str(), wideDestPath.c_str()) == 0)
     {
-        NFE_LOG_ERROR("Failed to move file '%s' to '%s': %s", srcPath.Str(), destPath.Str(), GetLastErrorString().Str());
+        NFE_LOG_ERROR("Failed to move file '%.*s' to '%.*s': %s", srcPath.Length(), srcPath.Data(), destPath.Length(), destPath.Data(), GetLastErrorString().Str());
         return false;
     }
 
-    NFE_LOG_INFO("File '%s' moved to '%s'", srcPath.Str(), destPath.Str());
+    NFE_LOG_INFO("File '%.*s' moved to '%.*s'", srcPath.Length(), srcPath.Data(), destPath.Length(), destPath.Data());
     return true;
 }
 
-bool FileSystem::Iterate(const String& path, const DirIterateCallback& callback)
+bool FileSystem::Iterate(const StringView& path, const DirIterateCallback& callback)
 {
     Utf16String widePath;
     HANDLE findHandle = INVALID_HANDLE_VALUE;
@@ -285,7 +288,7 @@ bool FileSystem::Iterate(const String& path, const DirIterateCallback& callback)
         findHandle = FindFirstFile(spec.c_str(), &findData);
         if (findHandle == INVALID_HANDLE_VALUE)
         {
-            NFE_LOG_ERROR("FindFirstFile failed for path '%s': %s", path.Str(), GetLastErrorString().Str());
+            NFE_LOG_ERROR("FindFirstFile failed for path '%.*s': %s", path.Length(), path.Data(), GetLastErrorString().Str());
             return false;
         }
 
@@ -336,7 +339,7 @@ bool FileSystem::Iterate(const String& path, const DirIterateCallback& callback)
         if (GetLastError() != ERROR_NO_MORE_FILES)
         {
             FindClose(findHandle);
-            NFE_LOG_ERROR("FindNextFile failed for path '%s': %s", path.Str(), GetLastErrorString().Str());
+            NFE_LOG_ERROR("FindNextFile failed for path '%.*s': %s", path.Length(), path.Data(), GetLastErrorString().Str());
             return false;
         }
 

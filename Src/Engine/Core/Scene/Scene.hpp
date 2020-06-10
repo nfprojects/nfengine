@@ -38,7 +38,7 @@ class CORE_API Scene final
 public:
     static constexpr int MaxSystems = 8;
 
-    explicit Scene(const Common::String& name = "unnamed_scene");
+    explicit Scene(const Common::StringView& name = "unnamed_scene");
     ~Scene();
 
     /**

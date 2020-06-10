@@ -404,8 +404,8 @@ TEST(ReflectionClassTest, TestClassWithDynArrayType_Serialization)
         obj.arrayOfInts.PushBack(20);
         obj.arrayOfInts.PushBack(30);
 
-        obj.arrayOfObjects.PushBack(TestClassWithFundamentalMembers(1, 1.0f, false, "aaa"));
-        obj.arrayOfObjects.PushBack(TestClassWithFundamentalMembers(15, 15.0f, false, "bbb"));
+        obj.arrayOfObjects.PushBack(TestClassWithFundamentalMembers(1, 1.0f, false, String("aaa")));
+        obj.arrayOfObjects.PushBack(TestClassWithFundamentalMembers(15, 15.0f, false, String("bbb")));
     }
 
     String str;
@@ -461,8 +461,8 @@ TEST(ReflectionClassTest, TestClassWithDynArrayType_BinarySerialization)
         obj.arrayOfInts.PushBack(20);
         obj.arrayOfInts.PushBack(30);
 
-        obj.arrayOfObjects.PushBack(TestClassWithFundamentalMembers(1, 1.0f, false, "aaa"));
-        obj.arrayOfObjects.PushBack(TestClassWithFundamentalMembers(15, 15.0f, true, "bbb"));
+        obj.arrayOfObjects.PushBack(TestClassWithFundamentalMembers(1, 1.0f, false, String("aaa")));
+        obj.arrayOfObjects.PushBack(TestClassWithFundamentalMembers(15, 15.0f, true, String("bbb")));
     }
 
     {

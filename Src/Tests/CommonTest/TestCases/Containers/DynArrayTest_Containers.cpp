@@ -17,10 +17,10 @@ using namespace NFE::Common;
 // Note: use long strings so they must be allocated dynamically
 namespace
 {
-const char* strA = "aaaaaaaaaaaaaaaaaaaaaaaaaa";
-const char* strB = "bbbbbbbbbbbbbbbbbbbbbbbbbb";
-const char* strC = "cccccccccccccccccccccccccc";
-const char* strD = "dddddddddddddddddddddddddd";
+const String strA{ "aaaaaaaaaaaaaaaaaaaaaaaaaa" };
+const String strB{ "bbbbbbbbbbbbbbbbbbbbbbbbbb" };
+const String strC{ "cccccccccccccccccccccccccc" };
+const String strD{ "dddddddddddddddddddddddddd" };
 
 } // namespace
 
@@ -38,7 +38,7 @@ TEST(DynArray, DynArrayOfStrings_Simple)
     ASSERT_NE(array.End(), array.Find(strA));
     ASSERT_NE(array.End(), array.Find(strB));
     ASSERT_NE(array.End(), array.Find(strC));
-    ASSERT_EQ(array.End(), array.Find("d"));
+    ASSERT_EQ(array.End(), array.Find(String("d")));
 }
 
 TEST(DynArray, DynArrayOfStrings_Erase)

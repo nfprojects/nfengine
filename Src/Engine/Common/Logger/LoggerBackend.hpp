@@ -7,7 +7,7 @@
 #pragma once
 
 #include "../nfCommon.hpp"
-#include "../Containers/String.hpp"
+#include "../Containers/StringView.hpp"
 #include "../Containers/UniquePtr.hpp"
 #include "../Containers/StaticArray.hpp"
 
@@ -62,7 +62,7 @@ using LoggerBackendPtr = UniquePtr<ILoggerBackend>;
 
 struct LoggerBackendInfo
 {
-    String name;
+    StringView name;
     LoggerBackendPtr ptr;
 };
 

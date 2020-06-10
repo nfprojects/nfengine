@@ -72,8 +72,8 @@ bool Logger::Init()
 #endif
     mPathPrefixLen = mPathPrefix.Length();
 
-    String execPath = NFE::Common::FileSystem::GetExecutablePath();
-    String execDir = NFE::Common::FileSystem::GetParentDir(execPath);
+    const String execPath = NFE::Common::FileSystem::GetExecutablePath();
+    const StringView execDir = NFE::Common::FileSystem::GetParentDir(execPath);
     mLogsDirectory = execDir + "/../../../Logs";
     if (!FileSystem::CreateDirIfNotExist(mLogsDirectory))
     {
@@ -93,12 +93,12 @@ bool Logger::Init()
             if (!backend.ptr->Init())
             {
                 // TODO it might be a good idea to purge disabled backends here or later on
-                NFE_LOG_ERROR("%s logger backend failed to initialize", backend.name.Str());
+                NFE_LOG_ERROR("%.*s logger backend failed to initialize", backend.name.Length(), backend.name.Data());
                 backend.ptr->Enable(false);
             }
             else
             {
-                NFE_LOG_INFO("%s logger backend enabled", backend.name.Str());
+                NFE_LOG_INFO("%.*s logger backend enabled", backend.name.Length(), backend.name.Data());
                 backend.ptr->Enable(true);
             }
         }

@@ -5,7 +5,7 @@
  */
 
 #include "PCH.hpp"
-#include "Engine/Common/Containers/StringView.hpp"
+#include "Engine/Common/Containers/String.hpp"
 
 
 using namespace NFE;
@@ -39,6 +39,22 @@ TEST(StringView, ConstStringLength)
     StringView stringView(testString, 4);
 
     ASSERT_FALSE(stringView.Empty());
+    ASSERT_EQ(4u, stringView.Length());
+
+    EXPECT_EQ('t', stringView[0]);
+    EXPECT_EQ('e', stringView[1]);
+    EXPECT_EQ('s', stringView[2]);
+    EXPECT_EQ('t', stringView[3]);
+}
+
+TEST(StringView, Constructor_String)
+{
+    static_assert(std::is_same_v<StringView, decltype(true ? String() : StringView())>, "Implicit String -> StringView conversion failed");
+    static_assert(std::is_same_v<StringView, decltype(false ? StringView() : String())>, "Implicit String -> StringView conversion failed");
+
+    const String str("test");
+    const auto stringView = true ? str : StringView();
+
     ASSERT_EQ(4u, stringView.Length());
 
     EXPECT_EQ('t', stringView[0]);

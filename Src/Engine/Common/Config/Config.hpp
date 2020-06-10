@@ -59,7 +59,7 @@ public:
 
     virtual bool ParseInPlace(char* string) override;
 
-    virtual bool Parse(const char* string) override;
+    virtual bool Parse(const StringView& string) override;
 
     virtual ConfigObjectNodePtr GetRootNode() const override
     {

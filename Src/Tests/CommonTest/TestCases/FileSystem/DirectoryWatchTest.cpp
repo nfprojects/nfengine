@@ -13,10 +13,10 @@ namespace {
 const unsigned int LATCH_TIMEOUT = 200;
 
 // not watched directory
-const String TEST_DIR0 = "dirwatch_test_dir_notwatched";
+const String TEST_DIR0{ "dirwatch_test_dir_notwatched" };
 // watched directories:
-const String TEST_DIR1 = "dirwatch_test_dir";
-const String TEST_DIR2 = "dirwatch_test_dir_2";
+const String TEST_DIR1{ "dirwatch_test_dir" };
+const String TEST_DIR2{ "dirwatch_test_dir_2" };
 
 const String TEST_DIR0_FILE1 = TEST_DIR0 + "/file1";
 const String TEST_DIR1_FILE1 = TEST_DIR1 + "/file1";
@@ -58,7 +58,7 @@ TEST_F(DirectoryWatchTest, Simple)
     // verify adding duplicate event filter
     ASSERT_TRUE(watch.WatchPath(TEST_DIR1, DirectoryWatch::Event::Create));
     // try watching not existing path
-    ASSERT_FALSE(watch.WatchPath(StringView("not_existing_path"), DirectoryWatch::Event::Create));
+    ASSERT_FALSE(watch.WatchPath(String("not_existing_path"), DirectoryWatch::Event::Create));
 }
 
 TEST_F(DirectoryWatchTest, MultipleWatches)

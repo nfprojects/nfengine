@@ -40,7 +40,7 @@ class NFCOMMON_API SystemInfo
 private:
     SystemInfo();
 
-    HashMap<String, CpuidFeature> mCpuidFeatureMap;
+    HashMap<StringView, CpuidFeature> mCpuidFeatureMap;
     String mCPUBrand;
     String mOSVersion;
     String mCompilerInfo;

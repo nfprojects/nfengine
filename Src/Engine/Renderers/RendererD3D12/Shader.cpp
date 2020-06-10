@@ -37,7 +37,7 @@ bool Shader::Init(const ShaderDesc& desc)
         }
 
         using namespace Common;
-        File file(Common::StringView(desc.path), AccessMode::Read);
+        File file(desc.path, AccessMode::Read);
         const uint32 size = static_cast<uint32>(file.GetSize());
         str.Resize(size + 1);
         shaderSize = size;
@@ -245,7 +245,7 @@ bool Shader::GetIODesc()
             continue;
         }
 
-        Common::String name = d3dBindingDesc.Name;
+        Common::String name{ d3dBindingDesc.Name };
         if (mResBindings.Exists(name))
         {
             NFE_LOG_ERROR("Multiple declarations of shader resource named '%s'", d3dBindingDesc.Name);
@@ -260,7 +260,7 @@ bool Shader::GetIODesc()
 
 int Shader::GetResourceSlotByName(const char* name)
 {
-    auto iter = mResBindings.Find(name);
+    auto iter = mResBindings.Find(Common::String(name));
     if (iter != mResBindings.End())
     {
         // TODO: verify resource type

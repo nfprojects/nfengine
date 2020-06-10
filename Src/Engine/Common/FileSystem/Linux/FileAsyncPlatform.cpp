@@ -106,7 +106,7 @@ FileAsync::FileAsync(CallbackFuncRef callbackFunc)
         setupIo(mCtx);
 }
 
-FileAsync::FileAsync(const String& path, AccessMode mode, CallbackFuncRef callbackFunc, bool overwrite)
+FileAsync::FileAsync(const StringView& path, AccessMode mode, CallbackFuncRef callbackFunc, bool overwrite)
     : mFD(INVALID_FD)
     , mMode(AccessMode::No)
     , mCallback(callbackFunc)
@@ -149,7 +149,7 @@ bool FileAsync::IsOpened() const
     return mFD != INVALID_FD;
 }
 
-bool FileAsync::Open(const String& path, AccessMode access, bool overwrite)
+bool FileAsync::Open(const StringView& path, AccessMode access, bool overwrite)
 {
     Close();
 
@@ -179,11 +179,12 @@ bool FileAsync::Open(const String& path, AccessMode access, bool overwrite)
             flags |= O_TRUNC;
     }
 
-    mFD = ::open(path.Str(), flags | O_NONBLOCK, 0644);
+    const StringViewToCStringHelper pathString(path);
+    mFD = ::open(pathString, flags | O_NONBLOCK, 0644);
 
     if (!IsOpened())
     {
-        NFE_LOG_ERROR("Failed to open file '%s': %s", path.Str(), strerror(errno));
+        NFE_LOG_ERROR("Failed to open file '%s': %s", pathString.Str(), strerror(errno));
         mMode = AccessMode::No;
         return false;
     }

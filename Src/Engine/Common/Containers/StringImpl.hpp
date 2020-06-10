@@ -150,6 +150,10 @@ char String::Back() const
 
 void String::SetLength(uint32 length)
 {
+    if (IsInternal())
+    {
+        NFE_ASSERT(length <= MaxInternalLength, "Invalid length for internal buffer: %u, max is %u", length, MaxInternalLength);
+    }
     mInternalData.length = length;
 }
 

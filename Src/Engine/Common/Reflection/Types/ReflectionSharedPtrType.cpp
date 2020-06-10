@@ -59,7 +59,7 @@ bool SharedPtrType::SerializeBinary(const void* object, OutputStream* stream, Se
 {
     const ObjectPtr& typedObject = *BitCast<const ObjectPtr*>(object);
     const Type* pointedDataType = GetPointedDataType(object);
-    const StringView pointedDataTypeName = pointedDataType ? pointedDataType->GetName().ToView() : StringView();
+    const StringView pointedDataTypeName = pointedDataType ? pointedDataType->GetName() : StringView();
 
     const uint32 typeNameStrIndex = context.MapString(pointedDataTypeName);
     if (!context.IsMapping())

@@ -4,5 +4,5 @@
 
 
 // BufferOutputStream and BufferInputStream constants
-extern const NFE::Common::String TEXT;
-extern const NFE::uint32 TEXTSIZE;
+extern const NFE::Common::String gText;
+extern const NFE::uint32 gTextSize;

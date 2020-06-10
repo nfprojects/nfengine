@@ -15,12 +15,20 @@
 namespace NFE {
 namespace Common {
 
+template<typename T>
+struct DefaultEqualsPolicy
+{
+    uint32 operator() (const T& a, const T& b) const
+    {
+        return a == b;
+    }
+};
 
 template<
     typename KeyType,
     typename ValueType,
     typename HashPolicy = DefaultHashPolicy<KeyType>,
-    typename EqualsPolicy = std::equal_to<KeyType>>
+    typename EqualsPolicy = DefaultEqualsPolicy<KeyType>>
 class HashMap final
 {
 public:

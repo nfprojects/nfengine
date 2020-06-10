@@ -35,7 +35,9 @@ public:
         for (const auto& backend : bckndList)
         {
             backend.ptr->Enable(true);
-            GetOStream() << std::endl << "<>LOGGER BACKEND: " << backend.name.Str() << std::endl;
+
+            const StringViewToCStringHelper backendName(backend.name);
+            GetOStream() << std::endl << "<>LOGGER BACKEND: " << backendName << std::endl;
 
             testFunc();
 

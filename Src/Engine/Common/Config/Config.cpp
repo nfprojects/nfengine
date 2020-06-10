@@ -89,11 +89,12 @@ Config& Config::AddValue(ConfigArray& configArray, const ConfigValue& val)
     return *this;
 }
 
-bool Config::Parse(const char* string)
+bool Config::Parse(const StringView& string)
 {
-    size_t strLength = strlen(string) + 1;
-    mStringCopy.Reset(new char[strLength]);
-    memcpy(mStringCopy.Get(), string, strLength);
+    mStringCopy.Reset(new char[string.Length() + 1]);
+    memcpy(mStringCopy.Get(), string.Data(), string.Length());
+    mStringCopy[string.Length()] = '\0';
+
     return ParseInPlace(mStringCopy.Get());
 }
 

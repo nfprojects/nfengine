@@ -62,12 +62,12 @@ void SystemInfo::InitCPUInfoPlatform()
 
 void SystemInfo::InitOSVersion()
 {
-    static const DynArray<String> osFiles = { "/etc/redhat-release", "/etc/issue" };
+    static const DynArray<const char*> osFiles = { "/etc/redhat-release", "/etc/issue" };
 
-    for (const auto& path : osFiles)
+    for (const char* path : osFiles)
     {
         String str;
-        if (ReadFileToString(path, str))
+        if (ReadFileToString(String(path), str))
         {
             if (!str.Empty())
             {

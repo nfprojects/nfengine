@@ -19,7 +19,7 @@ private:
     File mFile;
 
 public:
-    FileInputStream(const String& path);
+    FileInputStream(const StringView& path);
     ~FileInputStream();
 
     uint64 GetSize() override;

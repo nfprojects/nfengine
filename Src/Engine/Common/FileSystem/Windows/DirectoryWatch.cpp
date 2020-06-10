@@ -98,7 +98,7 @@ bool DirectoryWatch::WatchPath(const String& path, Event eventFilter)
 {
     {
         ScopedExclusiveLock<Mutex> lock(mMutex);
-        auto it = mRequests.Find(String(path));
+        auto it = mRequests.Find(path);
         if (it != mRequests.End())
         {
             // remove watch request if filter changes
@@ -118,7 +118,9 @@ bool DirectoryWatch::WatchPath(const String& path, Event eventFilter)
                 ::WaitForSingleObject(mEvent, INFINITE);
             }
             else // watch request not modified
+            {
                 return true;
+            }
         }
     }
 
@@ -152,7 +154,7 @@ bool DirectoryWatch::WatchPath(const String& path, Event eventFilter)
     mRequestsNum++;
     {
         NFE_SCOPED_LOCK(mMutex);
-        mRequests.Insert(path, std::move(request));
+        mRequests.Insert(std::move(String(path)), std::move(request));
     }
 
     /// trigger monitoring thread

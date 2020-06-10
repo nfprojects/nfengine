@@ -18,16 +18,16 @@ TEST(Set, SetOfStrings)
 {
     Set<String> set;
 
-    ASSERT_NE(set.End(), set.Insert("aaa").iterator);
-    ASSERT_NE(set.End(), set.Insert("bbb").iterator);
+    ASSERT_NE(set.End(), set.Insert(String("aaa")).iterator);
+    ASSERT_NE(set.End(), set.Insert(String("bbb")).iterator);
 
-    ASSERT_NE(set.End(), set.Find("aaa"));
-    ASSERT_NE(set.End(), set.Find("bbb"));
-    ASSERT_EQ(set.End(), set.Find("ccc"));
+    ASSERT_NE(set.End(), set.Find(String("aaa")));
+    ASSERT_NE(set.End(), set.Find(String("bbb")));
+    ASSERT_EQ(set.End(), set.Find(String("ccc")));
 
-    ASSERT_TRUE(set.Erase("aaa"));
-    ASSERT_TRUE(set.Erase("bbb"));
-    ASSERT_FALSE(set.Erase("ccc"));
+    ASSERT_TRUE(set.Erase(String("aaa")));
+    ASSERT_TRUE(set.Erase(String("bbb")));
+    ASSERT_FALSE(set.Erase(String("ccc")));
 }
 
 TEST(Set, SetOfDynArrays)

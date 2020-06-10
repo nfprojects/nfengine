@@ -11,7 +11,7 @@ namespace NFE {
 namespace Common {
 
 
-StringView FileSystem::GetParentDir(const StringView path)
+StringView FileSystem::GetParentDir(const StringView& path)
 {
     for (uint32 i = path.Length(); i-- > 0; )
     {
@@ -28,7 +28,7 @@ StringView FileSystem::GetParentDir(const StringView path)
     return StringView();
 }
 
-StringView FileSystem::GetExtension(const StringView path)
+StringView FileSystem::GetExtension(const StringView& path)
 {
     for (uint32 i = path.Length(); i-- > 0; )
     {
@@ -49,7 +49,7 @@ StringView FileSystem::GetExtension(const StringView path)
     return StringView();
 }
 
-bool FileSystem::CreateDirIfNotExist(const String& path)
+bool FileSystem::CreateDirIfNotExist(const StringView& path)
 {
     if (FileSystem::GetPathType(path) != PathType::Directory)
     {

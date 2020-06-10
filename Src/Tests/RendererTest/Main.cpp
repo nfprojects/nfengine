@@ -5,9 +5,6 @@
 #include "Engine/Common/Logger/Logger.hpp"
 
 
-const NFE::Common::String BACKEND_ARG_NAME = "--renderer";
-const NFE::Common::String CARD_ID_ARG_NAME = "--card_id";
-
 int main(int argc, char* argv[])
 {
     if (!NFE::Common::InitSubsystems())
@@ -19,7 +16,7 @@ int main(int argc, char* argv[])
     testing::InitGoogleTest(&argc, argv);
 
     const NFE::Common::String execPath = NFE::Common::FileSystem::GetExecutablePath();
-    const NFE::Common::String execDir = NFE::Common::FileSystem::GetParentDir(execPath);
+    const NFE::Common::StringView execDir = NFE::Common::FileSystem::GetParentDir(execPath);
     NFE::Common::FileSystem::ChangeDirectory(execDir + "/../../..");
 
     gPreferedCardId = -1;

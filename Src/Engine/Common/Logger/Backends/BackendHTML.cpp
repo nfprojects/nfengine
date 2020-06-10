@@ -27,7 +27,7 @@ bool LoggerBackendHTML::Init()
      * TODO: move intro, outro and the other HTML code templates to another file, so the logger
      * backend can be easly customizable.
      */
-    const static String gLogIntro = R"(
+    const static String gLogIntro(R"(
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html>
@@ -66,7 +66,7 @@ bool LoggerBackendHTML::Init()
            </tr>
        </thead>
        <tbody>
-)";
+)");
 
     const StringView logFileName("log.html");
     mBuffer.Resize(NFE_MAX_LOG_MESSAGE_LENGTH);
@@ -91,13 +91,13 @@ bool LoggerBackendHTML::Init()
 
 LoggerBackendHTML::~LoggerBackendHTML()
 {
-    const static String gLogOutro = R"(
+    const static String gLogOutro(R"(
             </tbody>
         </table>
         <script src='../nfEngine/Data/tablefilter.js'></script>
     </body>
 </html>
-)";
+)");
 
     mFile.Write(gLogOutro.Str(), gLogOutro.Length());
 }

@@ -22,14 +22,16 @@ int main(int argc, char* argv[])
 
     testing::InitGoogleTest(&argc, argv);
 
-    const StringView logsDirPath("Logs/PerfTests");
+    const String logsDirPath("Logs/PerfTests");
 
     const String execPath = FileSystem::GetExecutablePath();
-    const String execDir = FileSystem::GetParentDir(execPath);
+    const StringView execDir = FileSystem::GetParentDir(execPath);
     FileSystem::ChangeDirectory(execDir + "/../../..");
     PathType logsDir = FileSystem::GetPathType(logsDirPath);
     if (logsDir != PathType::Directory)
+    {
         FileSystem::CreateDir(logsDirPath);
+    }
 
     int result = RUN_ALL_TESTS();
 

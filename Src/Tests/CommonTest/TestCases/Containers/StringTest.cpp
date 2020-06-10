@@ -6,7 +6,6 @@
 
 #include "PCH.hpp"
 #include "Engine/Common/Containers/String.hpp"
-#include "Engine/Common/Containers/StringView.hpp"
 
 
 using namespace NFE;
@@ -360,9 +359,64 @@ TEST(String, Append_StringView)
 
 //////////////////////////////////////////////////////////////////////////
 
+TEST(String, Concatenate_String_String_Short)
+{
+    const String a("a");
+    const String b("b");
+    const String c = a + b;
+
+    ASSERT_FALSE(c.Empty());
+    ASSERT_EQ(2u, c.Length());
+    ASSERT_STREQ("ab", c.Str());
+}
+
+TEST(String, Concatenate_String_CString_Short)
+{
+    const String a("a");
+    const char* b = "b";
+    const String c = a + b;
+
+    ASSERT_FALSE(c.Empty());
+    ASSERT_EQ(2u, c.Length());
+    ASSERT_STREQ("ab", c.Str());
+}
+
+TEST(String, Concatenate_CString_String_Short)
+{
+    const char* a = "a";
+    const String b("b");
+    const String c = a + b;
+
+    ASSERT_FALSE(c.Empty());
+    ASSERT_EQ(2u, c.Length());
+    ASSERT_STREQ("ab", c.Str());
+}
+
 TEST(String, Concatenate_StringView_StringView_Short)
 {
     const StringView a("a");
+    const StringView b("b");
+    const String c = a + b;
+
+    ASSERT_FALSE(c.Empty());
+    ASSERT_EQ(2u, c.Length());
+    ASSERT_STREQ("ab", c.Str());
+}
+
+TEST(String, Concatenate_StringView_CString_Short)
+{
+    const StringView a("a");
+    const char* b = "b";
+    const String c = a + b;
+
+    ASSERT_FALSE(c.Empty());
+    ASSERT_EQ(2u, c.Length());
+    ASSERT_STREQ("ab", c.Str());
+}
+
+TEST(String, Concatenate_CString_StringView_Short)
+{
+    const char* a = "a";
     const StringView b("b");
     const String c = a + b;
 
@@ -825,8 +879,8 @@ TEST(String, Replace_StringView)
 
 TEST(String, Compare_String_String)
 {
-    String stringA("abcd");
-    String stringB("abcde");
+    const String stringA("abcd");
+    const String stringB("abcde");
 
     EXPECT_FALSE(stringA == stringB);
     EXPECT_FALSE(stringB == stringA);
@@ -845,8 +899,8 @@ TEST(String, Compare_String_String)
 
 TEST(String, Compare_String_StringView)
 {
-    String stringA("abcd");
-    StringView stringB("abcde");
+    const String stringA("abcd");
+    const StringView stringB("abcde");
 
     EXPECT_FALSE(stringA == stringB);
     EXPECT_FALSE(stringB == stringA);
@@ -865,8 +919,8 @@ TEST(String, Compare_String_StringView)
 
 TEST(String, Compare_StringView_String)
 {
-    StringView stringA("abcd");
-    String stringB("abcde");
+    const StringView stringA("abcd");
+    const String stringB("abcde");
 
     EXPECT_FALSE(stringA == stringB);
     EXPECT_FALSE(stringB == stringA);

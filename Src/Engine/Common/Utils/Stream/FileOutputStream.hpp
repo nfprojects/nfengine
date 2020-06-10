@@ -19,7 +19,7 @@ private:
     File mFile;
 
 public:
-    FileOutputStream(const String& fileName);
+    FileOutputStream(const StringView& fileName);
 
     virtual size_t Write(const void* buffer, size_t num) override;
     virtual bool Seek(uint64 position) override;

@@ -18,7 +18,7 @@ using namespace Common;
 bool UniquePtrType::SerializeBinary(const void* object, Common::OutputStream* stream, SerializationContext& context) const
 {
     const Type* pointedDataType = GetPointedDataType(object);
-    const StringView pointedDataTypeName = pointedDataType ? pointedDataType->GetName().ToView() : StringView();
+    const StringView pointedDataTypeName = pointedDataType ? pointedDataType->GetName() : StringView();
 
     const uint32 typeNameStrIndex = context.MapString(pointedDataTypeName);
 

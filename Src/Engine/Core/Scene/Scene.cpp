@@ -22,7 +22,7 @@ namespace Scene {
 using namespace Math;
 using namespace Resource;
 
-Scene::Scene(const Common::String& name)
+Scene::Scene(const Common::StringView& name)
     : mName(name)
     , mFrameNumber(0)
     , mTotalTime(0.0)

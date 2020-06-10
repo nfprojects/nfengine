@@ -18,7 +18,7 @@ Library::Library()
 {
 }
 
-Library::Library(const String& path)
+Library::Library(const StringView& path)
     : Library()
 {
     Open(path);
@@ -46,13 +46,13 @@ bool Library::IsOpened() const
     return mModule != nullptr;
 }
 
-bool Library::Open(const String& path)
+bool Library::Open(const StringView& path)
 {
     Close();
 
-    String pathExt = path;
-    const String& libExt(".dll");
-    if (!path.ToView().EndsWith(libExt))
+    String pathExt(path);
+    const StringView libExt(".dll");
+    if (!path.EndsWith(libExt))
     {
         pathExt += libExt;
     }
@@ -81,15 +81,17 @@ void Library::Close()
     }
 }
 
-void* Library::GetSymbol(const String& name)
+void* Library::GetSymbol(const StringView& name)
 {
     if (mModule == nullptr)
         return nullptr;
 
-    FARPROC ptr = ::GetProcAddress(mModule, name.Str());
+    const StringViewToCStringHelper nameCString(name);
+
+    FARPROC ptr = ::GetProcAddress(mModule, nameCString);
     if (ptr == nullptr)
     {
-        NFE_LOG_ERROR("Failed to get pointer to symbol '%s': %s", name.Str(), GetLastErrorString().Str());
+        NFE_LOG_ERROR("Failed to get pointer to symbol '%s': %s", nameCString, GetLastErrorString().Str());
         return nullptr;
     }
 

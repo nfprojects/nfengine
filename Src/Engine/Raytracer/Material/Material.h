@@ -82,7 +82,7 @@ public:
 
     // TODO material layers
 
-    NFE_RAYTRACER_API void SetBsdf(const Common::String& bsdfName);
+    NFE_RAYTRACER_API void SetBsdf(const Common::StringView& bsdfName);
 
     NFE_FORCE_INLINE const BSDF* GetBSDF() const { return mBSDF.Get(); }
 

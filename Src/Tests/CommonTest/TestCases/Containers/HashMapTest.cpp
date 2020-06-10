@@ -160,17 +160,17 @@ TEST(HashMap, StringToString)
 {
     HashMap<String, String> map;
 
-    ASSERT_NE(map.End(), map.Insert("a", "aaa").iterator);
-    ASSERT_NE(map.End(), map.Insert("b", "bbb").iterator);
+    ASSERT_NE(map.End(), map.Insert(String("a"), String("aaa")).iterator);
+    ASSERT_NE(map.End(), map.Insert(String("b"), String("bbb")).iterator);
 
-    ASSERT_NE(map.End(), map.Find("a"));
-    ASSERT_NE(map.End(), map.Find("b"));
-    ASSERT_EQ(map.End(), map.Find("c"));
+    ASSERT_NE(map.End(), map.Find(String("a")));
+    ASSERT_NE(map.End(), map.Find(String("b")));
+    ASSERT_EQ(map.End(), map.Find(String("c")));
 
-    ASSERT_EQ(String("aaa"), map["a"]);
-    ASSERT_EQ(String("bbb"), map["b"]);
+    ASSERT_EQ(String("aaa"), map[String("a")]);
+    ASSERT_EQ(String("bbb"), map[String("b")]);
 
-    ASSERT_TRUE(map.Erase("a"));
-    ASSERT_TRUE(map.Erase("b"));
-    ASSERT_FALSE(map.Erase("c"));
+    ASSERT_TRUE(map.Erase(String("a")));
+    ASSERT_TRUE(map.Erase(String("b")));
+    ASSERT_FALSE(map.Erase(String("c")));
 }

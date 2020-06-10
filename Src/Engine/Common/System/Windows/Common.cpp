@@ -83,7 +83,7 @@ String GetLastErrorString()
     ::FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM, NULL, lastError,
                     MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), buffer, bufferLength - 1, NULL);
 
-    String shortString = "?";
+    String shortString("?");
     UTF16ToUTF8(Utf16String(buffer, wcslen(buffer)), shortString);
     return shortString;
 }

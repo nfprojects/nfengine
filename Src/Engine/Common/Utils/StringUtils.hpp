@@ -5,7 +5,6 @@
 
 #pragma once
 
-#include "../nfCommon.hpp"
 #include "../Containers/StringView.hpp"
 #include "../Containers/DynArray.hpp"
 

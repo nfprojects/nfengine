@@ -5,7 +5,7 @@
 namespace NFE {
 namespace Common {
 
-FileInputStream::FileInputStream(const String& path)
+FileInputStream::FileInputStream(const StringView& path)
 {
     mFile.Open(path, AccessMode::Read, false);
 }

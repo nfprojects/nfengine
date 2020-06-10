@@ -5,7 +5,7 @@
 namespace NFE {
 namespace Common {
 
-FileOutputStream::FileOutputStream(const String& fileName)
+FileOutputStream::FileOutputStream(const StringView& fileName)
 {
     mFile.Open(fileName, AccessMode::Write, true);
 }

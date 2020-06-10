@@ -8,6 +8,7 @@
 #include "../FileSystem.hpp"
 #include "Logger/Logger.hpp"
 #include "Containers/String.hpp"
+#include "Containers/StringView.hpp"
 #include "Containers/Deque.hpp"
 
 #include <dirent.h>
@@ -18,16 +19,18 @@ namespace Common {
 
 namespace {
 
-bool RecursiveDeleteDirectory(const String& path)
+bool RecursiveDeleteDirectory(const StringView& path)
 {
+     const StringViewToCStringHelper pathString(path);
+
     DIR* d;
     struct dirent* dir;
     String foundPath;
 
-    d = ::opendir(path.Str());
+    d = ::opendir(pathString);
     if (d == NULL)
     {
-        NFE_LOG_ERROR("opendir() failed for path '%s': %s", path.Str(), strerror(errno));
+        NFE_LOG_ERROR("opendir() failed for path '%s': %s", pathString.Str(), strerror(errno));
         return false;
     }
 
@@ -50,9 +53,9 @@ bool RecursiveDeleteDirectory(const String& path)
     ::closedir(d);
 
     // now we can remove empty directory
-    if (::rmdir(path.Str()) != 0)
+    if (::rmdir(pathString) != 0)
     {
-        NFE_LOG_ERROR("Failed to remove directory '%s': %s", path.Str(), strerror(errno));
+        NFE_LOG_ERROR("Failed to remove directory '%s': %s", pathString.Str(), strerror(errno));
         return false;
     }
 
@@ -63,8 +66,8 @@ bool RecursiveDeleteDirectory(const String& path)
 
 String FileSystem::GetExecutablePath()
 {
-    String linkPath = "/proc/self/exe";
-    String execPathStr = "";
+    String linkPath("/proc/self/exe");
+    String execPathStr;
     char* execPath = realpath(linkPath.Str(), nullptr);
 
     if (!execPath)
@@ -78,25 +81,29 @@ String FileSystem::GetExecutablePath()
     return execPathStr;
 }
 
-bool FileSystem::ChangeDirectory(const String& path)
+bool FileSystem::ChangeDirectory(const StringView& path)
 {
-    if (::chdir(path.Str()) != 0)
+    const StringViewToCStringHelper pathString(path);
+
+    if (::chdir(pathString) != 0)
     {
-        NFE_LOG_ERROR("Failed to change current directory to '%s': %s", path.Str(), strerror(errno));
+        NFE_LOG_ERROR("Failed to change current directory to '%s': %s", pathString.Str(), strerror(errno));
         return false;
     }
 
-    NFE_LOG_INFO("Current directory changed to: '%s'", path.Str());
+    NFE_LOG_INFO("Current directory changed to: '%s'", pathString.Str());
     return true;
 }
 
-bool FileSystem::TouchFile(const String& path)
+bool FileSystem::TouchFile(const StringView& path)
 {
-    int fd = ::open(path.Str(), O_WRONLY | O_CREAT, S_IRUSR | S_IRGRP | S_IROTH);
+    const StringViewToCStringHelper pathString(path);
+
+    int fd = ::open(pathString, O_WRONLY | O_CREAT, S_IRUSR | S_IRGRP | S_IROTH);
 
     if (fd < 0)
     {
-        NFE_LOG_ERROR("Failed to create file '%s': %s", path.Str(), strerror(errno));
+        NFE_LOG_ERROR("Failed to create file '%s': %s", pathString.Str(), strerror(errno));
         return false;
     }
 
@@ -104,12 +111,14 @@ bool FileSystem::TouchFile(const String& path)
     return true;
 }
 
-PathType FileSystem::GetPathType(const String& path)
+PathType FileSystem::GetPathType(const StringView& path)
 {
+    const StringViewToCStringHelper pathString(path);
+
     struct stat stat;
-    if (::stat(path.Str(), &stat) != 0)
+    if (::stat(pathString, &stat) != 0)
     {
-        NFE_LOG_ERROR("stat() for '%s' failed: %s", path.Str(), strerror(errno));
+        NFE_LOG_ERROR("stat() for '%s' failed: %s", pathString.Str(), strerror(errno));
         return PathType::Invalid;
     }
 
@@ -121,20 +130,24 @@ PathType FileSystem::GetPathType(const String& path)
     return PathType::Invalid;
 }
 
-bool FileSystem::CreateDir(const String& path)
+bool FileSystem::CreateDir(const StringView& path)
 {
-    if (::mkdir(path.Str(), 0777) != 0)
+    const StringViewToCStringHelper pathString(path);
+
+    if (::mkdir(pathString, 0777) != 0)
     {
-        NFE_LOG_ERROR("Failed to create directory '%s': %s", path.Str(), strerror(errno));
+        NFE_LOG_ERROR("Failed to create directory '%s': %s", pathString, strerror(errno));
         return false;
     }
 
-    NFE_LOG_INFO("Created directory '%s'", path.Str());
+    NFE_LOG_INFO("Created directory '%s'", pathString.Str());
     return true;
 }
 
-bool FileSystem::Remove(const String& path, bool recursive)
+bool FileSystem::Remove(const StringView& path, bool recursive)
 {
+    const StringViewToCStringHelper pathString(path);
+
     PathType pathType = GetPathType(path);
 
     if (pathType == PathType::Directory)
@@ -142,48 +155,55 @@ bool FileSystem::Remove(const String& path, bool recursive)
         if (recursive)
         {
             if (!RecursiveDeleteDirectory(path))
+            {
                 return false;
+            }
         }
-        else if (::rmdir(path.Str()) != 0)
+        else if (::rmdir(pathString) != 0)
         {
-            NFE_LOG_ERROR("Failed to remove directory '%s': %s", path.Str(), strerror(errno));
+            NFE_LOG_ERROR("Failed to remove directory '%s': %s", pathString.Str(), strerror(errno));
             return false;
         }
     }
     else if (pathType == PathType::File)
     {
-        if (::unlink(path.Str()) != 0)
+        if (::unlink(pathString) != 0)
         {
-            NFE_LOG_ERROR("Failed to delete file '%s': %s", path.Str(), strerror(errno));
+            NFE_LOG_ERROR("Failed to delete file '%s': %s", pathString.Str(), strerror(errno));
             return false;
         }
     }
     else
+    {
         return false;
+    }
 
-    NFE_LOG_INFO("Removed '%s'", path.Str());
+    NFE_LOG_INFO("Removed '%s'", pathString.Str());
     return true;
 }
 
-bool FileSystem::Copy(const String& srcPath, const String& destPath, bool overwrite)
+bool FileSystem::Copy(const StringView& srcPath, const StringView& destPath, bool overwrite)
 {
+    const StringViewToCStringHelper srcPathString(srcPath);
+    const StringViewToCStringHelper destPathString(destPath);
+
     (void)overwrite;
 
     const int bufferSize = 8192;
     char buf[bufferSize];
     ssize_t nread;
 
-    int fdSrc = ::open(srcPath.Str(), O_RDONLY);
+    int fdSrc = ::open(srcPathString, O_RDONLY);
     if (fdSrc < 0)
     {
-        NFE_LOG_ERROR("Failed to open file '%s': %s", srcPath.Str(), strerror(errno));
+        NFE_LOG_ERROR("Failed to open file '%s': %s", srcPathString.Str(), strerror(errno));
         return false;
     }
 
-    int fdDest = ::open(destPath.Str(), O_WRONLY | O_CREAT | O_EXCL, 0666);
+    int fdDest = ::open(destPathString, O_WRONLY | O_CREAT | O_EXCL, 0666);
     if (fdDest < 0)
     {
-        NFE_LOG_ERROR("Failed to open file '%s': %s", destPath.Str(), strerror(errno));
+        NFE_LOG_ERROR("Failed to open file '%s': %s", destPathString.Str(), strerror(errno));
         goto errorLabel;
     }
 
@@ -201,7 +221,7 @@ bool FileSystem::Copy(const String& srcPath, const String& destPath, bool overwr
             }
             else if (errno != EINTR)
             {
-                NFE_LOG_ERROR("Write to file '%s' failed: %s", destPath.Str(), strerror(errno));
+                NFE_LOG_ERROR("Write to file '%s' failed: %s", destPathString.Str(), strerror(errno));
                 goto errorLabel;
             }
         } while (nread > 0);
@@ -212,42 +232,45 @@ bool FileSystem::Copy(const String& srcPath, const String& destPath, bool overwr
     {
         ::close(fdDest);
         ::close(fdSrc);
-        NFE_LOG_INFO("File '%s' copied to '%s'", srcPath.Str(), destPath.Str());
+        NFE_LOG_INFO("File '%s' copied to '%s'", srcPathString.Str(), destPathString.Str());
         return true;
     }
 
-    NFE_LOG_ERROR("Read from file '%s' failed: %s", srcPath.Str(), strerror(errno));
+    NFE_LOG_ERROR("Read from file '%s' failed: %s", srcPathString.Str(), strerror(errno));
 
 errorLabel:
     ::close(fdSrc);
     if (fdDest != -1)
     {
         ::close(fdDest);
-        ::unlink(destPath.Str());
+        ::unlink(destPathString.Str());
     }
 
     return false;
 }
 
-bool FileSystem::Move(const String& srcPath, const String& destPath)
+bool FileSystem::Move(const StringView& srcPath, const StringView& destPath)
 {
-    if (::rename(srcPath.Str(), destPath.Str()) != 0)
+    const StringViewToCStringHelper srcPathString(srcPath);
+    const StringViewToCStringHelper destPathString(destPath);
+
+    if (::rename(srcPathString,destPathString) != 0)
     {
-        NFE_LOG_ERROR("Failed to move file '%s' to '%s': %s", srcPath.Str(), destPath.Str(), strerror(errno));
+        NFE_LOG_ERROR("Failed to move file '%s' to '%s': %s", srcPathString.Str(), destPathString.Str(), strerror(errno));
         return false;
     }
 
-    NFE_LOG_INFO("File '%s' moved to '%s'", srcPath.Str(), destPath.Str());
+    NFE_LOG_INFO("File '%s' moved to '%s'", srcPathString.Str(), destPathString.Str());
     return true;
 }
 
-bool FileSystem::Iterate(const String& path, const DirIterateCallback& callback)
+bool FileSystem::Iterate(const StringView& path, const DirIterateCallback& callback)
 {
     struct dirent* dir;
     Deque<String> directories;
     String currentDir, foundPath;
 
-    directories.PushBack(path);
+    directories.PushBack(String(path));
 
     while (!directories.Empty())
     {

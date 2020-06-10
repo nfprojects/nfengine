@@ -8,7 +8,6 @@
 #pragma once
 
 #include "../nfCommon.hpp"
-#include "../Containers/StringView.hpp"
 
 #if defined(WIN32)
 #define WIN32_LEAN_AND_MEAN
@@ -25,6 +24,8 @@ namespace Common {
  */
 class NFCOMMON_API Library
 {
+    NFE_MAKE_NONCOPYABLE(Library)
+
 private:
 #if defined(WIN32)
     HMODULE mModule;
@@ -34,14 +35,12 @@ private:
 #error "Target system not supported!"
 #endif // WIN32
 
-    void* GetSymbol(const String& name);
+    void* GetSymbol(const StringView& name);
 
 public:
     Library();
-    Library(const String& path);
-    Library(const Library& other) = delete;
+    Library(const StringView& path);
     Library(Library&& other);
-    Library& operator=(const Library& other) = delete;
     Library& operator=(Library&& other);
     ~Library();
 
@@ -55,7 +54,7 @@ public:
      * @param  path File path.
      * @return true on success.
      */
-    bool Open(const String& path);
+    bool Open(const StringView& path);
 
     /**
      * Close opened library. All returned function pointers will be invalid after this operation.
@@ -69,7 +68,7 @@ public:
      * @return False if symbol does not exist or the library is not opened.
      */
     template <typename T>
-    bool GetSymbol(const String& name, T& result)
+    bool GetSymbol(const StringView& name, T& result)
     {
         // workaround: simple casting from data pointer to function pointer is not legal in C++
         *(reinterpret_cast<void**>(&result)) = GetSymbol(name);

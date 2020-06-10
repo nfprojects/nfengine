@@ -8,7 +8,6 @@
 
 #include "../Core.hpp"
 #include "../../Common/Containers/String.hpp"
-#include "../../Common/Containers/StringView.hpp"
 
 
 namespace NFE {

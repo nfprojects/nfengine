@@ -6,8 +6,7 @@
 
 #pragma once
 
-#include "../nfCommon.hpp"
-
+#include "StringView.hpp"
 
 namespace NFE {
 namespace Common {
@@ -29,11 +28,11 @@ public:
 
     // constructors
     NFE_INLINE String();
-    NFE_INLINE String(char c); // TODO make explicit
-    String(const StringView& view); // TODO make explicit
-    String(const String& string);
-    String(const char* string); // TODO make explicit
+    NFE_INLINE String(char c);
+    explicit String(const StringView& view);
+    explicit String(const char* string);
     String(const char* str, uint32 length);
+    String(const String& string);
 
     // construct a string from a fixed-sized array
     // array size must be less than MaxInternalLength
@@ -55,15 +54,11 @@ public:
     String& operator+=(const String& string);
     String& operator+=(const char* string);
 
-    // base concatenation operators
+    // concatenation operators
     friend NFCOMMON_API String operator+(const StringView& lhs, const StringView& rhs);
     friend NFCOMMON_API String operator+(String&& lhs, const StringView& rhs);
     friend NFCOMMON_API String operator+(const StringView& lhs, String&& rhs);
     friend NFCOMMON_API String operator+(String&& lhs, String&& rhs);
-    friend NFCOMMON_API String operator+(const StringView& lhs, char rhs);
-    friend NFCOMMON_API String operator+(String&& lhs, char rhs);
-    friend NFCOMMON_API String operator+(char lhs, const StringView& rhs);
-    friend NFCOMMON_API String operator+(char lhs, String&& rhs);
 
     /**
      * Clear the content (will free memory if allocated).
@@ -107,7 +102,6 @@ public:
      * Get a view of this string.
      */
     StringView ToView() const;
-    operator StringView() const;
 
     /**
      * Get length of the string (in bytes).
@@ -206,52 +200,18 @@ private:
 static_assert(sizeof(String) == 16UL, "Invalid String type size");
 
 
-// base concatenation operators (const StringView& and String&&)
-NFCOMMON_API String operator+(const StringView& lhs, const StringView& rhs);
-NFCOMMON_API String operator+(String&& lhs, const StringView& rhs);
-NFCOMMON_API String operator+(const StringView& lhs, String&& rhs);
-NFCOMMON_API String operator+(String&& lhs, String&& rhs);
-NFCOMMON_API String operator+(const StringView& lhs, char rhs);
-NFCOMMON_API String operator+(String&& lhs, char rhs);
-NFCOMMON_API String operator+(char lhs, const StringView& rhs);
-NFCOMMON_API String operator+(char lhs, String&& rhs);
+// concatenation operators (const StringView& and String&&)
+NFCOMMON_API String operator + (const StringView& lhs, const StringView& rhs);
+NFCOMMON_API String operator + (String&& lhs, const StringView& rhs);
+NFCOMMON_API String operator + (const StringView& lhs, String&& rhs);
+NFCOMMON_API String operator + (String&& lhs, String&& rhs);
 
-// other concatenation operators (const String&)
-NFCOMMON_API String operator+(const String& lhs, const String& rhs);
-NFCOMMON_API String operator+(String&& lhs, const String& rhs);
-NFCOMMON_API String operator+(const String& lhs, String&& rhs);
-NFCOMMON_API String operator+(const String& lhs, char rhs);
-NFCOMMON_API String operator+(char lhs, const String& rhs);
-
-// other concatenation operators (const char*)
-NFCOMMON_API String operator+(const String& lhs, const char* rhs);
-NFCOMMON_API String operator+(const char* lhs, const String& rhs);
-NFCOMMON_API String operator+(String&& lhs, const char* rhs);
-NFCOMMON_API String operator+(const char* lhs, String&& rhs);
-
-// comparison operators (string vs. string)
-NFCOMMON_API bool operator<(const String& lhs, const String& rhs);
-NFCOMMON_API bool operator<=(const String& lhs, const String& rhs);
-NFCOMMON_API bool operator>(const String& lhs, const String& rhs);
-NFCOMMON_API bool operator>=(const String& lhs, const String& rhs);
-NFCOMMON_API bool operator==(const String& lhs, const String& rhs);
-NFCOMMON_API bool operator!=(const String& lhs, const String& rhs);
-
-// comparison operators (string vs. view)
-NFCOMMON_API bool operator<(const String& lhs, const StringView& rhs);
-NFCOMMON_API bool operator<=(const String& lhs, const StringView& rhs);
-NFCOMMON_API bool operator>(const String& lhs, const StringView& rhs);
-NFCOMMON_API bool operator>=(const String& lhs, const StringView& rhs);
-NFCOMMON_API bool operator==(const String& lhs, const StringView& rhs);
-NFCOMMON_API bool operator!=(const String& lhs, const StringView& rhs);
-
-// comparison operators (view vs. string)
-NFCOMMON_API bool operator<(const StringView& lhs, const String& rhs);
-NFCOMMON_API bool operator<=(const StringView& lhs, const String& rhs);
-NFCOMMON_API bool operator>(const StringView& lhs, const String& rhs);
-NFCOMMON_API bool operator>=(const StringView& lhs, const String& rhs);
-NFCOMMON_API bool operator==(const StringView& lhs, const String& rhs);
-NFCOMMON_API bool operator!=(const StringView& lhs, const String& rhs);
+NFE_FORCE_INLINE bool operator == (const String& lhs, const StringView& rhs) { return lhs.ToView() == rhs;}
+NFE_FORCE_INLINE bool operator != (const String& lhs, const StringView& rhs) { return lhs.ToView() != rhs;}
+NFE_FORCE_INLINE bool operator < (const String& lhs, const StringView& rhs) { return lhs.ToView() < rhs;}
+NFE_FORCE_INLINE bool operator > (const String& lhs, const StringView& rhs) { return lhs.ToView() > rhs;}
+NFE_FORCE_INLINE bool operator <= (const String& lhs, const StringView& rhs) { return lhs.ToView() <= rhs;}
+NFE_FORCE_INLINE bool operator >= (const String& lhs, const StringView& rhs) { return lhs.ToView() >= rhs;}
 
 // hashing function for String class
 NFCOMMON_API uint32 GetHash(const String& string);

@@ -11,36 +11,36 @@ using namespace NFE;
 using namespace NFE::Common;
 
 namespace {
-const String TEST_IMAGES_PATH = "./nfEngine/TestResources/ImageSamples/";
-const String TEST_IMAGES_SAVEPATH = "./nfEngine/TestResources/ImageSamples/SaveTests/";
+const StringView TEST_IMAGES_PATH = "./nfEngine/TestResources/ImageSamples/";
+const StringView TEST_IMAGES_SAVEPATH = "./nfEngine/TestResources/ImageSamples/SaveTests/";
 const int TEXTURE_WIDTH = 16;
 const int TEXTURE_HEIGHT = 16;
 
-const String TEXTURE_DDS_BC1 = "textureBC1.dds";
-const String TEXTURE_DDS_BC2 = "textureBC2.dds";
-const String TEXTURE_DDS_BC3 = "textureBC3.dds";
-const String TEXTURE_DDS_BC4 = "textureBC4.dds";
-const String TEXTURE_DDS_BC5 = "textureBC5.dds";
-const String TEXTURE_DDS_BC6H = "textureBC6H.dds";
-const String TEXTURE_DDS_BC7 = "textureBC7.dds";
-const String TEXTURE_DDS_MM = "textureBC1_MM.dds";
+const StringView TEXTURE_DDS_BC1 = "textureBC1.dds";
+const StringView TEXTURE_DDS_BC2 = "textureBC2.dds";
+const StringView TEXTURE_DDS_BC3 = "textureBC3.dds";
+const StringView TEXTURE_DDS_BC4 = "textureBC4.dds";
+const StringView TEXTURE_DDS_BC5 = "textureBC5.dds";
+const StringView TEXTURE_DDS_BC6H = "textureBC6H.dds";
+const StringView TEXTURE_DDS_BC7 = "textureBC7.dds";
+const StringView TEXTURE_DDS_MM = "textureBC1_MM.dds";
 
-const String TEXTURE_JPG = "textureJPG.jpg";
+const StringView TEXTURE_JPG = "textureJPG.jpg";
 
-const String TEXTURE_BMP4 = "textureBMP4.bmp";
-const String TEXTURE_BMP8 = "textureBMP8.bmp";
-const String TEXTURE_BMP16ARGB = "textureBMP16ARGB.bmp";
-const String TEXTURE_BMP16XRGB = "textureBMP16XRGB.bmp";
-const String TEXTURE_BMP16RGB = "textureBMP16RGB.bmp";
-const String TEXTURE_BMP24 = "textureBMP24.bmp";
-const String TEXTURE_BMP32ARGB = "textureBMP32ARGB.bmp";
-const String TEXTURE_BMP32XRGB = "textureBMP32XRGB.bmp";
+const StringView TEXTURE_BMP4 = "textureBMP4.bmp";
+const StringView TEXTURE_BMP8 = "textureBMP8.bmp";
+const StringView TEXTURE_BMP16ARGB = "textureBMP16ARGB.bmp";
+const StringView TEXTURE_BMP16XRGB = "textureBMP16XRGB.bmp";
+const StringView TEXTURE_BMP16RGB = "textureBMP16RGB.bmp";
+const StringView TEXTURE_BMP24 = "textureBMP24.bmp";
+const StringView TEXTURE_BMP32ARGB = "textureBMP32ARGB.bmp";
+const StringView TEXTURE_BMP32XRGB = "textureBMP32XRGB.bmp";
 
-const String TEXTURE_PNG_RGB = "texturePNG_RGB.png";
-const String TEXTURE_PNG_RGBA = "texturePNG_RGBA.png";
-const String TEXTURE_PNG_RGBA_PALETTE = "texturePNG_RGBA_palette.png";
-const String TEXTURE_PNG_RGBA_INTERLACED = "texturePNG_RGBA_interlaced.png";
-const String TEXTURE_PNG_GA = "texturePNG_GA.png";
+const StringView TEXTURE_PNG_RGB = "texturePNG_RGB.png";
+const StringView TEXTURE_PNG_RGBA = "texturePNG_RGBA.png";
+const StringView TEXTURE_PNG_RGBA_PALETTE = "texturePNG_RGBA_palette.png";
+const StringView TEXTURE_PNG_RGBA_INTERLACED = "texturePNG_RGBA_interlaced.png";
+const StringView TEXTURE_PNG_GA = "texturePNG_GA.png";
 
 const int GRAYSCALE_R = 53;
 const int GRAYSCALE_B = 17;

@@ -170,77 +170,119 @@ bool StringView::EndsWith(const StringView& subString) const
 
 //////////////////////////////////////////////////////////////////////////
 
-NFE_FORCE_NOINLINE
-bool StringView::operator == (const StringView& other) const
+bool operator == (const StringView& lhs, const StringView& rhs)
 {
-    if (mLength != other.mLength)
-        return false;
-
-    if (mData == other.mData)
-        return true;
-
-    return 0 == memcmp(mData, other.mData, mLength);
-}
-
-bool StringView::operator != (const StringView& other) const
-{
-    if (mLength != other.mLength)
-        return true;
-
-    if (mData == other.mData)
-        return false;
-
-    return 0 != memcmp(mData, other.mData, mLength);
-}
-
-bool StringView::operator < (const StringView& other) const
-{
-    if (mLength < other.mLength)
-        return true;
-
-    if (mLength > other.mLength)
-        return false;
-
-    for (uint32 i = 0; i < mLength; ++i)
+    if (lhs.mLength != rhs.mLength)
     {
-        if (mData[i] < other.mData[i])
+        return false;
+    }
+
+    if (lhs.mData == rhs.mData)
+    {
+        return true;
+    }
+
+    return 0 == memcmp(lhs.mData, rhs.mData, lhs.mLength);
+}
+
+bool operator != (const StringView& lhs, const StringView& rhs)
+{
+    if (lhs.mLength != rhs.mLength)
+    {
+        return true;
+    }
+
+    if (lhs.mData == rhs.mData)
+    {
+        return false;
+    }
+
+    return 0 != memcmp(lhs.mData, rhs.mData, lhs.mLength);
+}
+
+bool operator < (const StringView& lhs, const StringView& rhs)
+{
+    if (lhs.mLength < rhs.mLength)
+    {
+        return true;
+    }
+
+    if (lhs.mLength > rhs.mLength)
+    {
+        return false;
+    }
+
+    for (uint32 i = 0; i < lhs.mLength; ++i)
+    {
+        if (lhs.mData[i] < rhs.mData[i])
+        {
             return true;
-        else if (mData[i] > other.mData[i])
+        }
+        else if (lhs.mData[i] > rhs.mData[i])
+        {
             return false;
+        }
     }
 
     // string are equal
     return false;
 }
 
-bool StringView::operator > (const StringView& other) const
+bool operator > (const StringView& lhs, const StringView& rhs)
 {
-    return other.operator < (*this);
+    return rhs < lhs;
 }
 
-bool StringView::operator <= (const StringView& other) const
+bool operator <= (const StringView& lhs, const StringView& rhs)
 {
-    if (mLength < other.mLength)
-        return true;
-
-    if (mLength > other.mLength)
-        return false;
-
-    for (uint32 i = 0; i < mLength; ++i)
+    if (lhs.mLength < rhs.mLength)
     {
-        if (mData[i] < other.mData[i])
+        return true;
+    }
+
+    if (lhs.mLength > rhs.mLength)
+    {
+        return false;
+    }
+
+    for (uint32 i = 0; i < lhs.mLength; ++i)
+    {
+        if (lhs.mData[i] < rhs.mData[i])
+        {
             return true;
-        else if (mData[i] > other.mData[i])
+        }
+        else if (lhs.mData[i] > rhs.mData[i])
+        {
             return false;
+        }
     }
 
     // string are equal
     return true;
 }
 
-bool StringView::operator >= (const StringView& other) const
+bool operator >= (const StringView& lhs, const StringView& rhs)
 {
-    return other.operator <= (*this);
+    return rhs <= lhs;
+}
+
+StringViewToCStringHelper::StringViewToCStringHelper(const StringView stringView)
+{
+    if (stringView.IsNullTerminated())
+    {
+        ptr = stringView.Data();
+    }
+    else if (stringView.Length() < stackBufferSize)
+    {
+        memcpy(buffer, stringView.Data(), stringView.Length());
+        buffer[stringView.Length()] = '\0';
+        ptr = buffer;
+    }
+    else
+    {
+        // not implemented yet...
+        NFE_FATAL("String is too long");
+    }
 }
 
 uint32 GetHash(const StringView& stringView)

@@ -383,16 +383,12 @@ String& String::Replace(uint32 index, uint32 numCharacters, char c)
     return *this;
 }
 
-String::operator StringView() const
-{
-    return ToView();
-}
-
 StringView String::ToView() const
 {
     StringView view;
     view.mLength = Length();
     view.mData = IsInternal() ? mInternalData.data : mExternalData.data;
+    view.mIsNullTerminated = true;
     return view;
 }
 
@@ -470,7 +466,7 @@ String operator+(String&& lhs, const StringView& rhs)
 {
     if (rhs.Empty())
     {
-        return String(std::move(lhs));
+        return std::move(lhs);
     }
 
     String result(std::move(lhs));
@@ -491,7 +487,7 @@ String operator+(const StringView& lhs, String&& rhs)
 {
     if (lhs.Empty())
     {
-        return String(std::move(rhs));
+        return std::move(rhs);
     }
 
     String result(std::move(rhs));
@@ -513,12 +509,12 @@ String operator+(String&& lhs, String&& rhs)
 {
     if (lhs.Empty())
     {
-        return String(std::move(rhs));
+        return std::move(rhs);
     }
 
     if (rhs.Empty())
     {
-        return String(std::move(lhs));
+        return std::move(lhs);
     }
 
     String result;
@@ -533,7 +529,7 @@ String operator+(String&& lhs, String&& rhs)
         memcpy(buffer + result.Length(), rhs.Str(), rhs.Length());
         buffer[targetLength] = '\0';
     }
-    else if (targetLength <= rhs.Capacity()) // reuse buffer from rhs (without reallocation)
+    else if (targetLength + 1 <= rhs.Capacity()) // reuse buffer from rhs (without reallocation)
     {
         result = std::move(rhs);
 
@@ -555,216 +551,6 @@ String operator+(String&& lhs, String&& rhs)
 
     result.SetLength(targetLength);
     return result;
-}
-
-//////////////////////////////////////////////////////////////////////////
-
-String operator+(const String& lhs, const String& rhs)
-{
-    return lhs.ToView() + rhs.ToView();
-}
-
-String operator+(String&& lhs, const String& rhs)
-{
-    return std::move(lhs) + rhs.ToView();
-}
-
-String operator+(const String& lhs, String&& rhs)
-{
-    return lhs.ToView() + std::move(rhs);
-}
-
-String operator+(const String& lhs, char rhs)
-{
-    return lhs.ToView() + rhs;
-}
-
-String operator+(char lhs, const String& rhs)
-{
-    return lhs + rhs.ToView();
-}
-
-String operator+(const String& lhs, const char* rhs)
-{
-    return lhs.ToView() + StringView(rhs);
-}
-
-String operator+(const char* lhs, const String& rhs)
-{
-    return StringView(lhs) + rhs.ToView();
-}
-
-String operator+(String&& lhs, const char* rhs)
-{
-    return std::move(lhs) + StringView(rhs);
-}
-
-String operator+(const char* lhs, String&& rhs)
-{
-    return StringView(lhs) + std::move(rhs);
-}
-
-String operator+(const StringView& lhs, char rhs)
-{
-    String result;
-    const uint32 targetLength = lhs.Length() + 1;
-    if (!result.Reserve(targetLength))
-    {
-        return result;
-    }
-
-    char* buffer = result.GetBuffer();
-    memcpy(buffer, lhs.Data(), lhs.Length());
-    buffer[lhs.Length()] = rhs;
-    buffer[targetLength] = '\0';
-    result.SetLength(targetLength);
-    return result;
-}
-
-String operator+(String&& lhs, char rhs)
-{
-    String result(std::move(lhs));
-    const uint32 targetLength = result.Length() + 1;
-    if (!result.Reserve(targetLength))
-    {
-        return result;
-    }
-
-    char* buffer = result.GetBuffer();
-    buffer[result.Length()] = rhs;
-    buffer[targetLength] = '\0';
-    result.SetLength(targetLength);
-    return result;
-}
-
-String operator+(char lhs, const StringView& rhs)
-{
-    String result;
-    const uint32 targetLength = 1 + rhs.Length();
-    if (!result.Reserve(targetLength))
-    {
-        return result;
-    }
-
-    char* buffer = result.GetBuffer();
-    buffer[0] = lhs;
-    memcpy(buffer + 1, rhs.Data(), rhs.Length());
-    buffer[targetLength] = '\0';
-    result.SetLength(targetLength);
-    return result;
-}
-
-String operator+(char lhs, String&& rhs)
-{
-    String result(std::move(rhs));
-    const uint32 targetLength = result.Length() + 1;
-    if (!result.Reserve(targetLength))
-    {
-        return result;
-    }
-
-    char* buffer = result.GetBuffer();
-    memmove(buffer + 1, buffer, result.Length());
-    buffer[0] = lhs;
-    buffer[targetLength] = '\0';
-    result.SetLength(targetLength);
-    return result;
-}
-
-//////////////////////////////////////////////////////////////////////////
-
-bool operator<(const String& lhs, const String& rhs)
-{
-    return lhs.ToView() < rhs.ToView();
-}
-
-bool operator<=(const String& lhs, const String& rhs)
-{
-    return lhs.ToView() <= rhs.ToView();
-}
-
-bool operator>(const String& lhs, const String& rhs)
-{
-    return lhs.ToView() > rhs.ToView();
-}
-
-bool operator>=(const String& lhs, const String& rhs)
-{
-    return lhs.ToView() >= rhs.ToView();
-}
-
-bool operator==(const String& lhs, const String& rhs)
-{
-    return lhs.ToView() == rhs.ToView();
-}
-
-bool operator!=(const String& lhs, const String& rhs)
-{
-    return lhs.ToView() != rhs.ToView();
-}
-
-//////////////////////////////////////////////////////////////////////////
-
-bool operator<(const String& lhs, const StringView& rhs)
-{
-    return lhs.ToView() < rhs;
-}
-
-bool operator<=(const String& lhs, const StringView& rhs)
-{
-    return lhs.ToView() <= rhs;
-}
-
-bool operator>(const String& lhs, const StringView& rhs)
-{
-    return lhs.ToView() > rhs;
-}
-
-bool operator>=(const String& lhs, const StringView& rhs)
-{
-    return lhs.ToView() >= rhs;
-}
-
-bool operator==(const String& lhs, const StringView& rhs)
-{
-    return lhs.ToView() == rhs;
-}
-
-bool operator!=(const String& lhs, const StringView& rhs)
-{
-    return lhs.ToView() != rhs;
-}
-
-//////////////////////////////////////////////////////////////////////////
-
-bool operator<(const StringView& lhs, const String& rhs)
-{
-    return lhs < rhs.ToView();
-}
-
-bool operator<=(const StringView& lhs, const String& rhs)
-{
-    return lhs <= rhs.ToView();
-}
-
-bool operator>(const StringView& lhs, const String& rhs)
-{
-    return lhs > rhs.ToView();
-}
-
-bool operator>=(const StringView& lhs, const String& rhs)
-{
-    return lhs >= rhs.ToView();
-}
-
-bool operator==(const StringView& lhs, const String& rhs)
-{
-    return lhs == rhs.ToView();
-}
-
-bool operator!=(const StringView& lhs, const String& rhs)
-{
-    return lhs != rhs.ToView();
 }
 
 //////////////////////////////////////////////////////////////////////////

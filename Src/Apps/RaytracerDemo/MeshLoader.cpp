@@ -35,7 +35,7 @@ struct TriangleIndicesHash
     }
 };
 
-BitmapPtr LoadBitmapObject(const String& baseDir, const String& path)
+BitmapPtr LoadBitmapObject(const StringView& baseDir, const StringView& path)
 {
     if (path.Empty())
     {
@@ -54,7 +54,7 @@ BitmapPtr LoadBitmapObject(const String& baseDir, const String& path)
 
     if (!bitmapPtr)
     {
-        bitmapPtr = MakeSharedPtr<Bitmap>(path.Str());
+        bitmapPtr = MakeSharedPtr<Bitmap>(fullPath.Str());
         if (!bitmapPtr->Load(fullPath.Str()))
         {
             return nullptr;
@@ -64,7 +64,7 @@ BitmapPtr LoadBitmapObject(const String& baseDir, const String& path)
     return bitmapPtr;
 }
 
-TexturePtr LoadTexture(const String& baseDir, const String& path)
+TexturePtr LoadTexture(const StringView& baseDir, const StringView& path)
 {
     BitmapPtr bitmap = LoadBitmapObject(baseDir, path);
 
@@ -81,7 +81,7 @@ TexturePtr LoadTexture(const String& baseDir, const String& path)
     return nullptr;
 }
 
-MaterialPtr LoadMaterial(const String& baseDir, const tinyobj::material_t& sourceMaterial)
+MaterialPtr LoadMaterial(const StringView& baseDir, const tinyobj::material_t& sourceMaterial)
 {
     auto material = MaterialPtr(new Material);
 

@@ -47,7 +47,7 @@ TEST(FileTest, Simple)
 
 TEST(FileTest, OpenNotExisting)
 {
-    const StringView filePath("test_file");
+    const String filePath("test_file");
 
     File file(filePath, AccessMode::Read);
     EXPECT_FALSE(file.IsOpened());
@@ -60,7 +60,7 @@ TEST(FileTest, OpenNotExisting)
 
 TEST(FileTest, Overwrite)
 {
-    const StringView filePath("test_file");
+    const String filePath("test_file");
     const int testData = 0xAABBCCDD;
     int data;
 
@@ -130,7 +130,7 @@ TEST(FileTest, Overwrite)
 #ifdef WIN32
 TEST(FileTest, AccessShare)
 {
-    const StringView filePath("access_share_test_file");
+    const String filePath("access_share_test_file");
 
     // create the test file first
     {
