@@ -41,19 +41,3 @@ TEST(BufferOutputStreamTest, WriteTest)
     ASSERT_EQ(streamSize, 2 * TEXTSIZE);
     ASSERT_EQ(memcmp(streamData, doubleStr.Str(), 2 * TEXTSIZE), 0);
 }
-
-TEST(BufferOutputStreamTest, ClearTest)
-{
-    // Create stream and insert our TEXT
-    Buffer buffer;
-    BufferOutputStream stream(buffer);
-    size_t writeResult = stream.Write(TEXT.Str(), TEXTSIZE);
-    ASSERT_EQ(TEXTSIZE, writeResult);
-
-    // Clear and check if everything got cleared
-    stream.Clear();
-    size_t streamSize = stream.GetSize();
-    const void* streamData = stream.GetData();
-    ASSERT_EQ(streamSize, 0u);
-    ASSERT_EQ(streamData, nullptr);
-}

@@ -16,12 +16,6 @@ BufferOutputStream::~BufferOutputStream()
 {
 }
 
-void BufferOutputStream::Clear()
-{
-    mBuffer.Clear();
-    mCursor = 0;
-}
-
 const void* BufferOutputStream::GetData() const
 {
     return mBuffer.Data();

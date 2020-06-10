@@ -24,8 +24,6 @@ public:
     virtual size_t Write(const void* buffer, size_t num) override;
     virtual bool Seek(uint64 position) override;
 
-    void Clear();
-
 private:
     Buffer& mBuffer;
     size_t mCursor;
