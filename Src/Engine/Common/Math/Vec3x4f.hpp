@@ -9,7 +9,7 @@ namespace Math {
 /**
  * Four 3D vectors
  */
-class NFE_ALIGN(32) Vec3x4f
+class NFE_ALIGN(16) Vec3x4f
 {
 public:
     Vec4f x;
@@ -336,6 +336,7 @@ public:
 
 };
 
+static_assert(sizeof(Vec3x4f) == sizeof(float) * 3 * 4, "Invalid sizeof Vec3x4f");
 
 } // namespace Math
 } // namespace NFE

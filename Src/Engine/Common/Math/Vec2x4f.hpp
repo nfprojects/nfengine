@@ -199,6 +199,8 @@ public:
 
 };
 
+static_assert(sizeof(Vec2x4f) == sizeof(float) * 2 * 4, "Invalid sizeof Vec2x4f");
+
 
 NFE_FORCE_INLINE const Vec2x4f operator * (const float lhs, const Vec2x4f rhs)
 {

@@ -348,7 +348,7 @@ public:
     NFE_FORCE_INLINE static const Vec4f Fmod1(const Vec4f& v);
 };
 
-static_assert(sizeof(Vec4f) == sizeof(float) * 4, "Invalid sizeof Vec8f");
+static_assert(sizeof(Vec4f) == sizeof(float) * 4, "Invalid sizeof Vec4f");
 
 // like Vec4f::operator * (float)
 NFE_FORCE_INLINE const Vec4f operator*(float a, const Vec4f& b);

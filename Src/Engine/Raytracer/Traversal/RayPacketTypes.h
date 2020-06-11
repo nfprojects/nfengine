@@ -2,7 +2,7 @@
 
 #include "../Raytracer.h"
 
-#define NFE_RT_RAY_GROUP_SIZE 8
+#define NFE_RT_RAY_GROUP_SIZE 16
 
 #include "../../Common/Math/Ray.hpp"
 #include "../../Common/Math/SimdRay.hpp"
@@ -56,7 +56,7 @@ struct RayPacketTypes
 
     using RayMaskType = uint16;
     using Float = Math::Vec16f;
-    using FloatMask = Math::VecBool16;
+    using FloatMask = Math::VecBool16f;
     using Int32 = Math::Vec16i;
     using Uint32 = Math::Vec16ui;
     using Vec2f = Math::Vec2x16f;

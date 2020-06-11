@@ -180,6 +180,7 @@ public:
 
 };
 
+static_assert(sizeof(Vec2x16f) == sizeof(float) * 2 * 16, "Invalid sizeof Vec2x16f");
 
 NFE_FORCE_INLINE const Vec2x16f operator * (const float lhs, const Vec2x16f rhs)
 {

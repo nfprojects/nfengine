@@ -37,11 +37,11 @@ struct NFE_ALIGN(32) VecBool16f : public Common::Aligned<32>
     NFE_FORCE_INLINE bool None() const;
     NFE_FORCE_INLINE bool Any() const;
 
-    NFE_FORCE_INLINE const VecBool16f operator & (const VecBool16f rhs) const;
-    NFE_FORCE_INLINE const VecBool16f operator | (const VecBool16f rhs) const;
-    NFE_FORCE_INLINE const VecBool16f operator ^ (const VecBool16f rhs) const;
+    NFE_FORCE_INLINE const VecBool16f operator & (const VecBool16f& rhs) const;
+    NFE_FORCE_INLINE const VecBool16f operator | (const VecBool16f& rhs) const;
+    NFE_FORCE_INLINE const VecBool16f operator ^ (const VecBool16f& rhs) const;
 
-    NFE_FORCE_INLINE bool operator == (const VecBool16f rhs) const;
+    NFE_FORCE_INLINE bool operator == (const VecBool16f& rhs) const;
 
 private:
     friend struct Vec16f;

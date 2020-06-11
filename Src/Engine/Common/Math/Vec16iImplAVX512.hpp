@@ -6,6 +6,70 @@
 namespace NFE {
 namespace Math {
 
+VecBool16i::VecBool16i(bool scalar)
+{
+    mask = _cvtu32_mask16(scalar ? 0xFFFF : 0);
+}
+
+VecBool16i::VecBool16i(
+    bool e0, bool e1, bool e2, bool e3, bool e4, bool e5, bool e6, bool e7,
+    bool e8, bool e9, bool e10, bool e11, bool e12, bool e13, bool e14, bool e15)
+{
+    mask = _cvtu32_mask16(
+        uint16(e0) | e1 << 1 | e2 << 2 | e3 << 3 | e4 << 4 | e5 << 5 | e6 << 6 | e7 << 7 |
+        e8 << 8 | e9 << 9 | e10 << 10 | e11 << 11 | e12 << 12 | e13 << 13 | e14 << 15 | e15 << 15
+    );
+}
+
+template<uint32 index>
+bool VecBool16i::Get() const
+{
+    static_assert(index < 16, "Invalid index");
+    return (uint32(mask) & (1 << index)) != 0;
+}
+
+uint32 VecBool16i::GetMask() const
+{
+    return mask;
+}
+
+bool VecBool16i::All() const
+{
+    return GetMask() == 0xFFFF;
+}
+
+bool VecBool16i::None() const
+{
+    return _mm512_testz_or_mask16(mask, mask) != 0;
+}
+
+bool VecBool16i::Any() const
+{
+    return _mm512_testz_or_mask16(mask, mask) == 0;
+}
+
+const VecBool16i VecBool16i::operator & (const VecBool16i& rhs) const
+{
+    return _kand_mask16(mask, rhs.mask);
+}
+
+const VecBool16i VecBool16i::operator | (const VecBool16i& rhs) const
+{
+    return _kor_mask16(mask, rhs.mask);
+}
+
+const VecBool16i VecBool16i::operator ^ (const VecBool16i& rhs) const
+{
+    return _kxor_mask16(mask, rhs.mask);
+}
+
+bool VecBool16i::operator == (const VecBool16i& rhs) const
+{
+    return GetMask() == rhs.GetMask();
+}
+
+///
+
 const Vec16i Vec16i::Zero()
 {
     return _mm512_setzero_si512();
@@ -61,7 +125,7 @@ const Vec16i Vec16i::Iota(const int32 value)
     return Vec16i(value) + Vec16i(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15);
 }
 
-const Vec16i Vec16i::Select(const Vec16i& a, const Vec16i& b, const VecBool16& sel)
+const Vec16i Vec16i::Select(const Vec16i& a, const Vec16i& b, const VecBool16i& sel)
 {
     return Vec16i(_mm512_mask_blend_epi32(sel, a, b));
 }
@@ -180,12 +244,12 @@ Vec16i& Vec16i::operator *= (int32 b)
     return *this;
 }
 
-const VecBool16 Vec16i::operator == (const Vec16i& b) const
+const VecBool16i Vec16i::operator == (const Vec16i& b) const
 {
     return _mm512_cmpeq_epi32_mask(v, b.v);
 }
 
-const VecBool16 Vec16i::operator != (const Vec16i& b) const
+const VecBool16i Vec16i::operator != (const Vec16i& b) const
 {
     return _mm512_cmpneq_epi32_mask(v, b.v);
 }
@@ -277,7 +341,7 @@ const Vec16ui Vec16ui::Iota(const uint32 value)
     return Vec16ui(value) + Vec16ui(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15);
 }
 
-const Vec16ui Vec16ui::Select(const Vec16ui& a, const Vec16ui& b, const VecBool16& sel)
+const Vec16ui Vec16ui::Select(const Vec16ui& a, const Vec16ui& b, const VecBool16i& sel)
 {
     return Vec16ui(_mm512_mask_blend_epi32(sel, a, b));
 }
@@ -359,12 +423,12 @@ Vec16ui& Vec16ui::operator -= (uint32 b)
     return *this;
 }
 
-const VecBool16 Vec16ui::operator == (const Vec16ui& b) const
+const VecBool16i Vec16ui::operator == (const Vec16ui& b) const
 {
     return _mm512_cmpeq_epu32_mask(v, b.v);
 }
 
-const VecBool16 Vec16ui::operator != (const Vec16ui& b) const
+const VecBool16i Vec16ui::operator != (const Vec16ui& b) const
 {
     return _mm512_cmpneq_epu32_mask(v, b.v);
 }

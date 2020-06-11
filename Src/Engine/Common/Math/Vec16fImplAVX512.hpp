@@ -45,22 +45,22 @@ bool VecBool16f::Any() const
     return _mm512_testz_or_mask16(mask, mask) == 0;
 }
 
-const VecBool16f VecBool16f::operator & (const VecBool16f rhs) const
+const VecBool16f VecBool16f::operator & (const VecBool16f& rhs) const
 {
     return _kand_mask16(mask, rhs.mask);
 }
 
-const VecBool16f VecBool16f::operator | (const VecBool16f rhs) const
+const VecBool16f VecBool16f::operator | (const VecBool16f& rhs) const
 {
     return _kor_mask16(mask, rhs.mask);
 }
 
-const VecBool16f VecBool16f::operator ^ (const VecBool16f rhs) const
+const VecBool16f VecBool16f::operator ^ (const VecBool16f& rhs) const
 {
     return _kxor_mask16(mask, rhs.mask);
 }
 
-bool VecBool16f::operator == (const VecBool16f rhs) const
+bool VecBool16f::operator == (const VecBool16f& rhs) const
 {
     return GetMask() == rhs.GetMask();
 }

@@ -55,22 +55,22 @@ bool VecBool16f::Any() const
     return low.Any() || high.Any();
 }
 
-const VecBool16f VecBool16f::operator & (const VecBool16f rhs) const
+const VecBool16f VecBool16f::operator & (const VecBool16f& rhs) const
 {
     return VecBool16f{ low & rhs.low, high & rhs.high };
 }
 
-const VecBool16f VecBool16f::operator | (const VecBool16f rhs) const
+const VecBool16f VecBool16f::operator | (const VecBool16f& rhs) const
 {
     return VecBool16f{ low | rhs.low, high | rhs.high };
 }
 
-const VecBool16f VecBool16f::operator ^ (const VecBool16f rhs) const
+const VecBool16f VecBool16f::operator ^ (const VecBool16f& rhs) const
 {
     return VecBool16f{ low ^ rhs.low, high ^ rhs.high };
 }
 
-bool VecBool16f::operator == (const VecBool16f rhs) const
+bool VecBool16f::operator == (const VecBool16f& rhs) const
 {
     return (low == rhs.low) && (high == rhs.high);
 }

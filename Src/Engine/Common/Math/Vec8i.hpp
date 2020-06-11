@@ -153,15 +153,22 @@ struct NFE_ALIGN(32) Vec8i : public Common::Aligned<32>
 private:
 
 #ifdef NFE_USE_AVX2
-    __m256i v;
-    __m256 f;
-    int32 i[8];
-    uint32 u[8];
+    NFE_UNNAMED_STRUCT union
+    {
+        __m256i v;
+        __m256 f;
+        int32 i[8];
+        uint32 u[8];
+    };
 #else
     Vec4i low;
     Vec4i high;
 #endif // NFE_USE_AVX2
 };
+
+static_assert(sizeof(Vec8i) == sizeof(int32) * 8, "Invalid sizeof Vec8i");
+
+
 
 // 8-element integer SIMD vector
 struct NFE_ALIGN(32) Vec8ui : public Common::Aligned<32>
@@ -249,15 +256,20 @@ struct NFE_ALIGN(32) Vec8ui : public Common::Aligned<32>
 private:
 
 #ifdef NFE_USE_AVX2
-    __m256i v;
-    __m256 f;
-    int32 i[8];
-    uint32 u[8];
+    NFE_UNNAMED_STRUCT union
+    {
+        __m256i v;
+        __m256 f;
+        int32 i[8];
+        uint32 u[8];
+    };
 #else
     Vec4ui low;
     Vec4ui high;
 #endif // NFE_USE_AVX2
 };
+
+static_assert(sizeof(Vec8ui) == sizeof(uint32) * 8, "Invalid sizeof Vec8ui");
 
 // gather 8 floats using base pointer and indices
 NFE_FORCE_INLINE const Vec8f Gather8(const float* basePtr, const Vec8i& indices);

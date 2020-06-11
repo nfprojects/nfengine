@@ -38,11 +38,11 @@ struct NFE_ALIGN(32) VecBool16i : public Common::Aligned<32>
     NFE_FORCE_INLINE bool None() const;
     NFE_FORCE_INLINE bool Any() const;
 
-    NFE_FORCE_INLINE const VecBool16i operator & (const VecBool16i rhs) const;
-    NFE_FORCE_INLINE const VecBool16i operator | (const VecBool16i rhs) const;
-    NFE_FORCE_INLINE const VecBool16i operator ^ (const VecBool16i rhs) const;
+    NFE_FORCE_INLINE const VecBool16i operator & (const VecBool16i& rhs) const;
+    NFE_FORCE_INLINE const VecBool16i operator | (const VecBool16i& rhs) const;
+    NFE_FORCE_INLINE const VecBool16i operator ^ (const VecBool16i& rhs) const;
 
-    NFE_FORCE_INLINE bool operator == (const VecBool16i rhs) const;
+    NFE_FORCE_INLINE bool operator == (const VecBool16i& rhs) const;
 
 private:
     friend struct Vec16i;
@@ -159,6 +159,9 @@ private:
 #endif // NFE_USE_AVX512
 };
 
+static_assert(sizeof(Vec16i) == sizeof(int32) * 16, "Invalid sizeof Vec16i");
+
+
 // 8-element integer SIMD vector
 struct NFE_ALIGN(64) Vec16ui : public Common::Aligned<64>
 {
@@ -248,6 +251,7 @@ private:
 #endif // NFE_USE_AVX512
 };
 
+static_assert(sizeof(Vec16ui) == sizeof(uint32) * 16, "Invalid sizeof Vec16ui");
 
 } // namespace Math
 } // namespace NFE

@@ -192,6 +192,8 @@ struct NFE_ALIGN(16) Vec4i : public Common::Aligned<16>
     NFE_FORCE_INLINE const Vec4i Swizzle() const;
 };
 
+static_assert(sizeof(Vec4i) == sizeof(int32) * 4, "Invalid sizeof Vec4i");
+
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
 /**
@@ -316,6 +318,8 @@ struct NFE_ALIGN(16) Vec4ui : public Common::Aligned<16>
     template<uint32 ix, uint32 iy, uint32 iz, uint32 iw>
     NFE_FORCE_INLINE const Vec4ui Swizzle() const;
 };
+
+static_assert(sizeof(Vec4ui) == sizeof(uint32) * 4, "Invalid sizeof Vec4ui");
 
 } // namespace Math
 } // namespace NFE

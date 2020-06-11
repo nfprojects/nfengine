@@ -397,6 +397,7 @@ public:
 
 };
 
+static_assert(sizeof(Vec3x8f) == sizeof(float) * 3 * 8, "Invalid sizeof Vec3x8f");
 
 } // namespace Math
 } // namespace NFE
