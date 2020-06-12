@@ -12,8 +12,8 @@
 #include "Engine/Common/System/Timer.hpp"
 #include "Engine/Common/Logger/Logger.hpp"
 
-#include "../nfEngineDeps/imgui/imgui.h"
-#include "../nfEngineDeps/imgui/imgui_sw.hpp"
+#include <imgui/imgui.h>
+#include <imgui_sw/src/imgui_sw.hpp>
 
 namespace NFE {
 

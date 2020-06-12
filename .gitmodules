@@ -37,3 +37,9 @@
 [submodule "Deps/benchmark"]
 	path = Deps/benchmark
 	url = https://github.com/google/benchmark.git
+[submodule "Deps/rapidjson"]
+	path = Deps/rapidjson
+	url = https://github.com/Tencent/rapidjson.git
+[submodule "Deps/imgui_sw"]
+	path = Deps/imgui_sw
+	url = https://github.com/emilk/imgui_software_renderer

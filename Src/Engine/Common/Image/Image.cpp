@@ -9,7 +9,7 @@
 #include "Image.hpp"
 #include "ImageType.hpp"
 #include "Logger/Logger.hpp"
-#include "squish/src/squish.h"
+#include "libsquish/squish.h"
 
 
 namespace {

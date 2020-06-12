@@ -11,7 +11,7 @@
 #include "Engine/Common/Reflection/Types/ReflectionUniquePtrType.hpp"
 #include "Engine/Common/Reflection/Types/ReflectionClassType.hpp"
 
-#include "../nfEngineDeps/imgui/imgui.h"
+#include <imgui/imgui.h>
 
 
 namespace NFE {

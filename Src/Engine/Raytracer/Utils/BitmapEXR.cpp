@@ -2,7 +2,7 @@
 #include "Bitmap.h"
 #include "../Common/Containers/DynArray.hpp"
 #include "../Common/Logger/Logger.hpp"
-#include "../../../nfEngineDeps/tinyexr/tinyexr.h"
+#include "tinyexr/tinyexr.h"
 
 namespace NFE {
 namespace RT {

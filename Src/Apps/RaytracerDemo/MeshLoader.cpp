@@ -9,7 +9,7 @@
 #include "Engine/Common/Math/HdrColor.hpp"
 #include "Engine/Common/FileSystem/FileSystem.hpp"
 
-#include "../nfEngineDeps/tinyobjloader/tiny_obj_loader.h"
+#include <tinyobjloader/tiny_obj_loader.h>
 
 
 namespace NFE {

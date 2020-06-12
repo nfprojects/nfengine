@@ -14,18 +14,21 @@ FILE(GLOB_RECURSE NFCOMMONTEST_TEST_CASES_SOURCES *.cpp)
 PKG_CHECK_MODULES(NFCOMMONTEST_DEPS REQUIRED
                   xcb)
 
-# setup directories
-INCLUDE_DIRECTORIES(${NFE_ROOT_DIRECTORY}/nfEngineDeps/
-                    ${NFE_SRC_DIRECTORY}
-                    ${NFE_COMMON_TEST_DIRECTORY}
-                    ${NFE_ROOT_DIRECTORY}/nfEngineDeps/gtest/include
-                    ${NFECOMMONTEST_DEPS_INCLUDE_DIRS})
-LINK_DIRECTORIES(${NFEDEPS_LIB_DIRECTORY}
-                 ${NFE_OUTPUT_DIRECTORY})
-
 ADD_EXECUTABLE(CommonTest ${NFCOMMONTEST_SOURCES} ${NFCOMMONTEST_HEADERS} ${NFCOMMONTEST_TEST_CASES_SOURCES})
 SET_TARGET_PROPERTIES(CommonTest PROPERTIES
                       LINK_FLAGS "-pthread")
+
+TARGET_INCLUDE_DIRECTORIES(CommonTest
+                           PRIVATE ${NFE_COMMON_TEST_DIRECTORY}
+                           PRIVATE ${NFE_SRC_DIRECTORY}
+                           PRIVATE ${NFEDEPS_ROOT_DIRECTORY}
+                           PRIVATE ${NFEDEPS_ROOT_DIRECTORY}/googletest/googletest/include
+                           PRIVATE ${NFECOMMONTEST_DEPS_INCLUDE_DIRS})
+
+TARGET_LINK_DIRECTORIES(CommonTest
+                        PRIVATE ${NFEDEPS_LIB_DIRECTORY}
+                        PRIVATE ${NFE_OUTPUT_DIRECTORY})
+
 ADD_DEPENDENCIES(CommonTest Common testCalcLib)
 TARGET_LINK_LIBRARIES(CommonTest Common gtest dl ${NFCOMMONTEST_DEPS_LIBRARIES})
 TARGET_PRECOMPILE_HEADERS(CommonTest PRIVATE PCH.hpp)

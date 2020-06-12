@@ -9,7 +9,7 @@
 #include "Engine/Common/Math/HdrColor.hpp"
 #include "Engine/Common/Math/Quaternion.hpp"
 
-#include "../nfEngineDeps/imgui/imgui.h"
+#include <imgui/imgui.h>
 
 namespace NFE {
 
@@ -123,7 +123,7 @@ static bool EditObject_Internal_Fundamental_Typed(const EditPropertyContext& ctx
 {
     const T min = (ctx.metadata && ctx.metadata->HasMinRange()) ? static_cast<T>(ctx.metadata->min) : std::numeric_limits<T>::min();
     const T max = (ctx.metadata && ctx.metadata->HasMaxRange()) ? static_cast<T>(ctx.metadata->max) : std::numeric_limits<T>::max();
-    
+
     const bool hasSlider = ctx.metadata && !ctx.metadata->HasNoSlider() && ctx.metadata->HasMinRange() && ctx.metadata->HasMaxRange();
 
     bool changed = false;

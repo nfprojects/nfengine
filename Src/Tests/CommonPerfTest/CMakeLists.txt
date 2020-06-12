@@ -15,18 +15,23 @@ PKG_CHECK_MODULES(NFCOMMONPERFTEST_DEPS REQUIRED
                   xcb)
 
 # setup directories
-INCLUDE_DIRECTORIES(${NFE_ROOT_DIRECTORY}/nfEngineDeps/
-                    ${NFE_COMMON_PERF_TEST_DIRECTORY}
-                    ${NFE_SRC_DIRECTORY}
-                    ${NFE_ROOT_DIRECTORY}/nfEngineDeps/gtest/include
-                    ${NFECOMMONPERFTEST_DEPS_INCLUDE_DIRS})
-LINK_DIRECTORIES(${NFEDEPS_LIB_DIRECTORY}
-                 ${NFE_OUTPUT_DIRECTORY})
-
 ADD_EXECUTABLE(CommonPerfTest
                ${NFCOMMONPERFTEST_SOURCES} ${NFCOMMONPERFTEST_HEADERS} ${NFCOMMONPERFTEST_TEST_CASES_SOURCES})
+
 SET_TARGET_PROPERTIES(CommonPerfTest PROPERTIES
                       LINK_FLAGS "-pthread")
+
+TARGET_INCLUDE_DIRECTORIES(CommonPerfTest
+                           PRIVATE ${NFE_COMMON_PERF_TEST_DIRECTORY}
+                           PRIVATE ${NFEDEPS_ROOT_DIRECTORY}
+                           PRIVATE ${NFEDEPS_ROOT_DIRECTORY}/googletest/googletest/include
+                           PRIVATE ${NFE_SRC_DIRECTORY}
+                           PRIVATE ${NFECOMMONPERFTEST_DEPS_INCLUDE_DIRS})
+
+TARGET_LINK_DIRECTORIES(CommonPerfTest
+                        PRIVATE ${NFEDEPS_LIB_DIRECTORY}
+                        PRIVATE ${NFE_OUTPUT_DIRECTORY})
+
 
 TARGET_PRECOMPILE_HEADERS(CommonPerfTest PRIVATE PCH.hpp)
 

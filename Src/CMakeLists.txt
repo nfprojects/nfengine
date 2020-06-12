@@ -27,5 +27,5 @@ SET(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -Wno-self-assign-overloaded")
 
 ADD_SUBDIRECTORY("Engine")
 ADD_SUBDIRECTORY("Tests")
-ADD_SUBDIRECTORY("Benchmarks")
+#ADD_SUBDIRECTORY("Benchmarks")
 ADD_SUBDIRECTORY("Apps")
