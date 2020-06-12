@@ -1,6 +1,5 @@
 #include "PCH.hpp"
 #include "FileInputStream.hpp"
-#include "Logger/Logger.hpp"
 
 
 namespace NFE {

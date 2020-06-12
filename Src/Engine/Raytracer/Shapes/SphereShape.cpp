@@ -1,7 +1,6 @@
 #include "PCH.h"
 #include "SphereShape.h"
 #include "Rendering/ShadingData.h"
-#include "Traversal/TraversalContext.h"
 #include "../Common/Math/Geometry.hpp"
 #include "../Common/Math/SamplingHelpers.hpp"
 #include "../Common/Math/Transcendental.hpp"

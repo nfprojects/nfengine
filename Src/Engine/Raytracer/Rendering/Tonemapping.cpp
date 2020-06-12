@@ -1,7 +1,6 @@
 #include "PCH.h"
 #include "Tonemapping.h"
 #include "../Common/Reflection/ReflectionClassDefine.hpp"
-#include "../Common/Math/Vec4f.hpp"
 #include "../Common/Math/ColorHelpers.hpp"
 #include "../Common/Math/Transcendental.hpp"
 

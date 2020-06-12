@@ -5,6 +5,8 @@
 #include "PCH.hpp"
 #include "ReflectionFundamentalType.hpp"
 #include "../SerializationContext.hpp"
+#include "../../Utils/Stream/InputStream.hpp"
+#include "../../Utils/Stream/OutputStream.hpp"
 
 namespace NFE {
 namespace RTTI {

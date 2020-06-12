@@ -1,6 +1,5 @@
 #include "PCH.h"
 #include "BVH.h"
-#include "../Common/Logger/Logger.hpp"
 
 
 namespace NFE {

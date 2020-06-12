@@ -1,10 +1,6 @@
 #include "PCH.h"
 #include "Memory.h"
-#include "../Common/Logger/Logger.hpp"
-#include "../Common/Math/Math.hpp"
 
-#include <stdlib.h>
-#include <malloc.h>
 
 namespace NFE {
 namespace RT {

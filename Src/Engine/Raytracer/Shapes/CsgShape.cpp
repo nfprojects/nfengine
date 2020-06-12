@@ -1,10 +1,8 @@
 #include "PCH.h"
 #include "CsgShape.h"
 #include "Rendering/ShadingData.h"
-#include "Traversal/TraversalContext.h"
-#include "../Common/Math/Geometry.hpp"
-#include "../Common/Reflection/Types/ReflectionSharedPtrType.hpp"
 #include "../Common/Reflection/ReflectionClassDefine.hpp"
+#include "../Common/Reflection/Types/ReflectionSharedPtrType.hpp"
 
 #include "BoxShape.h"
 #include "SphereShape.h"

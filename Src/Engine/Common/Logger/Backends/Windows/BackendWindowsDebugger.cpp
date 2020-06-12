@@ -7,7 +7,6 @@
 #include "PCH.hpp"
 #include "../../LoggerImpl.hpp"
 #include "BackendWindowsDebugger.hpp"
-#include "System/Windows/Common.hpp"
 
 
 namespace NFE {

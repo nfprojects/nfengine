@@ -1,6 +1,5 @@
 #include "PCH.h"
 #include "PointLight.h"
-#include "../../Rendering/RenderingContext.h"
 #include "../../Rendering/ShadingData.h"
 #include "../../../Common/Math/SamplingHelpers.hpp"
 #include "../../../Common/Reflection/ReflectionClassDefine.hpp"

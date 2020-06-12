@@ -1,9 +1,7 @@
 #include "PCH.h"
 #include "SceneObject_Light.h"
-#include "../Light/Light.h"
 #include "../Light/AreaLight.h"
 #include "../../Shapes/Shape.h"
-#include "Traversal/TraversalContext.h"
 #include "../Common/Reflection/ReflectionClassDefine.hpp"
 #include "../Common/Reflection/Types/ReflectionUniquePtrType.hpp"
 

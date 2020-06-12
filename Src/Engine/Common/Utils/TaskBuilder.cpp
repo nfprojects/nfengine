@@ -1,7 +1,6 @@
 #include "PCH.hpp"
 #include "TaskBuilder.hpp"
 #include "ThreadPool.hpp"
-#include "../Containers/SharedPtr.hpp"
 
 
 namespace NFE {

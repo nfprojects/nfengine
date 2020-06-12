@@ -5,7 +5,6 @@
 #include "Types/ReflectionClassType.hpp"
 #include "../Utils/Stream/OutputStream.hpp"
 #include "../Utils/Stream/InputStream.hpp"
-#include "../Memory/Buffer.hpp"
 
 
 namespace NFE {

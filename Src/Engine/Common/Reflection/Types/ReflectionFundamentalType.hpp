@@ -9,8 +9,6 @@
 #include "../../nfCommon.hpp"
 #include "ReflectionType.hpp"
 #include "../../Config/ConfigValue.hpp"
-#include "../../Utils/Stream/InputStream.hpp"
-#include "../../Utils/Stream/OutputStream.hpp"
 
 
 namespace NFE {

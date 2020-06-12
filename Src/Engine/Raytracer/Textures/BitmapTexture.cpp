@@ -2,7 +2,6 @@
 #include "BitmapTexture.h"
 #include "../Utils/Bitmap.h"
 #include "../Common/Math/ColorHelpers.hpp"
-#include "../Common/Logger/Logger.hpp"
 #include "../Common/Math/Distribution.hpp"
 #include "../Common/Containers/DynArray.hpp"
 

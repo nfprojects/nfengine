@@ -4,11 +4,8 @@
 #include "../Rendering/RenderingContext.h"
 #include "../Textures/Texture.h"
 #include "../Common/Math/Transcendental.hpp"
-#include "../Common/Math/SamplingHelpers.hpp"
-#include "../Common/Math/Geometry.hpp"
 #include "../Common/Reflection/ReflectionClassDefine.hpp"
 
-#include <memory>
 
 
 NFE_DEFINE_POLYMORPHIC_CLASS(NFE::RT::IMedium)

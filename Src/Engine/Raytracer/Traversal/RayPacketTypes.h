@@ -2,7 +2,7 @@
 
 #include "../Raytracer.h"
 
-#define NFE_RT_RAY_GROUP_SIZE 16
+#define NFE_RT_RAY_GROUP_SIZE 8
 
 #include "../../Common/Math/Ray.hpp"
 #include "../../Common/Math/SimdRay.hpp"

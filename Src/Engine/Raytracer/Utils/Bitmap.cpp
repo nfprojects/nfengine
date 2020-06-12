@@ -2,11 +2,9 @@
 #include "Bitmap.h"
 #include "BlockCompression.h"
 #include "../Common/Math/ColorHelpers.hpp"
-#include "../Common/Memory/MemoryHelpers.hpp"
 #include "../Common/Math/PackedLoadVec4f.hpp"
 #include "../Common/Logger/Logger.hpp"
 #include "../Common/System/Timer.hpp"
-#include "../Common/System/Assertion.hpp"
 
 namespace NFE {
 namespace RT {

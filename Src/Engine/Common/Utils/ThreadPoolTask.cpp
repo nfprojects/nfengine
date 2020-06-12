@@ -6,7 +6,6 @@
 
 #include "PCH.hpp"
 #include "ThreadPoolTask.hpp"
-#include "ThreadPool.hpp"
 
 namespace NFE {
 namespace Common {

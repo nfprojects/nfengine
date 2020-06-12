@@ -6,7 +6,6 @@
 
 
 #include "PCH.hpp"
-#include "Logger/Logger.hpp"
 #include "Utils/Stream/InputStream.hpp"
 #include "Utils/Stream/OutputStream.hpp"
 #include "Image.hpp"

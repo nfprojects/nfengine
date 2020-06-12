@@ -1,6 +1,5 @@
 #include "PCH.h"
 #include "NoiseTexture3D.h"
-#include "../../Common/Math/Vec4i.hpp"
 
 namespace NFE {
 namespace RT {

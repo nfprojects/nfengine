@@ -1,8 +1,6 @@
 #include "PCH.h"
 #include "Profiler.h"
-#include "../Common/System/Timer.hpp"
 #include "../Common/Utils/ScopedLock.hpp"
-#include "../Common/Logger/Logger.hpp"
 #include "../Common/Containers/HashMap.hpp"
 
 namespace NFE {

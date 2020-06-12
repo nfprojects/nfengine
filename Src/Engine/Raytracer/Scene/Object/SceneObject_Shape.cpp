@@ -1,14 +1,10 @@
 #include "PCH.h"
 #include "SceneObject_Shape.h"
 #include "Shapes/Shape.h"
-#include "Rendering/ShadingData.h"
-#include "Rendering/RenderingContext.h"
-#include "Traversal/TraversalContext.h"
 #include "Material/Material.h"
 #include "Medium/Medium.h"
-#include "../Common/Math/SimdGeometry.hpp"
-#include "../Common/Reflection/Types/ReflectionSharedPtrType.hpp"
 #include "../Common/Reflection/ReflectionClassDefine.hpp"
+#include "../Common/Reflection/Types/ReflectionSharedPtrType.hpp"
 
 NFE_DEFINE_POLYMORPHIC_CLASS(NFE::RT::ShapeSceneObject)
 {

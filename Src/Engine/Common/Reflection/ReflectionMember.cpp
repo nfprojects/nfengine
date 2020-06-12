@@ -6,7 +6,6 @@
 
 #include "PCH.hpp"
 #include "ReflectionMember.hpp"
-#include "System/Assertion.hpp"
 
 
 namespace NFE {

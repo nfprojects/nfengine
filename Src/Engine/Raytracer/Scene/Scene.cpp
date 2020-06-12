@@ -1,21 +1,16 @@
 #include "PCH.h"
 #include "Scene.h"
-#include "Medium/Medium.h"
 #include "Light/BackgroundLight.h"
 #include "Object/SceneObject_Shape.h"
 #include "Object/SceneObject_Light.h"
 #include "Object/SceneObject_Decal.h"
-#include "Object/SceneObject_Shape.h"
-#include "Rendering/ShadingData.h"
 #include "BVH/BVHBuilder.h"
 #include "Material/Material.h"
-#include "Utils/Profiler.h"
 #include "Shapes/Shape.h"
 
 #include "Traversal/Traversal_Single.h"
 #include "Traversal/Traversal_Packet.h"
 #include "../Common/Reflection/ReflectionUtils.hpp"
-#include "../Common/Reflection/Types/ReflectionClassType.hpp"
 
 namespace NFE {
 namespace RT {

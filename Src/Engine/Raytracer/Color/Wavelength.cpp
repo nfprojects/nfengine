@@ -1,6 +1,5 @@
 #include "PCH.h"
 #include "Wavelength.h"
-#include "../Common/Math/Vec8i.hpp"
 
 namespace NFE {
 namespace RT {

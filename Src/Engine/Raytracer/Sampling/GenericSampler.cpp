@@ -1,7 +1,6 @@
 #include "PCH.h"
 #include "GenericSampler.h"
 #include "../Common/Math/Random.hpp"
-#include "../Common/Logger/Logger.hpp"
 
 namespace NFE {
 namespace RT {

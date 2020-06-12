@@ -1,9 +1,6 @@
 #include "PCH.h"
 #include "VertexBuffer.h"
 #include "Material/Material.h"
-#include "Utils/Memory.h"
-#include "../Common/Math/SimdTriangle.hpp"
-#include "../Common/Logger/Logger.hpp"
 
 namespace NFE {
 namespace RT {

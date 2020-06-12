@@ -15,7 +15,7 @@
 #include "Engine/Common/System/Assertion.hpp"
 #include "Engine/Common/Logger/Logger.hpp"
 #include "Engine/Common/System/KeyCodes.hpp"
-
+#include "Engine/Common/Reflection/Types/ReflectionClassType.hpp"
 
 namespace NFE {
 

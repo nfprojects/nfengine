@@ -8,7 +8,6 @@
 #include "PCH.hpp"
 #include "Image.hpp"
 #include "ImageType.hpp"
-#include "Logger/Logger.hpp"
 #include "libsquish/squish.h"
 
 

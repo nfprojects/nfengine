@@ -8,7 +8,6 @@
 #include "Common.hpp"
 #include "../../Containers/DynArray.hpp"
 
-#include <strsafe.h>
 
 
 namespace NFE {

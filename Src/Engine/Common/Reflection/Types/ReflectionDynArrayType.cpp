@@ -8,8 +8,6 @@
 #include "../../Config/ConfigInterface.hpp"
 #include "../../Utils/Stream/OutputStream.hpp"
 #include "../../Utils/Stream/InputStream.hpp"
-#include "../../Config/ConfigInterface.hpp"
-#include "../../Config/ConfigValue.hpp"
 
 
 namespace NFE {

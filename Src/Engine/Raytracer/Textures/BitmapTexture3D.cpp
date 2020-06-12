@@ -1,7 +1,6 @@
 #include "PCH.h"
 #include "BitmapTexture3D.h"
 #include "../Utils/Bitmap.h"
-#include "../Common/Logger/Logger.hpp"
 
 namespace NFE {
 namespace RT {

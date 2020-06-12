@@ -1,6 +1,5 @@
 #include "PCH.hpp"
 #include "Packed.hpp"
-#include "Vec4f.hpp"
 #include "Vec4i.hpp"
 
 namespace NFE {

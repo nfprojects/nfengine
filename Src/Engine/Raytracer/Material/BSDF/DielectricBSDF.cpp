@@ -1,6 +1,5 @@
 #include "PCH.h"
 #include "DielectricBSDF.h"
-#include "../Material.h"
 #include "../Common/Math/Utils.hpp"
 #include "../Common/Reflection/ReflectionClassDefine.hpp"
 

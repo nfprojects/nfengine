@@ -6,7 +6,15 @@
 
 #pragma once
 
-#include "Types/ReflectionClassType.hpp"
+#include "../nfCommon.hpp"
+
+namespace NFE {
+namespace RTTI {
+
+struct ClassTypeInfo;
+
+} // namespace RTTI
+} // namespace NFE
 
 // Declare occurrence of a non-polymorphic class. Must be placed inside class declaration.
 #define NFE_DECLARE_CLASS(T)                                                                \

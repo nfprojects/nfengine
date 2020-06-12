@@ -1,5 +1,6 @@
 #include "PCH.hpp"
 #include "Transform.hpp"
+#include "Vec3x8f.hpp"
 
 
 namespace NFE {

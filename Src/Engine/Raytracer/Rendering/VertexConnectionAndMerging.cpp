@@ -9,14 +9,10 @@
 #include "Scene/Object/SceneObject_Light.h"
 #include "Material/Material.h"
 #include "Traversal/TraversalContext.h"
-#include "Sampling/GenericSampler.h"
-#include "Utils/Profiler.h"
 #include "../Common/Math/PackedLoadVec4f.hpp"
-#include "../Common/Memory/MemoryHelpers.hpp"
 #include "../Common/Utils/TaskBuilder.hpp"
 #include "../Common/Reflection/ReflectionUtils.hpp"
 #include "../Common/Reflection/ReflectionClassDefine.hpp"
-#include "../Common/Reflection/ReflectionEnumMacros.hpp"
 
 NFE_BEGIN_DEFINE_ENUM(NFE::RT::VertexMergingKernel)
 {

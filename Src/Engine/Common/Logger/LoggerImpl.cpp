@@ -6,7 +6,6 @@
 
 #include "PCH.hpp"
 #include "LoggerImpl.hpp"
-#include "LoggerBackend.hpp"
 #include "FileSystem/FileSystem.hpp"
 #include "System/SystemInfo.hpp"
 #include "Utils/ScopedLock.hpp"

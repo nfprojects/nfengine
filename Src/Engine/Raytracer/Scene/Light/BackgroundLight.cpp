@@ -3,8 +3,6 @@
 #include "../../Rendering/RenderingContext.h"
 #include "../../Rendering/ShadingData.h"
 #include "../../Textures/Texture.h"
-#include "../Camera.h"
-#include "../../../Common/Math/Transcendental.hpp"
 #include "../../../Common/Math/Geometry.hpp"
 #include "../../../Common/Math/SamplingHelpers.hpp"
 #include "../../../Common/Reflection/ReflectionClassDefine.hpp"

@@ -3,7 +3,6 @@
 #include "ReflectionMember.hpp"
 #include "ReflectionTypeRegistry.hpp"
 #include "Types/ReflectionFundamentalType.hpp"
-#include "../System/Assertion.hpp"
 
 
 namespace NFE {

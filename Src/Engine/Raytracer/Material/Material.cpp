@@ -1,8 +1,6 @@
 #include "PCH.h"
 #include "Material.h"
-#include "BSDF/BSDF.h"
 #include "../Common/Math/HdrColor.hpp"
-#include "../Common/Logger/Logger.hpp"
 #include "../Common/Reflection/ReflectionClassDefine.hpp"
 
 

@@ -7,7 +7,6 @@
 #include "PCH.hpp"
 #include "Mipmap.hpp"
 #include "Logger/Logger.hpp"
-#include "Math/Vec4fU.hpp"
 #include "Math/PackedLoadVec4f.hpp"
 
 namespace NFE {

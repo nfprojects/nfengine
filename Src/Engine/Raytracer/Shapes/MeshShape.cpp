@@ -3,18 +3,13 @@
 #include "MeshShape.h"
 #include "BVH/BVHBuilder.h"
 
-#include "Rendering/RenderingContext.h"
 #include "Rendering/ShadingData.h"
-#include "Traversal/TraversalContext.h"
 #include "Traversal/Traversal_Single.h"
 #include "Traversal/Traversal_Packet.h"
 
-#include "../Common/Math/Geometry.hpp"
-#include "../Common/Math/SimdGeometry.hpp"
 #include "../Common/Math/Distribution.hpp"
 #include "../Common/Math/SamplingHelpers.hpp"
 #include "../Common/Math/PackedLoadVec4f.hpp"
-#include "../Common/Logger/Logger.hpp"
 #include "../Common/Reflection/ReflectionClassDefine.hpp"
 
 NFE_DEFINE_POLYMORPHIC_CLASS(NFE::RT::MeshShape)

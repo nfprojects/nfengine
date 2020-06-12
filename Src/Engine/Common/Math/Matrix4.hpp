@@ -1,8 +1,7 @@
 #pragma once
 
 #include "Math.hpp"
-#include "Vec4f.hpp"
-#include "Vec3x8f.hpp"
+#include "Vec8f.hpp"
 #include "Box.hpp"
 #include "Ray.hpp"
 
@@ -149,20 +148,6 @@ public:
         t = T::MulAndAdd(T(rows[0]), a.x, T(rows[3]));
         t = T::MulAndAdd(T(rows[1]), a.y, t);
         t = T::MulAndAdd(T(rows[2]), a.z, t);
-        return t;
-    }
-
-    const Vec3x8f TransformPoint(const Vec3x8f& a) const
-    {
-        const Vec3x8f row0(rows[0]);
-        const Vec3x8f row1(rows[1]);
-        const Vec3x8f row2(rows[2]);
-        const Vec3x8f row3(rows[3]);
-
-        Vec3x8f t;
-        t = Vec3x8f::MulAndAdd(row0, a.x, row3);
-        t = Vec3x8f::MulAndAdd(row1, a.y, t);
-        t = Vec3x8f::MulAndAdd(row2, a.z, t);
         return t;
     }
 

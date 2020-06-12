@@ -8,10 +8,8 @@
 #include "PCH.hpp"
 #include "ImageBMP.hpp"
 #include "Image.hpp"
-#include "Logger/Logger.hpp"
 #include "Utils/BitUtils.hpp"
 #include "Utils/Stream/InputStream.hpp"
-#include "Containers/DynArray.hpp"
 #include "Reflection/ReflectionClassDefine.hpp"
 
 

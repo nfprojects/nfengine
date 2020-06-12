@@ -6,7 +6,6 @@
 #include "ReflectionUniquePtrType.hpp"
 #include "../SerializationContext.hpp"
 #include "../ReflectionTypeRegistry.hpp"
-#include "../../Config/ConfigInterface.hpp"
 #include "../../Utils/Stream/OutputStream.hpp"
 #include "../../Utils/Stream/InputStream.hpp"
 

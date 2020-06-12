@@ -5,7 +5,7 @@
 #include "Engine/Core/Scene/Events/Event_Tick.hpp"
 #include "Engine/Core/Scene/Components/ComponentLight.hpp"
 
-#include "Engine/Common/Reflection/ReflectionTypeResolver.hpp"
+#include "Engine/Common/Reflection/Types/ReflectionClassType.hpp"
 #include "Engine/Common/System/Assertion.hpp"
 
 namespace NFE {

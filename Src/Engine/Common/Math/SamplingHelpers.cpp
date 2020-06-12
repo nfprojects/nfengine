@@ -1,7 +1,6 @@
 #include "PCH.hpp"
 #include "SamplingHelpers.hpp"
 #include "Transcendental.hpp"
-#include "Vec8i.hpp"
 
 namespace NFE {
 namespace Math {

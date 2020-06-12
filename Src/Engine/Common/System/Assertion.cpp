@@ -8,7 +8,6 @@
 #include "Assertion.hpp"
 #include "Console.hpp"
 
-
 #if defined(__LINUX__) | defined(__linux__)
 #include <signal.h>
 #endif // defined(__LINUX__) | defined(__linux__)

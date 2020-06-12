@@ -1,10 +1,8 @@
 #include "PCH.h"
 #include "BitmapUtils.h"
 #include "../Common/Logger/Logger.hpp"
-#include "../Common/System/Assertion.hpp"
 #include "../Common/Utils/TaskBuilder.hpp"
 
-#include "../Common/Math/Vec8f.hpp"
 
 
 namespace NFE {

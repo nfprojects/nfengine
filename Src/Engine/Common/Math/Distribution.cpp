@@ -4,7 +4,6 @@
 #include "Memory/DefaultAllocator.hpp"
 #include "Logger/Logger.hpp"
 
-#include <algorithm>
 
 namespace NFE {
 namespace Math {

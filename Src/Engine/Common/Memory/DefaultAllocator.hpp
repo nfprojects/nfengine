@@ -8,7 +8,6 @@
 #include "../nfCommon.hpp"
 #include "../System/Mutex.hpp"
 
-#include <unordered_map>
 #include <atomic>
 
 namespace NFE {
@@ -70,13 +69,6 @@ public:
     AllocatorStats GetStats() const;
 
 private:
-
-#ifdef _DEBUG
-    Mutex mMutex;
-
-    // TODO use custom hash-map (not Common::HashMap, because there would be circular dependency)
-    std::unordered_map<void*, AllocationDebugInfo> mAllocationsDebugInfo;
-#endif
 
     std::atomic<size_t> mAllocationsNum;
     std::atomic<size_t> mBytesAllocated;

@@ -3,12 +3,11 @@
 #include "../../Rendering/RenderingContext.h"
 #include "../../Rendering/ShadingData.h"
 #include "../../Textures/Texture.h"
-#include "../../Shapes/Shape.h"
 #include "../../Shapes/RectShape.h"
 #include "../../../Common/Math/Geometry.hpp"
 #include "../../../Common/Math/SamplingHelpers.hpp"
 #include "../../../Common/Reflection/ReflectionClassDefine.hpp"
-#include "../../../Common/Reflection/Types/ReflectionSharedPtrType.hpp"
+#include "../Common/Reflection/Types/ReflectionSharedPtrType.hpp"
 
 
 NFE_DEFINE_POLYMORPHIC_CLASS(NFE::RT::AreaLight)

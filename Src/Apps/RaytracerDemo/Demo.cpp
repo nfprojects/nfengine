@@ -11,6 +11,7 @@
 
 #include "Engine/Common/System/Timer.hpp"
 #include "Engine/Common/Logger/Logger.hpp"
+#include "Engine/Common/Reflection/Types/ReflectionClassType.hpp"
 
 #include <imgui/imgui.h>
 #include <imgui_sw/src/imgui_sw.hpp>

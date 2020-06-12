@@ -1,6 +1,7 @@
 #include "PCH.hpp"
 #include "Quaternion.hpp"
 #include "Transcendental.hpp"
+#include "Vec3x8f.hpp"
 
 namespace NFE {
 namespace Math {

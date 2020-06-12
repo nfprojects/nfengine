@@ -1,7 +1,5 @@
 #include "PCH.h"
 #include "GradientTexture.h"
-#include "../../Common/Math/ColorHelpers.hpp"
-#include "../../Common/Math/Math.hpp"
 
 namespace NFE {
 namespace RT {

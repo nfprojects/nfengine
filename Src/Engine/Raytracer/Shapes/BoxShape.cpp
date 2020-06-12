@@ -1,9 +1,7 @@
 #include "PCH.h"
 #include "BoxShape.h"
 #include "Rendering/ShadingData.h"
-#include "Traversal/TraversalContext.h"
 #include "../Common/Math/Geometry.hpp"
-#include "../Common/Math/SimdGeometry.hpp"
 #include "../Common/Reflection/ReflectionClassDefine.hpp"
 
 

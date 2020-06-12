@@ -7,6 +7,7 @@
 #include "Engine/Core/Scene/Events/Event_Tick.hpp"
 
 #include "Engine/Common/System/Assertion.hpp"
+#include "Engine/Common/Reflection/Types/ReflectionClassType.hpp"
 
 
 namespace NFE {

@@ -1,8 +1,6 @@
 #include "PCH.h"
 #include "DirectionalLight.h"
-#include "../Camera.h"
 #include "../../Rendering/RenderingContext.h"
-#include "../../Rendering/ShadingData.h"
 #include "../../../Common/Math/Geometry.hpp"
 #include "../../../Common/Math/SamplingHelpers.hpp"
 #include "../../../Common/Math/Transcendental.hpp"

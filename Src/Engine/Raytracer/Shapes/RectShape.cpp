@@ -1,9 +1,6 @@
 #include "PCH.h"
 #include "RectShape.h"
 #include "Rendering/ShadingData.h"
-#include "Traversal/TraversalContext.h"
-#include "../Common/Math/Geometry.hpp"
-#include "../Common/Math/SamplingHelpers.hpp"
 #include "../Common/Math/SphericalQuad.hpp"
 #include "../Common/Reflection/ReflectionClassDefine.hpp"
 

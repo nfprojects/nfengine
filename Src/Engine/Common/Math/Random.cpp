@@ -1,6 +1,5 @@
 #include "PCH.hpp"
 #include "Random.hpp"
-#include "Transcendental.hpp"
 #include "../Utils/Entropy.hpp"
 
 namespace NFE {

@@ -5,7 +5,6 @@
 #include "PCH.hpp"
 #include "ReflectionNativeArrayType.hpp"
 #include "../SerializationContext.hpp"
-#include "../../Logger/Logger.hpp"
 #include "../../Utils/Stream/OutputStream.hpp"
 #include "../../Utils/Stream/InputStream.hpp"
 

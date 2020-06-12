@@ -1,6 +1,5 @@
 #include "PCH.h"
 #include "Bitmap.h"
-#include "../Common/Logger/Logger.hpp"
 #include "../Common/Containers/DynArray.hpp"
 
 namespace NFE {

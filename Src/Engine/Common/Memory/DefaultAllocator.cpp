@@ -8,8 +8,6 @@
 #include "DefaultAllocator.hpp"
 #include "Logger/Logger.hpp"
 #include "Math/Math.hpp"
-#include "System/Assertion.hpp"
-#include "Utils/ScopedLock.hpp"
 
 
 // TODO
@@ -40,10 +38,6 @@ DefaultAllocator& DefaultAllocator::GetInstance()
 void DefaultAllocator::Shutdown()
 {
     ReportAllocations();
-
-#ifdef _DEBUG
-    mAllocationsDebugInfo.clear();
-#endif // _DEBUG
 
     mInitialized = false;
 }
@@ -87,16 +81,6 @@ void* DefaultAllocator::Malloc(size_t size, size_t alignment, const char* source
     if (ptr)
     {
         mAllocationsNum++;
-
-#ifdef _DEBUG
-        NFE_SCOPED_LOCK(mMutex);
-        AllocationDebugInfo info;
-        info.size = size;
-        info.sourceFile = sourceFile;
-        info.sourceLine = sourceLine;
-        mAllocationsDebugInfo[ptr] = info;
-        mBytesAllocated += size;
-#endif // _DEBUG
     }
     else
     {
@@ -110,20 +94,9 @@ void* DefaultAllocator::Malloc(size_t size, size_t alignment, const char* source
 void DefaultAllocator::Free(void* ptr)
 {
     if (ptr == nullptr)
-        return;
-
-#ifdef _DEBUG
     {
-        NFE_SCOPED_LOCK(mMutex);
-        const auto iter = mAllocationsDebugInfo.find(ptr);
-
-        if (iter == mAllocationsDebugInfo.end())
-            NFE_LOG_FATAL("Trying to free already freed memory block");
-
-        mBytesAllocated -= iter->second.size;
-        mAllocationsDebugInfo.erase(iter);
+        return;
     }
-#endif // _DEBUG
 
     mAllocationsNum--;
 
@@ -137,20 +110,7 @@ void DefaultAllocator::Free(void* ptr)
 
 void DefaultAllocator::ReportAllocations()
 {
-#ifdef _DEBUG
-    NFE_SCOPED_LOCK(mMutex);
-
-    NFE_LOG_INFO("Allocated blocks: %zu (%zu bytes)", mAllocationsNum.load(), mBytesAllocated.load());
-    for (const auto& it : mAllocationsDebugInfo)
-    {
-        NFE_LOG_INFO("Allocated block (ptr=%p, size=%zu) at %s:%i", it.first, it.second.size,
-                 it.second.sourceFile, it.second.sourceLine);
-    }
-
-#else
     NFE_LOG_INFO("Allocated blocks: %zu", mAllocationsNum.load());
-
-#endif // _DEBUG
 }
 
 AllocatorStats DefaultAllocator::GetStats() const

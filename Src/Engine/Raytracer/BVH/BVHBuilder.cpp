@@ -1,7 +1,6 @@
 #include "PCH.h"
 #include "BVHBuilder.h"
 #include "../Common/System/Timer.hpp"
-#include "../Common/Logger/Logger.hpp"
 #include "../Common/Utils/TaskBuilder.hpp"
 #include "../Common/Utils/Waitable.hpp"
 #include "../Common/Utils/ThreadPool.hpp"

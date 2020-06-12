@@ -6,6 +6,14 @@
 #include <crtdbg.h>
 #endif // _DEBUG
 
+#if defined(WIN32)
+#define WIN32_LEAN_AND_MEAN
+#define NOMINMAX
+#include <Windows.h>
+#include <windowsx.h>
+#include <VersionHelpers.h>
+#endif // defined(WIN32)
+
 #ifdef NFE_USE_SSE
 #include <xmmintrin.h>
 #endif // NFE_USE_SSE
@@ -25,5 +33,7 @@
 #include <memory>
 #include <initializer_list>
 #include <functional>
+#include <type_traits>
 #include <sstream>
 #include <algorithm>
+#include <atomic>
