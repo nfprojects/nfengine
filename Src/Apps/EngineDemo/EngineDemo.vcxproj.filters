@@ -27,10 +27,22 @@
     <ClCompile Include="Controllers\FlickeringLightController.cpp">
       <Filter>Controllers</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\Deps\imgui\imgui.cpp">
+      <Filter>External</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Deps\imgui\imgui_draw.cpp">
+      <Filter>External</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Deps\imgui\imgui_widgets.cpp">
+      <Filter>External</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Controllers">
       <UniqueIdentifier>{eda95a72-cfb5-4ac5-91a7-554d7828156c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="External">
+      <UniqueIdentifier>{e0549459-08a5-459e-a7ab-11067ce4d808}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

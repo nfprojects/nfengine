@@ -21,7 +21,7 @@ class ExclusiveLockTest : public ::testing::Test
 };
 
 using LockTestTypes = ::testing::Types<Mutex, RWLock, SpinLock, RWSpinLock>;
-TYPED_TEST_CASE(ExclusiveLockTest, LockTestTypes);
+TYPED_TEST_SUITE(ExclusiveLockTest, LockTestTypes);
 
 
 TYPED_TEST(ExclusiveLockTest, Simple_Lock)

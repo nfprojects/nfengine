@@ -19,7 +19,7 @@
       <UseFullPaths>true</UseFullPaths>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>$(SolutionDir)nfenginedeps\Bin\$(Platform)\$(Configuration)\;$(SolutionDir)Bin\$(Platform)\$(Configuration)\</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)Deps\Bin\$(Platform)\$(Configuration)\;$(SolutionDir)Bin\$(Platform)\$(Configuration)\</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup />

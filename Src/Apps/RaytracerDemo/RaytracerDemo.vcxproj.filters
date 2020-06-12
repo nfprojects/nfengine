@@ -32,19 +32,19 @@
     <ClCompile Include="ObjectEditor.cpp">
       <Filter>Utils</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\nfEngineDeps\imgui\imgui.cpp">
+    <ClCompile Include="..\..\..\Deps\imgui\imgui.cpp">
       <Filter>External</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\nfEngineDeps\imgui\imgui_draw.cpp">
+    <ClCompile Include="..\..\..\Deps\imgui\imgui_draw.cpp">
       <Filter>External</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\nfEngineDeps\imgui\imgui_sw.cpp">
+    <ClCompile Include="..\..\..\Deps\imgui\imgui_widgets.cpp">
       <Filter>External</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\nfEngineDeps\imgui\imgui_widgets.cpp">
+    <ClCompile Include="..\..\..\Deps\imgui_sw\src\imgui_sw.cpp">
       <Filter>External</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\nfEngineDeps\tinyobjloader\tiny_obj_loader.cpp">
+    <ClCompile Include="..\..\..\Deps\tinyobjloader\tiny_obj_loader.cc">
       <Filter>External</Filter>
     </ClCompile>
   </ItemGroup>

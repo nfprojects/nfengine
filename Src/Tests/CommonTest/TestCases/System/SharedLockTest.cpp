@@ -21,7 +21,7 @@ class SharedLockTest : public ::testing::Test
 
 // TODO RWSpinLock
 using LockTestTypes = ::testing::Types<RWLock, RWSpinLock>;
-TYPED_TEST_CASE(SharedLockTest, LockTestTypes);
+TYPED_TEST_SUITE(SharedLockTest, LockTestTypes);
 
 
 TYPED_TEST(SharedLockTest, SimpleLock)

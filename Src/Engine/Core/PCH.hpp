@@ -61,11 +61,6 @@
 #include <unordered_map>
 #include <algorithm>
 
-// FreeType library
-#include "ft2build.h"
-#include "freetype/freetype.h"
-#include "freetype/ftglyph.h"
-
 // RapidXML library
 #include "rapidxml.hpp"
 #include "rapidxml_iterators.hpp"

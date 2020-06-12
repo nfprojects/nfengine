@@ -18,7 +18,19 @@ IF(NOT DEFINED NFE_BUILD_PLATFORM)
     ENDIF(WIN32)
 ENDIF(NOT DEFINED NFE_BUILD_PLATFORM)
 
-ADD_DEFINITIONS("-fPIC")
+# -fPIC must be set only for Unix shared objects
+IF(UNIX)
+    ADD_DEFINITIONS("-fPIC")
+ENDIF(UNIX)
+
+# force using static runtime linking
+IF(WIN32)
+    IF("${CMAKE_BUILD_TYPE}" STREQUAL "Debug")
+        ADD_DEFINITIONS("/MDd")
+    ELSE("${CMAKE_BUILD_TYPE}" STREQUAL "Debug")
+        ADD_DEFINITIONS("/MD")
+    ENDIF("${CMAKE_BUILD_TYPE}" STREQUAL "Debug")
+ENDIF(WIN32)
 
 
 # Add dependencies with respective settings
@@ -48,6 +60,7 @@ SET(INSTALL_GTEST OFF CACHE BOOL "Enable installation of googletest. (Projects e
 ADD_SUBDIRECTORY(googletest)
 
 # remainders which don't need additional options
+ADD_SUBDIRECTORY(freetype2)
 ADD_SUBDIRECTORY(libsquish)
 ADD_SUBDIRECTORY(nfenginedeps)
 
@@ -83,6 +96,7 @@ ADD_CUSTOM_COMMAND(TARGET NFEDepsPostBuild POST_BUILD
                    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:OSDependent> ${NFEDEPS_LIB_DIRECTORY}
                    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:OGLCompiler> ${NFEDEPS_LIB_DIRECTORY}
                    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:SPIRV> ${NFEDEPS_LIB_DIRECTORY}
+                   COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:gtest> ${NFEDEPS_LIB_DIRECTORY}
                    VERBATIM
 )
 

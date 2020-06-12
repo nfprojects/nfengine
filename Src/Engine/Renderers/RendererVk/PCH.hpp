@@ -20,7 +20,24 @@
 #endif
 
 #include <vulkan/vulkan.h>
+
+#ifdef WIN32
+/// glslang library duplicates strdup macro, which makes a collision when building with
+/// _CRTDBG_MAP_ALLOC. For glslang headers, disable this warning at least until the
+/// problem is fixed.
+#pragma warning(push)
+#pragma warning(disable: 4005)
+#endif // WIN32
+
 #include <glslang/glslang/Public/ShaderLang.h>
+#include <glslang/SPIRV/GlslangToSpv.h>
+#include <glslang/SPIRV/disassemble.h>
+#include <glslang/StandAlone/ResourceLimits.h>
+
+#ifdef WIN32
+#pragma warning(pop)
+#endif // WIN32
+
 
 #include <string.h>
 #include <memory>

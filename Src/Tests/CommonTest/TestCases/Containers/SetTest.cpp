@@ -21,7 +21,7 @@ class SetTest : public ::testing::Test
 
 using SetKeyType = int;
 using SetTestTypes = ::testing::Types<Set<SetKeyType>, HashSet<SetKeyType>>;
-TYPED_TEST_CASE(SetTest, SetTestTypes);
+TYPED_TEST_SUITE(SetTest, SetTestTypes);
 
 
 TYPED_TEST(SetTest, Empty)

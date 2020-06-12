@@ -96,8 +96,8 @@
     <ClInclude Include="Color\ColorRGB.h" />
     <ClInclude Include="Color\BlackBodyColor.h" />
     <ClInclude Include="Color\MonochromaticColor.h" />
-    <ClInclude Include="..\..\..\nfEngineDeps\tinyexr\tinyexr.h" />
     <ClInclude Include="Traversal\RayPacketTypes.h" />
+    <ClInclude Include="..\..\..\Deps\tinyexr\tinyexr.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BVH\BVH.cpp" />
@@ -180,7 +180,7 @@
     <ClCompile Include="Color\ColorRGB.cpp" />
     <ClCompile Include="Color\BlackBodyColor.cpp" />
     <ClCompile Include="Color\MonochromaticColor.cpp" />
-    <ClCompile Include="..\..\..\nfEngineDeps\tinyexr\tinyexr.cc" />
+    <ClCompile Include="..\..\..\Deps\tinyexr\tinyexr.cc" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Math">
