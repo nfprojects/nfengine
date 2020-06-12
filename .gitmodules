@@ -1,3 +1,39 @@
-[submodule "nfEngineDeps"]
-	path = nfEngineDeps
-	url = git@github.com:nfprojects/nfenginedeps
+[submodule "Deps/cxxopts"]
+	path = Deps/cxxopts
+	url = https://github.com/jarro2783/cxxopts.git
+[submodule "Deps/freetype2"]
+	path = Deps/freetype2
+	url = git://git.sv.nongnu.org/freetype/freetype2.git
+[submodule "Deps/glslang"]
+	path = Deps/glslang
+	url = https://github.com/KhronosGroup/glslang.git
+[submodule "Deps/googletest"]
+	path = Deps/googletest
+	url = https://github.com/google/googletest.git
+[submodule "Deps/imgui"]
+	path = Deps/imgui
+	url = https://github.com/ocornut/imgui.git
+[submodule "Deps/libpng"]
+	path = Deps/libpng
+	url = https://github.com/glennrp/libpng.git
+[submodule "Deps/libsquish"]
+	path = Deps/libsquish
+	url = https://github.com/svn2github/libsquish.git
+[submodule "Deps/tinyexr"]
+	path = Deps/tinyexr
+	url = https://github.com/syoyo/tinyexr.git
+[submodule "Deps/tinyobjloader"]
+	path = Deps/tinyobjloader
+	url = https://github.com/tinyobjloader/tinyobjloader.git
+[submodule "Deps/tracy"]
+	path = Deps/tracy
+	url = https://bitbucket.org/wolfpld/tracy.git
+[submodule "Deps/zlib"]
+	path = Deps/zlib
+	url = https://github.com/madler/zlib.git
+[submodule "Deps/nfenginedeps"]
+	path = Deps/nfenginedeps
+	url = https://github.com/nfprojects/nfenginedeps.git
+[submodule "Deps/benchmark"]
+	path = Deps/benchmark
+	url = https://github.com/google/benchmark.git
