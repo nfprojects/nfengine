@@ -109,7 +109,7 @@ void CommandRecorder::BindResources(uint32 slot, const ResourceBindingInstancePt
 
     vkCmdBindDescriptorSets(mCommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS,
                             mResourceBindingLayout->mPipelineLayout, rbi->mSet->mSetSlot, 1,
-                            &rbi->mSet->mDescriptorSet, 0, nullptr);
+                            &rbi->mDescriptorSet, 0, nullptr);
 }
 
 void CommandRecorder::BindVolatileCBuffer(uint32 slot, const BufferPtr& buffer)
@@ -267,7 +267,8 @@ bool CommandRecorder::WriteVolatileBuffer(Buffer* b, size_t size, const void* da
         NFE_LOG_ERROR("Failed to write data to Ring Ruffer - the Ring Buffer is full");
         return false;
     }
-
+    NFE_UNUSED(b);
+    /*
     for (uint32 i = 0; i < VK_MAX_VOLATILE_BUFFERS; ++i)
     {
         if (b == mBoundVolatileBuffers[i])
@@ -277,7 +278,7 @@ bool CommandRecorder::WriteVolatileBuffer(Buffer* b, size_t size, const void* da
                                     1, &writeHead);
         }
     }
-
+    */
     return true;
 }
 
@@ -294,7 +295,7 @@ bool CommandRecorder::WriteBuffer(const BufferPtr& buffer, size_t offset, size_t
     {
         if (static_cast<VkDeviceSize>(size) > b->mBufferSize)
         {
-            NFE_LOG_ERROR("Requested to write more than provided buffer can handle (%d vs buffer's $d)",
+            NFE_LOG_ERROR("Requested to write more than provided buffer can handle (%d vs buffer's %d)",
                       size, b->mBufferSize);
             return false;
         }

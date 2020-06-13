@@ -21,9 +21,7 @@ class ResourceBindingSet : public IResourceBindingSet
     friend class ResourceBindingLayout;
     friend class CommandRecorder;
 
-    VkDescriptorSet mDescriptorSet;
     VkDescriptorSetLayout mDescriptorLayout;
-    uint8 mDescriptorCounter[VK_DESCRIPTOR_TYPE_RANGE_SIZE];
     uint16 mSetSlot;
 
 public:
@@ -44,9 +42,6 @@ class ResourceBindingLayout : public IResourceBindingLayout
     friend class PipelineState;
 
     VkPipelineLayout mPipelineLayout;
-    VkDescriptorSet mVolatileBufferSet;
-    VkDescriptorSetLayout mVolatileBufferLayout;
-    uint16 mVolatileSetSlot;
 
 public:
     ResourceBindingLayout();
@@ -60,6 +55,7 @@ class ResourceBindingInstance : public IResourceBindingInstance
     friend class CommandRecorder;
 
     ResourceBindingSet* mSet;
+    VkDescriptorSet mDescriptorSet;
 
 public:
     bool Init(const ResourceBindingSetPtr& bindingSet) override;
