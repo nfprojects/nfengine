@@ -192,9 +192,9 @@ void CommandRecorder::SetViewport(float left, float width, float top, float heig
 {
     VkViewport viewport;
     viewport.x = left;
-    viewport.y = top;
+    viewport.y = (height - top);
     viewport.width = width;
-    viewport.height = height;
+    viewport.height = -height;
     viewport.minDepth = minDepth;
     viewport.maxDepth = maxDepth;
     vkCmdSetViewport(mCommandBuffer, 0, 1, &viewport);

@@ -23,10 +23,6 @@ void main()
 {
     gl_Position = vec4(InPos, 1.0);
 
-#ifdef VULKAN
-    gl_Position.y = -gl_Position.y;
-#endif
-
 #if USE_CBUFFER == 1
     gl_Position = gl_Position * TestCBuffer.viewMatrix;
 #endif

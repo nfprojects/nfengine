@@ -36,7 +36,7 @@ bool Instance::Init(bool enableDebug, VkDebugReportFlagBitsEXT flags)
     appInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
     appInfo.pApplicationName = "nfRendererVk";
     appInfo.pEngineName = "nfRendererVk";
-    appInfo.apiVersion = VK_API_VERSION_1_0;
+    appInfo.apiVersion = VK_API_VERSION_1_1;
     appInfo.applicationVersion = 1;
 
     // TODO XLIB_SURFACE is still unavailable
