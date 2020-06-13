@@ -1,6 +1,7 @@
 #include "PCH.hpp"
 #include "ReflectionTestCommon.hpp"
 #include "Engine/Common/Reflection/SerializationContext.hpp"
+#include "Engine/Common/Reflection/ReflectionUnitTestHelper.hpp"
 #include "Engine/Common/Utils/Stream/BufferOutputStream.hpp"
 #include "Engine/Common/Utils/Stream/BufferInputStream.hpp"
 #include "Engine/Common/Memory/Buffer.hpp"
@@ -115,6 +116,43 @@ TEST(ReflectionClassTest, TestClassWithFundamentalMembers_BinarySerialization)
         ASSERT_TRUE(type->DeserializeBinary(&readObj, stream, context));
 
         EXPECT_EQ(42, readObj.intValue);
+        EXPECT_EQ(1.234f, readObj.floatValue);
+        EXPECT_EQ(true, readObj.boolValue);
+        EXPECT_STREQ("test", readObj.strValue.Str());
+    }
+}
+
+TEST(ReflectionClassTest, TestClassWithFundamentalMembers_MissingMember)
+{
+    const auto* type = GetType<TestClassWithFundamentalMembers>();
+    ASSERT_NE(nullptr, type);
+
+    Buffer buffer;
+    SerializationContext context;
+
+    TestClassWithFundamentalMembers defaultObj;
+
+    TestClassWithFundamentalMembers obj;
+    obj.intValue = 42;
+    obj.floatValue = 1.234f;
+    obj.boolValue = true;
+    obj.strValue = "test";
+
+    {
+        BufferOutputStream stream(buffer);
+        ASSERT_TRUE(helper::SerializeObject(type, &obj, stream, context));
+    }
+
+    UnitTestHelper unitTestHelper;
+    unitTestHelper.mMissingTypes.PushBack(GetType<decltype(obj.intValue)>());
+    context.SetUnitTestHelper(&unitTestHelper);
+
+    {
+        TestClassWithFundamentalMembers readObj;
+        BufferInputStream stream(buffer);
+        ASSERT_TRUE(type->DeserializeBinary(&readObj, stream, context));
+
+        EXPECT_EQ(defaultObj.intValue, readObj.intValue);
         EXPECT_EQ(1.234f, readObj.floatValue);
         EXPECT_EQ(true, readObj.boolValue);
         EXPECT_STREQ("test", readObj.strValue.Str());
@@ -476,14 +514,14 @@ TEST(ReflectionClassTest, TestClassWithDynArrayType_BinarySerialization)
         BufferInputStream stream(buffer);
         ASSERT_TRUE(type->DeserializeBinary(&readObj, stream, context));
 
-        EXPECT_EQ(3u, readObj.arrayOfInts.Size());
+        ASSERT_EQ(3u, readObj.arrayOfInts.Size());
         {
             EXPECT_EQ(10, readObj.arrayOfInts[0]);
             EXPECT_EQ(20, readObj.arrayOfInts[1]);
             EXPECT_EQ(30, readObj.arrayOfInts[2]);
         }
 
-        EXPECT_EQ(2u, readObj.arrayOfObjects.Size());
+        ASSERT_EQ(2u, readObj.arrayOfObjects.Size());
         {
             EXPECT_EQ(1,            readObj.arrayOfObjects[0].intValue);
             EXPECT_EQ(1.0f,         readObj.arrayOfObjects[0].floatValue);

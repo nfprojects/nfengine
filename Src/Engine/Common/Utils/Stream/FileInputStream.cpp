@@ -20,9 +20,9 @@ uint64 FileInputStream::GetSize()
     return mFile.GetSize();
 }
 
-bool FileInputStream::Seek(uint64 position)
+bool FileInputStream::Seek(int64 offset, SeekMode mode)
 {
-    return mFile.Seek(position, SeekMode::Begin);
+    return mFile.Seek(offset, mode);
 }
 
 size_t FileInputStream::Read(void* buffer, size_t num)

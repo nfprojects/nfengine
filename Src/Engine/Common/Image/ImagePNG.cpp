@@ -62,14 +62,14 @@ StringView ImagePNG::GetName() const
 bool ImagePNG::Check(InputStream* stream)
 {
     uint32 signature = 0;
-    stream->Seek(0);
+    stream->Seek(0, SeekMode::Begin);
     if (sizeof(signature) < stream->Read(&signature, sizeof(signature)))
     {
         NFE_LOG_ERROR("Could not read signature from the stream.");
         return false;
     }
 
-    stream->Seek(0);
+    stream->Seek(0, SeekMode::Begin);
 
     return signature == 0x474E5089;
 }

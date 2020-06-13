@@ -168,6 +168,7 @@
     <ClInclude Include="Reflection\ReflectionMemberMetadataBuilder.hpp" />
     <ClInclude Include="Reflection\ReflectionTypeRegistry.hpp" />
     <ClInclude Include="Reflection\ReflectionTypeResolver.hpp" />
+    <ClInclude Include="Reflection\ReflectionUnitTestHelper.hpp" />
     <ClInclude Include="Reflection\ReflectionUtils.hpp" />
     <ClInclude Include="Reflection\SerializationContext.hpp" />
     <ClInclude Include="Reflection\Serializer.hpp" />
@@ -226,6 +227,7 @@
     <ClInclude Include="Utils\MD5.hpp" />
     <ClInclude Include="Utils\Stream\OutputStream.hpp" />
     <ClInclude Include="Utils\ScopedLock.hpp" />
+    <ClInclude Include="Utils\Stream\StreamCommon.hpp" />
     <ClInclude Include="Utils\StringUtils.hpp" />
     <ClInclude Include="Utils\TaskBuilder.hpp" />
     <ClInclude Include="Utils\ThreadPool.hpp" />

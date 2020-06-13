@@ -31,21 +31,32 @@ uint64 BufferInputStream::GetSize()
     return mSize;
 }
 
-bool BufferInputStream::Seek(uint64 position)
+bool BufferInputStream::Seek(int64 offset, SeekMode mode)
 {
     if (!mData)
     {
         return false;
     }
 
-    if (position > (uint64)std::numeric_limits<size_t>::max())
+    uint64 newPosition = std::numeric_limits<uint64>::max();
+    switch (mode)
     {
-        return false;
+    case SeekMode::Begin:
+        newPosition = (uint64)offset;
+        break;
+    case SeekMode::End:
+        newPosition = mSize + offset;
+        break;
+    case SeekMode::Current:
+        newPosition = mPos + offset;
+        break;
+    default:
+        NFE_FATAL("Invalid seek mode");
     }
 
-    if (position < mSize)
+    if (newPosition < mSize)
     {
-        mPos = (size_t)position;
+        mPos = (size_t)newPosition;
         return true;
     }
 

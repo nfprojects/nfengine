@@ -7,6 +7,7 @@
 #pragma once
 
 #include "../nfCommon.hpp"
+#include "../Utils/Stream/StreamCommon.hpp"
 
 #if defined(WIN32)
 #define WIN32_LEAN_AND_MEAN
@@ -18,19 +19,9 @@ namespace NFE {
 namespace Common {
 
 /**
- * File seeking mode.
- */
-enum class SeekMode
-{
-    Begin,   ///< relative to file's beginning
-    Current, ///< relative to current cursor position
-    End,     ///< relative to file's end
-};
-
-/**
  * File access mode.
  */
-enum class AccessMode
+enum class AccessMode : uint8
 {
     No,
     Read,

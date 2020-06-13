@@ -8,6 +8,7 @@
 #include "ReflectionClassType.hpp"
 #include "ReflectionPointerType.hpp"
 #include "../SerializationContext.hpp"
+#include "../ReflectionUnitTestHelper.hpp"
 #include "../ReflectionTypeRegistry.hpp"
 #include "../../Config/ConfigInterface.hpp"
 #include "../../Utils/Stream/OutputStream.hpp"
@@ -20,6 +21,8 @@ namespace RTTI {
 using namespace Common;
 
 const StringView ClassType::TYPE_MARKER("__type");
+
+using MemberPayloadSizeType = uint16;
 
 ClassType::ClassType(const ClassTypeInfo& info)
     : Type(info)
@@ -356,6 +359,8 @@ bool ClassType::SerializeBinary(const void* object, OutputStream* stream, Serial
         const uint32 memberNameStrIndex = context.MapString(StringView(member->GetName()));
         const uint32 typeNameStrIndex = context.MapString(memberType->GetName());
 
+        uint64 streamPosBeforeObject = UINT64_MAX;
+
         if (!context.IsMapping())
         {
             // write member name
@@ -370,9 +375,10 @@ bool ClassType::SerializeBinary(const void* object, OutputStream* stream, Serial
                 return false;
             }
 
-            // TODO
-            uint32 memberPayloadSize = 1;
-            if (!stream->WriteCompressedPositiveInt(memberPayloadSize))
+            streamPosBeforeObject = stream->GetPosition();
+
+            MemberPayloadSizeType memberPayloadSize = 0;
+            if (!stream->Write(memberPayloadSize))
             {
                 return false;
             }
@@ -381,8 +387,41 @@ bool ClassType::SerializeBinary(const void* object, OutputStream* stream, Serial
         // deserialize the member if the type is correct
         if (!memberType->SerializeBinary(member->GetMemberPtr(object), stream, context))
         {
-            // TOOO skip current member
             return false;
+        }
+
+        // write member payload size
+        if (!context.IsMapping())
+        {
+            const uint64 streamPosAfterObject = stream->GetPosition();
+
+            // Note: subtract sizeof(MemberPayloadSizeType), because (streamPosAfterObject-streamPosBeforeObject) includes
+            // both the object and payload size marker in the data stream
+            const uint64 payloadSize = streamPosAfterObject - streamPosBeforeObject - sizeof(MemberPayloadSizeType);
+            if (payloadSize > std::numeric_limits<MemberPayloadSizeType>::max())
+            {
+                NFE_LOG_ERROR("Sserialization failed. Member payload is too large");
+                return false;
+            }
+
+            if (!stream->Seek(streamPosBeforeObject, SeekMode::Begin))
+            {
+                NFE_LOG_ERROR("Sserialization failed. Failed to seek to write member payload size");
+                return false;
+            }
+
+            const MemberPayloadSizeType payloadSizeToWrite = static_cast<MemberPayloadSizeType>(payloadSize);
+            if (!stream->Write(payloadSizeToWrite))
+            {
+                NFE_LOG_ERROR("Sserialization failed. Failed to write member payload size");
+                return false;
+            }
+
+            if (!stream->Seek(streamPosAfterObject, SeekMode::Begin))
+            {
+                NFE_LOG_ERROR("Sserialization failed. Failed to seek back after writing member payload size");
+                return false;
+            }
         }
 
         // TODO update payload size
@@ -402,6 +441,8 @@ bool ClassType::DeserializeBinary(void* outObject, InputStream& stream, const Se
     // TODO bulk deserialization of POD types
 
     TypeRegistry& typeRegistry = TypeRegistry::GetInstance();
+
+    const UnitTestHelper* unitTestHelper = context.GetUnitTestHelper();
 
     // patch serialized members only
     for (uint32 i = 0; i < numMembers; ++i)
@@ -438,11 +479,36 @@ bool ClassType::DeserializeBinary(void* outObject, InputStream& stream, const Se
 
         // read amount of bytes in the stream for this member
         // note: this value will be positive
-        uint32 memberPayloadSize = 0;
-        if (!stream.ReadCompressedPositiveInt(memberPayloadSize))
+        MemberPayloadSizeType memberPayloadSize = 0;
+        if (!stream.Read(memberPayloadSize))
         {
             NFE_LOG_ERROR("Deserialization failed. Corrupted data?");
             return false;
+        }
+
+        const Type* serializedType = typeRegistry.GetExistingType(serializedTypeName);
+
+        if (unitTestHelper)
+        {
+            if (unitTestHelper->mMissingTypes.Find(serializedType) != unitTestHelper->mMissingTypes.End())
+            {
+                serializedType = nullptr;
+            }
+        }
+
+        // serialized type not known
+        if (!serializedType)
+        {
+            // TODO report unknown type
+            NFE_LOG_WARNING("Failed to deserialize member '%.*s' of class %s. Type in data '%.*s' is not know. Probably the type was removed from code.",
+                memberName.Length(), memberName.Data(), GetName().Str(), serializedTypeName.Length(), serializedTypeName.Data());
+
+            if (!stream.Seek(memberPayloadSize, SeekMode::Current))
+            {
+                NFE_LOG_ERROR("Deserialization failed. Failed to skip %u bytes. Corrupted data?", (uint32)memberPayloadSize);
+                return false;
+            }
+            continue;
         }
 
         // find member with given name
@@ -460,17 +526,6 @@ bool ClassType::DeserializeBinary(void* outObject, InputStream& stream, const Se
         }
 
         const Type* memberType = targetMember->GetType();
-        const Type* serializedType = typeRegistry.GetExistingType(serializedTypeName);
-
-        // serialized type not known
-        if (!serializedType)
-        {
-            // TOOO skip current member
-            // TODO report unknown type
-            NFE_LOG_WARNING("Failed to deserialize member '%.*s' of class %s. Type in data '%s' is not know. Probably the type was removed from code.",
-                memberName.Length(), memberName.Data(), GetName().Str(), serializedTypeName.Length(), serializedTypeName.Data());
-            return false;
-        }
 
         if (memberType != serializedType)
         {

@@ -15,9 +15,15 @@ static const SharedPtr<IObject> c_dummyObject;
 SerializationContext::SerializationContext(uint32 version)
     : mStage(Stage::Mapping)
     , mVersion(version)
+    , mUnitTestHelper(nullptr)
 { }
 
 SerializationContext::~SerializationContext() = default;
+
+void SerializationContext::SetUnitTestHelper(const UnitTestHelper* helper)
+{
+    mUnitTestHelper = helper;
+}
 
 void SerializationContext::InitStage(Stage newStage)
 {

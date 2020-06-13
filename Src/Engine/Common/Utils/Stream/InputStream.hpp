@@ -8,6 +8,7 @@
 #pragma once
 
 #include "../CompressedInt.hpp"
+#include "StreamCommon.hpp"
 
 namespace NFE {
 namespace Common {
@@ -28,10 +29,10 @@ public:
     virtual uint64 GetSize() = 0;
 
     /**
-     * Jump to specific position in stream.
+     * Seek the stream.
      * @return true on success.
      */
-    virtual bool Seek(uint64 position) = 0;
+    virtual bool Seek(int64 offset, SeekMode mode) = 0;
 
     /**
      * Fetch bytes and store in external buffer.

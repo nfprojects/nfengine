@@ -22,7 +22,8 @@ public:
     FileOutputStream(const StringView& fileName);
 
     virtual size_t Write(const void* buffer, size_t num) override;
-    virtual bool Seek(uint64 position) override;
+    virtual bool Seek(int64 offset, SeekMode mode) override;
+    virtual uint64 GetPosition() const override;
 };
 
 } // namespace Common

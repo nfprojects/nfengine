@@ -29,8 +29,8 @@ struct Token;
 template <class T> class DataTranslator;
 
 // FileSystem
-enum class SeekMode;
-enum class AccessMode;
+enum class SeekMode : uint8;
+enum class AccessMode : uint8;
 enum class PathType;
 class File;
 class FileAsync;

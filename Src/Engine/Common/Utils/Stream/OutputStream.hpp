@@ -8,6 +8,7 @@
 #pragma once
 
 #include "../CompressedInt.hpp"
+#include "StreamCommon.hpp"
 
 namespace NFE {
 namespace Common {
@@ -24,8 +25,11 @@ public:
     // Write data to the stream
     virtual size_t Write(const void* buffer, size_t num) = 0;
 
+    // Get current write cursor position
+    virtual uint64 GetPosition() const = 0;
+
     // Set write cursor position
-    virtual bool Seek(uint64 position) = 0;
+    virtual bool Seek(int64 offset, SeekMode mode) = 0;
 
     template<typename T>
     NFE_FORCE_INLINE bool Write(const T& data)

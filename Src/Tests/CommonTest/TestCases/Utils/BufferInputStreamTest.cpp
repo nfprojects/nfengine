@@ -27,7 +27,7 @@ TEST_F(BufferInputStreamTest, NullBufferTest)
 
     // Size should be as in constructor, methods should all fail
     ASSERT_EQ(stream.GetSize(), gTextSize);
-    ASSERT_EQ(stream.Seek(1), false);
+    ASSERT_EQ(stream.Seek(1, SeekMode::Begin), false);
     ASSERT_EQ(stream.Read(nullptr, 1), 0u);
 }
 
@@ -48,7 +48,7 @@ TEST_F(BufferInputStreamTest, StringBufferSeekTest)
 
     // Seek to the middle of the stream (gText/2) and compare it with 2nd half of gText
     size_t halfSize = gTextSize / 2;
-    bool seekResult = stream.Seek(halfSize);
+    bool seekResult = stream.Seek(halfSize, SeekMode::Begin);
     ASSERT_EQ(seekResult, true);
     size_t readResult = stream.Read(mBuffer.get(), halfSize);
     ASSERT_EQ(readResult, halfSize);

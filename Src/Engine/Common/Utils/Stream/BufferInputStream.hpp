@@ -24,7 +24,7 @@ public:
     BufferInputStream(const Buffer& buffer);
 
     uint64 GetSize() override;
-    bool Seek(uint64 position) override;
+    bool Seek(int64 offset, SeekMode mode) override;
     size_t Read(void* buffer, size_t num) override;
 };
 

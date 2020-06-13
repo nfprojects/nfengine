@@ -11,6 +11,8 @@
 namespace NFE {
 namespace RTTI {
 
+struct UnitTestHelper;
+
 class NFCOMMON_API SerializationContext
 {
 public:
@@ -28,8 +30,11 @@ public:
     SerializationContext(uint32 version = CurrentVersion);
     ~SerializationContext();
 
+    void SetUnitTestHelper(const UnitTestHelper* helper);
+
     NFE_FORCE_INLINE uint32 GetVersion() const { return mVersion; }
     NFE_FORCE_INLINE bool IsMapping() const { return mStage == Stage::Mapping; }
+    NFE_FORCE_INLINE const UnitTestHelper* GetUnitTestHelper() const { return mUnitTestHelper; }
 
     NFE_FORCE_INLINE const Common::DynArray<Common::StringView>& GetMappedStrings() const { return mStringsTable; }
     NFE_FORCE_INLINE const Common::DynArray<ObjectPtr>& GetMappedObjects() const { return mObjectsTable; }
@@ -69,6 +74,8 @@ private:
 
     // used during deserialization
     Common::Buffer mStringBuffer;
+
+    const UnitTestHelper* mUnitTestHelper;
 };
 
 } // namespace RTTI

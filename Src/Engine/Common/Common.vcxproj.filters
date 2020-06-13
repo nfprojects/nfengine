@@ -680,6 +680,12 @@
     <ClInclude Include="Utils\LanguageUtils.hpp">
       <Filter>Utils</Filter>
     </ClInclude>
+    <ClInclude Include="Reflection\ReflectionUnitTestHelper.hpp">
+      <Filter>Reflection</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils\Stream\StreamCommon.hpp">
+      <Filter>Utils\Stream</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="PCH.cpp" />

@@ -28,11 +28,16 @@ size_t BufferOutputStream::GetSize() const
 
 size_t BufferOutputStream::Write(const void* buffer, size_t numBytes)
 {
-    size_t targetSize = mCursor + numBytes;
+    NFE_ASSERT(mCursor <= mBuffer.Size(), "Cursor (%zu) is past the buffer end (%zu)", mCursor, mBuffer.Size());
 
-    if (!mBuffer.Resize(targetSize))
+    const size_t targetSize = mCursor + numBytes;
+
+    if (mBuffer.Size() < targetSize)
     {
-        return 0;
+        if (!mBuffer.Resize(targetSize))
+        {
+            return 0;
+        }
     }
 
     memcpy(reinterpret_cast<char*>(mBuffer.Data()) + mCursor, buffer, numBytes);
@@ -41,11 +46,32 @@ size_t BufferOutputStream::Write(const void* buffer, size_t numBytes)
     return numBytes;
 }
 
-bool BufferOutputStream::Seek(uint64 position)
+uint64 BufferOutputStream::GetPosition() const
 {
-    if (position < std::numeric_limits<size_t>::max())
+    return mCursor;
+}
+
+bool BufferOutputStream::Seek(int64 offset, SeekMode mode)
+{
+    uint64 newPosition = std::numeric_limits<uint64>::max();
+    switch (mode)
     {
-        mCursor = (size_t)position;
+    case SeekMode::Begin:
+        newPosition = (uint64)offset;
+        break;
+    case SeekMode::End:
+        newPosition = mBuffer.Size() + offset;
+        break;
+    case SeekMode::Current:
+        newPosition = mCursor + offset;
+        break;
+    default:
+        NFE_FATAL("Invalid seek mode");
+    }
+
+    if (newPosition <= mBuffer.Size())
+    {
+        mCursor = (size_t)newPosition;
         return true;
     }
 

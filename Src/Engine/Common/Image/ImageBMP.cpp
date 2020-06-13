@@ -135,7 +135,7 @@ bool ReadPixels(InputStream* stream, size_t offset, uint32 width, uint32 height,
                 imageData.get()[4 * (y * width + x) + 3] = 255;
             }
             offset += lineSizeActual;
-            stream->Seek(offset);
+            stream->Seek(offset, SeekMode::Begin);
         }
     }
     else
@@ -190,7 +190,7 @@ bool ReadPixels(InputStream* stream, size_t offset, uint32 width, uint32 height,
                 }
             }
             offset += lineSizeActual;
-            stream->Seek(offset);
+            stream->Seek(offset, SeekMode::Begin);
         }
     }
 
@@ -248,7 +248,7 @@ bool ReadPixelsWithPalette(InputStream* stream, size_t offset, uint32 width,
             imageData.get()[imageDataIndex + 3] = 255;
         }
         offset += lineSizeActual;
-        stream->Seek(offset);
+        stream->Seek(offset, SeekMode::Begin);
     }
 
     return img->SetData(imageData.get(), width, height, ImageFormat::RGBA_UByte);
@@ -267,14 +267,14 @@ StringView ImageBMP::GetName() const
 bool ImageBMP::Check(InputStream* stream)
 {
     uint16 signature = 0;
-    stream->Seek(0);
+    stream->Seek(0, SeekMode::Begin);
     if (sizeof(signature) < stream->Read(&signature, sizeof(signature)))
     {
         NFE_LOG_ERROR("Could not read signature from the stream.");
         return false;
     }
 
-    stream->Seek(0);
+    stream->Seek(0, SeekMode::Begin);
 
     return signature == 0x4D42;
 }
@@ -319,7 +319,7 @@ bool ImageBMP::Load(Image* img, InputStream* stream)
     {
         // Jump to the palette
         uint32 paletteOffset = sizeof(BitmapFileHeader) + infoHeader.size;
-        stream->Seek(paletteOffset);
+        stream->Seek(paletteOffset, SeekMode::Begin);
 
         // Resize & fill the palette
         palette.Resize(infoHeader.clrUsed);
@@ -338,7 +338,7 @@ bool ImageBMP::Load(Image* img, InputStream* stream)
     colorMask[3] = infoHeader.alphaMask;
 
     // Jump to the pixels
-    stream->Seek(fileHeader.offBits);
+    stream->Seek(fileHeader.offBits, SeekMode::Begin);
     size_t offset = fileHeader.offBits;
 
     // Read pixels
