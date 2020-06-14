@@ -23,23 +23,23 @@ class GtestParser():
         self.root['testNo'] = self.root['node'].attrib['tests']
         self.colorizerInstance = color.Colorizer()
         self.failLinks = []
-        sys.stdout.write('Opened testsuite: ' + self.root['node'].attrib['name'] + '\n')
+        print('Opened testsuite: ' + self.root['node'].attrib['name'])
 
 
     def parseXml(self):
         testSuite = self.root['node'].findall('testsuite')
         for suite in testSuite:
-            sys.stdout.write(tabIndent + suite.attrib['name'] + ' results:\n')
+            print("{}{} results:".format(tabIndent,suite.attrib['name']))
             testCase = suite.findall('testcase')
             for case in testCase:
-                sys.stdout.write(2 * tabIndent)
+                print(2 * tabIndent, end='')
                 if case.find('failure') is None:
                     self.colorizerInstance.printMulti('PASSED ', 'green', None, True)
                 else:
                     self.colorizerInstance.printMulti('FAILED ', 'red', None, True)
                     self.failLinks.append(suite.attrib['name'] + '.' + case.attrib['name'])
                 self.colorizerInstance.printMulti(case.attrib['name'], 'white', None, True)
-                sys.stdout.write('\n')
+                print('')
 
 
     def parseXmlFailsOnly(self):
@@ -51,11 +51,11 @@ class GtestParser():
                     self.failLinks.append(suite.attrib['name'] + '.' + case.attrib['name'])
         for failLink in self.failLinks:
             dotPosition = failLink.find('.')
-            sys.stdout.write(2 * tabIndent)
+            print(2 * tabIndent, end='')
             self.colorizerInstance.printMulti('FAILED ', 'red', None, True)
-            sys.stdout.write(' ' + failLink[:dotPosition] + '\\')
+            print(' ' + failLink[:dotPosition] + '\\', end='')
             self.colorizerInstance.printMulti(failLink[dotPosition + 1:], 'white', None, True)
-            sys.stdout.write('\n')
+            print('')
         if len(self.failLinks) <= 0:
             self.colorizerInstance.printMulti(2 * tabIndent + 'ALL TESTS PASSED\n', 'green', None, True)
 

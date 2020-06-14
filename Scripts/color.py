@@ -92,7 +92,7 @@ class Colorizer():
 
         # color & print
         windll.Kernel32.SetConsoleTextAttribute(self.std_output_hdl, color)
-        print text,
+        print(text, end='')
         windll.Kernel32.SetConsoleTextAttribute(self.std_output_hdl, self.defColor)
 
 
@@ -125,7 +125,7 @@ class Colorizer():
             color = self.resetColor
 
         # color & print
-        print color + text + self.resetColor,
+        print(color + text + self.resetColor, end='')
 
 
     def printMulti(self, text, fgColor, bgColor, isBold):
@@ -134,4 +134,4 @@ class Colorizer():
         elif _platform == "win32":
             self.printWin(text, fgColor, bgColor, isBold)
         else:
-            print text,
+            print(text, end='')

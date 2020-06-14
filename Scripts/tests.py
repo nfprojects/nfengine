@@ -70,9 +70,9 @@ def runTest(args, isVerbose):
     testNoCurrent = 0
     for line in linesIterator:
         if isVerbose is True:
-            print line,
+            print(line, end='')
         elif line[:5] == "[ RUN":
-            print "Running testcase " + str(testNoCurrent) + "/" + str(testNo) + "...\r",
+            print("Running testcase " + str(testNoCurrent) + "/" + str(testNo) + "...\r", end='')
             testNoCurrent += 1
 
 
@@ -96,9 +96,9 @@ def main(argv):
     args = argParser.parse_args()
 
     if args.perf:
-        testList = ['nfCommonPerfTest']
+        testList = ['CommonPerfTest']
     else:
-        testList = ['nfCommonTest', 'nfRendererTest']
+        testList = ['CommonTest', 'RendererTest']
 
     # playing with paths
     currentPath = os.path.realpath(__file__)
@@ -120,8 +120,8 @@ def main(argv):
     # searching for tests if needed
     findPath = os.path.normpath(findPath)
     if findTests is True:
-        print 'Current directory is ' + currentPath
-        print '\nLooking for test files in {}...'.format(findPath)
+        print('Current directory is ' + currentPath)
+        print('\nLooking for test files in {}...'.format(findPath))
 
         # adding .exe on win if user forgot
         if sys.platform == "win32":
@@ -133,7 +133,7 @@ def main(argv):
         # running search to fill pathList
         isPath = args.path is not None
         pathList = findTestsIntoPaths(findPath, testList, isPath)
-        print '{} test files found.\n'.format(len(pathList))
+        print('{} test files found.\n'.format(len(pathList)))
 
     # parsing gtest arguments
     gtestArgs = ''
@@ -142,7 +142,7 @@ def main(argv):
 
     # running the loop
     if len(pathList) > 0:
-        print '\nRunning found tests ====='
+        print('\nRunning found tests =====')
 
     if args.time:
         timeTotal = time.time()
@@ -157,7 +157,7 @@ def main(argv):
 
         # check if test file is valid
         if os.path.isfile(testPath) and os.access(testPath, os.X_OK):
-            print '\n====Running {} for {}'.format(nameFromPath(testPath), typeFromPath(testPath))
+            print('\n====Running {} for {}'.format(nameFromPath(testPath), typeFromPath(testPath)))
 
             # building args for subprocess
             testArgs = [testPath, '--gtest_output=xml']
@@ -168,7 +168,7 @@ def main(argv):
             runTest(testArgs, args.verbose)
 
             # managing test's output xml
-            print '====Parsing {} XML'.format(nameFromPath(testPath))
+            print('====Parsing {} XML'.format(nameFromPath(testPath)))
             if os.path.exists(xmlPath):
                 testParser = xmlParser.GtestParser(xmlPath)
                 if args.quiet:
@@ -182,28 +182,28 @@ def main(argv):
                                                     testParser.failLinks))
                 os.remove(xmlPath)
             else:
-                print '====Output XML for {} not found in: {}'.format(nameFromPath(testPath),xmlPath)
+                print('====Output XML for {} not found in: {}'.format(nameFromPath(testPath),xmlPath))
 
             if args.time:
-                print 'Test ran for {:.2f} seconds.'.format(time.time() - timeTest)
+                print('Test ran for {:.2f} seconds.'.format(time.time() - timeTest))
 
         else:
-            print '===={} NOT FOUND!'.format(nameFromPath(testPath).upper())
+            print('===={} NOT FOUND!'.format(nameFromPath(testPath).upper()))
 
     if len(fails) > 0:
-        print ('\n====\nTo run again failed tests, use commands shown below:\n')
+        print('\n====\nTo run again failed tests, use commands shown below:\n')
 
         for fail in fails:
-            print os.path.normpath('./Scripts/tests.py'),
-            print fail[0]
+            print(os.path.normpath('./Scripts/tests.py'),end='')
+            print(fail[0])
 
     if args.time:
-        print '====All tests ran for {:.2f} seconds'.format(time.time() - timeTotal)
+        print('====All tests ran for {:.2f} seconds'.format(time.time() - timeTotal))
 
 
 if __name__ == '__main__':
     if sys.platform == 'linux' or sys.platform == 'linux2' or sys.platform == 'win32':
         main(sys.argv)
     else:
-        print 'ERROR: Platform not supported!'
+        print('ERROR: Platform not supported!')
         exit(1)
