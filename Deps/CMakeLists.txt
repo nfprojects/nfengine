@@ -60,7 +60,7 @@ SET(INSTALL_GTEST OFF CACHE BOOL "Enable installation of googletest. (Projects e
 ADD_SUBDIRECTORY(googletest)
 
 # remainders which don't need additional options
-# ADD_SUBDIRECTORY(freetype2) #TODO
+ADD_SUBDIRECTORY(freetype2)
 ADD_SUBDIRECTORY(libsquish)
 ADD_SUBDIRECTORY(nfenginedeps)
 
@@ -97,7 +97,7 @@ ADD_CUSTOM_COMMAND(TARGET NFEDepsPostBuild POST_BUILD
                    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:OGLCompiler> ${NFEDEPS_LIB_DIRECTORY}
                    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:SPIRV> ${NFEDEPS_LIB_DIRECTORY}
                    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:gtest> ${NFEDEPS_LIB_DIRECTORY}
-		   # COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:freetype> ${NFEDEPS_LIB_DIRECTORY}
+                   COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:freetype> ${NFEDEPS_LIB_DIRECTORY}
                    VERBATIM
 )
 

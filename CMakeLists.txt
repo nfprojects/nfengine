@@ -6,6 +6,15 @@ CMAKE_MINIMUM_REQUIRED(VERSION 2.6)
 
 PROJECT(nfEngine)
 
+IF("${CMAKE_BINARY_DIR}" STREQUAL "${CMAKE_SOURCE_DIR}")
+    MESSAGE(FATAL_ERROR
+            "In-source build is not allowed. Please, make a build directory and "
+            "run CMake there, ex:\n"
+            "    $ mkdir build; cd build\n"
+            "    $ cmake .."
+            )
+ENDIF("${CMAKE_BINARY_DIR}" STREQUAL "${CMAKE_SOURCE_DIR}")
+
 MESSAGE("Generating Makefile for nfEngine project")
 
 INCLUDE(FindPkgConfig)
