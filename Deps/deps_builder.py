@@ -14,20 +14,19 @@ import time
 
 
 class DepsBuilder:
-    def __init__(self, projectName, generator, testDefine, deps, testDeps, platforms, configurations):
+    def __init__(self, projectName, generator, deps, platforms, configurations):
         signal.signal(signal.SIGINT, self.InterruptHandler)
 
         self.mProjectName = projectName
         self.mGenerator = generator
         self.mDeps = deps
-        self.mTestDeps = testDeps
-        self.mTestDefine = testDefine
         self.mPlatforms = platforms
         self.mConfigs = configurations
         self.mAnimThread = None
         self.mAnimDone = False
         self.mBuildAllPlats = False
         self.mBuildAllConfigs = False
+        self.mThreads = 0
 
         if platforms is None:
             self.mPlatforms = ["x64"]
@@ -41,7 +40,7 @@ class DepsBuilder:
 
         print("=== " + self.mProjectName + " dependency builder ===\n")
 
-        if platform.system() is not "Windows":
+        if platform.system() != "Windows":
             print("This script is designed to work under Windows to help build dependencies for MSVC.")
             print("Linux builds directly include CMake projects, so this script is not necessary. In")
             print("order to build dependencies on Linux, just run CMake on the project and everything")
@@ -59,8 +58,8 @@ class DepsBuilder:
                             help="Clean given platform/configuration.")
         parser.add_argument('--noanim', dest='noanim', action="store_true",
                             help="Disable progress animation (useful for non-terminal enviroments, ex. VS Output window)")
-        parser.add_argument('--tests', dest='tests', action="store_true",
-                            help="Include dependencies required for running tests.")
+        parser.add_argument('-t', '--threads', dest='threads', nargs='?', default="",
+                            help="Build on multiple threads. Leave empty to use max CPU count.")
 
         try:
             self.mArgs = parser.parse_args()
@@ -90,16 +89,22 @@ class DepsBuilder:
             print('\n')
             sys.exit(1)
 
+        if self.mArgs.threads != "" and self.mArgs.threads is not None:
+            try:
+                self.mThreads = int(self.mArgs.threads)
+            except:
+                print("Provided thread count is invalid, must be an integer")
+                sys.exit(1)
+
+            if self.mThreads <= 0:
+                print("Provided thread count is invalid, should be 1 or more")
+                sys.exit(1)
+
+
         if self.mBuildAllPlats or self.mBuildAllConfigs:
             print() # for clear output sake
 
-        if self.mArgs.tests:
-            self.mBuildDoneFileName = ".build_tests_done"
-        else:
-            self.mBuildDoneFileName = ".build_done"
-
-        if self.mArgs.tests and self.mTestDefine is None:
-            Exception("There's no test-related CMake define provided, cannot enable tests")
+        self.mBuildDoneFileName = ".build_done"
 
         print("Build details:")
         if self.mBuildAllPlats:
@@ -111,7 +116,10 @@ class DepsBuilder:
         else:
             print("    Configuration: " + self.mArgs.config)
         print("    Clean: " + str(self.mArgs.clean))
-        print("    Build test deps: " + str(self.mArgs.tests) + "\n")
+        if self.mThreads > 0:
+            print("    Thread count: " + str(self.mThreads))
+        else:
+            print("    Thread count: Max available")
 
     def AnimProgress(self, stepString):
         self.mAnimDone = False
@@ -148,7 +156,7 @@ class DepsBuilder:
     def CallStage(self, prompt, pargs, stageId=0, stageCount=0):
         capture = not self.mArgs.verbose
 
-        if (stageCount > 0):
+        if (stageCount > 1):
             prompt = str(stageId) + "/" + str(stageCount) + " " + prompt
 
         if not self.mArgs.verbose and not self.mArgs.noanim:
@@ -167,7 +175,7 @@ class DepsBuilder:
             self.mAnimThread = None
 
         if not self.mArgs.verbose:
-            if result.returncode is not 0:
+            if result.returncode != 0:
                 if self.mArgs.noanim:
                     print("   ==> " + prompt + "... FAILED")
                 else:
@@ -182,11 +190,6 @@ class DepsBuilder:
     def CMakeCreate(self):
         os.chdir(self.mCMakeDir)
 
-        if self.mArgs.tests:
-            enableTests = '1'
-        else:
-            enableTests = '0'
-
         process = [
             "cmake",
             "../../..",
@@ -194,9 +197,6 @@ class DepsBuilder:
             "-G", self.mGenerator,
             "-A", self.mCurrentPlat
         ]
-
-        if self.mTestDefine is not None:
-            process.append("-D" + self.mTestDefine + "=" + enableTests)
 
         self.CallStage("Creating build files for " + self.mCurrentPlat + "/" + self.mCurrentConfig, process)
 
@@ -206,13 +206,22 @@ class DepsBuilder:
         os.chdir(self.mCMakeDir)
 
         solution = project + ".sln"
+        threadArg = "/m"
+        if self.mThreads > 0:
+            threadArg += ":" + str(self.mThreads)
+
         process = [
             "msbuild",
             solution,
+            threadArg,
             "/t:" + target,
             "/p:Configuration=" + self.mCurrentConfig + ";Platform=" + self.mCurrentPlat
         ]
-        self.CallStage("Building " + target, process, stageId, stageCount)
+
+        if self.mThreads == 1:
+            self.CallStage("Building " + target, process, stageId, stageCount)
+        else:
+            self.CallStage("Building", process, stageId, stageCount)
 
         os.chdir(self.mScriptDir)
 
@@ -270,16 +279,19 @@ class DepsBuilder:
 
         self.CMakeCreate()
 
-        if self.mArgs.tests:
-            stageId = 0
-            for testdep in self.mTestDeps:
-                stageId += 1
-                self.MSBuild(testdep[0], testdep[1], stageId, len(self.mTestDeps))
-        else:
-            stageId = 0
+        stageId = 0
+
+        if self.mThreads == 1:
+            # Build step-by-step on single-threaded build
             for dep in self.mDeps:
                 stageId += 1
                 self.MSBuild(dep[0], dep[1], stageId, len(self.mDeps))
+        else:
+            # Multithreaded builds run faster if you trigger just the last step
+            # Then MSBuild will be able to work on multiple projects at once
+            stageId = 1
+            dep = self.mDeps[-1]
+            self.MSBuild(dep[0], dep[1], stageId, stageId)
 
         # touch build done file
         open(self.mBuildDoneFile, 'w').close()
@@ -329,9 +341,6 @@ def main():
         ("nfEngineDeps", "NFEDepsPostBuild")
     ]
 
-    testDeps = [
-    ]
-
     plats = [
         "x64"
     ]
@@ -344,8 +353,7 @@ def main():
     try:
         builder = DepsBuilder(projectName="nfEngine",
                               generator="Visual Studio 16 2019",
-                              testDefine="",
-                              deps=deps, testDeps=testDeps,
+                              deps=deps,
                               platforms=plats, configurations=confs)
         builder.Build()
     except Exception as e:

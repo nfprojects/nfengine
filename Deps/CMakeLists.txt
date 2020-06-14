@@ -72,7 +72,7 @@ ENDIF(NOT NFEDEPS_LIB_DIRECTORY)
 
 
 # Copy outputs via a custom target
-ADD_CUSTOM_TARGET(NFEDepsPostBuild ALL DEPENDS glslang jpeg squish png_static zlibstatic
+ADD_CUSTOM_TARGET(NFEDepsPostBuild ALL DEPENDS glslang jpeg squish png_static zlibstatic gtest freetype
     COMMENT "Commands called post-build NFE dependencies"
 )
 
