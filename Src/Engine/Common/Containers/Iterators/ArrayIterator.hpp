@@ -21,7 +21,7 @@ class ArrayIterator;
  * Array iterator with read-only access.
  */
 template<typename ElementType>
-class ConstArrayIterator : public std::iterator<std::bidirectional_iterator_tag, ElementType>
+class ConstArrayIterator
 {
     template<typename T>
     friend class ConstArrayIterator;
@@ -29,6 +29,11 @@ class ConstArrayIterator : public std::iterator<std::bidirectional_iterator_tag,
 public:
     // C++ standard iterator traits
     using self_type = ConstArrayIterator;
+	using iterator_category = std::bidirectional_iterator_tag;
+	using value_type = ElementType;
+	using difference_type = std::ptrdiff_t;
+	using pointer = ElementType*;
+	using reference = ElementType&;
 
     NFE_FORCE_INLINE ConstArrayIterator() : mElements(nullptr), mIndex(0) { }
     NFE_FORCE_INLINE ConstArrayIterator(const ElementType* elements, int32 index)
