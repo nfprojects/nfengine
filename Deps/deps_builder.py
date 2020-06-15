@@ -233,7 +233,7 @@ class DepsBuilder:
             raise OSError()
 
     def SwitchCWDToScriptRoot(self):
-        os.chdir(os.path.dirname(sys.argv[0]))
+        os.chdir(os.path.dirname(os.path.realpath(sys.argv[0])))
 
     def SetupBuildTree(self):
         if not self.mArgs.clean:
@@ -300,7 +300,6 @@ class DepsBuilder:
         print("Build progress:")
         self.CheckEnv()
         self.SwitchCWDToScriptRoot()
-
         if self.mBuildAllPlats and self.mBuildAllConfigs:
             for p in self.mPlatforms:
                 for c in self.mConfigs:
