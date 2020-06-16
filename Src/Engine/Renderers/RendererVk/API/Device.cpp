@@ -285,6 +285,7 @@ bool Device::Init(const DeviceInitParams* params)
     descPoolInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
     descPoolInfo.poolSizeCount = descPoolSizes.Size();
     descPoolInfo.pPoolSizes = descPoolSizes.Data();
+    descPoolInfo.flags = VK_DESCRIPTOR_POOL_CREATE_FREE_DESCRIPTOR_SET_BIT;
     for (const auto& s: descPoolSizes)
         descPoolInfo.maxSets += s.descriptorCount;
     result = vkCreateDescriptorPool(mDevice, &descPoolInfo, nullptr, &mDescriptorPool);

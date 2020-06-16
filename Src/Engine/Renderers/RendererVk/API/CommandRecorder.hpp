@@ -28,9 +28,13 @@ class CommandRecorder: public ICommandRecorder
     bool mActiveRenderPass;
     ResourceBindingLayout* mResourceBindingLayout;
     Buffer* mBoundVolatileBuffers[VK_MAX_VOLATILE_BUFFERS];
+    uint32 mBoundVolatileOffsets[VK_MAX_VOLATILE_BUFFERS];
+    bool mRebindDynamicBuffers;
+
 
     bool WriteDynamicBuffer(Buffer* b, size_t offset, size_t size, const void* data);
     bool WriteVolatileBuffer(Buffer* b, size_t size, const void* data);
+    void RebindDynamicBuffers() const;
 
 public:
     CommandRecorder();

@@ -23,6 +23,7 @@ class Buffer : public IBuffer
     VkDeviceMemory mBufferMemory;
     VkDeviceSize mBufferSize;
     BufferMode mMode;
+    uint32 mVolatileBinding;
 
 public:
     Buffer();

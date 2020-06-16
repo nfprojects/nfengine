@@ -89,11 +89,18 @@ bool ResourceBindingSet::Init(const ResourceBindingSetDesc& desc)
 
 ResourceBindingLayout::ResourceBindingLayout()
     : mPipelineLayout(VK_NULL_HANDLE)
+    , mVolatileBufferLayout(VK_NULL_HANDLE)
+    , mVolatileBufferSet(VK_NULL_HANDLE)
+    , mVolatileBufferSetSlot(0)
 {
 }
 
 ResourceBindingLayout::~ResourceBindingLayout()
 {
+    if (mVolatileBufferSet != VK_NULL_HANDLE)
+        vkFreeDescriptorSets(gDevice->GetDevice(), gDevice->GetDescriptorPool(), 1, &mVolatileBufferSet);
+    if (mVolatileBufferLayout != VK_NULL_HANDLE)
+        vkDestroyDescriptorSetLayout(gDevice->GetDevice(), mVolatileBufferLayout, nullptr);
     if (mPipelineLayout != VK_NULL_HANDLE)
         vkDestroyPipelineLayout(gDevice->GetDevice(), mPipelineLayout, nullptr);
 }
@@ -101,8 +108,6 @@ ResourceBindingLayout::~ResourceBindingLayout()
 bool ResourceBindingLayout::Init(const ResourceBindingLayoutDesc& desc)
 {
     VkResult result = VK_SUCCESS;
-
-    // TODO volatile buffers
 
     Common::DynArray<VkDescriptorSetLayout> dsls;
     dsls.Reserve(desc.numBindingSets);
@@ -118,6 +123,50 @@ bool ResourceBindingLayout::Init(const ResourceBindingLayoutDesc& desc)
         dsls.EmplaceBack(rbs->mDescriptorLayout);
     }
 
+    if (desc.numVolatileCBuffers > 0)
+    {
+        Common::DynArray<VkDescriptorSetLayoutBinding> volatileCBufferBindings;
+        bool setApplied = false;
+        VkDescriptorSetLayoutBinding layoutBinding;
+        VK_ZERO_MEMORY(layoutBinding);
+        for (uint32 i = 0; i < desc.numVolatileCBuffers; ++i)
+        {
+            const VolatileCBufferBinding& vb = desc.volatileCBuffers[i];
+
+            // decode set and bind from slot value
+            if (setApplied)
+            {
+                if ((vb.slot >> 16) != mVolatileBufferSetSlot)
+                {
+                    NFE_LOG_ERROR("Supplied bindings do not belong in the same descriptor set.");
+                    return false;
+                }
+            }
+            else
+            {
+                mVolatileBufferSetSlot = vb.slot >> 16;
+                setApplied = true;
+            }
+
+            layoutBinding.stageFlags = TranslateShaderTypeToVkShaderStage(vb.shaderVisibility);
+            layoutBinding.binding = vb.slot;
+            layoutBinding.descriptorCount = 1;
+            layoutBinding.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC;
+            layoutBinding.pImmutableSamplers = nullptr;
+            volatileCBufferBindings.PushBack(layoutBinding);
+        }
+
+        VkDescriptorSetLayoutCreateInfo descInfo;
+        VK_ZERO_MEMORY(descInfo);
+        descInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
+        descInfo.bindingCount = volatileCBufferBindings.Size();
+        descInfo.pBindings = volatileCBufferBindings.Data();
+        result = vkCreateDescriptorSetLayout(gDevice->GetDevice(), &descInfo, nullptr, &mVolatileBufferLayout);
+        CHECK_VKRESULT(result, "Failed to create Volatile CBuffer Descriptor Set Layout");
+
+        dsls.PushBack(mVolatileBufferLayout);
+    }
+
     VkPipelineLayoutCreateInfo info;
     VK_ZERO_MEMORY(info);
     info.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
@@ -125,6 +174,43 @@ bool ResourceBindingLayout::Init(const ResourceBindingLayoutDesc& desc)
     info.setLayoutCount = dsls.Size();
     result = vkCreatePipelineLayout(gDevice->GetDevice(), &info, nullptr, &mPipelineLayout);
     CHECK_VKRESULT(result, "Failed to create Pipeline Layout for Resource Binding Layout");
+
+    if (desc.numVolatileCBuffers > 0)
+    {
+        VkDescriptorSetAllocateInfo allocInfo;
+        VK_ZERO_MEMORY(allocInfo);
+        allocInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
+        allocInfo.descriptorPool = gDevice->GetDescriptorPool();
+        allocInfo.descriptorSetCount = 1;
+        allocInfo.pSetLayouts = &mVolatileBufferLayout;
+        result = vkAllocateDescriptorSets(gDevice->GetDevice(), &allocInfo, &mVolatileBufferSet);
+        CHECK_VKRESULT(result, "Failed to allocate Volatile Buffer Set");
+
+        for (uint32 i = 0; i < desc.numVolatileCBuffers; ++i)
+        {
+            const VolatileCBufferBinding& vb = desc.volatileCBuffers[i];
+
+            // NOTE I am not sure how Vulkan will behave if we bind the same buffer
+            //      to different descriptors. Check that later on.
+            VkDescriptorBufferInfo bufInfo;
+            VK_ZERO_MEMORY(bufInfo);
+            bufInfo.buffer = gDevice->GetRingBuffer()->GetVkBuffer();
+            bufInfo.offset = 0;
+            bufInfo.range = vb.size;
+
+            VkWriteDescriptorSet writeSet;
+            VK_ZERO_MEMORY(writeSet);
+            writeSet.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+            writeSet.dstSet = mVolatileBufferSet;
+            writeSet.dstBinding = (vb.slot & 0xFFFF);
+            writeSet.dstArrayElement = 0;
+            writeSet.descriptorCount = 1;
+            writeSet.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC;
+            writeSet.pBufferInfo = &bufInfo;
+
+            vkUpdateDescriptorSets(gDevice->GetDevice(), 1, &writeSet, 0, nullptr);
+        }
+    }
 
     return true;
 }

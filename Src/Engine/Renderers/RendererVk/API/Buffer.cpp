@@ -17,6 +17,7 @@ Buffer::Buffer()
     , mBufferMemory(VK_NULL_HANDLE)
     , mBufferSize(0)
     , mMode(BufferMode::Static)
+    , mVolatileBinding(UINT32_MAX)
 {
 }
 
@@ -38,7 +39,7 @@ bool Buffer::Init(const BufferDesc& desc)
     VkBuffer stagingBuffer = VK_NULL_HANDLE;
 
     // Temporary early leave until below types are implemented
-    if (desc.mode == BufferMode::Volatile || desc.mode == BufferMode::GPUOnly || desc.mode == BufferMode::Readback)
+    if (desc.mode == BufferMode::GPUOnly || desc.mode == BufferMode::Readback)
     {
         NFE_LOG_ERROR("Requested unsupported buffer mode");
         return false;

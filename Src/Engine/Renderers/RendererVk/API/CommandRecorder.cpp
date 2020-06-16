@@ -25,9 +25,13 @@ namespace Renderer {
 
 CommandRecorder::CommandRecorder()
     : mCommandBuffer(VK_NULL_HANDLE)
+    , mCommandBufferBeginInfo()
     , mRenderTarget(nullptr)
     , mActiveRenderPass(false)
     , mResourceBindingLayout(nullptr)
+    , mBoundVolatileBuffers()
+    , mBoundVolatileOffsets()
+    , mRebindDynamicBuffers(false)
 {
 }
 
@@ -47,8 +51,12 @@ bool CommandRecorder::Init()
 
 bool CommandRecorder::Begin()
 {
+    mRebindDynamicBuffers = false;
     for (uint32 i = 0; i < VK_MAX_VOLATILE_BUFFERS; ++i)
+    {
         mBoundVolatileBuffers[i] = nullptr;
+        mBoundVolatileOffsets[i] = 0;
+    }
 
     mRenderTarget = nullptr;
 
@@ -115,28 +123,12 @@ void CommandRecorder::BindResources(uint32 slot, const ResourceBindingInstancePt
 void CommandRecorder::BindVolatileCBuffer(uint32 slot, const BufferPtr& buffer)
 {
     Buffer* b = dynamic_cast<Buffer*>(buffer.Get());
-    if (b == nullptr)
-    {
-        NFE_LOG_ERROR("Invalid volatile buffer provided");
-        return;
-    }
+    NFE_ASSERT(b != nullptr, "Invalid volatile buffer provided");
+    NFE_ASSERT(b->mMode == BufferMode::Volatile, "Buffer with invalid mode provided");
+    NFE_ASSERT(slot < VK_MAX_VOLATILE_BUFFERS, "Binding to slot %d impossible (max available slots 0-7).", slot);
 
-    if (b->mMode != BufferMode::Volatile)
-    {
-        NFE_LOG_ERROR("Buffer with invalid mode provided");
-        return;
-    }
-
-    if (slot >= VK_MAX_VOLATILE_BUFFERS)
-    {
-        NFE_LOG_ERROR("Binding to slot %d impossible (max available slots 0-7).", slot);
-        return;
-    }
-
-    if (b != mBoundVolatileBuffers[slot])
-    {
-        mBoundVolatileBuffers[slot] = b;
-    }
+    mBoundVolatileBuffers[slot] = b;
+    mRebindDynamicBuffers = true;
 }
 
 void CommandRecorder::SetResourceBindingLayout(const ResourceBindingLayoutPtr& layout)
@@ -173,11 +165,7 @@ void CommandRecorder::SetRenderTarget(const RenderTargetPtr& renderTarget)
 void CommandRecorder::SetPipelineState(const PipelineStatePtr& state)
 {
     PipelineState* ps = dynamic_cast<PipelineState*>(state.Get());
-    if (ps == nullptr)
-    {
-        NFE_LOG_ERROR("Incorrect pipeline state provided");
-        return;
-    }
+    NFE_ASSERT(ps != nullptr, "Incorrect pipeline state provided");
 
     // TODO support compute bind point
     vkCmdBindPipeline(mCommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, ps->mPipeline);
@@ -227,7 +215,7 @@ bool CommandRecorder::WriteDynamicBuffer(Buffer* b, size_t offset, size_t size, 
     // copy data to Ring Buffer
     uint32 sourceOffset = gDevice->GetRingBuffer()->Write(data, static_cast<uint32>(size));
 
-    if (sourceOffset == std::numeric_limits<uint32>::max())
+    if (sourceOffset == UINT32_MAX)
     {
         NFE_LOG_ERROR("Failed to write temporary data to Ring Ruffer - the Ring Buffer is full");
         return false;
@@ -261,24 +249,21 @@ bool CommandRecorder::WriteDynamicBuffer(Buffer* b, size_t offset, size_t size, 
 
 bool CommandRecorder::WriteVolatileBuffer(Buffer* b, size_t size, const void* data)
 {
-    uint32 writeHead = gDevice->GetRingBuffer()->Write(data, static_cast<uint32>(size));
-    if (writeHead == std::numeric_limits<uint32>::max())
-    {
-        NFE_LOG_ERROR("Failed to write data to Ring Ruffer - the Ring Buffer is full");
-        return false;
-    }
     NFE_UNUSED(b);
-    /*
+
+    uint32 writeHead = gDevice->GetRingBuffer()->Write(data, static_cast<uint32>(size));
+    NFE_ASSERT(writeHead != UINT32_MAX, "Failed to write data to Ring Ruffer - the Ring Buffer is full");
+
     for (uint32 i = 0; i < VK_MAX_VOLATILE_BUFFERS; ++i)
     {
         if (b == mBoundVolatileBuffers[i])
         {
-            vkCmdBindDescriptorSets(mCommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, mResourceBindingLayout->mPipelineLayout,
-                                    mResourceBindingLayout->mVolatileSetSlot, 1, &mResourceBindingLayout->mVolatileBufferSet,
-                                    1, &writeHead);
+            mBoundVolatileOffsets[i] = writeHead;
+            mRebindDynamicBuffers = true;
+            break;
         }
     }
-    */
+
     return true;
 }
 
@@ -409,14 +394,45 @@ void CommandRecorder::Clear(uint32 flags, uint32 numTargets, const uint32* slots
     vkCmdClearAttachments(mCommandBuffer, clearAttsNum, clearAtts, 1, &rect);
 }
 
+void CommandRecorder::RebindDynamicBuffers() const
+{
+    uint32 offsets[VK_MAX_VOLATILE_BUFFERS];
+    uint32 offsetCount = 0;
+    for (uint32 i = 0; i < VK_MAX_VOLATILE_BUFFERS; ++i)
+    {
+        if (mBoundVolatileBuffers[i] != nullptr)
+        {
+            offsets[offsetCount++] = mBoundVolatileOffsets[i];
+        }
+    }
+
+    if (offsetCount > 0)
+    {
+        vkCmdBindDescriptorSets(mCommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, mResourceBindingLayout->mPipelineLayout,
+                                mResourceBindingLayout->mVolatileBufferSetSlot, 1, &mResourceBindingLayout->mVolatileBufferSet,
+                                offsetCount, offsets);
+    }
+}
 
 void CommandRecorder::Draw(uint32 vertexNum, uint32 instancesNum, uint32 vertexOffset, uint32 instanceOffset)
 {
+    if (mRebindDynamicBuffers)
+    {
+        RebindDynamicBuffers();
+        mRebindDynamicBuffers = false;
+    }
+
     vkCmdDraw(mCommandBuffer, vertexNum, instancesNum, vertexOffset, instanceOffset);
 }
 
 void CommandRecorder::DrawIndexed(uint32 indexNum, uint32 instancesNum, uint32 indexOffset, int32 vertexOffset, uint32 instanceOffset)
 {
+    if (mRebindDynamicBuffers)
+    {
+        RebindDynamicBuffers();
+        mRebindDynamicBuffers = false;
+    }
+
     vkCmdDrawIndexed(mCommandBuffer, indexNum, instancesNum, indexOffset, vertexOffset, instanceOffset);
 }
 
