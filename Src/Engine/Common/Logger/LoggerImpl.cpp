@@ -234,6 +234,8 @@ void Logger::Log(LogType type, const char* srcFile, int line, const char* str, .
     if (str == nullptr)
         return;
 
+    srcFile += mPathPrefixLen;
+
     std::unique_ptr<char[]> buffer;
     char* formattedStr = nullptr;
     va_list args, argsCopy;
