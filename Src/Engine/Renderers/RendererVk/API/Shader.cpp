@@ -244,7 +244,7 @@ void Shader::ParseResourceSlots()
         size_t openBracketPos = tokens[1].find('(');
         size_t closeBracketPos = tokens[1].find(')', openBracketPos+1);
 
-        const Common::String tokenName = tokens[1].substr(openBracketPos + 1, closeBracketPos - openBracketPos - 1).c_str();
+        const Common::String tokenName(tokens[1].substr(openBracketPos + 1, closeBracketPos - openBracketPos - 1).c_str());
         SetSlotMap::Iterator it;
         if (tokens[2] == "DescriptorSet" || tokens[2] == "Binding")
         {
@@ -275,7 +275,7 @@ void Shader::ParseResourceSlots()
 
 int Shader::GetResourceSlotByName(const char* name)
 {
-    auto it = mResourceSlotMap.Find(name);
+    auto it = mResourceSlotMap.Find(Common::String(name));
     if (it == mResourceSlotMap.End())
         return -1;
 
