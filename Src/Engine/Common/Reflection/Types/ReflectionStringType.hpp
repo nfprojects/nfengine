@@ -9,6 +9,7 @@
 #include "../../nfCommon.hpp"
 #include "ReflectionType.hpp"
 #include "../ReflectionTypeRegistry.hpp"
+#include "../ReflectionTypeResolver.hpp"
 #include "../../Containers/String.hpp"
 
 
@@ -51,8 +52,8 @@ public:
         typeInfo.size = sizeof(Common::String);
         typeInfo.alignment = alignof(Common::String);
         typeInfo.name = "NFE::Common::String";
-        typeInfo.constructor = []() { return new Common::String; };
-        typeInfo.arrayConstructor = [](uint32 num) { return new Common::String[num]; };
+        typeInfo.constructor = GetObjectConstructor<Common::String>();
+        typeInfo.destructor = GetObjectDestructor<Common::String>();
 
         return new StringType(typeInfo);
     }

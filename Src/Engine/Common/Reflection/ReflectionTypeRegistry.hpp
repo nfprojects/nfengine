@@ -49,6 +49,12 @@ public:
      */
     void Cleanup();
 
+    // write type name in binary form
+    bool SerializeTypeName(const Type* type, Common::OutputStream* stream, SerializationContext& context) const;
+
+    // read type name from binary form
+    bool DeserializeTypeName(const Type** outType, Common::InputStream* stream, SerializationContext& context);
+
 private:
     TypeRegistry() = default;
 

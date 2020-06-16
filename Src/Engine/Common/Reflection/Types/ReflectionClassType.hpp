@@ -129,7 +129,7 @@ public:
         typeInfo.size = sizeof(T);
         typeInfo.alignment = std::alignment_of_v<T>;
         typeInfo.constructor = GetObjectConstructor<T>();
-        typeInfo.arrayConstructor = GetArrayConstructor<T>();
+        typeInfo.destructor = GetObjectDestructor<T>();
 
         TypeCreator creator;
         creator.FinishInitialization(typeInfo);

@@ -9,6 +9,7 @@
 #include "../../nfCommon.hpp"
 #include "ReflectionType.hpp"
 #include "../../Config/ConfigValue.hpp"
+#include "../../Utils/LanguageUtils.hpp"
 
 
 namespace NFE {
@@ -19,7 +20,7 @@ namespace RTTI {
 class NFCOMMON_API FundamentalType : public Type
 {
 public:
-    NFE_FORCE_INLINE FundamentalType(const TypeInfo& info) : Type(info) { }
+    FundamentalType(const TypeInfo& info);
 
     virtual bool SerializeBinary(const void* object, Common::OutputStream* stream, SerializationContext& context) const override final;
     virtual bool DeserializeBinary(void* outObject, Common::InputStream& stream, const SerializationContext& context) const override final;
@@ -110,7 +111,7 @@ public:
                 typeInfo.size = sizeof(T);                                              \
                 typeInfo.alignment = alignof(T);                                        \
                 typeInfo.constructor = []() { return new T(); };                        \
-                typeInfo.arrayConstructor = [](uint32 num) { return new T[num](); };    \
+                typeInfo.destructor = [] (void* ptr) { delete BitCast<T*>(ptr); };      \
                 return new TypeClass(typeInfo);                                         \
             }                                                                           \
         };                                                                              \

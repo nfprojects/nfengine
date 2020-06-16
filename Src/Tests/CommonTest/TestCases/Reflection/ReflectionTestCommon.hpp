@@ -12,6 +12,7 @@
 #include "Engine/Common/Reflection/Types/ReflectionUniquePtrType.hpp"
 #include "Engine/Common/Reflection/Types/ReflectionSharedPtrType.hpp"
 #include "Engine/Common/Reflection/Types/ReflectionNativeArrayType.hpp"
+#include "Engine/Common/Reflection/Types/ReflectionClassType.hpp"
 #include "Engine/Common/Reflection/Types/ReflectionStringType.hpp"
 
 

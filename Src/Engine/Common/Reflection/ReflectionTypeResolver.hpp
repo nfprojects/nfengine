@@ -39,9 +39,8 @@ public:
 };
 
 
-using ConstructorFunc = std::function<void* ()>;
-using ArrayConstructorFunc = std::function<void* (uint32)>;
-
+using ConstructorFunc = std::function<void*(void)>;
+using DestructorFunc = std::function<void(void*)>;
 
 template <typename T>
 typename std::enable_if<!std::is_constructible_v<T>, ConstructorFunc>::type GetObjectConstructor()
@@ -50,31 +49,33 @@ typename std::enable_if<!std::is_constructible_v<T>, ConstructorFunc>::type GetO
     return ConstructorFunc();
 }
 
-/**
- * Get object constructor for non-abstract type.
- */
+template <typename T>
+typename std::enable_if<!std::is_constructible_v<T>, DestructorFunc>::type GetObjectDestructor()
+{
+    // abstract object can't be constructed
+    return DestructorFunc();
+}
+
+// Get object constructor for non-abstract type.
 template <typename T>
 typename std::enable_if<std::is_constructible_v<T>, ConstructorFunc>::type GetObjectConstructor()
 {
-    return []() { return new T; };
+    return [] ()
+    {
+        return new T;
+    };
 }
 
+// Get object destructor for non-abstract type.
 template <typename T>
-typename std::enable_if<!std::is_constructible_v<T>, ArrayConstructorFunc>::type GetArrayConstructor()
+typename std::enable_if<std::is_constructible_v<T>, DestructorFunc>::type GetObjectDestructor()
 {
-    // array of abstract objects can't be constructed
-    return ArrayConstructorFunc();
+    return [] (void* ptr)
+    {
+        T* typedPtr = BitCast<T*>(ptr);
+        delete typedPtr;
+    };
 }
-
-/**
- * Get array constructor for non-abstract type.
- */
-template <typename T>
-typename std::enable_if<std::is_constructible_v<T>, ArrayConstructorFunc>::type GetArrayConstructor()
-{
-    return [](uint32 arraySize) { return new T[arraySize]; };
-}
-
 
 
 /**
@@ -83,7 +84,7 @@ typename std::enable_if<std::is_constructible_v<T>, ArrayConstructorFunc>::type 
 template<typename T>
 const Type* ResolveType()
 {
-    static_assert(!std::is_const_v<T> && !std::is_volatile_v<T>, "Resolved type must be without any decorators");
+    static_assert(!std::is_const_v<T> && !std::is_volatile_v<T>, "Resolved type must have no decorators");
 
     const size_t hash = typeid(T).hash_code();
     const Type* existingType = ITypeRegistry::GetInstance().GetExistingType(hash);

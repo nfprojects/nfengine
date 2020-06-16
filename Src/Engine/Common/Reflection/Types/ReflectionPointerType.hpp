@@ -31,8 +31,8 @@ public:
     // get object type under the pointer
     virtual const Type* GetPointedDataType(const void* uniquePtrObject) const = 0;
 
-    // set object under the pointer
-    virtual void Reset(void* ptrObject, const Type* newDataType = nullptr) const = 0;
+    // set object under the pointer and return its pointer
+    virtual void* Reset(void* ptrObject, const Type* newDataType = nullptr) const = 0;
 
     virtual bool Compare(const void* objectA, const void* objectB) const override;
     virtual bool Clone(void* destObject, const void* sourceObject) const override;

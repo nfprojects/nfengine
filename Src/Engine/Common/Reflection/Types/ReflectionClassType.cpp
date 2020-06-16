@@ -356,7 +356,7 @@ bool ClassType::SerializeBinary(const void* object, OutputStream* stream, Serial
 
         // TODO instead of storing type names as strings use some compressed (symbolic) form?
 
-        const uint32 memberNameStrIndex = context.MapString(StringView(member->GetName()));
+        const uint32 memberNameStrIndex = context.MapString(member->GetName());
         const uint32 typeNameStrIndex = context.MapString(memberType->GetName());
 
         uint64 streamPosBeforeObject = UINT64_MAX;
@@ -517,24 +517,35 @@ bool ClassType::DeserializeBinary(void* outObject, InputStream& stream, const Se
         // target member not found
         if (!targetMember)
         {
-            // TOOO skip current member
             // TODO report missing member
             // TODO deserialize to Config object so it can be used for migration to newer format
             NFE_LOG_WARNING("Failed to deserialize member '%.*s' - it's not present in class %s. Probably it was removed from code.",
                 memberName.Length(), memberName.Data(), GetName().Str());
+
+            if (!stream.Seek(memberPayloadSize, SeekMode::Current))
+            {
+                NFE_LOG_ERROR("Deserialization failed. Failed to skip %u bytes. Corrupted data?", (uint32)memberPayloadSize);
+                return false;
+            }
             return false;
         }
 
         const Type* memberType = targetMember->GetType();
 
+        // member found and type know, but it does not match the type used in code
         if (memberType != serializedType)
         {
-            // TOOO skip current member
             // TODO report member type mismatch
             // TODO perform automatic type conversions if possible (UniquePtr->SharedPtr, NativeArray->DynArray, int8->int32, etc.)
             // TODO deserialize to Config object so it can be used for migration to newer format
             NFE_LOG_WARNING("Failed to deserialize member '%.*s' of class %s. Type in data is '%s', it's expected to be '%s'",
                 memberName.Length(), memberName.Data(), GetName().Str(), serializedType->GetName().Str(), memberType->GetName().Str());
+
+            if (!stream.Seek(memberPayloadSize, SeekMode::Current))
+            {
+                NFE_LOG_ERROR("Deserialization failed. Failed to skip %u bytes. Corrupted data?", (uint32)memberPayloadSize);
+                return false;
+            }
             return false;
         }
 

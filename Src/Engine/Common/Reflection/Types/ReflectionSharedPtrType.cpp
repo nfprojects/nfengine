@@ -17,12 +17,65 @@ namespace RTTI {
 
 using namespace Common;
 
+using ObjectType = SharedPtr<IObject>;
+
 SharedPtrType::SharedPtrType(const TypeInfo& info, const Type* underlyingType)
     : PointerType(info, underlyingType)
 {
     NFE_ASSERT(mUnderlyingType->IsA(GetType<IObject>()), "Reflection: SharedPtr must point to IObject-based class");
+    NFE_ASSERT(mSize == sizeof(ObjectType), "Invalid SharedPtrType size");
+    NFE_ASSERT(mAlignment == alignof(ObjectType), "Invalid SharedPtrType alignment");
 }
 
+void* SharedPtrType::GetPointedData(const void* ptrObject) const
+{
+    NFE_ASSERT(ptrObject, "Trying to access nullptr");
+    const ObjectType& typedObject = *static_cast<const ObjectType*>(ptrObject);
+    return typedObject.Get();
+}
+
+const Type* SharedPtrType::GetPointedDataType(const void* ptrObject) const
+{
+    NFE_ASSERT(ptrObject, "Trying to access nullptr");
+    const ObjectType& typedObject = *static_cast<const ObjectType*>(ptrObject);
+
+    if (typedObject)
+    {
+        if (mUnderlyingType->GetKind() == TypeKind::AbstractClass || mUnderlyingType->GetKind() == TypeKind::PolymorphicClass)
+        {
+            return typedObject.Get()->GetDynamicType();
+        }
+        else
+        {
+            return mUnderlyingType;
+        }
+    }
+
+    return nullptr;
+}
+
+void SharedPtrType::Assign(void* sharedPtrObject, const SharedPtr<IObject>& newPtr) const
+{
+    NFE_ASSERT(sharedPtrObject, "Trying to access nullptr");
+
+    ObjectType& typedObject = *static_cast<ObjectType*>(sharedPtrObject);
+    typedObject = newPtr;
+}
+
+void* SharedPtrType::Reset(void* ptrObject, const Type* newDataType) const
+{
+    NFE_ASSERT(ptrObject, "Trying to access nullptr");
+    ObjectType& typedObject = *static_cast<ObjectType*>(ptrObject);
+    if (newDataType)
+    {
+        typedObject.Reset(newDataType->CreateObject<IObject>());
+    }
+    else
+    {
+        typedObject.Reset();
+    }
+    return typedObject.Get();
+}
 
 bool SharedPtrType::Serialize(const void* object, IConfig& config, ConfigValue& outValue, SerializationContext& context) const
 {

@@ -92,6 +92,7 @@ class TypeCreator<Common::DynArray<T>>
 public:
     using TypeClass = DynArrayTypeImpl<T>;
     using TypeInfoClass = TypeInfo;
+    using ObjectType = Common::DynArray<T>;
 
     static Type* CreateType()
     {
@@ -101,11 +102,11 @@ public:
 
         TypeInfo typeInfo;
         typeInfo.kind = TypeKind::DynArray;
-        typeInfo.size = sizeof(Common::DynArray<T>);
-        typeInfo.alignment = alignof(Common::DynArray<T>);
+        typeInfo.size = sizeof(ObjectType);
+        typeInfo.alignment = alignof(ObjectType);
         typeInfo.name = typeName.Str();
-        typeInfo.constructor = []() { return new Common::DynArray<T>; };
-        typeInfo.arrayConstructor = [](uint32 num) { return new Common::DynArray<T>[num]; };
+        typeInfo.constructor = GetObjectConstructor<ObjectType>();
+        typeInfo.destructor = GetObjectDestructor<ObjectType>();
 
         return new DynArrayTypeImpl<T>(typeInfo);
     }

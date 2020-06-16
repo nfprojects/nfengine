@@ -48,6 +48,20 @@ TEST(ReflectionUniquePtrTest, Compare)
     EXPECT_FALSE(type->Compare(&ptrA, &ptrB));
 }
 
+TEST(ReflectionUniquePtrTest, Reset)
+{
+    const auto* type = GetType<TestUniquePtr>();
+
+    TestBaseClass defaultObj;
+
+    TestUniquePtr ptr;
+    type->Reset(&ptr, GetType<TestBaseClass>());
+
+    ASSERT_TRUE(ptr != nullptr);
+    EXPECT_EQ(defaultObj.intVal, ptr->intVal);
+    EXPECT_EQ(defaultObj.floatVal, ptr->floatVal);
+}
+
 TEST(ReflectionUniquePtrTest, Clone)
 {
     const auto* type = GetType<TestUniquePtr>();
@@ -63,6 +77,8 @@ TEST(ReflectionUniquePtrTest, Clone)
     EXPECT_NE(ptrA.Get(), ptrB.Get());
 
     EXPECT_TRUE(type->Compare(&ptrA, &ptrB));
+
+    //type->Reset(ptrB);
 }
 
 TEST(ReflectionUniquePtrTest, Serialize_Nullptr)

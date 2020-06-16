@@ -97,8 +97,8 @@ private:
                 typeInfo.name = #T;                                                 \
                 typeInfo.size = sizeof(T);                                          \
                 typeInfo.alignment = alignof(T);                                    \
-                typeInfo.constructor = []() { return new T; };                      \
-                typeInfo.arrayConstructor = [](uint32 num) { return new T[num]; };  \
+                typeInfo.constructor = GetObjectConstructor<T>();                   \
+                typeInfo.destructor = GetObjectDestructor<T>();                     \
                                                                                     \
                 TypeCreator creator;                                                \
                 creator.FinishInitialization(typeInfo);                             \

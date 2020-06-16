@@ -8,6 +8,7 @@
 #include "ReflectionType.hpp"
 #include "../../Logger/Logger.hpp"
 #include "../../Containers/StringView.hpp"
+#include "../../Memory/DefaultAllocator.hpp"
 
 
 namespace NFE {
@@ -58,10 +59,12 @@ Type::Type(const TypeInfo& info)
     mAlignment = static_cast<uint32>(info.alignment);
 
     mConstructor = info.constructor;
-    mArrayConstructor = info.arrayConstructor;
+    mDestructor = info.destructor;
 
     if (mConstructor)
     {
+        NFE_ASSERT(mDestructor, "When constructor is provided, destrtuctor must be defined as well");
+
         mDefaultObject = CreateRawObject();
         NFE_ASSERT(mDefaultObject, "Failed to create default object for type %s", GetName().Str());
     }
@@ -80,8 +83,13 @@ bool Type::IsA(const Type* baseType) const
 void* Type::CreateRawObject() const
 {
     NFE_ASSERT(mConstructor, "Cannot create an object of type '%s'", GetName().Str());
-
     return mConstructor();
+}
+
+void Type::DeleteObject(void* objectPtr) const
+{
+    NFE_ASSERT(mDestructor, "Cannot destroy an object of type '%s'", GetName().Str());
+    mDestructor(objectPtr);
 }
 
 bool Type::CanBeMemcopied() const

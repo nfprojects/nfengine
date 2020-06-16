@@ -69,8 +69,10 @@ public:
         typeInfo.size = sizeof(ObjectType);
         typeInfo.alignment = alignof(ObjectType);
         typeInfo.name = typeName.Str();
-        typeInfo.constructor = []() { return new ObjectType; };
-        typeInfo.arrayConstructor = [](uint32 num) { return new ObjectType[num]; };
+        //typeInfo.constructor = GetObjectConstructor<ObjectType>();
+        //typeInfo.destructor = GetObjectDestructor<ObjectType>();
+        typeInfo.constructor = [] () { return new ObjectType; };
+        typeInfo.destructor = [] (void* ptr) { delete BitCast<T*>(ptr); };
 
         return new TypeClass(typeInfo, N, arrayElementType);
     }

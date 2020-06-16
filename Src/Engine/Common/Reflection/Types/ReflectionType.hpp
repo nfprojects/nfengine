@@ -36,7 +36,8 @@ enum class TypeKind : uint8
     // TODO bitfields
 };
 
-using ConstructorFunc = std::function<void*()>;
+using ConstructorFunc = std::function<void*(void)>;
+using DestructorFunc = std::function<void(void*)>;
 using ArrayConstructorFunc = std::function<void*(uint32)>;
 
 /**
@@ -50,7 +51,7 @@ public:
     size_t alignment;
     TypeKind kind;
     ConstructorFunc constructor;
-    ArrayConstructorFunc arrayConstructor;
+    DestructorFunc destructor;
 
     TypeInfo()
         : name(nullptr)
@@ -99,11 +100,18 @@ public:
     // Print type info into log.
     virtual void PrintInfo() const;
 
+    // allocate and construct object of this type
+    [[nodiscard]] void* CreateRawObject() const;
+
+    // allocate memory and construct object
     template<typename T>
     [[nodiscard]] NFE_FORCE_INLINE T* CreateObject() const
     {
         return static_cast<T*>(CreateRawObject());
     }
+
+    // destroy object and release memory
+    void DeleteObject(void* objectPtr) const;
 
     template<typename T>
     NFE_FORCE_INLINE const T* GetDefaultObject() const
@@ -164,9 +172,6 @@ public:
 
 protected:
 
-    // allocate and construct object of this type
-    [[nodiscard]] void* CreateRawObject() const;
-
     // type name (including namespace)
     Common::String mName;
 
@@ -174,7 +179,7 @@ protected:
     uint32 mAlignment;
 
     ConstructorFunc mConstructor;
-    ArrayConstructorFunc mArrayConstructor;
+    DestructorFunc mDestructor;
 
     TypeKind mKind;
 

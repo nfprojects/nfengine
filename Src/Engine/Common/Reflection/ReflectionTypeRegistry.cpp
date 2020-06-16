@@ -97,5 +97,23 @@ void TypeRegistry::Cleanup()
     mTypesByHash.Clear();
 }
 
+bool TypeRegistry::SerializeTypeName(const Type* type, Common::OutputStream* stream, SerializationContext& context) const
+{
+    NFE_UNUSED(type);
+    NFE_UNUSED(stream);
+    NFE_UNUSED(context);
+
+    return false;
+}
+
+bool TypeRegistry::DeserializeTypeName(const Type** outType, Common::InputStream* stream, SerializationContext& context)
+{
+    NFE_UNUSED(outType);
+    NFE_UNUSED(stream);
+    NFE_UNUSED(context);
+
+    return false;
+}
+
 } // namespace RTTI
 } // namespace NFE
