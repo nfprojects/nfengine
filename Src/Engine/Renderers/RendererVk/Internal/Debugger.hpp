@@ -14,19 +14,13 @@ namespace Renderer {
 
 class Debugger
 {
-    // some instance functions to debug
-    PFN_vkCreateDebugReportCallbackEXT vkCreateDebugReportCallbackEXT;
-    PFN_vkDestroyDebugReportCallbackEXT vkDestroyDebugReportCallbackEXT;
-    PFN_vkDebugReportMessageEXT vkDebugReportMessageEXT;
+    // Instance-related debugging functions - Debug Messengers
+    PFN_vkCreateDebugUtilsMessengerEXT vkCreateDebugUtilsMessengerEXT;
+    PFN_vkDestroyDebugUtilsMessengerEXT vkDestroyDebugUtilsMessengerEXT;
 
-    // and some device debug functions
-    PFN_vkCmdDebugMarkerBeginEXT vkCmdDebugMarkerBeginEXT;
-    PFN_vkCmdDebugMarkerEndEXT vkCmdDebugMarkerEndEXT;
-    PFN_vkCmdDebugMarkerInsertEXT vkCmdDebugMarkerInsertEXT;
-    PFN_vkDebugMarkerSetObjectNameEXT vkDebugMarkerSetObjectNameEXT;
-    PFN_vkDebugMarkerSetObjectTagEXT vkDebugMarkerSetObjectTagEXT;
-
-    VkDebugReportCallbackEXT mDebugCallback;
+    // Debug primitives
+    VkDebugUtilsMessengerCreateInfoEXT mEarlyDebugMessengerInfo;
+    VkDebugUtilsMessengerEXT mDebugMessenger;
 
     bool mMarkersUseable;
     VkInstance mVkInstance;
@@ -43,23 +37,29 @@ public:
     static Debugger& Instance();
 
     /**
-     * Initializes debugger.
+     * Initializes debug messenger.
      *
      * Should be called right after the Instance is successfully created.
      */
-    bool InitReport(VkInstance instance, VkDebugReportFlagsEXT flags);
+    bool InitMessenger(VkInstance instance,
+                       VkDebugUtilsMessageSeverityFlagsEXT severity,
+                       VkDebugUtilsMessageTypeFlagsEXT type);
 
     /**
-     * Initializes debugging markers.
+     * Returns "early" debug messenger create info.
      *
-     * Should be called right after the Device ins successfully created.
+     * This structure can be passed directly to vkCreateInstance to provide logging utilities when
+     * Vulkan Instance is created.
      */
-    bool InitMarkers(VkDevice device);
+    NFE_INLINE VkDebugUtilsMessengerCreateInfoEXT* GetEarlyDebugMessengerInfo()
+    {
+        return &mEarlyDebugMessengerInfo;
+    }
 
     /**
-     * Frees debugger resources.
+     * Frees debug messenger.
      */
-    void Release();
+    void ReleaseMessenger();
 };
 
 } // namespace Renderer

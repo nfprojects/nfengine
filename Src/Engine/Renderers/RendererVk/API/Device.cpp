@@ -90,8 +90,6 @@ Device::~Device()
         vkDestroyDescriptorPool(mDevice, mDescriptorPool, nullptr);
     if (mDevice != VK_NULL_HANDLE)
         vkDestroyDevice(mDevice, nullptr);
-
-    Debugger::Instance().Release();
 }
 
 VkPhysicalDevice Device::SelectPhysicalDevice(const Common::DynArray<VkPhysicalDevice>& devices, int preferredId)
@@ -234,14 +232,6 @@ bool Device::Init(const DeviceInitParams* params)
     Common::DynArray<const char*> enabledExtensions;
     enabledExtensions.PushBack(VK_KHR_SWAPCHAIN_EXTENSION_NAME);
 
-
-    if (params->debugLevel > 0)
-    {
-        // TODO right now Debug Markers are unsupported by drivers
-        //      Uncomment when driver support appears
-        //enabledExtensions.PushBack(VK_EXT_DEBUG_MARKER_EXTENSION_NAME);
-    }
-
     const char* enabledLayers[] = {
         "VK_LAYER_LUNARG_standard_validation" // for debugging
     };
@@ -267,15 +257,6 @@ bool Device::Init(const DeviceInitParams* params)
 
     result = vkCreateDevice(mPhysicalDevice, &devInfo, nullptr, &mDevice);
     CHECK_VKRESULT(result, "Failed to create Vulkan device");
-
-    if (params->debugLevel > 0)
-    {
-        if (!Debugger::Instance().InitMarkers(mDevice))
-        {
-            NFE_LOG_ERROR("Vulkan debugging layer was requested, but is unavailable. Closing.");
-            return false;
-        }
-    }
 
     if (!nfvkDeviceExtensionsInit(mDevice))
     {

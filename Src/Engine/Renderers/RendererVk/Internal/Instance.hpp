@@ -26,10 +26,10 @@ public:
     /**
      * Initialize Vulkan instance for further use.
      *
-     * @param enableDebug Set to true if debug validation layer should be enabled.
+     * @param debugLevel Engine's requested debug level.
      * @return True on success
      */
-    bool Init(bool enableDebug, VkDebugReportFlagBitsEXT flags = VK_DEBUG_REPORT_ERROR_BIT_EXT);
+    bool Init(int debugLevel);
 
     /**
      * Acquire Vulkan instance.

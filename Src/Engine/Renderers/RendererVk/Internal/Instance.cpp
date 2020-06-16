@@ -26,22 +26,23 @@ Instance::~Instance()
     Release();
 }
 
-bool Instance::Init(bool enableDebug, VkDebugReportFlagBitsEXT flags)
+bool Instance::Init(int debugLevel)
 {
     if (mInstance)
         return true;
+
+    bool enableDebug = (debugLevel > 0);
 
     VkApplicationInfo appInfo = {};
     memset(&appInfo, 0, sizeof(appInfo));
     appInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
     appInfo.pApplicationName = "nfRendererVk";
-    appInfo.pEngineName = "nfRendererVk";
+    appInfo.pEngineName = "nfEngine";
     appInfo.apiVersion = VK_API_VERSION_1_1;
     appInfo.applicationVersion = 1;
 
-    // TODO XLIB_SURFACE is still unavailable
-    //      Use XCB surface instead for now
     // TODO extensions need to be in common with VkDevice
+    // TODO make sure extensions we need are available via vkEnumerateInstanceExtensionProperties
     Common::DynArray<const char*> enabledExtensions;
     enabledExtensions.PushBack(VK_KHR_SURFACE_EXTENSION_NAME);
 
@@ -54,7 +55,7 @@ bool Instance::Init(bool enableDebug, VkDebugReportFlagBitsEXT flags)
 #endif
 
     if (enableDebug)
-        enabledExtensions.PushBack(VK_EXT_DEBUG_REPORT_EXTENSION_NAME);
+        enabledExtensions.PushBack(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
 
     const char* enabledLayers[] = {
         "VK_LAYER_LUNARG_standard_validation" // for debugging
@@ -71,6 +72,9 @@ bool Instance::Init(bool enableDebug, VkDebugReportFlagBitsEXT flags)
     {
         instInfo.enabledLayerCount = 1;
         instInfo.ppEnabledLayerNames = enabledLayers;
+        // NOTE Early message severity does not have info and verbose output due to over-spam from
+        //      Instance creator. Consider adding it somehow based on Engine's debugLevel.
+        instInfo.pNext = Debugger::Instance().GetEarlyDebugMessengerInfo();
     }
 
     VkResult result = vkCreateInstance(&instInfo, nullptr, &mInstance);
@@ -78,10 +82,18 @@ bool Instance::Init(bool enableDebug, VkDebugReportFlagBitsEXT flags)
 
     if (enableDebug)
     {
-        if (!Debugger::Instance().InitReport(mInstance, flags))
+        VkDebugUtilsMessageSeverityFlagsEXT severityFlags =
+            VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT |
+            VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT;
+
+        VkDebugUtilsMessageTypeFlagsEXT typeFlags =
+            VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT |
+            VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT;
+
+        if (!Debugger::Instance().InitMessenger(mInstance, severityFlags, typeFlags))
         {
-            NFE_LOG_ERROR("Vulkan debug reports failed to initialize.");
-            return false;
+            NFE_LOG_ERROR("Vulkan debug messenger failed to initialize.");
+            return false; // TODO should we close here? App could easily run without Debugger's help
         }
     }
 
@@ -96,6 +108,8 @@ bool Instance::Init(bool enableDebug, VkDebugReportFlagBitsEXT flags)
 
 void Instance::Release()
 {
+    Debugger::Instance().ReleaseMessenger();
+
     if (mInstance)
         vkDestroyInstance(mInstance, nullptr);
 }

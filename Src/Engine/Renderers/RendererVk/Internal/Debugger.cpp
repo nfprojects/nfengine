@@ -15,31 +15,42 @@ namespace Renderer {
 
 namespace {
 
-VkBool32 DebugReport(VkDebugReportFlagsEXT flags, VkDebugReportObjectTypeEXT objectType,
-                     uint64_t object, size_t location, int32_t messageCode, const char* pLayerPrefix,
-                     const char* pMessage, void* pUserData)
+VkBool32 DebugMessenger(VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity,
+                        VkDebugUtilsMessageTypeFlagsEXT messageTypes,
+                        const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData,
+                        void* pUserData)
 {
-    NFE_UNUSED(objectType);
-    NFE_UNUSED(object);
-    NFE_UNUSED(location);
-    NFE_UNUSED(pUserData); // for now, but it might be a good idea to use it in the future
+    NFE_UNUSED(pUserData);
 
-    const char* report = "VK_REPORT";
-    const char* perf = "VK_PERF";
-    const char* format = "%s (code %i) [%s]: %s";
+    const char* format = "%s [%s]: %s";
+    const char* type = nullptr;
 
-    if (flags & VK_DEBUG_REPORT_ERROR_BIT_EXT)
-        NFE_LOG_ERROR(format, report, messageCode, pLayerPrefix, pMessage);
-    if (flags & VK_DEBUG_REPORT_WARNING_BIT_EXT)
-        NFE_LOG_WARNING(format, report, messageCode, pLayerPrefix, pMessage);
-    if (flags & VK_DEBUG_REPORT_INFORMATION_BIT_EXT)
-        NFE_LOG_INFO(format, report, messageCode, pLayerPrefix, pMessage);
-    if (flags & VK_DEBUG_REPORT_DEBUG_BIT_EXT)
-        NFE_LOG_DEBUG(format, report, messageCode, pLayerPrefix, pMessage);
-    if (flags & VK_DEBUG_REPORT_PERFORMANCE_WARNING_BIT_EXT)
-        NFE_LOG_WARNING(format, perf, messageCode, pLayerPrefix, pMessage);
+    switch (messageTypes)
+    {
+    case VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT:
+        type = "GENERAL";
+        break;
+    case VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT:
+        type = "VALIDATION";
+        break;
+    case VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT:
+        type = "PERFORMANCE";
+        break;
+    default:
+        // shouldn't happen, but will shut up compiler warnings
+        return VK_TRUE;
+    }
 
-    // returning VK_TRUE here would cause Vulkan APIs to return VK_ERROR_VALIDATION_FAILED_EXT
+    if (messageSeverity & VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT)
+        NFE_LOG_ERROR(format, type, pCallbackData->pMessageIdName, pCallbackData->pMessage);
+    if (messageSeverity & VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT)
+        NFE_LOG_WARNING(format, type, pCallbackData->pMessageIdName, pCallbackData->pMessage);
+    if (messageSeverity & VK_DEBUG_UTILS_MESSAGE_SEVERITY_INFO_BIT_EXT)
+        NFE_LOG_INFO(format, type, pCallbackData->pMessageIdName, pCallbackData->pMessage);
+    if (messageSeverity & VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT)
+        NFE_LOG_DEBUG(format, type, pCallbackData->pMessageIdName, pCallbackData->pMessage);
+
+    // returning VK_FALSE here would cause Vulkan APIs to return VK_ERROR_VALIDATION_FAILED_EXT
     // right now we don't want that, but for debugging purposes it can be changed.
     //if (flags & VK_DEBUG_REPORT_ERROR_BIT_EXT)
         return VK_TRUE;
@@ -50,15 +61,25 @@ VkBool32 DebugReport(VkDebugReportFlagsEXT flags, VkDebugReportObjectTypeEXT obj
 } // namespace
 
 Debugger::Debugger()
-    : mDebugCallback(VK_NULL_HANDLE)
+    : mEarlyDebugMessengerInfo()
+    , mDebugMessenger(VK_NULL_HANDLE)
     , mMarkersUseable(false)
     , mVkInstance(VK_NULL_HANDLE)
 {
+    VK_ZERO_MEMORY(mEarlyDebugMessengerInfo);
+    mEarlyDebugMessengerInfo.sType = VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT;
+    mEarlyDebugMessengerInfo.messageSeverity =
+        VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT |
+        VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT;
+    mEarlyDebugMessengerInfo.messageType =
+        VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT |
+        VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT;
+    mEarlyDebugMessengerInfo.pfnUserCallback = DebugMessenger;
 }
 
 Debugger::~Debugger()
 {
-    Release();
+    ReleaseMessenger();
 }
 
 Debugger& Debugger::Instance()
@@ -67,65 +88,40 @@ Debugger& Debugger::Instance()
     return instance;
 }
 
-bool Debugger::InitReport(VkInstance instance, VkDebugReportFlagsEXT flags)
+bool Debugger::InitMessenger(VkInstance instance, VkDebugUtilsMessageSeverityFlagsEXT severity, VkDebugUtilsMessageTypeFlagsEXT type)
 {
-    // Gather debug-specific extensions
-    // We should be here only when debug extension is requested from instance & device
     bool allExtensionsAvailable = true;
 
-    VK_GET_INSTANCEPROC(instance, vkCreateDebugReportCallbackEXT);
-    VK_GET_INSTANCEPROC(instance, vkDestroyDebugReportCallbackEXT);
-    VK_GET_INSTANCEPROC(instance, vkDebugReportMessageEXT);
+    VK_GET_INSTANCEPROC(instance, vkCreateDebugUtilsMessengerEXT);
+    VK_GET_INSTANCEPROC(instance, vkDestroyDebugUtilsMessengerEXT);
 
     if (!allExtensionsAvailable)
+    {
+        NFE_LOG_ERROR("Debug utils extension not available - cannot initialize Debug Messenger");
         return false;
+    }
 
     mVkInstance = instance;
 
-    VkDebugReportCallbackCreateInfoEXT debugInfo;
-    VK_ZERO_MEMORY(debugInfo);
-    debugInfo.sType = VK_STRUCTURE_TYPE_DEBUG_REPORT_CALLBACK_CREATE_INFO_EXT;
-    debugInfo.pfnCallback = reinterpret_cast<PFN_vkDebugReportCallbackEXT>(DebugReport);
-    debugInfo.flags = flags;
-    VkResult result = vkCreateDebugReportCallbackEXT(mVkInstance, &debugInfo, nullptr, &mDebugCallback);
-    CHECK_VKRESULT(result, "Failed to allocate debug report callback");
+    VkDebugUtilsMessengerCreateInfoEXT info;
+    VK_ZERO_MEMORY(info);
+    info.sType = VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT;
+    info.messageSeverity = severity;
+    info.messageType = type;
+    info.pfnUserCallback = DebugMessenger;
+    VkResult result = vkCreateDebugUtilsMessengerEXT(mVkInstance, &info, nullptr, &mDebugMessenger);
+    CHECK_VKRESULT(result, "Failed to create Debug Messenger");
 
-    NFE_LOG_DEBUG("Vulkan debug reports initialized successfully.");
+    NFE_LOG_DEBUG("Vulkan debug messenger initialized successfully.");
     return true;
 }
 
-bool Debugger::InitMarkers(VkDevice device)
+void Debugger::ReleaseMessenger()
 {
-    // TODO right now debug markers extension is unsupported through drivers
-    // Uncomment below and implement markers when drivers catch up
+    if (vkDestroyDebugUtilsMessengerEXT && (mDebugMessenger != VK_NULL_HANDLE))
+        vkDestroyDebugUtilsMessengerEXT(mVkInstance, mDebugMessenger, nullptr);
 
-    bool allExtensionsAvailable = true;
-
-    /*
-    VK_GET_DEVICEPROC(device, vkCmdDebugMarkerBeginEXT);
-    VK_GET_DEVICEPROC(device, vkCmdDebugMarkerEndEXT);
-    VK_GET_DEVICEPROC(device, vkCmdDebugMarkerInsertEXT);
-    VK_GET_DEVICEPROC(device, vkDebugMarkerSetObjectNameEXT);
-    VK_GET_DEVICEPROC(device, vkDebugMarkerSetObjectTagEXT);
-    */
-
-    if (!allExtensionsAvailable)
-        return false;
-
-    mVkDevice = device;
-    mMarkersUseable = false;
-
-    NFE_LOG_DEBUG("Vulkan debug markers initialized successfully.");
-    return true;
-}
-
-void Debugger::Release()
-{
-    if (vkDestroyDebugReportCallbackEXT && (mDebugCallback != VK_NULL_HANDLE))
-        vkDestroyDebugReportCallbackEXT(mVkInstance, mDebugCallback, nullptr);
-
-    mDebugCallback = VK_NULL_HANDLE;
-    mMarkersUseable = false;
+    mDebugMessenger = VK_NULL_HANDLE;
 }
 
 } // namespace Renderer
