@@ -85,11 +85,11 @@ struct DirLightDesc
  */
 class NFE_ALIGN(16) CORE_API LightComponent
     : public IComponent
-    , public Common::Aligned<16>
 {
     NFE_DECLARE_POLYMORPHIC_CLASS(LightComponent)
 
 private:
+
     Math::Vec4f mColor;
 
     LightType mLightType;
@@ -108,6 +108,8 @@ private:
     void CreateRenderingProxy(bool update);
 
 public:
+    NFE_ALIGNED_CLASS(16)
+
     LightComponent();
     ~LightComponent();
 

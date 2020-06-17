@@ -8,9 +8,10 @@ namespace Math {
 
 
 template<typename VecType>
-class NFE_ALIGN(alignof(VecType)) SimdBox : public Common::Aligned<alignof(VecType)>
+class NFE_ALIGN(alignof(VecType)) SimdBox
 {
 public:
+    NFE_ALIGNED_CLASS(alignof(VecType))
 
     VecType min;
     VecType max;

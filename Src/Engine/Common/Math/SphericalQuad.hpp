@@ -9,8 +9,10 @@ namespace Math {
 // that has uniform solid-angle distribution.
 // Based on paper "An Area-Preserving Parametrization for Spherical Rectangles" by
 // Carlos Urena, Marcos Fajardo and Alan King
-struct SphericalQuad : public Common::Aligned<16>
+struct SphericalQuad
 {
+    NFE_ALIGNED_CLASS(16)
+
     Vec4f o, x, y, z; // local reference system �R�
     float z0; //
     float x0, y0; // rectangle coords in �R�

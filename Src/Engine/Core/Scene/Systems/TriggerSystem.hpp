@@ -65,9 +65,10 @@ struct NFE_ALIGN(16) TriggerObject
  */
 class CORE_API NFE_ALIGN(16) TriggerSystem final
     : public ISystem
-    , public Common::Aligned<16>
 {
 public:
+    NFE_ALIGNED_CLASS(16)
+
     static const int ID = 5;
 
     explicit TriggerSystem(Scene& scene);

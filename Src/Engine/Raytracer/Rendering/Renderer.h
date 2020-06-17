@@ -17,13 +17,13 @@ namespace NFE {
 namespace RT {
 
 // abstract scene rendering interface
-class NFE_ALIGN(16) IRenderer
-    : public Common::Aligned<16>
-    , public IObject
+class NFE_ALIGN(16) IRenderer : public IObject
 {
     NFE_DECLARE_POLYMORPHIC_CLASS(IRenderer)
 
 public:
+    NFE_ALIGNED_CLASS(16)
+
     struct RenderParam
     {
         const Scene& scene;

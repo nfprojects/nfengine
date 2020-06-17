@@ -11,8 +11,10 @@ struct Vec8f;
 /**
  * Boolean vector for Vec4f type.
  */
-struct NFE_ALIGN(32) VecBool8i : public Common::Aligned<16>
+struct NFE_ALIGN(32) VecBool8i
 {
+    NFE_ALIGNED_CLASS(32)
+
     VecBool8i() = default;
     VecBool8i(const VecBool8i& other) = default;
     NFE_FORCE_INLINE VecBool8i(const VecBool8f& other);
@@ -60,8 +62,10 @@ private:
 };
 
 // 8-element integer SIMD vector
-struct NFE_ALIGN(32) Vec8i : public Common::Aligned<32>
+struct NFE_ALIGN(32) Vec8i
 {
+    NFE_ALIGNED_CLASS(32)
+
     friend struct Vec8ui;
 
     // constructors
@@ -171,8 +175,10 @@ static_assert(sizeof(Vec8i) == sizeof(int32) * 8, "Invalid sizeof Vec8i");
 
 
 // 8-element integer SIMD vector
-struct NFE_ALIGN(32) Vec8ui : public Common::Aligned<32>
+struct NFE_ALIGN(32) Vec8ui
 {
+    NFE_ALIGNED_CLASS(32)
+
     friend struct Vec8i;
 
     // constructors

@@ -9,9 +9,11 @@ namespace Math {
 /**
  * Sphere
  */
-class NFE_ALIGN(16) Sphere : public Common::Aligned<16>
+class NFE_ALIGN(16) Sphere
 {
 public:
+    NFE_ALIGNED_CLASS(16)
+
     Vec4f origin; //< Sphere center
     float r; //< Sphere radius
 

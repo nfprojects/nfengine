@@ -30,12 +30,12 @@ struct MediumScatteringEvent
 };
 
 // generic medium interface
-class IMedium 
-    : public Common::Aligned<16>
-    , public IObject
+class IMedium : public IObject
 {
     NFE_DECLARE_POLYMORPHIC_CLASS(IMedium)
 public:
+    NFE_ALIGNED_CLASS(16)
+
     virtual ~IMedium();
 
     // sample medium scattering event

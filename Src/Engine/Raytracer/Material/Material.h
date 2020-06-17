@@ -31,11 +31,13 @@ public:
 using MaterialPtr = Common::SharedPtr<Material>;
 
 // simple PBR material
-class NFE_ALIGN(16) Material : public Common::Aligned<16>
+class NFE_ALIGN(16) Material
 {
     NFE_DECLARE_CLASS(Material)
 
 public:
+    NFE_ALIGNED_CLASS(16)
+
     NFE_RAYTRACER_API Material(const char* debugName = "<unnamed>");
     NFE_RAYTRACER_API ~Material();
     NFE_RAYTRACER_API Material(Material&&);

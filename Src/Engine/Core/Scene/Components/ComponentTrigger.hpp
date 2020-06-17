@@ -38,11 +38,12 @@ enum class TriggerType : uint8
  */
 class CORE_API NFE_ALIGN(16) TriggerComponent
     : public IComponent
-    , public Common::Aligned<16>
 {
     NFE_DECLARE_POLYMORPHIC_CLASS(TriggerComponent)
 
 public:
+    NFE_ALIGNED_CLASS(16)
+
     TriggerComponent();
     ~TriggerComponent();
 

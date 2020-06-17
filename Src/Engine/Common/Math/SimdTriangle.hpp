@@ -8,9 +8,11 @@ namespace Math {
 
 
 template<typename VecType>
-class NFE_ALIGN(alignof(VecType)) SimdTriangle : public Common::Aligned<alignof(VecType)>
+class NFE_ALIGN(alignof(VecType)) SimdTriangle
 {
 public:
+
+    NFE_ALIGNED_CLASS(alignof(VecType))
 
     VecType v0;
     VecType edge1;

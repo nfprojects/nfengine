@@ -10,9 +10,11 @@ namespace Math {
 /**
  * Single ray (non-SIMD).
  */
-class NFE_ALIGN(16) Ray : public Common::Aligned<16>
+class NFE_ALIGN(16) Ray
 {
 public:
+    NFE_ALIGNED_CLASS(16)
+
     Vec4f origin;
     Vec4f dir;
     Vec4f invDir;

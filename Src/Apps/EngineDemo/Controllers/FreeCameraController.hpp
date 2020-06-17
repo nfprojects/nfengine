@@ -16,9 +16,10 @@ namespace NFE {
  */
 class NFE_ALIGN(16) FreeCameraController
     : public Scene::IEntityController
-    , public Common::Aligned<16>
 {
 public:
+    NFE_ALIGNED_CLASS(16)
+
     FreeCameraController();
 
     virtual void OnEvent(const Scene::Event& event) override;

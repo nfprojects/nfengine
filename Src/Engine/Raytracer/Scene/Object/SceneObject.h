@@ -17,13 +17,12 @@ namespace RT {
 using SceneObjectPtr = Common::UniquePtr<ISceneObject>;
 
 // Object on a scene
-class ISceneObject
-    : public Common::Aligned<16>
-    , public IObject
+class ISceneObject : public IObject
 {
     NFE_DECLARE_POLYMORPHIC_CLASS(ISceneObject)
 
 public:
+    NFE_ALIGNED_CLASS(16)
 
     NFE_RAYTRACER_API ISceneObject();
     NFE_RAYTRACER_API virtual ~ISceneObject();

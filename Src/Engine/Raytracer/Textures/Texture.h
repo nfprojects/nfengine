@@ -11,9 +11,11 @@ namespace RT {
 /**
  * Class representing 2D texture.
  */
-class ITexture : public Common::Aligned<16>
+class ITexture
 {
 public:
+    NFE_ALIGNED_CLASS(16)
+
     NFE_RAYTRACER_API virtual ~ITexture();
 
     // get human-readable description

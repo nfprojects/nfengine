@@ -8,11 +8,13 @@ namespace Math {
 /**
  * Axis Aligned Box
  */
-class NFE_ALIGN(16) Box : public Common::Aligned<16>
+class NFE_ALIGN(16) Box
 {
     NFE_DECLARE_CLASS(Box)
 
 public:
+
+    NFE_ALIGNED_CLASS(16)
 
     Vec4f min;
     Vec4f max;

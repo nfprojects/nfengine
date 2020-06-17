@@ -10,8 +10,10 @@ namespace Math {
 /**
  * Boolean vector for Vec16f type.
  */
-struct NFE_ALIGN(32) VecBool16f : public Common::Aligned<32>
+struct NFE_ALIGN(32) VecBool16f
 {
+    NFE_ALIGNED_CLASS(32)
+
     VecBool16f() = default;
 
     NFE_FORCE_INLINE explicit VecBool16f(bool scalar);
@@ -57,8 +59,10 @@ private:
 /**
  * 16-element SIMD float vector.
  */
-struct NFE_ALIGN(64) Vec16f : public Common::Aligned<64>
+struct NFE_ALIGN(64) Vec16f
 {
+    NFE_ALIGNED_CLASS(64)
+
     // constructors
     NFE_FORCE_INLINE Vec16f();
     NFE_FORCE_INLINE Vec16f(const Vec16f& other);

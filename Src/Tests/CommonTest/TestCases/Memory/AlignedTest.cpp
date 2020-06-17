@@ -13,24 +13,30 @@ using namespace NFE::Common;
 
 namespace {
 
-struct NFE_ALIGN(16) TestClass16 : public Aligned<16>
+struct NFE_ALIGN(16) TestClass16
 {
+    NFE_ALIGNED_CLASS(16)
+
     int a;
 
     TestClass16() : a(0) { }
     explicit TestClass16(int val) : a(val) { }
 };
 
-struct NFE_ALIGN(64) TestClass64 : public Aligned<64>
+struct NFE_ALIGN(64) TestClass64
 {
+    NFE_ALIGNED_CLASS(64)
+
     int a;
 
     TestClass64() : a(0) { }
     explicit TestClass64(int val) : a(val) { }
 };
 
-struct NFE_ALIGN(4096) TestClass4096 : public Aligned<4096>
+struct NFE_ALIGN(4096) TestClass4096
 {
+    NFE_ALIGNED_CLASS(4096)
+
     int a;
 
     TestClass4096() : a(0) { }

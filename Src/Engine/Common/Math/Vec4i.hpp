@@ -11,8 +11,10 @@ struct Vec4f;
 /**
  * Boolean vector for Vec4f type.
  */
-struct NFE_ALIGN(16) VecBool4i : public Common::Aligned<16>
+struct NFE_ALIGN(16) VecBool4i
 {
+    NFE_ALIGNED_CLASS(16)
+
     VecBool4i() = default;
 
     NFE_FORCE_INLINE explicit VecBool4i(bool scalar);
@@ -69,8 +71,10 @@ private:
 /**
  * 4-element signed integer SIMD vector.
  */
-struct NFE_ALIGN(16) Vec4i : public Common::Aligned<16>
+struct NFE_ALIGN(16) Vec4i
 {
+    NFE_ALIGNED_CLASS(16)
+
     NFE_UNNAMED_STRUCT union
     {
         int32 i[4];
@@ -199,8 +203,10 @@ static_assert(sizeof(Vec4i) == sizeof(int32) * 4, "Invalid sizeof Vec4i");
 /**
  * 4-element unsigned integer SIMD vector.
  */
-struct NFE_ALIGN(16) Vec4ui : public Common::Aligned<16>
+struct NFE_ALIGN(16) Vec4ui
 {
+    NFE_ALIGNED_CLASS(16)
+
     NFE_UNNAMED_STRUCT union
     {
         uint32 u[4];

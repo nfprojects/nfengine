@@ -14,9 +14,10 @@ namespace RT {
 /**
  * Class representing 2D bitmap.
  */
-class NFE_ALIGN(16) Bitmap : public Common::Aligned<16>
+class NFE_ALIGN(16) Bitmap
 {
 public:
+    NFE_ALIGNED_CLASS(16)
 
     enum class Format : uint8
     {

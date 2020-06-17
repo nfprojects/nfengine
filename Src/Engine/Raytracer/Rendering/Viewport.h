@@ -30,12 +30,14 @@ struct RenderingProgress
     float averageError = std::numeric_limits<float>::infinity();
 };
 
-class NFE_ALIGN(32) Viewport : public Common::Aligned<32>
+class NFE_ALIGN(32) Viewport
 {
     NFE_MAKE_NONCOPYABLE(Viewport)
     NFE_MAKE_NONMOVEABLE(Viewport)
 
 public:
+    NFE_ALIGNED_CLASS(32)
+
     NFE_RAYTRACER_API Viewport();
     NFE_RAYTRACER_API ~Viewport();
 

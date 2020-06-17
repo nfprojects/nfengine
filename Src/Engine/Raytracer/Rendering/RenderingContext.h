@@ -36,11 +36,13 @@ struct NFE_RAYTRACER_API SpectrumDebugData
  * A structure with local (per-thread) data.
  * It's like a hub for all global params (read only) and local state (read write).
  */
-struct NFE_ALIGN(64) RenderingContext : public Common::Aligned<64>
+struct NFE_ALIGN(64) RenderingContext
 {
     NFE_MAKE_NONCOPYABLE(RenderingContext)
 
 public:
+
+    NFE_ALIGNED_CLASS(64)
 
     NFE_RAYTRACER_API RenderingContext();
     NFE_RAYTRACER_API RenderingContext(RenderingContext&& other) = default;

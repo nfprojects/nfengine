@@ -60,9 +60,11 @@ NFE_FORCE_INLINE static constexpr float PdfWtoA(const float pdfW, const float di
 
 static constexpr uint32 g_MaxLightVertices = 256;
 
-class NFE_ALIGN(64) VertexConnectionAndMergingContext : public IRendererContext, public Aligned<64>
+class NFE_ALIGN(64) VertexConnectionAndMergingContext : public IRendererContext
 {
 public:
+    NFE_ALIGNED_CLASS(64)
+
     using Photon = VertexConnectionAndMerging::Photon;
     using LightVertex = VertexConnectionAndMerging::LightVertex;
 

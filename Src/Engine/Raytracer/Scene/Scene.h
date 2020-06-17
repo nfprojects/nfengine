@@ -18,9 +18,11 @@ using SceneObjectPtr = Common::UniquePtr<ISceneObject>;
  * Rendering scene.
  * Allows for placing objects (meshes, lights, etc.) and raytracing them.
  */
-class NFE_ALIGN(16) Scene : public Common::Aligned<16>
+class NFE_ALIGN(16) Scene
 {
 public:
+    NFE_ALIGNED_CLASS(16)
+
     NFE_RAYTRACER_API Scene();
     NFE_RAYTRACER_API ~Scene();
     NFE_RAYTRACER_API Scene(Scene&&);

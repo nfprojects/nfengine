@@ -15,8 +15,10 @@ namespace Math {
 /**
  * Boolean vector for Vec4f type.
  */
-struct NFE_ALIGN(16) VecBool4f : public Common::Aligned<16>
+struct NFE_ALIGN(16) VecBool4f
 {
+    NFE_ALIGNED_CLASS(16)
+
     VecBool4f() = default;
 
     NFE_FORCE_INLINE explicit VecBool4f(bool scalar);
@@ -69,11 +71,13 @@ private:
 /**
  * 4-element SIMD vector.
  */
-struct NFE_ALIGN(16) Vec4f : public Common::Aligned<16>
+struct NFE_ALIGN(16) Vec4f
 {
     NFE_DECLARE_CLASS(Vec4f)
 
 public:
+
+    NFE_ALIGNED_CLASS(16)
 
     using BoolType = VecBool4f;
 

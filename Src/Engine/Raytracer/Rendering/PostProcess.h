@@ -62,11 +62,13 @@ public:
     ColorGradingParams();
 };
 
-class NFE_ALIGN(16) PostprocessParams : public Common::Aligned<16>
+class NFE_ALIGN(16) PostprocessParams
 {
     NFE_DECLARE_CLASS(PostprocessParams)
 
 public:
+
+    NFE_ALIGNED_CLASS(16)
 
     // exposure in log scale
     float exposure;

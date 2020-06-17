@@ -66,11 +66,12 @@ struct OrthoProjectionDesc
  */
 class CORE_API NFE_ALIGN(32) CameraComponent
     : public IComponent
-    , public Common::Aligned<32>
 {
     NFE_DECLARE_POLYMORPHIC_CLASS(CameraComponent)
 
 public:
+    NFE_ALIGNED_CLASS(32)
+
     CameraComponent();
 
     // IComponent interface implementation

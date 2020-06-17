@@ -8,11 +8,13 @@ namespace Math {
 /**
  * Class representing 4D quaternion. Useful for representing rotations.
  */
-struct NFE_ALIGN(16) Quaternion final : public Common::Aligned<16>
+struct NFE_ALIGN(16) Quaternion final
 {
     NFE_DECLARE_CLASS(Quaternion)
 
 public:
+
+    NFE_ALIGNED_CLASS(16)
 
     // XYZ - vector part, W - scalar part:
     // q = f[3] + i * q[0] + j * q[1] + k * q[2]

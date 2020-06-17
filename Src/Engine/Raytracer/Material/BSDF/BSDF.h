@@ -16,11 +16,13 @@ namespace RT {
 // Handles both reflection and transmission
 // NOTE: all the calculations are performed in local-space of the hit point on a surface: X is tangent, Z is normal
 // NOTE: it's not called "BRDF", because it handles transmission as well
-class BSDF : public Common::Aligned<16>, public IObject
+class BSDF : public IObject
 {
     NFE_DECLARE_POLYMORPHIC_CLASS(BSDF)
 
 public:
+    NFE_ALIGNED_CLASS(16)
+
     enum EventType : uint8
     {
         NullEvent                   = 0,

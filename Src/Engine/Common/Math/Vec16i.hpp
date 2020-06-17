@@ -11,8 +11,10 @@ struct Vec16f;
 /**
  * Boolean vector for Vec16i and Vec16ui types.
  */
-struct NFE_ALIGN(32) VecBool16i : public Common::Aligned<32>
+struct NFE_ALIGN(32) VecBool16i
 {
+    NFE_ALIGNED_CLASS(32)
+
     VecBool16i() = default;
 
     NFE_FORCE_INLINE explicit VecBool16i(bool scalar);
@@ -57,8 +59,10 @@ private:
 };
 
 // 16-element integer SIMD vector
-struct NFE_ALIGN(64) Vec16i : public Common::Aligned<64>
+struct NFE_ALIGN(64) Vec16i
 {
+    NFE_ALIGNED_CLASS(64)
+
     friend struct Vec16ui;
 
     // constructors
@@ -163,8 +167,10 @@ static_assert(sizeof(Vec16i) == sizeof(int32) * 16, "Invalid sizeof Vec16i");
 
 
 // 8-element integer SIMD vector
-struct NFE_ALIGN(64) Vec16ui : public Common::Aligned<64>
+struct NFE_ALIGN(64) Vec16ui
 {
+    NFE_ALIGNED_CLASS(64)
+
     friend struct Vec16i;
 
     // constructors

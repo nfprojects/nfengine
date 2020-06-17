@@ -37,11 +37,12 @@ namespace Scene {
  * 2. From owning entity controller's OnEvent method.
  */
 class CORE_API NFE_ALIGN(16) Entity final
-    : public Common::Aligned<16>
 {
     NFE_MAKE_NONCOPYABLE(Entity)
 
 public:
+    NFE_ALIGNED_CLASS(16)
+
     // this will be called only by the Entity System
     explicit Entity(EntityID id, Scene& parentScene, Entity* parentEntity = nullptr);
     ~Entity();

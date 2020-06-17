@@ -7,9 +7,11 @@ namespace NFE {
 namespace Math {
 
 template<typename VecType>
-class NFE_ALIGN(alignof(VecType)) SimdRay : public Common::Aligned<alignof(VecType)>
+class NFE_ALIGN(alignof(VecType)) SimdRay
 {
 public:
+    NFE_ALIGNED_CLASS(alignof(VecType))
+
     VecType dir;
     VecType origin;
     VecType invDir; 

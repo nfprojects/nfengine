@@ -16,13 +16,13 @@ namespace NFE {
 namespace RT {
 
 // abstract light
-class NFE_ALIGN(16) ILight 
-    : public Common::Aligned<16>
-    , public IObject
+class NFE_ALIGN(16) ILight : public IObject
 {
     NFE_DECLARE_POLYMORPHIC_CLASS(ILight)
 
 public:
+    NFE_ALIGNED_CLASS(16)
+
     static constexpr const float BackgroundLightDistance = std::numeric_limits<float>::max();
     static constexpr const float CosEpsilon = 0.9999f;
 

@@ -9,8 +9,10 @@ namespace Math {
 /**
  * Boolean vector for Vec8f type.
  */
-struct NFE_ALIGN(32) VecBool8f : public Common::Aligned<32>
+struct NFE_ALIGN(32) VecBool8f
 {
+    NFE_ALIGNED_CLASS(32)
+
     VecBool8f() = default;
 
     NFE_FORCE_INLINE explicit VecBool8f(bool scalar);
@@ -58,8 +60,10 @@ private:
 /**
  * 8-element SIMD vector.
  */
-struct NFE_ALIGN(32) Vec8f : public Common::Aligned<32>
+struct NFE_ALIGN(32) Vec8f
 {
+    NFE_ALIGNED_CLASS(32)
+
     using BoolType = VecBool8f;
 
     // constructors

@@ -46,8 +46,10 @@ private:
         void Init(uint32 numLeaves);
     };
 
-    struct NFE_ALIGN(16) WorkSet : public Common::Aligned<16>
+    struct NFE_ALIGN(16) WorkSet
     {
+        NFE_ALIGNED_CLASS(16)
+
         Math::Box box;
         Indices leafIndices;
         Indices sortedLeavesIndicesCache[NumAxes];

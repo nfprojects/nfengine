@@ -10,9 +10,11 @@ namespace NFE {
 namespace Math {
 
 // 4x4 matrix
-class NFE_ALIGN(32) Matrix4 final : public Common::Aligned<16>
+class NFE_ALIGN(32) Matrix4 final
 {
 public:
+    NFE_ALIGNED_CLASS(16)
+
     union
     {
         Vec4f rows[4];
@@ -286,6 +288,10 @@ public:
         return Ray::BuildUnsafe(origin, dir);
     }
 };
+
+
+static_assert(sizeof(Matrix4) == sizeof(float) * 16, "Invalid sizeof Matrix4");
+
 
 } // namespace Math
 } // namespace NFE

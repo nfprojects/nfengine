@@ -34,13 +34,13 @@ struct ShapeSampleResult
     float cosAtSurface = -1.0f;
 };
 
-class IShape
-    : public Common::Aligned<16>
-    , public IObject
+class IShape : public IObject
 {
     NFE_DECLARE_POLYMORPHIC_CLASS(IShape)
 
 public:
+    NFE_ALIGNED_CLASS(16)
+
     NFE_RAYTRACER_API IShape();
     NFE_RAYTRACER_API virtual ~IShape();
 
