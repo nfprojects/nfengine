@@ -59,6 +59,8 @@ bool Device::CreateTemporarySurface(VkSurfaceKHR& surface)
         return false;
     }
 
+    xcb_flush(xcbConnection);
+
     // create a temporary surface
     VkXcbSurfaceCreateInfoKHR surfInfo;
     VK_ZERO_MEMORY(surfInfo);
@@ -83,6 +85,8 @@ void Device::CleanupTemporarySurface(VkSurfaceKHR& surface)
         free(err);
         return;
     }
+
+    xcb_flush(xcbConnection);
 
     xcb_disconnect(xcbConnection);
     xcbTempWindow = 0;
