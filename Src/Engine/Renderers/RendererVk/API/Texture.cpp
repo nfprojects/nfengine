@@ -35,12 +35,12 @@ Texture::~Texture()
     // TODO this needs to go away
     gDevice->WaitForGPU();
 
-    if (mImageMemory != VK_NULL_HANDLE)
-        vkFreeMemory(gDevice->GetDevice(), mImageMemory, nullptr);
     if (mImageView != VK_NULL_HANDLE)
         vkDestroyImageView(gDevice->GetDevice(), mImageView, nullptr);
     if (mImage != VK_NULL_HANDLE)
         vkDestroyImage(gDevice->GetDevice(), mImage, nullptr);
+    if (mImageMemory != VK_NULL_HANDLE)
+        vkFreeMemory(gDevice->GetDevice(), mImageMemory, nullptr);
 }
 
 bool Texture::Init(const TextureDesc& desc)
@@ -247,8 +247,8 @@ bool Texture::Init(const TextureDesc& desc)
 
     if (hasInitialData)
     {
-        vkFreeMemory(gDevice->GetDevice(), stagingBufferMemory, nullptr);
         vkDestroyBuffer(gDevice->GetDevice(), stagingBuffer, nullptr);
+        vkFreeMemory(gDevice->GetDevice(), stagingBufferMemory, nullptr);
     }
 
     VkImageViewCreateInfo ivInfo;

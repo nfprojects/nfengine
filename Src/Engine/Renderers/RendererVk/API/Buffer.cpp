@@ -26,10 +26,10 @@ Buffer::~Buffer()
     // TODO this needs to go away
     gDevice->WaitForGPU();
 
-    if (mBufferMemory != VK_NULL_HANDLE)
-        vkFreeMemory(gDevice->GetDevice(), mBufferMemory, nullptr);
     if (mBuffer != VK_NULL_HANDLE)
         vkDestroyBuffer(gDevice->GetDevice(), mBuffer, nullptr);
+    if (mBufferMemory != VK_NULL_HANDLE)
+        vkFreeMemory(gDevice->GetDevice(), mBufferMemory, nullptr);
 }
 
 bool Buffer::Init(const BufferDesc& desc)
@@ -151,8 +151,8 @@ bool Buffer::Init(const BufferDesc& desc)
         gDevice->WaitForGPU();
 
         vkFreeCommandBuffers(gDevice->GetDevice(), gDevice->GetCommandPool(), 1, &copyCmdBuffer);
-        vkFreeMemory(gDevice->GetDevice(), stagingBufferMemory, nullptr);
         vkDestroyBuffer(gDevice->GetDevice(), stagingBuffer, nullptr);
+        vkFreeMemory(gDevice->GetDevice(), stagingBufferMemory, nullptr);
     }
 
 leave:

@@ -25,10 +25,10 @@ RingBuffer::~RingBuffer()
 {
     vkUnmapMemory(mDevice, mBufferMemory);
 
-    if (mBufferMemory != VK_NULL_HANDLE)
-        vkFreeMemory(mDevice, mBufferMemory, nullptr);
     if (mBuffer != VK_NULL_HANDLE)
         vkDestroyBuffer(mDevice, mBuffer, nullptr);
+    if (mBufferMemory != VK_NULL_HANDLE)
+        vkFreeMemory(mDevice, mBufferMemory, nullptr);
 }
 
 bool RingBuffer::Init(uint32 size)
