@@ -17,11 +17,11 @@ namespace RTTI {
 
 /**
  * Type of type.
- * Named "type kind" to make it less confiusing.
+ * Named "type kind" to make it less confusing.
  */
 enum class TypeKind : uint8
 {
-    Undefined,          // invalid
+    Undefined = 0,      // invalid
     Fundamental,        // fundamental type (int, float, bool, etc.)
     Enumeration,        // enum / enum class
     NativeArray,        // T[N] types

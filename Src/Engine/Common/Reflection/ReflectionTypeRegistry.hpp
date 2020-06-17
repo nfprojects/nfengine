@@ -17,6 +17,13 @@
 namespace NFE {
 namespace RTTI {
 
+enum class TypeDeserializationResult : uint8
+{
+    Success = 0,    // Note: deserialize could be still "nullptr", which means it was serialized like that
+    UnknownType,    // There was some valid serialized but now it's not known (missing type at runtime)
+    Error,          // Deserialization failed due to corrupted data or bug in code. Any further operations on the stream should be aborted
+};
+
 /**
  * Container for all the registered types.
  */
@@ -53,7 +60,7 @@ public:
     bool SerializeTypeName(const Type* type, Common::OutputStream* stream, SerializationContext& context) const;
 
     // read type name from binary form
-    bool DeserializeTypeName(const Type** outType, Common::InputStream* stream, SerializationContext& context);
+    TypeDeserializationResult DeserializeTypeName(const Type*& outType, Common::InputStream& stream, const SerializationContext& context);
 
 private:
     TypeRegistry() = default;

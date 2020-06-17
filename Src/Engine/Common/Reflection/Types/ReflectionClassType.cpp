@@ -342,6 +342,8 @@ bool ClassType::SerializeBinary(const void* object, OutputStream* stream, Serial
     Common::DynArray<const Member*> membersToSerialize;
     CollectDifferingMemberList(object, mDefaultObject, membersToSerialize);
 
+    TypeRegistry& typeRegistry = TypeRegistry::GetInstance();
+
     if (!context.IsMapping())
     {
         if (!stream->WriteCompressedUint(membersToSerialize.Size()))
@@ -357,20 +359,18 @@ bool ClassType::SerializeBinary(const void* object, OutputStream* stream, Serial
         // TODO instead of storing type names as strings use some compressed (symbolic) form?
 
         const uint32 memberNameStrIndex = context.MapString(member->GetName());
-        const uint32 typeNameStrIndex = context.MapString(memberType->GetName());
 
         uint64 streamPosBeforeObject = UINT64_MAX;
+
+        if (!typeRegistry.SerializeTypeName(memberType, stream, context))
+        {
+            return false;
+        }
 
         if (!context.IsMapping())
         {
             // write member name
             if (!stream->WriteCompressedUint(memberNameStrIndex))
-            {
-                return false;
-            }
-
-            // write name of type of serialized member
-            if (!stream->WriteCompressedUint(typeNameStrIndex))
             {
                 return false;
             }
@@ -447,34 +447,28 @@ bool ClassType::DeserializeBinary(void* outObject, InputStream& stream, const Se
     // patch serialized members only
     for (uint32 i = 0; i < numMembers; ++i)
     {
-        uint32 strIndex;
-
-        // TODO instead of storing type names as strings use some compressed (symbolic) form?
+        // deserialize type from stream
+        const Type* serializedType = nullptr;
+        if (TypeDeserializationResult::Error == typeRegistry.DeserializeTypeName(serializedType, stream, context))
+        {
+            NFE_LOG_ERROR("Deserialization failed. Corrupted data?");
+            return false;
+        }
 
         // read member name
-        if (!stream.ReadCompressedUint(strIndex))
-        {
-            NFE_LOG_ERROR("Deserialization failed. Corrupted data?");
-            return false;
-        }
         StringView memberName;
-        if (!context.UnmapString(strIndex, memberName))
         {
-            NFE_LOG_ERROR("Deserialization failed. Corrupted data?");
-            return false;
-        }
-
-        // read name of type of serialized member
-        if (!stream.ReadCompressedUint(strIndex))
-        {
-            NFE_LOG_ERROR("Deserialization failed. Corrupted data?");
-            return false;
-        }
-        StringView serializedTypeName;
-        if (!context.UnmapString(strIndex, serializedTypeName))
-        {
-            NFE_LOG_ERROR("Deserialization failed. Corrupted data?");
-            return false;
+            uint32 strIndex;
+            if (!stream.ReadCompressedUint(strIndex))
+            {
+                NFE_LOG_ERROR("Deserialization failed. Corrupted data?");
+                return false;
+            }
+            if (!context.UnmapString(strIndex, memberName))
+            {
+                NFE_LOG_ERROR("Deserialization failed. Corrupted data?");
+                return false;
+            }
         }
 
         // read amount of bytes in the stream for this member
@@ -485,8 +479,6 @@ bool ClassType::DeserializeBinary(void* outObject, InputStream& stream, const Se
             NFE_LOG_ERROR("Deserialization failed. Corrupted data?");
             return false;
         }
-
-        const Type* serializedType = typeRegistry.GetExistingType(serializedTypeName);
 
         if (unitTestHelper)
         {
@@ -500,8 +492,8 @@ bool ClassType::DeserializeBinary(void* outObject, InputStream& stream, const Se
         if (!serializedType)
         {
             // TODO report unknown type
-            NFE_LOG_WARNING("Failed to deserialize member '%.*s' of class %s. Type in data '%.*s' is not know. Probably the type was removed from code.",
-                memberName.Length(), memberName.Data(), GetName().Str(), serializedTypeName.Length(), serializedTypeName.Data());
+            NFE_LOG_WARNING("Failed to deserialize member '%.*s' of class %s. Type in data is not know. Probably the type was removed from code.",
+                memberName.Length(), memberName.Data(), GetName().Str());
 
             if (!stream.Seek(memberPayloadSize, SeekMode::Current))
             {

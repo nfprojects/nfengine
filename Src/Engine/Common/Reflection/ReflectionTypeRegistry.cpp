@@ -6,6 +6,9 @@
 
 #include "PCH.hpp"
 #include "ReflectionTypeRegistry.hpp"
+#include "SerializationContext.hpp"
+#include "../Utils/Stream/OutputStream.hpp"
+#include "../Utils/Stream/InputStream.hpp"
 
 
 namespace NFE {
@@ -99,20 +102,48 @@ void TypeRegistry::Cleanup()
 
 bool TypeRegistry::SerializeTypeName(const Type* type, Common::OutputStream* stream, SerializationContext& context) const
 {
-    NFE_UNUSED(type);
-    NFE_UNUSED(stream);
-    NFE_UNUSED(context);
+    const StringView typeName = type ? type->GetName() : StringView();
 
-    return false;
+    const uint32 typeNameStrIndex = context.MapString(typeName);
+
+    if (!context.IsMapping())
+    {
+        if (!stream->WriteCompressedUint(typeNameStrIndex))
+        {
+            return false;
+        }
+    }
+
+    return true;
 }
 
-bool TypeRegistry::DeserializeTypeName(const Type** outType, Common::InputStream* stream, SerializationContext& context)
+TypeDeserializationResult TypeRegistry::DeserializeTypeName(const Type*& outType, Common::InputStream& stream, const SerializationContext& context)
 {
-    NFE_UNUSED(outType);
-    NFE_UNUSED(stream);
-    NFE_UNUSED(context);
+    uint32 strIndex;
 
-    return false;
+    // read name of type of serialized member
+    if (!stream.ReadCompressedUint(strIndex))
+    {
+        NFE_LOG_ERROR("Deserialization failed. Corrupted data?");
+        return TypeDeserializationResult::Error;
+    }
+
+    StringView serializedTypeName;
+    if (!context.UnmapString(strIndex, serializedTypeName))
+    {
+        NFE_LOG_ERROR("Deserialization failed. Corrupted data?");
+        return TypeDeserializationResult::Error;
+    }
+
+    if (serializedTypeName.Empty())
+    {
+        outType = nullptr;
+        return TypeDeserializationResult::Success;
+    }
+
+    outType = GetExistingType(serializedTypeName);
+
+    return outType != nullptr ? TypeDeserializationResult::Success : TypeDeserializationResult::UnknownType;
 }
 
 } // namespace RTTI

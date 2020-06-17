@@ -112,15 +112,10 @@ bool SharedPtrType::SerializeBinary(const void* object, OutputStream* stream, Se
 {
     const ObjectPtr& typedObject = *BitCast<const ObjectPtr*>(object);
     const Type* pointedDataType = GetPointedDataType(object);
-    const StringView pointedDataTypeName = pointedDataType ? pointedDataType->GetName() : StringView();
 
-    const uint32 typeNameStrIndex = context.MapString(pointedDataTypeName);
-    if (!context.IsMapping())
+    if (!TypeRegistry::GetInstance().SerializeTypeName(pointedDataType, stream, context))
     {
-        if (!stream->WriteCompressedUint(typeNameStrIndex))
-        {
-            return false;
-        }
+        return false;
     }
 
     if (pointedDataType)
@@ -151,37 +146,30 @@ bool SharedPtrType::SerializeBinary(const void* object, OutputStream* stream, Se
 
 bool SharedPtrType::DeserializeBinary(void* outObject, InputStream& stream, const SerializationContext& context) const
 {
-    // read pointed data type name
-    uint32 strIndex;
-    if (!stream.ReadCompressedUint(strIndex))
+    // deserialize type from stream
+    const Type* serializedType = nullptr;
+    TypeDeserializationResult typeDeserializationResult = TypeRegistry::GetInstance().DeserializeTypeName(serializedType, stream, context);
+
+    if (typeDeserializationResult == TypeDeserializationResult::Error)
     {
         NFE_LOG_ERROR("Deserialization failed. Corrupted data?");
         return false;
     }
-    StringView serializedTypeName;
-    if (!context.UnmapString(strIndex, serializedTypeName))
+
+    // serialized type not known
+    if (typeDeserializationResult == TypeDeserializationResult::UnknownType)
     {
-        NFE_LOG_ERROR("Deserialization failed. Corrupted data?");
+        // TOOO skip object
+        // TODO report unknown type
+        NFE_LOG_WARNING("Failed to deserialize SharedPtr of type '%s': type in data is not know. Probably the type was removed from code.", GetName().Str());
         return false;
     }
 
     // handle nullptr
-    if (serializedTypeName.Empty())
+    if (nullptr == serializedType)
     {
         Reset(outObject);
         return true;
-    }
-
-    const Type* serializedType = TypeRegistry::GetInstance().GetExistingType(serializedTypeName);
-
-    // serialized type not known
-    if (!serializedType)
-    {
-        // TOOO skip object
-        // TODO report unknown type
-        NFE_LOG_WARNING("Failed to deserialize SharedPtr of type '%s': type in data '%.*s' is not know. Probably the type was removed from code.",
-            GetName().Str(), serializedTypeName.Length(), serializedTypeName.Data());
-        return false;
     }
 
     if (!serializedType->IsA(GetUnderlyingType()))

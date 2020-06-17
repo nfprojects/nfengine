@@ -24,6 +24,8 @@ bool Serialize(const ArrayView<const ObjectPtr> rootObjects, OutputStream& outpu
 {
     NFE_ASSERT(!rootObjects.Empty(), "What's point in serializing zero objects?");
 
+    TypeRegistry& typeRegistry = TypeRegistry::GetInstance();
+
     // write magic
     if (!outputStream.Write(c_magicValue))
     {
@@ -56,7 +58,7 @@ bool Serialize(const ArrayView<const ObjectPtr> rootObjects, OutputStream& outpu
             }
 
             // map root object and it's type name
-            serializationContext.MapString(objectClassType->GetName());
+            typeRegistry.SerializeTypeName(objectClassType, nullptr, serializationContext);
             const uint32 objectIndex = serializationContext.MapObject(rootObjectPtr);
 
             rootObjectMappedIndices.PushBack(objectIndex);
@@ -114,11 +116,8 @@ bool Serialize(const ArrayView<const ObjectPtr> rootObjects, OutputStream& outpu
         for (const ObjectPtr& objectPtr : objectTable)
         {
             const Type* objectClassType = objectPtr->GetDynamicType();
-            const StringView pointedDataTypeName = objectClassType->GetName();
 
-            // serialize object type name
-            const uint32 typeNameStrIndex = serializationContext.MapString(pointedDataTypeName);
-            if (!outputStream.WriteCompressedUint(typeNameStrIndex))
+            if (!typeRegistry.SerializeTypeName(objectClassType, &outputStream, serializationContext))
             {
                 return false;
             }
@@ -155,6 +154,8 @@ bool Serialize(const ArrayView<const ObjectPtr> rootObjects, OutputStream& outpu
 
 bool Deserialize(DynArray<ObjectPtr>& outRootObjects, InputStream& inputStream)
 {
+    TypeRegistry& typeRegistry = TypeRegistry::GetInstance();
+
     // deseiralize magic
     {
         uint32 magic;
@@ -222,36 +223,28 @@ bool Deserialize(DynArray<ObjectPtr>& outRootObjects, InputStream& inputStream)
 
         for (uint32 objIndex = 0; objIndex < objectTableSize; ++objIndex)
         {
-            // serialize object type name
-            uint32 typeNameStrIndex = 0;
-            if (!inputStream.ReadCompressedUint(typeNameStrIndex))
-            {
-                NFE_LOG_ERROR("Deserialize: Failed to read object's type name index. Object index = %u", objIndex);
-                return false;
-            }
-            StringView serializedTypeName;
-            if (!serializationContext.UnmapString(typeNameStrIndex, serializedTypeName))
+            const Type* serializedType = nullptr;
+            TypeDeserializationResult typeDeserializationResult = typeRegistry.DeserializeTypeName(serializedType, inputStream, serializationContext);
+
+            if (typeDeserializationResult == TypeDeserializationResult::Error)
             {
                 NFE_LOG_ERROR("Deserialization failed. Corrupted data?");
                 return false;
             }
 
-            // handle nullptr
-            if (serializedTypeName.Empty())
-            {
-                continue;
-            }
-
-            const Type* serializedType = TypeRegistry::GetInstance().GetExistingType(serializedTypeName);
-
             // serialized type not known
-            if (!serializedType)
+            if (typeDeserializationResult == TypeDeserializationResult::UnknownType)
             {
                 // TOOO skip object (will require storing skipping offsets on serializing)
                 // TODO report unknown type
-                NFE_LOG_ERROR("Deserialize: Failed to deserialize object %u: type in data '%.*s' is not known. Probably the type was removed from code.",
-                    objIndex, serializedTypeName.Length(), serializedTypeName.Data());
+                NFE_LOG_ERROR("Deserialize: Failed to deserialize object %u: type in data is not known. Probably the type was removed from code.", objIndex);
                 return false;
+            }
+
+            // handle nullptr
+            if (nullptr == serializedType)
+            {
+                continue;
             }
 
             if (!serializedType->IsA(GetType<IObject>()))
