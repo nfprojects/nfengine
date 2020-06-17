@@ -172,7 +172,7 @@ bool Device::Init(const DeviceInitParams* params)
 
     vkGetPhysicalDeviceMemoryProperties(mPhysicalDevice, &mMemoryProperties);
 
-    // create a temporary platform-specific surface to get format capabilities
+    // create a temporary platform-specific surface to get platform's capabilities
     VkSurfaceKHR tempSurface = VK_NULL_HANDLE;
     if (!CreateTemporarySurface(tempSurface))
     {
@@ -190,6 +190,7 @@ bool Device::Init(const DeviceInitParams* params)
 
     mSupportedFormats.Resize(formatCount);
     vkGetPhysicalDeviceSurfaceFormatsKHR(mPhysicalDevice, tempSurface, &formatCount, mSupportedFormats.Data());
+
     CleanupTemporarySurface(tempSurface);
 
     // Grab queue properties from our selected device
