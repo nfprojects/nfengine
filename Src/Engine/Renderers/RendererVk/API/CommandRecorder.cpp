@@ -323,22 +323,59 @@ void CommandRecorder::CopyTexture(const TexturePtr& src, const BackbufferPtr& de
     s->Transition(mCommandBuffer, VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL);
     d->Transition(mCommandBuffer, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
 
-    VkImageCopy copyRegion;
-    VK_ZERO_MEMORY(copyRegion);
-    copyRegion.srcSubresource.aspectMask = s->mImageSubresRange.aspectMask;
-    copyRegion.srcSubresource.baseArrayLayer = s->mImageSubresRange.baseArrayLayer;
-    copyRegion.srcSubresource.layerCount = s->mImageSubresRange.layerCount;
-    copyRegion.srcSubresource.mipLevel = 0;
-    copyRegion.dstSubresource.aspectMask = d->mImageSubresRange.aspectMask;
-    copyRegion.dstSubresource.baseArrayLayer = d->mImageSubresRange.baseArrayLayer;
-    copyRegion.dstSubresource.layerCount = d->mImageSubresRange.layerCount;
-    copyRegion.dstSubresource.mipLevel = 0;
-    copyRegion.extent.width = s->mWidth;
-    copyRegion.extent.height = s->mHeight;
-    vkCmdCopyImage(mCommandBuffer,
-                   s->mImage, VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL,
-                   d->mImages[d->mCurrentImage], VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
-                   1, &copyRegion);
+    if ((s->mFormat == d->mFormat) && (s->mWidth == d->mWidth) && (s->mHeight == d->mHeight))
+    {
+        // do a raw copy, which doesn't do format conversion/scaling and is faster than blitting
+        VkImageCopy copyRegion;
+        VK_ZERO_MEMORY(copyRegion);
+        copyRegion.srcSubresource.aspectMask = s->mImageSubresRange.aspectMask;
+        copyRegion.srcSubresource.baseArrayLayer = s->mImageSubresRange.baseArrayLayer;
+        copyRegion.srcSubresource.layerCount = s->mImageSubresRange.layerCount;
+        copyRegion.srcSubresource.mipLevel = 0;
+        copyRegion.dstSubresource.aspectMask = d->mImageSubresRange.aspectMask;
+        copyRegion.dstSubresource.baseArrayLayer = d->mImageSubresRange.baseArrayLayer;
+        copyRegion.dstSubresource.layerCount = d->mImageSubresRange.layerCount;
+        copyRegion.dstSubresource.mipLevel = 0;
+        copyRegion.extent.width = s->mWidth;
+        copyRegion.extent.height = s->mHeight;
+        vkCmdCopyImage(mCommandBuffer,
+                       s->mImage, VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL,
+                       d->mImages[d->mCurrentImage], VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
+                       1, &copyRegion);
+    }
+    else
+    {
+        // Blit the image
+        VkImageBlit blitRegion;
+        VK_ZERO_MEMORY(blitRegion);
+        // subresources specification
+        blitRegion.srcSubresource.aspectMask = s->mImageSubresRange.aspectMask;
+        blitRegion.srcSubresource.baseArrayLayer = s->mImageSubresRange.baseArrayLayer;
+        blitRegion.srcSubresource.layerCount = s->mImageSubresRange.layerCount;
+        blitRegion.srcSubresource.mipLevel = 0;
+        blitRegion.dstSubresource.aspectMask = d->mImageSubresRange.aspectMask;
+        blitRegion.dstSubresource.baseArrayLayer = d->mImageSubresRange.baseArrayLayer;
+        blitRegion.dstSubresource.layerCount = d->mImageSubresRange.layerCount;
+        blitRegion.dstSubresource.mipLevel = 0;
+        // source offsets - define region to copy from
+        blitRegion.srcOffsets[0].x = 0;
+        blitRegion.srcOffsets[0].y = 0;
+        blitRegion.srcOffsets[0].z = 0;
+        blitRegion.srcOffsets[1].x = s->mWidth;
+        blitRegion.srcOffsets[1].y = s->mHeight;
+        blitRegion.srcOffsets[1].z = 1;
+        // destination offsets - define region where to copy to
+        blitRegion.dstOffsets[0].x = 0;
+        blitRegion.dstOffsets[0].y = 0;
+        blitRegion.dstOffsets[0].z = 0;
+        blitRegion.dstOffsets[1].x = d->mWidth;
+        blitRegion.dstOffsets[1].y = d->mHeight;
+        blitRegion.dstOffsets[1].z = 1;
+        vkCmdBlitImage(mCommandBuffer,
+                       s->mImage, VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL,
+                       d->mImages[d->mCurrentImage], VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
+                       1, &blitRegion, VK_FILTER_NEAREST);
+    }
 
     d->Transition(mCommandBuffer, VK_IMAGE_LAYOUT_PRESENT_SRC_KHR);
 }
