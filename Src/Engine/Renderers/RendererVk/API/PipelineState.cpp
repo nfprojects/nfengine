@@ -82,14 +82,6 @@ bool PipelineState::Init(const PipelineStateDesc& desc)
     pmsInfo.alphaToCoverageEnable = desc.blendState.alphaToCoverage;
     pmsInfo.alphaToOneEnable = VK_FALSE;
 
-    VkPipelineDepthStencilStateCreateInfo pdssInfo;
-    VK_ZERO_MEMORY(pdssInfo);
-    pdssInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO;
-    pdssInfo.depthTestEnable = desc.depthState.depthTestEnable;
-    pdssInfo.depthWriteEnable = desc.depthState.depthWriteEnable;
-    pdssInfo.depthCompareOp = TranslateCompareFuncToVkCompareOp(desc.depthState.depthCompareFunc);
-    pdssInfo.depthBoundsTestEnable = VK_FALSE;
-    pdssInfo.stencilTestEnable = desc.depthState.stencilEnable;
     VkStencilOpState stencilOps;
     VK_ZERO_MEMORY(stencilOps);
     stencilOps.failOp = TranslateStencilOpToVkStencilOp(desc.depthState.stencilOpFail);
@@ -98,9 +90,19 @@ bool PipelineState::Init(const PipelineStateDesc& desc)
     stencilOps.compareOp = TranslateCompareFuncToVkCompareOp(desc.depthState.stencilFunc);
     stencilOps.compareMask = desc.depthState.stencilMask;
     stencilOps.writeMask = desc.depthState.stencilMask;
-    stencilOps.reference = 0; // stencilOps.reference will be changed dynamically
+    stencilOps.reference = 0; // will be changed dynamically
+
+    VkPipelineDepthStencilStateCreateInfo pdssInfo;
+    VK_ZERO_MEMORY(pdssInfo);
+    pdssInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO;
+    pdssInfo.depthTestEnable = desc.depthState.depthTestEnable;
+    pdssInfo.depthWriteEnable = desc.depthState.depthWriteEnable;
+    pdssInfo.depthCompareOp = TranslateCompareFuncToVkCompareOp(desc.depthState.depthCompareFunc);
+    pdssInfo.depthBoundsTestEnable = VK_FALSE;
+    pdssInfo.stencilTestEnable = desc.depthState.stencilEnable;
     pdssInfo.front = pdssInfo.back = stencilOps;
-    pdssInfo.minDepthBounds = pdssInfo.maxDepthBounds = 0.0f;
+    pdssInfo.minDepthBounds = 0.0f;
+    pdssInfo.maxDepthBounds = 1.0f;
 
     VkPipelineColorBlendStateCreateInfo pcbsInfo;
     VK_ZERO_MEMORY(pcbsInfo);
