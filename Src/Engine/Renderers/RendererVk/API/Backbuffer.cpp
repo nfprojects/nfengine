@@ -7,7 +7,9 @@
 #include "PCH.hpp"
 #include "Backbuffer.hpp"
 #include "Device.hpp"
+#include "Internal/Debugger.hpp"
 
+#include <Engine/Common/Utils/StringUtils.hpp>
 #include <string.h>
 
 
@@ -225,6 +227,9 @@ bool Backbuffer::CreateSwapchain(const BackbufferDesc& desc)
     VkResult result = vkCreateSwapchainKHR(gDevice->GetDevice(), &swapInfo, nullptr, &mSwapchain);
     CHECK_VKRESULT(result, "Failed to create a swapchain");
 
+    if (desc.debugName)
+        Debugger::Instance().NameObject(reinterpret_cast<uint64_t>(mSwapchain), VK_OBJECT_TYPE_SWAPCHAIN_KHR, desc.debugName);
+
     uint32 swapImageCount = 0;
     result = vkGetSwapchainImagesKHR(gDevice->GetDevice(), mSwapchain, &swapImageCount, nullptr);
     CHECK_VKRESULT(result, "Failed to get swapchain image count");
@@ -257,6 +262,17 @@ bool Backbuffer::CreateSwapchain(const BackbufferDesc& desc)
 
     NFE_LOG_DEBUG("%d swapchain buffers acquired", mImageNum);
 
+    if (desc.debugName)
+    {
+        Common::String imageNamePrefix(desc.debugName);
+        imageNamePrefix += "-Image";
+        for (uint32 i = 0; i < mImageNum; ++i)
+        {
+            Common::String name = imageNamePrefix + Common::ToString(i);
+            Debugger::Instance().NameObject(reinterpret_cast<uint64_t>(mImages[i]), VK_OBJECT_TYPE_IMAGE, name.Str());
+        }
+    }
+
     return true;
 }
 
@@ -267,6 +283,8 @@ bool Backbuffer::CreateNextImageFence()
     info.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO;
     VkResult result = vkCreateFence(gDevice->GetDevice(), &info, nullptr, &mAcquireNextImageFence);
     CHECK_VKRESULT(result, "Failed to create next image fence");
+
+    Debugger::Instance().NameObject(reinterpret_cast<uint64_t>(mAcquireNextImageFence), VK_OBJECT_TYPE_FENCE, "AcquireNextImageFence");
 
     return true;
 }

@@ -14,6 +14,7 @@
 #include "Backbuffer.hpp"
 
 #include "Internal/Translations.hpp"
+#include "Internal/Debugger.hpp"
 
 #include "Engine/Common/Math/Vec4fU.hpp"
 

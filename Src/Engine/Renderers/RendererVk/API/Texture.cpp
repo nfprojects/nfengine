@@ -11,6 +11,7 @@
 #include "Device.hpp"
 
 #include "Internal/Translations.hpp"
+#include "Internal/Debugger.hpp"
 
 
 namespace NFE {
@@ -132,6 +133,9 @@ bool Texture::Init(const TextureDesc& desc)
     result = vkCreateImage(gDevice->GetDevice(), &imageInfo, nullptr, &mImage);
     CHECK_VKRESULT(result, "Failed to create Image for texture");
 
+    if (desc.debugName)
+        Debugger::Instance().NameObject(reinterpret_cast<uint64_t>(mImage), VK_OBJECT_TYPE_IMAGE, desc.debugName);
+
     VkMemoryRequirements imageMemReqs;
     vkGetImageMemoryRequirements(gDevice->GetDevice(), mImage, &imageMemReqs);
 
@@ -142,6 +146,13 @@ bool Texture::Init(const TextureDesc& desc)
     imageMemInfo.memoryTypeIndex = gDevice->GetMemoryTypeIndex(imageMemReqs.memoryTypeBits, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
     result = vkAllocateMemory(gDevice->GetDevice(), &imageMemInfo, nullptr, &mImageMemory);
     CHECK_VKRESULT(result, "Failed to allocate memory for Image");
+
+    if (desc.debugName)
+    {
+        Common::String memName(desc.debugName);
+        memName += "-DeviceMemory";
+        Debugger::Instance().NameObject(reinterpret_cast<uint64_t>(mImageMemory), VK_OBJECT_TYPE_DEVICE_MEMORY, memName.Str());
+    }
 
     result = vkBindImageMemory(gDevice->GetDevice(), mImage, mImageMemory, 0);
     CHECK_VKRESULT(result, "Failed to bind Image to its memory");
@@ -293,6 +304,13 @@ bool Texture::Init(const TextureDesc& desc)
     ivInfo.subresourceRange = mImageSubresRange;
     result = vkCreateImageView(gDevice->GetDevice(), &ivInfo, nullptr, &mImageView);
     CHECK_VKRESULT(result, "Failed to generate Image View from created Texure's image");
+
+    if (desc.debugName)
+    {
+        Common::String ivName(desc.debugName);
+        ivName += "-View";
+        Debugger::Instance().NameObject(reinterpret_cast<uint64_t>(mImageView), VK_OBJECT_TYPE_IMAGE_VIEW, ivName.Str());
+    }
 
     NFE_LOG_INFO("Texture initialized successfully");
     return true;

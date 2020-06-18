@@ -7,6 +7,7 @@
 #include "PCH.hpp"
 #include "RenderPassManager.hpp"
 #include "API/Device.hpp"
+#include "Debugger.hpp"
 
 
 namespace NFE {
@@ -94,6 +95,19 @@ VkRenderPass RenderPassManager::ConstructRenderPass(const RenderPassDesc& desc)
         }
         NFE_LOG_DEBUG("    depth:     %d (%s)", desc.depthFormat, TranslateVkFormatToString(desc.depthFormat));
         return VK_NULL_HANDLE;
+    }
+
+    if (Debugger::Instance().IsDebugAnnotationActive())
+    {
+        Common::String name("RenderPass-");
+        for (uint32 i = 0; i < desc.colorFormats.Size(); ++i)
+        {
+            name += TranslateVkFormatToString(desc.colorFormats[i]);
+            name += '-';
+        }
+
+        name += TranslateVkFormatToString(desc.depthFormat);
+        Debugger::Instance().NameObject(reinterpret_cast<uint64_t>(tempRenderPass), VK_OBJECT_TYPE_RENDER_PASS, name.Str());
     }
 
     return tempRenderPass;

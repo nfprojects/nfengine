@@ -18,6 +18,10 @@ class Debugger
     PFN_vkCreateDebugUtilsMessengerEXT vkCreateDebugUtilsMessengerEXT;
     PFN_vkDestroyDebugUtilsMessengerEXT vkDestroyDebugUtilsMessengerEXT;
 
+    // Device-related debugging functions
+    PFN_vkSetDebugUtilsObjectNameEXT vkSetDebugUtilsObjectNameEXT;
+    PFN_vkSetDebugUtilsObjectTagEXT vkSetDebugUtilsObjectTagEXT;
+
     // Debug primitives
     VkDebugUtilsMessengerCreateInfoEXT mEarlyDebugMessengerInfo;
     VkDebugUtilsMessengerEXT mDebugMessenger;
@@ -46,6 +50,28 @@ public:
                        VkDebugUtilsMessageTypeFlagsEXT type);
 
     /**
+     * Initializes Debug Object Annotation extension
+     *
+     * Should be called right after successfully creating Device
+     */
+    bool InitDebugObjectAnnotation(VkDevice device);
+
+    /**
+     * Names a Vulkan object via Debug Object Annotation extension
+     */
+    bool NameObject(uint64_t handle, VkObjectType type, const char* name);
+
+    /**
+     * Tags a Vulkan object with extra information via Debug Object Annotation extension.
+     */
+    bool TagObject(uint64_t handle, VkObjectType type, uint64_t tagName, void* tag, size_t tagSize);
+
+    NFE_INLINE bool IsDebugAnnotationActive() const
+    {
+        return (vkSetDebugUtilsObjectNameEXT != nullptr) && (vkSetDebugUtilsObjectTagEXT != nullptr);
+    }
+
+    /**
      * Returns "early" debug messenger create info.
      *
      * This structure can be passed directly to vkCreateInstance to provide logging utilities when
@@ -60,6 +86,11 @@ public:
      * Frees debug messenger.
      */
     void ReleaseMessenger();
+
+    /**
+     * Frees debug object annotation.
+     */
+    void ReleaseDebugObjectAnnotation();
 };
 
 } // namespace Renderer

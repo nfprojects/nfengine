@@ -11,6 +11,7 @@
 #include "Shader.hpp"
 
 #include "Internal/RenderPassManager.hpp"
+#include "Internal/Debugger.hpp"
 
 
 namespace NFE {
@@ -211,6 +212,9 @@ bool PipelineState::Init(const PipelineStateDesc& desc)
     VkResult result = vkCreateGraphicsPipelines(gDevice->GetDevice(), VK_NULL_HANDLE, 1, &pipeInfo,
                                                 nullptr, &mPipeline);
     CHECK_VKRESULT(result, "Failed to create Graphics Pipeline");
+
+    if (desc.debugName)
+        Debugger::Instance().NameObject(reinterpret_cast<uint64_t>(mPipeline), VK_OBJECT_TYPE_PIPELINE, desc.debugName);
 
     return true;
 }

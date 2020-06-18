@@ -88,6 +88,9 @@ Device::~Device()
         vkDestroyCommandPool(mDevice, mCommandPool, nullptr);
     if (mDescriptorPool != VK_NULL_HANDLE)
         vkDestroyDescriptorPool(mDevice, mDescriptorPool, nullptr);
+
+    Debugger::Instance().ReleaseDebugObjectAnnotation();
+
     if (mDevice != VK_NULL_HANDLE)
         vkDestroyDevice(mDevice, nullptr);
 }
@@ -265,6 +268,16 @@ bool Device::Init(const DeviceInitParams* params)
         return false;
     }
 
+    if (params->debugLevel > 0)
+    {
+        if (!Debugger::Instance().InitDebugObjectAnnotation(mDevice))
+        {
+            NFE_LOG_WARNING("Debug Object Annotation unavailable");
+        }
+    }
+
+    Debugger::Instance().NameObject(reinterpret_cast<uint64_t>(mDevice), VK_OBJECT_TYPE_DEVICE, "Device");
+
     vkGetDeviceQueue(mDevice, mGraphicsQueueIndex, 0, &mGraphicsQueue);
 
 
@@ -292,6 +305,8 @@ bool Device::Init(const DeviceInitParams* params)
     result = vkCreateDescriptorPool(mDevice, &descPoolInfo, nullptr, &mDescriptorPool);
     CHECK_VKRESULT(result, "Failed to create Descriptor Pool");
 
+    Debugger::Instance().NameObject(reinterpret_cast<uint64_t>(mDescriptorPool), VK_OBJECT_TYPE_DESCRIPTOR_POOL, "Device-DescriptorPool");
+
 
     VkCommandPoolCreateInfo poolInfo;
     VK_ZERO_MEMORY(poolInfo);
@@ -299,11 +314,10 @@ bool Device::Init(const DeviceInitParams* params)
     poolInfo.queueFamilyIndex = mGraphicsQueueIndex;
     poolInfo.flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
     result = vkCreateCommandPool(mDevice, &poolInfo, nullptr, &mCommandPool);
-    if (result != VK_SUCCESS)
-    {
-        NFE_LOG_ERROR("Failed to create a graphics command pool");
-        return false;
-    }
+    CHECK_VKRESULT(result, "Failed to create Command Pool");
+
+    Debugger::Instance().NameObject(reinterpret_cast<uint64_t>(mCommandPool), VK_OBJECT_TYPE_COMMAND_POOL, "Device-CommandPool");
+
 
     mCommandBufferPool.Resize(COMMAND_BUFFER_COUNT);
 
@@ -316,15 +330,30 @@ bool Device::Init(const DeviceInitParams* params)
     result = vkAllocateCommandBuffers(mDevice, &cbInfo, mCommandBufferPool.Data());
     CHECK_VKRESULT(result, "Failed to initialize Command Buffer Pool");
 
+    if (Debugger::Instance().IsDebugAnnotationActive())
+    {
+        Common::String cbNamePrefix("Device-CommandBuffer");
+        for (uint32 i = 0; i < COMMAND_BUFFER_COUNT; ++i)
+        {
+            Common::String name = cbNamePrefix + Common::ToString(i);
+            Debugger::Instance().NameObject(reinterpret_cast<uint64_t>(mCommandBufferPool[i]), VK_OBJECT_TYPE_COMMAND_BUFFER, name.Str());
+        }
+    }
+
+
     mRenderPassManager.Reset(new RenderPassManager(mDevice));
+
 
     mRingBuffer.Reset(new RingBuffer(mDevice));
     mRingBuffer->Init(1024 * 1024);
+
 
     VkPipelineCacheCreateInfo pipeCacheInfo;
     VK_ZERO_MEMORY(pipeCacheInfo);
     pipeCacheInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_CACHE_CREATE_INFO;
     result = vkCreatePipelineCache(mDevice, &pipeCacheInfo, nullptr, &mPipelineCache);
+
+    Debugger::Instance().NameObject(reinterpret_cast<uint64_t>(mPipelineCache), VK_OBJECT_TYPE_PIPELINE_CACHE, "Device-PipelineCache");
 
     NFE_LOG_INFO("Vulkan device initialized successfully");
     return true;

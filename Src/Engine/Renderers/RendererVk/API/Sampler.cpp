@@ -9,6 +9,7 @@
 #include "Device.hpp"
 
 #include "Internal/Translations.hpp"
+#include "Internal/Debugger.hpp"
 
 
 namespace NFE {
@@ -47,6 +48,9 @@ bool Sampler::Init(const SamplerDesc& desc)
     sampInfo.unnormalizedCoordinates = VK_FALSE;
     VkResult result = vkCreateSampler(gDevice->GetDevice(), &sampInfo, nullptr, &mSampler);
     CHECK_VKRESULT(result, "Failed to create Sampler");
+
+    if (desc.debugName)
+        Debugger::Instance().NameObject(reinterpret_cast<uint64_t>(mSampler), VK_OBJECT_TYPE_SAMPLER, desc.debugName);
 
     NFE_LOG_INFO("Sampler created successfully");
     return true;

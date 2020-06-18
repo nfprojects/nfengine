@@ -9,10 +9,12 @@
 #include "Shader.hpp"
 #include "Defines.hpp"
 #include "Device.hpp"
+#include "Internal/Debugger.hpp"
 #include "Engine/Common/FileSystem/File.hpp"
 
 #include <cstring>
 #include <cctype>
+
 
 namespace NFE {
 namespace Renderer {
@@ -167,6 +169,8 @@ bool Shader::Init(const ShaderDesc& desc)
     shaderInfo.pCode = mShaderSpv.data();
     VkResult result = vkCreateShaderModule(gDevice->GetDevice(), &shaderInfo, nullptr, &mShader);
     CHECK_VKRESULT(result, "Failed to create Shader module");
+
+    Debugger::Instance().NameObject(reinterpret_cast<uint64_t>(mShader), VK_OBJECT_TYPE_SHADER_MODULE, desc.path);
 
     VK_ZERO_MEMORY(mStageInfo);
     mStageInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;

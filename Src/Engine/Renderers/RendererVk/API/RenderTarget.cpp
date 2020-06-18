@@ -11,6 +11,8 @@
 #include "Texture.hpp"
 #include "Device.hpp"
 
+#include "Internal/Debugger.hpp"
+
 #include "Engine/Common/Containers/StaticArray.hpp"
 
 
@@ -144,6 +146,9 @@ bool RenderTarget::Init(const RenderTargetDesc& desc)
     fbInfo.layers = 1;
     result = vkCreateFramebuffer(gDevice->GetDevice(), &fbInfo, nullptr, &mFramebuffer);
     CHECK_VKRESULT(result, "Failed to create Framebuffer");
+
+    if (desc.debugName)
+        Debugger::Instance().NameObject(reinterpret_cast<uint64_t>(mFramebuffer), VK_OBJECT_TYPE_FRAMEBUFFER, desc.debugName);
 
     NFE_LOG_INFO("Render Target created successfully");
     return true;

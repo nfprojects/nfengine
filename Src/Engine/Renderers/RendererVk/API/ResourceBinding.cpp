@@ -10,6 +10,7 @@
 #include "Sampler.hpp"
 
 #include "Engine/Common/Containers/StaticArray.hpp"
+#include "Internal/Debugger.hpp"
 
 
 namespace NFE {
@@ -82,6 +83,8 @@ bool ResourceBindingSet::Init(const ResourceBindingSetDesc& desc)
     descInfo.pBindings = bindings.Data();
     VkResult result = vkCreateDescriptorSetLayout(gDevice->GetDevice(), &descInfo, nullptr, &mDescriptorLayout);
     CHECK_VKRESULT(result, "Failed to create Descriptor Set Layout");
+
+    Debugger::Instance().NameObject(reinterpret_cast<uint64_t>(mDescriptorLayout), VK_OBJECT_TYPE_DESCRIPTOR_SET_LAYOUT, "DescriptorSetLayout");
 
     return true;
 }
@@ -177,6 +180,8 @@ bool ResourceBindingLayout::Init(const ResourceBindingLayoutDesc& desc)
         result = vkCreateDescriptorSetLayout(gDevice->GetDevice(), &descInfo, nullptr, &mVolatileBufferLayout);
         CHECK_VKRESULT(result, "Failed to create Volatile CBuffer Descriptor Set Layout");
 
+        Debugger::Instance().NameObject(reinterpret_cast<uint64_t>(mVolatileBufferLayout), VK_OBJECT_TYPE_DESCRIPTOR_SET_LAYOUT, "VolatileBufferDSL");
+
         dsls[mVolatileBufferSetSlot] = mVolatileBufferLayout;
     }
 
@@ -188,6 +193,9 @@ bool ResourceBindingLayout::Init(const ResourceBindingLayoutDesc& desc)
     result = vkCreatePipelineLayout(gDevice->GetDevice(), &info, nullptr, &mPipelineLayout);
     CHECK_VKRESULT(result, "Failed to create Pipeline Layout for Resource Binding Layout");
 
+    if (desc.debugName)
+        Debugger::Instance().NameObject(reinterpret_cast<uint64_t>(mPipelineLayout), VK_OBJECT_TYPE_PIPELINE_LAYOUT, desc.debugName);
+
     if (desc.numVolatileCBuffers > 0)
     {
         VkDescriptorSetAllocateInfo allocInfo;
@@ -198,6 +206,8 @@ bool ResourceBindingLayout::Init(const ResourceBindingLayoutDesc& desc)
         allocInfo.pSetLayouts = &mVolatileBufferLayout;
         result = vkAllocateDescriptorSets(gDevice->GetDevice(), &allocInfo, &mVolatileBufferSet);
         CHECK_VKRESULT(result, "Failed to allocate Volatile Buffer Set");
+
+        Debugger::Instance().NameObject(reinterpret_cast<uint64_t>(mVolatileBufferSet), VK_OBJECT_TYPE_DESCRIPTOR_SET, "VolatileBufferSet");
 
         for (uint32 i = 0; i < desc.numVolatileCBuffers; ++i)
         {
@@ -247,6 +257,8 @@ bool ResourceBindingInstance::Init(const ResourceBindingSetPtr& bindingSet)
     info.pSetLayouts = &mSet->mDescriptorLayout;
     result = vkAllocateDescriptorSets(gDevice->GetDevice(), &info, &mDescriptorSet);
     CHECK_VKRESULT(result, "Failed to allocate Descriptor Set for Resource Binding Instance");
+
+    Debugger::Instance().NameObject(reinterpret_cast<uint64_t>(mDescriptorSet), VK_OBJECT_TYPE_DESCRIPTOR_SET, "DescriptorSet");
 
     return true;
 }

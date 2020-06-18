@@ -116,12 +116,74 @@ bool Debugger::InitMessenger(VkInstance instance, VkDebugUtilsMessageSeverityFla
     return true;
 }
 
+bool Debugger::InitDebugObjectAnnotation(VkDevice device)
+{
+    bool allExtensionsAvailable = true;
+
+    VK_GET_DEVICEPROC(device, vkSetDebugUtilsObjectNameEXT);
+    VK_GET_DEVICEPROC(device, vkSetDebugUtilsObjectTagEXT);
+
+    if (!allExtensionsAvailable)
+    {
+        NFE_LOG_ERROR("Debug utils extension not available - cannot initialize Debug Messenger");
+        return false;
+    }
+
+    mVkDevice = device;
+
+    return true;
+}
+
+bool Debugger::NameObject(uint64_t handle, VkObjectType type, const char* name)
+{
+    if (vkSetDebugUtilsObjectNameEXT == nullptr)
+        return true; // quietly pretend everything is okay - extension is unavailable or debugging is turned off
+
+    VkDebugUtilsObjectNameInfoEXT info;
+    VK_ZERO_MEMORY(info);
+    info.sType = VK_STRUCTURE_TYPE_DEBUG_UTILS_OBJECT_NAME_INFO_EXT;
+    info.objectHandle = handle;
+    info.objectType = type;
+    info.pObjectName = name;
+    VkResult result = vkSetDebugUtilsObjectNameEXT(mVkDevice, &info);
+    CHECK_VKRESULT(result, "Failed to set object name");
+
+    return true;
+}
+
+bool Debugger::TagObject(uint64_t handle, VkObjectType type, uint64_t tagName, void* tag, size_t tagSize)
+{
+    if (vkSetDebugUtilsObjectTagEXT == nullptr)
+        return true; // quietly pretend everything is okay - extension is unavailable or debugging is turned off
+
+    VkDebugUtilsObjectTagInfoEXT info;
+    VK_ZERO_MEMORY(info);
+    info.sType = VK_STRUCTURE_TYPE_DEBUG_UTILS_OBJECT_NAME_INFO_EXT;
+    info.objectHandle = handle;
+    info.objectType = type;
+    info.tagName = tagName;
+    info.pTag = tag;
+    info.tagSize = tagSize;
+    VkResult result = vkSetDebugUtilsObjectTagEXT(mVkDevice, &info);
+    CHECK_VKRESULT(result, "Failed to set object tag");
+
+    return true;
+}
+
 void Debugger::ReleaseMessenger()
 {
     if (vkDestroyDebugUtilsMessengerEXT && (mDebugMessenger != VK_NULL_HANDLE))
         vkDestroyDebugUtilsMessengerEXT(mVkInstance, mDebugMessenger, nullptr);
 
     mDebugMessenger = VK_NULL_HANDLE;
+    vkCreateDebugUtilsMessengerEXT = nullptr;
+    vkDestroyDebugUtilsMessengerEXT = nullptr;
+}
+
+void Debugger::ReleaseDebugObjectAnnotation()
+{
+    vkSetDebugUtilsObjectNameEXT = nullptr;
+    vkSetDebugUtilsObjectTagEXT = nullptr;
 }
 
 } // namespace Renderer

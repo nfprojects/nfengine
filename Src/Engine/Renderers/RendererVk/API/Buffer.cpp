@@ -7,6 +7,7 @@
 #include "PCH.hpp"
 #include "Buffer.hpp"
 #include "Device.hpp"
+#include "Internal/Debugger.hpp"
 
 
 namespace NFE {
@@ -99,6 +100,9 @@ bool Buffer::Init(const BufferDesc& desc)
     result = vkCreateBuffer(gDevice->GetDevice(), &bufInfo, nullptr, &mBuffer);
     CHECK_VKRESULT(result, "Failed to create device buffer");
 
+    if (desc.debugName)
+        Debugger::Instance().NameObject(reinterpret_cast<uint64_t>(mBuffer), VK_OBJECT_TYPE_BUFFER, desc.debugName);
+
     VkMemoryRequirements deviceMemReqs;
     vkGetBufferMemoryRequirements(gDevice->GetDevice(), mBuffer, &deviceMemReqs);
 
@@ -106,6 +110,13 @@ bool Buffer::Init(const BufferDesc& desc)
     memInfo.memoryTypeIndex = gDevice->GetMemoryTypeIndex(deviceMemReqs.memoryTypeBits, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
     result = vkAllocateMemory(gDevice->GetDevice(), &memInfo, nullptr, &mBufferMemory);
     CHECK_VKRESULT(result, "Failed to allocate memory for device buffer");
+
+    if (desc.debugName)
+    {
+        Common::String memName(desc.debugName);
+        memName += "-DeviceMemory";
+        Debugger::Instance().NameObject(reinterpret_cast<uint64_t>(mBufferMemory), VK_OBJECT_TYPE_DEVICE_MEMORY, memName.Str());
+    }
 
     result = vkBindBufferMemory(gDevice->GetDevice(), mBuffer, mBufferMemory, 0);
     CHECK_VKRESULT(result, "Failed to bind device buffer to its memory");

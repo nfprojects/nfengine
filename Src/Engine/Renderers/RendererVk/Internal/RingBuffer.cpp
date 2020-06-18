@@ -7,6 +7,8 @@
 #include "PCH.hpp"
 #include "RingBuffer.hpp"
 #include "API/Device.hpp"
+#include "Debugger.hpp"
+
 
 namespace NFE {
 namespace Renderer {
@@ -43,6 +45,8 @@ bool RingBuffer::Init(uint32 size)
     VkResult result = vkCreateBuffer(mDevice, &bufInfo, nullptr, &mBuffer);
     CHECK_VKRESULT(result, "Failed to create device buffer");
 
+    Debugger::Instance().NameObject(reinterpret_cast<uint64_t>(mBuffer), VK_OBJECT_TYPE_BUFFER, "RingBuffer");
+
     VkMemoryRequirements deviceMemReqs;
     vkGetBufferMemoryRequirements(mDevice, mBuffer, &deviceMemReqs);
 
@@ -55,6 +59,8 @@ bool RingBuffer::Init(uint32 size)
                                                           VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
     result = vkAllocateMemory(mDevice, &memInfo, nullptr, &mBufferMemory);
     CHECK_VKRESULT(result, "Failed to allocate memory for device buffer");
+
+    Debugger::Instance().NameObject(reinterpret_cast<uint64_t>(mBufferMemory), VK_OBJECT_TYPE_DEVICE_MEMORY, "RingBuffer-DeviceMemory");
 
     result = vkBindBufferMemory(mDevice, mBuffer, mBufferMemory, 0);
     CHECK_VKRESULT(result, "Failed to bind device buffer to its memory");
