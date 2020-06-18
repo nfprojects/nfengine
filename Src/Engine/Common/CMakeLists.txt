@@ -25,7 +25,9 @@ ADD_LIBRARY(Common SHARED ${NFCOMMON_SOURCES} ${NFCOMMON_HEADERS})
 TARGET_INCLUDE_DIRECTORIES(Common
                            PRIVATE ${NFEDEPS_ROOT_DIRECTORY}
                            PRIVATE ${NFEDEPS_ROOT_DIRECTORY}/nfenginedeps
-                           PRIVATE ${NFE_COMMON_DIRECTORY})
+                           PRIVATE ${NFE_COMMON_DIRECTORY}
+                           PRIVATE ${NFE_BUILD_DIRECTORY}/Deps/libpng
+                           PRIVATE ${NFE_BUILD_DIRECTORY}/Deps/zlib)
 
 TARGET_LINK_DIRECTORIES(Common
                         PRIVATE ${NFEDEPS_LIB_DIRECTORY})
