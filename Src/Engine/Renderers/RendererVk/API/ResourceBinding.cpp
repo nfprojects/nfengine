@@ -91,7 +91,7 @@ ResourceBindingLayout::ResourceBindingLayout()
     : mPipelineLayout(VK_NULL_HANDLE)
     , mVolatileBufferLayout(VK_NULL_HANDLE)
     , mVolatileBufferSet(VK_NULL_HANDLE)
-    , mVolatileBufferSetSlot(0)
+    , mVolatileBufferSetSlot(UINT32_MAX)
 {
 }
 
@@ -110,7 +110,8 @@ bool ResourceBindingLayout::Init(const ResourceBindingLayoutDesc& desc)
     VkResult result = VK_SUCCESS;
 
     Common::DynArray<VkDescriptorSetLayout> dsls;
-    dsls.Reserve(desc.numBindingSets);
+    const uint32 totalSetCount = desc.numBindingSets + desc.numVolatileCBuffers;
+    dsls.Resize(totalSetCount);
     for (uint32 i = 0; i < desc.numBindingSets; ++i)
     {
         ResourceBindingSet* rbs = dynamic_cast<ResourceBindingSet*>(desc.bindingSets[i].Get());
@@ -120,7 +121,13 @@ bool ResourceBindingLayout::Init(const ResourceBindingLayoutDesc& desc)
             return false;
         }
 
-        dsls.EmplaceBack(rbs->mDescriptorLayout);
+        if (rbs->mSetSlot > totalSetCount)
+        {
+            NFE_LOG_ERROR("Resource Binding Layout has too high set slot assigned.");
+            return false;
+        }
+
+        dsls[rbs->mSetSlot] = rbs->mDescriptorLayout;
     }
 
     if (desc.numVolatileCBuffers > 0)
@@ -156,6 +163,12 @@ bool ResourceBindingLayout::Init(const ResourceBindingLayoutDesc& desc)
             volatileCBufferBindings.PushBack(layoutBinding);
         }
 
+        if (mVolatileBufferSetSlot > totalSetCount)
+        {
+            NFE_LOG_ERROR("Resource Binding Layout has too high set slot assigned.");
+            return false;
+        }
+
         VkDescriptorSetLayoutCreateInfo descInfo;
         VK_ZERO_MEMORY(descInfo);
         descInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
@@ -164,7 +177,7 @@ bool ResourceBindingLayout::Init(const ResourceBindingLayoutDesc& desc)
         result = vkCreateDescriptorSetLayout(gDevice->GetDevice(), &descInfo, nullptr, &mVolatileBufferLayout);
         CHECK_VKRESULT(result, "Failed to create Volatile CBuffer Descriptor Set Layout");
 
-        dsls.PushBack(mVolatileBufferLayout);
+        dsls[mVolatileBufferSetSlot] = mVolatileBufferLayout;
     }
 
     VkPipelineLayoutCreateInfo info;
@@ -250,6 +263,7 @@ bool ResourceBindingInstance::WriteTextureView(uint32 slot, const TexturePtr& te
     VkDescriptorImageInfo imgInfo;
     VK_ZERO_MEMORY(imgInfo);
     imgInfo.imageView = t->mImageView;
+    imgInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
 
     VkWriteDescriptorSet writeSet;
     VK_ZERO_MEMORY(writeSet);

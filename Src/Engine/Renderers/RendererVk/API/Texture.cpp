@@ -54,11 +54,6 @@ bool Texture::Init(const TextureDesc& desc)
 
     bool hasInitialData = (desc.dataDesc != nullptr);
 
-    if (hasInitialData)
-    {
-        return false; // FIXME temporarily disabled
-    }
-
     mType = desc.type;
     if (desc.depthBufferFormat != DepthBufferFormat::Unknown)
         mFormat = TranslateDepthFormatToVkFormat(desc.depthBufferFormat);
@@ -120,9 +115,9 @@ bool Texture::Init(const TextureDesc& desc)
     if (desc.binding & NFE_RENDERER_TEXTURE_BIND_RENDERTARGET)
         imageInfo.usage |= VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
     if (desc.binding & NFE_RENDERER_TEXTURE_BIND_SHADER)
-        imageInfo.usage |= VK_IMAGE_USAGE_INPUT_ATTACHMENT_BIT;
+        imageInfo.usage |= VK_IMAGE_USAGE_SAMPLED_BIT;
 
-    imageInfo.usage |= VK_IMAGE_USAGE_TRANSFER_SRC_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT;
+    imageInfo.usage |= VK_IMAGE_USAGE_TRANSFER_SRC_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT;
     imageInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
     imageInfo.initialLayout = VK_IMAGE_LAYOUT_PREINITIALIZED;
 
@@ -229,7 +224,11 @@ bool Texture::Init(const TextureDesc& desc)
         vkCmdCopyBufferToImage(copyCmdBuffer, stagingBuffer, mImage, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &imageCopyRegion);
     }
 
-    Transition(copyCmdBuffer, VK_IMAGE_LAYOUT_GENERAL);
+    // TODO this is a 100% tempshit, get the transition to happen before using the Texture
+    if (desc.binding & NFE_RENDERER_TEXTURE_BIND_SHADER)
+        Transition(copyCmdBuffer, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
+    else
+        Transition(copyCmdBuffer, VK_IMAGE_LAYOUT_GENERAL);
 
     result = vkEndCommandBuffer(copyCmdBuffer);
     CHECK_VKRESULT(result, "Failure during copy command buffer recording");
