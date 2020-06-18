@@ -74,7 +74,7 @@ const Type* TypeRegistry::GetExistingType(const StringView name) const
     return iter->second;
 }
 
-const Type* TypeRegistry::RegisterType(size_t hash, Type* type)
+void TypeRegistry::RegisterType(size_t hash, Type* type)
 {
     NFE_ASSERT(type, "Invalid type pointer");
 
@@ -87,9 +87,18 @@ const Type* TypeRegistry::RegisterType(size_t hash, Type* type)
     }
 
     mTypesByHash.Insert(hash, type);
-    mTypesByName.Insert(StringView(type->GetName()), type);
+}
 
-    return type;
+void TypeRegistry::RegisterTypeName(const StringView name, Type* type)
+{
+    const auto iter = mTypesByName.Find(name);
+
+    if (iter != mTypesByName.End())
+    {
+        NFE_FATAL("Type with given name already exists (%.*s)", name.Length(), name.Data());
+    }
+
+    mTypesByName.Insert(name, type);
 }
 
 void TypeRegistry::Cleanup()

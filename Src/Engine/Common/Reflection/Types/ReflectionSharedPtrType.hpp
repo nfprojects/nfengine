@@ -17,7 +17,9 @@ namespace RTTI {
 class NFCOMMON_API SharedPtrType : public PointerType
 {
 public:
-    SharedPtrType(const TypeInfo& info, const Type* underlyingType);
+    SharedPtrType(const Type* underlyingType);
+
+    virtual void OnInitialize(const TypeInfo& info) override;
 
     // reset with an existing IObject
     void Assign(void* sharedPtrObject, const Common::SharedPtr<IObject>& newPtr) const;
@@ -46,7 +48,12 @@ public:
 
     static Type* CreateType()
     {
-        const Type* underlyingType = GetType<T>();
+        return new SharedPtrType(ResolveType<T>());
+    }
+
+    static void InitializeType(Type* type)
+    {
+        const Type* underlyingType = ResolveType<T>();
 
         const Common::String typeName = Common::String("NFE::Common::SharedPtr<") + underlyingType->GetName() + '>';
 
@@ -58,7 +65,7 @@ public:
         typeInfo.constructor = GetObjectConstructor<T>();
         typeInfo.destructor = GetObjectDestructor<T>();
 
-        return new SharedPtrType(typeInfo, underlyingType);
+        type->Initialize(typeInfo);
     }
 };
 

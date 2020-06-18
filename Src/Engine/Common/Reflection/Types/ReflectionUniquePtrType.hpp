@@ -18,7 +18,7 @@ namespace RTTI {
 class NFCOMMON_API UniquePtrType : public PointerType
 {
 public:
-    UniquePtrType(const TypeInfo& info, const Type* underlyingType);
+    UniquePtrType(const Type* underlyingType);
 
     virtual void* GetPointedData(const void* uniquePtrObject) const override;
     virtual const Type* GetPointedDataType(const void* uniquePtrObject) const override;
@@ -41,7 +41,12 @@ public:
 
     static Type* CreateType()
     {
-        const Type* underlyingType = GetType<T>();
+        return new UniquePtrType(ResolveType<T>());
+    }
+
+    static void InitializeType(Type* type)
+    {
+        const Type* underlyingType = ResolveType<T>();
 
         const Common::String typeName = Common::String("NFE::Common::UniquePtr<") + underlyingType->GetName() + '>';
 
@@ -53,7 +58,7 @@ public:
         typeInfo.constructor = GetObjectConstructor<ObjectType>();
         typeInfo.destructor = GetObjectDestructor<ObjectType>();
 
-        return new UniquePtrType(typeInfo, underlyingType);
+        type->Initialize(typeInfo);
     }
 };
 

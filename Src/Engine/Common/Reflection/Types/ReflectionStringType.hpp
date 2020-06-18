@@ -24,7 +24,7 @@ class NFCOMMON_API StringType final : public Type
     NFE_MAKE_NONCOPYABLE(StringType)
 
 public:
-    StringType(const TypeInfo& info);
+    StringType();
     ~StringType();
 
     bool Serialize(const void* object, Common::IConfig& config, Common::ConfigValue& outValue, SerializationContext& context) const override;
@@ -47,6 +47,11 @@ public:
 
     static Type* CreateType()
     {
+        return new StringType;
+    }
+
+    static void InitializeType(Type* type)
+    {
         TypeInfo typeInfo;
         typeInfo.kind = TypeKind::String;
         typeInfo.size = sizeof(Common::String);
@@ -55,7 +60,7 @@ public:
         typeInfo.constructor = GetObjectConstructor<Common::String>();
         typeInfo.destructor = GetObjectDestructor<Common::String>();
 
-        return new StringType(typeInfo);
+        type->Initialize(typeInfo);
     }
 };
 

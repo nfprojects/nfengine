@@ -8,6 +8,12 @@
 namespace NFE {
 namespace RTTI {
 
+PointerType::PointerType(const Type* underlyingType)
+    : mUnderlyingType(underlyingType)
+{
+    NFE_ASSERT(mUnderlyingType, "Invalid pointed type");
+}
+
 bool PointerType::Compare(const void* objectA, const void* objectB) const
 {
     const void* pointedObjectA = GetPointedData(objectA);

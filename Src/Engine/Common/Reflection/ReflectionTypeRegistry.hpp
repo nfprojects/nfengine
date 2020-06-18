@@ -49,7 +49,8 @@ public:
     /**
      * Register non-existing type.
      */
-    virtual const Type* RegisterType(size_t hash, Type* type) override;
+    virtual void RegisterType(size_t hash, Type* type) override;
+    virtual void RegisterTypeName(const Common::StringView name, Type* type) override;
 
     /**
      * Unregister all the types.

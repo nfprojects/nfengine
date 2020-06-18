@@ -19,9 +19,8 @@ class NFCOMMON_API ArrayType : public Type
     NFE_MAKE_NONCOPYABLE(ArrayType)
 
 public:
-    NFE_FORCE_INLINE ArrayType(const TypeInfo& info, const Type* underlyingType)
-        : Type(info)
-        , mUnderlyingType(underlyingType)
+    NFE_FORCE_INLINE ArrayType(const Type* underlyingType)
+        : mUnderlyingType(underlyingType)
     {
         NFE_ASSERT(mUnderlyingType, "Array's underlying type cannot be null. Type: %s", GetName().Str());
     }

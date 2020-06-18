@@ -22,8 +22,8 @@ class NFCOMMON_API DynArrayType : public ArrayType
     NFE_MAKE_NONCOPYABLE(DynArrayType)
 
 public:
-    NFE_FORCE_INLINE DynArrayType(const TypeInfo& info, const Type* underlyingType)
-        : ArrayType(info, underlyingType)
+    NFE_FORCE_INLINE DynArrayType(const Type* underlyingType)
+        : ArrayType(underlyingType)
     { }
 
     // get number of array elements
@@ -53,8 +53,8 @@ class DynArrayTypeImpl final : public DynArrayType
 public:
     using ObjectType = Common::DynArray<T>;
 
-    NFE_FORCE_INLINE DynArrayTypeImpl(const TypeInfo& info)
-        : DynArrayType(info, GetType<T>())
+    NFE_FORCE_INLINE DynArrayTypeImpl()
+        : DynArrayType(GetType<T>())
     { }
 
     virtual bool ResizeArray(void* arrayObject, uint32 targetSize) const override
@@ -96,7 +96,12 @@ public:
 
     static Type* CreateType()
     {
-        const Type* templateArgumentType = GetType<T>();
+        return new DynArrayTypeImpl<T>();
+    }
+
+    static void InitializeType(Type* type)
+    {
+        const Type* templateArgumentType = ResolveType<T>();
 
         const Common::String typeName = Common::String("NFE::Common::DynArray<") + templateArgumentType->GetName() + '>';
 
@@ -108,7 +113,7 @@ public:
         typeInfo.constructor = GetObjectConstructor<ObjectType>();
         typeInfo.destructor = GetObjectDestructor<ObjectType>();
 
-        return new DynArrayTypeImpl<T>(typeInfo);
+        type->Initialize(typeInfo);
     }
 };
 

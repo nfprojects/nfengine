@@ -38,8 +38,15 @@ const char* Type::TypeKindToString(const TypeKind kind)
 
 Type::~Type() = default;
 
-Type::Type(const TypeInfo& info)
-    : mDefaultObject(nullptr)
+Type::Type()
+    : mSize(0u)
+    , mAlignment(0u)
+    , mKind(TypeKind::Undefined)
+    , mDefaultObject(nullptr)
+{
+}
+
+void Type::Initialize(const TypeInfo& info)
 {
     NFE_ASSERT(info.name, "Invalid type name (nullptr)");
     mName = StringView(info.name);
@@ -68,6 +75,13 @@ Type::Type(const TypeInfo& info)
         mDefaultObject = CreateRawObject();
         NFE_ASSERT(mDefaultObject, "Failed to create default object for type %s", GetName().Str());
     }
+
+    OnInitialize(info);
+}
+
+void Type::OnInitialize(const TypeInfo& info)
+{
+    NFE_UNUSED(info);
 }
 
 void Type::PrintInfo() const

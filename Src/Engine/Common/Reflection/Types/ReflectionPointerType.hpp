@@ -18,10 +18,7 @@ class NFCOMMON_API PointerType : public Type
     NFE_MAKE_NONCOPYABLE(PointerType)
 
 public:
-    NFE_FORCE_INLINE PointerType(const TypeInfo& info, const Type* underlyingType)
-        : Type(info)
-        , mUnderlyingType(underlyingType)
-    { }
+    PointerType(const Type* underlyingType);
 
     NFE_FORCE_INLINE const Type* GetUnderlyingType() const { return mUnderlyingType; }
 
@@ -38,8 +35,6 @@ public:
     virtual bool Clone(void* destObject, const void* sourceObject) const override;
 
 protected:
-    NFE_FORCE_INLINE PointerType(const TypeInfo& info) : Type(info) { }
-
     const Type* mUnderlyingType;
 };
 

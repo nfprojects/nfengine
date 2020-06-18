@@ -17,9 +17,7 @@ namespace RTTI {
 
 using namespace Common;
 
-StringType::StringType(const TypeInfo& info)
-    : Type(info)
-{ }
+StringType::StringType() = default;
 
 StringType::~StringType() = default;
 

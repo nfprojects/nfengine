@@ -46,7 +46,7 @@ class NFCOMMON_API EnumType final : public Type
     NFE_MAKE_NONCOPYABLE(EnumType)
 
 public:
-    explicit EnumType(const EnumTypeInfo& info);
+    EnumType();
     ~EnumType();
 
     // list all the enum options
@@ -67,6 +67,8 @@ public:
     bool Clone(void* destObject, const void* sourceObject) const override;
 
 private:
+    virtual void OnInitialize(const TypeInfo& info) override;
+
     EnumOptions mOptions;
 };
 
@@ -92,6 +94,10 @@ private:
             using TypeInfoClass = EnumTypeInfo;                                     \
             static Type* CreateType()                                               \
             {                                                                       \
+                return new EnumType;                                                \
+            }                                                                       \
+            static void InitializeType(Type* type)                                  \
+            {                                                                       \
                 TypeInfoClass typeInfo;                                             \
                 typeInfo.kind = TypeKind::Enumeration;                              \
                 typeInfo.name = #T;                                                 \
@@ -102,9 +108,8 @@ private:
                                                                                     \
                 TypeCreator creator;                                                \
                 creator.FinishInitialization(typeInfo);                             \
-                return new EnumType(typeInfo);                                      \
+                type->Initialize(typeInfo);                                         \
             }                                                                       \
-                                                                                    \
             void FinishInitialization(TypeInfoClass& typeInfo);                     \
         };                                                                          \
     } } /* namespace NFE::RTTI */

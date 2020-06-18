@@ -11,10 +11,7 @@
 namespace NFE {
 namespace RTTI {
 
-FundamentalType::FundamentalType(const TypeInfo& info)
-    : Type(info)
-{
-}
+FundamentalType::FundamentalType() = default;
 
 bool FundamentalType::SerializeBinary(const void* object, Common::OutputStream* stream, SerializationContext& context) const
 {

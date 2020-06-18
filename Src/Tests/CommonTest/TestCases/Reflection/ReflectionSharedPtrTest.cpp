@@ -1,6 +1,7 @@
 #include "PCH.hpp"
 #include "ReflectionTestCommon.hpp"
 #include "Engine/Common/Reflection/ReflectionUtils.hpp"
+#include "Engine/Common/Reflection/ReflectionClassDefine.hpp"
 
 
 using namespace NFE;
@@ -13,6 +14,22 @@ namespace {
 using TestSharedPtr = SharedPtr<TestBaseClass>;
 
 } // namespace
+
+
+
+class TestClassWithSharedPtrRecursion : public IObject
+{
+    NFE_DECLARE_POLYMORPHIC_CLASS(TestClassWithSharedPtrRecursion)
+public:
+    SharedPtr<TestClassWithSharedPtrRecursion> child;
+};
+
+NFE_DEFINE_POLYMORPHIC_CLASS(TestClassWithSharedPtrRecursion)
+{
+    NFE_CLASS_MEMBER(child);
+}
+NFE_END_DEFINE_CLASS()
+
 
 
 TEST(ReflectionTest, SharedPtr_Verify)

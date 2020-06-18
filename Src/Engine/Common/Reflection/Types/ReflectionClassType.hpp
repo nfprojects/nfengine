@@ -35,7 +35,7 @@ public:
     using Members = Common::DynArray<Member>;
     using Children = Common::DynArray<const ClassType*>;
 
-    ClassType(const ClassTypeInfo& info);
+    ClassType();
 
     /**
      * Get parent class.
@@ -79,6 +79,9 @@ public:
     virtual bool Clone(void* destObject, const void* sourceObject) const override;
 
 private:
+
+    virtual void OnInitialize(const TypeInfo& info) override;
+
     // parent class type
     const ClassType* mParent;
 
@@ -101,14 +104,9 @@ private:
  */
 struct ClassTypeInfo : public TypeInfo
 {
-    const ClassType* parent;
+    const ClassType* parent = nullptr;
     ClassType::Children childTypes;
     Common::DynArray<Member> members;
-
-    ClassTypeInfo()
-        : TypeInfo()
-        , parent(nullptr)
-    { }
 };
 
 /**
@@ -124,6 +122,11 @@ public:
 
     static Type* CreateType()
     {
+        return new ClassType();
+    }
+
+    static void InitializeType(Type* type)
+    {
         ClassTypeInfo typeInfo;
         typeInfo.kind = TypeKind::SimpleClass; // can be overridden in FinishInitialization
         typeInfo.size = sizeof(T);
@@ -133,7 +136,7 @@ public:
 
         TypeCreator creator;
         creator.FinishInitialization(typeInfo);
-        return new ClassType(typeInfo);
+        static_cast<ClassType*>(type)->Initialize(typeInfo);
     }
 
     void FinishInitialization(TypeInfoClass& typeInfo);

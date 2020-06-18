@@ -20,7 +20,6 @@ struct ClassTypeInfo;
 #define NFE_DECLARE_CLASS(T)                                                                \
     friend class NFE::RTTI::TypeCreator<T>;                                                 \
     private:                                                                                \
-        static const char* _GetName();                                                      \
         static bool _InitType(NFE::RTTI::ClassTypeInfo& typeInfo);
 
 
@@ -30,7 +29,6 @@ struct ClassTypeInfo;
     public:                                                                                 \
         virtual const NFE::RTTI::Type* GetDynamicType() const;                              \
     private:                                                                                \
-        static const char* _GetName();                                                      \
         static bool _InitType(NFE::RTTI::ClassTypeInfo& typeInfo);
 
 #include "Object.hpp"

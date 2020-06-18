@@ -22,7 +22,7 @@ class NFCOMMON_API NativeArrayType : public ArrayType
     NFE_MAKE_NONCOPYABLE(NativeArrayType)
 
 public:
-    NativeArrayType(const TypeInfo& info, uint32 arraySize, const Type* underlyingType);
+    NativeArrayType(uint32 arraySize, const Type* underlyingType);
 
     // get number of array elements
     NFE_FORCE_INLINE uint32 GetArraySize() const { return mArraySize; }
@@ -61,7 +61,12 @@ public:
 
     static Type* CreateType()
     {
-        const Type* arrayElementType = GetType<T>();
+        return new TypeClass(N, ResolveType<T>());
+    }
+
+    static void InitializeType(Type* type)
+    {
+        const Type* arrayElementType = ResolveType<T>();
         const Common::String typeName = Common::String::Printf("%s[%u]", arrayElementType->GetName().Str(), N);
 
         TypeInfo typeInfo;
@@ -74,7 +79,7 @@ public:
         typeInfo.constructor = [] () { return new ObjectType; };
         typeInfo.destructor = [] (void* ptr) { delete BitCast<T*>(ptr); };
 
-        return new TypeClass(typeInfo, N, arrayElementType);
+        type->Initialize(typeInfo);
     }
 
     void FinishInitialization(TypeInfo& typeInfo)

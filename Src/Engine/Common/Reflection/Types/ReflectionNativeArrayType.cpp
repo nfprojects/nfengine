@@ -11,8 +11,8 @@
 namespace NFE {
 namespace RTTI {
 
-NativeArrayType::NativeArrayType(const TypeInfo& info, uint32 arraySize, const Type* elementType)
-    : ArrayType(info, elementType)
+NativeArrayType::NativeArrayType(uint32 arraySize, const Type* elementType)
+    : ArrayType(elementType)
     , mArraySize(arraySize)
 {
     NFE_ASSERT(mArraySize > 0, "Native array size cannot be empty. Type: %s", GetName().Str());

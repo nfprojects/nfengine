@@ -35,7 +35,8 @@ public:
     virtual const Type* GetExistingType(const char* name) const = 0;
 
     // Register non-existing type.
-    virtual const Type* RegisterType(size_t hash, Type* type) = 0;
+    virtual void RegisterType(size_t hash, Type* type) = 0;
+    virtual void RegisterTypeName(const Common::StringView name, Type* type) = 0;
 };
 
 
@@ -84,17 +85,29 @@ typename std::enable_if<std::is_constructible_v<T>, DestructorFunc>::type GetObj
 template<typename T>
 const Type* ResolveType()
 {
-    static_assert(!std::is_const_v<T> && !std::is_volatile_v<T>, "Resolved type must have no decorators");
+    static_assert(!std::is_const_v<T> && !std::is_volatile_v<T>, "Type should not have any qualifiers");
+    static_assert(IsTypeDefined<T>, "Type is not defined");
+    static_assert(IsTypeDefined<TypeCreator<T>>, "Type is not defined");
 
     const size_t hash = typeid(T).hash_code();
-    const Type* existingType = ITypeRegistry::GetInstance().GetExistingType(hash);
-    if (!existingType)
+    if (const Type* existingType = ITypeRegistry::GetInstance().GetExistingType(hash))
     {
-        Type* newType = TypeCreator<T>::CreateType();
-        existingType = ITypeRegistry::GetInstance().RegisterType(hash, std::move(newType));
+        return existingType;
     }
 
-    return existingType;
+    // create dummy type object
+    Type* newType = TypeCreator<T>::CreateType();
+
+    // register by hash immediately so it can be resolved in TypeCreator::InitializeType
+    ITypeRegistry::GetInstance().RegisterType(hash, newType);
+
+    // finish type initialization
+    TypeCreator<T>::InitializeType(newType);
+
+    // type name is available after the type is fully initialized
+    ITypeRegistry::GetInstance().RegisterTypeName(newType->GetName(), newType);
+
+    return newType;
 }
 
 /**

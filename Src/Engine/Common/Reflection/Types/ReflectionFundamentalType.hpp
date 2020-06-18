@@ -20,7 +20,7 @@ namespace RTTI {
 class NFCOMMON_API FundamentalType : public Type
 {
 public:
-    FundamentalType(const TypeInfo& info);
+    FundamentalType();
 
     virtual bool SerializeBinary(const void* object, Common::OutputStream* stream, SerializationContext& context) const override final;
     virtual bool DeserializeBinary(void* outObject, Common::InputStream& stream, const SerializationContext& context) const override final;
@@ -37,9 +37,7 @@ class FundamentalTypeImpl final : public FundamentalType
     NFE_MAKE_NONCOPYABLE(FundamentalTypeImpl)
 
 public:
-    FundamentalTypeImpl(const TypeInfo& info)
-        : FundamentalType(info)
-    { }
+    FundamentalTypeImpl() = default;
 
     virtual bool Serialize(const void* object, Common::IConfig& config, Common::ConfigValue& outValue, SerializationContext& context) const override
     {
@@ -105,6 +103,10 @@ public:
             using TypeInfoClass = TypeInfo;                                             \
             static Type* CreateType()                                                   \
             {                                                                           \
+                return new TypeClass;                                                   \
+            }                                                                           \
+            static void InitializeType(Type* type)                                      \
+            {                                                                           \
                 TypeInfo typeInfo;                                                      \
                 typeInfo.kind = TypeKind::Fundamental;                                  \
                 typeInfo.name = #T;                                                     \
@@ -112,7 +114,7 @@ public:
                 typeInfo.alignment = alignof(T);                                        \
                 typeInfo.constructor = []() { return new T(); };                        \
                 typeInfo.destructor = [] (void* ptr) { delete BitCast<T*>(ptr); };      \
-                return new TypeClass(typeInfo);                                         \
+                type->Initialize(typeInfo);                                             \
             }                                                                           \
         };                                                                              \
     } } /* namespace NFE::RTTI */

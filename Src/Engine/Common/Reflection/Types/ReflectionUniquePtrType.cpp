@@ -18,12 +18,9 @@ namespace RTTI {
 
 using namespace Common;
 
-UniquePtrType::UniquePtrType(const TypeInfo& info, const Type* underlyingType)
-    : PointerType(info)
-{
-    mUnderlyingType = underlyingType;
-    NFE_ASSERT(mUnderlyingType, "Invalid pointed type");
-}
+UniquePtrType::UniquePtrType(const Type* underlyingType)
+    : PointerType(underlyingType)
+{ }
 
 void* UniquePtrType::GetPointedData(const void* uniquePtrObject) const
 {

@@ -73,8 +73,11 @@ public:
     template <typename T>
     friend class TypeCreator;
 
-    explicit Type(const TypeInfo& info);
+    Type();
     virtual ~Type();
+
+    // finish type initialization
+    void Initialize(const TypeInfo& info);
 
     // Get type name (his includes namespaces also)
     NFE_FORCE_INLINE const Common::String& GetName() const { return mName; }
@@ -184,6 +187,11 @@ protected:
     TypeKind mKind;
 
     const void* mDefaultObject;
+
+private:
+
+    virtual void OnInitialize(const TypeInfo& info);
+
 };
 
 

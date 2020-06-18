@@ -129,6 +129,21 @@ TEST(ReflectionClassTest, ChildClass_Verify)
     }
 }
 
+TEST(ReflectionClassTest, ChildClass_Cast_Down)
+{
+    TestChildClassA objA;
+    EXPECT_EQ(static_cast<const TestBaseClass*>(&objA), Cast<TestBaseClass>(&objA));
+}
+
+TEST(ReflectionClassTest, ChildClass_Cast_Up)
+{
+    TestChildClassA objA;
+    TestBaseClass* basePtr = &objA;
+
+    EXPECT_EQ(&objA, Cast<TestChildClassA>(basePtr));
+    EXPECT_EQ(nullptr, Cast<TestChildClassB>(basePtr));
+}
+
 TEST(ReflectionClassTest, ChildClass_Serialization)
 {
     const auto* type = GetType<TestChildClassA>();

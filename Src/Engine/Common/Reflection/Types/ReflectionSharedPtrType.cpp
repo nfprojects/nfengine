@@ -19,10 +19,14 @@ using namespace Common;
 
 using ObjectType = SharedPtr<IObject>;
 
-SharedPtrType::SharedPtrType(const TypeInfo& info, const Type* underlyingType)
-    : PointerType(info, underlyingType)
+SharedPtrType::SharedPtrType(const Type* underlyingType)
+    : PointerType(underlyingType)
+{ }
+
+void SharedPtrType::OnInitialize(const TypeInfo& info)
 {
-    NFE_ASSERT(mUnderlyingType->IsA(GetType<IObject>()), "Reflection: SharedPtr must point to IObject-based class");
+    NFE_UNUSED(info);
+
     NFE_ASSERT(mSize == sizeof(ObjectType), "Invalid SharedPtrType size");
     NFE_ASSERT(mAlignment == alignof(ObjectType), "Invalid SharedPtrType alignment");
 }

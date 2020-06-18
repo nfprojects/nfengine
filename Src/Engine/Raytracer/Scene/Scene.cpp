@@ -11,6 +11,7 @@
 #include "Traversal/Traversal_Single.h"
 #include "Traversal/Traversal_Packet.h"
 #include "../Common/Reflection/ReflectionUtils.hpp"
+#include "../Common/Reflection/Types/ReflectionClassType.hpp"
 
 namespace NFE {
 namespace RT {

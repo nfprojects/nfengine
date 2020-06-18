@@ -24,12 +24,18 @@ const StringView ClassType::TYPE_MARKER("__type");
 
 using MemberPayloadSizeType = uint16;
 
-ClassType::ClassType(const ClassTypeInfo& info)
-    : Type(info)
-    , mParent(info.parent)
+ClassType::ClassType()
+    : mParent(nullptr)
+{}
+
+void ClassType::OnInitialize(const TypeInfo& info)
 {
-    mMembers.Reserve(info.members.Size());
-    for (const Member& member : info.members)
+    const ClassTypeInfo& classTypeInfo = reinterpret_cast<const ClassTypeInfo&>(info);
+
+    mParent = classTypeInfo.parent;
+
+    mMembers.Reserve(classTypeInfo.members.Size());
+    for (const Member& member : classTypeInfo.members)
     {
         NFE_ASSERT(nullptr == FindMember(StringView(member.GetName())),
             "Duplicated member '%s' in class '%s'", member.GetName(), GetName().Str());

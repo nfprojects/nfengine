@@ -51,7 +51,6 @@ NFE_FORCE_INLINE constexpr size_t OffsetOf(Member Class::*member)
             T::_InitType(typeInfo);                                                                     \
         }                                                                                               \
     } } /* namespace NFE::RTTI */                                                                       \
-    const char* T::_GetName() { return #T; }                                                            \
     bool T::_InitType(NFE::RTTI::ClassTypeInfo& typeInfo)                                               \
     {                                                                                                   \
         (void)typeInfo;                                                                                 \
@@ -77,7 +76,6 @@ NFE_FORCE_INLINE constexpr size_t OffsetOf(Member Class::*member)
             T::_InitType(typeInfo);                                                                             \
         }                                                                                                       \
     } } /* namespace NFE::RTTI */                                                                               \
-    const char* T::_GetName() { return #T; }                                                                    \
     const NFE::RTTI::Type* T::GetDynamicType() const { return NFE::RTTI::GetType<T>(); }                        \
     bool T::_InitType(NFE::RTTI::ClassTypeInfo& typeInfo)                                                       \
     {                                                                                                           \
@@ -99,9 +97,9 @@ NFE_FORCE_INLINE constexpr size_t OffsetOf(Member Class::*member)
  */
 #define NFE_CLASS_PARENT(ParentType)   \
     static_assert(std::is_class_v<ParentType>, "Given type '" #ParentType "' is not a class");                                  \
-    static_assert(!std::is_same_v<ParentType, ClassType>, "Parent calss can't be the same as defined class '" #ParentType "'");   \
+    static_assert(!std::is_same_v<ParentType, ClassType>, "Parent calss can't be the same as defined class '" #ParentType "'"); \
     static_assert(std::is_base_of_v<ParentType, ClassType>, "Given type '" #ParentType "' is not a parent of defined class");   \
-    typeInfo.parent = NFE::RTTI::GetType<ParentType>();
+    typeInfo.parent = reinterpret_cast<const NFE::RTTI::ClassType*>(NFE::RTTI::ResolveType<ParentType>());
 
 
 /**
@@ -116,7 +114,7 @@ NFE_FORCE_INLINE constexpr size_t OffsetOf(Member Class::*member)
         /* register the member */                                                                   \
         typeInfo.members.PushBack(NFE::RTTI::Member(#memberName,                                    \
                                                     NFE::RTTI::OffsetOf(&ClassType::memberName),    \
-                                                    NFE::RTTI::GetType<MemberType>()));             \
+                                                    NFE::RTTI::ResolveType<MemberType>()));         \
     }                                                                                               \
     /* expose member metadata builder */                                                            \
     typeInfo.members.Back().GetMetadataBuilder()

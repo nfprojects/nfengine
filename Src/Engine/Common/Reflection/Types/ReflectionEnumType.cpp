@@ -16,10 +16,16 @@ namespace RTTI {
 
 using namespace Common;
 
-EnumType::EnumType(const EnumTypeInfo& info)
-    : Type(info)
-    , mOptions(info.options)
+EnumType::EnumType() = default;
+
+EnumType::~EnumType() = default;
+
+void EnumType::OnInitialize(const TypeInfo& info)
 {
+    const EnumTypeInfo& enumTypeInfo = reinterpret_cast<const EnumTypeInfo&>(info);
+
+    mOptions = enumTypeInfo.options;
+
     NFE_ASSERT(GetSize() == 1 || GetSize() == 2 || GetSize() == 4 || GetSize() == 8, "Invalid enum type size");
     NFE_ASSERT(mOptions.Size() > 0, "Enum type must have at least one option");
 
@@ -43,8 +49,6 @@ EnumType::EnumType(const EnumTypeInfo& info)
         }
     }
 }
-
-EnumType::~EnumType() = default;
 
 void EnumType::PrintInfo() const
 {
