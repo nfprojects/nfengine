@@ -284,7 +284,9 @@ bool Backbuffer::CreateNextImageFence()
     VkResult result = vkCreateFence(gDevice->GetDevice(), &info, nullptr, &mAcquireNextImageFence);
     CHECK_VKRESULT(result, "Failed to create next image fence");
 
-    Debugger::Instance().NameObject(reinterpret_cast<uint64_t>(mAcquireNextImageFence), VK_OBJECT_TYPE_FENCE, "AcquireNextImageFence");
+    // FIXME this name gets free'd (somehow) on vkAcquireNextImageKHR at nVidia's Linux driver,
+    //       which causes a plenty memory issues and crashes. Uncomment when fixed.
+    //Debugger::Instance().NameObject(reinterpret_cast<uint64_t>(mAcquireNextImageFence), VK_OBJECT_TYPE_FENCE, "AcquireNextImageFence");
 
     return true;
 }

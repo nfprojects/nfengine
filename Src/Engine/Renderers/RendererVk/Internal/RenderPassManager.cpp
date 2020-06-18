@@ -57,7 +57,7 @@ VkRenderPass RenderPassManager::ConstructRenderPass(const RenderPassDesc& desc)
         atts[curAtt].format = desc.depthFormat;
         atts[curAtt].samples = VK_SAMPLE_COUNT_1_BIT;
         atts[curAtt].loadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
-        atts[curAtt].storeOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
+        atts[curAtt].storeOp = VK_ATTACHMENT_STORE_OP_STORE;
         atts[curAtt].stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
         atts[curAtt].stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
         atts[curAtt].initialLayout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
@@ -75,6 +75,16 @@ VkRenderPass RenderPassManager::ConstructRenderPass(const RenderPassDesc& desc)
     if (desc.depthFormat != VK_FORMAT_UNDEFINED)
         subpass.pDepthStencilAttachment = &depthRef;
 
+    VkSubpassDependency subpassDependency;
+    VK_ZERO_MEMORY(subpassDependency);
+    subpassDependency.srcSubpass = 0;
+    subpassDependency.dstSubpass = 0;
+    subpassDependency.srcStageMask = VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT;
+    subpassDependency.srcAccessMask = 0;
+    subpassDependency.dstStageMask = VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT;
+    subpassDependency.dstAccessMask = 0;
+    subpassDependency.dependencyFlags = 0;
+
     VkRenderPassCreateInfo rpInfo;
     VK_ZERO_MEMORY(rpInfo);
     rpInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO;
@@ -82,6 +92,8 @@ VkRenderPass RenderPassManager::ConstructRenderPass(const RenderPassDesc& desc)
     rpInfo.pAttachments = atts;
     rpInfo.subpassCount = 1;
     rpInfo.pSubpasses = &subpass;
+    rpInfo.dependencyCount = 1;
+    rpInfo.pDependencies = &subpassDependency;
 
     VkRenderPass tempRenderPass = VK_NULL_HANDLE;
     VkResult result = vkCreateRenderPass(mDeviceRef, &rpInfo, nullptr, &tempRenderPass);
@@ -99,14 +111,19 @@ VkRenderPass RenderPassManager::ConstructRenderPass(const RenderPassDesc& desc)
 
     if (Debugger::Instance().IsDebugAnnotationActive())
     {
-        Common::String name("RenderPass-");
+        Common::String name("RenderPass");
         for (uint32 i = 0; i < desc.colorFormats.Size(); ++i)
         {
-            name += TranslateVkFormatToString(desc.colorFormats[i]);
             name += '-';
+            name += TranslateVkFormatToString(desc.colorFormats[i]);
         }
 
-        name += TranslateVkFormatToString(desc.depthFormat);
+        if (desc.depthFormat != VK_FORMAT_UNDEFINED)
+        {
+            name += '-';
+            name += TranslateVkFormatToString(desc.depthFormat);
+        }
+
         Debugger::Instance().NameObject(reinterpret_cast<uint64_t>(tempRenderPass), VK_OBJECT_TYPE_RENDER_PASS, name.Str());
     }
 

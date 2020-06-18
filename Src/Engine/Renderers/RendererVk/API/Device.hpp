@@ -37,6 +37,7 @@ private:
     VkDevice mDevice;
     VkDescriptorPool mDescriptorPool;
     VkCommandPool mCommandPool;
+    VkSampler mDefaultSampler;
     Common::DynArray<VkCommandBuffer> mCommandBufferPool;
     uint32 mCurrentCommandBuffer;
     uint32 mGraphicsQueueIndex;
@@ -106,6 +107,11 @@ public:
     NFE_INLINE RingBuffer* GetRingBuffer() const
     {
         return mRingBuffer.Get();
+    }
+
+    NFE_INLINE const VkSampler& GetDefaultSampler() const
+    {
+        return mDefaultSampler;
     }
 
     NFE_INLINE uint32 GetCurrentCommandBuffer() const

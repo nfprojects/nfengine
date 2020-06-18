@@ -71,7 +71,7 @@ bool RenderTargetsScene::CreateBasicResources(bool multipleRT, bool withDepthBuf
         return false;
 
     PipelineStateDesc pipelineStateDesc;
-    pipelineStateDesc.rtFormats[0] = mBackbufferFormat;
+    pipelineStateDesc.rtFormats[0] = ElementFormat::R8G8B8A8_U_Norm;
     pipelineStateDesc.vertexShader = mVertexShader;
     pipelineStateDesc.depthFormat = DepthBufferFormat::Unknown;
     pipelineStateDesc.resBindingLayout = mResBindingLayout;

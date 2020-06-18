@@ -82,6 +82,8 @@ Device::~Device()
     if (mCommandBufferPool.Size())
         vkFreeCommandBuffers(mDevice, mCommandPool, COMMAND_BUFFER_COUNT, mCommandBufferPool.Data());
 
+    if (mDefaultSampler != VK_NULL_HANDLE)
+        vkDestroySampler(mDevice, mDefaultSampler, nullptr);
     if (mPipelineCache != VK_NULL_HANDLE)
         vkDestroyPipelineCache(mDevice, mPipelineCache, nullptr);
     if (mCommandPool != VK_NULL_HANDLE)
@@ -352,6 +354,30 @@ bool Device::Init(const DeviceInitParams* params)
     VK_ZERO_MEMORY(pipeCacheInfo);
     pipeCacheInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_CACHE_CREATE_INFO;
     result = vkCreatePipelineCache(mDevice, &pipeCacheInfo, nullptr, &mPipelineCache);
+    CHECK_VKRESULT(result, "Failed to create Pipeline Cache");
+
+
+    VkSamplerCreateInfo samplerInfo;
+    VK_ZERO_MEMORY(samplerInfo);
+    samplerInfo.sType = VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO;
+    samplerInfo.magFilter = VK_FILTER_NEAREST;
+    samplerInfo.minFilter = VK_FILTER_NEAREST;
+    samplerInfo.mipmapMode = VK_SAMPLER_MIPMAP_MODE_NEAREST;
+    samplerInfo.addressModeU = VK_SAMPLER_ADDRESS_MODE_REPEAT;
+    samplerInfo.addressModeV = VK_SAMPLER_ADDRESS_MODE_REPEAT;
+    samplerInfo.addressModeW = VK_SAMPLER_ADDRESS_MODE_REPEAT;
+    samplerInfo.mipLodBias = 0.0f;
+    samplerInfo.anisotropyEnable = false;
+    samplerInfo.maxAnisotropy = 16;
+    samplerInfo.compareEnable = false;
+    samplerInfo.compareOp = VK_COMPARE_OP_ALWAYS;
+    samplerInfo.minLod = FLT_MIN;
+    samplerInfo.maxLod = FLT_MAX;
+    samplerInfo.borderColor = VK_BORDER_COLOR_FLOAT_OPAQUE_BLACK;
+    samplerInfo.unnormalizedCoordinates = VK_FALSE;
+    result = vkCreateSampler(mDevice, &samplerInfo, nullptr, &mDefaultSampler);
+    CHECK_VKRESULT(result, "Failed to create default Sampler");
+
 
     Debugger::Instance().NameObject(reinterpret_cast<uint64_t>(mPipelineCache), VK_OBJECT_TYPE_PIPELINE_CACHE, "Device-PipelineCache");
 

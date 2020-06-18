@@ -120,11 +120,22 @@ bool Texture::Init(const TextureDesc& desc)
 
     // TODO SHADER_WRITABLE
     if (desc.binding & NFE_RENDERER_TEXTURE_BIND_DEPTH)
+    {
         imageInfo.usage |= VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT;
+        mImageLayoutDefault = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
+    }
+
     if (desc.binding & NFE_RENDERER_TEXTURE_BIND_RENDERTARGET)
+    {
         imageInfo.usage |= VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
+        mImageLayoutDefault = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+    }
+
     if (desc.binding & NFE_RENDERER_TEXTURE_BIND_SHADER)
+    {
         imageInfo.usage |= VK_IMAGE_USAGE_SAMPLED_BIT;
+        mImageLayoutDefault = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+    }
 
     imageInfo.usage |= VK_IMAGE_USAGE_TRANSFER_SRC_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT;
     imageInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
@@ -321,6 +332,9 @@ void Texture::Transition(VkCommandBuffer cb, VkImageLayout dstLayout)
     // no need to transition if destination is the same
     if (dstLayout == mImageLayout)
         return;
+
+    if (dstLayout == VK_IMAGE_LAYOUT_UNDEFINED)
+        dstLayout = mImageLayoutDefault; // revert to default
 
     // TODO take access masks and pipeline stages into account
     VkImageMemoryBarrier imageBarrier;

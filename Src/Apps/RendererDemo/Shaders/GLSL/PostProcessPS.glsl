@@ -1,16 +1,16 @@
 #if (SAMPLES_NUM > 1)
-layout (binding = 0) uniform sampler2DMS gTexture;
+layout (set = 1, binding = 0) uniform sampler2DMS gTexture;
 #else
-layout (binding = 0) uniform sampler2D gTexture;
+layout (set = 1, binding = 0) uniform sampler2D gTexture;
 #endif
 
-in VertexShaderOutput
+layout (location = 0) in VertexShaderOutput
 {
     vec2 TexCoord;
     vec4 Color;
 } Input;
 
-out vec4 outColor;
+layout (location = 0) out vec4 outColor;
 
 // primary texture
 vec4 mode0(ivec2 texelCoords)

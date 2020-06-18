@@ -201,6 +201,7 @@ public:
         int frames = 0;
 
         while (!IsClosed())
+        //while (frames < 2)
         {
             float dt = static_cast<float>(timer.Stop());
             timer.Start();

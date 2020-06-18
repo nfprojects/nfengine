@@ -9,6 +9,9 @@
 #include "../Interface/ResourceBinding.hpp"
 #include "Defines.hpp"
 #include "PipelineState.hpp"
+#include "IResource.hpp"
+
+#include <Engine/Common/Containers/DynArray.hpp>
 
 
 
@@ -22,6 +25,7 @@ class ResourceBindingSet : public IResourceBindingSet
     friend class CommandRecorder;
 
     VkDescriptorSetLayout mDescriptorLayout;
+    uint32_t mResourceCount;
     uint16 mSetSlot;
 
 public:
@@ -59,6 +63,7 @@ class ResourceBindingInstance : public IResourceBindingInstance
 
     ResourceBindingSet* mSet;
     VkDescriptorSet mDescriptorSet;
+    Common::DynArray<IResource*> mWrittenResources; // needed for barriers/image layout transitions
 
 public:
     bool Init(const ResourceBindingSetPtr& bindingSet) override;

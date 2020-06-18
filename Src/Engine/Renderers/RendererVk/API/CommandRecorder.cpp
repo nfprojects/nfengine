@@ -111,9 +111,15 @@ void CommandRecorder::BindResources(uint32 slot, const ResourceBindingInstancePt
 
     ResourceBindingInstance* rbi = dynamic_cast<ResourceBindingInstance*>(bindingSetInstance.Get());
     if (rbi == nullptr)
+        return; // there is no "unbind" of descriptor sets in Vulkan
+
+    for (auto& r: rbi->mWrittenResources)
     {
-        NFE_LOG_ERROR("Incorrect resource binding instance provided");
-        return;
+        if ((r != nullptr) && (r->GetType() == ShaderResourceType::Texture))
+        {
+            Texture* t = dynamic_cast<Texture*>(r);
+            t->Transition(mCommandBuffer, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
+        }
     }
 
     vkCmdBindDescriptorSets(mCommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS,
@@ -144,11 +150,19 @@ void CommandRecorder::SetRenderTarget(const RenderTargetPtr& renderTarget)
     {
         // there is a previous render pass active, end it
         vkCmdEndRenderPass(mCommandBuffer);
+
+        // revert attachments to default
+        mRenderTarget->TransitionColorAttachments(mCommandBuffer);
+        mRenderTarget->TransitionDSAttachment(mCommandBuffer);
+    }
+
+    if (renderTarget == nullptr)
+    {
+        mRenderTarget = nullptr;
+        return;
     }
 
     mRenderTarget = dynamic_cast<RenderTarget*>(renderTarget.Get());
-    NFE_ASSERT(mRenderTarget != nullptr, "Invalid Render Target pointer provided");
-
     mRenderTarget->TransitionColorAttachments(mCommandBuffer, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL);
     mRenderTarget->TransitionDSAttachment(mCommandBuffer, VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL);
 
@@ -508,6 +522,9 @@ CommandListID CommandRecorder::Finish()
     if (mRenderTarget)
     {
         vkCmdEndRenderPass(mCommandBuffer);
+
+        mRenderTarget->TransitionColorAttachments(mCommandBuffer);
+        mRenderTarget->TransitionDSAttachment(mCommandBuffer);
     }
 
     VkResult result = vkEndCommandBuffer(mCommandBuffer);

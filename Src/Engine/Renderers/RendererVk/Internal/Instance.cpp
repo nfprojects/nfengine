@@ -58,7 +58,7 @@ bool Instance::Init(int debugLevel)
         enabledExtensions.PushBack(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
 
     const char* enabledLayers[] = {
-        "VK_LAYER_LUNARG_standard_validation" // for debugging
+        "VK_LAYER_KHRONOS_validation" // for debugging
     };
 
     VkInstanceCreateInfo instInfo = {};

@@ -18,6 +18,7 @@ namespace Renderer {
 
 ResourceBindingSet::ResourceBindingSet()
     : mDescriptorLayout(VK_NULL_HANDLE)
+    , mResourceCount(0)
     , mSetSlot(UINT16_MAX)
 {
 }
@@ -73,6 +74,12 @@ bool ResourceBindingSet::Init(const ResourceBindingSetDesc& desc)
 
             layoutBinding.pImmutableSamplers = &s->mSampler;
         }
+        else if (rb.resourceType == ShaderResourceType::Texture) // && WritableTexture?
+        {
+            NFE_LOG_WARNING("Sampler not provided for Texture Resource Type - binding default sampler");
+            layoutBinding.pImmutableSamplers = &gDevice->GetDefaultSampler();
+        }
+
         bindings.PushBack(layoutBinding);
     }
 
@@ -85,6 +92,8 @@ bool ResourceBindingSet::Init(const ResourceBindingSetDesc& desc)
     CHECK_VKRESULT(result, "Failed to create Descriptor Set Layout");
 
     Debugger::Instance().NameObject(reinterpret_cast<uint64_t>(mDescriptorLayout), VK_OBJECT_TYPE_DESCRIPTOR_SET_LAYOUT, "DescriptorSetLayout");
+
+    mResourceCount = bindings.Size();
 
     return true;
 }
@@ -260,6 +269,10 @@ bool ResourceBindingInstance::Init(const ResourceBindingSetPtr& bindingSet)
 
     Debugger::Instance().NameObject(reinterpret_cast<uint64_t>(mDescriptorSet), VK_OBJECT_TYPE_DESCRIPTOR_SET, "DescriptorSet");
 
+    mWrittenResources.Resize(mSet->mResourceCount);
+    for (auto& r: mWrittenResources)
+        r = nullptr;
+
     return true;
 }
 
@@ -288,6 +301,8 @@ bool ResourceBindingInstance::WriteTextureView(uint32 slot, const TexturePtr& te
     writeSet.pImageInfo = &imgInfo;
 
     vkUpdateDescriptorSets(gDevice->GetDevice(), 1, &writeSet, 0, nullptr);
+
+    mWrittenResources[slot] = t;
 
     return true;
 }
@@ -318,6 +333,8 @@ bool ResourceBindingInstance::WriteCBufferView(uint32 slot, const BufferPtr& buf
     writeSet.pBufferInfo = &bufInfo;
 
     vkUpdateDescriptorSets(gDevice->GetDevice(), 1, &writeSet, 0, nullptr);
+
+    mWrittenResources[slot] = b;
 
     return true;
 }
