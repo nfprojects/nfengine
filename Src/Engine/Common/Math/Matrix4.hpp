@@ -13,7 +13,7 @@ namespace Math {
 class NFE_ALIGN(32) Matrix4 final
 {
 public:
-    NFE_ALIGNED_CLASS(16)
+    NFE_ALIGNED_CLASS(32)
 
     union
     {
