@@ -111,7 +111,7 @@ bool DepthStencilScene::CreateBasicResources(bool withDepth, bool withStencil)
     blendStateDesc.rtDescs[0].destColorFunc = BlendFunc::OneMinusSrcAlpha;
 
     PipelineStateDesc psd;
-    psd.rtFormats[0] = mBackbufferFormat;
+    psd.rtFormats[0] = ElementFormat::R8G8B8A8_U_Norm;
     psd.vertexShader = mVertexShader;
     psd.pixelShader = mPixelShader;
     psd.raterizerState.cullMode = CullMode::Disabled;

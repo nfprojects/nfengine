@@ -173,7 +173,7 @@ void CommandRecorder::SetPipelineState(const PipelineStatePtr& state)
 
 void CommandRecorder::SetStencilRef(unsigned char ref)
 {
-    NFE_UNUSED(ref);
+    vkCmdSetStencilReference(mCommandBuffer, VK_STENCIL_FACE_FRONT_AND_BACK, ref);
 }
 
 void CommandRecorder::SetViewport(float left, float width, float top, float height, float minDepth, float maxDepth)

@@ -94,11 +94,19 @@ bool Texture::Init(const TextureDesc& desc)
     if (mType == TextureType::Texture3D)
         mDepth = desc.depth;
 
-    mImageSubresRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+    VK_ZERO_MEMORY(mImageSubresRange);
     mImageSubresRange.baseArrayLayer = 0;
     mImageSubresRange.baseMipLevel = 0;
     mImageSubresRange.levelCount = desc.mipmaps;
     mImageSubresRange.layerCount = desc.layers;
+    if (desc.depthBufferFormat != DepthBufferFormat::Unknown)
+    {
+        mImageSubresRange.aspectMask |= VK_IMAGE_ASPECT_DEPTH_BIT;
+        if (desc.depthBufferFormat == DepthBufferFormat::Depth24_Stencil8)
+            mImageSubresRange.aspectMask |= VK_IMAGE_ASPECT_STENCIL_BIT;
+    }
+    else if (desc.format != ElementFormat::Unknown)
+        mImageSubresRange.aspectMask |= VK_IMAGE_ASPECT_COLOR_BIT;
 
     imageInfo.format = mFormat;
     imageInfo.extent.width = mWidth;
