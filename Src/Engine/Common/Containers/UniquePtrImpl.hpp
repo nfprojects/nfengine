@@ -8,6 +8,7 @@
 
 #include "UniquePtr.hpp"
 #include "../System/Assertion.hpp"
+#include "../Memory/DefaultAllocator.hpp"
 
 
 namespace NFE {
@@ -182,7 +183,9 @@ UniquePtr<T[], Deleter>::operator UniquePtr<U[]>()
 template<typename T, typename... Args>
 std::enable_if_t<!std::is_array<T>::value, UniquePtr<T>> MakeUniquePtr(Args&& ... args)
 {
-    return UniquePtr<T>(new T(std::forward<Args>(args) ...));
+    void* memory = NFE_MALLOC(sizeof(T), alignof(T));
+    T* ptr = new (memory) T(std::forward<Args>(args) ...);
+    return UniquePtr<T>(ptr);
 }
 
 template<typename T>

@@ -70,8 +70,6 @@ void Type::Initialize(const TypeInfo& info)
 
     if (mConstructor)
     {
-        NFE_ASSERT(mDestructor, "When constructor is provided, destrtuctor must be defined as well");
-
         mDefaultObject = CreateRawObject();
         NFE_ASSERT(mDefaultObject, "Failed to create default object for type %s", GetName().Str());
     }
@@ -94,16 +92,43 @@ bool Type::IsA(const Type* baseType) const
     return this == baseType;
 }
 
+void Type::ConstructObject(void* objectPtr) const
+{
+    NFE_ASSERT(mConstructor, "Cannot create an object of type '%s'", GetName().Str());
+
+    mConstructor(objectPtr);
+}
+
+void Type::DestructObject(void* objectPtr) const
+{
+    if (mDestructor)
+    {
+        mDestructor(objectPtr);
+    }
+}
+
 void* Type::CreateRawObject() const
 {
     NFE_ASSERT(mConstructor, "Cannot create an object of type '%s'", GetName().Str());
-    return mConstructor();
+
+    void* objectMemory = NFE_MALLOC(mSize, mAlignment);
+    if (objectMemory)
+    {
+        ConstructObject(objectMemory);
+    }
+
+    return objectMemory;
 }
 
 void Type::DeleteObject(void* objectPtr) const
 {
     NFE_ASSERT(mDestructor, "Cannot destroy an object of type '%s'", GetName().Str());
-    mDestructor(objectPtr);
+    
+    if (objectPtr)
+    {
+        DestructObject(objectPtr);
+        NFE_FREE(objectPtr);
+    }
 }
 
 bool Type::CanBeMemcopied() const

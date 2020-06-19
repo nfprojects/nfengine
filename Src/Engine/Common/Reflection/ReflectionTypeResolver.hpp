@@ -40,7 +40,7 @@ public:
 };
 
 
-using ConstructorFunc = std::function<void*(void)>;
+using ConstructorFunc = std::function<void(void*)>;
 using DestructorFunc = std::function<void(void*)>;
 
 template <typename T>
@@ -61,9 +61,9 @@ typename std::enable_if<!std::is_constructible_v<T>, DestructorFunc>::type GetOb
 template <typename T>
 typename std::enable_if<std::is_constructible_v<T>, ConstructorFunc>::type GetObjectConstructor()
 {
-    return [] ()
+    return [] (void* ptr)
     {
-        return new T;
+        return new (ptr) T;
     };
 }
 
@@ -74,7 +74,7 @@ typename std::enable_if<std::is_constructible_v<T>, DestructorFunc>::type GetObj
     return [] (void* ptr)
     {
         T* typedPtr = BitCast<T*>(ptr);
-        delete typedPtr;
+        typedPtr->~T();
     };
 }
 

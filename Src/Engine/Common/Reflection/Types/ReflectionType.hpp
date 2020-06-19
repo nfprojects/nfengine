@@ -36,9 +36,8 @@ enum class TypeKind : uint8
     // TODO bitfields
 };
 
-using ConstructorFunc = std::function<void*(void)>;
+using ConstructorFunc = std::function<void(void*)>;
 using DestructorFunc = std::function<void(void*)>;
-using ArrayConstructorFunc = std::function<void*(uint32)>;
 
 /**
  * Instead of filling Type class directly, this class is used as a helper.
@@ -105,6 +104,12 @@ public:
 
     // allocate and construct object of this type
     [[nodiscard]] void* CreateRawObject() const;
+
+    // construct an object given allocated memory
+    void ConstructObject(void* objectPtr) const;
+
+    // destruct an object
+    void DestructObject(void* objectPtr) const;
 
     // allocate memory and construct object
     template<typename T>

@@ -112,8 +112,7 @@ public:
                 typeInfo.name = #T;                                                     \
                 typeInfo.size = sizeof(T);                                              \
                 typeInfo.alignment = alignof(T);                                        \
-                typeInfo.constructor = []() { return new T(); };                        \
-                typeInfo.destructor = [] (void* ptr) { delete BitCast<T*>(ptr); };      \
+                typeInfo.constructor = [](void* ptr) { return new (ptr) T(); };         \
                 type->Initialize(typeInfo);                                             \
             }                                                                           \
         };                                                                              \

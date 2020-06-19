@@ -61,7 +61,11 @@ public:
     {
         static const auto defaultDeleter = [](T* object)
         {
-            delete object;
+            if (object)
+            {
+                object->~T();
+                NFE_FREE(object);
+            }
         };
 
         return defaultDeleter;

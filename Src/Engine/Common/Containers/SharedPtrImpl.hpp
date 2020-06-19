@@ -7,6 +7,7 @@
 #pragma once
 
 #include "SharedPtr.hpp"
+#include "../Memory/DefaultAllocator.hpp"
 
 
 namespace NFE {
@@ -236,8 +237,9 @@ bool operator != (const T* lhs, const SharedPtr<T>& rhs)
 template<typename T, typename ... Args>
 SharedPtr<T> MakeSharedPtr(Args&& ... args)
 {
-    // TODO single allocation for both object and control block
-    return SharedPtr<T>(new T(std::forward<Args>(args) ...));
+    void* memory = NFE_MALLOC(sizeof(T), alignof(T));
+    T* ptr = new (memory) T(std::forward<Args>(args) ...);
+    return SharedPtr<T>(ptr);
 }
 
 template<typename TargetType, typename SourceType>

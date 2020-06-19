@@ -53,7 +53,7 @@ Material::Material(const char* debugName)
 
 MaterialPtr Material::Create()
 {
-    return MaterialPtr(new Material);
+    return MakeSharedPtr<Material>();
 }
 
 void Material::SetBsdf(const StringView& bsdfName)

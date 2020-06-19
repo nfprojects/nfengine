@@ -86,7 +86,7 @@ TEST(WeakPtr, ConstructFromEmptyWeakPointer)
 TEST(WeakPtr, ToWeakPtr)
 {
     int counter = 0;
-    SharedPtr<TestClass> sharedPtr(new TestClass(counter));
+    SharedPtr<TestClass> sharedPtr = MakeUniquePtr<TestClass>(counter);
     const WeakPtr<TestClass> weakPtr(sharedPtr);
 
     ASSERT_EQ(0, counter);
@@ -115,7 +115,7 @@ TEST(WeakPtr, ToWeakPtr)
 TEST(WeakPtr, Reset)
 {
     int counter = 0;
-    SharedPtr<TestClass> sharedPtr(new TestClass(counter));
+    SharedPtr<TestClass> sharedPtr = MakeUniquePtr<TestClass>(counter);
 
     WeakPtr<TestClass> weakPtr(sharedPtr);
     weakPtr.Reset();
@@ -141,7 +141,7 @@ TEST(WeakPtr, SharedPointerFromEmptyWeakPointer)
 TEST(WeakPtr, SharedPointerFromValidWeakPointer)
 {
     int counter = 0;
-    const SharedPtr<TestClass> sharedPtr(new TestClass(counter));
+    const SharedPtr<TestClass> sharedPtr = MakeUniquePtr<TestClass>(counter);
     const WeakPtr<TestClass> weakPtr(sharedPtr);
     const SharedPtr<TestClass> sharedPtr2 = weakPtr.Lock();
 
@@ -209,7 +209,7 @@ TEST(WeakPtr, SharedPointerFromValidWeakPointer)
 TEST(WeakPtr, SharedPointerFromExpiredWeakPointer)
 {
     int counter = 0;
-    SharedPtr<TestClass> sharedPtr(new TestClass(counter));
+    SharedPtr<TestClass> sharedPtr = MakeUniquePtr<TestClass>(counter);
     const WeakPtr<TestClass> weakPtr(sharedPtr);
 
     ASSERT_EQ(0, counter);

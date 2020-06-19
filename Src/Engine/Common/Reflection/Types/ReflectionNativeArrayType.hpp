@@ -74,10 +74,8 @@ public:
         typeInfo.size = sizeof(ObjectType);
         typeInfo.alignment = alignof(ObjectType);
         typeInfo.name = typeName.Str();
-        //typeInfo.constructor = GetObjectConstructor<ObjectType>();
-        //typeInfo.destructor = GetObjectDestructor<ObjectType>();
-        typeInfo.constructor = [] () { return new ObjectType; };
-        typeInfo.destructor = [] (void* ptr) { delete BitCast<T*>(ptr); };
+        typeInfo.constructor = GetObjectConstructor<ObjectType>();
+        typeInfo.destructor = GetObjectDestructor<ObjectType>();
 
         type->Initialize(typeInfo);
     }

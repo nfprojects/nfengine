@@ -251,7 +251,7 @@ TEST(ReflectionClassTest, AbstractClass_Deserialization)
 
 TEST(ReflectionClassTest, DynamicCast_FromChild)
 {
-    UniquePtr<TestChildClassA> pointer(new TestChildClassA);
+    UniquePtr<TestChildClassA> pointer = MakeUniquePtr<TestChildClassA>();
 
     const TestBaseClass* pointerBase = RTTI::Cast<TestBaseClass>(pointer.Get());
     EXPECT_EQ(pointerBase, pointer.Get());
@@ -262,7 +262,7 @@ TEST(ReflectionClassTest, DynamicCast_FromChild)
 
 TEST(ReflectionClassTest, DynamicCast_FromBase)
 {
-    const UniquePtr<TestBaseClass> pointer(new TestChildClassA);
+    const UniquePtr<TestBaseClass> pointer = MakeUniquePtr<TestChildClassA>();
 
     const TestBaseClass* pointerBase = RTTI::Cast<TestBaseClass>(pointer.Get());
     EXPECT_EQ(pointerBase, pointer.Get());

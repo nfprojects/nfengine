@@ -81,7 +81,7 @@ TEST(SharedPtr, Empty_MoveAssignment_SingleRef)
 
 TEST(SharedPtr, SimpleType_SingleRef)
 {
-    SharedPtr<int> pointer(new int);
+    SharedPtr<int> pointer = MakeSharedPtr<int>();
     *pointer = 123;
 
     ASSERT_NE(pointer, nullptr);
@@ -95,7 +95,7 @@ TEST(SharedPtr, Destructor_SingleRef)
 {
     int counter = 0;
     {
-        SharedPtr<TestClass> pointer(new TestClass(counter));
+        SharedPtr<TestClass> pointer = MakeSharedPtr<TestClass>(counter);
         ASSERT_EQ(0, counter);
     }
     ASSERT_EQ(1, counter);
@@ -104,7 +104,7 @@ TEST(SharedPtr, Destructor_SingleRef)
 TEST(SharedPtr, Reset_SingleRef)
 {
     int counter = 0;
-    SharedPtr<TestClass> pointer(new TestClass(counter));
+    SharedPtr<TestClass> pointer = MakeSharedPtr<TestClass>(counter);
 
     ASSERT_EQ(0, counter);
     ASSERT_NE(pointer, nullptr);
@@ -123,7 +123,7 @@ TEST(SharedPtr, Reset_SingleRef)
 TEST(SharedPtr, MoveConstructor_SingleRef)
 {
     int counter = 0;
-    SharedPtr<TestClass> pointer(new TestClass(counter));
+    SharedPtr<TestClass> pointer = MakeSharedPtr<TestClass>(counter);
 
     ASSERT_EQ(0, counter);
     ASSERT_NE(pointer, nullptr);
@@ -145,8 +145,8 @@ TEST(SharedPtr, MoveAssignment_SingleRef)
 {
     int counter = 0;
     int counter2 = 0;
-    SharedPtr<TestClass> pointer(new TestClass(counter));
-    SharedPtr<TestClass> pointer2(new TestClass(counter2));
+    SharedPtr<TestClass> pointer = MakeSharedPtr<TestClass>(counter);
+    SharedPtr<TestClass> pointer2 = MakeSharedPtr<TestClass>(counter2);
     const TestClass* rawPointer = pointer.Get();
 
     ASSERT_EQ(0, counter);
@@ -184,7 +184,7 @@ TEST(SharedPtr, MoveAssignment_SingleRef)
 TEST(SharedPtr, CopyConstructor)
 {
     int counter = 0;
-    SharedPtr<TestClass> pointerA(new TestClass(counter));
+    SharedPtr<TestClass> pointerA = MakeSharedPtr<TestClass>(counter);
 
     ASSERT_EQ(0, counter);
     ASSERT_NE(pointerA, nullptr);
@@ -228,7 +228,7 @@ TEST(SharedPtr, CopyConstructor)
 TEST(SharedPtr, Assignment)
 {
     int counter = 0;
-    SharedPtr<TestClass> pointerA(new TestClass(counter));
+    SharedPtr<TestClass> pointerA = MakeSharedPtr<TestClass>(counter);
     SharedPtr<TestClass> pointerB;
 
     ASSERT_EQ(0, counter);
@@ -327,7 +327,7 @@ TEST(SharedPtr, CopyConstructor_MultiThreaded)
     using PtrType = SharedPtr<TestClass>;
 
     int counter = 0;
-    PtrType globalPointer(new TestClass(counter));
+    PtrType globalPointer = MakeSharedPtr<TestClass>(counter);
     std::atomic_bool finish(false);
 
     const auto func = [&finish, &globalPointer]()

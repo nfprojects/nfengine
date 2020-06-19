@@ -6,8 +6,8 @@
 
 #pragma once
 
-#include "../nfCommon.hpp"
 #include "Hash.hpp"
+#include "../Memory/DefaultAllocator.hpp"
 
 
 namespace NFE {
@@ -19,7 +19,11 @@ struct DefaultDeleter
 {
     static void Delete(T* pointer)
     {
-        delete pointer;
+        if (pointer)
+        {
+            pointer->~T();
+            NFE_FREE(pointer);
+        }
     }
 };
 

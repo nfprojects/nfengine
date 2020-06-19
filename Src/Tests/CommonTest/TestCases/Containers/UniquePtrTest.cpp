@@ -77,7 +77,7 @@ TEST(UniquePtr, Empty_MoveAssignment)
 
 TEST(UniquePtr, SimpleType)
 {
-    UniquePtr<int> pointer(new int);
+    UniquePtr<int> pointer = MakeUniquePtr<int>();
     *pointer = 123;
 
     ASSERT_NE(pointer, nullptr);
@@ -90,7 +90,7 @@ TEST(UniquePtr, Destructor)
 {
     int counter = 0;
     {
-        UniquePtr<TestClass> pointer(new TestClass(&counter));
+        UniquePtr<TestClass> pointer = MakeUniquePtr<TestClass>(&counter);
         ASSERT_EQ(0, counter);
     }
     ASSERT_EQ(1, counter);
@@ -99,7 +99,7 @@ TEST(UniquePtr, Destructor)
 TEST(UniquePtr, Reset)
 {
     int counter = 0;
-    UniquePtr<TestClass> pointer(new TestClass(&counter));
+    UniquePtr<TestClass> pointer = MakeUniquePtr<TestClass>(&counter);
 
     ASSERT_EQ(0, counter);
     ASSERT_NE(pointer, nullptr);
@@ -116,7 +116,7 @@ TEST(UniquePtr, Reset)
 TEST(UniquePtr, Release)
 {
     int counter = 0;
-    UniquePtr<TestClass> pointer(new TestClass(&counter));
+    UniquePtr<TestClass> pointer = MakeUniquePtr<TestClass>(&counter);
 
     ASSERT_EQ(0, counter);
     ASSERT_NE(pointer, nullptr);
@@ -129,13 +129,13 @@ TEST(UniquePtr, Release)
     ASSERT_FALSE(pointer);
     ASSERT_EQ(0, counter);
 
-    delete releasedPtr;
+    DefaultDeleter<TestClass>::Delete(releasedPtr);
 }
 
 TEST(UniquePtr, MoveConstructor)
 {
     int counter = 0;
-    UniquePtr<TestClass> pointer(new TestClass(&counter));
+    UniquePtr<TestClass> pointer = MakeUniquePtr<TestClass>(&counter);
 
     ASSERT_EQ(0, counter);
     ASSERT_NE(pointer, nullptr);
@@ -157,8 +157,8 @@ TEST(UniquePtr, MoveAssignment)
 {
     int counter = 0;
     int counter2 = 0;
-    UniquePtr<TestClass> pointer(new TestClass(&counter));
-    UniquePtr<TestClass> pointer2(new TestClass(&counter2));
+    UniquePtr<TestClass> pointer = MakeUniquePtr<TestClass>(&counter);
+    UniquePtr<TestClass> pointer2 = MakeUniquePtr<TestClass>(&counter2);
     const TestClass* rawPointer = pointer.Get();
 
     ASSERT_EQ(0, counter);
@@ -204,7 +204,7 @@ TEST(UniquePtr, CastToBaseClass_Scalar)
 {
     int counter = 0;
     {
-        UniquePtr<ChildTestClass> childPtr(new ChildTestClass(&counter));
+        UniquePtr<ChildTestClass> childPtr = MakeUniquePtr<ChildTestClass>(&counter);
 
         ASSERT_EQ(0, counter);
 

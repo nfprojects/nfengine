@@ -83,7 +83,7 @@ TexturePtr LoadTexture(const StringView& baseDir, const StringView& path)
 
 MaterialPtr LoadMaterial(const StringView& baseDir, const tinyobj::material_t& sourceMaterial)
 {
-    auto material = MaterialPtr(new Material);
+    auto material = MakeSharedPtr<Material>();
 
     material->SetBsdf("diffuse"); // TODO
     material->debugName = sourceMaterial.name.c_str();
@@ -101,7 +101,7 @@ MaterialPtr LoadMaterial(const StringView& baseDir, const tinyobj::material_t& s
 
 MaterialPtr CreateDefaultMaterial(MaterialsMap& outMaterials)
 {
-    auto material = MaterialPtr(new Material);
+    auto material = MakeSharedPtr<Material>();
     material->debugName = "default";
     material->baseColor = HdrColorRGB(0.8f, 0.8f, 0.8f);
     material->emission = HdrColorRGB(0.0f, 0.0f, 0.0f);
@@ -396,7 +396,7 @@ public:
         meshDesc.vertexBufferDesc.tangents = mVertexTangents.Data();
         meshDesc.vertexBufferDesc.texCoords = mVertexTexCoords.Data();
 
-        MeshShapePtr mesh = MeshShapePtr(new MeshShape);
+        MeshShapePtr mesh = MakeSharedPtr<MeshShape>();
         bool result = mesh->Initialize(meshDesc);
         if (!result)
         {

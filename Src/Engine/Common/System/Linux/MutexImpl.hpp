@@ -9,6 +9,7 @@
 #include "../Mutex.hpp"
 #include "../Assertion.hpp"
 
+#include <pthread.h>
 
 namespace NFE {
 namespace Common {
