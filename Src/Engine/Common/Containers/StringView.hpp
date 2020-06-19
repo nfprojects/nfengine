@@ -153,7 +153,7 @@ public:
 
     NFCOMMON_API StringViewToCStringHelper(const StringView stringView);
 
-        NFE_FORCE_INLINE const char* Str() const
+    NFE_FORCE_INLINE const char* Str() const
     {
         return ptr;
     }

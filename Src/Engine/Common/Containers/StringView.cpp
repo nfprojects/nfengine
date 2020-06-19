@@ -15,6 +15,7 @@ namespace Common {
 StringView::StringView(const String& string)
     : mData(string.Str())
     , mLength(string.Length())
+    , mIsNullTerminated(true)
 {
 }
 
@@ -22,6 +23,7 @@ StringView& StringView::operator = (const String& other)
 {
     mData = other.Str();
     mLength = other.Length();
+    mIsNullTerminated = true;
     return *this;
 }
 
