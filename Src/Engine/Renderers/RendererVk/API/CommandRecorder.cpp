@@ -79,14 +79,18 @@ void CommandRecorder::SetVertexBuffers(uint32 num, const BufferPtr* vertexBuffer
     for (uint32 i = 0; i < num; ++i)
     {
         Buffer* buf = dynamic_cast<Buffer*>(vertexBuffers[i].Get());
-        if (!buf)
-        {
-            NFE_LOG_ERROR("Incorrect buffer provided at slot %d", i);
-            return;
-        }
+        NFE_ASSERT(buf != nullptr, "Incorrect buffer provided at slot %d", i);
 
-        buffers[i] = buf->mBuffer;
-        offs[i] = static_cast<VkDeviceSize>(offsets[i]);
+        if (buf->mMode == BufferMode::Volatile)
+        {
+            buffers[i] = gDevice->GetRingBuffer()->GetVkBuffer();
+            offs[i] = static_cast<VkDeviceSize>(offsets[i]) + buf->mVolatileDataOffset;
+        }
+        else
+        {
+            buffers[i] = buf->mBuffer;
+            offs[i] = static_cast<VkDeviceSize>(offsets[i]);
+        }
     }
 
     // TODO assumes start slot 0
@@ -127,11 +131,17 @@ void CommandRecorder::BindVolatileCBuffer(uint32 slot, const BufferPtr& buffer)
 {
     Buffer* b = dynamic_cast<Buffer*>(buffer.Get());
     NFE_ASSERT(b != nullptr, "Invalid volatile buffer provided");
-    NFE_ASSERT(b->mMode == BufferMode::Volatile, "Buffer with invalid mode provided");
+    NFE_ASSERT(b->mMode == BufferMode::Volatile, "Buffer is not a Volatile Buffer");
+    NFE_ASSERT(b->mType == BufferType::Constant, "Buffer is not a Constant Buffer");
     NFE_ASSERT(slot < VK_MAX_VOLATILE_BUFFERS, "Binding to slot %d impossible (max available slots 0-7).", slot);
 
     mBoundVolatileBuffers[slot] = b;
     mRebindDynamicBuffers = true;
+
+    if (b->mVolatileDataOffset != UINT32_MAX)
+    {
+        mBoundVolatileOffsets[slot] = b->mVolatileDataOffset;
+    }
 }
 
 void CommandRecorder::SetResourceBindingLayout(const ResourceBindingLayoutPtr& layout)
@@ -264,16 +274,19 @@ bool CommandRecorder::WriteVolatileBuffer(Buffer* b, size_t size, const void* da
 {
     NFE_UNUSED(b);
 
-    uint32 writeHead = gDevice->GetRingBuffer()->Write(data, static_cast<uint32>(size));
-    NFE_ASSERT(writeHead != UINT32_MAX, "Failed to write data to Ring Ruffer - the Ring Buffer is full");
+    b->mVolatileDataOffset = gDevice->GetRingBuffer()->Write(data, static_cast<uint32>(size));
+    NFE_ASSERT(b->mVolatileDataOffset != UINT32_MAX, "Failed to write data to Ring Ruffer - the Ring Buffer is full");
 
-    for (uint32 i = 0; i < VK_MAX_VOLATILE_BUFFERS; ++i)
+    if (b->mType == BufferType::Constant)
     {
-        if (b == mBoundVolatileBuffers[i])
+        for (uint32 i = 0; i < VK_MAX_VOLATILE_BUFFERS; ++i)
         {
-            mBoundVolatileOffsets[i] = writeHead;
-            mRebindDynamicBuffers = true;
-            break;
+            if (b == mBoundVolatileBuffers[i])
+            {
+                mBoundVolatileOffsets[i] = b->mVolatileDataOffset;
+                mRebindDynamicBuffers = true;
+                break;
+            }
         }
     }
 

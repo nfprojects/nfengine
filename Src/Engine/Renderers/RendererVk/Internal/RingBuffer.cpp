@@ -39,7 +39,7 @@ bool RingBuffer::Init(uint32 size)
     VK_ZERO_MEMORY(bufInfo);
     bufInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
     bufInfo.size = static_cast<VkDeviceSize>(size);
-    bufInfo.usage = VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_SRC_BIT;
+    bufInfo.usage = VK_BUFFER_USAGE_VERTEX_BUFFER_BIT | VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_SRC_BIT;
 
     // device buffer
     VkResult result = vkCreateBuffer(mDevice, &bufInfo, nullptr, &mBuffer);
@@ -75,6 +75,7 @@ bool RingBuffer::Init(uint32 size)
 
 uint32 RingBuffer::Write(const void* data, uint32 size)
 {
+    // TODO RingBuffer must accept size_t instead of uint32
     uint32 dataHead = mTail;
 
     if (dataHead + size > mSize)

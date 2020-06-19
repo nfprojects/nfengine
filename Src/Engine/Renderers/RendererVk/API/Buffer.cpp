@@ -19,6 +19,7 @@ Buffer::Buffer()
     , mBufferSize(0)
     , mMode(BufferMode::Static)
     , mVolatileBinding(UINT32_MAX)
+    , mVolatileDataOffset(UINT32_MAX)
 {
 }
 
@@ -47,10 +48,17 @@ bool Buffer::Init(const BufferDesc& desc)
     }
 
     mMode = desc.mode;
+    mType = desc.type;
     mBufferSize = static_cast<VkDeviceSize>(desc.size);
 
-    if (desc.mode == BufferMode::Volatile && desc.type == BufferType::Constant)
+    if (desc.mode == BufferMode::Volatile)
+    {
+        // TODO RingBuffer must accept size_t instead of uint32
+        if (desc.initialData)
+            mVolatileDataOffset = gDevice->GetRingBuffer()->Write(desc.initialData, static_cast<uint32>(desc.size));
+
         goto leave;
+    }
 
     if (desc.mode == BufferMode::Static && desc.initialData == nullptr)
     {

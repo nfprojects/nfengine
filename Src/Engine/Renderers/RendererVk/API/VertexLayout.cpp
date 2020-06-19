@@ -30,7 +30,7 @@ bool VertexLayout::Init(const VertexLayoutDesc& desc)
     VK_ZERO_MEMORY(vidDesc);
 
     // gather how much VBs we have to bind
-    std::list<std::tuple<int, int>> vbList;
+    std::list<std::tuple<uint32, uint32>> vbList;
     for (uint32 i = 0; i < desc.numElements; ++i)
     {
         vbList.emplace_back(i, desc.elements[i].vertexBufferId);
