@@ -96,11 +96,7 @@ void CommandRecorder::SetVertexBuffers(uint32 num, const BufferPtr* vertexBuffer
 void CommandRecorder::SetIndexBuffer(const BufferPtr& indexBuffer, IndexBufferFormat format)
 {
     Buffer* ib = dynamic_cast<Buffer*>(indexBuffer.Get());
-    if (ib == nullptr)
-    {
-        NFE_LOG_ERROR("Incorrect Index Buffer provided");
-        return;
-    }
+    NFE_ASSERT(ib != nullptr, "Incorrect Index Buffer provided");
 
     vkCmdBindIndexBuffer(mCommandBuffer, ib->mBuffer, 0, TranslateIndexBufferFormatToVkIndexType(format));
 }
@@ -236,6 +232,7 @@ bool CommandRecorder::WriteDynamicBuffer(Buffer* b, size_t offset, size_t size, 
         return false;
     }
 
+    // CopyBuffer has to be call outside a Render Pass
     if (mRenderTarget)
         vkCmdEndRenderPass(mCommandBuffer);
 
@@ -246,6 +243,7 @@ bool CommandRecorder::WriteDynamicBuffer(Buffer* b, size_t offset, size_t size, 
     region.dstOffset = static_cast<VkDeviceSize>(offset);
     vkCmdCopyBuffer(mCommandBuffer, gDevice->GetRingBuffer()->GetVkBuffer(), b->mBuffer, 1, &region);
 
+    // Restore previously-active RenderPass after copy to buffer is done
     if (mRenderTarget)
     {
         VkRenderPassBeginInfo rpBeginInfo;

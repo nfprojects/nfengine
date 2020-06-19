@@ -20,6 +20,7 @@ class VertexLayout : public IVertexLayout
 
     Common::DynArray<VkVertexInputBindingDescription> mBindings;
     Common::DynArray<VkVertexInputAttributeDescription> mAttributes;
+    Common::DynArray<VkVertexInputBindingDivisorDescriptionEXT> mDivisors;
 
 public:
     VertexLayout();

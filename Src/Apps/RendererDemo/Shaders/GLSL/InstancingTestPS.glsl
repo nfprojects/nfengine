@@ -1,9 +1,9 @@
-in VertexShaderOutput
+layout (location = 0) in VertexShaderOutput
 {
     vec4 Color;
 } Input;
 
-out vec4 color;
+layout (location = 0) out vec4 color;
 
 void main()
 {

@@ -237,29 +237,30 @@ bool Device::Init(const DeviceInitParams* params)
 
     Common::DynArray<const char*> enabledExtensions;
     enabledExtensions.PushBack(VK_KHR_SWAPCHAIN_EXTENSION_NAME);
+    enabledExtensions.PushBack(VK_EXT_VERTEX_ATTRIBUTE_DIVISOR_EXTENSION_NAME);
 
-    const char* enabledLayers[] = {
-        "VK_LAYER_LUNARG_standard_validation" // for debugging
-    };
 
-    VkPhysicalDeviceFeatures features;
+    VkPhysicalDeviceVertexAttributeDivisorFeaturesEXT divisorFeatures;
+    VK_ZERO_MEMORY(divisorFeatures);
+    divisorFeatures.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VERTEX_ATTRIBUTE_DIVISOR_FEATURES_EXT;
+    divisorFeatures.vertexAttributeInstanceRateDivisor = VK_TRUE;
+    divisorFeatures.vertexAttributeInstanceRateZeroDivisor = VK_TRUE;
+
+    VkPhysicalDeviceFeatures2 features;
     VK_ZERO_MEMORY(features);
-    features.samplerAnisotropy = VK_TRUE;
+    features.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FEATURES_2;
+    features.pNext = &divisorFeatures;
+    features.features.samplerAnisotropy = VK_TRUE;
+
 
     VkDeviceCreateInfo devInfo;
     VK_ZERO_MEMORY(devInfo);
     devInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
-    devInfo.pNext = nullptr;
+    devInfo.pNext = &features;
     devInfo.queueCreateInfoCount = 1;
     devInfo.pQueueCreateInfos = &queueInfo;
-    devInfo.pEnabledFeatures = &features;
     devInfo.enabledExtensionCount = enabledExtensions.Size();
     devInfo.ppEnabledExtensionNames = enabledExtensions.Data();
-    if (params->debugLevel > 0)
-    {
-        devInfo.enabledLayerCount = 1;
-        devInfo.ppEnabledLayerNames = enabledLayers;
-    }
 
     result = vkCreateDevice(mPhysicalDevice, &devInfo, nullptr, &mDevice);
     CHECK_VKRESULT(result, "Failed to create Vulkan device");

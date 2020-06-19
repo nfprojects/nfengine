@@ -33,13 +33,22 @@ bool PipelineState::Init(const PipelineStateDesc& desc)
     mDesc = desc;
 
     VertexLayout* vl = dynamic_cast<VertexLayout*>(desc.vertexLayout.Get());
+
+    VkPipelineVertexInputDivisorStateCreateInfoEXT pvisDivisorInfo;
+    VK_ZERO_MEMORY(pvisDivisorInfo);
+    pvisDivisorInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_DIVISOR_STATE_CREATE_INFO_EXT;
+    pvisDivisorInfo.vertexBindingDivisorCount = vl->mDivisors.Size();
+    pvisDivisorInfo.pVertexBindingDivisors = vl->mDivisors.Data();
+
     VkPipelineVertexInputStateCreateInfo pvisInfo;
     VK_ZERO_MEMORY(pvisInfo);
     pvisInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
+    pvisInfo.pNext = (vl->mDivisors.Size() > 0) ? &pvisDivisorInfo : nullptr;
     pvisInfo.vertexBindingDescriptionCount = vl->mBindings.Size();
     pvisInfo.pVertexBindingDescriptions = vl->mBindings.Data();
     pvisInfo.vertexAttributeDescriptionCount = vl->mAttributes.Size();
     pvisInfo.pVertexAttributeDescriptions = vl->mAttributes.Data();
+
 
     VkPipelineInputAssemblyStateCreateInfo piasInfo;
     VK_ZERO_MEMORY(piasInfo);
@@ -47,10 +56,12 @@ bool PipelineState::Init(const PipelineStateDesc& desc)
     piasInfo.topology = TranslatePrimitiveTypeToVkTopology(desc.primitiveType);
     piasInfo.primitiveRestartEnable = VK_FALSE; // TODO?
 
+
     VkPipelineTessellationStateCreateInfo ptsInfo;
     VK_ZERO_MEMORY(ptsInfo);
     ptsInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_TESSELLATION_STATE_CREATE_INFO;
     ptsInfo.patchControlPoints = desc.numControlPoints;
+
 
     VkPipelineViewportStateCreateInfo pvsInfo;
     VK_ZERO_MEMORY(pvsInfo);
@@ -58,6 +69,7 @@ bool PipelineState::Init(const PipelineStateDesc& desc)
     // no attached viewports/scissors here, as we want to dynamically change them
     pvsInfo.viewportCount = 1;
     pvsInfo.scissorCount = 1;
+
 
     VkPipelineRasterizationStateCreateInfo prsInfo;
     VK_ZERO_MEMORY(prsInfo);
@@ -73,6 +85,7 @@ bool PipelineState::Init(const PipelineStateDesc& desc)
     prsInfo.depthBiasSlopeFactor = 0.0f;
     prsInfo.lineWidth = 1.0f;
 
+
     VkPipelineMultisampleStateCreateInfo pmsInfo;
     VK_ZERO_MEMORY(pmsInfo);
     pmsInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO;
@@ -83,6 +96,7 @@ bool PipelineState::Init(const PipelineStateDesc& desc)
     pmsInfo.alphaToCoverageEnable = desc.blendState.alphaToCoverage;
     pmsInfo.alphaToOneEnable = VK_FALSE;
 
+
     VkStencilOpState stencilOps;
     VK_ZERO_MEMORY(stencilOps);
     stencilOps.failOp = TranslateStencilOpToVkStencilOp(desc.depthState.stencilOpFail);
@@ -92,6 +106,7 @@ bool PipelineState::Init(const PipelineStateDesc& desc)
     stencilOps.compareMask = desc.depthState.stencilMask;
     stencilOps.writeMask = desc.depthState.stencilMask;
     stencilOps.reference = 0; // will be changed dynamically
+
 
     VkPipelineDepthStencilStateCreateInfo pdssInfo;
     VK_ZERO_MEMORY(pdssInfo);
@@ -104,6 +119,7 @@ bool PipelineState::Init(const PipelineStateDesc& desc)
     pdssInfo.front = pdssInfo.back = stencilOps;
     pdssInfo.minDepthBounds = 0.0f;
     pdssInfo.maxDepthBounds = 1.0f;
+
 
     VkPipelineColorBlendStateCreateInfo pcbsInfo;
     VK_ZERO_MEMORY(pcbsInfo);
@@ -130,6 +146,7 @@ bool PipelineState::Init(const PipelineStateDesc& desc)
     pcbsInfo.attachmentCount = i;
     pcbsInfo.pAttachments = states;
 
+
     // make viewport, scissor and stencil ref dynamic
     VkPipelineDynamicStateCreateInfo pdsInfo;
     VK_ZERO_MEMORY(pdsInfo);
@@ -142,6 +159,7 @@ bool PipelineState::Init(const PipelineStateDesc& desc)
     pdsInfo.dynamicStateCount = sizeof(dynStates) / sizeof(dynStates[0]);
     pdsInfo.pDynamicStates = dynStates;
 
+
     // request a render pass from manager
     VkFormat colorFormats[MAX_RENDER_TARGETS];
     VkFormat depthFormat = TranslateDepthFormatToVkFormat(desc.depthFormat);
@@ -153,8 +171,10 @@ bool PipelineState::Init(const PipelineStateDesc& desc)
     if (renderPass == VK_NULL_HANDLE)
         return false;
 
+
     // bind resource layout
     ResourceBindingLayout* rbl = dynamic_cast<ResourceBindingLayout*>(desc.resBindingLayout.Get());
+
 
     // shader stages
     VkPipelineShaderStageCreateInfo stages[5];
@@ -190,6 +210,7 @@ bool PipelineState::Init(const PipelineStateDesc& desc)
         stages[stageCount] = s->mStageInfo;
         stageCount++;
     }
+
 
     VkGraphicsPipelineCreateInfo pipeInfo;
     VK_ZERO_MEMORY(pipeInfo);

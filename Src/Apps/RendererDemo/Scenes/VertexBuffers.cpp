@@ -166,7 +166,7 @@ bool VertexBuffersScene::CreateBuffers(bool withInstanceBuffer, BufferMode verte
         return false;
 
     PipelineStateDesc pipelineStateDesc;
-    pipelineStateDesc.rtFormats[0] = mBackbufferFormat;
+    pipelineStateDesc.rtFormats[0] = ElementFormat::R8G8B8A8_U_Norm;
     pipelineStateDesc.vertexShader = mVertexShader;
     pipelineStateDesc.pixelShader = mPixelShader;
     pipelineStateDesc.primitiveType = PrimitiveType::Triangles;
