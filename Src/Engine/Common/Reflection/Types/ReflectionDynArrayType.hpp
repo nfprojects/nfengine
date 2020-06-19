@@ -29,8 +29,11 @@ public:
     // get number of array elements
     uint32 GetArraySize(const void* arrayObject) const;
 
-    // resize array object
-    virtual bool ResizeArray(void* arrayObject, uint32 targetSize) const = 0;
+    virtual void* GetElementPointer(void* arrayObject, uint32 index) const override;
+    virtual const void* GetElementPointer(const void* arrayObject, uint32 index) const override;
+
+    bool ReserveArray(void* arrayObject, uint32 targetCapacity) const;
+    bool ResizeArray(void* arrayObject, uint32 targetSize) const;
 
     // Type interface implementation
     virtual void PrintInfo() const override final;
@@ -42,46 +45,6 @@ public:
     virtual bool Clone(void* destObject, const void* sourceObject) const override final;
 };
 
-/**
- * Specialized type information for DynArray<T> types.
- */
-template<typename T>
-class DynArrayTypeImpl final : public DynArrayType
-{
-    NFE_MAKE_NONCOPYABLE(DynArrayTypeImpl)
-
-public:
-    using ObjectType = Common::DynArray<T>;
-
-    NFE_FORCE_INLINE DynArrayTypeImpl()
-        : DynArrayType(GetType<T>())
-    { }
-
-    virtual bool ResizeArray(void* arrayObject, uint32 targetSize) const override
-    {
-        NFE_ASSERT(arrayObject, "Invalid array object");
-
-        ObjectType& typedObject = *static_cast<ObjectType*>(arrayObject);
-        return typedObject.Resize(targetSize);
-    }
-
-    virtual void* GetElementPointer(void* arrayObject, uint32 index) const override
-    {
-        NFE_ASSERT(arrayObject, "Invalid array object");
-
-        ObjectType& typedObject = *static_cast<ObjectType*>(arrayObject);
-        return &typedObject[index];
-    }
-
-    virtual const void* GetElementPointer(const void* arrayObject, uint32 index) const override
-    {
-        NFE_ASSERT(arrayObject, "Invalid array object");
-
-        const ObjectType& typedObject = *static_cast<const ObjectType*>(arrayObject);
-        return &typedObject[index];
-    }
-};
-
 
 /**
  * Generic type creator for DynArray<T> types.
@@ -90,20 +53,21 @@ template<typename T>
 class TypeCreator<Common::DynArray<T>>
 {
 public:
-    using TypeClass = DynArrayTypeImpl<T>;
+    using TypeClass = DynArrayType;
     using TypeInfoClass = TypeInfo;
     using ObjectType = Common::DynArray<T>;
 
     static Type* CreateType()
     {
-        return new DynArrayTypeImpl<T>();
+        const Type* underlyingType = ResolveType<T>();
+        return new DynArrayType(underlyingType);
     }
 
     static void InitializeType(Type* type)
     {
         const Type* templateArgumentType = ResolveType<T>();
 
-        const Common::String typeName = Common::String("NFE::Common::DynArray<") + templateArgumentType->GetName() + '>';
+        const Common::String typeName = Common::String("DynArray<") + templateArgumentType->GetName() + '>';
 
         TypeInfo typeInfo;
         typeInfo.kind = TypeKind::DynArray;

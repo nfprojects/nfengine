@@ -163,6 +163,7 @@ struct TypeInfo;
 struct ClassTypeInfo;
 class Type;
 class ClassType;
+class DynArrayType;
 class TypeRegistry;
 class Member;
 class SerializationContext;

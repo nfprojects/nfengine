@@ -454,8 +454,16 @@ bool DynArray<ElementType>::Resize(uint32 size)
 {
     const uint32 oldSize = this->mSize;
 
+    // call destructors
+    for (uint32 i = size; i < oldSize; ++i)
+    {
+        this->mElements[i].~ElementType();
+    }
+
     if (!Reserve(size))
+    {
         return false;
+    }
 
     // initialize new elements
     for (uint32 i = oldSize; i < size; ++i)

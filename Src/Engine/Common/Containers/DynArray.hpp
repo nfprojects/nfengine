@@ -156,6 +156,8 @@ public:
 
 private:
 
+    friend class RTTI::DynArrayType;
+
     bool ContainsElement(const ElementType& element) const;
 
     // allocated size

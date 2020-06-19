@@ -49,9 +49,12 @@ bool NativeArrayType::Compare(const void* objectA, const void* objectB) const
 
     if (elementType->CanBeMemcopied())
     {
+        NFE_ASSERT(GetElementPointer(objectA, 0u) == objectA, "Array pointer is expected to point at first element");
+        NFE_ASSERT(GetElementPointer(objectB, 0u) == objectB, "Array pointer is expected to point at first element");
+
         const size_t elementSize = elementType->GetSize();
         const size_t numBytesInArray = elementSize * mArraySize;
-        return 0 == memcmp(GetElementPointer(objectA, 0u), GetElementPointer(objectB, 0u), numBytesInArray);
+        return 0 == memcmp(objectA, objectB, numBytesInArray);
     }
 
     for (uint32 i = 0; i < mArraySize; ++i)
@@ -71,9 +74,12 @@ bool NativeArrayType::Clone(void* destObject, const void* sourceObject) const
 
     if (elementType->CanBeMemcopied())
     {
+        NFE_ASSERT(GetElementPointer(destObject, 0u) == destObject, "Array pointer is expected to point at first element");
+        NFE_ASSERT(GetElementPointer(sourceObject, 0u) == sourceObject, "Array pointer is expected to point at first element");
+
         const size_t elementSize = elementType->GetSize();
         const size_t numBytesToCopy = elementSize * mArraySize;
-        memcpy(GetElementPointer(destObject, 0u), GetElementPointer(sourceObject, 0u), numBytesToCopy);
+        memcpy(destObject, sourceObject, numBytesToCopy);
         return true;
     }
 

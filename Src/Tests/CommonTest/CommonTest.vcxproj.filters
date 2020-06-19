@@ -232,6 +232,9 @@
     <ClCompile Include="TestCases\Utils\CompressedInt.cpp">
       <Filter>TestCases\Utils</Filter>
     </ClCompile>
+    <ClCompile Include="TestCases\Reflection\ReflectionDynArrayTest.cpp">
+      <Filter>TestCases\Reflection</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="PCH.hpp" />
