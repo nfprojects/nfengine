@@ -59,7 +59,7 @@ void* UniquePtrType::Reset(void* uniquePtrObject, const Type* newDataType) const
 
     if (pointedData)
     {
-        mUnderlyingType->DeleteObject(pointedData);
+        GetPointedDataType(uniquePtrObject)->DeleteObject(pointedData);
     }
 
     *typedObject = nullptr;
