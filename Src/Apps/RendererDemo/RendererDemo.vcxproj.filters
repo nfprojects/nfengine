@@ -159,5 +159,8 @@
     <None Include="Shaders\GLSL\TestVS.glsl">
       <Filter>Shaders\GLSL</Filter>
     </None>
+    <None Include="Shaders\GLSL\TestCS.glsl">
+      <Filter>Shaders\GLSL</Filter>
+    </None>
   </ItemGroup>
 </Project>

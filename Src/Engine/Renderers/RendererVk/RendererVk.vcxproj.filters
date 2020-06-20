@@ -86,6 +86,9 @@
     <ClInclude Include="Internal\Win\WinExtensions.hpp">
       <Filter>Internal\Win</Filter>
     </ClInclude>
+    <ClInclude Include="API\IResource.hpp">
+      <Filter>API</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp" />

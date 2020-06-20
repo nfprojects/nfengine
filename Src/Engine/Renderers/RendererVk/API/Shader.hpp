@@ -22,6 +22,7 @@ class Shader : public IShader
 {
     friend class CommandRecorder;
     friend class PipelineState;
+    friend class ComputePipelineState;
 
     typedef std::pair<uint16, uint16> SetSlotPair; // first is set, second is binding
     typedef Common::HashMap<Common::String, SetSlotPair> SetSlotMap; // mapping Resource Name to Slot

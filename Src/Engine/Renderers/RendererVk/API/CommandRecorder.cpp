@@ -12,6 +12,8 @@
 #include "Buffer.hpp"
 #include "Texture.hpp"
 #include "Backbuffer.hpp"
+#include "PipelineState.hpp"
+#include "ComputePipelineState.hpp"
 
 #include "Internal/Translations.hpp"
 #include "Internal/Debugger.hpp"
@@ -403,6 +405,7 @@ void CommandRecorder::CopyTexture(const TexturePtr& src, const BackbufferPtr& de
                        1, &blitRegion, VK_FILTER_NEAREST);
     }
 
+    s->Transition(mCommandBuffer);
     d->Transition(mCommandBuffer, VK_IMAGE_LAYOUT_PRESENT_SRC_KHR);
 }
 
@@ -502,7 +505,15 @@ void CommandRecorder::DrawIndexed(uint32 indexNum, uint32 instancesNum, uint32 i
 void CommandRecorder::BindComputeResources(uint32 slot, const ResourceBindingInstancePtr& bindingSetInstance)
 {
     NFE_UNUSED(slot);
-    NFE_UNUSED(bindingSetInstance);
+
+    ResourceBindingInstance* rbi = dynamic_cast<ResourceBindingInstance*>(bindingSetInstance.Get());
+    if (rbi == nullptr)
+        return; // there is no "unbind" of descriptor sets in Vulkan
+
+    vkCmdBindDescriptorSets(mCommandBuffer, VK_PIPELINE_BIND_POINT_COMPUTE,
+                            mComputeResourceBindingLayout->mPipelineLayout,
+                            rbi->mSet->mSetSlot, 1,
+                            &rbi->mDescriptorSet, 0, nullptr);
 }
 
 void CommandRecorder::BindComputeVolatileCBuffer(uint32 slot, const BufferPtr& buffer)
@@ -513,19 +524,21 @@ void CommandRecorder::BindComputeVolatileCBuffer(uint32 slot, const BufferPtr& b
 
 void CommandRecorder::SetComputeResourceBindingLayout(const ResourceBindingLayoutPtr& layout)
 {
-    NFE_UNUSED(layout);
+    mComputeResourceBindingLayout = dynamic_cast<ResourceBindingLayout*>(layout.Get());
+    NFE_ASSERT(mComputeResourceBindingLayout != nullptr, "Invalid Compute Resource Binding Layout provided");
 }
 
 void CommandRecorder::SetComputePipelineState(const ComputePipelineStatePtr& state)
 {
-    NFE_UNUSED(state);
+    ComputePipelineState* cps = dynamic_cast<ComputePipelineState*>(state.Get());
+    NFE_ASSERT(cps != nullptr, "Invalid Compute Pipeline State provided");
+
+    vkCmdBindPipeline(mCommandBuffer, VK_PIPELINE_BIND_POINT_COMPUTE, cps->mPipeline);
 }
 
 void CommandRecorder::Dispatch(uint32 x, uint32 y, uint32 z)
 {
-    NFE_UNUSED(x);
-    NFE_UNUSED(y);
-    NFE_UNUSED(z);
+    vkCmdDispatch(mCommandBuffer, x, y, z);
 }
 
 CommandListID CommandRecorder::Finish()

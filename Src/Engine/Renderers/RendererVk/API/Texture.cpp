@@ -137,6 +137,12 @@ bool Texture::Init(const TextureDesc& desc)
         mImageLayoutDefault = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
     }
 
+    if (desc.binding & NFE_RENDERER_TEXTURE_BIND_SHADER_WRITABLE)
+    {
+        imageInfo.usage |= VK_IMAGE_USAGE_STORAGE_BIT;
+        mImageLayoutDefault = VK_IMAGE_LAYOUT_GENERAL;
+    }
+
     imageInfo.usage |= VK_IMAGE_USAGE_TRANSFER_SRC_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT;
     imageInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
     imageInfo.initialLayout = VK_IMAGE_LAYOUT_PREINITIALIZED;
@@ -255,10 +261,7 @@ bool Texture::Init(const TextureDesc& desc)
     }
 
     // TODO this is a 100% tempshit, get the transition to happen before using the Texture
-    if (desc.binding & NFE_RENDERER_TEXTURE_BIND_SHADER)
-        Transition(copyCmdBuffer, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
-    else
-        Transition(copyCmdBuffer, VK_IMAGE_LAYOUT_GENERAL);
+    Transition(copyCmdBuffer, mImageLayoutDefault);
 
     result = vkEndCommandBuffer(copyCmdBuffer);
     CHECK_VKRESULT(result, "Failure during copy command buffer recording");

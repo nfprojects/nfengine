@@ -276,37 +276,6 @@ bool ResourceBindingInstance::Init(const ResourceBindingSetPtr& bindingSet)
     return true;
 }
 
-bool ResourceBindingInstance::WriteTextureView(uint32 slot, const TexturePtr& texture)
-{
-    Texture* t = dynamic_cast<Texture*>(texture.Get());
-    if (t == nullptr)
-    {
-        NFE_LOG_ERROR("Incorrect Texture pointer provided");
-        return false;
-    }
-
-    VkDescriptorImageInfo imgInfo;
-    VK_ZERO_MEMORY(imgInfo);
-    imgInfo.imageView = t->mImageView;
-    imgInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
-
-    VkWriteDescriptorSet writeSet;
-    VK_ZERO_MEMORY(writeSet);
-    writeSet.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-    writeSet.dstSet = mDescriptorSet;
-    writeSet.dstBinding = slot;
-    writeSet.dstArrayElement = 0;
-    writeSet.descriptorCount = 1;
-    writeSet.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-    writeSet.pImageInfo = &imgInfo;
-
-    vkUpdateDescriptorSets(gDevice->GetDevice(), 1, &writeSet, 0, nullptr);
-
-    mWrittenResources[slot] = t;
-
-    return true;
-}
-
 bool ResourceBindingInstance::WriteCBufferView(uint32 slot, const BufferPtr& buffer)
 {
     Buffer* b = dynamic_cast<Buffer*>(buffer.Get());
@@ -339,11 +308,66 @@ bool ResourceBindingInstance::WriteCBufferView(uint32 slot, const BufferPtr& buf
     return true;
 }
 
+bool ResourceBindingInstance::WriteTextureView(uint32 slot, const TexturePtr& texture)
+{
+    Texture* t = dynamic_cast<Texture*>(texture.Get());
+    if (t == nullptr)
+    {
+        NFE_LOG_ERROR("Incorrect Texture pointer provided");
+        return false;
+    }
+
+    VkDescriptorImageInfo imgInfo;
+    VK_ZERO_MEMORY(imgInfo);
+    imgInfo.imageView = t->mImageView;
+    imgInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+
+    VkWriteDescriptorSet writeSet;
+    VK_ZERO_MEMORY(writeSet);
+    writeSet.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+    writeSet.dstSet = mDescriptorSet;
+    writeSet.dstBinding = slot;
+    writeSet.dstArrayElement = 0;
+    writeSet.descriptorCount = 1;
+    writeSet.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+    writeSet.pImageInfo = &imgInfo;
+
+    vkUpdateDescriptorSets(gDevice->GetDevice(), 1, &writeSet, 0, nullptr);
+
+    mWrittenResources[slot] = t;
+
+    return true;
+}
+
 bool ResourceBindingInstance::WriteWritableTextureView(uint32 slot, const TexturePtr& texture)
 {
-    NFE_UNUSED(slot);
-    NFE_UNUSED(texture);
-    return false;
+    Texture* t = dynamic_cast<Texture*>(texture.Get());
+    if (t == nullptr)
+    {
+        NFE_LOG_ERROR("Incorrect Texture pointer provided");
+        return false;
+    }
+
+    VkDescriptorImageInfo imgInfo;
+    VK_ZERO_MEMORY(imgInfo);
+    imgInfo.imageView = t->mImageView;
+    imgInfo.imageLayout = VK_IMAGE_LAYOUT_GENERAL;
+
+    VkWriteDescriptorSet writeSet;
+    VK_ZERO_MEMORY(writeSet);
+    writeSet.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+    writeSet.dstSet = mDescriptorSet;
+    writeSet.dstBinding = slot;
+    writeSet.dstArrayElement = 0;
+    writeSet.descriptorCount = 1;
+    writeSet.descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_IMAGE;
+    writeSet.pImageInfo = &imgInfo;
+
+    vkUpdateDescriptorSets(gDevice->GetDevice(), 1, &writeSet, 0, nullptr);
+
+    mWrittenResources[slot] = t;
+
+    return true;
 }
 
 } // namespace Renderer

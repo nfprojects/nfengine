@@ -44,6 +44,7 @@ class ResourceBindingLayout : public IResourceBindingLayout
 {
     friend class CommandRecorder;
     friend class PipelineState;
+    friend class ComputePipelineState;
 
     VkPipelineLayout mPipelineLayout;
     VkDescriptorSetLayout mVolatileBufferLayout;
@@ -67,8 +68,8 @@ class ResourceBindingInstance : public IResourceBindingInstance
 
 public:
     bool Init(const ResourceBindingSetPtr& bindingSet) override;
-    bool WriteTextureView(uint32 slot, const TexturePtr& texture) override;
     bool WriteCBufferView(uint32 slot, const BufferPtr& buffer) override;
+    bool WriteTextureView(uint32 slot, const TexturePtr& texture) override;
     bool WriteWritableTextureView(uint32 slot, const TexturePtr& texture) override;
 };
 

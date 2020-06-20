@@ -515,6 +515,7 @@ VkDescriptorType TranslateShaderResourceTypeToVkDescriptorType(ShaderResourceTyp
     case ShaderResourceType::CBuffer: return VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
     case ShaderResourceType::Texture: return VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
     case ShaderResourceType::Sampler: return VK_DESCRIPTOR_TYPE_SAMPLER;
+    case ShaderResourceType::WritableTexture: return VK_DESCRIPTOR_TYPE_STORAGE_IMAGE;
     default: return VK_DESCRIPTOR_TYPE_MAX_ENUM;
     }
 }
@@ -528,6 +529,7 @@ VkShaderStageFlagBits TranslateShaderTypeToVkShaderStage(ShaderType type)
     case ShaderType::Domain: return VK_SHADER_STAGE_TESSELLATION_EVALUATION_BIT;
     case ShaderType::Geometry: return VK_SHADER_STAGE_GEOMETRY_BIT;
     case ShaderType::Pixel: return VK_SHADER_STAGE_FRAGMENT_BIT;
+    case ShaderType::Compute: return VK_SHADER_STAGE_COMPUTE_BIT;
     case ShaderType::All: return VK_SHADER_STAGE_ALL_GRAPHICS;
     default: return static_cast<VkShaderStageFlagBits>(0);
     }

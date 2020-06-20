@@ -20,6 +20,7 @@
     <ClInclude Include="API\CommandRecorder.hpp" />
     <ClInclude Include="API\ComputePipelineState.hpp" />
     <ClInclude Include="API\Device.hpp" />
+    <ClInclude Include="API\IResource.hpp" />
     <ClInclude Include="API\PipelineState.hpp" />
     <ClInclude Include="API\RenderTarget.hpp" />
     <ClInclude Include="API\ResourceBinding.hpp" />

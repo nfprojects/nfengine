@@ -22,14 +22,20 @@ class CommandRecorder: public ICommandRecorder
 {
     friend class Device;
 
+    // General fields
     VkCommandBuffer mCommandBuffer;
     VkCommandBufferBeginInfo mCommandBufferBeginInfo;
+
+    // Graphics resources
     RenderTarget* mRenderTarget;
     bool mActiveRenderPass;
     ResourceBindingLayout* mResourceBindingLayout;
     Buffer* mBoundVolatileBuffers[VK_MAX_VOLATILE_BUFFERS];
     uint32 mBoundVolatileOffsets[VK_MAX_VOLATILE_BUFFERS];
     bool mRebindDynamicBuffers;
+
+    // Compute resources
+    ResourceBindingLayout* mComputeResourceBindingLayout;
 
 
     bool WriteDynamicBuffer(Buffer* b, size_t offset, size_t size, const void* data);

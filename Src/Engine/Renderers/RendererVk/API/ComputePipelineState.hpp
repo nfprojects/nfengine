@@ -14,8 +14,14 @@ namespace Renderer {
 
 class ComputePipelineState : public IComputePipelineState
 {
+    friend class CommandRecorder;
+
+    VkPipeline mPipeline;
+
 public:
     ComputePipelineState();
+    ~ComputePipelineState();
+
     bool Init(const ComputePipelineStateDesc& desc);
 };
 

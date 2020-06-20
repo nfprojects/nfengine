@@ -21,10 +21,11 @@ namespace Renderer {
 
 namespace {
 
-const int DEFAULT_VERSION = 110;
-const std::string SHADER_HEADER_START = "#version 450\n\
+const int DEFAULT_VERSION = 460;
+const std::string SHADER_HEADER_START = "#version 460\n\
 #extension GL_ARB_separate_shader_objects: enable\n\
-#extension GL_ARB_shading_language_420pack: enable\n";
+#extension GL_ARB_shading_language_420pack: enable\n\
+#extension GL_ARB_shader_image_load_store: enable\n";
 const std::string DEFINE_STR = "#define ";
 const std::string SHADER_HEADER_TAIL = "\0";
 
@@ -103,6 +104,9 @@ bool Shader::Init(const ShaderDesc& desc)
         break;
     case ShaderType::Pixel:
         lang = EShLangFragment;
+        break;
+    case ShaderType::Compute:
+        lang = EShLangCompute;
         break;
     default:
         NFE_LOG_ERROR("Incorrect shader type provided");
