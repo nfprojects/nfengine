@@ -26,8 +26,8 @@ class Buffer : public IBuffer, public IResource
     BufferMode mMode;
     BufferType mType;
 
-    uint32 mVolatileDataOffset;
     uint32 mVolatileBinding;
+    uint32 mVolatileDataOffset;
 
 public:
     Buffer();

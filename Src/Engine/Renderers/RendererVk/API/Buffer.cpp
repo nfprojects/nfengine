@@ -18,6 +18,7 @@ Buffer::Buffer()
     , mBufferMemory(VK_NULL_HANDLE)
     , mBufferSize(0)
     , mMode(BufferMode::Static)
+    , mType(BufferType::Vertex)
     , mVolatileBinding(UINT32_MAX)
     , mVolatileDataOffset(UINT32_MAX)
 {
