@@ -11,6 +11,12 @@ import subprocess
 import sys
 import threading
 import time
+import datetime
+
+
+def SecondsToHumanReadableString(time):
+    min, sec = divmod(int(time), 60)
+    return str(min) + "m " + str(sec) + "s"
 
 
 class DepsBuilder:
@@ -153,7 +159,7 @@ class DepsBuilder:
         print("\nInterrupt captured\n")
         sys.exit(1)
 
-    def CallStage(self, prompt, pargs, stageId=0, stageCount=0):
+    def CallStage(self, prompt, pargs, stageId=0, stageCount=0, measureTime=False):
         capture = not self.mArgs.verbose
 
         if (stageCount > 1):
@@ -167,7 +173,13 @@ class DepsBuilder:
             print("   ==> " + prompt + "... ")
 
         sys.stdout.flush()
+
+        if measureTime:
+            processStart = time.perf_counter()
         result = subprocess.run(pargs, capture_output=capture)
+
+        if measureTime:
+            processTime = time.perf_counter() - processStart
 
         if self.mAnimThread is not None:
             self.mAnimDone = True
@@ -175,17 +187,21 @@ class DepsBuilder:
             self.mAnimThread = None
 
         if not self.mArgs.verbose:
-            if result.returncode != 0:
-                if self.mArgs.noanim:
-                    print("   ==> " + prompt + "... FAILED")
-                else:
-                    print("FAILED")
-                raise Exception("Build failed. Rerun with -v option to see details.")
+            if result.returncode == 0:
+                resultMsg = "SUCCESS"
             else:
-                if self.mArgs.noanim:
-                    print("   ==> " + prompt + "... SUCCESS")
-                else:
-                    print("SUCCESS")
+                resultMsg = "FAILED"
+
+            if measureTime:
+                resultMsg += " (" + SecondsToHumanReadableString(processTime) + ")"
+
+            if self.mArgs.noanim:
+                print("   ==> " + prompt + "... " + resultMsg)
+            else:
+                print(resultMsg)
+
+            if result.returncode != 0:
+                raise Exception("Build failed. Rerun with -v option to see details.")
 
     def CMakeCreate(self):
         os.chdir(self.mCMakeDir)
@@ -219,9 +235,9 @@ class DepsBuilder:
         ]
 
         if self.mThreads == 1:
-            self.CallStage("Building " + target, process, stageId, stageCount)
+            self.CallStage("Building " + target, process, stageId, stageCount, measureTime=True)
         else:
-            self.CallStage("Building", process, stageId, stageCount)
+            self.CallStage("Building", process, stageId, stageCount, measureTime=True)
 
         os.chdir(self.mScriptDir)
 
@@ -297,6 +313,8 @@ class DepsBuilder:
         open(self.mBuildDoneFile, 'w').close()
 
     def Build(self):
+        buildStartTime = time.perf_counter()
+
         print("Build progress:")
         self.CheckEnv()
         self.SwitchCWDToScriptRoot()
@@ -321,7 +339,8 @@ class DepsBuilder:
             self.mCurrentConfig = self.mArgs.config
             self.BuildCurrent()
 
-        print("\nScript is done\n")
+        buildTotalTime = time.perf_counter() - buildStartTime
+        print("\nScript is done (took " + SecondsToHumanReadableString(buildTotalTime) + ")\n")
 
 
 def main():
