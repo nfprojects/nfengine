@@ -16,7 +16,10 @@ import datetime
 
 def SecondsToHumanReadableString(time):
     min, sec = divmod(int(time), 60)
-    return str(min) + "m " + str(sec) + "s"
+    if sec < 10:
+        return str(min) + "m 0" + str(sec) + "s"
+    else:
+        return str(min) + "m " + str(sec) + "s"
 
 
 class DepsBuilder:
@@ -127,13 +130,16 @@ class DepsBuilder:
         else:
             print("    Thread count: Max available")
 
-    def AnimProgress(self, stepString):
+    def AnimProgress(self, stepString, startTime=0):
         self.mAnimDone = False
 
         for c in itertools.cycle('\\|/-'):
             if self.mAnimDone:
                 break
-            sys.stdout.write("\r " + c + " ==> " + stepString + "...")
+            messageEnd = "..."
+            if startTime != 0:
+                messageEnd += " (" + SecondsToHumanReadableString(time.perf_counter() - startTime) + ")"
+            sys.stdout.write("\r " + c + " ==> " + stepString + messageEnd)
             sys.stdout.flush()
             time.sleep(0.2)
 
@@ -165,17 +171,20 @@ class DepsBuilder:
         if (stageCount > 1):
             prompt = str(stageId) + "/" + str(stageCount) + " " + prompt
 
+        if measureTime:
+            processStart = time.perf_counter()
+
         if not self.mArgs.verbose and not self.mArgs.noanim:
+            animArgs = [prompt]
+            if measureTime:
+                animArgs.append(processStart)
             self.mAnimThread = threading.Thread(target=self.AnimProgress,
-                                                args=[prompt])
+                                                args=animArgs)
             self.mAnimThread.start()
         else:
             print("   ==> " + prompt + "... ")
 
         sys.stdout.flush()
-
-        if measureTime:
-            processStart = time.perf_counter()
         result = subprocess.run(pargs, capture_output=capture)
 
         if measureTime:
@@ -200,8 +209,8 @@ class DepsBuilder:
             else:
                 print(resultMsg)
 
-            if result.returncode != 0:
-                raise Exception("Build failed. Rerun with -v option to see details.")
+        if result.returncode != 0:
+            raise Exception("Build failed. Rerun with -v option to see details.")
 
     def CMakeCreate(self):
         os.chdir(self.mCMakeDir)
@@ -214,7 +223,7 @@ class DepsBuilder:
             "-A", self.mCurrentPlat
         ]
 
-        self.CallStage("Creating build files for " + self.mCurrentPlat + "/" + self.mCurrentConfig, process)
+        self.CallStage("Creating build files for " + self.mCurrentPlat + "/" + self.mCurrentConfig, process, measureTime=True)
 
         os.chdir(self.mScriptDir)
 
