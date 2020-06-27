@@ -56,7 +56,7 @@ using VertexLayoutPtr = Common::SharedPtr<IVertexLayout>;
 /**
  * GPU resources data format.
  */
-enum class ElementFormat : uint8
+enum class Format : uint8
 {
     Unknown,
 
@@ -369,89 +369,91 @@ enum class TextureMagFilter : uint8
 /**
  * Get format pixel channels.
  */
-NFE_INLINE uint32 GetElementFormatChannels(ElementFormat format)
+NFE_INLINE uint32 GetElementFormatChannels(const Format format)
 {
     switch (format)
     {
-    case ElementFormat::R8_U_Int:
-    case ElementFormat::R8_S_Int:
-    case ElementFormat::R8_U_Norm:
-    case ElementFormat::R8_S_Norm:
-    case ElementFormat::R16_U_Int:
-    case ElementFormat::R16_S_Int:
-    case ElementFormat::R16_U_Norm:
-    case ElementFormat::R16_S_Norm:
-    case ElementFormat::R16_Float:
-    case ElementFormat::R32_U_Int:
-    case ElementFormat::R32_S_Int:
-    case ElementFormat::R32_Float:
+    case Format::R8_U_Int:
+    case Format::R8_S_Int:
+    case Format::R8_U_Norm:
+    case Format::R8_S_Norm:
+    case Format::R16_U_Int:
+    case Format::R16_S_Int:
+    case Format::R16_U_Norm:
+    case Format::R16_S_Norm:
+    case Format::R16_Float:
+    case Format::R32_U_Int:
+    case Format::R32_S_Int:
+    case Format::R32_Float:
         return 1;
 
-    case ElementFormat::R8G8_U_Int:
-    case ElementFormat::R8G8_S_Int:
-    case ElementFormat::R8G8_U_Norm:
-    case ElementFormat::R8G8_S_Norm:
-    case ElementFormat::R16G16_U_Int:
-    case ElementFormat::R16G16_S_Int:
-    case ElementFormat::R16G16_U_Norm:
-    case ElementFormat::R16G16_S_Norm:
-    case ElementFormat::R16G16_Float:
-    case ElementFormat::R32G32_U_Int:
-    case ElementFormat::R32G32_S_Int:
-    case ElementFormat::R32G32_Float:
+    case Format::R8G8_U_Int:
+    case Format::R8G8_S_Int:
+    case Format::R8G8_U_Norm:
+    case Format::R8G8_S_Norm:
+    case Format::R16G16_U_Int:
+    case Format::R16G16_S_Int:
+    case Format::R16G16_U_Norm:
+    case Format::R16G16_S_Norm:
+    case Format::R16G16_Float:
+    case Format::R32G32_U_Int:
+    case Format::R32G32_S_Int:
+    case Format::R32G32_Float:
         return 2;
 
-    case ElementFormat::R32G32B32_U_Int:
-    case ElementFormat::R32G32B32_S_Int:
-    case ElementFormat::R32G32B32_Float:
-    case ElementFormat::B5G6R5_U_norm:
-    case ElementFormat::R11G11B10_Float:
-    case ElementFormat::R9G9B9E5_Float:
+    case Format::R32G32B32_U_Int:
+    case Format::R32G32B32_S_Int:
+    case Format::R32G32B32_Float:
+    case Format::B5G6R5_U_norm:
+    case Format::R11G11B10_Float:
+    case Format::R9G9B9E5_Float:
         return 3;
 
-    case ElementFormat::R8G8B8A8_U_Int:
-    case ElementFormat::R8G8B8A8_S_Int:
-    case ElementFormat::R8G8B8A8_U_Norm:
-    case ElementFormat::R8G8B8A8_U_Norm_sRGB:
-    case ElementFormat::R8G8B8A8_S_Norm:
-    case ElementFormat::B8G8R8A8_U_Norm:
-    case ElementFormat::B8G8R8A8_U_Norm_sRGB:
-    case ElementFormat::R16G16B16A16_U_Int:
-    case ElementFormat::R16G16B16A16_S_Int:
-    case ElementFormat::R16G16B16A16_U_Norm:
-    case ElementFormat::R16G16B16A16_S_Norm:
-    case ElementFormat::R16G16B16A16_Float:
-    case ElementFormat::R32G32B32A32_U_Int:
-    case ElementFormat::R32G32B32A32_S_Int:
-    case ElementFormat::R32G32B32A32_Float:
-    case ElementFormat::B5G5R5A1_U_Norm:
-    case ElementFormat::B4G4R4A4_U_Norm:
-    case ElementFormat::R10G10B10A2_U_Norm:
-    case ElementFormat::R10G10B10A2_U_Int:
+    case Format::R8G8B8A8_U_Int:
+    case Format::R8G8B8A8_S_Int:
+    case Format::R8G8B8A8_U_Norm:
+    case Format::R8G8B8A8_U_Norm_sRGB:
+    case Format::R8G8B8A8_S_Norm:
+    case Format::B8G8R8A8_U_Norm:
+    case Format::B8G8R8A8_U_Norm_sRGB:
+    case Format::R16G16B16A16_U_Int:
+    case Format::R16G16B16A16_S_Int:
+    case Format::R16G16B16A16_U_Norm:
+    case Format::R16G16B16A16_S_Norm:
+    case Format::R16G16B16A16_Float:
+    case Format::R32G32B32A32_U_Int:
+    case Format::R32G32B32A32_S_Int:
+    case Format::R32G32B32A32_Float:
+    case Format::B5G5R5A1_U_Norm:
+    case Format::B4G4R4A4_U_Norm:
+    case Format::R10G10B10A2_U_Norm:
+    case Format::R10G10B10A2_U_Int:
         return 4;
 
-    case ElementFormat::BC1_U_Norm:
-    case ElementFormat::BC1_U_Norm_sRGB:
-    case ElementFormat::BC2_U_Norm:
-    case ElementFormat::BC2_U_Norm_sRGB:
-    case ElementFormat::BC3_U_Norm:
-    case ElementFormat::BC3_U_Norm_sRGB:
+    case Format::BC1_U_Norm:
+    case Format::BC1_U_Norm_sRGB:
+    case Format::BC2_U_Norm:
+    case Format::BC2_U_Norm_sRGB:
+    case Format::BC3_U_Norm:
+    case Format::BC3_U_Norm_sRGB:
         return 4;
 
-    case ElementFormat::BC4_U_Norm:
-    case ElementFormat::BC4_S_Norm:
+    case Format::BC4_U_Norm:
+    case Format::BC4_S_Norm:
         return 1;
 
-    case ElementFormat::BC5_U_Norm:
-    case ElementFormat::BC5_S_Norm:
+    case Format::BC5_U_Norm:
+    case Format::BC5_S_Norm:
         return 2;
 
-    case ElementFormat::BC6H_U_Float:
-    case ElementFormat::BC6H_S_Float:
-    case ElementFormat::BC7_U_Norm:
-    case ElementFormat::BC7_U_Norm_sRGB:
+    case Format::BC6H_U_Float:
+    case Format::BC6H_S_Float:
+    case Format::BC7_U_Norm:
+    case Format::BC7_U_Norm_sRGB:
         return 3;
     }
+
+    static_assert(64 == (uint32)Format::Max, "Format list changed, update the switch above");
 
     return 0;
 }
@@ -459,160 +461,164 @@ NFE_INLINE uint32 GetElementFormatChannels(ElementFormat format)
 /**
  * Get bytes per element.
  */
-NFE_INLINE uint32 GetElementFormatSize(ElementFormat format)
+NFE_INLINE uint32 GetElementFormatSize(const Format format)
 {
     switch (format)
     {
-    case ElementFormat::R8_U_Int:
-    case ElementFormat::R8_S_Int:
-    case ElementFormat::R8_U_Norm:
-    case ElementFormat::R8_S_Norm:
+    case Format::R8_U_Int:
+    case Format::R8_S_Int:
+    case Format::R8_U_Norm:
+    case Format::R8_S_Norm:
         return 1;
-    case ElementFormat::R16_U_Int:
-    case ElementFormat::R16_S_Int:
-    case ElementFormat::R16_U_Norm:
-    case ElementFormat::R16_S_Norm:
-    case ElementFormat::R16_Float:
+    case Format::R16_U_Int:
+    case Format::R16_S_Int:
+    case Format::R16_U_Norm:
+    case Format::R16_S_Norm:
+    case Format::R16_Float:
         return 2;
-    case ElementFormat::R32_U_Int:
-    case ElementFormat::R32_S_Int:
-    case ElementFormat::R32_Float:
+    case Format::R32_U_Int:
+    case Format::R32_S_Int:
+    case Format::R32_Float:
         return 4;
-    case ElementFormat::R8G8_U_Int:
-    case ElementFormat::R8G8_S_Int:
-    case ElementFormat::R8G8_U_Norm:
-    case ElementFormat::R8G8_S_Norm:
+    case Format::R8G8_U_Int:
+    case Format::R8G8_S_Int:
+    case Format::R8G8_U_Norm:
+    case Format::R8G8_S_Norm:
         return 2 * 1;
-    case ElementFormat::R16G16_U_Int:
-    case ElementFormat::R16G16_S_Int:
-    case ElementFormat::R16G16_U_Norm:
-    case ElementFormat::R16G16_S_Norm:
-    case ElementFormat::R16G16_Float:
+    case Format::R16G16_U_Int:
+    case Format::R16G16_S_Int:
+    case Format::R16G16_U_Norm:
+    case Format::R16G16_S_Norm:
+    case Format::R16G16_Float:
         return 2 * 2;
-    case ElementFormat::R32G32_U_Int:
-    case ElementFormat::R32G32_S_Int:
-    case ElementFormat::R32G32_Float:
+    case Format::R32G32_U_Int:
+    case Format::R32G32_S_Int:
+    case Format::R32G32_Float:
         return 2 * 4;
-    case ElementFormat::R32G32B32_U_Int:
-    case ElementFormat::R32G32B32_S_Int:
-    case ElementFormat::R32G32B32_Float:
+    case Format::R32G32B32_U_Int:
+    case Format::R32G32B32_S_Int:
+    case Format::R32G32B32_Float:
         return 3 * 4;
-    case ElementFormat::R8G8B8A8_U_Int:
-    case ElementFormat::R8G8B8A8_S_Int:
-    case ElementFormat::R8G8B8A8_U_Norm:
-    case ElementFormat::R8G8B8A8_U_Norm_sRGB:
-    case ElementFormat::R8G8B8A8_S_Norm:
-    case ElementFormat::B8G8R8A8_U_Norm:
-    case ElementFormat::B8G8R8A8_U_Norm_sRGB:
+    case Format::R8G8B8A8_U_Int:
+    case Format::R8G8B8A8_S_Int:
+    case Format::R8G8B8A8_U_Norm:
+    case Format::R8G8B8A8_U_Norm_sRGB:
+    case Format::R8G8B8A8_S_Norm:
+    case Format::B8G8R8A8_U_Norm:
+    case Format::B8G8R8A8_U_Norm_sRGB:
         return 4 * 1;
-    case ElementFormat::R16G16B16A16_U_Int:
-    case ElementFormat::R16G16B16A16_S_Int:
-    case ElementFormat::R16G16B16A16_U_Norm:
-    case ElementFormat::R16G16B16A16_S_Norm:
-    case ElementFormat::R16G16B16A16_Float:
+    case Format::R16G16B16A16_U_Int:
+    case Format::R16G16B16A16_S_Int:
+    case Format::R16G16B16A16_U_Norm:
+    case Format::R16G16B16A16_S_Norm:
+    case Format::R16G16B16A16_Float:
         return 4 * 2;
-    case ElementFormat::R32G32B32A32_U_Int:
-    case ElementFormat::R32G32B32A32_S_Int:
-    case ElementFormat::R32G32B32A32_Float:
+    case Format::R32G32B32A32_U_Int:
+    case Format::R32G32B32A32_S_Int:
+    case Format::R32G32B32A32_Float:
         return 4 * 4;
-    case ElementFormat::B5G6R5_U_norm:
-    case ElementFormat::B5G5R5A1_U_Norm:
-    case ElementFormat::B4G4R4A4_U_Norm:
+    case Format::B5G6R5_U_norm:
+    case Format::B5G5R5A1_U_Norm:
+    case Format::B4G4R4A4_U_Norm:
         return 2;
-    case ElementFormat::R11G11B10_Float:
-    case ElementFormat::R10G10B10A2_U_Norm:
-    case ElementFormat::R10G10B10A2_U_Int:
-    case ElementFormat::R9G9B9E5_Float:
+    case Format::R11G11B10_Float:
+    case Format::R10G10B10A2_U_Norm:
+    case Format::R10G10B10A2_U_Int:
+    case Format::R9G9B9E5_Float:
         return 4;
-    case ElementFormat::BC1_U_Norm:
-    case ElementFormat::BC1_U_Norm_sRGB:
-    case ElementFormat::BC4_U_Norm:
-    case ElementFormat::BC4_S_Norm:
+    case Format::BC1_U_Norm:
+    case Format::BC1_U_Norm_sRGB:
+    case Format::BC4_U_Norm:
+    case Format::BC4_S_Norm:
         return 8;
-    case ElementFormat::BC2_U_Norm:
-    case ElementFormat::BC2_U_Norm_sRGB:
-    case ElementFormat::BC3_U_Norm:
-    case ElementFormat::BC3_U_Norm_sRGB:
-    case ElementFormat::BC5_U_Norm:
-    case ElementFormat::BC5_S_Norm:
-    case ElementFormat::BC6H_U_Float:
-    case ElementFormat::BC6H_S_Float:
-    case ElementFormat::BC7_U_Norm:
-    case ElementFormat::BC7_U_Norm_sRGB:
+    case Format::BC2_U_Norm:
+    case Format::BC2_U_Norm_sRGB:
+    case Format::BC3_U_Norm:
+    case Format::BC3_U_Norm_sRGB:
+    case Format::BC5_U_Norm:
+    case Format::BC5_S_Norm:
+    case Format::BC6H_U_Float:
+    case Format::BC6H_S_Float:
+    case Format::BC7_U_Norm:
+    case Format::BC7_U_Norm_sRGB:
         return 16;
     }
+
+    static_assert(64 == (uint32)Format::Max, "Format list changed, update the switch above");
 
     return 0;
 }
 
-NFE_INLINE const char* GetElementFormatName(ElementFormat format)
+NFE_INLINE const char* GetElementFormatName(const Format format)
 {
     switch (format)
     {
-    case ElementFormat::R32G32B32A32_Float:     return "R32G32B32A32_Float";
-    case ElementFormat::R32G32B32A32_U_Int:     return "R32G32B32A32_U_Int";
-    case ElementFormat::R32G32B32A32_S_Int:     return "R32G32B32A32_S_Int";
-    case ElementFormat::R32G32B32_Float:        return "R32G32B32_Float";
-    case ElementFormat::R32G32B32_U_Int:        return "R32G32B32_U_Int";
-    case ElementFormat::R32G32B32_S_Int:        return "R32G32B32_S_Int";
-    case ElementFormat::R32G32_Float:           return "R32G32_Float";
-    case ElementFormat::R32G32_U_Int:           return "R32G32_U_Int";
-    case ElementFormat::R32G32_S_Int:           return "R32G32_S_Int";
-    case ElementFormat::R32_Float:              return "R32_Float";
-    case ElementFormat::R32_U_Int:              return "R32_U_Int";
-    case ElementFormat::R32_S_Int:              return "R32_S_Int";
-    case ElementFormat::R16G16B16A16_Float:     return "R16G16B16A16_Float";
-    case ElementFormat::R16G16B16A16_S_Int:     return "R16G16B16A16_S_Int";
-    case ElementFormat::R16G16B16A16_S_Norm:    return "R16G16B16A16_S_Norm";
-    case ElementFormat::R16G16B16A16_U_Int:     return "R16G16B16A16_U_Int";
-    case ElementFormat::R16G16B16A16_U_Norm:    return "R16G16B16A16_U_Norm";
-    case ElementFormat::R16G16_Float:           return "R16G16_Float";
-    case ElementFormat::R16G16_S_Int:           return "R16G16_S_Int";
-    case ElementFormat::R16G16_S_Norm:          return "R16G16_S_Norm";
-    case ElementFormat::R16G16_U_Int:           return "R16G16_U_Int";
-    case ElementFormat::R16G16_U_Norm:          return "R16G16_U_Norm";
-    case ElementFormat::R16_Float:              return "R16_Float";
-    case ElementFormat::R16_S_Int:              return "R16_S_Int";
-    case ElementFormat::R16_S_Norm:             return "R16_S_Norm";
-    case ElementFormat::R16_U_Int:              return "R16_U_Int";
-    case ElementFormat::R16_U_Norm:             return "R16_U_Norm";
-    case ElementFormat::R8G8B8A8_S_Int:         return "R8G8B8A8_S_Int";
-    case ElementFormat::R8G8B8A8_U_Int:         return "R8G8B8A8_U_Int";
-    case ElementFormat::R8G8B8A8_S_Norm:        return "R8G8B8A8_S_Norm";
-    case ElementFormat::R8G8B8A8_U_Norm:        return "R8G8B8A8_U_Norm";
-    case ElementFormat::R8G8B8A8_U_Norm_sRGB:   return "R8G8B8A8_U_Norm_sRGB";
-    case ElementFormat::B8G8R8A8_U_Norm:        return "B8G8R8A8_U_Norm";
-    case ElementFormat::B8G8R8A8_U_Norm_sRGB:   return "B8G8R8A8_U_Norm_sRGB";
-    case ElementFormat::R8G8_S_Int:             return "R8G8_S_Int";
-    case ElementFormat::R8G8_U_Int:             return "R8G8_U_Int";
-    case ElementFormat::R8G8_S_Norm:            return "R8G8_S_Norm";
-    case ElementFormat::R8G8_U_Norm:            return "R8G8_U_Norm";
-    case ElementFormat::R8_S_Int:               return "R8_S_Int";
-    case ElementFormat::R8_U_Int:               return "R8_U_Int";
-    case ElementFormat::R8_S_Norm:              return "R8_S_Norm";
-    case ElementFormat::R8_U_Norm:              return "R8_U_Norm";
-    case ElementFormat::B5G6R5_U_norm:          return "B5G6R5_U_norm";
-    case ElementFormat::B5G5R5A1_U_Norm:        return "B5G5R5A1_U_Norm";
-    case ElementFormat::B4G4R4A4_U_Norm:        return "B4G4R4A4_U_Norm";
-    case ElementFormat::R11G11B10_Float:        return "R11G11B10_Float";
-    case ElementFormat::R10G10B10A2_U_Norm:     return "R10G10B10A2_U_Norm";
-    case ElementFormat::R10G10B10A2_U_Int:      return "R10G10B10A2_U_Int";
-    case ElementFormat::R9G9B9E5_Float:         return "R9G9B9E5_Float";
-    case ElementFormat::BC1_U_Norm:             return "BC1_U_Norm";
-    case ElementFormat::BC1_U_Norm_sRGB:        return "BC1_U_Norm_sRGB";
-    case ElementFormat::BC4_U_Norm:             return "BC4_U_Norm";
-    case ElementFormat::BC4_S_Norm:             return "BC4_S_Norm";
-    case ElementFormat::BC2_U_Norm:             return "BC2_U_Norm";
-    case ElementFormat::BC2_U_Norm_sRGB:        return "BC2_U_Norm_sRGB";
-    case ElementFormat::BC3_U_Norm:             return "BC3_U_Norm";
-    case ElementFormat::BC3_U_Norm_sRGB:        return "BC3_U_Norm_sRGB";
-    case ElementFormat::BC5_U_Norm:             return "BC5_U_Norm";
-    case ElementFormat::BC5_S_Norm:             return "BC5_S_Norm";
-    case ElementFormat::BC6H_U_Float:           return "BC6H_U_Float";
-    case ElementFormat::BC6H_S_Float:           return "BC6H_S_Float";
-    case ElementFormat::BC7_U_Norm:             return "BC7_U_Norm";
-    case ElementFormat::BC7_U_Norm_sRGB:        return "BC7_U_Norm_sRGB";
+    case Format::R32G32B32A32_Float:     return "R32G32B32A32_Float";
+    case Format::R32G32B32A32_U_Int:     return "R32G32B32A32_U_Int";
+    case Format::R32G32B32A32_S_Int:     return "R32G32B32A32_S_Int";
+    case Format::R32G32B32_Float:        return "R32G32B32_Float";
+    case Format::R32G32B32_U_Int:        return "R32G32B32_U_Int";
+    case Format::R32G32B32_S_Int:        return "R32G32B32_S_Int";
+    case Format::R32G32_Float:           return "R32G32_Float";
+    case Format::R32G32_U_Int:           return "R32G32_U_Int";
+    case Format::R32G32_S_Int:           return "R32G32_S_Int";
+    case Format::R32_Float:              return "R32_Float";
+    case Format::R32_U_Int:              return "R32_U_Int";
+    case Format::R32_S_Int:              return "R32_S_Int";
+    case Format::R16G16B16A16_Float:     return "R16G16B16A16_Float";
+    case Format::R16G16B16A16_S_Int:     return "R16G16B16A16_S_Int";
+    case Format::R16G16B16A16_S_Norm:    return "R16G16B16A16_S_Norm";
+    case Format::R16G16B16A16_U_Int:     return "R16G16B16A16_U_Int";
+    case Format::R16G16B16A16_U_Norm:    return "R16G16B16A16_U_Norm";
+    case Format::R16G16_Float:           return "R16G16_Float";
+    case Format::R16G16_S_Int:           return "R16G16_S_Int";
+    case Format::R16G16_S_Norm:          return "R16G16_S_Norm";
+    case Format::R16G16_U_Int:           return "R16G16_U_Int";
+    case Format::R16G16_U_Norm:          return "R16G16_U_Norm";
+    case Format::R16_Float:              return "R16_Float";
+    case Format::R16_S_Int:              return "R16_S_Int";
+    case Format::R16_S_Norm:             return "R16_S_Norm";
+    case Format::R16_U_Int:              return "R16_U_Int";
+    case Format::R16_U_Norm:             return "R16_U_Norm";
+    case Format::R8G8B8A8_S_Int:         return "R8G8B8A8_S_Int";
+    case Format::R8G8B8A8_U_Int:         return "R8G8B8A8_U_Int";
+    case Format::R8G8B8A8_S_Norm:        return "R8G8B8A8_S_Norm";
+    case Format::R8G8B8A8_U_Norm:        return "R8G8B8A8_U_Norm";
+    case Format::R8G8B8A8_U_Norm_sRGB:   return "R8G8B8A8_U_Norm_sRGB";
+    case Format::B8G8R8A8_U_Norm:        return "B8G8R8A8_U_Norm";
+    case Format::B8G8R8A8_U_Norm_sRGB:   return "B8G8R8A8_U_Norm_sRGB";
+    case Format::R8G8_S_Int:             return "R8G8_S_Int";
+    case Format::R8G8_U_Int:             return "R8G8_U_Int";
+    case Format::R8G8_S_Norm:            return "R8G8_S_Norm";
+    case Format::R8G8_U_Norm:            return "R8G8_U_Norm";
+    case Format::R8_S_Int:               return "R8_S_Int";
+    case Format::R8_U_Int:               return "R8_U_Int";
+    case Format::R8_S_Norm:              return "R8_S_Norm";
+    case Format::R8_U_Norm:              return "R8_U_Norm";
+    case Format::B5G6R5_U_norm:          return "B5G6R5_U_norm";
+    case Format::B5G5R5A1_U_Norm:        return "B5G5R5A1_U_Norm";
+    case Format::B4G4R4A4_U_Norm:        return "B4G4R4A4_U_Norm";
+    case Format::R11G11B10_Float:        return "R11G11B10_Float";
+    case Format::R10G10B10A2_U_Norm:     return "R10G10B10A2_U_Norm";
+    case Format::R10G10B10A2_U_Int:      return "R10G10B10A2_U_Int";
+    case Format::R9G9B9E5_Float:         return "R9G9B9E5_Float";
+    case Format::BC1_U_Norm:             return "BC1_U_Norm";
+    case Format::BC1_U_Norm_sRGB:        return "BC1_U_Norm_sRGB";
+    case Format::BC4_U_Norm:             return "BC4_U_Norm";
+    case Format::BC4_S_Norm:             return "BC4_S_Norm";
+    case Format::BC2_U_Norm:             return "BC2_U_Norm";
+    case Format::BC2_U_Norm_sRGB:        return "BC2_U_Norm_sRGB";
+    case Format::BC3_U_Norm:             return "BC3_U_Norm";
+    case Format::BC3_U_Norm_sRGB:        return "BC3_U_Norm_sRGB";
+    case Format::BC5_U_Norm:             return "BC5_U_Norm";
+    case Format::BC5_S_Norm:             return "BC5_S_Norm";
+    case Format::BC6H_U_Float:           return "BC6H_U_Float";
+    case Format::BC6H_S_Float:           return "BC6H_S_Float";
+    case Format::BC7_U_Norm:             return "BC7_U_Norm";
+    case Format::BC7_U_Norm_sRGB:        return "BC7_U_Norm_sRGB";
     }
+
+    static_assert(64 == (uint32)Format::Max, "Format list changed, update the switch above");
 
     return "<unknown>";
 }

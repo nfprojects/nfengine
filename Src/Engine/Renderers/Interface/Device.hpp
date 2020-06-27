@@ -58,7 +58,7 @@ public:
      * Check if a given format is supported for a backbuffer texture.
      * @return True if format is supported.
      */
-    virtual bool IsBackbufferFormatSupported(ElementFormat format) = 0;
+    virtual bool IsBackbufferFormatSupported(Format format) = 0;
 
     /**
      * DeviceResourcesCreation Resources creation functions

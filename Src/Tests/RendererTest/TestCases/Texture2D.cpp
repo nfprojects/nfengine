@@ -20,7 +20,7 @@ TEST_F(Texture2D, Creation)
     // default (good) texture descriptor
     TextureDesc defTextureDesc;
     defTextureDesc.binding = NFE_RENDERER_TEXTURE_BIND_SHADER;
-    defTextureDesc.format = ElementFormat::R8G8B8A8_U_Norm;
+    defTextureDesc.format = Format::R8G8B8A8_U_Norm;
     defTextureDesc.width = 2;
     defTextureDesc.height = 2;
     defTextureDesc.mipmaps = 1;

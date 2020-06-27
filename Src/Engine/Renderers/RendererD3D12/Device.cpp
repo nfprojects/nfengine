@@ -564,7 +564,7 @@ bool Device::GetDeviceInfo(DeviceInfo& info)
     return true;
 }
 
-bool Device::IsBackbufferFormatSupported(ElementFormat format)
+bool Device::IsBackbufferFormatSupported(Format format)
 {
     D3D12_FEATURE_DATA_FORMAT_SUPPORT formatData;
     formatData.Format = TranslateElementFormat(format);

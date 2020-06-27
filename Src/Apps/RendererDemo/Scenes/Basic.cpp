@@ -152,9 +152,9 @@ bool BasicScene::CreateVertexBuffer(bool withExtraVert)
 
     VertexLayoutElement vertexLayoutElements[] =
     {
-        { ElementFormat::R32G32B32_Float,       0, 0, false, 0 }, // position
-        { ElementFormat::R32G32_Float,          12, 0, false, 0 }, // tex-coords
-        { ElementFormat::R32G32B32A32_Float,    20, 0, false, 0 }, // color
+        { Format::R32G32B32_Float,       0, 0, false, 0 }, // position
+        { Format::R32G32_Float,          12, 0, false, 0 }, // tex-coords
+        { Format::R32G32B32A32_Float,    20, 0, false, 0 }, // color
     };
 
     VertexLayoutDesc vertexLayoutDesc;
@@ -165,7 +165,7 @@ bool BasicScene::CreateVertexBuffer(bool withExtraVert)
         return false;
 
     PipelineStateDesc pipelineStateDesc;
-    pipelineStateDesc.rtFormats[0] = ElementFormat::R8G8B8A8_U_Norm;
+    pipelineStateDesc.rtFormats[0] = Format::R8G8B8A8_U_Norm;
     pipelineStateDesc.vertexShader = mVertexShader;
     pipelineStateDesc.pixelShader = mPixelShader;
     pipelineStateDesc.blendState.independent = false;
@@ -245,7 +245,7 @@ bool BasicScene::CreateTexture()
 
     TextureDesc textureDesc;
     textureDesc.binding = NFE_RENDERER_TEXTURE_BIND_SHADER;
-    textureDesc.format = ElementFormat::R8G8B8A8_U_Norm;
+    textureDesc.format = Format::R8G8B8A8_U_Norm;
     textureDesc.width = 2;
     textureDesc.height = 2;
     textureDesc.mipmaps = 1;

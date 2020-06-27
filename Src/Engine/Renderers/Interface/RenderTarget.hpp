@@ -20,13 +20,13 @@ struct RenderTargetElement
     TexturePtr texture;     //< target texture object
     uint32 level;           //< target mipmap level within the texture
     uint32 layer;           //< target layer (or slice for 3D textures) within the texture
-    ElementFormat format;   //< texture format override (use "Unknown" to inherit from the texture)
+    Format format;          //< texture format override (use "Unknown" to inherit from the texture)
 
     RenderTargetElement(const TexturePtr& texture = nullptr)
         : texture(texture)
         , level(0)
         , layer(0)
-        , format(ElementFormat::Unknown)
+        , format(Format::Unknown)
     {}
 };
 

@@ -113,7 +113,7 @@ bool RenderTarget::Init(const RenderTargetDesc& desc)
     {
         for (uint32 i = 0; i < desc.numTargets; ++i)
         {
-            if (desc.targets[i].format == ElementFormat::Unknown)
+            if (desc.targets[i].format == Format::Unknown)
                 colorFormats[i] = mAttachments[i]->mFormat;
             else
                 colorFormats[i] = TranslateElementFormatToVkFormat(desc.targets[i].format);

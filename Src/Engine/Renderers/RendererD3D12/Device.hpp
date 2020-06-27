@@ -88,7 +88,7 @@ public:
     ID3D12CommandQueue* GetCommandQueue() const;
     void* GetHandle() const override;
     bool GetDeviceInfo(DeviceInfo& info) override;
-    bool IsBackbufferFormatSupported(ElementFormat format) override;
+    bool IsBackbufferFormatSupported(Format format) override;
 
     /// Resources creation functions
 

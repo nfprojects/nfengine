@@ -501,7 +501,7 @@ CommandRecorderPtr Device::CreateCommandRecorder()
     return cr;
 }
 
-bool Device::IsBackbufferFormatSupported(ElementFormat format)
+bool Device::IsBackbufferFormatSupported(Format format)
 {
     VkFormat bbFormat = TranslateElementFormatToVkFormat(format);
     for (auto& f: mSupportedFormats)

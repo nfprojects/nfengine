@@ -125,9 +125,9 @@ bool MultithreadedScene::CreateVertexBuffer()
 
     VertexLayoutElement vertexLayoutElements[] =
     {
-        { ElementFormat::R32G32B32_Float,       0, 0, false, 0 }, // position
-        { ElementFormat::R32G32_Float,          12, 0, false, 0 }, // tex-coords
-        { ElementFormat::R32G32B32A32_Float,    20, 0, false, 0 }, // color
+        { Format::R32G32B32_Float,       0, 0, false, 0 }, // position
+        { Format::R32G32_Float,          12, 0, false, 0 }, // tex-coords
+        { Format::R32G32B32A32_Float,    20, 0, false, 0 }, // color
     };
 
     VertexLayoutDesc vertexLayoutDesc;

@@ -16,7 +16,7 @@ namespace Renderer {
  */
 struct VertexLayoutElement
 {
-    ElementFormat format;       //< element format
+    Format format;              //< element format
     uint32 offset;              //< element offset in bytes
     uint32 vertexBufferId;      //< source vertex buffer slot
     bool perInstance;           //< is the vertex element constant for entire instance?

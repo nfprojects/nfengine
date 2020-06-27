@@ -73,18 +73,18 @@ bool Scene::Init(IDevice* rendererDevice, void* winHandle)
     mCommandBuffer = mRendererDevice->CreateCommandRecorder();
 
     // find suitable back buffer format
-    ElementFormat preferredFormats[] =
+    const Format preferredFormats[] =
     {
         // Higher quality formats are temporarily disabled; they cause errors in D3D12 renderer
-        // ElementFormat::R16G16B16A16_U_Norm,
-        // ElementFormat::R10G10B10A2_U_Norm,
-        ElementFormat::R8G8B8A8_U_Norm,
-        ElementFormat::B8G8R8A8_U_Norm,
-        ElementFormat::R8G8B8A8_U_Norm_sRGB,
-        ElementFormat::B8G8R8A8_U_Norm_sRGB,
+        // Format::R16G16B16A16_U_Norm,
+        // Format::R10G10B10A2_U_Norm,
+        Format::R8G8B8A8_U_Norm,
+        Format::B8G8R8A8_U_Norm,
+        Format::R8G8B8A8_U_Norm_sRGB,
+        Format::B8G8R8A8_U_Norm_sRGB,
     };
 
-    mBackbufferFormat = ElementFormat::Unknown;
+    mBackbufferFormat = Format::Unknown;
     for (size_t i = 0; i < ArraySize(preferredFormats); ++i)
     {
         if (rendererDevice->IsBackbufferFormatSupported(preferredFormats[i]))
@@ -145,7 +145,7 @@ bool Scene::OnInit(void* winHandle)
     texDesc.height = WINDOW_HEIGHT;
     texDesc.type = TextureType::Texture2D;
     texDesc.mode = BufferMode::GPUOnly;
-    texDesc.format = ElementFormat::R8G8B8A8_U_Norm;
+    texDesc.format = Format::R8G8B8A8_U_Norm;
     texDesc.binding = NFE_RENDERER_TEXTURE_BIND_RENDERTARGET;
     texDesc.debugName = "Scene::mWindowRenderTargetTexture";
     mWindowRenderTargetTexture = mRendererDevice->CreateTexture(texDesc);

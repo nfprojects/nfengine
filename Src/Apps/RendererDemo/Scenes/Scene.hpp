@@ -34,7 +34,7 @@ protected:
     // Renderer interfaces
     NFE::Renderer::IDevice* mRendererDevice;
     NFE::Renderer::CommandRecorderPtr mCommandBuffer;
-    NFE::Renderer::ElementFormat mBackbufferFormat;
+    NFE::Renderer::Format mBackbufferFormat;
 
     NFE::Renderer::BackbufferPtr mWindowBackbuffer;
     NFE::Renderer::TexturePtr mWindowRenderTargetTexture;

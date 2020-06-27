@@ -126,7 +126,7 @@ public:
     // overrides
     void* GetHandle() const override;
     bool GetDeviceInfo(DeviceInfo& info) override;
-    bool IsBackbufferFormatSupported(ElementFormat format) override;
+    bool IsBackbufferFormatSupported(Format format) override;
 
     VertexLayoutPtr CreateVertexLayout(const VertexLayoutDesc& desc) override;
     BufferPtr CreateBuffer(const BufferDesc& desc) override;

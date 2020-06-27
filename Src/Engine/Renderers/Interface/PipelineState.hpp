@@ -137,7 +137,7 @@ struct PipelineStateDesc
     VertexLayoutPtr vertexLayout;
 
     uint32 numRenderTargets;
-    ElementFormat rtFormats[MAX_RENDER_TARGETS];
+    Format rtFormats[MAX_RENDER_TARGETS];
     DepthBufferFormat depthFormat;
     uint32 numSamples; // for multisampling
 
@@ -163,7 +163,7 @@ struct PipelineStateDesc
         , debugName(nullptr)
     {
         for (int i = 0; i < MAX_RENDER_TARGETS; ++i)
-            rtFormats[i] = ElementFormat::B8G8R8A8_U_Norm;
+            rtFormats[i] = Format::B8G8R8A8_U_Norm;
     }
 };
 

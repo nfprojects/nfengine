@@ -3,7 +3,7 @@
 #include "DrawTest.hpp"
 
 
-void DrawTest::BeginTestFrame(uint32 width, uint32 height, size_t numTargets, ElementFormat* formats)
+void DrawTest::BeginTestFrame(uint32 width, uint32 height, size_t numTargets, const Format* formats)
 {
     mTestTextureWidth = width;
     mTestTextureHeight = height;

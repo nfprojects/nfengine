@@ -93,9 +93,9 @@ protected:
         // vertex layout
         VertexLayoutElement vertexLayoutElements[] =
         {
-            { ElementFormat::R32G32B32_Float,   0,  0, false, 0 }, // position
-            { ElementFormat::R32G32_Float,      12, 0, false, 0 }, // tex-coords
-            { ElementFormat::R8G8B8A8_U_Norm,   20, 0, false, 0 }, // color
+            { Format::R32G32B32_Float,   0,  0, false, 0 }, // position
+            { Format::R32G32_Float,      12, 0, false, 0 }, // tex-coords
+            { Format::R8G8B8A8_U_Norm,   20, 0, false, 0 }, // color
         };
 
         VertexLayoutDesc vertexLayoutDesc;
@@ -158,11 +158,11 @@ TEST_F(SimpleDrawTest, Culling)
         pipelineStateDesc.vertexLayout = mVertexLayout;
         pipelineStateDesc.resBindingLayout = resBindingLayout;
         pipelineStateDesc.numRenderTargets = 1;
-        pipelineStateDesc.rtFormats[0] = ElementFormat::R32G32B32A32_Float;
+        pipelineStateDesc.rtFormats[0] = Format::R32G32B32A32_Float;
         pipelineState = gRendererDevice->CreatePipelineState(pipelineStateDesc);
         ASSERT_NE(nullptr, pipelineState.Get());
 
-        ElementFormat formats[] = { ElementFormat::R32G32B32A32_Float };
+        Format formats[] = { Format::R32G32B32A32_Float };
         BeginTestFrame(VIEWPORT_SIZE, VIEWPORT_SIZE, 1, formats);
         {
             mCommandBuffer->Clear(ClearFlagsColor, 1, nullptr, &CLEAR_COLOR);
@@ -208,50 +208,50 @@ TEST_F(SimpleDrawTest, RenderTargetFormats)
                      std::to_string(clearColor.z) + ", " +
                      std::to_string(clearColor.w) + ", ");
 
-        for (int i = 0; i < static_cast<int>(ElementFormat::Max); ++i)
+        for (int i = 0; i < static_cast<int>(Format::Max); ++i)
         {
-            ElementFormat format = static_cast<ElementFormat>(i);
+            Format format = static_cast<Format>(i);
             bool supportedFormat = false;
 
             switch (format)
             {
-            case ElementFormat::R32G32B32A32_Float:
-            case ElementFormat::R32G32B32A32_U_Int:
-            case ElementFormat::R32G32B32A32_S_Int:
-            case ElementFormat::R32G32_Float:
-            case ElementFormat::R32G32_U_Int:
-            case ElementFormat::R32G32_S_Int:
-            case ElementFormat::R32_Float:
-            case ElementFormat::R32_U_Int:
-            case ElementFormat::R32_S_Int:
-            case ElementFormat::R16G16B16A16_Float:
-            case ElementFormat::R16G16B16A16_S_Int:
-            case ElementFormat::R16G16B16A16_S_Norm:
-            case ElementFormat::R16G16B16A16_U_Int:
-            case ElementFormat::R16G16B16A16_U_Norm:
-            case ElementFormat::R16G16_Float:
-            case ElementFormat::R16G16_S_Int:
-            case ElementFormat::R16G16_S_Norm:
-            case ElementFormat::R16G16_U_Int:
-            case ElementFormat::R16G16_U_Norm:
-            case ElementFormat::R16_Float:
-            case ElementFormat::R16_S_Int:
-            case ElementFormat::R16_S_Norm:
-            case ElementFormat::R16_U_Int:
-            case ElementFormat::R16_U_Norm:
-            case ElementFormat::R8G8B8A8_S_Int:
-            case ElementFormat::R8G8B8A8_U_Int:
-            case ElementFormat::R8G8B8A8_S_Norm:
-            case ElementFormat::R8G8B8A8_U_Norm:
-            case ElementFormat::B8G8R8A8_U_Norm:
-            case ElementFormat::R8G8_S_Int:
-            case ElementFormat::R8G8_U_Int:
-            case ElementFormat::R8G8_S_Norm:
-            case ElementFormat::R8G8_U_Norm:
-            case ElementFormat::R8_S_Int:
-            case ElementFormat::R8_U_Int:
-            case ElementFormat::R8_S_Norm:
-            case ElementFormat::R8_U_Norm:
+            case Format::R32G32B32A32_Float:
+            case Format::R32G32B32A32_U_Int:
+            case Format::R32G32B32A32_S_Int:
+            case Format::R32G32_Float:
+            case Format::R32G32_U_Int:
+            case Format::R32G32_S_Int:
+            case Format::R32_Float:
+            case Format::R32_U_Int:
+            case Format::R32_S_Int:
+            case Format::R16G16B16A16_Float:
+            case Format::R16G16B16A16_S_Int:
+            case Format::R16G16B16A16_S_Norm:
+            case Format::R16G16B16A16_U_Int:
+            case Format::R16G16B16A16_U_Norm:
+            case Format::R16G16_Float:
+            case Format::R16G16_S_Int:
+            case Format::R16G16_S_Norm:
+            case Format::R16G16_U_Int:
+            case Format::R16G16_U_Norm:
+            case Format::R16_Float:
+            case Format::R16_S_Int:
+            case Format::R16_S_Norm:
+            case Format::R16_U_Int:
+            case Format::R16_U_Norm:
+            case Format::R8G8B8A8_S_Int:
+            case Format::R8G8B8A8_U_Int:
+            case Format::R8G8B8A8_S_Norm:
+            case Format::R8G8B8A8_U_Norm:
+            case Format::B8G8R8A8_U_Norm:
+            case Format::R8G8_S_Int:
+            case Format::R8G8_U_Int:
+            case Format::R8G8_S_Norm:
+            case Format::R8G8_U_Norm:
+            case Format::R8_S_Int:
+            case Format::R8_U_Int:
+            case Format::R8_S_Norm:
+            case Format::R8_U_Norm:
                 supportedFormat = true;
                 break;
             }
@@ -271,9 +271,9 @@ TEST_F(SimpleDrawTest, RenderTargetFormats)
             switch (format)
             {
             // 8-bit unsigned ints
-            case ElementFormat::R8_U_Int:
-            case ElementFormat::R8G8_U_Int:
-            case ElementFormat::R8G8B8A8_U_Int:
+            case Format::R8_U_Int:
+            case Format::R8G8_U_Int:
+            case Format::R8G8B8A8_U_Int:
             {
                 uint8 expected[4];
                 expected[0] = ToUint8(clearColor.x);
@@ -285,9 +285,9 @@ TEST_F(SimpleDrawTest, RenderTargetFormats)
             }
 
             // 8-bit unsigned ints (normalized)
-            case ElementFormat::R8_U_Norm:
-            case ElementFormat::R8G8_U_Norm:
-            case ElementFormat::R8G8B8A8_U_Norm:
+            case Format::R8_U_Norm:
+            case Format::R8G8_U_Norm:
+            case Format::R8G8B8A8_U_Norm:
             {
                 uint8 expected[4];
                 expected[0] = ToNormUint8(clearColor.x);
@@ -299,9 +299,9 @@ TEST_F(SimpleDrawTest, RenderTargetFormats)
             }
 
             // 8-bit signed ints
-            //case ElementFormat::R8_S_Int:
-            case ElementFormat::R8G8_S_Int:
-            case ElementFormat::R8G8B8A8_S_Int:
+            //case Format::R8_S_Int:
+            case Format::R8G8_S_Int:
+            case Format::R8G8B8A8_S_Int:
             {
                 int8 expected[4];
                 expected[0] = ToInt8(clearColor.x);
@@ -313,9 +313,9 @@ TEST_F(SimpleDrawTest, RenderTargetFormats)
             }
 
             // 8-bit signed ints (normalized)
-            case ElementFormat::R8_S_Norm:
-            case ElementFormat::R8G8_S_Norm:
-            case ElementFormat::R8G8B8A8_S_Norm:
+            case Format::R8_S_Norm:
+            case Format::R8G8_S_Norm:
+            case Format::R8G8B8A8_S_Norm:
             {
                 int8 expected[4];
                 expected[0] = ToNormInt8(clearColor.x);
@@ -327,9 +327,9 @@ TEST_F(SimpleDrawTest, RenderTargetFormats)
             }
 
             // 16-bit unsigned ints
-            case ElementFormat::R16_U_Int:
-            case ElementFormat::R16G16_U_Int:
-            case ElementFormat::R16G16B16A16_U_Int:
+            case Format::R16_U_Int:
+            case Format::R16G16_U_Int:
+            case Format::R16G16B16A16_U_Int:
             {
                 uint16 expected[4];
                 expected[0] = ToUint16(clearColor.x);
@@ -341,9 +341,9 @@ TEST_F(SimpleDrawTest, RenderTargetFormats)
             }
 
             // 16-bit unsigned ints (normalized)
-            case ElementFormat::R16_U_Norm:
-            case ElementFormat::R16G16_U_Norm:
-            case ElementFormat::R16G16B16A16_U_Norm:
+            case Format::R16_U_Norm:
+            case Format::R16G16_U_Norm:
+            case Format::R16G16B16A16_U_Norm:
             {
                 uint16 expected[4];
                 expected[0] = ToNormUint16(clearColor.x);
@@ -355,9 +355,9 @@ TEST_F(SimpleDrawTest, RenderTargetFormats)
             }
 
             // 16-bit signed ints
-            case ElementFormat::R16_S_Int:
-            case ElementFormat::R16G16_S_Int:
-            case ElementFormat::R16G16B16A16_S_Int:
+            case Format::R16_S_Int:
+            case Format::R16G16_S_Int:
+            case Format::R16G16B16A16_S_Int:
             {
                 int16 expected[4];
                 expected[0] = ToInt16(clearColor.x);
@@ -369,9 +369,9 @@ TEST_F(SimpleDrawTest, RenderTargetFormats)
             }
 
             // 16-bit signed ints (normalized)
-            case ElementFormat::R16_S_Norm:
-            case ElementFormat::R16G16_S_Norm:
-            case ElementFormat::R16G16B16A16_S_Norm:
+            case Format::R16_S_Norm:
+            case Format::R16G16_S_Norm:
+            case Format::R16G16B16A16_S_Norm:
             {
                 int16 expected[4];
                 expected[0] = ToNormInt16(clearColor.x);
@@ -383,10 +383,10 @@ TEST_F(SimpleDrawTest, RenderTargetFormats)
             }
 
                 // 32-bit unsigned ints
-            case ElementFormat::R32_U_Int:
-            case ElementFormat::R32G32_U_Int:
-            case ElementFormat::R32G32B32_U_Int:
-            case ElementFormat::R32G32B32A32_U_Int:
+            case Format::R32_U_Int:
+            case Format::R32G32_U_Int:
+            case Format::R32G32B32_U_Int:
+            case Format::R32G32B32A32_U_Int:
             {
                 uint32 expected[4];
                 expected[0] = ToUint32(clearColor.x);
@@ -398,10 +398,10 @@ TEST_F(SimpleDrawTest, RenderTargetFormats)
             }
 
                 // 32-bit signed ints
-            case ElementFormat::R32_S_Int:
-            case ElementFormat::R32G32_S_Int:
-            case ElementFormat::R32G32B32_S_Int:
-            case ElementFormat::R32G32B32A32_S_Int:
+            case Format::R32_S_Int:
+            case Format::R32G32_S_Int:
+            case Format::R32G32B32_S_Int:
+            case Format::R32G32B32A32_S_Int:
             {
                 int32 expected[4];
                 expected[0] = ToInt32(clearColor.x);
@@ -413,9 +413,9 @@ TEST_F(SimpleDrawTest, RenderTargetFormats)
             }
 
                 // half floats
-            //case ElementFormat::R16_Float:
-            //case ElementFormat::R16G16_Float:
-            //case ElementFormat::R16G16B16A16_Float:
+            //case Format::R16_Float:
+            //case Format::R16G16_Float:
+            //case Format::R16G16B16A16_Float:
             //{
             //    Half expected[4];
             //    expected[0] = Half(clearColor.x);
@@ -427,21 +427,21 @@ TEST_F(SimpleDrawTest, RenderTargetFormats)
             //}
 
                 // floats
-            case ElementFormat::R32_Float:
-            case ElementFormat::R32G32_Float:
-            case ElementFormat::R32G32B32_Float:
-            case ElementFormat::R32G32B32A32_Float:
+            case Format::R32_Float:
+            case Format::R32G32_Float:
+            case Format::R32G32B32_Float:
+            case Format::R32G32B32A32_Float:
                 VerifyPixelsFloat(0, &clearColor.x);
                 break;
 
             // packed
-            case ElementFormat::B5G6R5_U_norm:
-            case ElementFormat::B5G5R5A1_U_Norm:
-            case ElementFormat::B4G4R4A4_U_Norm:
-            case ElementFormat::R11G11B10_Float:
-            case ElementFormat::R10G10B10A2_U_Norm:
-            case ElementFormat::R10G10B10A2_U_Int:
-            case ElementFormat::R9G9B9E5_Float:
+            case Format::B5G6R5_U_norm:
+            case Format::B5G5R5A1_U_Norm:
+            case Format::B4G4R4A4_U_Norm:
+            case Format::R11G11B10_Float:
+            case Format::R10G10B10A2_U_Norm:
+            case Format::R10G10B10A2_U_Int:
+            case Format::R9G9B9E5_Float:
                 // TODO: special conversion functions will be required to verify values
                 break;
             }
@@ -492,12 +492,12 @@ TEST_F(SimpleDrawTest, StaticCBuffer)
     pipelineStateDesc.vertexLayout = mVertexLayout;
     pipelineStateDesc.resBindingLayout = resBindingLayout;
     pipelineStateDesc.numRenderTargets = 1;
-    pipelineStateDesc.rtFormats[0] = ElementFormat::R32G32B32A32_Float;
+    pipelineStateDesc.rtFormats[0] = Format::R32G32B32A32_Float;
     pipelineState = gRendererDevice->CreatePipelineState(pipelineStateDesc);
     ASSERT_NE(nullptr, pipelineState.Get());
 
 
-    ElementFormat formats[] = { ElementFormat::R32G32B32A32_Float };
+    Format formats[] = { Format::R32G32B32A32_Float };
     BeginTestFrame(VIEWPORT_SIZE, VIEWPORT_SIZE, 1, formats);
     {
         mCommandBuffer->Clear(ClearFlagsColor, 1, nullptr, &CLEAR_COLOR);

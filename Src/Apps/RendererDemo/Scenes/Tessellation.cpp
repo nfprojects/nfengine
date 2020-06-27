@@ -90,7 +90,7 @@ bool TessellationScene::CreateVertexBuffer()
 
     VertexLayoutElement vertexLayoutElements[] =
     {
-        { ElementFormat::R32G32B32_Float, 0, 0, false, 0 }, // position
+        { Format::R32G32B32_Float, 0, 0, false, 0 }, // position
     };
 
     VertexLayoutDesc vertexLayoutDesc;

@@ -132,10 +132,10 @@ bool VertexBuffersScene::CreateBuffers(bool withInstanceBuffer, BufferMode verte
 
         VertexLayoutElement vertexLayoutElements[] =
         {
-            { ElementFormat::R32G32B32_Float,       0,  0, false, 0 }, // position
-            { ElementFormat::R32G32B32A32_Float,    0,  1, false, 0 }, // color
-            { ElementFormat::R32G32B32_Float,       0,  2, true,  1 }, // position offset
-            { ElementFormat::R32G32B32A32_Float,    12, 2, true,  1 }, // color scale
+            { Format::R32G32B32_Float,       0,  0, false, 0 }, // position
+            { Format::R32G32B32A32_Float,    0,  1, false, 0 }, // color
+            { Format::R32G32B32_Float,       0,  2, true,  1 }, // position offset
+            { Format::R32G32B32A32_Float,    12, 2, true,  1 }, // color scale
         };
 
         VertexLayoutDesc vertexLayoutDesc;
@@ -147,8 +147,8 @@ bool VertexBuffersScene::CreateBuffers(bool withInstanceBuffer, BufferMode verte
     {
         VertexLayoutElement vertexLayoutElements[] =
         {
-            { ElementFormat::R32G32B32_Float,       0, 0, false, 0 }, // position
-            { ElementFormat::R32G32B32A32_Float,    0, 1, false, 0 }, // color
+            { Format::R32G32B32_Float,       0, 0, false, 0 }, // position
+            { Format::R32G32B32A32_Float,    0, 1, false, 0 }, // color
         };
 
         VertexLayoutDesc vertexLayoutDesc;
@@ -166,7 +166,7 @@ bool VertexBuffersScene::CreateBuffers(bool withInstanceBuffer, BufferMode verte
         return false;
 
     PipelineStateDesc pipelineStateDesc;
-    pipelineStateDesc.rtFormats[0] = ElementFormat::R8G8B8A8_U_Norm;
+    pipelineStateDesc.rtFormats[0] = Format::R8G8B8A8_U_Norm;
     pipelineStateDesc.vertexShader = mVertexShader;
     pipelineStateDesc.pixelShader = mPixelShader;
     pipelineStateDesc.primitiveType = PrimitiveType::Triangles;

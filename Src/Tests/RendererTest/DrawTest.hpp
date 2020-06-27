@@ -17,7 +17,7 @@ class DrawTest : public RendererTest
         TexturePtr readbackTexture;    // texture used for GPU -> CPU data transfer
         std::unique_ptr<char[]> pixelData;
         size_t textureSize;
-        ElementFormat format;
+        Format format;
     };
 
     RenderTargetPtr mTestRenderTarget;
@@ -36,7 +36,7 @@ protected:
      * @param formats           Render target textures formats
      * @see EndFrame
      */
-    void BeginTestFrame(uint32 width, uint32 height, size_t numTargets, ElementFormat* formats);
+    void BeginTestFrame(uint32 width, uint32 height, size_t numTargets, const Format* formats);
 
     /**
      * Finish rendering into test render target texture and read rendered pixels buffer.

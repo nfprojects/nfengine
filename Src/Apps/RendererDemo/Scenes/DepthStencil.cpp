@@ -60,9 +60,9 @@ bool DepthStencilScene::CreateBasicResources(bool withDepth, bool withStencil)
 
     VertexLayoutElement vertexLayoutElements[] =
     {
-        { ElementFormat::R32G32B32_Float,       0, 0, false, 0 }, // position
-        { ElementFormat::R32G32_Float,          12, 0, false, 0 }, // tex-coords
-        { ElementFormat::R32G32B32A32_Float,    20, 0, false, 0 }, // color
+        { Format::R32G32B32_Float,       0, 0, false, 0 }, // position
+        { Format::R32G32_Float,          12, 0, false, 0 }, // tex-coords
+        { Format::R32G32B32A32_Float,    20, 0, false, 0 }, // color
     };
 
     VertexLayoutDesc vertexLayoutDesc;
@@ -111,7 +111,7 @@ bool DepthStencilScene::CreateBasicResources(bool withDepth, bool withStencil)
     blendStateDesc.rtDescs[0].destColorFunc = BlendFunc::OneMinusSrcAlpha;
 
     PipelineStateDesc psd;
-    psd.rtFormats[0] = ElementFormat::R8G8B8A8_U_Norm;
+    psd.rtFormats[0] = Format::R8G8B8A8_U_Norm;
     psd.vertexShader = mVertexShader;
     psd.pixelShader = mPixelShader;
     psd.raterizerState.cullMode = CullMode::Disabled;

@@ -33,7 +33,7 @@ protected:
     uint8 mSamplesNum;
     TextureType mType;
     BufferMode mMode;
-    ElementFormat mFormat;
+    Format mFormat;
 
     // upload initial data
     bool UploadData(const TextureDesc& desc);
@@ -79,7 +79,7 @@ public:
         return mMode;
     }
 
-    NFE_INLINE ElementFormat GetFormat() const
+    NFE_INLINE Format GetFormat() const
     {
         return mFormat;
     }

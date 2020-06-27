@@ -106,7 +106,7 @@ bool Texture::Init(const TextureDesc& desc)
         if (desc.depthBufferFormat == DepthBufferFormat::Depth24_Stencil8)
             mImageSubresRange.aspectMask |= VK_IMAGE_ASPECT_STENCIL_BIT;
     }
-    else if (desc.format != ElementFormat::Unknown)
+    else if (desc.format != Format::Unknown)
         mImageSubresRange.aspectMask |= VK_IMAGE_ASPECT_COLOR_BIT;
 
     imageInfo.format = mFormat;

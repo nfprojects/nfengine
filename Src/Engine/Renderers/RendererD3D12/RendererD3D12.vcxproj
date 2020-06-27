@@ -168,6 +168,7 @@
     <ClInclude Include="Common.hpp" />
     <ClInclude Include="ComputePipelineState.hpp" />
     <ClInclude Include="Device.hpp" />
+    <ClInclude Include="Format.hpp" />
     <ClInclude Include="HeapAllocator.hpp" />
     <ClInclude Include="PipelineState.hpp" />
     <ClInclude Include="PCH.hpp" />

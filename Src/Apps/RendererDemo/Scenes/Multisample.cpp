@@ -84,9 +84,9 @@ bool MultisampleScene::CreateVertexBuffer()
 
     VertexLayoutElement vertexLayoutElements[] =
     {
-        { ElementFormat::R32G32B32_Float,       0, 0, false, 0 }, // position
-        { ElementFormat::R32G32_Float,          12, 0, false, 0 }, // tex-coords
-        { ElementFormat::R32G32B32A32_Float,    20, 0, false, 0 }, // color
+        { Format::R32G32B32_Float,       0, 0, false, 0 }, // position
+        { Format::R32G32_Float,          12, 0, false, 0 }, // tex-coords
+        { Format::R32G32B32A32_Float,    20, 0, false, 0 }, // color
     };
 
     VertexLayoutDesc vertexLayoutDesc;
@@ -103,7 +103,7 @@ bool MultisampleScene::CreateVertexBuffer()
     texDesc.height = WINDOW_HEIGHT;
     texDesc.mipmaps = 1;
     texDesc.samplesNum = MULTISAMPLE_SAMPLES;
-    texDesc.format = ElementFormat::R8G8B8A8_U_Norm;
+    texDesc.format = Format::R8G8B8A8_U_Norm;
     texDesc.binding = NFE_RENDERER_TEXTURE_BIND_RENDERTARGET | NFE_RENDERER_TEXTURE_BIND_SHADER;
     texDesc.defaultColorClearValue[0] = 0.2f;
     texDesc.defaultColorClearValue[1] = 0.3f;

@@ -27,7 +27,7 @@ VkCompareOp TranslateCompareFuncToVkCompareOp(CompareFunc func);
 VkCullModeFlags TranslateCullModeToVkCullMode(CullMode mode);
 VkFormat TranslateDepthFormatToVkFormat(DepthBufferFormat format);
 VkDescriptorType TranslateDynamicResourceTypeToVkDescriptorType(ShaderResourceType type);
-VkFormat TranslateElementFormatToVkFormat(ElementFormat format);
+VkFormat TranslateElementFormatToVkFormat(Format format);
 VkPolygonMode TranslateFillModeToVkPolygonMode(FillMode mode);
 VkIndexType TranslateIndexBufferFormatToVkIndexType(IndexBufferFormat format);
 VkFilter TranslateMagFilterToVkFilter(TextureMagFilter filter);
