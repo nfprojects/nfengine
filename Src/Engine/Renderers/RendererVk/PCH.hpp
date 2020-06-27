@@ -29,6 +29,7 @@
 #pragma warning(disable: 4005)
 #endif // WIN32
 
+#define ENABLE_HLSL
 #include <glslang/glslang/Public/ShaderLang.h>
 #include <glslang/SPIRV/GlslangToSpv.h>
 #include <glslang/SPIRV/disassemble.h>

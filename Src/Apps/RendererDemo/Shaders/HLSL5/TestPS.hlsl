@@ -1,5 +1,7 @@
 #if (USE_TEXTURE > 0)
+[[vk::binding(0, 1)]]
 Texture2D<float4> gTexture : register(t0);
+[[vk::binding(0, 1)]]
 SamplerState gSampler : register(s0);
 #endif
 

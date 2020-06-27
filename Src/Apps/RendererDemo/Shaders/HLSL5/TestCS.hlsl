@@ -1,7 +1,9 @@
 // simple compute shader
 
+[[vk::binding(1, 0)]]
 RWTexture2D<unorm float4> gOutputTexture : register(u0);
 
+[[vk::binding(0, 0)]]
 cbuffer gParams : register (b0)
 {
     uint4 OutputResolution;
