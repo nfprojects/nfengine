@@ -20,8 +20,8 @@ const NFE::Common::String VK_BACKEND("RendererVk");
 const NFE::Common::String HLSL5_SHADER_PATH_PREFIX("Src/Apps/RendererDemo/Shaders/HLSL5/");
 const NFE::Common::String HLSL5_SHADER_EXTENSION(".hlsl");
 
-const NFE::Common::String GLSL_SHADER_PATH_PREFIX("Src/Apps/RendererDemo/Shaders/GLSL/");
-const NFE::Common::String GLSL_SHADER_EXTENSION(".glsl");
+const NFE::Common::String GLSL_SHADER_PATH_PREFIX("Src/Apps/RendererDemo/Shaders/HLSL5/");
+const NFE::Common::String GLSL_SHADER_EXTENSION(".hlsl");
 
 NFE::Common::DynArray<NFE::Common::String> GetDefaultBackend()
 {

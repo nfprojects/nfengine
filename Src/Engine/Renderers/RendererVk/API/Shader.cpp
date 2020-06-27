@@ -22,12 +22,12 @@ namespace Renderer {
 namespace {
 
 const int DEFAULT_VERSION = 460;
-const std::string SHADER_HEADER_START = "#version 460\n\
+const Common::String SHADER_HEADER_START("#version 460\n\
 #extension GL_ARB_separate_shader_objects: enable\n\
 #extension GL_ARB_shading_language_420pack: enable\n\
-#extension GL_ARB_shader_image_load_store: enable\n";
-const std::string DEFINE_STR = "#define ";
-const std::string SHADER_HEADER_TAIL = "\0";
+#extension GL_ARB_shader_image_load_store: enable\n");
+const Common::String DEFINE_STR("#define ");
+const Common::String SHADER_HEADER_TAIL("\0");
 
 } // namespace
 
@@ -47,8 +47,8 @@ bool Shader::Init(const ShaderDesc& desc)
 {
     mType = desc.type;
 
-    std::vector<char> str;
-    size_t shaderSize = 0;
+    Common::DynArray<char> str;
+    int32 shaderSize = 0;
     const char* code = nullptr;
 
     if (desc.code == nullptr)
@@ -59,28 +59,29 @@ bool Shader::Init(const ShaderDesc& desc)
             return false;
         }
 
-        using namespace Common;
-        File file(desc.path, AccessMode::Read);
-        shaderSize = static_cast<size_t>(file.GetSize());
-        str.resize(shaderSize + 1);
+        Common::File file(desc.path, Common::AccessMode::Read);
+        shaderSize = static_cast<int32>(file.GetSize());
+        str.Resize(shaderSize + 1);
 
-        if (file.Read(str.data(), shaderSize) != shaderSize)
+        if (file.Read(str.Data(), shaderSize) != shaderSize)
             return false;
         str[shaderSize] = '\0';
-        code = str.data();
+        code = str.Data();
     }
     else
     {
         code = desc.code;
-        shaderSize = strlen(code);
+        shaderSize = static_cast<int32>(strlen(code));
     }
 
     // construct a shader string containing all the macros
-    std::string shaderHead = SHADER_HEADER_START;
+    Common::String shaderHead;
     if (desc.macrosNum > 0)
     {
-        for (unsigned int i = 0; i < desc.macrosNum; ++i)
+        for (uint32 i = 0; i < desc.macrosNum; ++i)
+        {
             shaderHead += DEFINE_STR + desc.macros[i].name + ' ' + desc.macros[i].value + '\n';
+        }
     }
 
     // null-termination to help glslang
@@ -122,18 +123,18 @@ bool Shader::Init(const ShaderDesc& desc)
     }
 
     // set environment
-    mShaderGlslang->setEnvInput(glslang::EShSourceGlsl, lang, glslang::EShClientVulkan, DEFAULT_VERSION);
+    mShaderGlslang->setEnvInput(glslang::EShSourceHlsl, lang, glslang::EShClientVulkan, DEFAULT_VERSION);
     mShaderGlslang->setEnvClient(glslang::EShClientVulkan, glslang::EShTargetVulkan_1_1);
     mShaderGlslang->setEnvTarget(glslang::EShTargetSpv, glslang::EShTargetSpv_1_1);
 
     // input shader strings
-    const char * shaderStrs[] = { shaderHead.c_str(), code };
+    const char * shaderStrs[] = { shaderHead.Str(), code };
     mShaderGlslang->setStrings(shaderStrs, 2);
     mShaderGlslang->setEntryPoint("main");
 
     // parse to glslang's AST
-    EShMessages msg = static_cast<EShMessages>(EShMsgDefault | EShMsgVulkanRules);
-    if (!mShaderGlslang->parse(&glslang::DefaultTBuiltInResource, DEFAULT_VERSION, ENoProfile, false, false, msg))
+    EShMessages msg = static_cast<EShMessages>(EShMsgDefault | EShMsgVulkanRules | EShMsgReadHlsl);
+    if (!mShaderGlslang->parse(&glslang::DefaultTBuiltInResource, DEFAULT_VERSION, EProfile::ENoProfile, false, false, msg))
     {
         NFE_LOG_ERROR("Failed to parse shader file %s:\n%s", desc.path, mShaderGlslang->getInfoLog());
         return false;
@@ -146,10 +147,17 @@ bool Shader::Init(const ShaderDesc& desc)
         NFE_LOG_ERROR("Memory allocation failed");
         return false;
     }
+
     mProgramGlslang->addShader(mShaderGlslang.Get());
     if (!mProgramGlslang->link(msg))
     {
         NFE_LOG_ERROR("Failed to pre-link shader stage:\n%s", mProgramGlslang->getInfoLog());
+        return false;
+    }
+
+    if (!mProgramGlslang->buildReflection())
+    {
+        NFE_LOG_ERROR("Failed to build reflection for shader program");
         return false;
     }
 
@@ -162,8 +170,6 @@ bool Shader::Init(const ShaderDesc& desc)
 
     spv::SpvBuildLogger spvLogger;
     glslang::GlslangToSpv(*progInt, mShaderSpv, &spvLogger);
-
-    ParseResourceSlots();
 
     // now we have spirv representation of shader, provide it to Vulkan
     VkShaderModuleCreateInfo shaderInfo;
@@ -202,100 +208,34 @@ bool Shader::GetIODesc()
     return false;
 }
 
-void Shader::ParseResourceSlots()
-{
-    // TODO get rid of std::vector and std::string
-
-    std::stringstream disasm;
-    spv::Disassemble(disasm, mShaderSpv);
-
-    std::string line;
-    std::vector<std::string> names;
-    std::vector<std::string> decorates;
-    while (std::getline(disasm, line))
-    {
-        size_t namePos = line.find("Name");
-        size_t decoratePos = line.find("Decorate");
-        if (namePos == std::string::npos && decoratePos == std::string::npos)
-            continue;
-
-        // trim from starting whitespaces
-        line.erase(line.begin(), std::find_if(line.begin(), line.end(),
-            [](char c) -> bool { return !std::isspace(c); }));
-
-        if (namePos == std::string::npos)
-            decorates.push_back(line);
-        else
-            names.push_back(line);
-    }
-
-    // TODO decoration-name matching should be done by resource IDs
-    for (auto& decoration: decorates)
-    {
-        // extract number which relates to provided decorate
-        std::istringstream iss(decoration);
-        std::vector<std::string> tokens;
-        std::string token;
-        while (std::getline(iss, token,' '))
-            tokens.push_back(token);
-
-        // SPIR-V assumes following order:
-        //   [0] - "Decorate" keyword
-        //   [1] - "XX(<name>)" (Resource SPIR-V identifier & name)
-        //   [2] - DecoratorType (ex. DescriptorSet, Binding, Location)
-        //   [3] - Decoration value (ex. Binding number for Binding DecoratorType)
-        // Different amount than 4 tokens means we shouldn't care about it
-        if (tokens.size() != 4)
-            continue;
-
-        // trim ID(name) to acquire these values
-        size_t openBracketPos = tokens[1].find('(');
-        size_t closeBracketPos = tokens[1].find(')', openBracketPos+1);
-
-        const Common::String tokenName(tokens[1].substr(openBracketPos + 1, closeBracketPos - openBracketPos - 1).c_str());
-        SetSlotMap::Iterator it;
-        if (tokens[2] == "DescriptorSet" || tokens[2] == "Binding")
-        {
-            it = mResourceSlotMap.Find(tokenName);
-            if (it == mResourceSlotMap.end())
-            {
-                it = mResourceSlotMap.Insert(tokenName, std::make_pair(static_cast<uint16>(0), static_cast<uint16>(0))).iterator;
-            }
-        }
-        else
-            continue;
-
-        if (tokens[2] == "DescriptorSet")
-        {
-            NFE_LOG_DEBUG("Found resource %s with DescriptorSet = %s", tokens[1].c_str(), tokens[3].c_str());
-            it->second.first = static_cast<uint16>(std::atoi(tokens[3].c_str()));
-        }
-
-        if (tokens[2] == "Binding")
-        {
-            NFE_LOG_DEBUG("Found resource %s with Binding = %s", tokens[1].c_str(), tokens[3].c_str());
-            it->second.second = static_cast<uint16>(std::atoi(tokens[3].c_str()));
-        }
-    }
-
-    return;
-}
-
 int Shader::GetResourceSlotByName(const char* name)
 {
-    auto it = mResourceSlotMap.Find(Common::String(name));
-    if (it == mResourceSlotMap.End())
-        return -1;
+    auto ExtractBindingSetSlots = [](const glslang::TObjectReflection& o) -> int
+    {
+        // encode slot/binding pair onto a single uint
+        // 16 MSB are set slot, 16 LSB are binding slot in that set
+        const glslang::TQualifier& qualifier = o.getType()->getQualifier();
+        uint32 result = qualifier.layoutSet;
+        result <<= 16;
+        result |= qualifier.layoutBinding;
+        return static_cast<int>(result);
+    };
 
-    const SetSlotPair& pair = it->second;
+    for (int i = 0; i < mProgramGlslang->getNumUniformBlocks(); ++i)
+    {
+        const glslang::TObjectReflection& obj = mProgramGlslang->getUniformBlock(i);
+        if (obj.name.compare(name) == 0)
+            return ExtractBindingSetSlots(obj);
+    }
 
-    // encode slot/binding pair onto a single uint
-    // 16 MSB are set, 16 LSB are binding point
-    uint32 result = std::get<0>(pair);
-    result <<= 16;
-    result |= std::get<1>(pair);
+    for (int i = 0; i < mProgramGlslang->getNumUniformVariables(); ++i)
+    {
+        const glslang::TObjectReflection& obj = mProgramGlslang->getUniform(i);
+        if (obj.name.compare(name) == 0)
+            return ExtractBindingSetSlots(obj);
+    }
 
-    return static_cast<int>(result);
+    return -1;
 }
 
 } // namespace Renderer

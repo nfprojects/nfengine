@@ -1,6 +1,8 @@
 #if (SAMPLES_NUM > 1)
+[[vk::binding(0, 1)]]
 Texture2DMS<float4, SAMPLES_NUM> gTexture : register(t0);
 #else
+[[vk::binding(0, 1)]]
 Texture2D<float4> gTexture : register(t0);
 #endif
 
