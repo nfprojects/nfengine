@@ -15,9 +15,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{49AB8AC7-1834-4AF8-9792-59313C71C7E0}</ProjectGuid>
+    <ProjectGuid>{6BACA77B-43A5-4641-9E3B-80D386C56A40}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>RendererD3D12</RootNamespace>
+    <RootNamespace>RendererCommon</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -66,123 +66,63 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <PrecompiledHeader>Use</PrecompiledHeader>
-      <PreprocessorDefinitions>RENDERERD3D12_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NFE_RENDERER_COMMON_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeaderFile>PCH.hpp</PrecompiledHeaderFile>
       <AdditionalIncludeDirectories>$(SolutionDir)Src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
-      <AdditionalDependencies>RendererCommon.lib;Common.lib;d3d12.lib;dxgi.lib;dxguid.lib;d3dcompiler.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Common.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
-    <PostBuildEvent>
-      <Command>COPY "$(WindowsSdkDir)redist\d3d\x64\D3DCompiler_47.DLL" "$(SolutionDir)Bin\$(Platform)\$(Configuration)\"</Command>
-    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
       <PrecompiledHeader>Use</PrecompiledHeader>
-      <FunctionLevelLinking>true</FunctionLevelLinking>
-      <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>RENDERERD3D12_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NFE_RENDERER_COMMON_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeaderFile>PCH.hpp</PrecompiledHeaderFile>
       <AdditionalIncludeDirectories>$(SolutionDir)Src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <FloatingPointModel>Fast</FloatingPointModel>
-      <FloatingPointExceptions>false</FloatingPointExceptions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
-      <EnableCOMDATFolding>true</EnableCOMDATFolding>
-      <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>RendererCommon.lib;Common.lib;d3d12.lib;dxgi.lib;dxguid.lib;d3dcompiler.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Common.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
-    <PostBuildEvent>
-      <Command>COPY "$(WindowsSdkDir)redist\d3d\x64\D3DCompiler_47.DLL" "$(SolutionDir)Bin\$(Platform)\$(Configuration)\"</Command>
-    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Final|x64'">
     <ClCompile>
       <PrecompiledHeader>Use</PrecompiledHeader>
-      <FunctionLevelLinking>true</FunctionLevelLinking>
-      <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>RENDERERD3D12_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NFE_RENDERER_COMMON_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeaderFile>PCH.hpp</PrecompiledHeaderFile>
       <AdditionalIncludeDirectories>$(SolutionDir)Src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <FloatingPointModel>Fast</FloatingPointModel>
-      <FloatingPointExceptions>false</FloatingPointExceptions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>RendererCommon.lib;Common.lib;d3d12.lib;dxgi.lib;dxguid.lib;d3dcompiler.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Common.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
-    <PostBuildEvent>
-      <Command>COPY "$(WindowsSdkDir)redist\d3d\x64\D3DCompiler_47.DLL" "$(SolutionDir)Bin\$(Platform)\$(Configuration)\"</Command>
-    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Backbuffer.cpp" />
-    <ClCompile Include="CommandList.cpp" />
-    <ClCompile Include="CommandListManager.cpp" />
-    <ClCompile Include="ComputePipelineState.cpp" />
-    <ClCompile Include="HeapAllocator.cpp" />
-    <ClCompile Include="PipelineState.cpp" />
-    <ClCompile Include="Buffer.cpp" />
-    <ClCompile Include="CommandRecorder.cpp" />
-    <ClCompile Include="Common.cpp" />
-    <ClCompile Include="Device.cpp" />
-    <ClCompile Include="Main.cpp">
-      <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</CompileAsManaged>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-      </PrecompiledHeader>
-      <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</CompileAsManaged>
-      <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Final|x64'">false</CompileAsManaged>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-      </PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Final|x64'">
-      </PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="ReferencedResourcesList.cpp" />
-    <ClCompile Include="RendererD3D12.cpp" />
-    <ClCompile Include="RenderTarget.cpp" />
-    <ClCompile Include="ResourceBinding.cpp" />
-    <ClCompile Include="ResourceStateCache.cpp" />
-    <ClCompile Include="RingBuffer.cpp" />
-    <ClCompile Include="Sampler.cpp" />
-    <ClCompile Include="Shader.cpp" />
     <ClCompile Include="PCH.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Final|x64'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="Texture.cpp" />
-    <ClCompile Include="Translations.cpp" />
-    <ClCompile Include="VertexLayout.cpp" />
+    <ClCompile Include="Types.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Backbuffer.hpp" />
     <ClInclude Include="Buffer.hpp" />
     <ClInclude Include="CommandRecorder.hpp" />
-    <ClInclude Include="CommandList.hpp" />
-    <ClInclude Include="CommandListManager.hpp" />
-    <ClInclude Include="Common.hpp" />
     <ClInclude Include="ComputePipelineState.hpp" />
     <ClInclude Include="Device.hpp" />
-    <ClInclude Include="Format.hpp" />
-    <ClInclude Include="HeapAllocator.hpp" />
-    <ClInclude Include="PipelineState.hpp" />
     <ClInclude Include="PCH.hpp" />
-    <ClInclude Include="ReferencedResourcesList.hpp" />
-    <ClInclude Include="RendererD3D12.hpp" />
+    <ClInclude Include="PipelineState.hpp" />
+    <ClInclude Include="RendererCommon.hpp" />
     <ClInclude Include="RenderTarget.hpp" />
-    <ClInclude Include="Resource.hpp" />
     <ClInclude Include="ResourceBinding.hpp" />
-    <ClInclude Include="ResourceStateCache.hpp" />
-    <ClInclude Include="RingBuffer.hpp" />
-    <ClInclude Include="Sampler.hpp" />
     <ClInclude Include="Shader.hpp" />
     <ClInclude Include="Texture.hpp" />
-    <ClInclude Include="Translations.hpp" />
+    <ClInclude Include="Types.hpp" />
     <ClInclude Include="VertexLayout.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

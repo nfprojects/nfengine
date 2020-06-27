@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include "../Interface/ComputePipelineState.hpp"
+#include "../RendererCommon/ComputePipelineState.hpp"
 #include "ResourceBinding.hpp"
 
 namespace NFE {

@@ -7,12 +7,12 @@
 #include "PCH.hpp"
 #include "ReferencedResourcesList.hpp"
 
-#include "../Interface/Buffer.hpp"
-#include "../Interface/ComputePipelineState.hpp"
-#include "../Interface/PipelineState.hpp"
-#include "../Interface/Texture.hpp"
-#include "../Interface/RenderTarget.hpp"
-#include "../Interface/Backbuffer.hpp"
+#include "../RendererCommon/Buffer.hpp"
+#include "../RendererCommon/ComputePipelineState.hpp"
+#include "../RendererCommon/PipelineState.hpp"
+#include "../RendererCommon/Texture.hpp"
+#include "../RendererCommon/RenderTarget.hpp"
+#include "../RendererCommon/Backbuffer.hpp"
 
 
 namespace NFE {

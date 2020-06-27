@@ -8,7 +8,7 @@
 
 #include "../Common.hpp"
 
-#include "Engine/Renderers/Interface/Device.hpp"
+#include "Engine/Renderers/RendererCommon/Device.hpp"
 
 #include <vector>
 

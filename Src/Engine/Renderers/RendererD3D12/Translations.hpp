@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include "../Interface/Types.hpp"
+#include "../RendererCommon/Types.hpp"
 #include "Format.hpp"
 #include "Engine/Common/nfCommon.hpp"
 

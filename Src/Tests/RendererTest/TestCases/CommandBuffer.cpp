@@ -1,7 +1,7 @@
 #include "../PCH.hpp"
 #include "../RendererTest.hpp"
 
-#include "Engine/Renderers/Interface/CommandRecorder.hpp"
+#include "Engine/Renderers/RendererCommon/CommandRecorder.hpp"
 
 class CommandList : public RendererTest
 {

@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include "../Interface/Shader.hpp"
+#include "../RendererCommon/Shader.hpp"
 #include "Common.hpp"
 #include "../../Common/Containers/HashMap.hpp"
 

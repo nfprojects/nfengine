@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include "../Interface/ResourceBinding.hpp"
+#include "../RendererCommon/ResourceBinding.hpp"
 #include "Common.hpp"
 #include "../../Common/Containers/DynArray.hpp"
 

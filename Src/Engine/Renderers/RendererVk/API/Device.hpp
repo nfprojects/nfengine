@@ -8,7 +8,7 @@
 
 #include "Defines.hpp"
 
-#include "../Interface/Device.hpp"
+#include "../RendererCommon/Device.hpp"
 
 #include "CommandRecorder.hpp"
 #include "Internal/Instance.hpp"

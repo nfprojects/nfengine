@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include "../Interface/Buffer.hpp"
+#include "../RendererCommon/Buffer.hpp"
 
 #include "Resource.hpp"
 #include "Common.hpp"

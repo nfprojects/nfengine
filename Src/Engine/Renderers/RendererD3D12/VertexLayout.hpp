@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include "../Interface/VertexLayout.hpp"
+#include "../RendererCommon/VertexLayout.hpp"
 #include "Common.hpp"
 
 namespace NFE {

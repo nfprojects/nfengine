@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include "../Interface/Types.hpp"
+#include "../RendererCommon/Types.hpp"
 #include "Engine/Common/Containers/HashSet.hpp"
 
 

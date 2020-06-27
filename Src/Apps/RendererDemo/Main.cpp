@@ -17,7 +17,7 @@
 #include "Scenes/Multithreaded.hpp"
 #include "Scenes/Multisample.hpp"
 
-#include "Engine/Renderers/Interface/Device.hpp"
+#include "Engine/Renderers/RendererCommon/Device.hpp"
 
 #include "Engine/Common/System/Library.hpp"
 #include "Engine/Common/FileSystem/FileSystem.hpp"

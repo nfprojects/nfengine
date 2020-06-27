@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include "../Interface/Texture.hpp"
+#include "../RendererCommon/Texture.hpp"
 #include "Defines.hpp"
 #include "IResource.hpp"
 

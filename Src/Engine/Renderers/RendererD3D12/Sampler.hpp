@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include "../Interface/Texture.hpp"
+#include "../RendererCommon/Texture.hpp"
 #include "Common.hpp"
 
 namespace NFE {

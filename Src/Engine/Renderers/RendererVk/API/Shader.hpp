@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include "../Interface/Shader.hpp"
+#include "../RendererCommon/Shader.hpp"
 #include "Defines.hpp"
 
 #include "Engine/Common/Containers/DynArray.hpp"

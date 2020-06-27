@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include "../Interface/CommandRecorder.hpp"
+#include "../RendererCommon/CommandRecorder.hpp"
 #include "Common.hpp"
 #include "RingBuffer.hpp"
 #include "ResourceBinding.hpp"

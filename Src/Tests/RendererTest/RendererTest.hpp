@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Engine/Renderers/Interface/Device.hpp"
+#include "Engine/Renderers/RendererCommon/Device.hpp"
 #include "Engine/Common/System/Library.hpp"
 
 

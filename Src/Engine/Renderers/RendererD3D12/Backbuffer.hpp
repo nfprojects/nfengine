@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include "../Interface/Backbuffer.hpp"
+#include "../RendererCommon/Backbuffer.hpp"
 #include "Common.hpp"
 #include "Resource.hpp"
 #include "Engine/Common/Containers/DynArray.hpp"

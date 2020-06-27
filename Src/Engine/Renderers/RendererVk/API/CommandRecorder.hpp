@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include "../Interface/CommandRecorder.hpp"
+#include "../RendererCommon/CommandRecorder.hpp"
 
 #include "Defines.hpp"
 #include "RenderTarget.hpp"

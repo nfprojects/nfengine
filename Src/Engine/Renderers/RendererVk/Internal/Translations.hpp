@@ -6,8 +6,8 @@
 
 #pragma once
 
-#include "../Interface/Types.hpp"
-#include "../Interface/ResourceBinding.hpp"
+#include "../RendererCommon/Types.hpp"
+#include "../RendererCommon/ResourceBinding.hpp"
 
 #include "Defines.hpp"
 

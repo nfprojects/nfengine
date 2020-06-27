@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include "../Interface/CommandRecorder.hpp"
+#include "../RendererCommon/CommandRecorder.hpp"
 #include "Common.hpp"
 
 #include "Engine/Common/Containers/HashMap.hpp"

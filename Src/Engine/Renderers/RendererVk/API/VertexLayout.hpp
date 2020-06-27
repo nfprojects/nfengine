@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include "../Interface/VertexLayout.hpp"
+#include "../RendererCommon/VertexLayout.hpp"
 #include "Defines.hpp"
 #include "PipelineState.hpp"
 #include "Engine/Common/Containers/DynArray.hpp"

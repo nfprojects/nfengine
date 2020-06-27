@@ -6,6 +6,7 @@
 
 #include <math.h>
 #include <float.h>
+#include <type_traits>
 
 #ifdef NFE_USE_SSE
 #include <xmmintrin.h>

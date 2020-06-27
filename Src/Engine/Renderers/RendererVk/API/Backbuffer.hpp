@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include "../Interface/Backbuffer.hpp"
+#include "../RendererCommon/Backbuffer.hpp"
 #include "Texture.hpp"
 
 namespace NFE {

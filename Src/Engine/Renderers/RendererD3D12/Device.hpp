@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include "../Interface/Device.hpp"
+#include "../RendererCommon/Device.hpp"
 #include "Common.hpp"
 #include "PipelineState.hpp"
 #include "HeapAllocator.hpp"

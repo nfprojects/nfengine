@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include "../Interface/PipelineState.hpp"
+#include "../RendererCommon/PipelineState.hpp"
 #include "Defines.hpp"
 #include "ResourceBinding.hpp"
 

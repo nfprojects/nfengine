@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include "../Interface/RenderTarget.hpp"
+#include "../RendererCommon/RenderTarget.hpp"
 #include "Texture.hpp"
 #include "Defines.hpp"
 
