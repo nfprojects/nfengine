@@ -166,6 +166,7 @@ class ClassType;
 class DynArrayType;
 class TypeRegistry;
 class Member;
+class Variant;
 class SerializationContext;
 class ITypeSerializer;
 template<typename T> class TypeCreator;

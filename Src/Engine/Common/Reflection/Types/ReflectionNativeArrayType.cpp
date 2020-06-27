@@ -5,6 +5,7 @@
 #include "PCH.hpp"
 #include "ReflectionNativeArrayType.hpp"
 #include "../SerializationContext.hpp"
+#include "../ReflectionVariant.hpp"
 #include "../../Utils/Stream/OutputStream.hpp"
 #include "../../Utils/Stream/InputStream.hpp"
 
@@ -16,6 +17,27 @@ NativeArrayType::NativeArrayType(uint32 arraySize, const Type* elementType)
     , mArraySize(arraySize)
 {
     NFE_ASSERT(mArraySize > 0, "Native array size cannot be empty. Type: %s", GetName().Str());
+}
+
+void NativeArrayType::OnInitialize(const TypeInfo& info)
+{
+    ArrayType::OnInitialize(info);
+
+    mConstructor = [this] (void* object)
+    {
+        for (uint32 i = 0; i < mArraySize; ++i)
+        {
+            mUnderlyingType->ConstructObject(GetElementPointer(object, i));
+        }
+    };
+
+    mDestructor = [this] (void* object)
+    {
+        for (uint32 i = 0; i < mArraySize; ++i)
+        {
+            mUnderlyingType->DestructObject(GetElementPointer(object, i));
+        }
+    };
 }
 
 void NativeArrayType::PrintInfo() const
@@ -95,6 +117,32 @@ bool NativeArrayType::Clone(void* destObject, const void* sourceObject) const
     return success;
 }
 
+bool NativeArrayType::TryLoadFromDifferentType(void* outObject, const Variant& otherObject) const
+{
+    NFE_ASSERT(otherObject.GetType(), "Empty variant");
+
+    if (otherObject.GetType()->GetKind() == TypeKind::NativeArray)
+    {
+        const NativeArrayType* otherType = static_cast<const NativeArrayType*>(otherObject.GetType());
+
+        // TODO should be able to upgrade if underlying types are compatible as well
+        if (otherType->GetUnderlyingType() == GetUnderlyingType())
+        {
+            // can only upgrade from smaller array (otherwise we may loose data)
+            if (otherType->GetArraySize() <= GetArraySize())
+            {
+                return otherType->Clone(outObject, otherObject.GetDataBuffer().Data());
+            }
+        }
+    }
+    else if (otherObject.GetType()->GetKind() == TypeKind::DynArray)
+    {
+        // TODO
+    }
+
+    return false;
+}
+
 bool NativeArrayType::CanBeMemcopied() const
 {
     return mUnderlyingType->CanBeMemcopied();
@@ -130,7 +178,7 @@ bool NativeArrayType::Serialize(const void* object, Common::IConfig& config, Com
     return true;
 }
 
-bool NativeArrayType::Deserialize(void* outObject, const Common::IConfig& config, const Common::ConfigValue& value, const SerializationContext& context) const
+bool NativeArrayType::Deserialize(void* outObject, const Common::IConfig& config, const Common::ConfigValue& value, SerializationContext& context) const
 {
     using namespace Common;
 
@@ -212,7 +260,7 @@ bool NativeArrayType::SerializeBinary(const void* object, Common::OutputStream* 
     return true;
 }
 
-bool NativeArrayType::DeserializeBinary(void* outObject, Common::InputStream& stream, const SerializationContext& context) const
+bool NativeArrayType::DeserializeBinary(void* outObject, Common::InputStream& stream, SerializationContext& context) const
 {
     const Type* elementType = GetUnderlyingType();
     const size_t elementSize = elementType->GetSize();

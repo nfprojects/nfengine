@@ -24,9 +24,9 @@ public:
     virtual const Type* GetPointedDataType(const void* uniquePtrObject) const override;
     virtual void* Reset(void* uniquePtrObject, const Type* newDataType = nullptr) const override;
     virtual bool Serialize(const void* object, Common::IConfig& config, Common::ConfigValue& outValue, SerializationContext& context) const override;
-    virtual bool Deserialize(void* outObject, const Common::IConfig& config, const Common::ConfigValue& value, const SerializationContext& context) const override;
+    virtual bool Deserialize(void* outObject, const Common::IConfig& config, const Common::ConfigValue& value, SerializationContext& context) const override;
     virtual bool SerializeBinary(const void* object, Common::OutputStream* stream, SerializationContext& context) const override final;
-    virtual bool DeserializeBinary(void* outObject, Common::InputStream& stream, const SerializationContext& context) const override final;
+    virtual bool DeserializeBinary(void* outObject, Common::InputStream& stream, SerializationContext& context) const override final;
 };
 
 /**

@@ -86,7 +86,7 @@ bool EnumType::Serialize(const void* object, Common::IConfig& config, Common::Co
     return false;
 }
 
-bool EnumType::Deserialize(void* outObject, const Common::IConfig& config, const Common::ConfigValue& value, const SerializationContext& context) const
+bool EnumType::Deserialize(void* outObject, const Common::IConfig& config, const Common::ConfigValue& value, SerializationContext& context) const
 {
     NFE_UNUSED(config);
     NFE_UNUSED(context);
@@ -140,7 +140,7 @@ bool EnumType::SerializeBinary(const void* object, OutputStream* stream, Seriali
     return stream->WriteCompressedUint(strIndex);
 }
 
-bool EnumType::DeserializeBinary(void* outObject, InputStream& stream, const SerializationContext& context) const
+bool EnumType::DeserializeBinary(void* outObject, InputStream& stream, SerializationContext& context) const
 {
     uint32 strIndex;
     if (!stream.ReadCompressedUint(strIndex))

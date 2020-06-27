@@ -2,6 +2,8 @@
 
 #include "../nfCommon.hpp"
 #include "Object.hpp"
+#include "ReflectionMemberPath.hpp"
+#include "ReflectionVariant.hpp"
 #include "../Containers/HashMap.hpp"
 #include "../Containers/DynArray.hpp"
 #include "../Containers/StringView.hpp"
@@ -13,8 +15,17 @@ namespace RTTI {
 
 struct UnitTestHelper;
 
+struct MemberTypeMismatchInfo
+{
+    MemberPath path;
+    Variant readObject;
+};
+
 class NFCOMMON_API SerializationContext
 {
+    NFE_MAKE_NONCOPYABLE(SerializationContext)
+    NFE_MAKE_NONMOVEABLE(SerializationContext)
+
 public:
     static constexpr uint32 InvalidIndex = UINT32_MAX;
 
@@ -53,6 +64,13 @@ public:
     bool UnmapString(const uint32 index, Common::StringView& outStr) const;
     bool UnmapObject(const uint32 index, ObjectPtr& outPtr) const;
 
+    void PushMemberTypeMismatchInfo(const MemberPath& path, Variant&& readObject);
+
+    const Common::DynArray<MemberTypeMismatchInfo>& GetMemberTypeMismatchInfos() const
+    {
+        return mMemberTypeMismatchInfos;
+    }
+
 private:
 
     struct MappingInfo
@@ -74,6 +92,9 @@ private:
 
     // used during deserialization
     Common::Buffer mStringBuffer;
+
+    // list of information about mismatched member types during deserialization
+    Common::DynArray<MemberTypeMismatchInfo> mMemberTypeMismatchInfos;
 
     const UnitTestHelper* mUnitTestHelper;
 };

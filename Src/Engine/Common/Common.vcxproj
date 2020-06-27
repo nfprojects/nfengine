@@ -166,10 +166,12 @@
     <ClInclude Include="Reflection\ReflectionEnumMacros.hpp" />
     <ClInclude Include="Reflection\ReflectionMember.hpp" />
     <ClInclude Include="Reflection\ReflectionMemberMetadataBuilder.hpp" />
+    <ClInclude Include="Reflection\ReflectionMemberPath.hpp" />
     <ClInclude Include="Reflection\ReflectionTypeRegistry.hpp" />
     <ClInclude Include="Reflection\ReflectionTypeResolver.hpp" />
     <ClInclude Include="Reflection\ReflectionUnitTestHelper.hpp" />
     <ClInclude Include="Reflection\ReflectionUtils.hpp" />
+    <ClInclude Include="Reflection\ReflectionVariant.hpp" />
     <ClInclude Include="Reflection\SerializationContext.hpp" />
     <ClInclude Include="Reflection\Serializer.hpp" />
     <ClInclude Include="Reflection\Types\ReflectionArrayType.hpp" />
@@ -300,6 +302,7 @@
     <ClCompile Include="Reflection\ReflectionMember.cpp" />
     <ClCompile Include="Reflection\ReflectionMemberMetadataBuilder.cpp" />
     <ClCompile Include="Reflection\ReflectionTypeRegistry.cpp" />
+    <ClCompile Include="Reflection\ReflectionVariant.cpp" />
     <ClCompile Include="Reflection\SerializationContext.cpp" />
     <ClCompile Include="Reflection\Serializer.cpp" />
     <ClCompile Include="Reflection\Types\ReflectionClassType.cpp" />

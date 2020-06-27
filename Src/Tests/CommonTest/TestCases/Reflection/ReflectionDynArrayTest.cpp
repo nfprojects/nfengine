@@ -157,3 +157,68 @@ TEST(ReflectionDynArrayTest, SerializeBinary)
         EXPECT_EQ(789, readObj[2]);
     }
 }
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+
+class TestClassWithNestedDynArrays
+{
+    NFE_DECLARE_CLASS(TestClassWithNestedDynArrays)
+public:
+    DynArray<DynArray<int32>> a;
+    DynArray<int32> b[2];
+};
+
+NFE_DEFINE_CLASS(TestClassWithNestedDynArrays)
+{
+    NFE_CLASS_MEMBER(a);
+    NFE_CLASS_MEMBER(b);
+}
+NFE_END_DEFINE_CLASS()
+
+TEST(ReflectionDynArrayTest, NestedDynArrays)
+{
+    const auto* type = GetType<TestClassWithNestedDynArrays>();
+    ASSERT_NE(nullptr, type);
+
+    Buffer buffer;
+    SerializationContext context;
+
+    {
+        TestClassWithNestedDynArrays obj;
+        obj.a.PushBack(DynArray<int32>());
+        obj.a[0].PushBack(1);
+        obj.a[0].PushBack(2);
+        obj.b[0].PushBack(3);
+        obj.b[1].PushBack(4);
+
+        BufferOutputStream stream(buffer);
+        ASSERT_TRUE(helper::SerializeObject(type, &obj, stream, context));
+    }
+
+    {
+        TestClassWithNestedDynArrays readObj;
+        // push some random data (they should be cleared on Deserialize)
+        readObj.a.Resize(10);
+        readObj.a[0].PushBack(10);
+        readObj.a[0].PushBack(20);
+        readObj.a[1].PushBack(10);
+        readObj.a[1].PushBack(20);
+        readObj.b[0].PushBack(10);
+        readObj.b[0].PushBack(20);
+        readObj.b[1].PushBack(10);
+        readObj.b[1].PushBack(20);
+
+        BufferInputStream stream(buffer);
+        ASSERT_TRUE(type->DeserializeBinary(&readObj, stream, context));
+
+        ASSERT_EQ(1u, readObj.a.Size());
+        ASSERT_EQ(2u, readObj.a[0].Size());
+        ASSERT_EQ(1u, readObj.b[0].Size());
+        ASSERT_EQ(1u, readObj.b[1].Size());
+
+        EXPECT_EQ(1, readObj.a[0][0]);
+        EXPECT_EQ(2, readObj.a[0][1]);
+        EXPECT_EQ(3, readObj.b[0][0]);
+        EXPECT_EQ(4, readObj.b[1][0]);
+    }
+}

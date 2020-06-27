@@ -235,6 +235,9 @@
     <ClCompile Include="TestCases\Reflection\ReflectionDynArrayTest.cpp">
       <Filter>TestCases\Reflection</Filter>
     </ClCompile>
+    <ClCompile Include="TestCases\Reflection\ReflectionTypeMismatchTest.cpp">
+      <Filter>TestCases\Reflection</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="PCH.hpp" />

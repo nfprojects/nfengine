@@ -126,7 +126,7 @@ bool TypeRegistry::SerializeTypeName(const Type* type, Common::OutputStream* str
     return true;
 }
 
-TypeDeserializationResult TypeRegistry::DeserializeTypeName(const Type*& outType, Common::InputStream& stream, const SerializationContext& context)
+TypeDeserializationResult TypeRegistry::DeserializeTypeName(const Type*& outType, Common::InputStream& stream, SerializationContext& context)
 {
     uint32 strIndex;
 

@@ -28,15 +28,17 @@ public:
     NFE_FORCE_INLINE uint32 GetArraySize() const { return mArraySize; }
     virtual uint32 GetArraySize(const void* arrayObject) const override final;
 
+    virtual void OnInitialize(const TypeInfo& info) override final;
     virtual void PrintInfo() const override;
 
     virtual bool Serialize(const void* object, Common::IConfig& config, Common::ConfigValue& outValue, SerializationContext& context) const override;
     virtual bool SerializeBinary(const void* object, Common::OutputStream* stream, SerializationContext& context) const override;
-    virtual bool DeserializeBinary(void* outObject, Common::InputStream& stream, const SerializationContext& context) const override;
-    virtual bool Deserialize(void* outObject, const Common::IConfig& config, const Common::ConfigValue& value, const SerializationContext& context) const override;
+    virtual bool DeserializeBinary(void* outObject, Common::InputStream& stream, SerializationContext& context) const override;
+    virtual bool Deserialize(void* outObject, const Common::IConfig& config, const Common::ConfigValue& value, SerializationContext& context) const override;
 
     virtual bool Compare(const void* objectA, const void* objectB) const override;
     virtual bool Clone(void* destObject, const void* sourceObject) const override;
+    virtual bool TryLoadFromDifferentType(void* outObject, const Variant& otherObject) const override final;
     virtual bool CanBeMemcopied() const override;
 
     // access element data
@@ -74,8 +76,6 @@ public:
         typeInfo.size = sizeof(ObjectType);
         typeInfo.alignment = alignof(ObjectType);
         typeInfo.name = typeName.Str();
-        typeInfo.constructor = GetObjectConstructor<ObjectType>();
-        typeInfo.destructor = GetObjectDestructor<ObjectType>();
 
         type->Initialize(typeInfo);
     }

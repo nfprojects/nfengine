@@ -4,6 +4,7 @@
 
 #include "PCH.hpp"
 #include "ReflectionDynArrayType.hpp"
+#include "ReflectionNativeArrayType.hpp"
 #include "../SerializationContext.hpp"
 #include "../../Config/ConfigInterface.hpp"
 #include "../../Utils/Stream/OutputStream.hpp"
@@ -124,6 +125,43 @@ const void* DynArrayType::GetElementPointer(const void* arrayObject, uint32 inde
     return accessor->mElements + index * GetUnderlyingType()->GetSize();
 }
 
+bool DynArrayType::TryLoadFromDifferentType(void* outObject, const Variant& otherObject) const
+{
+    NFE_ASSERT(otherObject.GetType(), "Empty variant");
+
+    // only native array can be converted to DynArray
+    if (otherObject.GetType()->GetKind() != TypeKind::NativeArray)
+    {
+        return false;
+    }
+
+    const NativeArrayType* otherType = static_cast<const NativeArrayType*>(otherObject.GetType());
+    const Type* underlyingType = GetUnderlyingType();
+
+    // TODO should be able to upgrade if underlying types are compatible as well
+    if (otherType->GetUnderlyingType() != underlyingType)
+    {
+        return false;
+    }
+
+    const uint32 targetSize = otherType->GetArraySize();
+    if (!ResizeArray(outObject, targetSize))
+    {
+        return false;
+    }
+
+    // copy array elements
+    for (uint32 i = 0; i < targetSize; ++i)
+    {
+        if (!underlyingType->Clone(GetElementPointer(outObject, i), otherType->GetElementPointer(otherObject.GetData(), i)))
+        {
+            return false;
+        }
+    }
+
+    return true;
+}
+
 bool DynArrayType::Serialize(const void* object, IConfig& config, ConfigValue& outValue, SerializationContext& context) const
 {
     using namespace Common;
@@ -153,7 +191,7 @@ bool DynArrayType::Serialize(const void* object, IConfig& config, ConfigValue& o
     return true;
 }
 
-bool DynArrayType::Deserialize(void* outObject, const IConfig& config, const ConfigValue& value, const SerializationContext& context) const
+bool DynArrayType::Deserialize(void* outObject, const IConfig& config, const ConfigValue& value, SerializationContext& context) const
 {
     using namespace Common;
 
@@ -238,7 +276,7 @@ bool DynArrayType::SerializeBinary(const void* object, OutputStream* stream, Ser
     return true;
 }
 
-bool DynArrayType::DeserializeBinary(void* outObject, InputStream& stream, const SerializationContext& context) const
+bool DynArrayType::DeserializeBinary(void* outObject, InputStream& stream, SerializationContext& context) const
 {
     uint32 arraySize;
     if (!stream.ReadCompressedUint(arraySize))

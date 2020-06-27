@@ -61,7 +61,7 @@ public:
     bool SerializeTypeName(const Type* type, Common::OutputStream* stream, SerializationContext& context) const;
 
     // read type name from binary form
-    TypeDeserializationResult DeserializeTypeName(const Type*& outType, Common::InputStream& stream, const SerializationContext& context);
+    TypeDeserializationResult DeserializeTypeName(const Type*& outType, Common::InputStream& stream, SerializationContext& context);
 
 private:
     TypeRegistry() = default;

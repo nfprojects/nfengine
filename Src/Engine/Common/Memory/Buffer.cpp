@@ -16,6 +16,7 @@ Buffer::Buffer()
     : mData(nullptr)
     , mSize(0)
     , mCapacity(0)
+    , mAlignment(0)
 {
 }
 
@@ -23,6 +24,7 @@ Buffer::Buffer(const Buffer& other)
     : mData(nullptr)
     , mSize(0)
     , mCapacity(0)
+    , mAlignment(0)
 {
     *this = other;
 }
@@ -32,10 +34,20 @@ Buffer::Buffer(Buffer&& other)
     mSize = other.mSize;
     mCapacity = other.mCapacity;
     mData = other.mData;
+    mAlignment = other.mAlignment;
 
     other.mData = nullptr;
     other.mSize = 0;
     other.mCapacity = 0;
+    other.mAlignment = 0;
+}
+
+Buffer::Buffer(const void* data, const size_t dataSize, const size_t alignment)
+    : Buffer()
+{
+    NFE_ASSERT(Math::IsPowerOfTwo(alignment), "Invalid alignment: %zu", alignment);
+
+    Resize(dataSize, data, alignment);
 }
 
 Buffer::~Buffer()
@@ -47,7 +59,7 @@ Buffer& Buffer::operator = (const Buffer& other)
 {
     if (this != &other)
     {
-        Resize(other.Size(), other.Data());
+        Resize(other.Size(), other.Data(), other.GetAlignment());
     }
 
     return *this;
@@ -62,10 +74,12 @@ Buffer& Buffer::operator = (Buffer&& other)
         mSize = other.mSize;
         mCapacity = other.mCapacity;
         mData = other.mData;
+        mAlignment = other.mAlignment;
 
         other.mData = nullptr;
         other.mSize = 0;
         other.mCapacity = 0;
+        other.mAlignment = 0;
     }
 
     return *this;
@@ -80,9 +94,11 @@ void Buffer::Zero()
     }
 }
 
-bool Buffer::Resize(size_t size, const void* newData)
+bool Buffer::Resize(size_t size, const void* newData, const size_t alignment)
 {
-    if (!Reserve(size, newData == nullptr))
+    NFE_ASSERT(Math::IsPowerOfTwo(alignment), "Invalid alignment: %zu", alignment);
+
+    if (!Reserve(size, newData == nullptr, alignment))
     {
         return false;
     }
@@ -94,11 +110,15 @@ bool Buffer::Resize(size_t size, const void* newData)
     }
 
     mSize = size;
+    mAlignment = alignment;
+
     return true;
 }
 
-bool Buffer::Reserve(size_t size, bool preserveData)
+bool Buffer::Reserve(size_t size, bool preserveData, const size_t alignment)
 {
+    NFE_ASSERT(Math::IsPowerOfTwo(alignment), "Invalid alignment: %zu", alignment);
+
     if (size > mCapacity)
     {
         size_t newCapacity = mCapacity;
@@ -108,7 +128,7 @@ bool Buffer::Reserve(size_t size, bool preserveData)
             newCapacity += Math::Max<size_t>(1u, newCapacity / 2);
         }
 
-        void* newBuffer = NFE_MALLOC(newCapacity, Alignment);
+        void* newBuffer = NFE_MALLOC(newCapacity, alignment);
         if (!newBuffer)
         {
             // memory allocation failed

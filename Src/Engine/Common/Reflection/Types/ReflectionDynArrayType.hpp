@@ -38,9 +38,10 @@ public:
     // Type interface implementation
     virtual void PrintInfo() const override final;
     virtual bool Serialize(const void* object, Common::IConfig& config, Common::ConfigValue& outValue, SerializationContext& context) const override final;
-    virtual bool Deserialize(void* outObject, const Common::IConfig& config, const Common::ConfigValue& value, const SerializationContext& context) const override final;
+    virtual bool Deserialize(void* outObject, const Common::IConfig& config, const Common::ConfigValue& value, SerializationContext& context) const override final;
     virtual bool SerializeBinary(const void* object, Common::OutputStream* stream, SerializationContext& context) const override final;
-    virtual bool DeserializeBinary(void* outObject, Common::InputStream& stream, const SerializationContext& context) const override final;
+    virtual bool DeserializeBinary(void* outObject, Common::InputStream& stream, SerializationContext& context) const override final;
+    virtual bool TryLoadFromDifferentType(void* outObject, const Variant& otherObject) const override final;
     virtual bool Compare(const void* objectA, const void* objectB) const override final;
     virtual bool Clone(void* destObject, const void* sourceObject) const override final;
 };

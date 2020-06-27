@@ -686,6 +686,12 @@
     <ClInclude Include="Utils\Stream\StreamCommon.hpp">
       <Filter>Utils\Stream</Filter>
     </ClInclude>
+    <ClInclude Include="Reflection\ReflectionVariant.hpp">
+      <Filter>Reflection</Filter>
+    </ClInclude>
+    <ClInclude Include="Reflection\ReflectionMemberPath.hpp">
+      <Filter>Reflection</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="PCH.cpp" />
@@ -981,6 +987,9 @@
       <Filter>Containers</Filter>
     </ClCompile>
     <ClCompile Include="Reflection\Serializer.cpp">
+      <Filter>Reflection</Filter>
+    </ClCompile>
+    <ClCompile Include="Reflection\ReflectionVariant.cpp">
       <Filter>Reflection</Filter>
     </ClCompile>
   </ItemGroup>

@@ -152,7 +152,7 @@ public:
      * @param   config,value        Source config value.
      * @return  True on success.
      */
-    virtual bool Deserialize(void* outObject, const Common::IConfig& config, const Common::ConfigValue& value, const SerializationContext& context) const = 0;
+    virtual bool Deserialize(void* outObject, const Common::IConfig& config, const Common::ConfigValue& value, SerializationContext& context) const = 0;
 
     /**
      * Read an object of this type from binary data stream.
@@ -161,7 +161,7 @@ public:
      * @param   stream              Input data stream.
      * @return  True on success.
      */
-    virtual bool DeserializeBinary(void* outObject, Common::InputStream& stream, const SerializationContext& context) const = 0;
+    virtual bool DeserializeBinary(void* outObject, Common::InputStream& stream, SerializationContext& context) const = 0;
 
     /**
      * Deep compare two objects. Returns true if objecs are the same.
@@ -173,6 +173,12 @@ public:
      * Copy may fail for non-copyable-constructible types.
      */
     virtual bool Clone(void* destObject, const void* sourceObject) const = 0;
+
+    /**
+     * Try to copy data from a different type.
+     * Mainly used in deserialization for upgrading compatible types.
+     */
+    virtual bool TryLoadFromDifferentType(void* outObject, const Variant& otherObject) const;
 
     // Returns true if can be copied/serialized via simple memcopy
     // Applies to fundamental types and POD structures
@@ -192,8 +198,6 @@ protected:
     TypeKind mKind;
 
     const void* mDefaultObject;
-
-private:
 
     virtual void OnInitialize(const TypeInfo& info);
 

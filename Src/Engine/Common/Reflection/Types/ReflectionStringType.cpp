@@ -32,7 +32,7 @@ bool StringType::Serialize(const void* object, Common::IConfig& config, Common::
     return true;
 }
 
-bool StringType::Deserialize(void* outObject, const Common::IConfig& config, const Common::ConfigValue& value, const SerializationContext& context) const
+bool StringType::Deserialize(void* outObject, const Common::IConfig& config, const Common::ConfigValue& value, SerializationContext& context) const
 {
     NFE_UNUSED(config);
     NFE_UNUSED(context);
@@ -70,7 +70,7 @@ bool StringType::SerializeBinary(const void* object, OutputStream* stream, Seria
     return stream->WriteCompressedUint(strIndex);
 }
 
-bool StringType::DeserializeBinary(void* outObject, InputStream& stream, const SerializationContext& context) const
+bool StringType::DeserializeBinary(void* outObject, InputStream& stream, SerializationContext& context) const
 {
     uint32 strIndex;
     if (!stream.ReadCompressedUint(strIndex))

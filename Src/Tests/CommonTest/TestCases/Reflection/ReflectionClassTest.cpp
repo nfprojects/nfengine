@@ -2,6 +2,7 @@
 #include "ReflectionTestCommon.hpp"
 #include "Engine/Common/Reflection/SerializationContext.hpp"
 #include "Engine/Common/Reflection/ReflectionUnitTestHelper.hpp"
+#include "Engine/Common/Reflection/ReflectionClassDefine.hpp"
 #include "Engine/Common/Utils/Stream/BufferOutputStream.hpp"
 #include "Engine/Common/Utils/Stream/BufferInputStream.hpp"
 #include "Engine/Common/Memory/Buffer.hpp"
@@ -122,7 +123,79 @@ TEST(ReflectionClassTest, TestClassWithFundamentalMembers_BinarySerialization)
     }
 }
 
-TEST(ReflectionClassTest, TestClassWithFundamentalMembers_MissingMember)
+///////////////////////////////////////////////////////////////////////////////////////////////////
+
+class TestClass_MissingMember_Before
+{
+    NFE_DECLARE_CLASS(TestClass_MissingMember_Before)
+public:
+    int32 a = 0;
+    int32 b = 0;
+    int32 c = 0;
+};
+
+NFE_DEFINE_CLASS(TestClass_MissingMember_Before)
+{
+    NFE_CLASS_MEMBER(a);
+    NFE_CLASS_MEMBER(b);
+    NFE_CLASS_MEMBER(c);
+}
+NFE_END_DEFINE_CLASS()
+
+class TestClass_MissingMember_After
+{
+    NFE_DECLARE_CLASS(TestClass_MissingMember_After)
+public:
+    int32 a = 0;
+    // b missing
+    int32 c = 0;
+};
+
+NFE_DEFINE_CLASS(TestClass_MissingMember_After)
+{
+    NFE_CLASS_MEMBER(a);
+    NFE_CLASS_MEMBER(c);
+}
+NFE_END_DEFINE_CLASS()
+
+TEST(ReflectionTypeMismatchTest, MissingMember)
+{
+    Buffer buffer;
+    SerializationContext context;
+
+    {
+        TestClass_MissingMember_Before obj;
+        obj.a = 1;
+        obj.b = 2;
+        obj.c = 3;
+
+        const auto* typeBefore = GetType<TestClass_MissingMember_Before>();
+        ASSERT_NE(nullptr, typeBefore);
+
+        BufferOutputStream stream(buffer);
+        ASSERT_TRUE(helper::SerializeObject(typeBefore, &obj, stream, context));
+    }
+
+    {
+        const auto* typeAfter = GetType<TestClass_MissingMember_After>();
+        ASSERT_NE(nullptr, typeAfter);
+
+        TestClass_MissingMember_After readObj;
+        BufferInputStream stream(buffer);
+        ASSERT_TRUE(typeAfter->DeserializeBinary(&readObj, stream, context));
+
+        EXPECT_EQ(1, readObj.a);
+        EXPECT_EQ(3, readObj.c);
+
+        const auto& mismatchedTypes = context.GetMemberTypeMismatchInfos();
+        ASSERT_EQ(1u, mismatchedTypes.Size());
+        EXPECT_EQ(MemberPath("b"), mismatchedTypes[0].path);
+        ASSERT_EQ(GetType<int32>(), mismatchedTypes[0].readObject.GetType());
+        EXPECT_EQ(2, mismatchedTypes[0].readObject.Get<int32>());
+    }
+}
+
+TEST(ReflectionClassTest, TestClassWithFundamentalMembers_MissingMemberType)
 {
     const auto* type = GetType<TestClassWithFundamentalMembers>();
     ASSERT_NE(nullptr, type);

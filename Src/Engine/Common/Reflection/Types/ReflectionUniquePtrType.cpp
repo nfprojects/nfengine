@@ -92,7 +92,7 @@ bool UniquePtrType::Serialize(const void* object, IConfig& config, ConfigValue& 
     return true;
 }
 
-bool UniquePtrType::Deserialize(void* outObject, const IConfig& config, const ConfigValue& value, const SerializationContext& context) const
+bool UniquePtrType::Deserialize(void* outObject, const IConfig& config, const ConfigValue& value, SerializationContext& context) const
 {
     NFE_ASSERT(outObject, "Trying to deserialize to nullptr");
 
@@ -207,7 +207,7 @@ bool UniquePtrType::SerializeBinary(const void* object, OutputStream* stream, Se
     return true;
 }
 
-bool UniquePtrType::DeserializeBinary(void* outObject, InputStream& stream, const SerializationContext& context) const
+bool UniquePtrType::DeserializeBinary(void* outObject, InputStream& stream, SerializationContext& context) const
 {
     // deserialize type from stream
     const Type* serializedType = nullptr;

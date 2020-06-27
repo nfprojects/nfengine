@@ -98,7 +98,7 @@ bool SharedPtrType::Serialize(const void* object, IConfig& config, ConfigValue& 
     return true;
 }
 
-bool SharedPtrType::Deserialize(void* outObject, const IConfig& config, const ConfigValue& value, const SerializationContext& context) const
+bool SharedPtrType::Deserialize(void* outObject, const IConfig& config, const ConfigValue& value, SerializationContext& context) const
 {
     NFE_ASSERT(outObject, "Trying to deserialize to nullptr");
 
@@ -148,7 +148,7 @@ bool SharedPtrType::SerializeBinary(const void* object, OutputStream* stream, Se
     return true;
 }
 
-bool SharedPtrType::DeserializeBinary(void* outObject, InputStream& stream, const SerializationContext& context) const
+bool SharedPtrType::DeserializeBinary(void* outObject, InputStream& stream, SerializationContext& context) const
 {
     // deserialize type from stream
     const Type* serializedType = nullptr;

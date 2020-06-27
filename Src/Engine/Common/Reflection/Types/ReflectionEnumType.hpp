@@ -61,8 +61,8 @@ public:
     void PrintInfo() const override;
     bool Serialize(const void* object, Common::IConfig& config, Common::ConfigValue& outValue, SerializationContext& context) const override;
     bool SerializeBinary(const void* object, Common::OutputStream* stream, SerializationContext& context) const override;
-    bool Deserialize(void* outObject, const Common::IConfig& config, const Common::ConfigValue& value, const SerializationContext& context) const override;
-    bool DeserializeBinary(void* outObject, Common::InputStream& stream, const SerializationContext& context) const override;
+    bool Deserialize(void* outObject, const Common::IConfig& config, const Common::ConfigValue& value, SerializationContext& context) const override;
+    bool DeserializeBinary(void* outObject, Common::InputStream& stream, SerializationContext& context) const override;
     bool Compare(const void* objectA, const void* objectB) const override;
     bool Clone(void* destObject, const void* sourceObject) const override;
 

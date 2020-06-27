@@ -10,6 +10,7 @@
 #include "../SerializationContext.hpp"
 #include "../ReflectionUnitTestHelper.hpp"
 #include "../ReflectionTypeRegistry.hpp"
+#include "../ReflectionVariant.hpp"
 #include "../../Config/ConfigInterface.hpp"
 #include "../../Utils/Stream/OutputStream.hpp"
 #include "../../Utils/Stream/InputStream.hpp"
@@ -259,7 +260,7 @@ bool ClassType::Serialize(const void* object, IConfig& config, ConfigValue& outV
     return true;
 }
 
-bool ClassType::DeserializeMember(void* outObject, const StringView memberName, const IConfig& config, const ConfigValue& value, const SerializationContext& context) const
+bool ClassType::DeserializeMember(void* outObject, const StringView memberName, const IConfig& config, const ConfigValue& value, SerializationContext& context) const
 {
     // find member with given name
     const Member* targetMember = FindMember(memberName);
@@ -283,7 +284,7 @@ bool ClassType::DeserializeMember(void* outObject, const StringView memberName, 
     return true;
 }
 
-bool ClassType::Deserialize(void* outObject, const IConfig& config, const ConfigValue& value, const SerializationContext& context) const
+bool ClassType::Deserialize(void* outObject, const IConfig& config, const ConfigValue& value, SerializationContext& context) const
 {
     if (GetKind() == TypeKind::AbstractClass)
     {
@@ -436,7 +437,7 @@ bool ClassType::SerializeBinary(const void* object, OutputStream* stream, Serial
     return true;
 }
 
-bool ClassType::DeserializeBinary(void* outObject, InputStream& stream, const SerializationContext& context) const
+bool ClassType::DeserializeBinary(void* outObject, InputStream& stream, SerializationContext& context) const
 {
     uint32 numMembers;
     if (!stream.ReadCompressedUint(numMembers))
@@ -515,17 +516,30 @@ bool ClassType::DeserializeBinary(void* outObject, InputStream& stream, const Se
         // target member not found
         if (!targetMember)
         {
-            // TODO report missing member
-            // TODO deserialize to Config object so it can be used for migration to newer format
             NFE_LOG_WARNING("Failed to deserialize member '%.*s' - it's not present in class %s. Probably it was removed from code.",
                 memberName.Length(), memberName.Data(), GetName().Str());
 
-            if (!stream.Seek(memberPayloadSize, SeekMode::Current))
+            Buffer tempObjectData;
+            if (!tempObjectData.Resize(serializedType->GetSize(), nullptr, serializedType->GetAlignment()))
             {
-                NFE_LOG_ERROR("Deserialization failed. Failed to skip %u bytes. Corrupted data?", (uint32)memberPayloadSize);
+                NFE_LOG_ERROR("Deserialization failed. Failed to allocate buffer for temporary object");
                 return false;
             }
-            return false;
+
+            // deserialize to a temporary object
+            serializedType->ConstructObject(tempObjectData.Data());
+            if (!serializedType->DeserializeBinary(tempObjectData.Data(), stream, context))
+            {
+                return false;
+            }
+
+            Variant readObject(serializedType, std::move(tempObjectData));
+
+            // report missing memeber, so the type can be upgraded manually
+            MemberPath memberPath(memberName);
+            context.PushMemberTypeMismatchInfo(memberPath, std::move(readObject));
+
+            continue;
         }
 
         const Type* memberType = targetMember->GetType();
@@ -533,24 +547,42 @@ bool ClassType::DeserializeBinary(void* outObject, InputStream& stream, const Se
         // member found and type know, but it does not match the type used in code
         if (memberType != serializedType)
         {
-            // TODO report member type mismatch
-            // TODO perform automatic type conversions if possible (UniquePtr->SharedPtr, NativeArray->DynArray, int8->int32, etc.)
-            // TODO deserialize to Config object so it can be used for migration to newer format
+            Buffer tempObjectData;
+            if (!tempObjectData.Resize(serializedType->GetSize(), nullptr, serializedType->GetAlignment()))
+            {
+                NFE_LOG_ERROR("Deserialization failed. Failed to allocate buffer for temporary object");
+                return false;
+            }
+
+            // deserialize to a temporary object
+            serializedType->ConstructObject(tempObjectData.Data());
+            if (!serializedType->DeserializeBinary(tempObjectData.Data(), stream, context))
+            {
+                return false;
+            }
+
+            Variant readObject(serializedType, std::move(tempObjectData));
+
+            if (memberType->TryLoadFromDifferentType(targetMember->GetMemberPtr(outObject), readObject))
+            {
+                NFE_LOG_DEBUG("Successfully upgraded member '%.*s' of class %s. Type in data was '%s', but in code it is '%s'",
+                    memberName.Length(), memberName.Data(), GetName().Str(), serializedType->GetName().Str(), memberType->GetName().Str());
+                continue;
+            }
+
             NFE_LOG_WARNING("Failed to deserialize member '%.*s' of class %s. Type in data is '%s', it's expected to be '%s'",
                 memberName.Length(), memberName.Data(), GetName().Str(), serializedType->GetName().Str(), memberType->GetName().Str());
 
-            if (!stream.Seek(memberPayloadSize, SeekMode::Current))
-            {
-                NFE_LOG_ERROR("Deserialization failed. Failed to skip %u bytes. Corrupted data?", (uint32)memberPayloadSize);
-                return false;
-            }
-            return false;
+            // report type mismatch, so the type can be upgraded manually
+            MemberPath memberPath(targetMember->GetName());
+            context.PushMemberTypeMismatchInfo(memberPath, std::move(readObject));
+
+            continue;
         }
 
         // deserialize the member if the type is correct
         if (!memberType->DeserializeBinary(targetMember->GetMemberPtr(outObject), stream, context))
         {
-            // TOOO skip current member
             return false;
         }
     }

@@ -190,5 +190,10 @@ bool SerializationContext::PushObject(const ObjectPtr& object)
     return true;
 }
 
+void SerializationContext::PushMemberTypeMismatchInfo(const MemberPath& path, Variant&& readObject)
+{
+    mMemberTypeMismatchInfos.PushBack({ path, std::move(readObject) });
+}
+
 } // namespace RTTI
 } // namespace NFE
