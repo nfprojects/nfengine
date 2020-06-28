@@ -14,6 +14,9 @@ namespace Common {
 
 bool InitSubsystems()
 {
+    // setup handling access violation, etc.
+    InitFatalErrorHandlers();
+
     if (!Logger::GetInstance()->Init())
         return false;
 

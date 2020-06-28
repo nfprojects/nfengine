@@ -31,6 +31,11 @@
 // "C++ nonstandard extension: nameless struct"
 #pragma warning(disable : 4201)
 
+// "unreachable code" - in Final we can get a lot of those, due to use of __assume in assertion macro
+#ifdef NFE_CONFIGURATION_FINAL
+#pragma warning(disable : 4702)
+#endif // NFE_CONFIGURATION_FINAL
+
 #ifndef strdup
 #define strdup _strdup
 #endif

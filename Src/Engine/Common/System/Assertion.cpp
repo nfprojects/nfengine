@@ -1,6 +1,6 @@
 /**
  * @file
- * @author  Witek902 (witek902@gmail.com)
+ * @author  Witek902
  * @brief   Fatal assertion definitions
  */
 
@@ -8,23 +8,19 @@
 #include "Assertion.hpp"
 #include "Console.hpp"
 
-#if defined(NFE_PLATFORM_LINUX)
-#include <signal.h>
-#endif // defined(NFE_PLATFORM_LINUX)
-
 
 namespace NFE {
 namespace Common {
 
-void HandleFatalAssertion(const char* expressionStr, const char* functionStr, const char* srcFile, int line)
+void ReportFatalAssertion(const char* expressionStr, const char* functionStr, const char* srcFile, int32 line)
 {
-    HandleFatalAssertion(expressionStr, functionStr, srcFile, line, "<no message>");
+    ReportFatalAssertion(expressionStr, functionStr, srcFile, line, "<no message>");
 }
 
-void HandleFatalAssertion(const char* expressionStr, const char* functionStr, const char* srcFile, int line, const char* str, ...)
+void ReportFatalAssertion(const char* expressionStr, const char* functionStr, const char* srcFile, int32 line, const char* str, ...)
 {
     // keep shorter strings on the stack
-    const int SHORT_MESSAGE_LENGTH = 4096;
+    const int32 SHORT_MESSAGE_LENGTH = 4096;
     char stackBuffer[SHORT_MESSAGE_LENGTH];
 
     std::unique_ptr<char[]> buffer;
@@ -33,7 +29,7 @@ void HandleFatalAssertion(const char* expressionStr, const char* functionStr, co
     va_start(args, str);
     va_copy(argsCopy, args);
 
-    int len = vsnprintf(stackBuffer, SHORT_MESSAGE_LENGTH, str, args);
+    int32 len = vsnprintf(stackBuffer, SHORT_MESSAGE_LENGTH, str, args);
     if (len < 0)
     {
         va_end(argsCopy);
@@ -57,27 +53,32 @@ void HandleFatalAssertion(const char* expressionStr, const char* functionStr, co
     va_end(argsCopy);
     va_end(args);
 
-    std::stringstream message;
-    message << "NFEngine assertion '" << expressionStr << "' failed.\n\n";
-    message << "Source file: " << srcFile << ':' << line << "\n";
-    message << "Function: " << functionStr << "\n";
-    message << "Message: " << (formattedStr ? formattedStr : "(vsnprintf failed)");
-
-#if defined(NFE_PLATFORM_WINDOWS)
-    message << "\n\nPress 'YES' to continue (not recommended) or 'NO' to abort.";
-    if (IDYES == ::MessageBoxA(NULL, message.str().c_str(), "Assertion failed", MB_ICONERROR | MB_YESNO))
-    {
-        return;
-    }
-
-    ::ExitProcess(1);
-#elif defined(NFE_PLATFORM_LINUX)
-    PrintColored(ConsoleColor::Red, message.str().c_str());
+    PrintColored(ConsoleColor::Red, "NFEngine assertion failed!\n");
+    PrintColored(ConsoleColor::Red, "Expression: %s\n", expressionStr);
+    PrintColored(ConsoleColor::Red, "Source file: %s:%u\n", srcFile, line);
+    PrintColored(ConsoleColor::Red, "Function: %s\n", functionStr);
+    PrintColored(ConsoleColor::Red, "Message: %s\n", formattedStr ? formattedStr : "(vsnprintf failed)");
     fflush(stdout);
-    ::raise(SIGTRAP);
-#else
-#error Invalid platform
-#endif
+
+    PrintColored(ConsoleColor::White, "Callstack:\n");
+    PrintCallstack(2); // skipping 2 functions: PrintCallstack and this one (ReportFatalAssertion)
+    fflush(stdout);
+}
+
+static volatile bool gThisIsAlwaysTrue = true;
+
+void HandleFatalAssertion()
+{
+    const int32 assertExitCode = 2;
+
+    if (gThisIsAlwaysTrue)
+    {
+#if defined(WIN32)
+        ::ExitProcess(assertExitCode);
+#elif defined(__LINUX__) | defined(__linux__)
+        ::exit(assertExitCode);
+#endif // defined(WIN32)
+    }
 }
 
 } // namespace Common

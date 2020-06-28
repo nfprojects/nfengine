@@ -164,6 +164,9 @@
     <ClInclude Include="Utils\Latch.hpp">
       <Filter>Utils</Filter>
     </ClInclude>
+    <ClCompile Include="System\Windows\AssertionWindows.cpp">
+      <Filter>System</Filter>
+    </ClCompile>
     <ClInclude Include="System\Windows\AsyncQueueManager.hpp">
       <Filter>System</Filter>
     </ClInclude>

@@ -317,6 +317,7 @@
     <ClCompile Include="Reflection\Types\ReflectionUniquePtrType.cpp" />
     <ClCompile Include="System\Assertion.cpp" />
     <ClCompile Include="System\SystemInfo.cpp" />
+    <ClCompile Include="System\Windows\AssertionWindows.cpp" />
     <ClCompile Include="System\Windows\AsyncQueueManager.cpp" />
     <ClCompile Include="System\Windows\Common.cpp" />
     <ClCompile Include="System\Windows\Console.cpp" />
@@ -406,7 +407,7 @@
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
-      <AdditionalDependencies>jpeg.lib;zlibstaticd.lib;squishd.lib;libpng16_staticd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>dbghelp.lib;jpeg.lib;zlibstaticd.lib;squishd.lib;libpng16_staticd.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
@@ -433,7 +434,7 @@
       <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>jpeg.lib;zlibstatic.lib;squish.lib;libpng16_static.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>dbghelp.lib;jpeg.lib;zlibstatic.lib;squish.lib;libpng16_static.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
@@ -460,7 +461,7 @@
       <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>jpeg.lib;zlibstatic.lib;squish.lib;libpng16_static.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>dbghelp.lib;jpeg.lib;zlibstatic.lib;squish.lib;libpng16_static.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
