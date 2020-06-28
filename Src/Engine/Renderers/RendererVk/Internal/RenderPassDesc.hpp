@@ -42,19 +42,4 @@ struct RenderPassDesc
 };
 
 } // namespace Renderer
-
-
-namespace Common {
-
-// hash specialization for RenderPassDesc
-inline uint32 GetHash(const Renderer::RenderPassDesc& renderPassDesc)
-{
-    uint32 colorHash = 0;
-    for (auto& format : renderPassDesc.colorFormats)
-        colorHash ^= GetHash(uint32(format));
-    return colorHash ^ GetHash(renderPassDesc.colorFormats.Size()) ^ GetHash(uint32(renderPassDesc.depthFormat));
-}
-
-}
-
 } // namespace NFE

@@ -169,7 +169,7 @@ uint32 GetElementFormatChannels(const Format format)
 }
 
 
-NFE_INLINE uint32 GetElementFormatSize(const Format format)
+uint32 GetElementFormatSize(const Format format)
 {
     switch (format)
     {

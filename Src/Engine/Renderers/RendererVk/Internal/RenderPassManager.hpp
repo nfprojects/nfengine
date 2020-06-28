@@ -15,6 +15,17 @@
 namespace NFE {
 namespace Renderer {
 
+struct RenderPassDescHash
+{
+    uint32 operator() (const Renderer::RenderPassDesc& renderPassDesc)
+    {
+        uint32 colorHash = 0;
+        for (auto& format : renderPassDesc.colorFormats)
+            colorHash ^= Common::GetHash(uint32(format));
+        return colorHash ^ Common::GetHash(renderPassDesc.colorFormats.Size()) ^ Common::GetHash(uint32(renderPassDesc.depthFormat));
+    }
+};
+
 /**
  * A class managing Vulkan's Render Passes.
  *
@@ -28,7 +39,7 @@ class RenderPassManager
 {
     VkDevice mDeviceRef;
 
-    using RenderPassMap = Common::HashMap<RenderPassDesc, VkRenderPass>;
+    using RenderPassMap = Common::HashMap<RenderPassDesc, VkRenderPass, RenderPassDescHash>;
     RenderPassMap mRenderPasses;
 
     VkRenderPass ConstructRenderPass(const RenderPassDesc& desc);

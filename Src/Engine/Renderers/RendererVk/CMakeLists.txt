@@ -50,9 +50,9 @@ TARGET_LINK_DIRECTORIES(RendererVk
                         PRIVATE ${NFEDEPS_LIB_DIRECTORY}
 )
 
-ADD_DEPENDENCIES(RendererVk Common)
+ADD_DEPENDENCIES(RendererVk RendererCommon)
 
-TARGET_LINK_LIBRARIES(RendererVk vulkan glslang HLSL SPIRV OGLCompiler OSDependent)
+TARGET_LINK_LIBRARIES(RendererVk RendererCommon vulkan glslang HLSL SPIRV SPIRV-Tools SPIRV-Tools-opt OGLCompiler OSDependent)
 
 TARGET_PRECOMPILE_HEADERS(RendererVk PRIVATE PCH.hpp)
 
