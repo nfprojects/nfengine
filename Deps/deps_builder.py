@@ -23,9 +23,10 @@ def SecondsToHumanReadableString(time):
 
 
 class DepsBuilder:
-    def __init__(self, projectName, generator, deps, platforms, configurations):
+    def __init__(self, projectName, generator, requirements, deps, platforms, configurations):
         signal.signal(signal.SIGINT, self.InterruptHandler)
 
+        self.mRequirements = requirements
         self.mProjectName = projectName
         self.mGenerator = generator
         self.mDeps = deps
@@ -146,17 +147,6 @@ class DepsBuilder:
         sys.stdout.write("\r   ==> " + stepString + "... ")
         sys.stdout.flush()
 
-    def IsCallable(self, exe):
-        print("   ==> Checking for " + exe + "... ", end='')
-        path = shutil.which(exe)
-        if path is not None:
-            print("FOUND")
-            return True
-        else:
-            print("NOT FOUND")
-            print("Make sure " + exe + " is visible in PATH env variable before using this script.")
-            return False
-
     def InterruptHandler(self, sig, frame):
         self.mAnimDone = True
         if self.mAnimThread is not None and self.mAnimThread.is_alive():
@@ -250,15 +240,15 @@ class DepsBuilder:
 
         os.chdir(self.mScriptDir)
 
-    def CheckEnv(self):
-        if not self.IsCallable("cmake"):
-            raise OSError()
-
-        if not self.IsCallable("msbuild"):
-            raise OSError()
+    def CheckRequirements(self):
+        for r in self.mRequirements:
+            if r() is False:
+                raise OSError("Build requirements not met")
 
     def SwitchCWDToScriptRoot(self):
-        os.chdir(os.path.dirname(os.path.realpath(sys.argv[0])))
+        path = os.path.dirname(os.path.realpath(sys.argv[0]))
+        print("   ==> Switching CWD to " + path)
+        os.chdir(path)
 
     def SetupBuildTree(self):
         if not self.mArgs.clean:
@@ -325,8 +315,8 @@ class DepsBuilder:
         buildStartTime = time.perf_counter()
 
         print("Build progress:")
-        self.CheckEnv()
         self.SwitchCWDToScriptRoot()
+        self.CheckRequirements()
         if self.mBuildAllPlats and self.mBuildAllConfigs:
             for p in self.mPlatforms:
                 for c in self.mConfigs:
@@ -352,7 +342,95 @@ class DepsBuilder:
         print("\nScript is done (took " + SecondsToHumanReadableString(buildTotalTime) + ")\n")
 
 
+def IsCallable(exe):
+    print("   ==> Checking for " + exe + "... ", end='')
+    path = shutil.which(exe)
+    if path is not None:
+        print("OK")
+        return True
+    else:
+        print("NOT FOUND")
+        print("Make sure " + exe + " is visible in PATH env variable before using this script.")
+        return False
+
+def IsNonEmptyDir(dir):
+    if os.path.isdir(dir) and len(os.listdir(dir)) > 0:
+        return True
+    else:
+        return False
+
+def HasCMake():
+    return IsCallable("cmake")
+
+def HasMSBuild():
+    return IsCallable("msbuild")
+
+def HasSubmodules():
+    print("   ==> Checking for submodules... ", end='')
+    submodules = [
+        "cxxopts",
+        "freetype2",
+        "glslang",
+        "googletest",
+        "imgui",
+        "imgui_sw",
+        "libpng",
+        "libsquish",
+        "nfenginedeps",
+        "rapidjson",
+        "tinyexr",
+        "tinyobjloader",
+        "tracy",
+        "zlib"
+    ]
+
+    hasAllSubmodules = True
+    for s in submodules:
+        if not IsNonEmptyDir(s):
+            hasAllSubmodules = False
+
+    if hasAllSubmodules:
+        print("OK")
+        return True
+    else:
+        print("FAILED")
+        print("Download required submodules via: git submodule update --init --recursive")
+        return False
+
+def GetGlslangSPVTools():
+    print("   ==> Checking if Glslang has SPIRV-Tools downloaded... ", end='')
+    if IsNonEmptyDir("glslang/External/spirv-tools"):
+        print("OK")
+        return True
+    else:
+        print("NOT FOUND")
+        process = [
+            "python",
+            "update_glslang_sources.py"
+        ]
+        print("        \\_ Downloading SPIRV-Tools glslang dependency... ", end='')
+        sys.stdout.flush()
+        os.chdir("glslang")
+        result = subprocess.run(process, capture_output=True)
+        os.chdir("..")
+
+        if result.returncode == 0:
+            print("OK")
+            return True
+        else:
+            print("FAILED")
+            print("Enter glslang directory, run update_glslang_sources.py file and manually check for errors")
+            return False
+
+
 def main():
+    reqs = [
+        HasCMake,
+        HasMSBuild,
+        HasSubmodules,
+        GetGlslangSPVTools
+    ]
+
     deps = [
         ("nfEngineDeps", "zlibstatic"),
         ("nfEngineDeps", "png_static"),
@@ -380,7 +458,7 @@ def main():
     try:
         builder = DepsBuilder(projectName="nfEngine",
                               generator="Visual Studio 16 2019",
-                              deps=deps,
+                              requirements=reqs, deps=deps,
                               platforms=plats, configurations=confs)
         builder.Build()
     except Exception as e:
