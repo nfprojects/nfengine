@@ -11,6 +11,7 @@
 #include "PipelineState.hpp"
 #include "HeapAllocator.hpp"
 #include "RingBuffer.hpp"
+#include "ShaderCompiler.hpp"
 
 #include "Engine/Common/Containers/DynArray.hpp"
 #include "Engine/Common/Containers/WeakPtr.hpp"
@@ -68,10 +69,12 @@ class Device : public IDevice
     HeapAllocator mRtvHeapAllocator;
     HeapAllocator mDsvHeapAllocator;
 
+    ShaderCompiler mShaderCompiler;
+
     bool mDebugLayerEnabled;
 
     void NotifyCommandRecordersFrameCompleted(uint64 completedFrameIndex);
-    
+
     bool InitDebugLayer(int32 level);
     bool InitializeDevice(const DeviceInitParams* params);
     bool DetectFeatureLevel();
@@ -132,6 +135,11 @@ public:
     HeapAllocator& GetDsvHeapAllocator()
     {
         return mDsvHeapAllocator;
+    }
+
+    ShaderCompiler& GetShaderCompiler()
+    {
+        return mShaderCompiler;
     }
 
     bool IsDebugLayerEnabled() const

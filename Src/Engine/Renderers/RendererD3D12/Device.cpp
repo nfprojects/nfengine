@@ -165,6 +165,14 @@ bool Device::Init(const DeviceInitParams* params)
         return false;
     }
 
+    D3D12_FEATURE_DATA_SHADER_MODEL d3d12shadermodel;
+    hr = mDevice->CheckFeatureSupport(D3D12_FEATURE_SHADER_MODEL, &d3d12shadermodel, sizeof(d3d12shadermodel));
+    if (FAILED(hr))
+    {
+        NFE_LOG_ERROR("Failed to obtain D3D12 shader model info: %x", hr);
+        return false;
+    }
+
     return true;
 }
 
@@ -224,7 +232,7 @@ bool Device::InitDebugLayer(int32 level)
             }
         }
     }
-    
+
     return true;
 }
 
@@ -249,7 +257,14 @@ bool Device::InitializeDevice(const DeviceInitParams* params)
         return false;
     }
 
-    hr = D3D_CALL_CHECK(D3D12CreateDevice(mAdapters[mAdapterInUse].Get(), D3D_FEATURE_LEVEL_11_0, IID_PPV_ARGS(mDevice.GetPtr())));
+    hr = D3D12EnableExperimentalFeatures(1, &D3D12ExperimentalShaderModels, nullptr, nullptr);
+    if (FAILED(hr))
+    {
+        NFE_LOG_ERROR("Failed to enable experimental features: %x", hr);
+        return false;
+    }
+
+    hr = D3D_CALL_CHECK(D3D12CreateDevice(mAdapters[mAdapterInUse].Get(), D3D_FEATURE_LEVEL_12_1, IID_PPV_ARGS(mDevice.GetPtr())));
     if (FAILED(hr))
         return false;
 
@@ -309,6 +324,12 @@ bool Device::CreateResources()
     if (!mDsvHeapAllocator.Init())
     {
         NFE_LOG_ERROR("Failed to initialize heap allocator for DSV");
+        return false;
+    }
+
+    if (!mShaderCompiler.Init())
+    {
+        NFE_LOG_ERROR("Failed to initialize DXC shader compiler");
         return false;
     }
 

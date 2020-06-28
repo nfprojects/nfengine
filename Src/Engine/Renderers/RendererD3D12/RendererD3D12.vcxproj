@@ -72,10 +72,10 @@
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
-      <AdditionalDependencies>RendererCommon.lib;Common.lib;d3d12.lib;dxgi.lib;dxguid.lib;d3dcompiler.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>RendererCommon.lib;Common.lib;d3d12.lib;dxgi.lib;dxguid.lib;dxcompiler.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>COPY "$(WindowsSdkDir)redist\d3d\x64\D3DCompiler_47.DLL" "$(SolutionDir)Bin\$(Platform)\$(Configuration)\"</Command>
+      <Command>COPY "$(WindowsSdkDir)redist\d3d\x64\dxcompiler.dll" "$(SolutionDir)Bin\$(Platform)\$(Configuration)\"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -93,10 +93,10 @@
       <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>RendererCommon.lib;Common.lib;d3d12.lib;dxgi.lib;dxguid.lib;d3dcompiler.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>RendererCommon.lib;Common.lib;d3d12.lib;dxgi.lib;dxguid.lib;dxcompiler.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>COPY "$(WindowsSdkDir)redist\d3d\x64\D3DCompiler_47.DLL" "$(SolutionDir)Bin\$(Platform)\$(Configuration)\"</Command>
+      <Command>COPY "$(WindowsSdkDir)redist\d3d\x64\dxcompiler.dll" "$(SolutionDir)Bin\$(Platform)\$(Configuration)\"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Final|x64'">
@@ -114,10 +114,10 @@
       <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>RendererCommon.lib;Common.lib;d3d12.lib;dxgi.lib;dxguid.lib;d3dcompiler.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>RendererCommon.lib;Common.lib;d3d12.lib;dxgi.lib;dxguid.lib;dxcompiler.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>COPY "$(WindowsSdkDir)redist\d3d\x64\D3DCompiler_47.DLL" "$(SolutionDir)Bin\$(Platform)\$(Configuration)\"</Command>
+      <Command>COPY "$(WindowsSdkDir)redist\d3d\x64\dxcompiler.dll" "$(SolutionDir)Bin\$(Platform)\$(Configuration)\"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -155,6 +155,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Final|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="ShaderCompiler.cpp" />
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="Translations.cpp" />
     <ClCompile Include="VertexLayout.cpp" />
@@ -167,6 +168,7 @@
     <ClInclude Include="CommandListManager.hpp" />
     <ClInclude Include="Common.hpp" />
     <ClInclude Include="ComputePipelineState.hpp" />
+    <ClInclude Include="D3DPtr.hpp" />
     <ClInclude Include="Device.hpp" />
     <ClInclude Include="Format.hpp" />
     <ClInclude Include="HeapAllocator.hpp" />
@@ -181,6 +183,7 @@
     <ClInclude Include="RingBuffer.hpp" />
     <ClInclude Include="Sampler.hpp" />
     <ClInclude Include="Shader.hpp" />
+    <ClInclude Include="ShaderCompiler.hpp" />
     <ClInclude Include="Texture.hpp" />
     <ClInclude Include="Translations.hpp" />
     <ClInclude Include="VertexLayout.hpp" />
