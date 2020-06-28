@@ -26,7 +26,7 @@ class Shader : public IShader
     friend class CommandRecorder;
 
     ShaderType mType;
-    D3DPtr<ID3DBlob> mBytecode;
+    D3DPtr<IDxcBlob> mBytecode;
     Common::HashMap<Common::String, ResBinding> mResBindings;
 
     bool GetIODesc();
@@ -34,7 +34,7 @@ class Shader : public IShader
 public:
     Shader();
     bool Init(const ShaderDesc& desc);
-    ID3DBlob* GetBytecode() const;
+    IDxcBlob* GetBytecode() const;
     D3D12_SHADER_BYTECODE GetD3D12Bytecode() const;
 
     bool Disassemble(bool html, Common::String& output) override;

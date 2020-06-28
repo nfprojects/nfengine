@@ -30,8 +30,6 @@ class Shader : public IShader
     VkShaderModule mShader;
     VkPipelineShaderStageCreateInfo mStageInfo;
 
-    bool GetIODesc();
-
 public:
     Shader();
     ~Shader();

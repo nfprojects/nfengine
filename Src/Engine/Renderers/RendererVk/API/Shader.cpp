@@ -202,12 +202,6 @@ bool Shader::Disassemble(bool html, Common::String& output)
     return true;
 }
 
-bool Shader::GetIODesc()
-{
-    // TODO
-    return false;
-}
-
 int Shader::GetResourceSlotByName(const char* name)
 {
     auto ExtractBindingSetSlots = [](const glslang::TObjectReflection& o) -> int

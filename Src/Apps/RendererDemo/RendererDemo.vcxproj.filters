@@ -25,9 +25,6 @@
     <Filter Include="Shaders\HLSL5">
       <UniqueIdentifier>{6d84e4d5-f34f-421c-b5da-75d6cfabde23}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Shaders\GLSL">
-      <UniqueIdentifier>{a7253636-a188-4d4f-937b-a0d1ed2d7c09}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -139,28 +136,5 @@
     <FxCompile Include="Shaders\HLSL5\TestCS.hlsl">
       <Filter>Shaders\HLSL5</Filter>
     </FxCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Shaders\GLSL\InstancingTestPS.glsl">
-      <Filter>Shaders\GLSL</Filter>
-    </None>
-    <None Include="Shaders\GLSL\InstancingTestVS.glsl">
-      <Filter>Shaders\GLSL</Filter>
-    </None>
-    <None Include="Shaders\GLSL\PostProcessPS.glsl">
-      <Filter>Shaders\GLSL</Filter>
-    </None>
-    <None Include="Shaders\GLSL\RenderTargetPS.glsl">
-      <Filter>Shaders\GLSL</Filter>
-    </None>
-    <None Include="Shaders\GLSL\TestPS.glsl">
-      <Filter>Shaders\GLSL</Filter>
-    </None>
-    <None Include="Shaders\GLSL\TestVS.glsl">
-      <Filter>Shaders\GLSL</Filter>
-    </None>
-    <None Include="Shaders\GLSL\TestCS.glsl">
-      <Filter>Shaders\GLSL</Filter>
-    </None>
   </ItemGroup>
 </Project>

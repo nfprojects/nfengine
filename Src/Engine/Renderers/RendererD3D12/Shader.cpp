@@ -10,6 +10,19 @@
 
 #include "Engine/Common/Logger/Logger.hpp"
 #include "Engine/Common/FileSystem/File.hpp"
+#include "Engine/Common/Containers/DynArray.hpp"
+#include "Engine/Common/System/Windows/Common.hpp"
+
+
+namespace {
+
+struct D3DWideMacro
+{
+    NFE::Common::Utf16String name;
+    NFE::Common::Utf16String value;
+};
+
+} // namespace
 
 
 namespace NFE {
@@ -23,7 +36,7 @@ bool Shader::Init(const ShaderDesc& desc)
 {
     mType = desc.type;
 
-    HRESULT hr;
+    //HRESULT hr;
     Common::DynArray<char> str;
     size_t shaderSize = 0;
     const char* code = nullptr;
@@ -53,74 +66,31 @@ bool Shader::Init(const ShaderDesc& desc)
         shaderSize = strlen(code);
     }
 
-    DWORD flags = D3DCOMPILE_ENABLE_STRICTNESS | D3DCOMPILE_PACK_MATRIX_ROW_MAJOR;
-#ifdef _DEBUG //shaders debugging
-    flags |= D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION;
-#else
-    flags |= D3DCOMPILE_OPTIMIZATION_LEVEL3;
-#endif
-
-    // TODO: max profile level detection
-    const char* profileName;
-    switch (mType)
-    {
-    case ShaderType::Vertex:
-        profileName = "vs_5_0";
-        break;
-    case ShaderType::Geometry:
-        profileName = "gs_5_0";
-        break;
-    case ShaderType::Hull:
-        profileName = "hs_5_0";
-        break;
-    case ShaderType::Domain:
-        profileName = "ds_5_0";
-        break;
-    case ShaderType::Pixel:
-        profileName = "ps_5_0";
-        break;
-    case ShaderType::Compute:
-        profileName = "cs_5_0";
-        break;
-    default:
-        NFE_LOG_ERROR("Invalid shader type");
-        return false;
-    }
-
     Common::String macrosStr;
-    Common::UniquePtr<D3D_SHADER_MACRO[]> d3dMacros;
+    Common::DynArray<D3DWideMacro> d3dWideMacros; // only used as wchar_t string container
+    Common::DynArray<DxcDefine> d3dMacros;
     if (desc.macrosNum > 0)
     {
-        d3dMacros.Reset(new D3D_SHADER_MACRO[desc.macrosNum + 1]);
-        for (size_t i = 0; i < desc.macrosNum; ++i)
+        d3dWideMacros.Resize(desc.macrosNum);
+        d3dMacros.Resize(desc.macrosNum);
+        for (uint32 i = 0; i < desc.macrosNum; ++i)
         {
-            d3dMacros[i].Name = desc.macros[i].name;
-            d3dMacros[i].Definition = desc.macros[i].value;
+            Common::UTF8ToUTF16(desc.macros[i].name, d3dWideMacros[i].name);
+            Common::UTF8ToUTF16(desc.macros[i].value, d3dWideMacros[i].value);
+            d3dMacros[i].Name = d3dWideMacros[i].name.c_str();
+            d3dMacros[i].Value = d3dWideMacros[i].name.c_str();
 
-            macrosStr += Common::String('\'') + d3dMacros[i].Name + "' = '" + desc.macros[i].value + '\'';
+            macrosStr += Common::String('\'') + desc.macros[i].name + "' = '" + desc.macros[i].value + '\'';
             if (i < desc.macrosNum - 1)
                 macrosStr += ", ";
         }
-        d3dMacros[desc.macrosNum].Name = nullptr;
-        d3dMacros[desc.macrosNum].Definition = nullptr;
     }
 
     NFE_LOG_INFO("Compiling shader '%s' with macros: [%s]...", desc.path, macrosStr.Str());
 
-    ID3DBlob* errorsBuffer = nullptr;
-    hr = D3DCompile(code, shaderSize, desc.path, d3dMacros.Get(),
-                    D3D_COMPILE_STANDARD_FILE_INCLUDE, "main", profileName, flags, 0,
-                    mBytecode.GetPtr(), &errorsBuffer);
-
-    if (errorsBuffer)
+    if (!gDevice->GetShaderCompiler().Compile(code, static_cast<uint32>(shaderSize), desc.path, mType, d3dMacros, mBytecode))
     {
-        NFE_LOG_ERROR("Shader '%s' compilation output:\n%s", desc.path, (char*)errorsBuffer->GetBufferPointer());
-        errorsBuffer->Release();
-    }
-
-    if (FAILED(hr))
-    {
-        NFE_LOG_ERROR("Compilation of shader '%s' failed", desc.path);
+        NFE_LOG_ERROR("Failed to compile shader %s", desc.path);
         return false;
     }
 
@@ -133,22 +103,10 @@ bool Shader::Init(const ShaderDesc& desc)
 
 bool Shader::Disassemble(bool html, Common::String& output)
 {
-    ID3DBlob* bytecode = mBytecode.Get();
-    if (bytecode == nullptr)
-    {
-        NFE_LOG_ERROR("Shader is not compiled");
-        return false;
-    }
+    NFE_UNUSED(html);
 
-    UINT flags = 0;
-    if (html)
-        flags = D3D_DISASM_ENABLE_COLOR_CODE | D3D_DISASM_ENABLE_INSTRUCTION_NUMBERING;
-
-    HRESULT hr;
-    D3DPtr<ID3DBlob> disassembly;
-    hr = D3D_CALL_CHECK(D3DDisassemble(bytecode->GetBufferPointer(), bytecode->GetBufferSize(),
-                                       flags, 0, disassembly.GetPtr()));
-    if (FAILED(hr))
+    D3DPtr<IDxcBlobEncoding> disassembly;
+    if (!gDevice->GetShaderCompiler().Disassemble(mBytecode, disassembly))
         return false;
 
     const char* str = static_cast<const char*>(disassembly->GetBufferPointer());
@@ -158,7 +116,7 @@ bool Shader::Disassemble(bool html, Common::String& output)
     return true;
 }
 
-ID3DBlob* Shader::GetBytecode() const
+IDxcBlob* Shader::GetBytecode() const
 {
     return mBytecode.Get();
 }
@@ -185,7 +143,7 @@ bool Shader::GetIODesc()
 {
     HRESULT hr;
 
-    ID3DBlob* bytecode = mBytecode.Get();
+    IDxcBlob* bytecode = mBytecode.Get();
     if (bytecode == nullptr)
     {
         NFE_LOG_ERROR("Shader is not compiled");
@@ -193,22 +151,19 @@ bool Shader::GetIODesc()
     }
 
     // get reflector object
-    D3DPtr<ID3D11ShaderReflection> reflection;
-    hr = D3D_CALL_CHECK(D3DReflect(bytecode->GetBufferPointer(), bytecode->GetBufferSize(), IID_PPV_ARGS(reflection.GetPtr())));
-    if (FAILED(hr))
+    D3DPtr<ID3D12ShaderReflection> reflection;
+    if (!gDevice->GetShaderCompiler().Reflect(mBytecode, reflection))
         return false;
 
-    // TODO add support for ID3D12ShaderReflection for Shader Model 5.1
-
     // get shader descriptior via reflector
-    D3D11_SHADER_DESC desc;
+    D3D12_SHADER_DESC desc;
     hr = D3D_CALL_CHECK(reflection->GetDesc(&desc));
     if (FAILED(hr))
         return false;
 
     for (UINT i = 0; i < desc.BoundResources; ++i)
     {
-        D3D11_SHADER_INPUT_BIND_DESC d3dBindingDesc;
+        D3D12_SHADER_INPUT_BIND_DESC d3dBindingDesc;
         hr = D3D_CALL_CHECK(reflection->GetResourceBindingDesc(i, &d3dBindingDesc));
         if (FAILED(hr))
         {
