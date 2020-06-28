@@ -51,7 +51,13 @@ ADD_SUBDIRECTORY(libpng)
 SET(ENABLE_SPVREMAPPER OFF CACHE BOOL "Enables building of SPVRemapper")
 SET(ENABLE_GLSLANG_BINARIES OFF CACHE BOOL "Builds glslangValidator and spirv-remap")
 SET(ENABLE_CTEST OFF CACHE BOOL "Enables testing")
-SET(BUILD_EXTERNAL OFF CACHE BOOL "Build external dependencies in /External")
+SET(ENABLE_OPT ON CACHE BOOL "Enables spirv-opt capability if present")
+SET(BUILD_EXTERNAL ON CACHE BOOL "Build external dependencies in /External")
+
+IF(NOT EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/glslang/External/spirv-tools)
+MESSAGE(FATAL_ERROR "SPIRV-Tools are not downloaded for Glslang build. Please enter Deps/glslang and run update_glslang_sources.py")
+ENDIF(NOT EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/glslang/External/spirv-tools)
+
 ADD_SUBDIRECTORY(glslang)
 
 # googletest
@@ -72,7 +78,7 @@ ENDIF(NOT NFEDEPS_LIB_DIRECTORY)
 
 
 # Copy outputs via a custom target
-ADD_CUSTOM_TARGET(NFEDepsPostBuild ALL DEPENDS glslang jpeg squish png_static zlibstatic gtest freetype
+ADD_CUSTOM_TARGET(NFEDepsPostBuild ALL DEPENDS glslang jpeg squish png_static zlibstatic gtest freetype SPIRV-Tools
     COMMENT "Commands called post-build NFE dependencies"
 )
 
@@ -96,6 +102,8 @@ ADD_CUSTOM_COMMAND(TARGET NFEDepsPostBuild POST_BUILD
                    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:OSDependent> ${NFEDEPS_LIB_DIRECTORY}
                    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:OGLCompiler> ${NFEDEPS_LIB_DIRECTORY}
                    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:SPIRV> ${NFEDEPS_LIB_DIRECTORY}
+                   COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:SPIRV-Tools> ${NFEDEPS_LIB_DIRECTORY}
+                   COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:SPIRV-Tools-opt> ${NFEDEPS_LIB_DIRECTORY}
                    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:gtest> ${NFEDEPS_LIB_DIRECTORY}
                    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:freetype> ${NFEDEPS_LIB_DIRECTORY}
                    VERBATIM
