@@ -27,6 +27,7 @@ const char* Type::TypeKindToString(const TypeKind kind)
     case TypeKind::NativeArray:         return "native array";
     case TypeKind::String:              return "string";
     case TypeKind::DynArray:            return "dynamic array";
+    case TypeKind::StaticArray:         return "static array";
     case TypeKind::UniquePtr:           return "unique pointer";
     case TypeKind::SharedPtr:           return "shared pointer";
     case TypeKind::Class:               return "simple class";
@@ -43,6 +44,7 @@ Type::Type()
     , mAlignment(0u)
     , mKind(TypeKind::Undefined)
     , mDefaultObject(nullptr)
+    , mIsDynamicType(false)
 {
 }
 
@@ -87,7 +89,8 @@ void Type::OnInitialize(const TypeInfo& info)
 
 void Type::PrintInfo() const
 {
-    NFE_LOG_DEBUG("%s (%s): size=%u, alignment=%u", GetName().Str(), TypeKindToString(GetKind()), GetSize(), GetAlignment());
+    NFE_LOG_DEBUG("%s (%s): size=%u, alignment=%u, dynamic=%s",
+        GetName().Str(), TypeKindToString(GetKind()), GetSize(), GetAlignment(), mIsDynamicType ? "true" : "false");
 }
 
 bool Type::IsA(const Type* baseType) const
@@ -97,6 +100,7 @@ bool Type::IsA(const Type* baseType) const
 
 void Type::ConstructObject(void* objectPtr) const
 {
+    NFE_ASSERT(!mIsDynamicType, "Dynamic type object should be used only for deserialization");
     NFE_ASSERT(mConstructor, "Cannot create an object of type '%s'", GetName().Str());
 
     mConstructor(objectPtr);
@@ -104,6 +108,8 @@ void Type::ConstructObject(void* objectPtr) const
 
 void Type::DestructObject(void* objectPtr) const
 {
+    NFE_ASSERT(!mIsDynamicType, "Dynamic type object should be used only for deserialization");
+
     if (mDestructor)
     {
         mDestructor(objectPtr);
@@ -112,6 +118,7 @@ void Type::DestructObject(void* objectPtr) const
 
 void* Type::CreateRawObject() const
 {
+    NFE_ASSERT(!mIsDynamicType, "Dynamic type object should be used only for deserialization");
     NFE_ASSERT(mConstructor, "Cannot create an object of type '%s'", GetName().Str());
 
     void* objectMemory = NFE_MALLOC(mSize, mAlignment);
@@ -125,6 +132,7 @@ void* Type::CreateRawObject() const
 
 void Type::DeleteObject(void* objectPtr) const
 {
+    NFE_ASSERT(!mIsDynamicType, "Dynamic type object should be used only for deserialization");
     NFE_ASSERT(mDestructor, "Cannot destroy an object of type '%s'", GetName().Str());
     
     if (objectPtr)
@@ -148,6 +156,8 @@ bool Type::CanBeMemcopied() const
 
 bool Type::SerializeTypeName(Common::OutputStream* stream, SerializationContext& context) const
 {
+    NFE_ASSERT(!mIsDynamicType, "Dynamic type object should be used only for deserialization");
+
     NFE_UNUSED(context);
 
     uint8 typeNameId = static_cast<uint8>(mTypeNameID);

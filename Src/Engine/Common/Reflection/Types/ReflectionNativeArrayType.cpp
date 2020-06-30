@@ -21,7 +21,7 @@ const String NativeArrayType::BuildTypeName(const Type* underlyingType, uint32 a
 }
 
 NativeArrayType::NativeArrayType(uint32 arraySize, const Type* elementType)
-    : ArrayType(elementType)
+    : IArrayType(elementType)
     , mArraySize(arraySize)
 {
     NFE_ASSERT(mArraySize > 0, "Native array size cannot be empty. Type: %s", GetName().Str());
@@ -32,7 +32,7 @@ void NativeArrayType::OnInitialize(const TypeInfo& info)
     NFE_ASSERT(info.size == mArraySize * mUnderlyingType->GetSize(), "Invalid array size");
     NFE_ASSERT(info.alignment == mUnderlyingType->GetAlignment(), "Invalid array alignment");
 
-    ArrayType::OnInitialize(info);
+    IArrayType::OnInitialize(info);
 
     mConstructor = [this] (void* object)
     {

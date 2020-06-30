@@ -17,7 +17,7 @@ namespace RTTI {
 /**
  * Type information for T[N] types.
  */
-class NFCOMMON_API NativeArrayType final : public ArrayType
+class NFCOMMON_API NativeArrayType final : public IArrayType
 {
     NFE_MAKE_NONCOPYABLE(NativeArrayType)
 

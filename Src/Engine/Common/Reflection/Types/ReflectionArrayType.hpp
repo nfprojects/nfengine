@@ -14,12 +14,12 @@ namespace RTTI {
 /**
  * Type information for generic array (native, DynArray, StaticArray, etc.)
  */
-class NFCOMMON_API ArrayType : public Type
+class NFCOMMON_API IArrayType : public Type
 {
-    NFE_MAKE_NONCOPYABLE(ArrayType)
+    NFE_MAKE_NONCOPYABLE(IArrayType)
 
 public:
-    NFE_FORCE_INLINE ArrayType(const Type* underlyingType)
+    NFE_FORCE_INLINE IArrayType(const Type* underlyingType)
         : mUnderlyingType(underlyingType)
     {
         NFE_ASSERT(mUnderlyingType, "Array's underlying type cannot be null. Type: %s", GetName().Str());

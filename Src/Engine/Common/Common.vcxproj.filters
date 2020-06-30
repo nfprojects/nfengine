@@ -695,11 +695,17 @@
     <ClInclude Include="Reflection\ReflectionMemberPath.hpp">
       <Filter>Reflection</Filter>
     </ClInclude>
+    <ClInclude Include="Reflection\Types\ReflectionStaticArrayType.hpp">
+      <Filter>Reflection\Types</Filter>
+    </ClInclude>
     <ClInclude Include="Containers\FixedArray.hpp">
       <Filter>Containers</Filter>
     </ClInclude>
     <ClInclude Include="Containers\FixedArrayImpl.hpp">
       <Filter>Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="Reflection\Types\ReflectionResizableArrayType.hpp">
+      <Filter>Reflection\Types</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1000,6 +1006,12 @@
     </ClCompile>
     <ClCompile Include="Reflection\ReflectionVariant.cpp">
       <Filter>Reflection</Filter>
+    </ClCompile>
+    <ClCompile Include="Reflection\Types\ReflectionStaticArrayType.cpp">
+      <Filter>Reflection\Types</Filter>
+    </ClCompile>
+    <ClCompile Include="Reflection\Types\ReflectionResizableArrayType.cpp">
+      <Filter>Reflection\Types</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

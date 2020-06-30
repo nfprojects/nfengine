@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include "ReflectionArrayType.hpp"
+#include "ReflectionResizableArrayType.hpp"
 #include "../ReflectionTypeResolver.hpp"
 #include "../../Containers/DynArray.hpp"
 
@@ -17,36 +17,28 @@ namespace RTTI {
 /**
  * Type information for DynArray<T> types.
  */
-class NFCOMMON_API DynArrayType : public ArrayType
+class NFCOMMON_API DynArrayType final : public IResizableArrayType
 {
     NFE_MAKE_NONCOPYABLE(DynArrayType)
 
 public:
     NFE_FORCE_INLINE DynArrayType(const Type* underlyingType)
-        : ArrayType(underlyingType)
+        : IResizableArrayType(underlyingType)
     { }
 
     static const Common::String BuildTypeName(const Type* underlyingType);
 
-    // get number of array elements
-    uint32 GetArraySize(const void* arrayObject) const;
-
-    virtual void* GetElementPointer(void* arrayObject, uint32 index) const override;
-    virtual const void* GetElementPointer(const void* arrayObject, uint32 index) const override;
-
     bool ReserveArray(void* arrayObject, uint32 targetCapacity) const;
-    bool ResizeArray(void* arrayObject, uint32 targetSize) const;
+
+    // ResizableArrayType interface
+    virtual uint32 GetArraySize(const void* arrayObject) const override final;
+    virtual uint32 GetMaxCapacity() const override final;
+    virtual bool ResizeArray(void* arrayObject, uint32 targetSize) const override final;
+    virtual void* GetElementPointer(void* arrayObject, uint32 index) const override final;
+    virtual const void* GetElementPointer(const void* arrayObject, uint32 index) const override final;
 
     // Type interface implementation
     virtual void PrintInfo() const override final;
-    virtual bool Serialize(const void* object, Common::IConfig& config, Common::ConfigValue& outValue, SerializationContext& context) const override final;
-    virtual bool Deserialize(void* outObject, const Common::IConfig& config, const Common::ConfigValue& value, SerializationContext& context) const override final;
-    virtual bool SerializeBinary(const void* object, Common::OutputStream* stream, SerializationContext& context) const override final;
-    virtual bool DeserializeBinary(void* outObject, Common::InputStream& stream, SerializationContext& context) const override final;
-    virtual bool SerializeTypeName(Common::OutputStream* stream, SerializationContext& context) const override final;
-    virtual bool TryLoadFromDifferentType(void* outObject, const Variant& otherObject) const override final;
-    virtual bool Compare(const void* objectA, const void* objectB) const override final;
-    virtual bool Clone(void* destObject, const void* sourceObject) const override final;
 };
 
 

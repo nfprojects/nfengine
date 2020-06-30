@@ -173,6 +173,12 @@ public:
      */
     bool Resize(uint32 size);
 
+    /**
+     * Resize the array and fill with a given template element.
+     * Element type must have default constructor.
+     */
+    bool Resize(uint32 size, const ElementType& defaultElement);
+
     // lower-case aliases for Begin()/End(), required by C++ for range-based 'for' to work
     NFE_INLINE ConstIterator begin() const { return this->Begin(); }
     NFE_INLINE ConstIterator cbegin() const { return this->Begin(); }
@@ -182,10 +188,14 @@ public:
     NFE_INLINE Iterator end() { return this->End(); }
 
 private:
-    alignas(alignof(ElementType)) uint8 mData[MaxSize * sizeof(ElementType)];
 
     // number of elements in the array
     uint32 mSize;
+
+    static constexpr size_t ElementAlignment = alignof(ElementType);
+    static constexpr size_t BufferSize = MaxSize * sizeof(ElementType);
+
+    alignas(ElementAlignment) uint8 mData[BufferSize];
 };
 
 

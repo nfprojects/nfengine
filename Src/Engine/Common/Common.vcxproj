@@ -182,7 +182,9 @@
     <ClInclude Include="Reflection\Types\ReflectionFundamentalType.hpp" />
     <ClInclude Include="Reflection\Types\ReflectionNativeArrayType.hpp" />
     <ClInclude Include="Reflection\Types\ReflectionPointerType.hpp" />
+    <ClInclude Include="Reflection\Types\ReflectionResizableArrayType.hpp" />
     <ClInclude Include="Reflection\Types\ReflectionSharedPtrType.hpp" />
+    <ClInclude Include="Reflection\Types\ReflectionStaticArrayType.hpp" />
     <ClInclude Include="Reflection\Types\ReflectionStringType.hpp" />
     <ClInclude Include="Reflection\Types\ReflectionType.hpp" />
     <ClInclude Include="Reflection\Types\ReflectionDynArrayType.hpp" />
@@ -312,7 +314,9 @@
     <ClCompile Include="Reflection\Types\ReflectionEnumType.cpp" />
     <ClCompile Include="Reflection\Types\ReflectionFundamentalType.cpp" />
     <ClCompile Include="Reflection\Types\ReflectionNativeArrayType.cpp" />
+    <ClCompile Include="Reflection\Types\ReflectionResizableArrayType.cpp" />
     <ClCompile Include="Reflection\Types\ReflectionSharedPtrType.cpp" />
+    <ClCompile Include="Reflection\Types\ReflectionStaticArrayType.cpp" />
     <ClCompile Include="Reflection\Types\ReflectionStringType.cpp" />
     <ClCompile Include="Reflection\Types\ReflectionType.cpp" />
     <ClCompile Include="Reflection\Types\ReflectionPointerType.cpp" />

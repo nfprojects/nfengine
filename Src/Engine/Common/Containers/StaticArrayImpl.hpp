@@ -451,15 +451,48 @@ bool StaticArray<ElementType, MaxSize>::Resize(uint32 size)
 {
     NFE_ASSERT(size <= MaxSize, "StaticArray size exceeded");
 
-    for (uint32 i = 0; i < size; ++i)
+    const uint32 oldSize = this->mSize;
+
+    // call destructors
+    for (uint32 i = size; i < oldSize; ++i)
+    {
+        Data()[i].~ElementType();
+    }
+
+    // initialize new elements
+    for (uint32 i = oldSize; i < size; ++i)
     {
         new (Data() + i) ElementType;
     }
 
     this->mSize = size;
+
     return true;
 }
 
+template<typename ElementType, uint32 MaxSize>
+bool StaticArray<ElementType, MaxSize>::Resize(uint32 size, const ElementType& defaultElement)
+{
+    NFE_ASSERT(size <= MaxSize, "StaticArray size exceeded");
+
+    const uint32 oldSize = this->mSize;
+
+    // call destructors
+    for (uint32 i = size; i < oldSize; ++i)
+    {
+        Data()[i].~ElementType();
+    }
+
+    // initialize new elements
+    for (uint32 i = oldSize; i < size; ++i)
+    {
+        new (Data() + i) ElementType(defaultElement);
+    }
+
+    this->mSize = size;
+
+    return true;
+}
 
 } // namespace Common
 } // namespace NFE

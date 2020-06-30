@@ -66,6 +66,7 @@ public:
     virtual bool SerializeTypeName(Common::OutputStream* stream, SerializationContext& context) const override;
     virtual bool Compare(const void* objectA, const void* objectB) const override;
     virtual bool Clone(void* destObject, const void* sourceObject) const override;
+    virtual bool CanBeMemcopied() const override final { return true; }
 
 private:
     virtual void OnInitialize(const TypeInfo& info) override;

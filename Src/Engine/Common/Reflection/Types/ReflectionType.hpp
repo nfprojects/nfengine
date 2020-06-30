@@ -27,6 +27,7 @@ enum class TypeKind : uint8
     NativeArray,        // T[N] types
     String,             // NFE::String type
     DynArray,           // NFE::DynArray<T> types
+    StaticArray,        // NFE::StaticArray<T,N> types
     UniquePtr,          // NFE::UniquePtr<T> types
     SharedPtr,          // NFE::SharedPtr<T> types
     Class,              // class type
@@ -53,9 +54,10 @@ enum class TypeNameID : uint8
     Enumeration         = 0x11,
     NativeArray         = 0x12,
     DynArray            = 0x13,
-    UniquePtr           = 0x14,
-    SharedPtr           = 0x15,
-    String              = 0x16,
+    StaticArray         = 0x14,
+    UniquePtr           = 0x15,
+    SharedPtr           = 0x16,
+    String              = 0x17,
 };
 
 using ConstructorFunc = std::function<void(void*)>;
@@ -105,6 +107,9 @@ public:
 
     // Get type kind
     NFE_FORCE_INLINE TypeKind GetKind() const { return mKind; }
+
+    // Check if the type is dynamic
+    NFE_FORCE_INLINE bool IsDynamicType() const { return mIsDynamicType; }
 
     // Get type name ID
     NFE_FORCE_INLINE TypeNameID GetTypeNameID() const { return mTypeNameID; }
@@ -213,6 +218,14 @@ protected:
 
     uint32 mSize;
     uint32 mAlignment;
+
+    // Dynamic types are created during deserialization for types that are not fully known at the runtime.
+    // For example, there could be "UniquePtr<int32>" type object created for that type defined in the code,
+    // but in the data there's an unknown (unregistered) type "UniquePtr<int8>".
+    // This will happen when a property of type "UniquePtr<int8>" was changed in the code into "UniquePtr<int32>",
+    // but the serialized data remained the same and is now being deserialized (using the new code).
+    // In this case, the type object for type "UniquePtr<int8>" will be created at the runtime, thus it's "dynamic".
+    bool mIsDynamicType : 1;
 
     ConstructorFunc mConstructor;
     DestructorFunc mDestructor;

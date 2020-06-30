@@ -241,6 +241,9 @@
     <ClCompile Include="TestCases\Containers\FixedArrayTest.cpp">
       <Filter>TestCases\Containers</Filter>
     </ClCompile>
+    <ClCompile Include="TestCases\Reflection\ReflectionStaticArrayTest.cpp">
+      <Filter>TestCases\Reflection</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="PCH.hpp" />

@@ -164,6 +164,7 @@ struct ClassTypeInfo;
 class Type;
 class ClassType;
 class DynArrayType;
+class StaticArrayType;
 class TypeRegistry;
 class Member;
 class Variant;

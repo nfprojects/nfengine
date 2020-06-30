@@ -3,7 +3,7 @@
  */
 
 #include "PCH.hpp"
-#include "ReflectionDynArrayType.hpp"
+#include "ReflectionResizableArrayType.hpp"
 #include "ReflectionNativeArrayType.hpp"
 #include "../SerializationContext.hpp"
 #include "../../Config/ConfigInterface.hpp"
@@ -16,128 +16,7 @@ namespace RTTI {
 
 using namespace Common;
 
-// hacky type punning - this structure must match Common:DynArray layout
-using DynArrayAccessor = DynArray<char>;
-
-const Common::String DynArrayType::BuildTypeName(const Type* underlyingType)
-{
-    NFE_ASSERT(underlyingType, "Invalid type");
-    return Common::String("DynArray<") + underlyingType->GetName() + '>';
-}
-
-void DynArrayType::PrintInfo() const
-{
-    Type::PrintInfo();
-}
-
-uint32 DynArrayType::GetArraySize(const void* arrayObject) const
-{
-    const DynArrayAccessor& typedObject = *static_cast<const DynArrayAccessor*>(arrayObject);
-    return typedObject.Size();
-}
-
-uint32 DynArrayType::GetMaxCapacity() const
-{
-    return UINT32_MAX;
-}
-
-bool DynArrayType::ReserveArray(void* arrayObject, uint32 targetCapacity) const
-{
-    NFE_ASSERT(arrayObject, "Invalid array object");
-
-    DynArrayAccessor* accessor = BitCast<DynArrayAccessor*>(arrayObject);
-    const Type* elementType = GetUnderlyingType();
-    const size_t objectSize = elementType->GetSize();
-
-    if (targetCapacity <= accessor->mAllocSize)
-    {
-        // smaller that allocated - ignore
-        return true;
-    }
-
-    uint32 newCapacity = accessor->mAllocSize;
-    while (targetCapacity > newCapacity)
-    {
-        // grow by 50%
-        newCapacity += Math::Max<uint32>(1, newCapacity / 2);
-    }
-
-    char* newBuffer = (char*)NFE_MALLOC(newCapacity * objectSize, elementType->GetAlignment());
-    if (!newBuffer)
-    {
-        // memory allocation failed
-        return false;
-    }
-
-    // TODO move constructor
-    // move objects
-    for (uint32 i = 0; i < accessor->mSize; ++i)
-    {
-        elementType->ConstructObject(newBuffer + i * objectSize);
-        elementType->Clone(newBuffer + i * objectSize, accessor->mElements + i * objectSize);
-        elementType->DestructObject(accessor->mElements + i * objectSize);
-    }
-
-    // replace buffer
-    NFE_FREE(accessor->mElements);
-    accessor->mElements = (char*)newBuffer;
-    accessor->mAllocSize = newCapacity;
-    return true;
-}
-
-bool DynArrayType::ResizeArray(void* arrayObject, uint32 targetSize) const
-{
-    NFE_ASSERT(arrayObject, "Invalid array object");
-
-    DynArrayAccessor* accessor = BitCast<DynArrayAccessor*>(arrayObject);
-    const Type* elementType = GetUnderlyingType();
-    const size_t objectSize = elementType->GetSize();
-
-    const uint32 oldSize = accessor->mSize;
-
-    // call destructors
-    for (uint32 i = targetSize; i < oldSize; ++i)
-    {
-        elementType->DestructObject(accessor->mElements + i * objectSize);
-    }
-
-    if (!ReserveArray(arrayObject, targetSize))
-    {
-        return false;
-    }
-
-    // initialize new elements
-    for (uint32 i = oldSize; i < targetSize; ++i)
-    {
-        elementType->ConstructObject(accessor->mElements + i * objectSize);
-    }
-
-    accessor->mSize = targetSize;
-    return true;
-}
-
-void* DynArrayType::GetElementPointer(void* arrayObject, uint32 index) const
-{
-    NFE_ASSERT(arrayObject, "Invalid array object");
-
-    const DynArrayAccessor* accessor = BitCast<const DynArrayAccessor*>(arrayObject);
-    NFE_ASSERT(index < accessor->mSize, "DynArray index out of bounds. Index=%u, Size=%u", index, accessor->mSize);
-
-    return accessor->mElements + index * GetUnderlyingType()->GetSize();
-}
-
-const void* DynArrayType::GetElementPointer(const void* arrayObject, uint32 index) const
-{
-    NFE_ASSERT(arrayObject, "Invalid array object");
-
-    const DynArrayAccessor* accessor = BitCast<const DynArrayAccessor*>(arrayObject);
-    NFE_ASSERT(index < accessor->mSize, "DynArray index out of bounds. Index=%u, Size=%u", index, accessor->mSize);
-
-    return accessor->mElements + index * GetUnderlyingType()->GetSize();
-}
-
-/*
-bool DynArrayType::TryLoadFromDifferentType(void* outObject, const Variant& otherObject) const
+bool IResizableArrayType::TryLoadFromDifferentType(void* outObject, const Variant& otherObject) const
 {
     NFE_ASSERT(otherObject.GetType(), "Empty variant");
 
@@ -174,7 +53,7 @@ bool DynArrayType::TryLoadFromDifferentType(void* outObject, const Variant& othe
     return true;
 }
 
-bool DynArrayType::Serialize(const void* object, IConfig& config, ConfigValue& outValue, SerializationContext& context) const
+bool IResizableArrayType::Serialize(const void* object, IConfig& config, ConfigValue& outValue, SerializationContext& context) const
 {
     using namespace Common;
 
@@ -203,7 +82,7 @@ bool DynArrayType::Serialize(const void* object, IConfig& config, ConfigValue& o
     return true;
 }
 
-bool DynArrayType::Deserialize(void* outObject, const IConfig& config, const ConfigValue& value, SerializationContext& context) const
+bool IResizableArrayType::Deserialize(void* outObject, const IConfig& config, const ConfigValue& value, SerializationContext& context) const
 {
     using namespace Common;
 
@@ -243,7 +122,7 @@ bool DynArrayType::Deserialize(void* outObject, const IConfig& config, const Con
     return true;
 }
 
-bool DynArrayType::SerializeBinary(const void* object, OutputStream* stream, SerializationContext& context) const
+bool IResizableArrayType::SerializeBinary(const void* object, OutputStream* stream, SerializationContext& context) const
 {
     const uint32 arraySize = GetArraySize(object);
 
@@ -288,7 +167,7 @@ bool DynArrayType::SerializeBinary(const void* object, OutputStream* stream, Ser
     return true;
 }
 
-bool DynArrayType::DeserializeBinary(void* outObject, InputStream& stream, SerializationContext& context) const
+bool IResizableArrayType::DeserializeBinary(void* outObject, InputStream& stream, SerializationContext& context) const
 {
     uint32 arraySize;
     if (!stream.ReadCompressedUint(arraySize))
@@ -332,7 +211,7 @@ bool DynArrayType::DeserializeBinary(void* outObject, InputStream& stream, Seria
     return true;
 }
 
-bool DynArrayType::SerializeTypeName(Common::OutputStream* stream, SerializationContext& context) const
+bool IResizableArrayType::SerializeTypeName(Common::OutputStream* stream, SerializationContext& context) const
 {
     // write header
     if (!Type::SerializeTypeName(stream, context))
@@ -344,7 +223,7 @@ bool DynArrayType::SerializeTypeName(Common::OutputStream* stream, Serialization
     return mUnderlyingType->SerializeTypeName(stream, context);
 }
 
-bool DynArrayType::Compare(const void* objectA, const void* objectB) const
+bool IResizableArrayType::Compare(const void* objectA, const void* objectB) const
 {
     const uint32 arraySizeA = GetArraySize(objectA);
     const uint32 arraySizeB = GetArraySize(objectB);
@@ -365,7 +244,7 @@ bool DynArrayType::Compare(const void* objectA, const void* objectB) const
     return true;
 }
 
-bool DynArrayType::Clone(void* destObject, const void* sourceObject) const
+bool IResizableArrayType::Clone(void* destObject, const void* sourceObject) const
 {
     const Type* underlyingType = GetUnderlyingType();
     const uint32 targetSize = GetArraySize(sourceObject);
@@ -401,7 +280,6 @@ bool DynArrayType::Clone(void* destObject, const void* sourceObject) const
 
     return success;
 }
-*/
 
 } // namespace RTTI
 } // namespace NFE
