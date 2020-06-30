@@ -12,6 +12,7 @@
 
 #include "../Containers/HashMap.hpp"
 #include "../Containers/StringView.hpp"
+#include "../System/RWLock.hpp"
 
 
 namespace NFE {
@@ -39,18 +40,22 @@ public:
      * Find existing type by typeid hash.
      */
     virtual const Type* GetExistingType(size_t hash) const override;
+    const Type* GetExistingType_NoLock(size_t hash) const;
 
     /**
      * Find existing type by name.
      */
     virtual const Type* GetExistingType(const char* name) const override;
-    const Type* GetExistingType(const Common::StringView name) const;
+    const Type* GetExistingType_NoLock(const char* name) const;
+    const Type* GetExistingType_NoLock(const Common::StringView name) const;
 
     /**
      * Register non-existing type.
      */
     virtual void RegisterType(size_t hash, Type* type) override;
     virtual void RegisterTypeName(const Common::StringView name, Type* type) override;
+    void RegisterType_NoLock(size_t hash, Type* type);
+    void RegisterTypeName_NoLock(const Common::StringView name, Type* type);
 
     /**
      * Unregister all the types.
@@ -65,6 +70,15 @@ public:
 
 private:
     TypeRegistry() = default;
+
+    TypeDeserializationResult DeserializeClassType(const Type*& outType, Common::InputStream& stream, SerializationContext& context);
+    TypeDeserializationResult DeserializeEnumType(const Type*& outType, Common::InputStream& stream, SerializationContext& context);
+    TypeDeserializationResult DeserializeDynArrayType(const Type*& outType, Common::InputStream& stream, SerializationContext& context);
+    TypeDeserializationResult DeserializeNativeArrayType(const Type*& outType, Common::InputStream& stream, SerializationContext& context);
+    TypeDeserializationResult DeserializeUniquePtrType(const Type*& outType, Common::InputStream& stream, SerializationContext& context);
+    TypeDeserializationResult DeserializeSharedPtrType(const Type*& outType, Common::InputStream& stream, SerializationContext& context);
+
+    mutable Common::RWLock mTypesListLock;
 
     Common::HashMap<Common::StringView, const Type*> mTypesByName;
     Common::HashMap<size_t, Type*> mTypesByHash;

@@ -154,7 +154,7 @@ public:
     float f32 = 0.0f;
     TestEnum e = TestEnum::OptionA;
     TestClassWithFundamentalMembers obj;
-    TestClassWithFundamentalMembers arrayOfObj[2];
+    TestClassWithFundamentalMembers arrayOfObj[3];
     NFE::Common::DynArray<TestClassWithFundamentalMembers> dynArrayOfObj;
     NFE::Common::UniquePtr<NFE::IObject> uniquePtr;
     NFE::Common::SharedPtr<NFE::IObject> sharedPtrA;

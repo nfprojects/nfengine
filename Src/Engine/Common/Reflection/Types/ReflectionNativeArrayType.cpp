@@ -12,6 +12,14 @@
 namespace NFE {
 namespace RTTI {
 
+using namespace Common;
+
+const String NativeArrayType::BuildTypeName(const Type* underlyingType, uint32 arraySize)
+{
+    NFE_ASSERT(underlyingType, "Invalid type");
+    return String::Printf("%s[%u]", underlyingType->GetName().Str(), arraySize);
+}
+
 NativeArrayType::NativeArrayType(uint32 arraySize, const Type* elementType)
     : ArrayType(elementType)
     , mArraySize(arraySize)
@@ -21,6 +29,9 @@ NativeArrayType::NativeArrayType(uint32 arraySize, const Type* elementType)
 
 void NativeArrayType::OnInitialize(const TypeInfo& info)
 {
+    NFE_ASSERT(info.size == mArraySize * mUnderlyingType->GetSize(), "Invalid array size");
+    NFE_ASSERT(info.alignment == mUnderlyingType->GetAlignment(), "Invalid array alignment");
+
     ArrayType::OnInitialize(info);
 
     mConstructor = [this] (void* object)
@@ -148,7 +159,7 @@ bool NativeArrayType::CanBeMemcopied() const
     return mUnderlyingType->CanBeMemcopied();
 }
 
-bool NativeArrayType::Serialize(const void* object, Common::IConfig& config, Common::ConfigValue& outValue, SerializationContext& context) const
+bool NativeArrayType::Serialize(const void* object, IConfig& config, ConfigValue& outValue, SerializationContext& context) const
 {
     using namespace Common;
 
@@ -178,7 +189,7 @@ bool NativeArrayType::Serialize(const void* object, Common::IConfig& config, Com
     return true;
 }
 
-bool NativeArrayType::Deserialize(void* outObject, const Common::IConfig& config, const Common::ConfigValue& value, SerializationContext& context) const
+bool NativeArrayType::Deserialize(void* outObject, const IConfig& config, const ConfigValue& value, SerializationContext& context) const
 {
     using namespace Common;
 
@@ -228,7 +239,7 @@ bool NativeArrayType::Deserialize(void* outObject, const Common::IConfig& config
     return true;
 }
 
-bool NativeArrayType::SerializeBinary(const void* object, Common::OutputStream* stream, SerializationContext& context) const
+bool NativeArrayType::SerializeBinary(const void* object, OutputStream* stream, SerializationContext& context) const
 {
     const Type* elementType = GetUnderlyingType();
     const size_t elementSize = elementType->GetSize();
@@ -260,7 +271,7 @@ bool NativeArrayType::SerializeBinary(const void* object, Common::OutputStream* 
     return true;
 }
 
-bool NativeArrayType::DeserializeBinary(void* outObject, Common::InputStream& stream, SerializationContext& context) const
+bool NativeArrayType::DeserializeBinary(void* outObject, InputStream& stream, SerializationContext& context) const
 {
     const Type* elementType = GetUnderlyingType();
     const size_t elementSize = elementType->GetSize();
@@ -289,6 +300,26 @@ bool NativeArrayType::DeserializeBinary(void* outObject, Common::InputStream& st
     return true;
 }
 
+bool NativeArrayType::SerializeTypeName(OutputStream* stream, SerializationContext& context) const
+{
+    // write header
+    if (!Type::SerializeTypeName(stream, context))
+    {
+        return false;
+    }
+
+    // append array size
+    if (stream)
+    {
+        if (!stream->WriteCompressedPositiveInt(mArraySize))
+        {
+            return false;
+        }
+    }
+
+    // append inner type
+    return mUnderlyingType->SerializeTypeName(stream, context);
+}
 
 } // namespace RTTI
 } // namespace NFE

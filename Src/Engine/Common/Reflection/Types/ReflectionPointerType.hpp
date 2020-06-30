@@ -33,6 +33,7 @@ public:
 
     virtual bool Compare(const void* objectA, const void* objectB) const override;
     virtual bool Clone(void* destObject, const void* sourceObject) const override;
+    virtual bool SerializeTypeName(Common::OutputStream* stream, SerializationContext& context) const override;
 
 protected:
     const Type* mUnderlyingType;

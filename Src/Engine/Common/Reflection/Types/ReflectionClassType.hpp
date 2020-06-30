@@ -75,6 +75,7 @@ public:
     virtual bool SerializeBinary(const void* object, Common::OutputStream* stream, SerializationContext& context) const override;
     virtual bool Deserialize(void* outObject, const Common::IConfig& config, const Common::ConfigValue& value, SerializationContext& context) const override;
     virtual bool DeserializeBinary(void* outObject, Common::InputStream& stream, SerializationContext& context) const override;
+    virtual bool SerializeTypeName(Common::OutputStream* stream, SerializationContext& context) const override;
     virtual bool Compare(const void* objectA, const void* objectB) const override;
     virtual bool Clone(void* destObject, const void* sourceObject) const override;
 
@@ -132,6 +133,7 @@ public:
     {
         ClassTypeInfo typeInfo;
         typeInfo.kind = TypeKind::Class;
+        typeInfo.typeNameID = TypeNameID::Class;
         typeInfo.size = sizeof(T);
         typeInfo.alignment = std::alignment_of_v<T>;
         typeInfo.constructor = GetObjectConstructor<T>();

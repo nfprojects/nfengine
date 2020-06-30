@@ -19,6 +19,12 @@ using namespace Common;
 // hacky type punning - this structure must match Common:DynArray layout
 using DynArrayAccessor = DynArray<char>;
 
+const Common::String DynArrayType::BuildTypeName(const Type* underlyingType)
+{
+    NFE_ASSERT(underlyingType, "Invalid type");
+    return Common::String("DynArray<") + underlyingType->GetName() + '>';
+}
+
 void DynArrayType::PrintInfo() const
 {
     Type::PrintInfo();
@@ -318,6 +324,18 @@ bool DynArrayType::DeserializeBinary(void* outObject, InputStream& stream, Seria
     }
 
     return true;
+}
+
+bool DynArrayType::SerializeTypeName(Common::OutputStream* stream, SerializationContext& context) const
+{
+    // write header
+    if (!Type::SerializeTypeName(stream, context))
+    {
+        return false;
+    }
+
+    // append inner type
+    return mUnderlyingType->SerializeTypeName(stream, context);
 }
 
 bool DynArrayType::Compare(const void* objectA, const void* objectB) const

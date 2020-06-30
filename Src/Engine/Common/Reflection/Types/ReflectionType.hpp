@@ -34,6 +34,30 @@ enum class TypeKind : uint8
     // TODO bitfields
 };
 
+// DO NOT CHANGE EXISTING IDs - IT WOULD BREAK THE SERIALIZATION !!!
+enum class TypeNameID : uint8
+{
+    Invalid             = 0x0,
+    Fundamental_Bool    = 0x1,
+    Fundamental_Uint8   = 0x2,
+    Fundamental_Uint16  = 0x3,
+    Fundamental_Uint32  = 0x4,
+    Fundamental_Uint64  = 0x5,
+    Fundamental_Int8    = 0x6,
+    Fundamental_Int16   = 0x7,
+    Fundamental_Int32   = 0x8,
+    Fundamental_Int64   = 0x9,
+    Fundamental_Float   = 0xA,
+    Fundamental_Double  = 0xB,
+    Class               = 0x10,
+    Enumeration         = 0x11,
+    NativeArray         = 0x12,
+    DynArray            = 0x13,
+    UniquePtr           = 0x14,
+    SharedPtr           = 0x15,
+    String              = 0x16,
+};
+
 using ConstructorFunc = std::function<void(void*)>;
 using DestructorFunc = std::function<void(void*)>;
 
@@ -43,19 +67,13 @@ using DestructorFunc = std::function<void(void*)>;
 struct TypeInfo
 {
 public:
-    const char* name;
-    size_t size;
-    size_t alignment;
-    TypeKind kind;
+    const char* name = nullptr;
+    size_t size = 0u;
+    size_t alignment = 0u;
+    TypeKind kind = TypeKind::Undefined;
+    TypeNameID typeNameID = TypeNameID::Invalid;
     ConstructorFunc constructor;
     DestructorFunc destructor;
-
-    TypeInfo()
-        : name(nullptr)
-        , size(0)
-        , alignment(0)
-        , kind(TypeKind::Undefined)
-    { }
 };
 
 /**
@@ -85,8 +103,11 @@ public:
     // Get type alignment (in bytes)
     NFE_FORCE_INLINE size_t GetAlignment() const { return static_cast<size_t>(mAlignment); }
 
-    // Get type kind.
+    // Get type kind
     NFE_FORCE_INLINE TypeKind GetKind() const { return mKind; }
+
+    // Get type name ID
+    NFE_FORCE_INLINE TypeNameID GetTypeNameID() const { return mTypeNameID; }
 
     // Can be constructed (without arguments)?
     NFE_FORCE_INLINE bool IsConstructible() const { return mConstructor != nullptr; }
@@ -182,6 +203,9 @@ public:
     // Applies to fundamental types and POD structures
     virtual bool CanBeMemcopied() const;
 
+    // Write type name in binary form
+    virtual bool SerializeTypeName(Common::OutputStream* stream, SerializationContext& context) const;
+
 protected:
 
     // type name (including namespace)
@@ -194,6 +218,7 @@ protected:
     DestructorFunc mDestructor;
 
     TypeKind mKind;
+    TypeNameID mTypeNameID;
 
     const void* mDefaultObject;
 

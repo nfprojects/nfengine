@@ -65,5 +65,17 @@ bool PointerType::Clone(void* destObject, const void* sourceObject) const
     return true;
 }
 
+bool PointerType::SerializeTypeName(Common::OutputStream* stream, SerializationContext& context) const
+{
+    // write header
+    if (!Type::SerializeTypeName(stream, context))
+    {
+        return false;
+    }
+
+    // append inner type
+    return mUnderlyingType->SerializeTypeName(stream, context);
+}
+
 } // namespace RTTI
 } // namespace NFE

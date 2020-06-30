@@ -58,13 +58,14 @@ public:
     void WriteRawValue(void* object, uint64 rawValue) const;
     uint64 ReadRawValue(const void* object) const;
 
-    void PrintInfo() const override;
-    bool Serialize(const void* object, Common::IConfig& config, Common::ConfigValue& outValue, SerializationContext& context) const override;
-    bool SerializeBinary(const void* object, Common::OutputStream* stream, SerializationContext& context) const override;
-    bool Deserialize(void* outObject, const Common::IConfig& config, const Common::ConfigValue& value, SerializationContext& context) const override;
-    bool DeserializeBinary(void* outObject, Common::InputStream& stream, SerializationContext& context) const override;
-    bool Compare(const void* objectA, const void* objectB) const override;
-    bool Clone(void* destObject, const void* sourceObject) const override;
+    virtual void PrintInfo() const override;
+    virtual bool Serialize(const void* object, Common::IConfig& config, Common::ConfigValue& outValue, SerializationContext& context) const override;
+    virtual bool SerializeBinary(const void* object, Common::OutputStream* stream, SerializationContext& context) const override;
+    virtual bool Deserialize(void* outObject, const Common::IConfig& config, const Common::ConfigValue& value, SerializationContext& context) const override;
+    virtual bool DeserializeBinary(void* outObject, Common::InputStream& stream, SerializationContext& context) const override;
+    virtual bool SerializeTypeName(Common::OutputStream* stream, SerializationContext& context) const override;
+    virtual bool Compare(const void* objectA, const void* objectB) const override;
+    virtual bool Clone(void* destObject, const void* sourceObject) const override;
 
 private:
     virtual void OnInitialize(const TypeInfo& info) override;
@@ -100,6 +101,7 @@ private:
             {                                                                       \
                 TypeInfoClass typeInfo;                                             \
                 typeInfo.kind = TypeKind::Enumeration;                              \
+                typeInfo.typeNameID = TypeNameID::Enumeration;                      \
                 typeInfo.name = #T;                                                 \
                 typeInfo.size = sizeof(T);                                          \
                 typeInfo.alignment = alignof(T);                                    \

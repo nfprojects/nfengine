@@ -19,6 +19,8 @@ class NFCOMMON_API SharedPtrType : public PointerType
 public:
     SharedPtrType(const Type* underlyingType);
 
+    static const Common::String BuildTypeName(const Type* underlyingType);
+
     virtual void OnInitialize(const TypeInfo& info) override;
 
     // reset with an existing IObject
@@ -55,10 +57,11 @@ public:
     {
         const Type* underlyingType = ResolveType<T>();
 
-        const Common::String typeName = Common::String("NFE::Common::SharedPtr<") + underlyingType->GetName() + '>';
+        const Common::String typeName = SharedPtrType::BuildTypeName(underlyingType);
 
         TypeInfo typeInfo;
         typeInfo.kind = TypeKind::SharedPtr;
+        typeInfo.typeNameID = TypeNameID::SharedPtr;
         typeInfo.size = sizeof(ObjectType);
         typeInfo.alignment = alignof(ObjectType);
         typeInfo.name = typeName.Str();

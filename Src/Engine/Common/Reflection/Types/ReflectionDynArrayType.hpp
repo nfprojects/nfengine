@@ -26,6 +26,8 @@ public:
         : ArrayType(underlyingType)
     { }
 
+    static const Common::String BuildTypeName(const Type* underlyingType);
+
     // get number of array elements
     uint32 GetArraySize(const void* arrayObject) const;
 
@@ -41,6 +43,7 @@ public:
     virtual bool Deserialize(void* outObject, const Common::IConfig& config, const Common::ConfigValue& value, SerializationContext& context) const override final;
     virtual bool SerializeBinary(const void* object, Common::OutputStream* stream, SerializationContext& context) const override final;
     virtual bool DeserializeBinary(void* outObject, Common::InputStream& stream, SerializationContext& context) const override final;
+    virtual bool SerializeTypeName(Common::OutputStream* stream, SerializationContext& context) const override final;
     virtual bool TryLoadFromDifferentType(void* outObject, const Variant& otherObject) const override final;
     virtual bool Compare(const void* objectA, const void* objectB) const override final;
     virtual bool Clone(void* destObject, const void* sourceObject) const override final;
@@ -66,12 +69,13 @@ public:
 
     static void InitializeType(Type* type)
     {
-        const Type* templateArgumentType = ResolveType<T>();
+        const Type* underlyingType = ResolveType<T>();
 
-        const Common::String typeName = Common::String("DynArray<") + templateArgumentType->GetName() + '>';
+        const Common::String typeName = DynArrayType::BuildTypeName(underlyingType);
 
         TypeInfo typeInfo;
         typeInfo.kind = TypeKind::DynArray;
+        typeInfo.typeNameID = TypeNameID::DynArray;
         typeInfo.size = sizeof(ObjectType);
         typeInfo.alignment = alignof(ObjectType);
         typeInfo.name = typeName.Str();

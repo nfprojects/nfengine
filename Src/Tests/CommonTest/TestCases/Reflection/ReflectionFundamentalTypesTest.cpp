@@ -185,7 +185,7 @@ TEST(ReflectionFundamentalTypeTest, VerifyString)
     const auto* type = GetType<String>();
 
     ASSERT_NE(nullptr, type);
-    EXPECT_EQ("NFE::Common::String", type->GetName());
+    EXPECT_EQ("String", type->GetName());
     EXPECT_EQ(TypeKind::String, type->GetKind());
     EXPECT_EQ(sizeof(NFE::Common::String), type->GetSize());
     EXPECT_EQ(alignof(NFE::Common::String), type->GetAlignment());

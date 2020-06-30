@@ -93,7 +93,7 @@ public:
 /**
  * Declare a type. This must be placed OUTSIDE namespace.
  */
-#define NFE_DECLARE_FUNDAMENTAL_TYPE(T)                                                 \
+#define NFE_DECLARE_FUNDAMENTAL_TYPE(T, ID)                                             \
     static_assert(std::is_fundamental_v<T>, "Given type is not fundamental");           \
     namespace NFE { namespace RTTI {                                                    \
         template <>                                                                     \
@@ -110,6 +110,7 @@ public:
             {                                                                           \
                 TypeInfo typeInfo;                                                      \
                 typeInfo.kind = TypeKind::Fundamental;                                  \
+                typeInfo.typeNameID = TypeNameID::ID;                                   \
                 typeInfo.name = #T;                                                     \
                 typeInfo.size = sizeof(T);                                              \
                 typeInfo.alignment = alignof(T);                                        \
@@ -123,16 +124,16 @@ public:
 //////////////////////////////////////////////////////////////////////////
 
 
-NFE_DECLARE_FUNDAMENTAL_TYPE(bool)
-NFE_DECLARE_FUNDAMENTAL_TYPE(float)
-NFE_DECLARE_FUNDAMENTAL_TYPE(double)
+NFE_DECLARE_FUNDAMENTAL_TYPE(bool, Fundamental_Bool)
+NFE_DECLARE_FUNDAMENTAL_TYPE(float, Fundamental_Float)
+NFE_DECLARE_FUNDAMENTAL_TYPE(double, Fundamental_Double)
 
-NFE_DECLARE_FUNDAMENTAL_TYPE(NFE::uint8)
-NFE_DECLARE_FUNDAMENTAL_TYPE(NFE::uint16)
-NFE_DECLARE_FUNDAMENTAL_TYPE(NFE::uint32)
-NFE_DECLARE_FUNDAMENTAL_TYPE(NFE::uint64)
+NFE_DECLARE_FUNDAMENTAL_TYPE(NFE::uint8, Fundamental_Uint8)
+NFE_DECLARE_FUNDAMENTAL_TYPE(NFE::uint16, Fundamental_Uint16)
+NFE_DECLARE_FUNDAMENTAL_TYPE(NFE::uint32, Fundamental_Uint32)
+NFE_DECLARE_FUNDAMENTAL_TYPE(NFE::uint64, Fundamental_Uint64)
 
-NFE_DECLARE_FUNDAMENTAL_TYPE(NFE::int8)
-NFE_DECLARE_FUNDAMENTAL_TYPE(NFE::int16)
-NFE_DECLARE_FUNDAMENTAL_TYPE(NFE::int32)
-NFE_DECLARE_FUNDAMENTAL_TYPE(NFE::int64)
+NFE_DECLARE_FUNDAMENTAL_TYPE(NFE::int8, Fundamental_Int8)
+NFE_DECLARE_FUNDAMENTAL_TYPE(NFE::int16, Fundamental_Int16)
+NFE_DECLARE_FUNDAMENTAL_TYPE(NFE::int32, Fundamental_Int32)
+NFE_DECLARE_FUNDAMENTAL_TYPE(NFE::int64, Fundamental_Int64)

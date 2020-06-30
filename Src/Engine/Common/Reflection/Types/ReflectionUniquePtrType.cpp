@@ -22,6 +22,12 @@ UniquePtrType::UniquePtrType(const Type* underlyingType)
     : PointerType(underlyingType)
 { }
 
+const Common::String UniquePtrType::BuildTypeName(const Type* underlyingType)
+{
+    NFE_ASSERT(underlyingType, "Invalid type");
+    return Common::String("UniquePtr<") + underlyingType->GetName() + '>';
+}
+
 void* UniquePtrType::GetPointedData(const void* uniquePtrObject) const
 {
     NFE_ASSERT(uniquePtrObject, "Trying to access nullptr");

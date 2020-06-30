@@ -9,6 +9,7 @@
 #include "../../Logger/Logger.hpp"
 #include "../../Containers/StringView.hpp"
 #include "../../Memory/DefaultAllocator.hpp"
+#include "../../Utils/Stream/OutputStream.hpp"
 
 
 namespace NFE {
@@ -53,6 +54,9 @@ void Type::Initialize(const TypeInfo& info)
 
     NFE_ASSERT(info.kind != TypeKind::Undefined, "Type kind cannot be undefined");
     mKind = info.kind;
+
+    NFE_ASSERT(info.typeNameID != TypeNameID::Invalid, "Invalid type name ID");
+    mTypeNameID = info.typeNameID;
 
     // downcast to 4 bytes to save space - there shouldn't be classes greater than 4GB...
     NFE_ASSERT(info.size < UINT32_MAX, "Type size is too big");
@@ -140,6 +144,19 @@ bool Type::TryLoadFromDifferentType(void* outObject, const Variant& otherObject)
 bool Type::CanBeMemcopied() const
 {
     return false;
+}
+
+bool Type::SerializeTypeName(Common::OutputStream* stream, SerializationContext& context) const
+{
+    NFE_UNUSED(context);
+
+    uint8 typeNameId = static_cast<uint8>(mTypeNameID);
+    if (stream)
+    {
+        return stream->Write(typeNameId);
+    }
+
+    return true;
 }
 
 } // namespace RTTI

@@ -20,6 +20,8 @@ class NFCOMMON_API UniquePtrType : public PointerType
 public:
     UniquePtrType(const Type* underlyingType);
 
+    static const Common::String BuildTypeName(const Type* underlyingType);
+
     virtual void* GetPointedData(const void* uniquePtrObject) const override;
     virtual const Type* GetPointedDataType(const void* uniquePtrObject) const override;
     virtual void* Reset(void* uniquePtrObject, const Type* newDataType = nullptr) const override;
@@ -48,10 +50,11 @@ public:
     {
         const Type* underlyingType = ResolveType<T>();
 
-        const Common::String typeName = Common::String("NFE::Common::UniquePtr<") + underlyingType->GetName() + '>';
+        const Common::String typeName = UniquePtrType::BuildTypeName(underlyingType);
 
         TypeInfo typeInfo;
         typeInfo.kind = TypeKind::UniquePtr;
+        typeInfo.typeNameID = TypeNameID::UniquePtr;
         typeInfo.size = sizeof(ObjectType);
         typeInfo.alignment = alignof(ObjectType);
         typeInfo.name = typeName.Str();

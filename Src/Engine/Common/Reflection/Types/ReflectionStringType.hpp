@@ -54,9 +54,10 @@ public:
     {
         TypeInfo typeInfo;
         typeInfo.kind = TypeKind::String;
+        typeInfo.typeNameID = TypeNameID::String;
         typeInfo.size = sizeof(Common::String);
         typeInfo.alignment = alignof(Common::String);
-        typeInfo.name = "NFE::Common::String";
+        typeInfo.name = "String";
         typeInfo.constructor = GetObjectConstructor<Common::String>();
         typeInfo.destructor = GetObjectDestructor<Common::String>();
 

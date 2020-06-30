@@ -592,6 +592,27 @@ bool ClassType::DeserializeBinary(void* outObject, InputStream& stream, Serializ
     return true;
 }
 
+bool ClassType::SerializeTypeName(Common::OutputStream* stream, SerializationContext& context) const
+{
+    // write header
+    if (!Type::SerializeTypeName(stream, context))
+    {
+        return false;
+    }
+
+    // append class name
+    const uint32 typeNameStrIndex = context.MapString(GetName());
+    if (!context.IsMapping())
+    {
+        if (!stream->WriteCompressedUint(typeNameStrIndex))
+        {
+            return false;
+        }
+    }
+
+    return true;
+}
+
 bool ClassType::Compare(const void* objectA, const void* objectB) const
 {
     if (mParent)

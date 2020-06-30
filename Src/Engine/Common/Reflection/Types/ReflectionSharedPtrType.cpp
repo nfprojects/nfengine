@@ -23,6 +23,12 @@ SharedPtrType::SharedPtrType(const Type* underlyingType)
     : PointerType(underlyingType)
 { }
 
+const Common::String SharedPtrType::BuildTypeName(const Type* underlyingType)
+{
+    NFE_ASSERT(underlyingType, "Invalid type");
+    return Common::String("SharedPtr<") + underlyingType->GetName() + '>';
+}
+
 void SharedPtrType::OnInitialize(const TypeInfo& info)
 {
     NFE_UNUSED(info);

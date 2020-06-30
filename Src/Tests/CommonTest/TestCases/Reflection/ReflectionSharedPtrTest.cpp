@@ -37,7 +37,7 @@ TEST(ReflectionTest, SharedPtr_Verify)
     const auto* type = GetType<TestSharedPtr>();
     ASSERT_NE(nullptr, type);
 
-    EXPECT_TRUE("NFE::Common::SharedPtr<TestBaseClass>" == type->GetName());
+    EXPECT_TRUE("SharedPtr<TestBaseClass>" == type->GetName());
     EXPECT_EQ(TypeKind::SharedPtr, type->GetKind());
     EXPECT_EQ(sizeof(TestSharedPtr), type->GetSize());
     EXPECT_EQ(alignof(TestSharedPtr), type->GetAlignment());
