@@ -287,7 +287,7 @@ static bool EditObject_Internal_Class_Members(const ClassType* type, void* data)
         if (propertyChanged)
         {
             // notify object
-            if (type->GetKind() == TypeKind::PolymorphicClass || type->GetKind() == TypeKind::AbstractClass)
+            if (type->IsA(GetType<IObject>()))
             {
                 IObject* object = reinterpret_cast<IObject*>(data);
                 const bool propertyChangeHandled = object->OnPropertyChanged(StringView(member.GetName()));
@@ -366,7 +366,7 @@ static bool EditObject_Internal_Pointer(const EditPropertyContext& ctx)
     }
 
     const Type* pointedType = type->GetUnderlyingType();
-    if (pointedType->GetKind() == TypeKind::AbstractClass || pointedType->GetKind() == TypeKind::PolymorphicClass)
+    if (pointedType->GetKind() == TypeKind::Class)
     {
         static_cast<const ClassType*>(pointedType)->ListSubtypes([&typesList] (const ClassType* type)
         {
@@ -405,7 +405,7 @@ static bool EditObject_Internal_Pointer(const EditPropertyContext& ctx)
     {
         if (currentType)
         {
-            if (currentType->GetKind() == TypeKind::AbstractClass || currentType->GetKind() == TypeKind::PolymorphicClass)
+            if (currentType->IsA(GetType<IObject>()))
             {
                 // skip header for class types
                 changed |= EditObject_Internal_Class_Members(static_cast<const ClassType*>(currentType), type->GetPointedData(ctx.data));
@@ -556,8 +556,7 @@ static bool EditObject_Internal(const EditPropertyContext& ctx)
         case TypeKind::Enumeration:
             changed = EditObject_Internal_Enum(ctx);
             break;
-        case TypeKind::SimpleClass:
-        case TypeKind::PolymorphicClass:
+        case TypeKind::Class:
             changed = EditObject_Internal_Class(ctx);
             break;
         case TypeKind::UniquePtr:

@@ -36,7 +36,7 @@ const Type* UniquePtrType::GetPointedDataType(const void* uniquePtrObject) const
 
     if (pointedData)
     {
-        if (mUnderlyingType->GetKind() == TypeKind::AbstractClass || mUnderlyingType->GetKind() == TypeKind::PolymorphicClass)
+        if (mUnderlyingType->IsA(GetType<IObject>()))
         {
             return BitCast<const IObject*>(pointedData)->GetDynamicType();
         }
@@ -150,7 +150,7 @@ bool UniquePtrType::Deserialize(void* outObject, const IConfig& config, const Co
         }
         else
         {
-            if (mUnderlyingType->GetKind() != TypeKind::AbstractClass)
+            if (mUnderlyingType->GetKind() != TypeKind::Class || !static_cast<const ClassType*>(mUnderlyingType)->IsAbstract())
             {
                 NFE_LOG_WARNING("Type marker not found - using pointed type as a reference");
                 targetType = mUnderlyingType;

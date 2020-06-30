@@ -29,9 +29,7 @@ enum class TypeKind : uint8
     DynArray,           // NFE::DynArray<T> types
     UniquePtr,          // NFE::UniquePtr<T> types
     SharedPtr,          // NFE::SharedPtr<T> types
-    SimpleClass,        // class without virtual methods
-    PolymorphicClass,   // class containing at least one virtual method
-    AbstractClass,      // class containing at least one pure-virtual method
+    Class,              // class type
 
     // TODO bitfields
 };

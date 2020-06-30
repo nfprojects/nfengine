@@ -45,7 +45,7 @@ const Type* SharedPtrType::GetPointedDataType(const void* ptrObject) const
 
     if (typedObject)
     {
-        if (mUnderlyingType->GetKind() == TypeKind::AbstractClass || mUnderlyingType->GetKind() == TypeKind::PolymorphicClass)
+        if (mUnderlyingType->IsA(GetType<IObject>()))
         {
             return typedObject.Get()->GetDynamicType();
         }

@@ -71,7 +71,7 @@ NFE_FORCE_INLINE constexpr size_t OffsetOf(Member Class::*member)
         namespace { const Type* NFE_UNIQUE_NAME(gForceResolvedType) = GetType<T>(); }                           \
         template<> NFE_API_EXPORT void TypeCreator<T>::FinishInitialization(ClassTypeInfo& typeInfo)            \
         {                                                                                                       \
-            typeInfo.kind = std::is_abstract_v<T> ? TypeKind::AbstractClass : TypeKind::PolymorphicClass;       \
+            typeInfo.isAbstract = std::is_abstract_v<T>;                                                        \
             typeInfo.name = #T;                                                                                 \
             T::_InitType(typeInfo);                                                                             \
         }                                                                                                       \

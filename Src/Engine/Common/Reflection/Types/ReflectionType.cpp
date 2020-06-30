@@ -28,11 +28,10 @@ const char* Type::TypeKindToString(const TypeKind kind)
     case TypeKind::DynArray:            return "dynamic array";
     case TypeKind::UniquePtr:           return "unique pointer";
     case TypeKind::SharedPtr:           return "shared pointer";
-    case TypeKind::SimpleClass:         return "simple class";
-    case TypeKind::PolymorphicClass:    return "polymorphic class";
-    case TypeKind::AbstractClass:       return "abstract class";
+    case TypeKind::Class:               return "simple class";
     }
 
+    NFE_FATAL("Invalid RTTI type kind: %u", (uint32)kind);
     return "undefined";
 }
 

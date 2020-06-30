@@ -16,7 +16,8 @@ TEST(ReflectionClassTest, BaseClass_Verify)
 
     // check class type properties
     EXPECT_EQ("TestBaseClass", type->GetName());
-    EXPECT_EQ(TypeKind::PolymorphicClass, type->GetKind());
+    EXPECT_EQ(TypeKind::Class, type->GetKind());
+    EXPECT_FALSE(type->IsAbstract());
     EXPECT_LE(minSize, type->GetSize());
     EXPECT_LE(sizeof(size_t), type->GetAlignment());
     EXPECT_EQ(GetType<IObject>(), type->GetParent());
@@ -97,7 +98,8 @@ TEST(ReflectionClassTest, ChildClass_Verify)
 
     // check class type properties
     EXPECT_EQ("TestChildClassA", type->GetName());
-    EXPECT_EQ(TypeKind::PolymorphicClass, type->GetKind());
+    EXPECT_EQ(TypeKind::Class, type->GetKind());
+    EXPECT_FALSE(type->IsAbstract());
     EXPECT_LE(minSize, type->GetSize());
     EXPECT_LE(sizeof(size_t), type->GetAlignment());
     EXPECT_EQ(GetType<TestBaseClass>(), type->GetParent());
@@ -197,7 +199,8 @@ TEST(ReflectionClassTest, AbstractClass_Verify)
 
     // check class type properties
     EXPECT_EQ("TestAbstractClass", type->GetName());
-    EXPECT_EQ(TypeKind::AbstractClass, type->GetKind());
+    EXPECT_EQ(TypeKind::Class, type->GetKind());
+    EXPECT_TRUE(type->IsAbstract());
     EXPECT_LE(minSize, type->GetSize());
     EXPECT_LE(sizeof(size_t), type->GetAlignment());
     EXPECT_EQ(GetType<IObject>(), type->GetParent());

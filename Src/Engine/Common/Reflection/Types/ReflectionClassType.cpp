@@ -27,6 +27,7 @@ using MemberPayloadSizeType = uint16;
 
 ClassType::ClassType()
     : mParent(nullptr)
+    , mIsAbstract(false)
 {}
 
 void ClassType::OnInitialize(const TypeInfo& info)
@@ -34,6 +35,7 @@ void ClassType::OnInitialize(const TypeInfo& info)
     const ClassTypeInfo& classTypeInfo = reinterpret_cast<const ClassTypeInfo&>(info);
 
     mParent = classTypeInfo.parent;
+    mIsAbstract = classTypeInfo.isAbstract;
 
     mMembers.Reserve(classTypeInfo.members.Size());
     for (const Member& member : classTypeInfo.members)
@@ -130,7 +132,7 @@ void ClassType::ListSubtypes(Children& outTypes, bool skipAbstractTypes) const
 
 void ClassType::ListSubtypes(const std::function<void(const ClassType*)>& func, bool skipAbstractTypes) const
 {
-    if (GetKind() != TypeKind::AbstractClass || !skipAbstractTypes)
+    if (!IsAbstract() || !skipAbstractTypes)
     {
         func(this);
     }
@@ -226,7 +228,7 @@ bool ClassType::SerializeDirectly(const void* object, IConfig& config, ConfigObj
 
 bool ClassType::Serialize(const void* object, IConfig& config, ConfigValue& outValue, SerializationContext& context) const
 {
-    if (GetKind() == TypeKind::AbstractClass)
+    if (IsAbstract())
     {
         NFE_LOG_ERROR("Trying to serialize abstract type '%s'", GetName().Str());
         return false;
@@ -235,7 +237,7 @@ bool ClassType::Serialize(const void* object, IConfig& config, ConfigValue& outV
     ConfigObject root;
 
     // attach type marker
-    if (GetKind() == TypeKind::PolymorphicClass)
+    if (IsA(GetType<IObject>()))
     {
         ConfigValue marker(GetName().Str());
         config.AddValue(root, TYPE_MARKER, marker);
@@ -286,7 +288,7 @@ bool ClassType::DeserializeMember(void* outObject, const StringView memberName, 
 
 bool ClassType::Deserialize(void* outObject, const IConfig& config, const ConfigValue& value, SerializationContext& context) const
 {
-    if (GetKind() == TypeKind::AbstractClass)
+    if (IsAbstract())
     {
         // TODO report type mismatch
         NFE_LOG_ERROR("Trying to deserialize abstract type '%s'", GetName().Str());
@@ -342,7 +344,7 @@ bool ClassType::Deserialize(void* outObject, const IConfig& config, const Config
 bool ClassType::SerializeBinary(const void* object, OutputStream* stream, SerializationContext& context) const
 {
     NFE_ASSERT(object, "Invalid object ptr");
-    NFE_ASSERT(GetKind() != TypeKind::AbstractClass, "Tring to serialize abstract class");
+    NFE_ASSERT(!IsAbstract(), "Tring to serialize abstract class");
 
     // collect list of members to serialize
     // TODO get rid of dynamic allocation

@@ -37,11 +37,11 @@ public:
 
     ClassType();
 
-    /**
-     * Get parent class.
-     * @note    Will return nullptr for root classes.
-     */
-    const ClassType* GetParent() const { return mParent; }
+    // Get parent class (will return nullptr for root classes)
+    NFE_FORCE_INLINE const ClassType* GetParent() const { return mParent; }
+
+    // Check if the class is abstract (cannot create object of it)
+    NFE_FORCE_INLINE bool IsAbstract() const { return mIsAbstract; }
 
     /**
      * Enumerate all subtypes of this type (including self).
@@ -91,6 +91,8 @@ private:
     // list of members (NOT INCLUDING derived members)
     Members mMembers;
 
+    bool mIsAbstract;
+
     // serialize directly to an existing ConfigObject structure
     bool SerializeDirectly(const void* object, Common::IConfig& config, Common::ConfigObject& outObject, SerializationContext& context) const;
 
@@ -104,6 +106,7 @@ private:
  */
 struct ClassTypeInfo : public TypeInfo
 {
+    bool isAbstract = false;
     const ClassType* parent = nullptr;
     ClassType::Children childTypes;
     Common::DynArray<Member> members;
@@ -128,7 +131,7 @@ public:
     static void InitializeType(Type* type)
     {
         ClassTypeInfo typeInfo;
-        typeInfo.kind = TypeKind::SimpleClass; // can be overridden in FinishInitialization
+        typeInfo.kind = TypeKind::Class;
         typeInfo.size = sizeof(T);
         typeInfo.alignment = std::alignment_of_v<T>;
         typeInfo.constructor = GetObjectConstructor<T>();
