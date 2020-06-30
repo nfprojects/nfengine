@@ -6,33 +6,86 @@ MESSAGE("Generating Makefile for RendererVk")
 
 SET(NFE_RENDERERVK_DIRECTORY ${NFE_RENDERERS_DIRECTORY}/RendererVk)
 
-FILE(GLOB NFRENDERERVK_INTERNAL_SOURCES        Internal/*.cpp)
-FILE(GLOB NFRENDERERVK_INTERNAL_HEADERS        Internal/*.hpp)
-FILE(GLOB NFRENDERERVK_INTERNAL_LINUX_SOURCES  Internal/Linux/*.cpp)
-FILE(GLOB NFRENDERERVK_INTERNAL_LINUX_HEADERS  Internal/Linux/*.hpp)
-FILE(GLOB NFRENDERERVK_API_SOURCES             API/*.cpp)
-FILE(GLOB NFRENDERERVK_API_HEADERS             API/*.hpp)
-FILE(GLOB NFRENDERERVK_API_LINUX_SOURCES       API/Linux/*.cpp)
-FILE(GLOB NFRENDERERVK_API_LINUX_HEADERS       API/Linux/*.hpp)
+SET(NFRENDERERVK_SOURCES
+    API/Backbuffer.cpp
+    API/Buffer.cpp
+    API/CommandRecorder.cpp
+    API/ComputePipelineState.cpp
+    API/Device.cpp
+    API/PipelineState.cpp
+    API/RenderTarget.cpp
+    API/ResourceBinding.cpp
+    API/Sampler.cpp
+    API/Shader.cpp
+    API/Texture.cpp
+    API/VertexLayout.cpp
+    Internal/Debugger.cpp
+    Internal/Extensions.cpp
+    Internal/Instance.cpp
+    Internal/RenderPassManager.cpp
+    Internal/RingBuffer.cpp
+    # Internal/SemaphorePool.cpp temporarily commented out
+    Internal/ShaderIncluder.cpp
+    Internal/Translations.cpp
+    )
+
+SET(NFRENDERERVK_HEADERS
+    API/Backbuffer.hpp
+    API/Buffer.hpp
+    API/CommandRecorder.hpp
+    API/ComputePipelineState.hpp
+    API/Device.hpp
+    API/IResource.hpp
+    API/PipelineState.hpp
+    API/RenderTarget.hpp
+    API/ResourceBinding.hpp
+    API/Sampler.hpp
+    API/Shader.hpp
+    API/Texture.hpp
+    API/VertexLayout.hpp
+    Internal/Debugger.hpp
+    Internal/Extensions.hpp
+    Internal/GetProc.hpp
+    Internal/Instance.hpp
+    Internal/RenderPassDesc.hpp
+    Internal/RenderPassManager.hpp
+    Internal/RingBuffer.hpp
+    # Internal/SemaphorePool.hpp temporarily commented out
+    Internal/ShaderIncluder.hpp
+    Internal/Translations.hpp
+    )
+
+SET(NFRENDERERVK_LINUX_SOURCES
+    API/Linux/XcbBackbuffer.cpp
+    API/Linux/XcbDevice.cpp
+    Internal/Linux/XcbExtensions.cpp
+    )
+
+SET(NFRENDERERVK_LINUX_HEADERS
+    Internal/Linux/XcbExtensions.hpp
+    )
 
 # GLSLang's default resource limits definition
 SET(NFRENDERERVK_GLSLANG_DEFAULT_RESOURCE_LIMITS
     ${NFEDEPS_ROOT_DIRECTORY}/glslang/StandAlone/ResourceLimits.cpp
     ${NFEDEPS_ROOT_DIRECTORY}/glslang/StandAlone/ResourceLimits.h
-)
+    )
 
 # Skips Main.cpp on purpose, because there's only Main.cpp definition for Win32
-SET(NFRENDERERVK_MAIN_SOURCES PCH.cpp)
-SET(NFRENDERERVK_MAIN_HEADERS PCH.hpp)
+SET(NFRENDERERVK_MAIN_SOURCES
+    PCH.cpp
+    )
+
+SET(NFRENDERERVK_MAIN_HEADERS
+    PCH.hpp
+    )
 
 ADD_LIBRARY(RendererVk SHARED
-            ${NFRENDERERVK_INTERNAL_SOURCES} ${NFRENDERERVK_INTERNAL_HEADERS}
-            ${NFRENDERERVK_INTERNAL_LINUX_SOURCES} ${NFRENDERERVK_INTERNAL_LINUX_HEADERS}
-            ${NFRENDERERVK_API_SOURCES} ${NFRENDERERVK_API_HEADERS}
-            ${NFRENDERERVK_API_LINUX_SOURCES} ${NFRENDERERVK_API_LINUX_HEADERS}
+            ${NFRENDERERVK_SOURCES} ${NFRENDERERVK_HEADERS}
+            ${NFRENDERERVK_LINUX_SOURCES} ${NFRENDERERVK_LINUX_HEADERS}
             ${NFRENDERERVK_MAIN_SOURCES} ${NFRENDERERVK_MAIN_HEADERS}
             ${NFRENDERERVK_GLSLANG_DEFAULT_RESOURCE_LIMITS}
-)
+            )
 
 # To enable XCB-specific Vulkan extensions
 TARGET_COMPILE_DEFINITIONS(RendererVk

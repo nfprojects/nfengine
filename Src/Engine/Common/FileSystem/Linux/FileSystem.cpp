@@ -81,6 +81,21 @@ String FileSystem::GetExecutablePath()
     return execPathStr;
 }
 
+String FileSystem::GetAbsolutePath(const StringView& path)
+{
+    String fullPathStr;
+    char* fullPath = realpath(path.Data(), nullptr);
+    if (!fullPath)
+        NFE_LOG_ERROR("Failed to resolve absolute path of %s: %s", path.Data(), strerror(errno));
+    else
+    {
+        fullPathStr = fullPath;
+        free(fullPath);
+    }
+
+    return fullPathStr;
+}
+
 bool FileSystem::ChangeDirectory(const StringView& path)
 {
     const StringViewToCStringHelper pathString(path);

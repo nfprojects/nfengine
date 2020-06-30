@@ -9,9 +9,14 @@
 #include "Shader.hpp"
 #include "Defines.hpp"
 #include "Device.hpp"
-#include "Internal/Debugger.hpp"
-#include "Engine/Common/FileSystem/File.hpp"
 
+#include "Internal/Debugger.hpp"
+#include "Internal/ShaderIncluder.hpp"
+
+#include <Engine/Common/FileSystem/File.hpp>
+#include <Engine/Common/FileSystem/FileSystem.hpp>
+
+#include <vector>
 #include <cstring>
 #include <cctype>
 
@@ -115,7 +120,7 @@ bool Shader::Init(const ShaderDesc& desc)
     }
 
     // create and parse shader
-    mShaderGlslang.Reset(new glslang::TShader(lang));
+    mShaderGlslang = Common::MakeUniquePtr<glslang::TShader>(lang);
     if (!mShaderGlslang)
     {
         NFE_LOG_ERROR("Memory allocation failed");
@@ -128,20 +133,23 @@ bool Shader::Init(const ShaderDesc& desc)
     mShaderGlslang->setEnvTarget(glslang::EShTargetSpv, glslang::EShTargetSpv_1_1);
 
     // input shader strings
-    const char * shaderStrs[] = { shaderHead.Str(), code };
-    mShaderGlslang->setStrings(shaderStrs, 2);
+    const char* shaderStrs[] = { shaderHead.Str(), code };
+    int shaderLengths[] = { static_cast<int>(shaderHead.Length()), shaderSize };
+    const char* shaderNames[] = { "RendererVk_ShaderHead", desc.path };
+    mShaderGlslang->setStringsWithLengthsAndNames(shaderStrs, shaderLengths, shaderNames, 2);
     mShaderGlslang->setEntryPoint("main");
 
     // parse to glslang's AST
+    ShaderIncluder includer(desc.path);
     EShMessages msg = static_cast<EShMessages>(EShMsgDefault | EShMsgVulkanRules | EShMsgReadHlsl);
-    if (!mShaderGlslang->parse(&glslang::DefaultTBuiltInResource, DEFAULT_VERSION, EProfile::ENoProfile, false, false, msg))
+    if (!mShaderGlslang->parse(&glslang::DefaultTBuiltInResource, DEFAULT_VERSION, EProfile::ENoProfile, false, false, msg, includer))
     {
         NFE_LOG_ERROR("Failed to parse shader file %s:\n%s", desc.path, mShaderGlslang->getInfoLog());
         return false;
     }
 
     // create temporary TProgram to extract an intermediate SPIR-V
-    mProgramGlslang.Reset(new glslang::TProgram());
+    mProgramGlslang = Common::MakeUniquePtr<glslang::TProgram>();
     if (!mProgramGlslang)
     {
         NFE_LOG_ERROR("Memory allocation failed");
@@ -169,14 +177,18 @@ bool Shader::Init(const ShaderDesc& desc)
     }
 
     spv::SpvBuildLogger spvLogger;
-    glslang::GlslangToSpv(*progInt, mShaderSpv, &spvLogger);
+    std::vector<uint32> shaderSpv;
+    glslang::GlslangToSpv(*progInt, shaderSpv, &spvLogger);
+
+    mShaderSpv.Resize(static_cast<uint32>(shaderSpv.size()));
+    memcpy(mShaderSpv.Data(), shaderSpv.data(), shaderSpv.size() * sizeof(uint32));
 
     // now we have spirv representation of shader, provide it to Vulkan
     VkShaderModuleCreateInfo shaderInfo;
     VK_ZERO_MEMORY(shaderInfo);
     shaderInfo.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
-    shaderInfo.codeSize = mShaderSpv.size() * sizeof(uint32);
-    shaderInfo.pCode = mShaderSpv.data();
+    shaderInfo.codeSize = mShaderSpv.Size() * sizeof(uint32);
+    shaderInfo.pCode = mShaderSpv.Data();
     VkResult result = vkCreateShaderModule(gDevice->GetDevice(), &shaderInfo, nullptr, &mShader);
     CHECK_VKRESULT(result, "Failed to create Shader module");
 
@@ -196,8 +208,12 @@ bool Shader::Disassemble(bool html, Common::String& output)
 {
     NFE_UNUSED(html); // TODO
     // Disassemble the shader, to provide parsing source for slot extraction
+
+    std::vector<uint32> shaderSpv(mShaderSpv.Size());
+    memcpy(shaderSpv.data(), mShaderSpv.Data(), mShaderSpv.Size() * sizeof(uint32));
+
     std::stringstream ss;
-    spv::Disassemble(ss, mShaderSpv);
+    spv::Disassemble(ss, shaderSpv);
     output = ss.str().c_str();
     return true;
 }

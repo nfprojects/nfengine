@@ -124,6 +124,43 @@ String FileSystem::GetExecutablePath()
     return execPathStr;
 }
 
+String FileSystem::GetAbsolutePath(const StringView& path)
+{
+    Utf16String widePath;
+    if (!UTF8ToUTF16(path, widePath))
+        return false;
+
+    DynArray<wchar_t> fullPath;
+
+    DWORD sizeRead = 0;
+    unsigned int len = MAX_PATH; // Maximum length of a relative paths, available in Windows
+    const unsigned int maxPathWide = 32768; // Maximum length of a path, available in Windows
+
+    for (; len < maxPathWide; len *= 2)
+    {
+        fullPath.Resize(len);
+        sizeRead = GetFullPathName(nullptr, len, fullPath.Data(), nullptr);
+
+        if (sizeRead < len && sizeRead != 0)
+            break;
+    }
+
+    if (len >= maxPathWide)
+    {
+        NFE_LOG_ERROR("Failed to resolve executable's path : %s", GetLastErrorString().Str());
+        return String();
+    }
+
+    String fullPathStr;
+    if (!UTF16ToUTF8(Utf16String(fullPath.Data()), fullPathStr))
+    {
+        NFE_LOG_ERROR("UTF conversion of executable's path failed : %s", GetLastErrorString().Str());
+        return String();
+    }
+
+    return fullPathStr;
+}
+
 bool FileSystem::ChangeDirectory(const StringView& path)
 {
     Utf16String widePath;
