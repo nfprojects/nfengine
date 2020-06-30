@@ -49,6 +49,11 @@ public:
     static String GetExecutablePath();
 
     /**
+     * Get absolute path based on a given path.
+     */
+    static String GetAbsolutePath(const StringView& path);
+
+    /**
      * Set current working directory.
      */
     static bool ChangeDirectory(const StringView& path);

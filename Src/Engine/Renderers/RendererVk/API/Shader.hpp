@@ -11,8 +11,6 @@
 
 #include "Engine/Common/Containers/DynArray.hpp"
 
-// TODO remove
-#include <vector>
 
 namespace NFE {
 namespace Renderer {
@@ -26,7 +24,7 @@ class Shader : public IShader
     ShaderType mType;
     Common::UniquePtr<glslang::TShader> mShaderGlslang;
     Common::UniquePtr<glslang::TProgram> mProgramGlslang;
-    std::vector<uint32> mShaderSpv; // TODO remove
+    Common::DynArray<uint32> mShaderSpv;
     VkShaderModule mShader;
     VkPipelineShaderStageCreateInfo mStageInfo;
 
