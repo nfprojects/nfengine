@@ -249,14 +249,7 @@ bool Device::InitializeDevice(const DeviceInitParams* params)
         return false;
     }
 
-    hr = D3D12EnableExperimentalFeatures(1, &D3D12ExperimentalShaderModels, nullptr, nullptr);
-    if (FAILED(hr))
-    {
-        NFE_LOG_ERROR("Failed to enable experimental features: %x", hr);
-        return false;
-    }
-
-    hr = D3D_CALL_CHECK(D3D12CreateDevice(mAdapters[mAdapterInUse].Get(), D3D_FEATURE_LEVEL_12_1, IID_PPV_ARGS(mDevice.GetPtr())));
+    hr = D3D_CALL_CHECK(D3D12CreateDevice(mAdapters[mAdapterInUse].Get(), D3D_FEATURE_LEVEL_11_0, IID_PPV_ARGS(mDevice.GetPtr())));
     if (FAILED(hr))
         return false;
 
