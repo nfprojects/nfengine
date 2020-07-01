@@ -78,7 +78,7 @@ bool Shader::Init(const ShaderDesc& desc)
             Common::UTF8ToUTF16(desc.macros[i].name, d3dWideMacros[i].name);
             Common::UTF8ToUTF16(desc.macros[i].value, d3dWideMacros[i].value);
             d3dMacros[i].Name = d3dWideMacros[i].name.c_str();
-            d3dMacros[i].Value = d3dWideMacros[i].name.c_str();
+            d3dMacros[i].Value = d3dWideMacros[i].value.c_str();
 
             macrosStr += Common::String('\'') + desc.macros[i].name + "' = '" + desc.macros[i].value + '\'';
             if (i < desc.macrosNum - 1)

@@ -75,7 +75,8 @@
       <AdditionalDependencies>RendererCommon.lib;Common.lib;d3d12.lib;dxgi.lib;dxguid.lib;dxcompiler.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>COPY "$(WindowsSdkDir)redist\d3d\x64\dxcompiler.dll" "$(SolutionDir)Bin\$(Platform)\$(Configuration)\"</Command>
+      <Command>COPY "$(WindowsSdkDir)redist\d3d\x64\dxcompiler.dll" "$(SolutionDir)Bin\$(Platform)\$(Configuration)\"
+COPY "$(WindowsSdkDir)redist\d3d\x64\dxil.dll" "$(SolutionDir)Bin\$(Platform)\$(Configuration)\"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -96,7 +97,8 @@
       <AdditionalDependencies>RendererCommon.lib;Common.lib;d3d12.lib;dxgi.lib;dxguid.lib;dxcompiler.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>COPY "$(WindowsSdkDir)redist\d3d\x64\dxcompiler.dll" "$(SolutionDir)Bin\$(Platform)\$(Configuration)\"</Command>
+      <Command>COPY "$(WindowsSdkDir)redist\d3d\x64\dxcompiler.dll" "$(SolutionDir)Bin\$(Platform)\$(Configuration)\"
+COPY "$(WindowsSdkDir)redist\d3d\x64\dxil.dll" "$(SolutionDir)Bin\$(Platform)\$(Configuration)\"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Final|x64'">
@@ -117,7 +119,8 @@
       <AdditionalDependencies>RendererCommon.lib;Common.lib;d3d12.lib;dxgi.lib;dxguid.lib;dxcompiler.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>COPY "$(WindowsSdkDir)redist\d3d\x64\dxcompiler.dll" "$(SolutionDir)Bin\$(Platform)\$(Configuration)\"</Command>
+      <Command>COPY "$(WindowsSdkDir)redist\d3d\x64\dxcompiler.dll" "$(SolutionDir)Bin\$(Platform)\$(Configuration)\"
+COPY "$(WindowsSdkDir)redist\d3d\x64\dxil.dll" "$(SolutionDir)Bin\$(Platform)\$(Configuration)\"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
