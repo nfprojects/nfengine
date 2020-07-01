@@ -27,6 +27,8 @@ ShaderIncluder::IncludeResult* ShaderIncluder::StoreFailedInclusion(IncludeColle
                                                                     const Common::String& path,
                                                                     const Common::String& error)
 {
+    NFE_LOG_ERROR("%s file inclusion failed - %s", path.Str(), error.Str());
+
     IncludeEntry entry;
     entry.ptr = Common::MakeUniquePtr<IncludeResult>("", error.Str(), error.Length(), nullptr);
 
@@ -41,8 +43,8 @@ ShaderIncluder::IncludeResult* ShaderIncluder::IncludeGeneric(IncludeCollection&
                                                               const char* includerName,
                                                               size_t inclusionDepth)
 {
-    NFE_UNUSED(includerName);
-    NFE_UNUSED(inclusionDepth);
+    NFE_UNUSED(includerName); // this field is invalid, use it when glslang fixes it
+    NFE_UNUSED(inclusionDepth); // might be worth limiting
 
     Common::String headerStr(headerName);
     Common::String includedFilePath = searchPath + '/' + headerName;
@@ -81,8 +83,6 @@ ShaderIncluder::IncludeResult* ShaderIncluder::IncludeGeneric(IncludeCollection&
         // failed to read file
         return StoreFailedInclusion(collection, includedFilePath, INCLUDER_ERROR_READ_FAILED);
     }
-
-    NFE_LOG_DEBUG("Read file contents:\n%s", entry.data.Data());
 
     // save the entry
     entry.ptr = Common::MakeUniquePtr<IncludeResult>(includedFilePath.Str(), entry.data.Data(), entry.data.Size(), nullptr);
