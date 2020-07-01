@@ -165,14 +165,6 @@ bool Device::Init(const DeviceInitParams* params)
         return false;
     }
 
-    D3D12_FEATURE_DATA_SHADER_MODEL d3d12shadermodel;
-    hr = mDevice->CheckFeatureSupport(D3D12_FEATURE_SHADER_MODEL, &d3d12shadermodel, sizeof(d3d12shadermodel));
-    if (FAILED(hr))
-    {
-        NFE_LOG_ERROR("Failed to obtain D3D12 shader model info: %x", hr);
-        return false;
-    }
-
     return true;
 }
 

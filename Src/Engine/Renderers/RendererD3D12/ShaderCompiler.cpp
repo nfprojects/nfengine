@@ -93,9 +93,11 @@ bool ShaderCompiler::Compile(const char* source, uint32 sourceSize, const char* 
     D3DPtr<IDxcBlobEncoding> srcBlob(srcBlobPtr);
 
     Common::DynArray<const wchar_t*> arguments;
+    arguments.EmplaceBack(L"-Ges");
 #ifdef _DEBUG
     arguments.EmplaceBack(L"-Od");
     arguments.EmplaceBack(L"-Zi");
+    arguments.EmplaceBack(L"-Qembed_debug");
 #else
     arguments.EmplaceBack(L"-O3");
 #endif
@@ -187,7 +189,6 @@ bool ShaderCompiler::Reflect(const D3DPtr<IDxcBlob>& bytecode, D3DPtr<ID3D12Shad
         NFE_LOG_ERROR("Failed to create DXC Container Reflection: %x", hr);
         return false;
     }
-
 
     hr = containerReflection->Load(bytecodePtr);
     if (FAILED(hr))

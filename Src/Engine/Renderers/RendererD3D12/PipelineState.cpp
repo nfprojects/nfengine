@@ -181,7 +181,6 @@ bool PipelineState::Init(const PipelineStateDesc& desc)
     psd.CachedPSO.CachedBlobSizeInBytes = 0;
     psd.CachedPSO.pCachedBlob = nullptr;
 
-
     HRESULT hr;
     hr = D3D_CALL_CHECK(gDevice->GetDevice()->CreateGraphicsPipelineState(&psd,
                                                                           IID_PPV_ARGS(mPipelineState.GetPtr())));
