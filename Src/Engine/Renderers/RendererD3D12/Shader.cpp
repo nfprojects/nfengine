@@ -36,7 +36,6 @@ bool Shader::Init(const ShaderDesc& desc)
 {
     mType = desc.type;
 
-    //HRESULT hr;
     Common::DynArray<char> str;
     size_t shaderSize = 0;
     const char* code = nullptr;
