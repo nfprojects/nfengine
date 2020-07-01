@@ -366,6 +366,7 @@ void CommandRecorder::CopyTexture(const TexturePtr& src, const BackbufferPtr& de
         copyRegion.dstSubresource.mipLevel = 0;
         copyRegion.extent.width = s->mWidth;
         copyRegion.extent.height = s->mHeight;
+        copyRegion.extent.depth = 1;
         vkCmdCopyImage(mCommandBuffer,
                        s->mImage, VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL,
                        d->mImages[d->mCurrentImage], VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,

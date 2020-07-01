@@ -101,7 +101,7 @@ bool TessellationScene::CreateVertexBuffer()
         return false;
 
     PipelineStateDesc pipelineStateDesc;
-    pipelineStateDesc.rtFormats[0] = mBackbufferFormat;
+    pipelineStateDesc.rtFormats[0] = Format::R8G8B8A8_U_Norm;
     pipelineStateDesc.vertexShader = mVertexShader;
     pipelineStateDesc.pixelShader = mPixelShader;
     pipelineStateDesc.hullShader = mHullShader;
