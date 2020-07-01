@@ -251,6 +251,7 @@ bool Device::Init(const DeviceInitParams* params)
     features.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FEATURES_2;
     features.pNext = &divisorFeatures;
     features.features.samplerAnisotropy = VK_TRUE;
+    features.features.tessellationShader = VK_TRUE;
 
 
     VkDeviceCreateInfo devInfo;
