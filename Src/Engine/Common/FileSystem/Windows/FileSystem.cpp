@@ -139,7 +139,7 @@ String FileSystem::GetAbsolutePath(const StringView& path)
     for (; len < maxPathWide; len *= 2)
     {
         fullPath.Resize(len);
-        sizeRead = GetFullPathName(nullptr, len, fullPath.Data(), nullptr);
+        sizeRead = GetFullPathName(widePath.c_str(), len, fullPath.Data(), nullptr);
 
         if (sizeRead < len && sizeRead != 0)
             break;
