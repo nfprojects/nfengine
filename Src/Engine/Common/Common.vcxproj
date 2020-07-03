@@ -61,6 +61,7 @@
     <ClInclude Include="FileSystem\FileBuffered.hpp" />
     <ClInclude Include="FileSystem\FileSystem.hpp" />
     <ClInclude Include="ForwardDeclarations.hpp" />
+    <ClInclude Include="Image\BlockCompression.hpp" />
     <ClInclude Include="Image\Image.hpp" />
     <ClInclude Include="Image\ImageBMP.hpp" />
     <ClInclude Include="Image\ImageDDS.hpp" />
@@ -251,6 +252,7 @@
     <ClCompile Include="FileSystem\Windows\File.cpp" />
     <ClCompile Include="FileSystem\Windows\FileAsyncPlatform.cpp" />
     <ClCompile Include="FileSystem\Windows\FileSystem.cpp" />
+    <ClCompile Include="Image\BlockCompression.cpp" />
     <ClCompile Include="Image\Image.cpp" />
     <ClCompile Include="Image\ImageBMP.cpp" />
     <ClCompile Include="Image\ImageDDS.cpp" />

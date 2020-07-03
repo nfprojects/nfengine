@@ -692,6 +692,9 @@
     <ClInclude Include="Reflection\ReflectionMemberPath.hpp">
       <Filter>Reflection</Filter>
     </ClInclude>
+    <ClInclude Include="Image\BlockCompression.hpp">
+      <Filter>Image</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="PCH.cpp" />
@@ -991,6 +994,9 @@
     </ClCompile>
     <ClCompile Include="Reflection\ReflectionVariant.cpp">
       <Filter>Reflection</Filter>
+    </ClCompile>
+    <ClCompile Include="Image\BlockCompression.cpp">
+      <Filter>Image</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

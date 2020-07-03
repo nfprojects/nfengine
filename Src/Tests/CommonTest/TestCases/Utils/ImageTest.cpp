@@ -5,7 +5,6 @@
 #include "Engine/Common/Utils/Stream/FileOutputStream.hpp"
 #include "Engine/Common/FileSystem/FileSystem.hpp"
 #include "Engine/Common/Containers/String.hpp"
-#include "Engine/Common/Image/BlockCompression.h"
 
 using namespace NFE;
 using namespace NFE::Common;
