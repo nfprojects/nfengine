@@ -177,8 +177,15 @@ Color Mipmap::GetTexel(uint32 x, uint32 y, ImageFormat fmt) const
         case ImageFormat::RGBA_UByte:
         {
             uint8* data = static_cast<uint8*>(mData.Data());
-            data += 4 * (y * mWidth + x);
-            return Vec4f_Load_4xUint8(data) * VECTOR_INV_255;
+            Vec4fU colors;
+            colors.x = static_cast<float>(data[4 * (y * mWidth + x)]) / 255.0f;
+            colors.y = static_cast<float>(data[4 * (y * mWidth + x) + 1]) / 255.0f;
+            colors.z = static_cast<float>(data[4 * (y * mWidth + x) + 2]) / 255.0f;
+            colors.w = static_cast<float>(data[4 * (y * mWidth + x) + 3]) / 255.0f;
+            //data += 4 * (y * mWidth + x);
+            //return Vec4f_Load_4xUint8(data) * VECTOR_INV_255;
+
+            return Color(colors);
         }
 
         case ImageFormat::R_Float:
@@ -190,9 +197,15 @@ Color Mipmap::GetTexel(uint32 x, uint32 y, ImageFormat fmt) const
 
         case ImageFormat::RGBA_Float:
         {
-            Vec4fU* data = static_cast<Vec4fU*>(mData.Data());
-            data += (y * mWidth + x);
-            return Color(*data);
+            float* data = static_cast<float*>(mData.Data());
+            Vec4fU colors;
+            colors.x = data[4 * (y * mWidth + x)];
+            colors.y = data[4 * (y * mWidth + x) + 1];
+            colors.z = data[4 * (y * mWidth + x) + 2];
+            colors.w = data[4 * (y * mWidth + x) + 3];
+            //data += (y * mWidth + x);
+            //return Color(*data);
+            return Color(colors);
         }
 
         default:
@@ -236,8 +249,12 @@ void Mipmap::SetTexel(const Color& v, uint32 x, uint32 y, ImageFormat fmt)
         case ImageFormat::RGBA_UByte:
         {
             uint8* data = static_cast<uint8*>(mData.Data());
-            data += 4 * (y * mWidth + x);
-            *reinterpret_cast<uint32*>(data) = (v * 255.0f).ToBGR();
+            data[4 * (y * mWidth + x)] = static_cast<uint8>(v.f[0] * 255.0f);
+            data[4 * (y * mWidth + x) + 1] = static_cast<uint8>(v.f[1] * 255.0f);
+            data[4 * (y * mWidth + x) + 2] = static_cast<uint8>(v.f[2] * 255.0f);
+            data[4 * (y * mWidth + x) + 3] = static_cast<uint8>(v.f[3] * 255.0f);
+            //data += 4 * (y * mWidth + x);
+            //*reinterpret_cast<uint32*>(data) = (v * 255.0f).ToBGR();
             break;
         }
 
@@ -250,9 +267,15 @@ void Mipmap::SetTexel(const Color& v, uint32 x, uint32 y, ImageFormat fmt)
 
         case ImageFormat::RGBA_Float:
         {
+            float* data = static_cast<float*>(mData.Data());
+            data[4 * (y * mWidth + x)] = v.f[0];
+            data[4 * (y * mWidth + x) + 1] = v.f[1];
+            data[4 * (y * mWidth + x) + 2] = v.f[2];
+            data[4 * (y * mWidth + x) + 3] = v.f[3];
+            /*
             Vec4fU* data = static_cast<Vec4fU*>(mData.Data());
             data += (y * mWidth + x);
-            *data = v.ToVec4fU();
+            *data = v.ToVec4fU();*/
             break;
         }
 

@@ -5,14 +5,14 @@
 #include "Engine/Common/Utils/Stream/FileOutputStream.hpp"
 #include "Engine/Common/FileSystem/FileSystem.hpp"
 #include "Engine/Common/Containers/String.hpp"
-
+#include "Engine/Common/Image/BlockCompression.h"
 
 using namespace NFE;
 using namespace NFE::Common;
 
 namespace {
-const StringView TEST_IMAGES_PATH = "./nfEngine/TestResources/ImageSamples/";
-const StringView TEST_IMAGES_SAVEPATH = "./nfEngine/TestResources/ImageSamples/SaveTests/";
+const StringView TEST_IMAGES_PATH = "./Src/Tests/CommonTest/TestResources/ImageSamples/";
+const StringView TEST_IMAGES_SAVEPATH = "./Src/Tests/CommonTest/TestResources/ImageSamples/SaveTests/";
 const int TEXTURE_WIDTH = 16;
 const int TEXTURE_HEIGHT = 16;
 
@@ -128,23 +128,6 @@ protected:
 
             CheckTexels(&imageToConvert);
         }
-
-        // Convert to BC, then to RGBA and check texels
-        for (auto i : SUPPORTED_CONVERSION_FORMATS_BC)
-        {
-            // Add scoped trace, to give information where exactly the error occured
-            SCOPED_TRACE(("Conversion to " + String(FormatToStr(i))).Str());
-
-            Image imageToConvert(*mImage.get());
-
-            ASSERT_TRUE(imageToConvert.Convert(i));
-            ASSERT_EQ(i, imageToConvert.GetFormat());
-
-            ASSERT_TRUE(imageToConvert.Convert(TEST_DATA_FORMAT));
-            ASSERT_EQ(TEST_DATA_FORMAT, imageToConvert.GetFormat());
-
-            CheckTexels(&imageToConvert);
-        }
     }
 
     void FillTestImage(ImageFormat textureFormat)
@@ -242,7 +225,6 @@ protected:
         }
     }
 
-    // Function to compare texels of loaded images with sample image
     void CheckTexels(Image* img)
     {
         Image* imgPtr = nullptr;
@@ -251,7 +233,7 @@ protected:
         if (textureFormat == ImageFormat::A_UByte)
             imgPtr = mTestImageA.get();
         else if (textureFormat == ImageFormat::R_UByte
-                 || textureFormat == ImageFormat::R_Float)
+            || textureFormat == ImageFormat::R_Float)
             imgPtr = mTestImageR.get();
         else
         {
