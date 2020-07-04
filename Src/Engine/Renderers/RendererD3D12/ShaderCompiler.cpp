@@ -97,7 +97,6 @@ bool ShaderCompiler::Compile(const char* source, uint32 sourceSize, const char* 
 #ifdef _DEBUG
     arguments.EmplaceBack(L"-Od");
     arguments.EmplaceBack(L"-Zi");
-    arguments.EmplaceBack(L"-Qembed_debug");
 #else
     arguments.EmplaceBack(L"-O3");
 #endif
