@@ -69,6 +69,7 @@
     <ClInclude Include="Image\ImageJPG.hpp" />
     <ClInclude Include="Image\ImagePNG.hpp" />
     <ClInclude Include="Image\ImageType.hpp" />
+    <ClInclude Include="Image\ImageUtils.hpp" />
     <ClInclude Include="Image\Mipmap.hpp" />
     <ClInclude Include="Logger\Backends\BackendCommon.hpp" />
     <ClInclude Include="Logger\Backends\BackendConsole.hpp" />
@@ -260,6 +261,7 @@
     <ClCompile Include="Image\ImageJPG.cpp" />
     <ClCompile Include="Image\ImagePNG.cpp" />
     <ClCompile Include="Image\ImageType.cpp" />
+    <ClCompile Include="Image\ImageUtils.cpp" />
     <ClCompile Include="Image\Mipmap.cpp" />
     <ClCompile Include="Logger\Backends\BackendConsole.cpp" />
     <ClCompile Include="Logger\Backends\BackendHTML.cpp" />

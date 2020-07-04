@@ -100,7 +100,8 @@ size_t BitsPerPixel(ImageFormat format)
 bool IsSupportedBC(ImageFormat format)
 {
     if (format == ImageFormat::BC1 || format == ImageFormat::BC2 ||
-        format == ImageFormat::BC3)
+        format == ImageFormat::BC3 || format == ImageFormat::BC4 ||
+        format == ImageFormat::BC5)
         return true;
     else
         return false;

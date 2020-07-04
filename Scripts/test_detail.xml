@@ -1,0 +1,946 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites tests="807" name="AllTests">
+  <testsuite name="ArrayView" tests="21">
+    <testcase name="Empty" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\ArrayViewTest.cpp" line="14" />
+    <testcase name="Access" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\ArrayViewTest.cpp" line="24" />
+    <testcase name="ConstAccess" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\ArrayViewTest.cpp" line="45" />
+    <testcase name="ConstructConstFromNonConst" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\ArrayViewTest.cpp" line="63" />
+    <testcase name="AssignConstToNonConst" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\ArrayViewTest.cpp" line="82" />
+    <testcase name="Iterator" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\ArrayViewTest.cpp" line="101" />
+    <testcase name="ConstIterator" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\ArrayViewTest.cpp" line="136" />
+    <testcase name="IteratorConversion" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\ArrayViewTest.cpp" line="170" />
+    <testcase name="IteratorArithmetics" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\ArrayViewTest.cpp" line="183" />
+    <testcase name="ConstIteratorArithmetics" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\ArrayViewTest.cpp" line="196" />
+    <testcase name="RangeBasedFor" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\ArrayViewTest.cpp" line="209" />
+    <testcase name="Range" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\ArrayViewTest.cpp" line="223" />
+    <testcase name="Equal" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\ArrayViewTest.cpp" line="237" />
+    <testcase name="NotEqual_DifferentSize" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\ArrayViewTest.cpp" line="251" />
+    <testcase name="NotEqual_DifferentValues" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\ArrayViewTest.cpp" line="265" />
+    <testcase name="Find" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\ArrayViewTest.cpp" line="279" />
+    <testcase name="CompareConstAndNonConst" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\ArrayViewTest.cpp" line="289" />
+    <testcase name="Stl_FindIf" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\ArrayViewTest.cpp" line="303" />
+    <testcase name="Stl_Count" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\ArrayViewTest.cpp" line="322" />
+    <testcase name="Stl_Sort" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\ArrayViewTest.cpp" line="331" />
+    <testcase name="Stl_StableSort" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\ArrayViewTest.cpp" line="345" />
+  </testsuite>
+  <testsuite name="Deque" tests="7">
+    <testcase name="Empty" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\DequeTest.cpp" line="15" />
+    <testcase name="PushBack" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\DequeTest.cpp" line="25" />
+    <testcase name="PushFront" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\DequeTest.cpp" line="41" />
+    <testcase name="PushBack_PopFront" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\DequeTest.cpp" line="57" />
+    <testcase name="PushBack_PopBack" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\DequeTest.cpp" line="83" />
+    <testcase name="PushBack_PopFront_Asymmetric" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\DequeTest.cpp" line="109" />
+    <testcase name="PushFront_PopBack_Asymmetric" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\DequeTest.cpp" line="128" />
+  </testsuite>
+  <testsuite name="DynArray" tests="42">
+    <testcase name="Empty" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\DynArrayTest.cpp" line="26" />
+    <testcase name="CreateWithSize_Default" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\DynArrayTest.cpp" line="36" />
+    <testcase name="CreateWithSize_Custom" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\DynArrayTest.cpp" line="49" />
+    <testcase name="PushBack" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\DynArrayTest.cpp" line="62" />
+    <testcase name="EmplaceBack_Simple" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\DynArrayTest.cpp" line="80" />
+    <testcase name="EmplaceBack_Class" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\DynArrayTest.cpp" line="90" />
+    <testcase name="InitializeFromArray" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\DynArrayTest.cpp" line="101" />
+    <testcase name="Clear" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\DynArrayTest.cpp" line="112" />
+    <testcase name="Resize" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\DynArrayTest.cpp" line="129" />
+    <testcase name="InitializerList" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\DynArrayTest.cpp" line="154" />
+    <testcase name="PopBack" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\DynArrayTest.cpp" line="168" />
+    <testcase name="CopyConstructor" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\DynArrayTest.cpp" line="191" />
+    <testcase name="Assign" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\DynArrayTest.cpp" line="265" />
+    <testcase name="MoveConstructor" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\DynArrayTest.cpp" line="352" />
+    <testcase name="MoveAssignment" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\DynArrayTest.cpp" line="404" />
+    <testcase name="PushBackArray" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\DynArrayTest.cpp" line="474" />
+    <testcase name="PushBackConstArray" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\DynArrayTest.cpp" line="493" />
+    <testcase name="InsertAt_Front" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\DynArrayTest.cpp" line="512" />
+    <testcase name="InsertAt_Back" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\DynArrayTest.cpp" line="523" />
+    <testcase name="InsertAt_Middle" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\DynArrayTest.cpp" line="534" />
+    <testcase name="InsertArrayAt_Empty" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\DynArrayTest.cpp" line="545" />
+    <testcase name="InsertArrayAt_Front" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\DynArrayTest.cpp" line="560" />
+    <testcase name="InsertAt_Multiple" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\DynArrayTest.cpp" line="574" />
+    <testcase name="InsertArrayAt_Back" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\DynArrayTest.cpp" line="585" />
+    <testcase name="InsertArrayAt_Middle" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\DynArrayTest.cpp" line="599" />
+    <testcase name="Erase_Front" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\DynArrayTest.cpp" line="613" />
+    <testcase name="Erase_Middle" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\DynArrayTest.cpp" line="624" />
+    <testcase name="Erase_Back" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\DynArrayTest.cpp" line="635" />
+    <testcase name="Erase_Range_Front" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\DynArrayTest.cpp" line="646" />
+    <testcase name="Erase_Range_Middle" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\DynArrayTest.cpp" line="657" />
+    <testcase name="Erase_Range_End" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\DynArrayTest.cpp" line="668" />
+    <testcase name="Erase_Range_Everything" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\DynArrayTest.cpp" line="679" />
+    <testcase name="Erase_Range_Empty" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\DynArrayTest.cpp" line="687" />
+    <testcase name="DynArrayOfStrings_Simple" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\DynArrayTest_Containers.cpp" line="29" />
+    <testcase name="DynArrayOfStrings_Erase" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\DynArrayTest_Containers.cpp" line="44" />
+    <testcase name="DynArrayOfStrings_Insert" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\DynArrayTest_Containers.cpp" line="63" />
+    <testcase name="DynArrayOfUniquePtrs_Simple" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\DynArrayTest_Containers.cpp" line="85" />
+    <testcase name="DynArrayOfUniquePtrs_Erase" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\DynArrayTest_Containers.cpp" line="98" />
+    <testcase name="DynArrayOfDynArrays_Simple" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\DynArrayTest_Containers.cpp" line="121" />
+    <testcase name="DynArrayOfDynArrays_CopyConstructor" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\DynArrayTest_Containers.cpp" line="136" />
+    <testcase name="DynArrayOfDynArrays_MoveConstructor" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\DynArrayTest_Containers.cpp" line="155" />
+    <testcase name="DynArrayOfDynArrays_Erase" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\DynArrayTest_Containers.cpp" line="174" />
+  </testsuite>
+  <testsuite name="HashMap" tests="8">
+    <testcase name="Empty" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\HashMapTest.cpp" line="15" />
+    <testcase name="Insert" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\HashMapTest.cpp" line="27" />
+    <testcase name="InsertOrReplace" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\HashMapTest.cpp" line="52" />
+    <testcase name="Iterate" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\HashMapTest.cpp" line="81" />
+    <testcase name="EraseByKey" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\HashMapTest.cpp" line="100" />
+    <testcase name="EraseByIterator" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\HashMapTest.cpp" line="117" />
+    <testcase name="EraseByConstIterator" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\HashMapTest.cpp" line="138" />
+    <testcase name="StringToString" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\HashMapTest.cpp" line="159" />
+  </testsuite>
+  <testsuite name="HashSet" tests="4">
+    <testcase name="HashSetOfStrings" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\HashSetTest_Containers.cpp" line="17" />
+    <testcase name="HashSetOfDynArrays" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\HashSetTest_Containers.cpp" line="33" />
+    <testcase name="HashSetOfSharedPtrs" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\HashSetTest_Containers.cpp" line="56" />
+    <testcase name="HashSetOfUniquePtrs" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\HashSetTest_Containers.cpp" line="78" />
+  </testsuite>
+  <testsuite name="Map" tests="8">
+    <testcase name="Empty" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\MapTest.cpp" line="15" />
+    <testcase name="Insert" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\MapTest.cpp" line="27" />
+    <testcase name="InsertOrReplace" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\MapTest.cpp" line="49" />
+    <testcase name="Iterate" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\MapTest.cpp" line="75" />
+    <testcase name="EraseByKey" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\MapTest.cpp" line="94" />
+    <testcase name="EraseByIterator" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\MapTest.cpp" line="111" />
+    <testcase name="EraseByConstIterator" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\MapTest.cpp" line="132" />
+    <testcase name="StringToString" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\MapTest.cpp" line="153" />
+  </testsuite>
+  <testsuite name="PackedArray" tests="7">
+    <testcase name="AddUnsignedChar" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\PackedArrayTest.cpp" line="18" />
+    <testcase name="AddUnsignedShort" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\PackedArrayTest.cpp" line="38" />
+    <testcase name="AddAndRemoveAscending" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\PackedArrayTest.cpp" line="58" />
+    <testcase name="AddAndRemoveDescending" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\PackedArrayTest.cpp" line="87" />
+    <testcase name="AddAndRemoveRandom" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\PackedArrayTest.cpp" line="113" />
+    <testcase name="ComplexTypeCopy" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\PackedArrayTest.cpp" line="173" />
+    <testcase name="ComplexTypeMove" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\PackedArrayTest.cpp" line="198" />
+  </testsuite>
+  <testsuite name="SetTest/0" tests="17">
+    <testcase name="Empty" type_param="class NFE::Common::Set&lt;int,struct NFE::Common::DefaultComparator&lt;int&gt; &gt;" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\SetTest.cpp" line="27" />
+    <testcase name="SimpleInsert" type_param="class NFE::Common::Set&lt;int,struct NFE::Common::DefaultComparator&lt;int&gt; &gt;" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\SetTest.cpp" line="39" />
+    <testcase name="SimpleInsertOrReplace" type_param="class NFE::Common::Set&lt;int,struct NFE::Common::DefaultComparator&lt;int&gt; &gt;" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\SetTest.cpp" line="63" />
+    <testcase name="Clear" type_param="class NFE::Common::Set&lt;int,struct NFE::Common::DefaultComparator&lt;int&gt; &gt;" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\SetTest.cpp" line="95" />
+    <testcase name="CopyConstructor" type_param="class NFE::Common::Set&lt;int,struct NFE::Common::DefaultComparator&lt;int&gt; &gt;" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\SetTest.cpp" line="109" />
+    <testcase name="Assign" type_param="class NFE::Common::Set&lt;int,struct NFE::Common::DefaultComparator&lt;int&gt; &gt;" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\SetTest.cpp" line="178" />
+    <testcase name="InsertViaMove" type_param="class NFE::Common::Set&lt;int,struct NFE::Common::DefaultComparator&lt;int&gt; &gt;" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\SetTest.cpp" line="255" />
+    <testcase name="MoveConstructor" type_param="class NFE::Common::Set&lt;int,struct NFE::Common::DefaultComparator&lt;int&gt; &gt;" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\SetTest.cpp" line="304" />
+    <testcase name="MoveAssignment" type_param="class NFE::Common::Set&lt;int,struct NFE::Common::DefaultComparator&lt;int&gt; &gt;" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\SetTest.cpp" line="351" />
+    <testcase name="Iterator" type_param="class NFE::Common::Set&lt;int,struct NFE::Common::DefaultComparator&lt;int&gt; &gt;" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\SetTest.cpp" line="411" />
+    <testcase name="Find" type_param="class NFE::Common::Set&lt;int,struct NFE::Common::DefaultComparator&lt;int&gt; &gt;" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\SetTest.cpp" line="450" />
+    <testcase name="RangeBasedFor" type_param="class NFE::Common::Set&lt;int,struct NFE::Common::DefaultComparator&lt;int&gt; &gt;" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\SetTest.cpp" line="469" />
+    <testcase name="EraseSingleElementTree" type_param="class NFE::Common::Set&lt;int,struct NFE::Common::DefaultComparator&lt;int&gt; &gt;" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\SetTest.cpp" line="488" />
+    <testcase name="EraseBasic" type_param="class NFE::Common::Set&lt;int,struct NFE::Common::DefaultComparator&lt;int&gt; &gt;" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\SetTest.cpp" line="501" />
+    <testcase name="BigTest" type_param="class NFE::Common::Set&lt;int,struct NFE::Common::DefaultComparator&lt;int&gt; &gt;" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\SetTest.cpp" line="516" />
+    <testcase name="Permutations" type_param="class NFE::Common::Set&lt;int,struct NFE::Common::DefaultComparator&lt;int&gt; &gt;" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\SetTest.cpp" line="570" />
+    <testcase name="Stl_FindIf" type_param="class NFE::Common::Set&lt;int,struct NFE::Common::DefaultComparator&lt;int&gt; &gt;" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\SetTest.cpp" line="633" />
+  </testsuite>
+  <testsuite name="SetTest/1" tests="17">
+    <testcase name="Empty" type_param="class NFE::Common::HashSet&lt;int,struct NFE::Common::DefaultHashPolicy&lt;int&gt;,struct std::equal_to&lt;int&gt; &gt;" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\SetTest.cpp" line="27" />
+    <testcase name="SimpleInsert" type_param="class NFE::Common::HashSet&lt;int,struct NFE::Common::DefaultHashPolicy&lt;int&gt;,struct std::equal_to&lt;int&gt; &gt;" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\SetTest.cpp" line="39" />
+    <testcase name="SimpleInsertOrReplace" type_param="class NFE::Common::HashSet&lt;int,struct NFE::Common::DefaultHashPolicy&lt;int&gt;,struct std::equal_to&lt;int&gt; &gt;" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\SetTest.cpp" line="63" />
+    <testcase name="Clear" type_param="class NFE::Common::HashSet&lt;int,struct NFE::Common::DefaultHashPolicy&lt;int&gt;,struct std::equal_to&lt;int&gt; &gt;" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\SetTest.cpp" line="95" />
+    <testcase name="CopyConstructor" type_param="class NFE::Common::HashSet&lt;int,struct NFE::Common::DefaultHashPolicy&lt;int&gt;,struct std::equal_to&lt;int&gt; &gt;" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\SetTest.cpp" line="109" />
+    <testcase name="Assign" type_param="class NFE::Common::HashSet&lt;int,struct NFE::Common::DefaultHashPolicy&lt;int&gt;,struct std::equal_to&lt;int&gt; &gt;" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\SetTest.cpp" line="178" />
+    <testcase name="InsertViaMove" type_param="class NFE::Common::HashSet&lt;int,struct NFE::Common::DefaultHashPolicy&lt;int&gt;,struct std::equal_to&lt;int&gt; &gt;" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\SetTest.cpp" line="255" />
+    <testcase name="MoveConstructor" type_param="class NFE::Common::HashSet&lt;int,struct NFE::Common::DefaultHashPolicy&lt;int&gt;,struct std::equal_to&lt;int&gt; &gt;" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\SetTest.cpp" line="304" />
+    <testcase name="MoveAssignment" type_param="class NFE::Common::HashSet&lt;int,struct NFE::Common::DefaultHashPolicy&lt;int&gt;,struct std::equal_to&lt;int&gt; &gt;" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\SetTest.cpp" line="351" />
+    <testcase name="Iterator" type_param="class NFE::Common::HashSet&lt;int,struct NFE::Common::DefaultHashPolicy&lt;int&gt;,struct std::equal_to&lt;int&gt; &gt;" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\SetTest.cpp" line="411" />
+    <testcase name="Find" type_param="class NFE::Common::HashSet&lt;int,struct NFE::Common::DefaultHashPolicy&lt;int&gt;,struct std::equal_to&lt;int&gt; &gt;" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\SetTest.cpp" line="450" />
+    <testcase name="RangeBasedFor" type_param="class NFE::Common::HashSet&lt;int,struct NFE::Common::DefaultHashPolicy&lt;int&gt;,struct std::equal_to&lt;int&gt; &gt;" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\SetTest.cpp" line="469" />
+    <testcase name="EraseSingleElementTree" type_param="class NFE::Common::HashSet&lt;int,struct NFE::Common::DefaultHashPolicy&lt;int&gt;,struct std::equal_to&lt;int&gt; &gt;" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\SetTest.cpp" line="488" />
+    <testcase name="EraseBasic" type_param="class NFE::Common::HashSet&lt;int,struct NFE::Common::DefaultHashPolicy&lt;int&gt;,struct std::equal_to&lt;int&gt; &gt;" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\SetTest.cpp" line="501" />
+    <testcase name="BigTest" type_param="class NFE::Common::HashSet&lt;int,struct NFE::Common::DefaultHashPolicy&lt;int&gt;,struct std::equal_to&lt;int&gt; &gt;" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\SetTest.cpp" line="516" />
+    <testcase name="Permutations" type_param="class NFE::Common::HashSet&lt;int,struct NFE::Common::DefaultHashPolicy&lt;int&gt;,struct std::equal_to&lt;int&gt; &gt;" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\SetTest.cpp" line="570" />
+    <testcase name="Stl_FindIf" type_param="class NFE::Common::HashSet&lt;int,struct NFE::Common::DefaultHashPolicy&lt;int&gt;,struct std::equal_to&lt;int&gt; &gt;" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\SetTest.cpp" line="633" />
+  </testsuite>
+  <testsuite name="Set" tests="4">
+    <testcase name="SetOfStrings" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\SetTest_Containers.cpp" line="17" />
+    <testcase name="SetOfDynArrays" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\SetTest_Containers.cpp" line="33" />
+    <testcase name="SetOfSharedPtrs" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\SetTest_Containers.cpp" line="56" />
+    <testcase name="SetOfUniquePtrs" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\SetTest_Containers.cpp" line="78" />
+  </testsuite>
+  <testsuite name="SharedPtr" tests="20">
+    <testcase name="Empty_SingleRef" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\SharedPtrTest.cpp" line="34" />
+    <testcase name="Empty_MoveConstructor_SingleRef" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\SharedPtrTest.cpp" line="43" />
+    <testcase name="Empty_MoveAssignment_SingleRef" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\SharedPtrTest.cpp" line="62" />
+    <testcase name="SimpleType_SingleRef" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\SharedPtrTest.cpp" line="82" />
+    <testcase name="Destructor_SingleRef" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\SharedPtrTest.cpp" line="94" />
+    <testcase name="Reset_SingleRef" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\SharedPtrTest.cpp" line="104" />
+    <testcase name="MoveConstructor_SingleRef" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\SharedPtrTest.cpp" line="123" />
+    <testcase name="MoveAssignment_SingleRef" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\SharedPtrTest.cpp" line="144" />
+    <testcase name="CopyConstructor" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\SharedPtrTest.cpp" line="184" />
+    <testcase name="Assignment" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\SharedPtrTest.cpp" line="228" />
+    <testcase name="CopyConstructor_Nullptr" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\SharedPtrTest.cpp" line="281" />
+    <testcase name="MoveConstructor_Nullptr" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\SharedPtrTest.cpp" line="292" />
+    <testcase name="Assignment_Nullptr" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\SharedPtrTest.cpp" line="303" />
+    <testcase name="MoveAssignment_Nullptr" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\SharedPtrTest.cpp" line="314" />
+    <testcase name="CopyConstructor_MultiThreaded" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\SharedPtrTest.cpp" line="325" />
+    <testcase name="CustomDeleter" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\SharedPtrTest.cpp" line="354" />
+    <testcase name="CastToBaseClass" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\SharedPtrTest.cpp" line="377" />
+    <testcase name="CastToBaseClass_Reference" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\SharedPtrTest.cpp" line="405" />
+    <testcase name="SharedPtrOfSharedPtr" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\SharedPtrTest_Containers.cpp" line="15" />
+    <testcase name="SharedPtrOfDynArray" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\SharedPtrTest_Containers.cpp" line="29" />
+  </testsuite>
+  <testsuite name="StaticArray" tests="30">
+    <testcase name="Empty" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\StaticArrayTest.cpp" line="17" />
+    <testcase name="Empty_Const" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\StaticArrayTest.cpp" line="27" />
+    <testcase name="PushBack" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\StaticArrayTest.cpp" line="37" />
+    <testcase name="InitializeFromArray" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\StaticArrayTest.cpp" line="54" />
+    <testcase name="Clear" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\StaticArrayTest.cpp" line="65" />
+    <testcase name="Resize" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\StaticArrayTest.cpp" line="81" />
+    <testcase name="InitializerList" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\StaticArrayTest.cpp" line="106" />
+    <testcase name="PopBack" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\StaticArrayTest.cpp" line="120" />
+    <testcase name="CopyConstructor" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\StaticArrayTest.cpp" line="143" />
+    <testcase name="Assign" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\StaticArrayTest.cpp" line="220" />
+    <testcase name="MoveConstructor" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\StaticArrayTest.cpp" line="305" />
+    <testcase name="MoveAssignment" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\StaticArrayTest.cpp" line="356" />
+    <testcase name="PushBackArray" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\StaticArrayTest.cpp" line="424" />
+    <testcase name="PushBackConstArray" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\StaticArrayTest.cpp" line="443" />
+    <testcase name="InsertAt_Front" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\StaticArrayTest.cpp" line="462" />
+    <testcase name="InsertAt_Back" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\StaticArrayTest.cpp" line="473" />
+    <testcase name="InsertAt_Middle" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\StaticArrayTest.cpp" line="484" />
+    <testcase name="InsertArrayAt_Empty" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\StaticArrayTest.cpp" line="495" />
+    <testcase name="InsertArrayAt_Front" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\StaticArrayTest.cpp" line="510" />
+    <testcase name="InsertAt_Multiple" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\StaticArrayTest.cpp" line="524" />
+    <testcase name="InsertArrayAt_Back" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\StaticArrayTest.cpp" line="535" />
+    <testcase name="InsertArrayAt_Middle" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\StaticArrayTest.cpp" line="549" />
+    <testcase name="Erase_Front" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\StaticArrayTest.cpp" line="563" />
+    <testcase name="Erase_Middle" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\StaticArrayTest.cpp" line="574" />
+    <testcase name="Erase_Back" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\StaticArrayTest.cpp" line="585" />
+    <testcase name="Erase_Range_Front" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\StaticArrayTest.cpp" line="596" />
+    <testcase name="Erase_Range_Middle" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\StaticArrayTest.cpp" line="607" />
+    <testcase name="Erase_Range_End" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\StaticArrayTest.cpp" line="618" />
+    <testcase name="Erase_Range_Everything" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\StaticArrayTest.cpp" line="629" />
+    <testcase name="Erase_Range_Empty" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\StaticArrayTest.cpp" line="637" />
+  </testsuite>
+  <testsuite name="String" tests="64">
+    <testcase name="Constructor_Default" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\StringTest.cpp" line="27" />
+    <testcase name="Constructor_Char" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\StringTest.cpp" line="37" />
+    <testcase name="Constructor_View_Short" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\StringTest.cpp" line="47" />
+    <testcase name="Constructor_View_Long" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\StringTest.cpp" line="59" />
+    <testcase name="MoveConstructor_Empty" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\StringTest.cpp" line="73" />
+    <testcase name="MoveConstructor_Short" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\StringTest.cpp" line="87" />
+    <testcase name="MoveConstructor_Long" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\StringTest.cpp" line="101" />
+    <testcase name="MoveAssignment_Empty" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\StringTest.cpp" line="117" />
+    <testcase name="MoveAssignment_Short" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\StringTest.cpp" line="133" />
+    <testcase name="MoveAssignment_Long" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\StringTest.cpp" line="149" />
+    <testcase name="Constructor_Copy_Empty" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\StringTest.cpp" line="167" />
+    <testcase name="Constructor_Copy_Short" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\StringTest.cpp" line="178" />
+    <testcase name="Constructor_Copy_Long" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\StringTest.cpp" line="189" />
+    <testcase name="Constructor_Copy_ExternalToInternal" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\StringTest.cpp" line="202" />
+    <testcase name="Constructor_FixedArray" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\StringTest.cpp" line="218" />
+    <testcase name="Constructor_Printf" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\StringTest.cpp" line="228" />
+    <testcase name="Reserve_Small" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\StringTest.cpp" line="239" />
+    <testcase name="Reserve_Big" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\StringTest.cpp" line="253" />
+    <testcase name="Assign_Char" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\StringTest.cpp" line="269" />
+    <testcase name="Assign_String" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\StringTest.cpp" line="280" />
+    <testcase name="Assign_String_Self" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\StringTest.cpp" line="290" />
+    <testcase name="Assign_StringView_Short" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\StringTest.cpp" line="300" />
+    <testcase name="Assign_StringView_Long" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\StringTest.cpp" line="311" />
+    <testcase name="Append_Char_Short" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\StringTest.cpp" line="324" />
+    <testcase name="Append_Char_Long" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\StringTest.cpp" line="335" />
+    <testcase name="Append_StringView" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\StringTest.cpp" line="349" />
+    <testcase name="Concatenate_String_String_Short" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\StringTest.cpp" line="362" />
+    <testcase name="Concatenate_String_CString_Short" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\StringTest.cpp" line="373" />
+    <testcase name="Concatenate_CString_String_Short" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\StringTest.cpp" line="384" />
+    <testcase name="Concatenate_StringView_StringView_Short" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\StringTest.cpp" line="395" />
+    <testcase name="Concatenate_StringView_CString_Short" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\StringTest.cpp" line="406" />
+    <testcase name="Concatenate_CString_StringView_Short" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\StringTest.cpp" line="417" />
+    <testcase name="Concatenate_StringView_StringView_Long0" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\StringTest.cpp" line="428" />
+    <testcase name="Concatenate_StringView_StringView_Long1" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\StringTest.cpp" line="439" />
+    <testcase name="Concatenate_MoveString_StringView_Short" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\StringTest.cpp" line="452" />
+    <testcase name="Concatenate_MoveString_StringView_Long0" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\StringTest.cpp" line="463" />
+    <testcase name="Concatenate_MoveString_StringView_Long1" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\StringTest.cpp" line="474" />
+    <testcase name="Concatenate_MoveString_StringView_Long2" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\StringTest.cpp" line="485" />
+    <testcase name="Concatenate_StringView_MoveString_Short" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\StringTest.cpp" line="498" />
+    <testcase name="Concatenate_StringView_MoveString_Long0" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\StringTest.cpp" line="509" />
+    <testcase name="Concatenate_StringView_MoveString_Long1" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\StringTest.cpp" line="520" />
+    <testcase name="Concatenate_StringView_MoveString_Long2" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\StringTest.cpp" line="531" />
+    <testcase name="Concatenate_MoveString_MoveString_Short" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\StringTest.cpp" line="544" />
+    <testcase name="Concatenate_MoveString_MoveString_Long0" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\StringTest.cpp" line="555" />
+    <testcase name="Concatenate_MoveString_MoveString_Long1" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\StringTest.cpp" line="566" />
+    <testcase name="Concatenate_MoveString_MoveString_Long2" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\StringTest.cpp" line="577" />
+    <testcase name="Concatenate_Char_StringView" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\StringTest.cpp" line="590" />
+    <testcase name="Concatenate_StringView_Char" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\StringTest.cpp" line="600" />
+    <testcase name="Concatenate_Char_MoveString_Short" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\StringTest.cpp" line="612" />
+    <testcase name="Concatenate_MoveString_Char_Short" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\StringTest.cpp" line="622" />
+    <testcase name="Concatenate_Char_MoveString_Long" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\StringTest.cpp" line="632" />
+    <testcase name="Concatenate_MoveString_Char_Long" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\StringTest.cpp" line="642" />
+    <testcase name="Insert_Char_Empty" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\StringTest.cpp" line="654" />
+    <testcase name="Insert_Char_Short" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\StringTest.cpp" line="664" />
+    <testcase name="Insert_StringView_Empty" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\StringTest.cpp" line="684" />
+    <testcase name="Insert_StringView" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\StringTest.cpp" line="694" />
+    <testcase name="Erase" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\StringTest.cpp" line="716" />
+    <testcase name="Replace_Char_NoErase" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\StringTest.cpp" line="756" />
+    <testcase name="Replace_Char" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\StringTest.cpp" line="783" />
+    <testcase name="Replace_StringView_NoErase" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\StringTest.cpp" line="818" />
+    <testcase name="Replace_StringView" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\StringTest.cpp" line="845" />
+    <testcase name="Compare_String_String" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\StringTest.cpp" line="880" />
+    <testcase name="Compare_String_StringView" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\StringTest.cpp" line="900" />
+    <testcase name="Compare_StringView_String" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\StringTest.cpp" line="920" />
+  </testsuite>
+  <testsuite name="StringView" tests="12">
+    <testcase name="Empty" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\StringViewTest.cpp" line="14" />
+    <testcase name="ConstString" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\StringViewTest.cpp" line="22" />
+    <testcase name="ConstStringLength" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\StringViewTest.cpp" line="36" />
+    <testcase name="Constructor_String" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\StringViewTest.cpp" line="50" />
+    <testcase name="CompareEqual_DifferentPointer" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\StringViewTest.cpp" line="66" />
+    <testcase name="CompareEqual_SamePointer" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\StringViewTest.cpp" line="89" />
+    <testcase name="CompareDifferent_SameLength" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\StringViewTest.cpp" line="112" />
+    <testcase name="CompareDifferentLength" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\StringViewTest.cpp" line="134" />
+    <testcase name="FindFirst_Char" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\StringViewTest.cpp" line="154" />
+    <testcase name="FindLast_End" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\StringViewTest.cpp" line="168" />
+    <testcase name="FindFirst_SubString" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\StringViewTest.cpp" line="182" />
+    <testcase name="FindLast_SubString" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\StringViewTest.cpp" line="211" />
+  </testsuite>
+  <testsuite name="UniquePtr" tests="16">
+    <testcase name="Empty" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\UniquePtrTest.cpp" line="39" />
+    <testcase name="Empty_MoveConstructor" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\UniquePtrTest.cpp" line="47" />
+    <testcase name="Empty_MoveAssignment" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\UniquePtrTest.cpp" line="62" />
+    <testcase name="SimpleType" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\UniquePtrTest.cpp" line="78" />
+    <testcase name="Destructor" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\UniquePtrTest.cpp" line="89" />
+    <testcase name="Reset" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\UniquePtrTest.cpp" line="99" />
+    <testcase name="Release" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\UniquePtrTest.cpp" line="116" />
+    <testcase name="MoveConstructor" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\UniquePtrTest.cpp" line="135" />
+    <testcase name="MoveAssignment" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\UniquePtrTest.cpp" line="156" />
+    <testcase name="MakeUniquePtr" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\UniquePtrTest.cpp" line="189" />
+    <testcase name="CastToBaseClass_Scalar" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\UniquePtrTest.cpp" line="203" />
+    <testcase name="ArrayType" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\UniquePtrTest.cpp" line="220" />
+    <testcase name="MakeUniquePtrArrayType" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\UniquePtrTest.cpp" line="238" />
+    <testcase name="CastToBaseClass_Array" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\UniquePtrTest.cpp" line="256" />
+    <testcase name="UniquePtrOfUniquePtr" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\UniquePtrTest_Containers.cpp" line="15" />
+    <testcase name="UniquePtrOfDynArray" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\UniquePtrTest_Containers.cpp" line="29" />
+  </testsuite>
+  <testsuite name="WeakPtr" tests="11">
+    <testcase name="Constructor" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\WeakPtrTest.cpp" line="31" />
+    <testcase name="AssignEmptySharedPointer" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\WeakPtrTest.cpp" line="39" />
+    <testcase name="ConstructFromEmptySharedPointer" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\WeakPtrTest.cpp" line="52" />
+    <testcase name="AssignEmptyWeakPointer" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\WeakPtrTest.cpp" line="64" />
+    <testcase name="ConstructFromEmptyWeakPointer" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\WeakPtrTest.cpp" line="74" />
+    <testcase name="ToWeakPtr" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\WeakPtrTest.cpp" line="86" />
+    <testcase name="Reset" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\WeakPtrTest.cpp" line="115" />
+    <testcase name="SharedPointerFromEmptyWeakPointer" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\WeakPtrTest.cpp" line="131" />
+    <testcase name="SharedPointerFromValidWeakPointer" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\WeakPtrTest.cpp" line="141" />
+    <testcase name="SharedPointerFromExpiredWeakPointer" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\WeakPtrTest.cpp" line="209" />
+    <testcase name="CastToBaseClassViaWeakPtr" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Containers\WeakPtrTest.cpp" line="244" />
+  </testsuite>
+  <testsuite name="DirectoryWatchTest" tests="11">
+    <testcase name="Constructor" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\FileSystem\DirectoryWatchTest.cpp" line="48" />
+    <testcase name="Simple" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\FileSystem\DirectoryWatchTest.cpp" line="54" />
+    <testcase name="MultipleWatches" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\FileSystem\DirectoryWatchTest.cpp" line="64" />
+    <testcase name="Create" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\FileSystem\DirectoryWatchTest.cpp" line="114" />
+    <testcase name="Delete" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\FileSystem\DirectoryWatchTest.cpp" line="156" />
+    <testcase name="MoveWithinSingleWatchedDir" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\FileSystem\DirectoryWatchTest.cpp" line="201" />
+    <testcase name="MoveToAnotherWatchedDir" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\FileSystem\DirectoryWatchTest.cpp" line="245" />
+    <testcase name="MoveFromNotWatchedDir" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\FileSystem\DirectoryWatchTest.cpp" line="296" />
+    <testcase name="MoveToNotWatchedDir" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\FileSystem\DirectoryWatchTest.cpp" line="329" />
+    <testcase name="ModifyFile" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\FileSystem\DirectoryWatchTest.cpp" line="360" />
+    <testcase name="RemoveWatch" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\FileSystem\DirectoryWatchTest.cpp" line="410" />
+  </testsuite>
+  <testsuite name="FileAsyncTest" tests="6">
+    <testcase name="Constructors" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\FileSystem\FileAsyncTest.cpp" line="93" />
+    <testcase name="Read" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\FileSystem\FileAsyncTest.cpp" line="111" />
+    <testcase name="Write" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\FileSystem\FileAsyncTest.cpp" line="158" />
+    <testcase name="OpenClose" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\FileSystem\FileAsyncTest.cpp" line="204" />
+    <testcase name="OperationsOnClosed" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\FileSystem\FileAsyncTest.cpp" line="223" />
+    <testcase name="InvalidOperations" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\FileSystem\FileAsyncTest.cpp" line="239" />
+  </testsuite>
+  <testsuite name="FileBufferedTest" tests="9">
+    <testcase name="Constructors" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\FileSystem\FileBufferedTest.cpp" line="44" />
+    <testcase name="Read" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\FileSystem\FileBufferedTest.cpp" line="58" />
+    <testcase name="ReadSeek" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\FileSystem\FileBufferedTest.cpp" line="86" />
+    <testcase name="ReadWrite" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\FileSystem\FileBufferedTest.cpp" line="131" />
+    <testcase name="Write" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\FileSystem\FileBufferedTest.cpp" line="184" />
+    <testcase name="OpenClose" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\FileSystem\FileBufferedTest.cpp" line="214" />
+    <testcase name="OperationsOnClosed" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\FileSystem\FileBufferedTest.cpp" line="233" />
+    <testcase name="InvalidOperations" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\FileSystem\FileBufferedTest.cpp" line="249" />
+    <testcase name="GetSize" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\FileSystem\FileBufferedTest.cpp" line="270" />
+  </testsuite>
+  <testsuite name="FileSystemTest" tests="6">
+    <testcase name="GetParentDir" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\FileSystem\FileSystemTest.cpp" line="7" />
+    <testcase name="ExtractExtension" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\FileSystem\FileSystemTest.cpp" line="40" />
+    <testcase name="DirectoryAndRemove" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\FileSystem\FileSystemTest.cpp" line="73" />
+    <testcase name="TouchFile" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\FileSystem\FileSystemTest.cpp" line="93" />
+    <testcase name="Iterate" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\FileSystem\FileSystemTest.cpp" line="104" />
+    <testcase name="GetExecutablePath" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\FileSystem\FileSystemTest.cpp" line="154" />
+  </testsuite>
+  <testsuite name="FileTest" tests="4">
+    <testcase name="Simple" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\FileSystem\FileTest.cpp" line="10" />
+    <testcase name="OpenNotExisting" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\FileSystem\FileTest.cpp" line="48" />
+    <testcase name="Overwrite" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\FileSystem\FileTest.cpp" line="61" />
+    <testcase name="AccessShare" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\FileSystem\FileTest.cpp" line="131" />
+  </testsuite>
+  <testsuite name="MathBox" tests="3">
+    <testcase name="Equality" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathBoxTest.cpp" line="17" />
+    <testcase name="Surface" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathBoxTest.cpp" line="40" />
+    <testcase name="Volume" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathBoxTest.cpp" line="48" />
+  </testsuite>
+  <testsuite name="MathTest" tests="79">
+    <testcase name="Distribution_SingleValue" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathDistributionTest.cpp" line="11" />
+    <testcase name="Distribution_MultipleValues" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathDistributionTest.cpp" line="30" />
+    <testcase name="Vec16f_Constructor0" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathVec16fTest.cpp" line="7" />
+    <testcase name="Vec16f_ConstructorList" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathVec16fTest.cpp" line="12" />
+    <testcase name="Vec16f_ConstructorScalar" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathVec16fTest.cpp" line="37" />
+    <testcase name="Vec16f_ConstructorHiLow" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathVec16fTest.cpp" line="47" />
+    <testcase name="VecBool16f_Get" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathVec16fTest.cpp" line="73" />
+    <testcase name="Vec4f_Load_2xUint8_Norm" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathPackedTest.cpp" line="143" />
+    <testcase name="Vec4f_Load_4xUint8_Norm" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathPackedTest.cpp" line="167" />
+    <testcase name="Vec4f_Load_2xUint16_Norm" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathPackedTest.cpp" line="187" />
+    <testcase name="Vec4f_Load_4xUint16" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathPackedTest.cpp" line="211" />
+    <testcase name="Sin_4" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathTranscendental.cpp" line="72" />
+    <testcase name="Sin_8" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathTranscendental.cpp" line="79" />
+    <testcase name="FastACos" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathTranscendental.cpp" line="104" />
+    <testcase name="FastExp_4" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathTranscendental.cpp" line="122" />
+    <testcase name="FastExp2_4" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathTranscendental.cpp" line="135" />
+    <testcase name="Vec4f_Constructor1" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathVec4fTest.cpp" line="18" />
+    <testcase name="Vec4f_Constructor2" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathVec4fTest.cpp" line="27" />
+    <testcase name="Vec4f_IsInfinite" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathVec4fTest.cpp" line="36" />
+    <testcase name="Vec4f_IsNAN" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathVec4fTest.cpp" line="49" />
+    <testcase name="Vec4f_Invalid" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathVec4fTest.cpp" line="62" />
+    <testcase name="Vec4f_ToFromFloat2" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathVec4fTest.cpp" line="76" />
+    <testcase name="Vec4f_ToFromFloat3" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathVec4fTest.cpp" line="83" />
+    <testcase name="Vec4f_Splat" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathVec4fTest.cpp" line="90" />
+    <testcase name="Vec4f_Select_Variable" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathVec4fTest.cpp" line="98" />
+    <testcase name="Vec4f_Select_Immediate" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathVec4fTest.cpp" line="111" />
+    <testcase name="Vec4f_Arithmetics" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathVec4fTest.cpp" line="127" />
+    <testcase name="Vec4f_Lerp" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathVec4fTest.cpp" line="138" />
+    <testcase name="Vec4f_MinMax" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathVec4fTest.cpp" line="145" />
+    <testcase name="Vec4f_DotProduct" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathVec4fTest.cpp" line="153" />
+    <testcase name="Vec4f_CrossProduct" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathVec4fTest.cpp" line="164" />
+    <testcase name="Vec4f_Normalized" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathVec4fTest.cpp" line="171" />
+    <testcase name="Vec4f_Normalize3" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathVec4fTest.cpp" line="179" />
+    <testcase name="Vec4f_Normalize4" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathVec4fTest.cpp" line="189" />
+    <testcase name="Vec4f_FusedMultiplyAndAdd" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathVec4fTest.cpp" line="199" />
+    <testcase name="Vec4f_Less" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathVec4fTest.cpp" line="213" />
+    <testcase name="Vec4f_LessOrEqual" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathVec4fTest.cpp" line="227" />
+    <testcase name="Vec4f_Greater" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathVec4fTest.cpp" line="241" />
+    <testcase name="Vec4f_GreaterOrEqual" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathVec4fTest.cpp" line="255" />
+    <testcase name="Vec4f_Equal" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathVec4fTest.cpp" line="269" />
+    <testcase name="Vec4f_NotEqual" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathVec4fTest.cpp" line="278" />
+    <testcase name="Vec4f_Swizzle_Variable" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathVec4fTest.cpp" line="289" />
+    <testcase name="Vec4f_Swizzle_Immediate" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathVec4fTest.cpp" line="312" />
+    <testcase name="Vec4f_ChangeSign_Immediate" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathVec4fTest.cpp" line="597" />
+    <testcase name="Vec4f_ChangeSign" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathVec4fTest.cpp" line="619" />
+    <testcase name="Vec4f_MakeMask" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathVec4fTest.cpp" line="629" />
+    <testcase name="Vec4f_Transpose3" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathVec4fTest.cpp" line="649" />
+    <testcase name="Vec8f_Constructor0" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathVec8fTest.cpp" line="8" />
+    <testcase name="Vec8f_Constructor1" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathVec8fTest.cpp" line="13" />
+    <testcase name="Vec8f_Constructor2" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathVec8fTest.cpp" line="27" />
+    <testcase name="Vec8f_ConstructorHiLow" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathVec8fTest.cpp" line="41" />
+    <testcase name="VecBool8f_Get" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathVec8fTest.cpp" line="83" />
+    <testcase name="Vec8f_Arithmetics" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathVec8fTest.cpp" line="97" />
+    <testcase name="Vec8f_Gather" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathVec8fTest.cpp" line="118" />
+    <testcase name="Vec4i_Constructor1" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathVec4iTest.cpp" line="19" />
+    <testcase name="Vec4i_Constructor2" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathVec4iTest.cpp" line="28" />
+    <testcase name="Vec4i_Zero" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathVec4iTest.cpp" line="37" />
+    <testcase name="Vec4i_VectorArithmetics" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathVec4iTest.cpp" line="48" />
+    <testcase name="Vec4i_ShiftLeftSharedCount" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathVec4iTest.cpp" line="57" />
+    <testcase name="Vec4i_ShiftRightSharedCount" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathVec4iTest.cpp" line="72" />
+    <testcase name="Vec4i_ShiftLeftGeneric" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathVec4iTest.cpp" line="87" />
+    <testcase name="Vec4i_VectorMinMax" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathVec4iTest.cpp" line="98" />
+    <testcase name="Vec4i_VectorLess" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathVec4iTest.cpp" line="108" />
+    <testcase name="Vec4i_VectorLessOrEqual" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathVec4iTest.cpp" line="122" />
+    <testcase name="Vec4i_VectorGreater" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathVec4iTest.cpp" line="136" />
+    <testcase name="Vec4i_VectorGreaterOrEqual" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathVec4iTest.cpp" line="150" />
+    <testcase name="Vec4i_VectorEqual" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathVec4iTest.cpp" line="164" />
+    <testcase name="Vec4i_VectorNotEqual" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathVec4iTest.cpp" line="173" />
+    <testcase name="Vec4i_VectorSwizzle" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathVec4iTest.cpp" line="184" />
+    <testcase name="Vec8i_ConstructorFromValues" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathVec8iTest.cpp" line="9" />
+    <testcase name="Vec8i_ConstructFromScalar" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathVec8iTest.cpp" line="22" />
+    <testcase name="Vec8i_ConstructFromLoHi" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathVec8iTest.cpp" line="35" />
+    <testcase name="Vec8i_Zero" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathVec8iTest.cpp" line="51" />
+    <testcase name="VecBool8i_All" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathVec8iTest.cpp" line="64" />
+    <testcase name="VecBool8i_None" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathVec8iTest.cpp" line="78" />
+    <testcase name="VecBool8i_Any" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathVec8iTest.cpp" line="92" />
+    <testcase name="Vec8i_Equal" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathVec8iTest.cpp" line="106" />
+    <testcase name="Vec8i_NotEqual" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathVec8iTest.cpp" line="119" />
+    <testcase name="Vec8i_VectorArithmetics" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathVec8iTest.cpp" line="132" />
+  </testsuite>
+  <testsuite name="MathEquationSolver" tests="9">
+    <testcase name="QuadraticEq_2_solutions" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathEquationSolverTest.cpp" line="12" />
+    <testcase name="QuadraticEq_1_solution" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathEquationSolverTest.cpp" line="20" />
+    <testcase name="QuadraticEq_0_solutions" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathEquationSolverTest.cpp" line="27" />
+    <testcase name="CubicEq_3_real_solutions" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathEquationSolverTest.cpp" line="37" />
+    <testcase name="CubicEq_tripple_root" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathEquationSolverTest.cpp" line="52" />
+    <testcase name="CubicEq_2_real_solutions" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathEquationSolverTest.cpp" line="65" />
+    <testcase name="CubicEq_1_real_solution" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathEquationSolverTest.cpp" line="78" />
+    <testcase name="LinearEquationsSystem3" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathEquationSolverTest.cpp" line="98" />
+    <testcase name="LinearEquationsSystem3_Invalid" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathEquationSolverTest.cpp" line="120" />
+  </testsuite>
+  <testsuite name="MathVec2f" tests="15">
+    <testcase name="Constructors" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathVec2fTest.cpp" line="16" />
+    <testcase name="SelectBySign" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathVec2fTest.cpp" line="28" />
+    <testcase name="VectorArithmetics" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathVec2fTest.cpp" line="41" />
+    <testcase name="VectorLerp" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathVec2fTest.cpp" line="52" />
+    <testcase name="VectorMinMax" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathVec2fTest.cpp" line="59" />
+    <testcase name="VectorGeometrics" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathVec2fTest.cpp" line="67" />
+    <testcase name="VectorLess" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathVec2fTest.cpp" line="76" />
+    <testcase name="VectorLessOrEqual" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathVec2fTest.cpp" line="85" />
+    <testcase name="VectorGreater" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathVec2fTest.cpp" line="94" />
+    <testcase name="VectorGreaterOrEqual" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathVec2fTest.cpp" line="103" />
+    <testcase name="VectorEqual" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathVec2fTest.cpp" line="112" />
+    <testcase name="VectorNotEqual" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathVec2fTest.cpp" line="119" />
+    <testcase name="VectorSwizzle" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathVec2fTest.cpp" line="128" />
+    <testcase name="Blend" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathVec2fTest.cpp" line="138" />
+    <testcase name="ChangeSign" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathVec2fTest.cpp" line="149" />
+  </testsuite>
+  <testsuite name="MathVec3f" tests="15">
+    <testcase name="Constructors" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathVec3fTest.cpp" line="16" />
+    <testcase name="SelectBySign" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathVec3fTest.cpp" line="29" />
+    <testcase name="VectorArithmetics" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathVec3fTest.cpp" line="43" />
+    <testcase name="VectorLerp" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathVec3fTest.cpp" line="54" />
+    <testcase name="VectorMinMax" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathVec3fTest.cpp" line="61" />
+    <testcase name="VectorGeometrics" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathVec3fTest.cpp" line="69" />
+    <testcase name="VectorLess" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathVec3fTest.cpp" line="78" />
+    <testcase name="VectorLessOrEqual" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathVec3fTest.cpp" line="89" />
+    <testcase name="VectorGreater" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathVec3fTest.cpp" line="100" />
+    <testcase name="VectorGreaterOrEqual" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathVec3fTest.cpp" line="111" />
+    <testcase name="VectorEqual" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathVec3fTest.cpp" line="122" />
+    <testcase name="VectorNotEqual" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathVec3fTest.cpp" line="130" />
+    <testcase name="VectorSwizzle" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathVec3fTest.cpp" line="140" />
+    <testcase name="Blend" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathVec3fTest.cpp" line="159" />
+    <testcase name="ChangeSign" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathVec3fTest.cpp" line="174" />
+  </testsuite>
+  <testsuite name="MathVec4fU" tests="15">
+    <testcase name="Constructors" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathVec4fUTest.cpp" line="16" />
+    <testcase name="SelectBySign" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathVec4fUTest.cpp" line="32" />
+    <testcase name="VectorArithmetics" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathVec4fUTest.cpp" line="47" />
+    <testcase name="VectorLerp" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathVec4fUTest.cpp" line="58" />
+    <testcase name="VectorMinMax" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathVec4fUTest.cpp" line="65" />
+    <testcase name="VectorGeometrics" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathVec4fUTest.cpp" line="73" />
+    <testcase name="VectorLess" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathVec4fUTest.cpp" line="81" />
+    <testcase name="VectorLessOrEqual" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathVec4fUTest.cpp" line="94" />
+    <testcase name="VectorGreater" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathVec4fUTest.cpp" line="107" />
+    <testcase name="VectorGreaterOrEqual" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathVec4fUTest.cpp" line="120" />
+    <testcase name="VectorEqual" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathVec4fUTest.cpp" line="133" />
+    <testcase name="VectorNotEqual" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathVec4fUTest.cpp" line="142" />
+    <testcase name="VectorSwizzle" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathVec4fUTest.cpp" line="153" />
+    <testcase name="Blend" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathVec4fUTest.cpp" line="180" />
+    <testcase name="ChangeSign" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathVec4fUTest.cpp" line="203" />
+  </testsuite>
+  <testsuite name="MathGeometry" tests="9">
+    <testcase name="BuildOrthonormalBasis" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathGeometryTest.cpp" line="32" />
+    <testcase name="ClosestPointOnSegment" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathGeometryTest.cpp" line="59" />
+    <testcase name="BoxBoxIntersection" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathGeometryTest.cpp" line="91" />
+    <testcase name="BoxFrustumIntersection" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathGeometryTest.cpp" line="108" />
+    <testcase name="SphereFrustumIntersection" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathGeometryTest.cpp" line="142" />
+    <testcase name="SphereBoxIntersection" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathGeometryTest.cpp" line="188" />
+    <testcase name="SphereSphereIntersection" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathGeometryTest.cpp" line="223" />
+    <testcase name="FrustumPointIntersection" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathGeometryTest.cpp" line="238" />
+    <testcase name="TriangleFrustumIntersection" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathGeometryTest.cpp" line="265" />
+  </testsuite>
+  <testsuite name="MathMatrix2" tests="5">
+    <testcase name="Simple" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathMatrix2Test.cpp" line="21" />
+    <testcase name="Multiply" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathMatrix2Test.cpp" line="31" />
+    <testcase name="MultiplyVector" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathMatrix2Test.cpp" line="39" />
+    <testcase name="Inverse" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathMatrix2Test.cpp" line="50" />
+    <testcase name="Inverse_Noninvertible" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathMatrix2Test.cpp" line="57" />
+  </testsuite>
+  <testsuite name="MathMatrix3" tests="6">
+    <testcase name="Simple" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathMatrix3Test.cpp" line="24" />
+    <testcase name="Multiply" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathMatrix3Test.cpp" line="35" />
+    <testcase name="MultiplyVector" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathMatrix3Test.cpp" line="43" />
+    <testcase name="MultiplyVector_Affine" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathMatrix3Test.cpp" line="53" />
+    <testcase name="Inverse" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathMatrix3Test.cpp" line="63" />
+    <testcase name="Inverse_Noninvertible" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathMatrix3Test.cpp" line="70" />
+  </testsuite>
+  <testsuite name="MathMatrix4" tests="4">
+    <testcase name="Simple" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathMatrix4Test.cpp" line="30" />
+    <testcase name="Arithmetics" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathMatrix4Test.cpp" line="43" />
+    <testcase name="Determinant" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathMatrix4Test.cpp" line="53" />
+    <testcase name="Inverse" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathMatrix4Test.cpp" line="59" />
+  </testsuite>
+  <testsuite name="MathPacked" tests="3">
+    <testcase name="UnitVector" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathPackedTest.cpp" line="23" />
+    <testcase name="ColorRgbHdr" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathPackedTest.cpp" line="73" />
+    <testcase name="Half" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathPackedTest.cpp" line="99" />
+  </testsuite>
+  <testsuite name="MathQuaternion" tests="14">
+    <testcase name="Equal" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathQuaternionTest.cpp" line="28" />
+    <testcase name="RotationAxisX" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathQuaternionTest.cpp" line="47" />
+    <testcase name="RotationAxisY" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathQuaternionTest.cpp" line="62" />
+    <testcase name="RotationAxisZ" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathQuaternionTest.cpp" line="77" />
+    <testcase name="RotationAxis" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathQuaternionTest.cpp" line="92" />
+    <testcase name="ToMatrix" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathQuaternionTest.cpp" line="108" />
+    <testcase name="FromMatrix" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathQuaternionTest.cpp" line="123" />
+    <testcase name="ToAxis" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathQuaternionTest.cpp" line="144" />
+    <testcase name="ToAxis_Identity" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathQuaternionTest.cpp" line="165" />
+    <testcase name="MultiplyBasics" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathQuaternionTest.cpp" line="174" />
+    <testcase name="MultiplyRotations" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathQuaternionTest.cpp" line="209" />
+    <testcase name="MultiplyRandomInverse" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathQuaternionTest.cpp" line="249" />
+    <testcase name="FromEulerAngles" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathQuaternionTest.cpp" line="265" />
+    <testcase name="ToEulerAngles" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathQuaternionTest.cpp" line="289" />
+  </testsuite>
+  <testsuite name="Math" tests="32">
+    <testcase name="ConvertInt8" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathConversionsTest.cpp" line="37" />
+    <testcase name="ConvertInt16" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathConversionsTest.cpp" line="70" />
+    <testcase name="ConvertInt32" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathConversionsTest.cpp" line="104" />
+    <testcase name="MinMax_Int" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathTest.cpp" line="8" />
+    <testcase name="MinMax_Float" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathTest.cpp" line="29" />
+    <testcase name="MinMax_Double" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathTest.cpp" line="50" />
+    <testcase name="Abs_Int" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathTest.cpp" line="73" />
+    <testcase name="Abs_Float" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathTest.cpp" line="80" />
+    <testcase name="Abs_Double" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathTest.cpp" line="88" />
+    <testcase name="CopySign_Float" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathTest.cpp" line="98" />
+    <testcase name="CopySign_Double" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathTest.cpp" line="107" />
+    <testcase name="Clamp_Float" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathTest.cpp" line="118" />
+    <testcase name="Clamp_Int" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathTest.cpp" line="125" />
+    <testcase name="Lerp_Float" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathTest.cpp" line="134" />
+    <testcase name="IsPowerOfTwo" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathTest.cpp" line="143" />
+    <testcase name="IsNan_Float" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathTest.cpp" line="160" />
+    <testcase name="IsInfinity_Float" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathTest.cpp" line="181" />
+    <testcase name="IsValid_Float" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathTest.cpp" line="202" />
+    <testcase name="Denormal_Float" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathTest.cpp" line="223" />
+    <testcase name="Pow" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathTest.cpp" line="231" />
+    <testcase name="Sin" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathTranscendental.cpp" line="66" />
+    <testcase name="Cos" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathTranscendental.cpp" line="86" />
+    <testcase name="ASin" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathTranscendental.cpp" line="92" />
+    <testcase name="ACos" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathTranscendental.cpp" line="98" />
+    <testcase name="ATan" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathTranscendental.cpp" line="110" />
+    <testcase name="FastExp" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathTranscendental.cpp" line="116" />
+    <testcase name="FastExp2" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathTranscendental.cpp" line="129" />
+    <testcase name="Log" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathTranscendental.cpp" line="142" />
+    <testcase name="FastLog" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathTranscendental.cpp" line="148" />
+    <testcase name="FastLog_4" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathTranscendental.cpp" line="154" />
+    <testcase name="FastLog2" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathTranscendental.cpp" line="161" />
+    <testcase name="FastLog2_4" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathTranscendental.cpp" line="167" />
+  </testsuite>
+  <testsuite name="MathTransform" tests="6">
+    <testcase name="TransformPoint" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathTransformTest.cpp" line="16" />
+    <testcase name="TransformVector" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathTransformTest.cpp" line="29" />
+    <testcase name="CompoundTransform" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathTransformTest.cpp" line="42" />
+    <testcase name="Invert_TranslationOnly" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathTransformTest.cpp" line="66" />
+    <testcase name="Invert_RotationOnly" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathTransformTest.cpp" line="75" />
+    <testcase name="Invert" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\MathTransformTest.cpp" line="84" />
+  </testsuite>
+  <testsuite name="RandomTest" tests="1">
+    <testcase name="Entropy" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Math\RandomTest.cpp" line="10" />
+  </testsuite>
+  <testsuite name="Aligned" tests="2">
+    <testcase name="AlignedObject" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Memory\AlignedTest.cpp" line="54" />
+    <testcase name="AlignedArray" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Memory\AlignedTest.cpp" line="69" />
+  </testsuite>
+  <testsuite name="MemoryTest" tests="6">
+    <testcase name="MallocSize" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Memory\MemoryTest.cpp" line="11" />
+    <testcase name="MallocAlignment" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Memory\MemoryTest.cpp" line="23" />
+    <testcase name="MallocInvalidSize" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Memory\MemoryTest.cpp" line="37" />
+    <testcase name="MallocInvalidAlignment" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Memory\MemoryTest.cpp" line="45" />
+    <testcase name="AccessValid" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Memory\MemoryTest.cpp" line="52" />
+    <testcase name="AccessInvalid" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Memory\MemoryTest.cpp" line="67" />
+  </testsuite>
+  <testsuite name="ReflectionDynArrayTest" tests="9">
+    <testcase name="Verify" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Reflection\ReflectionDynArrayTest.cpp" line="19" />
+    <testcase name="DefaultObject" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Reflection\ReflectionDynArrayTest.cpp" line="30" />
+    <testcase name="Compare" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Reflection\ReflectionDynArrayTest.cpp" line="39" />
+    <testcase name="Resize" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Reflection\ReflectionDynArrayTest.cpp" line="64" />
+    <testcase name="Clone_Empty" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Reflection\ReflectionDynArrayTest.cpp" line="80" />
+    <testcase name="Clone_SingleElement" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Reflection\ReflectionDynArrayTest.cpp" line="94" />
+    <testcase name="SerializeBinary_Empty" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Reflection\ReflectionDynArrayTest.cpp" line="111" />
+    <testcase name="SerializeBinary" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Reflection\ReflectionDynArrayTest.cpp" line="132" />
+    <testcase name="NestedDynArrays" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Reflection\ReflectionDynArrayTest.cpp" line="178" />
+  </testsuite>
+  <testsuite name="ReflectionEnumTest" tests="11">
+    <testcase name="TestEnum_Verify" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Reflection\ReflectionEnumTest.cpp" line="15" />
+    <testcase name="TestEnum_FindOptionByValue" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Reflection\ReflectionEnumTest.cpp" line="38" />
+    <testcase name="TestEnum_FindOptionByValue_Invalid" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Reflection\ReflectionEnumTest.cpp" line="46" />
+    <testcase name="TestEnum_WriteRawValue" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Reflection\ReflectionEnumTest.cpp" line="54" />
+    <testcase name="Deserialize_Valid" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Reflection\ReflectionEnumTest.cpp" line="62" />
+    <testcase name="Deserialize_InvalidOption" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Reflection\ReflectionEnumTest.cpp" line="74" />
+    <testcase name="Deserialize_InvalidType" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Reflection\ReflectionEnumTest.cpp" line="85" />
+    <testcase name="Serialize_Valid" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Reflection\ReflectionEnumTest.cpp" line="96" />
+    <testcase name="Serialize_Invalid" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Reflection\ReflectionEnumTest.cpp" line="109" />
+    <testcase name="SerializeBinary_Valid" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Reflection\ReflectionEnumTest.cpp" line="119" />
+    <testcase name="SerializeBinary_InvalidOption" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Reflection\ReflectionEnumTest.cpp" line="138" />
+  </testsuite>
+  <testsuite name="ReflectionFundamentalTypeTest" tests="41">
+    <testcase name="VerifyBool" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Reflection\ReflectionFundamentalTypesTest.cpp" line="16" />
+    <testcase name="VerifyInt8" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Reflection\ReflectionFundamentalTypesTest.cpp" line="31" />
+    <testcase name="VerifyInt16" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Reflection\ReflectionFundamentalTypesTest.cpp" line="46" />
+    <testcase name="VerifyInt32" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Reflection\ReflectionFundamentalTypesTest.cpp" line="61" />
+    <testcase name="VerifyInt64" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Reflection\ReflectionFundamentalTypesTest.cpp" line="76" />
+    <testcase name="VerifyUInt8" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Reflection\ReflectionFundamentalTypesTest.cpp" line="92" />
+    <testcase name="VerifyUInt16" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Reflection\ReflectionFundamentalTypesTest.cpp" line="107" />
+    <testcase name="VerifyUInt32" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Reflection\ReflectionFundamentalTypesTest.cpp" line="122" />
+    <testcase name="VerifyUInt64" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Reflection\ReflectionFundamentalTypesTest.cpp" line="137" />
+    <testcase name="VerifyFloat" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Reflection\ReflectionFundamentalTypesTest.cpp" line="153" />
+    <testcase name="VerifyDouble" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Reflection\ReflectionFundamentalTypesTest.cpp" line="168" />
+    <testcase name="VerifyString" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Reflection\ReflectionFundamentalTypesTest.cpp" line="183" />
+    <testcase name="SerializeBool_False" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Reflection\ReflectionFundamentalTypesTest.cpp" line="200" />
+    <testcase name="SerializeBool_True" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Reflection\ReflectionFundamentalTypesTest.cpp" line="212" />
+    <testcase name="SerializeBinaryBool" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Reflection\ReflectionFundamentalTypesTest.cpp" line="223" />
+    <testcase name="SerializeInt8" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Reflection\ReflectionFundamentalTypesTest.cpp" line="243" />
+    <testcase name="SerializeInt16" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Reflection\ReflectionFundamentalTypesTest.cpp" line="254" />
+    <testcase name="SerializeInt32" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Reflection\ReflectionFundamentalTypesTest.cpp" line="265" />
+    <testcase name="SerializeBinaryInt32" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Reflection\ReflectionFundamentalTypesTest.cpp" line="276" />
+    <testcase name="SerializeInt64" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Reflection\ReflectionFundamentalTypesTest.cpp" line="296" />
+    <testcase name="SerializeUInt8" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Reflection\ReflectionFundamentalTypesTest.cpp" line="307" />
+    <testcase name="SerializeUInt16" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Reflection\ReflectionFundamentalTypesTest.cpp" line="319" />
+    <testcase name="SerializeUInt32" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Reflection\ReflectionFundamentalTypesTest.cpp" line="331" />
+    <testcase name="SerializeUInt64" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Reflection\ReflectionFundamentalTypesTest.cpp" line="343" />
+    <testcase name="SerializeFloat" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Reflection\ReflectionFundamentalTypesTest.cpp" line="356" />
+    <testcase name="SerializeDouble" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Reflection\ReflectionFundamentalTypesTest.cpp" line="368" />
+    <testcase name="SerializeString_Empty" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Reflection\ReflectionFundamentalTypesTest.cpp" line="380" />
+    <testcase name="SerializeString_NonEmpty" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Reflection\ReflectionFundamentalTypesTest.cpp" line="392" />
+    <testcase name="DeserializeBool_False" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Reflection\ReflectionFundamentalTypesTest.cpp" line="406" />
+    <testcase name="DeserializeBool_True" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Reflection\ReflectionFundamentalTypesTest.cpp" line="417" />
+    <testcase name="DeserializeInt8" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Reflection\ReflectionFundamentalTypesTest.cpp" line="428" />
+    <testcase name="DeserializeInt16" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Reflection\ReflectionFundamentalTypesTest.cpp" line="439" />
+    <testcase name="DeserializeInt32" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Reflection\ReflectionFundamentalTypesTest.cpp" line="450" />
+    <testcase name="DeserializeInt64" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Reflection\ReflectionFundamentalTypesTest.cpp" line="461" />
+    <testcase name="DeserializeUInt8" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Reflection\ReflectionFundamentalTypesTest.cpp" line="472" />
+    <testcase name="DeserializeUInt16" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Reflection\ReflectionFundamentalTypesTest.cpp" line="483" />
+    <testcase name="DeserializeUInt32" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Reflection\ReflectionFundamentalTypesTest.cpp" line="494" />
+    <testcase name="DeserializeUInt64" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Reflection\ReflectionFundamentalTypesTest.cpp" line="505" />
+    <testcase name="DeserializeFloat" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Reflection\ReflectionFundamentalTypesTest.cpp" line="517" />
+    <testcase name="DeserializeDouble" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Reflection\ReflectionFundamentalTypesTest.cpp" line="528" />
+    <testcase name="DeserializeString" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Reflection\ReflectionFundamentalTypesTest.cpp" line="539" />
+  </testsuite>
+  <testsuite name="ReflectionTest" tests="8">
+    <testcase name="Serialize_Simple_SingleObject" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Reflection\ReflectionSerializerTest.cpp" line="21" />
+    <testcase name="Serialize_Simple_MultipleObject" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Reflection\ReflectionSerializerTest.cpp" line="50" />
+    <testcase name="Serialize_Complex_SingleRootObject" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Reflection\ReflectionSerializerTest.cpp" line="87" />
+    <testcase name="SharedPtr_Verify" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Reflection\ReflectionSharedPtrTest.cpp" line="35" />
+    <testcase name="SharedPtr_DefaultObject" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Reflection\ReflectionSharedPtrTest.cpp" line="46" />
+    <testcase name="SharedPtr_Compare" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Reflection\ReflectionSharedPtrTest.cpp" line="55" />
+    <testcase name="SharedPtr_Clone" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Reflection\ReflectionSharedPtrTest.cpp" line="74" />
+    <testcase name="SharedPtr_Serialize_Nullptr" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Reflection\ReflectionSharedPtrTest.cpp" line="91" />
+  </testsuite>
+  <testsuite name="ReflectionTypeMismatchTest" tests="6">
+    <testcase name="IncompatibleType" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Reflection\ReflectionTypeMismatchTest.cpp" line="51" />
+    <testcase name="CompatibleFundamentalType" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Reflection\ReflectionTypeMismatchTest.cpp" line="125" />
+    <testcase name="IncompatibleNativeArrayType" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Reflection\ReflectionTypeMismatchTest.cpp" line="195" />
+    <testcase name="CompatibleNativeArrayType" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Reflection\ReflectionTypeMismatchTest.cpp" line="303" />
+    <testcase name="NativeArrayToDynArray" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Reflection\ReflectionTypeMismatchTest.cpp" line="393" />
+    <testcase name="MissingMember" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Reflection\ReflectionClassTest.cpp" line="162" />
+  </testsuite>
+  <testsuite name="ReflectionUniquePtrTest" tests="13">
+    <testcase name="Verify" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Reflection\ReflectionUniquePtrTest.cpp" line="21" />
+    <testcase name="Compare" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Reflection\ReflectionUniquePtrTest.cpp" line="32" />
+    <testcase name="Reset" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Reflection\ReflectionUniquePtrTest.cpp" line="51" />
+    <testcase name="Clone" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Reflection\ReflectionUniquePtrTest.cpp" line="65" />
+    <testcase name="Serialize_Nullptr" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Reflection\ReflectionUniquePtrTest.cpp" line="84" />
+    <testcase name="Serialize_Base" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Reflection\ReflectionUniquePtrTest.cpp" line="94" />
+    <testcase name="Deserialize_Nullptr" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Reflection\ReflectionUniquePtrTest.cpp" line="107" />
+    <testcase name="Deserialize_InvalidType" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Reflection\ReflectionUniquePtrTest.cpp" line="116" />
+    <testcase name="Deserialize_NonRelatedType" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Reflection\ReflectionUniquePtrTest.cpp" line="124" />
+    <testcase name="Deserialize_Base" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Reflection\ReflectionUniquePtrTest.cpp" line="132" />
+    <testcase name="Deserialize_Child" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Reflection\ReflectionUniquePtrTest.cpp" line="147" />
+    <testcase name="SerializeBinary_Nullptr" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Reflection\ReflectionUniquePtrTest.cpp" line="167" />
+    <testcase name="SerializeBinary" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Reflection\ReflectionUniquePtrTest.cpp" line="186" />
+  </testsuite>
+  <testsuite name="ConditionVariableTest" tests="3">
+    <testcase name="WaitFor_Timeout" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\System\ConditionVariableTest.cpp" line="14" />
+    <testcase name="WaitFor_Multithreaded" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\System\ConditionVariableTest.cpp" line="26" />
+    <testcase name="WaitMultipleTimes" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\System\ConditionVariableTest.cpp" line="51" />
+  </testsuite>
+  <testsuite name="SharedLockTest/0" tests="6">
+    <testcase name="SimpleLock" type_param="class NFE::Common::RWLock" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\System\SharedLockTest.cpp" line="27" />
+    <testcase name="SimpleTryAcquireShared" type_param="class NFE::Common::RWLock" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\System\SharedLockTest.cpp" line="36" />
+    <testcase name="SimpleTryAcquireShared_Locked" type_param="class NFE::Common::RWLock" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\System\SharedLockTest.cpp" line="46" />
+    <testcase name="SimpleTryAcquireExclusive_Locked" type_param="class NFE::Common::RWLock" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\System\SharedLockTest.cpp" line="60" />
+    <testcase name="Multithreaded_Simple" type_param="class NFE::Common::RWLock" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\System\SharedLockTest.cpp" line="74" />
+    <testcase name="Multithreaded_Validate" type_param="class NFE::Common::RWLock" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\System\SharedLockTest.cpp" line="150" />
+  </testsuite>
+  <testsuite name="SharedLockTest/1" tests="6">
+    <testcase name="SimpleLock" type_param="class NFE::Common::RWSpinLock" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\System\SharedLockTest.cpp" line="27" />
+    <testcase name="SimpleTryAcquireShared" type_param="class NFE::Common::RWSpinLock" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\System\SharedLockTest.cpp" line="36" />
+    <testcase name="SimpleTryAcquireShared_Locked" type_param="class NFE::Common::RWSpinLock" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\System\SharedLockTest.cpp" line="46" />
+    <testcase name="SimpleTryAcquireExclusive_Locked" type_param="class NFE::Common::RWSpinLock" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\System\SharedLockTest.cpp" line="60" />
+    <testcase name="Multithreaded_Simple" type_param="class NFE::Common::RWSpinLock" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\System\SharedLockTest.cpp" line="74" />
+    <testcase name="Multithreaded_Validate" type_param="class NFE::Common::RWSpinLock" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\System\SharedLockTest.cpp" line="150" />
+  </testsuite>
+  <testsuite name="ExclusiveLockTest/0" tests="5">
+    <testcase name="Simple_Lock" type_param="class NFE::Common::Mutex" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\System\ExclusiveLockTest.cpp" line="27" />
+    <testcase name="Simple_TwoLocks" type_param="class NFE::Common::Mutex" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\System\ExclusiveLockTest.cpp" line="36" />
+    <testcase name="SimpleTryAcquire" type_param="class NFE::Common::Mutex" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\System\ExclusiveLockTest.cpp" line="45" />
+    <testcase name="SimpleTryAcquire_Locked" type_param="class NFE::Common::Mutex" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\System\ExclusiveLockTest.cpp" line="54" />
+    <testcase name="Multithreaded" type_param="class NFE::Common::Mutex" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\System\ExclusiveLockTest.cpp" line="68" />
+  </testsuite>
+  <testsuite name="ExclusiveLockTest/1" tests="5">
+    <testcase name="Simple_Lock" type_param="class NFE::Common::RWLock" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\System\ExclusiveLockTest.cpp" line="27" />
+    <testcase name="Simple_TwoLocks" type_param="class NFE::Common::RWLock" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\System\ExclusiveLockTest.cpp" line="36" />
+    <testcase name="SimpleTryAcquire" type_param="class NFE::Common::RWLock" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\System\ExclusiveLockTest.cpp" line="45" />
+    <testcase name="SimpleTryAcquire_Locked" type_param="class NFE::Common::RWLock" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\System\ExclusiveLockTest.cpp" line="54" />
+    <testcase name="Multithreaded" type_param="class NFE::Common::RWLock" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\System\ExclusiveLockTest.cpp" line="68" />
+  </testsuite>
+  <testsuite name="ExclusiveLockTest/2" tests="5">
+    <testcase name="Simple_Lock" type_param="class NFE::Common::SpinLock" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\System\ExclusiveLockTest.cpp" line="27" />
+    <testcase name="Simple_TwoLocks" type_param="class NFE::Common::SpinLock" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\System\ExclusiveLockTest.cpp" line="36" />
+    <testcase name="SimpleTryAcquire" type_param="class NFE::Common::SpinLock" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\System\ExclusiveLockTest.cpp" line="45" />
+    <testcase name="SimpleTryAcquire_Locked" type_param="class NFE::Common::SpinLock" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\System\ExclusiveLockTest.cpp" line="54" />
+    <testcase name="Multithreaded" type_param="class NFE::Common::SpinLock" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\System\ExclusiveLockTest.cpp" line="68" />
+  </testsuite>
+  <testsuite name="ExclusiveLockTest/3" tests="5">
+    <testcase name="Simple_Lock" type_param="class NFE::Common::RWSpinLock" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\System\ExclusiveLockTest.cpp" line="27" />
+    <testcase name="Simple_TwoLocks" type_param="class NFE::Common::RWSpinLock" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\System\ExclusiveLockTest.cpp" line="36" />
+    <testcase name="SimpleTryAcquire" type_param="class NFE::Common::RWSpinLock" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\System\ExclusiveLockTest.cpp" line="45" />
+    <testcase name="SimpleTryAcquire_Locked" type_param="class NFE::Common::RWSpinLock" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\System\ExclusiveLockTest.cpp" line="54" />
+    <testcase name="Multithreaded" type_param="class NFE::Common::RWSpinLock" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\System\ExclusiveLockTest.cpp" line="68" />
+  </testsuite>
+  <testsuite name="SystemInfoTest" tests="4">
+    <testcase name="CpuInfoTest" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\System\SystemInfoTest.cpp" line="7" />
+    <testcase name="MemoryInfoTest" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\System\SystemInfoTest.cpp" line="16" />
+    <testcase name="InfoStringTest" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\System\SystemInfoTest.cpp" line="28" />
+    <testcase name="FeatureSupportTest" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\System\SystemInfoTest.cpp" line="36" />
+  </testsuite>
+  <testsuite name="ThreadTest" tests="4">
+    <testcase name="SetPriority" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\System\ThreadTest.cpp" line="33" />
+    <testcase name="ThreadId" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\System\ThreadTest.cpp" line="56" />
+    <testcase name="SetThreadNameNormal" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\System\ThreadTest.cpp" line="87" />
+    <testcase name="SetThreadNameInvalid" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\System\ThreadTest.cpp" line="104" />
+  </testsuite>
+  <testsuite name="TimerTest" tests="4">
+    <testcase name="ImmediateStartStopTest" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\System\TimerTest.cpp" line="20" />
+    <testcase name="BasicUseTest" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\System\TimerTest.cpp" line="30" />
+    <testcase name="MultipleStopTest" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\System\TimerTest.cpp" line="49" />
+    <testcase name="MultipleStartTest" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\System\TimerTest.cpp" line="64" />
+  </testsuite>
+  <testsuite name="WindowTest" tests="2">
+    <testcase name="Create" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\System\WindowTest.cpp" line="13" />
+    <testcase name="MultiWindow" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\System\WindowTest.cpp" line="28" />
+  </testsuite>
+  <testsuite name="BitUtils" tests="19">
+    <testcase name="CountTrailingZeros8" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Utils\BitUtilsTest.cpp" line="9" />
+    <testcase name="CountTrailingZeros16" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Utils\BitUtilsTest.cpp" line="24" />
+    <testcase name="CountTrailingZeros32" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Utils\BitUtilsTest.cpp" line="39" />
+    <testcase name="CountTrailingZeros64" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Utils\BitUtilsTest.cpp" line="54" />
+    <testcase name="CountLeadingZeros8" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Utils\BitUtilsTest.cpp" line="71" />
+    <testcase name="CountLeadingZeros16" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Utils\BitUtilsTest.cpp" line="86" />
+    <testcase name="CountLeadingZeros32" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Utils\BitUtilsTest.cpp" line="101" />
+    <testcase name="CountLeadingZeros64" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Utils\BitUtilsTest.cpp" line="116" />
+    <testcase name="CountBits8" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Utils\BitUtilsTest.cpp" line="146" />
+    <testcase name="CountBits16" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Utils\BitUtilsTest.cpp" line="162" />
+    <testcase name="CountBits32" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Utils\BitUtilsTest.cpp" line="178" />
+    <testcase name="CountBits64" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Utils\BitUtilsTest.cpp" line="194" />
+    <testcase name="ReverseBits8" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Utils\BitUtilsTest.cpp" line="228" />
+    <testcase name="ReverseBits16" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Utils\BitUtilsTest.cpp" line="244" />
+    <testcase name="ReverseBits32" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Utils\BitUtilsTest.cpp" line="260" />
+    <testcase name="ReverseBits64" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Utils\BitUtilsTest.cpp" line="276" />
+    <testcase name="SwapEndianness" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Utils\BitUtilsTest.cpp" line="294" />
+    <testcase name="CreateBitmask8" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Utils\BitUtilsTest.cpp" line="303" />
+    <testcase name="CreateBitmask16" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Utils\BitUtilsTest.cpp" line="317" />
+  </testsuite>
+  <testsuite name="BufferInputStreamTest" tests="3">
+    <testcase name="NullBufferTest" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Utils\BufferInputStreamTest.cpp" line="23" />
+    <testcase name="StringBufferTest" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Utils\BufferInputStreamTest.cpp" line="34" />
+    <testcase name="StringBufferSeekTest" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Utils\BufferInputStreamTest.cpp" line="44" />
+  </testsuite>
+  <testsuite name="BufferOutputStreamTest" tests="2">
+    <testcase name="ConstructorTest" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Utils\BufferOutputStreamTest.cpp" line="11" />
+    <testcase name="WriteTest" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Utils\BufferOutputStreamTest.cpp" line="21" />
+  </testsuite>
+  <testsuite name="BVH" tests="2">
+    <testcase name="Simple" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Utils\BVHTest.cpp" line="28" />
+    <testcase name="QueryInsertRemove" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Utils\BVHTest.cpp" line="96" />
+  </testsuite>
+  <testsuite name="CompressedInt" tests="4">
+    <testcase name="Uint32" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Utils\CompressedInt.cpp" line="13" />
+    <testcase name="Stream_Uint32" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Utils\CompressedInt.cpp" line="32" />
+    <testcase name="Uint64" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Utils\CompressedInt.cpp" line="54" />
+    <testcase name="Stream_Uint64" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Utils\CompressedInt.cpp" line="73" />
+  </testsuite>
+  <testsuite name="Config" tests="7">
+    <testcase name="Simple" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Utils\ConfigTest.cpp" line="61" />
+    <testcase name="SimpleNegative" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Utils\ConfigTest.cpp" line="99" />
+    <testcase name="ValueCheck" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Utils\ConfigTest.cpp" line="134" />
+    <testcase name="Generate" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Utils\ConfigTest.cpp" line="231" />
+    <testcase name="GenericValue" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Utils\ConfigTest.cpp" line="263" />
+    <testcase name="DataTranslator" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Utils\ConfigTest.cpp" line="326" />
+    <testcase name="DataTranslatorInvalidTypes" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Utils\ConfigTest.cpp" line="383" />
+  </testsuite>
+  <testsuite name="EnumIteratorTest" tests="1">
+    <testcase name="SimpleTest" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Utils\EnumIteratorTest.cpp" line="29" />
+  </testsuite>
+  <testsuite name="ImageTest" tests="20">
+    <testcase name="BasicConstructor" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Utils\ImageTest.cpp" line="274" />
+    <testcase name="CopyConstructor" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Utils\ImageTest.cpp" line="285" />
+    <testcase name="CopyAssignment" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Utils\ImageTest.cpp" line="312" />
+    <testcase name="MoveConstructor" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Utils\ImageTest.cpp" line="317" />
+    <testcase name="MoveAssignment" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Utils\ImageTest.cpp" line="322" />
+    <testcase name="SetData" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Utils\ImageTest.cpp" line="327" />
+    <testcase name="Grayscale" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Utils\ImageTest.cpp" line="339" />
+    <testcase name="GenerateMipmaps" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Utils\ImageTest.cpp" line="391" />
+    <testcase name="Release" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Utils\ImageTest.cpp" line="421" />
+    <testcase name="LoadJPG" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Utils\ImageTest.cpp" line="438" />
+    <testcase name="SaveJPG" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Utils\ImageTest.cpp" line="445" />
+    <testcase name="LoadPNG" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Utils\ImageTest.cpp" line="465" />
+    <testcase name="LoadBMP" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Utils\ImageTest.cpp" line="488" />
+    <testcase name="LoadDDS" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Utils\ImageTest.cpp" line="522" />
+    <testcase name="ImageFormatError" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Utils\ImageTest.cpp" line="560" />
+    <testcase name="ConvertJPG" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Utils\ImageTest.cpp" line="569" />
+    <testcase name="ConvertPNG" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Utils\ImageTest.cpp" line="579" />
+    <testcase name="ConvertBMP" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Utils\ImageTest.cpp" line="598" />
+    <testcase name="ConvertDDS" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Utils\ImageTest.cpp" line="626" />
+    <testcase name="ConvertErrors" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Utils\ImageTest.cpp" line="663" />
+  </testsuite>
+  <testsuite name="Latch" tests="3">
+    <testcase name="Wait" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Utils\LatchTest.cpp" line="17" />
+    <testcase name="WaitFor" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Utils\LatchTest.cpp" line="28" />
+    <testcase name="Timeout" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Utils\LatchTest.cpp" line="39" />
+  </testsuite>
+  <testsuite name="MD5Test" tests="4">
+    <testcase name="MD5EmptyTest" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Utils\MD5Test.cpp" line="28" />
+    <testcase name="MD5SingleChunkTest" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Utils\MD5Test.cpp" line="38" />
+    <testcase name="MD5FullSingleChunkTest" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Utils\MD5Test.cpp" line="47" />
+    <testcase name="MD5MultiChunkTest" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Utils\MD5Test.cpp" line="57" />
+  </testsuite>
+  <testsuite name="StringUtils" tests="8">
+    <testcase name="ToStringBool" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Utils\StringUtilsTest.cpp" line="14" />
+    <testcase name="ToStringUint32" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Utils\StringUtilsTest.cpp" line="20" />
+    <testcase name="ToStringUint64" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Utils\StringUtilsTest.cpp" line="32" />
+    <testcase name="ToStringInt32" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Utils\StringUtilsTest.cpp" line="45" />
+    <testcase name="ToStringInt64" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Utils\StringUtilsTest.cpp" line="66" />
+    <testcase name="ToStringFloat" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Utils\StringUtilsTest.cpp" line="87" />
+    <testcase name="ToStringDouble" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Utils\StringUtilsTest.cpp" line="100" />
+    <testcase name="Split_StringView" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Utils\StringUtilsTest.cpp" line="113" />
+  </testsuite>
+  <testsuite name="ThreadPoolSimple" tests="10">
+    <testcase name="EmptyTask_NoWaiting" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Utils\ThreadPoolSimpleTest.cpp" line="18" />
+    <testcase name="EmptyTasks_NoWaiting" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Utils\ThreadPoolSimpleTest.cpp" line="30" />
+    <testcase name="EmptyWaitableTask_Waiting" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Utils\ThreadPoolSimpleTest.cpp" line="45" />
+    <testcase name="SimpleDependency" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Utils\ThreadPoolSimpleTest.cpp" line="80" />
+    <testcase name="ThousandTasks" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Utils\ThreadPoolSimpleTest.cpp" line="143" />
+    <testcase name="ChildTasks" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Utils\ThreadPoolSimpleTest.cpp" line="170" />
+    <testcase name="DependencyChain" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Utils\ThreadPoolSimpleTest.cpp" line="201" />
+    <testcase name="EnqueueInsideTaskRecursive" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Utils\ThreadPoolSimpleTest.cpp" line="259" />
+    <testcase name="EnqueueChildRecursive" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Utils\ThreadPoolSimpleTest.cpp" line="289" />
+    <testcase name="ParallelSort" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Utils\ThreadPoolSimpleTest.cpp" line="326" />
+  </testsuite>
+  <testsuite name="ReflectionClassTest" tests="39">
+    <testcase name="TestClassWithFundamentalMembers_Verify" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Reflection\ReflectionClassTest.cpp" line="16" />
+    <testcase name="TestClassWithFundamentalMembers_Serialization" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Reflection\ReflectionClassTest.cpp" line="64" />
+    <testcase name="TestClassWithFundamentalMembers_Deserialization" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Reflection\ReflectionClassTest.cpp" line="82" />
+    <testcase name="TestClassWithFundamentalMembers_BinarySerialization" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Reflection\ReflectionClassTest.cpp" line="96" />
+    <testcase name="TestClassWithFundamentalMembers_MissingMemberType" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Reflection\ReflectionClassTest.cpp" line="199" />
+    <testcase name="TestClassWithNestedType_Verify" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Reflection\ReflectionClassTest.cpp" line="240" />
+    <testcase name="TestClassWithNestedType_Serialization" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Reflection\ReflectionClassTest.cpp" line="274" />
+    <testcase name="TestClassWithNestedType_Deserialization" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Reflection\ReflectionClassTest.cpp" line="292" />
+    <testcase name="TestClassWithNestedType_Dererialize_Invalid" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Reflection\ReflectionClassTest.cpp" line="306" />
+    <testcase name="TestClassWithArrayType_Verify" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Reflection\ReflectionClassTest.cpp" line="321" />
+    <testcase name="TestClassWithArrayType_Serialization" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Reflection\ReflectionClassTest.cpp" line="355" />
+    <testcase name="TestClassWithArrayType_Deserialization" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Reflection\ReflectionClassTest.cpp" line="375" />
+    <testcase name="TestClassWithArrayType_Deserialization_TooShort" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Reflection\ReflectionClassTest.cpp" line="391" />
+    <testcase name="TestClassWithArrayType_Deserialization_TooLong" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Reflection\ReflectionClassTest.cpp" line="408" />
+    <testcase name="TestClassWithArrayType_BinarySerialization" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Reflection\ReflectionClassTest.cpp" line="424" />
+    <testcase name="TestClassWithDynArrayType_Verify" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Reflection\ReflectionClassTest.cpp" line="465" />
+    <testcase name="TestClassWithDynArrayType_Serialization_Empty" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Reflection\ReflectionClassTest.cpp" line="499" />
+    <testcase name="TestClassWithDynArrayType_Serialization" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Reflection\ReflectionClassTest.cpp" line="511" />
+    <testcase name="TestClassWithArrayType_Deserialization_Empty" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Reflection\ReflectionClassTest.cpp" line="533" />
+    <testcase name="TestClassWithArrayType_Deserialization_NonEmpty" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Reflection\ReflectionClassTest.cpp" line="545" />
+    <testcase name="TestClassWithDynArrayType_BinarySerialization" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Reflection\ReflectionClassTest.cpp" line="565" />
+    <testcase name="TestClassWithUniquePtrType_Verify" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Reflection\ReflectionClassTest.cpp" line="619" />
+    <testcase name="TestClassWithUniquePtrType_Serialization_Empty" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Reflection\ReflectionClassTest.cpp" line="673" />
+    <testcase name="BaseClass_Verify" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Reflection\ReflectionPolymorphicClassTest.cpp" line="11" />
+    <testcase name="BaseClass_Serialization" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Reflection\ReflectionPolymorphicClassTest.cpp" line="60" />
+    <testcase name="BaseClass_Deserialization" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Reflection\ReflectionPolymorphicClassTest.cpp" line="76" />
+    <testcase name="ChildClass_Verify" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Reflection\ReflectionPolymorphicClassTest.cpp" line="93" />
+    <testcase name="ChildClass_Cast_Down" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Reflection\ReflectionPolymorphicClassTest.cpp" line="134" />
+    <testcase name="ChildClass_Cast_Up" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Reflection\ReflectionPolymorphicClassTest.cpp" line="140" />
+    <testcase name="ChildClass_Serialization" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Reflection\ReflectionPolymorphicClassTest.cpp" line="149" />
+    <testcase name="ChildClass_Deserialization" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Reflection\ReflectionPolymorphicClassTest.cpp" line="166" />
+    <testcase name="ChildClass_Deserialization_InvalidMarker" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Reflection\ReflectionPolymorphicClassTest.cpp" line="180" />
+    <testcase name="AbstractClass_Verify" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Reflection\ReflectionPolymorphicClassTest.cpp" line="194" />
+    <testcase name="AbstractClass_Serialization" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Reflection\ReflectionPolymorphicClassTest.cpp" line="227" />
+    <testcase name="AbstractClass_Deserialization" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Reflection\ReflectionPolymorphicClassTest.cpp" line="243" />
+    <testcase name="DynamicCast_FromChild" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Reflection\ReflectionPolymorphicClassTest.cpp" line="255" />
+    <testcase name="DynamicCast_FromBase" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Reflection\ReflectionPolymorphicClassTest.cpp" line="266" />
+    <testcase name="DynamicCast_FromChild_Nullptr" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Reflection\ReflectionPolymorphicClassTest.cpp" line="280" />
+    <testcase name="DynamicCast_FromBase_Nullptr" file="C:\Users\mikul1\Documents\gitprojects\nfengine\Src\Tests\CommonTest\TestCases\Reflection\ReflectionPolymorphicClassTest.cpp" line="288" />
+  </testsuite>
+</testsuites>

@@ -695,6 +695,9 @@
     <ClInclude Include="Image\BlockCompression.hpp">
       <Filter>Image</Filter>
     </ClInclude>
+    <ClInclude Include="Image\ImageUtils.hpp">
+      <Filter>Image</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="PCH.cpp" />
@@ -996,6 +999,9 @@
       <Filter>Reflection</Filter>
     </ClCompile>
     <ClCompile Include="Image\BlockCompression.cpp">
+      <Filter>Image</Filter>
+    </ClCompile>
+    <ClCompile Include="Image\ImageUtils.cpp">
       <Filter>Image</Filter>
     </ClCompile>
   </ItemGroup>

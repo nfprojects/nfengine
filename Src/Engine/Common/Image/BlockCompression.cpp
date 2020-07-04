@@ -91,8 +91,6 @@ namespace helper
 
 } // helper
 
-
-NFE_API_EXPORT
 NFE_FORCE_NOINLINE
 const Vec4f DecodeBC1(const uint8* data, uint32 x, uint32 y, const uint32 width)
 {
@@ -109,7 +107,6 @@ const Vec4f DecodeBC1(const uint8* data, uint32 x, uint32 y, const uint32 width)
     return helper::DecodeBC_4ColorPalette(blockData, x, y) + alpha;
 }
 
-NFE_API_EXPORT
 NFE_FORCE_NOINLINE
 std::unique_ptr<float[]> DecodeBC1Image(const uint8* data, const uint32 w, const uint32 h)
 {
@@ -131,7 +128,6 @@ std::unique_ptr<float[]> DecodeBC1Image(const uint8* data, const uint32 w, const
     return decodedData;
 }
 
-NFE_API_EXPORT
 NFE_FORCE_NOINLINE
 const Vec4f DecodeBC2(const uint8* data, uint32 x, uint32 y, const uint32 width)
 {
@@ -153,7 +149,6 @@ const Vec4f DecodeBC2(const uint8* data, uint32 x, uint32 y, const uint32 width)
     return helper::DecodeBC_4ColorPalette(blockData + 8, x, y) + alpha;
 }
 
-NFE_API_EXPORT
 NFE_FORCE_NOINLINE
 const Vec4f DecodeBC3(const uint8* data, uint32 x, uint32 y, const uint32 width)
 {

@@ -110,29 +110,6 @@ size_t Mipmap::GetDataSize() const
     return mData.Size();
 }
 
-Color Mipmap::FilterBox(uint32 x, uint32 y, ImageFormat fmt) const
-{
-    Color a = GetTexel(2 * x,     2 * y,     fmt);
-    Color b = GetTexel(2 * x + 1, 2 * y,     fmt);
-    Color c = GetTexel(2 * x,     2 * y + 1, fmt);
-    Color d = GetTexel(2 * x + 1, 2 * y + 1, fmt);
-
-    return ((a + b) + (c + d)) * 0.25f;
-}
-
-Color Mipmap::FilterGammaCorrected(uint32 x, uint32 y, ImageFormat fmt) const
-{
-    Color a = GetTexel(2 * x,     2 * y,     fmt);
-    Color b = GetTexel(2 * x + 1, 2 * y,     fmt);
-    Color c = GetTexel(2 * x,     2 * y + 1, fmt);
-    Color d = GetTexel(2 * x + 1, 2 * y + 1, fmt);
-    a *= a;
-    b *= b;
-    c *= c;
-    d *= d;
-
-    return Vec4f::Sqrt(((a + b) + (c + d)) * 0.25f);
-}
 
 Color Mipmap::GetTexel(uint32 x, uint32 y, ImageFormat fmt) const
 {

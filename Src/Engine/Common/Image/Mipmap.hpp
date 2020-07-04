@@ -20,13 +20,8 @@ class NFCOMMON_API Mipmap
 {
 protected:
     Buffer mData;
-
     uint32 mWidth;
     uint32 mHeight;
-
-    typedef Color(Mipmap::*filterFunctor)(uint32, uint32, ImageFormat) const;
-    Color FilterBox(uint32 x, uint32 y, ImageFormat fmt) const;
-    Color FilterGammaCorrected(uint32 x, uint32 y, ImageFormat fmt) const;
 
     friend class Image;
 public:

@@ -1,5 +1,5 @@
 #include "PCH.hpp"
-#include "Engine/Common/Image/Image.hpp"
+#include "Engine/Common/Image/ImageUtils.hpp"
 #include "Engine/Common/Image/ImageType.hpp"
 #include "Engine/Common/Utils/Stream/FileInputStream.hpp"
 #include "Engine/Common/Utils/Stream/FileOutputStream.hpp"
@@ -63,10 +63,6 @@ const std::vector<ImageFormat> SUPPORTED_CONVERSION_FORMATS_NON_BC = { ImageForm
                                                                        ImageFormat::A_UByte,
                                                                        ImageFormat::R_UByte,
                                                                        ImageFormat::R_Float };
-// TODO Add BC4-BC7 format, when their conversion is supported
-const std::vector<ImageFormat> SUPPORTED_CONVERSION_FORMATS_BC = { ImageFormat::BC1,
-                                                                   ImageFormat::BC2,
-                                                                   ImageFormat::BC3 };
 } // namespace
 
 class ImageTest : public testing::Test
@@ -96,7 +92,7 @@ protected:
         // Add scoped trace, to give information where exactly the error occured
         SCOPED_TRACE(("Loading " + String(FormatToStr(fmt))).Str());
 
-        ASSERT_TRUE(mImage->Load(mImageFile.get()));
+        ASSERT_TRUE(ImageUtils::Load(mImageFile.get(), mImage.get()));
         ASSERT_EQ(fmt, mImage->GetFormat());
         ASSERT_EQ(TEXTURE_WIDTH, mImage->GetWidth());
         ASSERT_EQ(TEXTURE_HEIGHT, mImage->GetHeight());
@@ -112,7 +108,7 @@ protected:
     void ConvertAssert()
     {
         // Load image
-        ASSERT_TRUE(mImage->Load(mImageFile.get()));
+        ASSERT_TRUE(ImageUtils::Load(mImageFile.get(), mImage.get()));
 
         // Convert to nonBC format and check texels
         for (auto i : SUPPORTED_CONVERSION_FORMATS_NON_BC)
@@ -121,8 +117,8 @@ protected:
             SCOPED_TRACE(("Conversion to " + String(FormatToStr(i))).Str());
 
             Image imageToConvert(*mImage.get());
-
-            ASSERT_TRUE(imageToConvert.Convert(i));
+            printf("Conversion to %s\n", FormatToStr(i));
+            ASSERT_TRUE(ImageUtils::Convert(&imageToConvert, i));
             ASSERT_EQ(i, imageToConvert.GetFormat());
 
             CheckTexels(&imageToConvert);
@@ -315,7 +311,29 @@ TEST_F(ImageTest, CopyConstructor)
 
 TEST_F(ImageTest, CopyAssignment)
 {
-    ASSERT_FALSE(std::is_copy_assignable<Image>::value);
+    EXPECT_TRUE(std::is_copy_assignable<Image>::value);
+
+    Image imageEmpty;
+    EXPECT_TRUE(mImage->SetData(TEST_DATA, TEST_DATA_WIDTH,
+        TEST_DATA_HEIGHT, TEST_DATA_FORMAT));
+
+    // After setting data, mImage should differ from uninitialized Image object
+    EXPECT_NE(mImage->GetMipmapsNum(), imageEmpty.GetMipmapsNum());
+    EXPECT_NE(mImage->GetData() == nullptr, imageEmpty.GetData() == nullptr);
+    EXPECT_NE(mImage->GetFormat(), imageEmpty.GetFormat());
+    EXPECT_NE(mImage->GetHeight(), imageEmpty.GetHeight());
+    EXPECT_NE(mImage->GetWidth(), imageEmpty.GetWidth());
+
+    Image imageCopy = *mImage.get();
+    const uint8* mImageData = static_cast<const uint8*>(mImage->GetData());
+    const uint8* imageCopyData = static_cast<const uint8*>(imageCopy.GetData());
+
+    // After copying Image object, both objects should return the same data
+    ASSERT_EQ(mImage->GetMipmapsNum(), imageCopy.GetMipmapsNum());
+    ASSERT_EQ(0, memcmp(mImageData, imageCopyData, TEST_DATA_SIZE));
+    ASSERT_EQ(mImage->GetFormat(), imageCopy.GetFormat());
+    ASSERT_EQ(mImage->GetHeight(), imageCopy.GetHeight());
+    ASSERT_EQ(mImage->GetWidth(), imageCopy.GetWidth());
 }
 
 TEST_F(ImageTest, MoveConstructor)
@@ -325,7 +343,7 @@ TEST_F(ImageTest, MoveConstructor)
 
 TEST_F(ImageTest, MoveAssignment)
 {
-    ASSERT_FALSE(std::is_move_assignable<Image>::value);
+    ASSERT_TRUE(std::is_move_assignable<Image>::value);
 }
 
 TEST_F(ImageTest, SetData)
@@ -346,7 +364,7 @@ TEST_F(ImageTest, Grayscale)
     EXPECT_TRUE(mImage->SetData(TEST_DATA, TEST_DATA_WIDTH,
                                 TEST_DATA_HEIGHT, TEST_DATA_FORMAT));
 
-    ASSERT_TRUE(mImage->Grayscale());
+    ASSERT_TRUE(ImageUtils::Grayscale(mImage.get()));
 
     ASSERT_EQ(1u, mImage->GetMipmapsNum());
     ASSERT_EQ(TEST_DATA_FORMAT, mImage->GetFormat());
@@ -395,30 +413,30 @@ TEST_F(ImageTest, Grayscale)
 TEST_F(ImageTest, GenerateMipmaps)
 {
     // No data
-    ASSERT_FALSE(mImage->GenerateMipmaps(MipmapFilter::Box, TEST_DATA_MAX_MIPMAP_NUM));
+    ASSERT_FALSE(ImageUtils::GenerateMipmaps(mImage.get(), MipmapFilter::Box, TEST_DATA_MAX_MIPMAP_NUM));
 
     // BC4, BC5, BC6H and BC7 not supported
     EXPECT_TRUE(mImage->SetData(TEST_DATA, TEST_DATA_WIDTH,
                                 TEST_DATA_HEIGHT, ImageFormat::BC4));
-    ASSERT_FALSE(mImage->GenerateMipmaps(MipmapFilter::Box, TEST_DATA_MAX_MIPMAP_NUM));
+    ASSERT_FALSE(ImageUtils::GenerateMipmaps(mImage.get(), MipmapFilter::Box, TEST_DATA_MAX_MIPMAP_NUM));
 
     EXPECT_TRUE(mImage->SetData(TEST_DATA, TEST_DATA_WIDTH,
                                 TEST_DATA_HEIGHT, ImageFormat::BC5));
-    ASSERT_FALSE(mImage->GenerateMipmaps(MipmapFilter::Box, TEST_DATA_MAX_MIPMAP_NUM));
+    ASSERT_FALSE(ImageUtils::GenerateMipmaps(mImage.get(), MipmapFilter::Box, TEST_DATA_MAX_MIPMAP_NUM));
 
     EXPECT_TRUE(mImage->SetData(TEST_DATA, TEST_DATA_WIDTH,
                                 TEST_DATA_HEIGHT, ImageFormat::BC6H));
-    ASSERT_FALSE(mImage->GenerateMipmaps(MipmapFilter::Box, TEST_DATA_MAX_MIPMAP_NUM));
+    ASSERT_FALSE(ImageUtils::GenerateMipmaps(mImage.get(), MipmapFilter::Box, TEST_DATA_MAX_MIPMAP_NUM));
 
     EXPECT_TRUE(mImage->SetData(TEST_DATA, TEST_DATA_WIDTH,
                                 TEST_DATA_HEIGHT, ImageFormat::BC7));
-    ASSERT_FALSE(mImage->GenerateMipmaps(MipmapFilter::Box, TEST_DATA_MAX_MIPMAP_NUM));
+    ASSERT_FALSE(ImageUtils::GenerateMipmaps(mImage.get(), MipmapFilter::Box, TEST_DATA_MAX_MIPMAP_NUM));
 
     // Successfully loaded picture
     mImage->Release();
     mImageFile.reset(new FileInputStream((TEST_IMAGES_PATH + TEXTURE_JPG)));
     ASSERT_NO_FATAL_FAILURE(LoadAssert(ImageFormat::RGB_UByte));
-    ASSERT_TRUE(mImage->GenerateMipmaps(MipmapFilter::Box, TEST_DATA_MAX_MIPMAP_NUM));
+    ASSERT_TRUE(ImageUtils::GenerateMipmaps(mImage.get(), MipmapFilter::Box, TEST_DATA_MAX_MIPMAP_NUM));
     ASSERT_EQ(TEST_DATA_MAX_MIPMAP_NUM + 1, mImage->GetMipmapsNum());
 }
 
@@ -426,7 +444,7 @@ TEST_F(ImageTest, Release)
 {
     EXPECT_TRUE(mImage->SetData(TEST_DATA, TEST_DATA_WIDTH,
                                 TEST_DATA_HEIGHT, TEST_DATA_FORMAT));
-    EXPECT_TRUE(mImage->GenerateMipmaps(MipmapFilter::Box, TEST_DATA_MAX_MIPMAP_NUM));
+    EXPECT_TRUE(ImageUtils::GenerateMipmaps(mImage.get(), MipmapFilter::Box, TEST_DATA_MAX_MIPMAP_NUM));
     EXPECT_EQ(TEST_DATA_MAX_MIPMAP_NUM + 1, mImage->GetMipmapsNum());
 
     // After releasing Image, all data should be purged
@@ -443,26 +461,6 @@ TEST_F(ImageTest, LoadJPG)
 {
     FillTestImage(ImageFormat::RGB_UByte);
     mImageFile.reset(new FileInputStream(TEST_IMAGES_PATH + TEXTURE_JPG));
-    LoadCheck(ImageFormat::RGB_UByte);
-}
-
-TEST_F(ImageTest, SaveJPG)
-{
-    FillTestImage(ImageFormat::RGB_UByte);
-    mImageFile.reset(new FileInputStream((TEST_IMAGES_PATH + TEXTURE_JPG)));
-    LoadCheck(ImageFormat::RGB_UByte);
-
-    {
-        auto imageType = ImageType::GetImageType(StringView("JPG"));
-        ASSERT_NE(nullptr, imageType.Get());
-
-        FileOutputStream outFile((TEST_IMAGES_SAVEPATH + TEXTURE_JPG + "_saved.jpg"));
-        ASSERT_FALSE(imageType->Save(mImage.get(), &outFile));
-        ASSERT_TRUE(mImage->Convert(ImageFormat::RGBA_UByte));
-        ASSERT_TRUE(imageType->Save(mImage.get(), &outFile));
-    }
-
-    mImageFile.reset(new FileInputStream((TEST_IMAGES_SAVEPATH + TEXTURE_JPG + "_saved.jpg")));
     LoadCheck(ImageFormat::RGB_UByte);
 }
 
@@ -485,7 +483,7 @@ TEST_F(ImageTest, LoadPNG)
     // When loading grayscale PNG, convert testImage just before checking texels
     mImageFile.reset(new FileInputStream((TEST_IMAGES_PATH + TEXTURE_PNG_GA)));
     LoadAssert(ImageFormat::RGBA_UByte);
-    ASSERT_TRUE(mTestImageRGB->Grayscale());
+    ASSERT_TRUE(ImageUtils::Grayscale(mTestImageRGB.get()));
     CheckTexels(mImage.get());
 }
 
@@ -645,7 +643,6 @@ TEST_F(ImageTest, ConvertDDS)
     mImageFile.reset(new FileInputStream((TEST_IMAGES_PATH + TEXTURE_DDS_BC3)));
     ConvertAssert();
 
-    /* TODO Enable, when BC4 - BC7 support is implemented
     // BC4
     mImageFile.reset(new FileInputStream((TEST_IMAGES_PATH + TEXTURE_DDS_BC4)));
     ConvertAssert();
@@ -654,6 +651,7 @@ TEST_F(ImageTest, ConvertDDS)
     mImageFile.reset(new FileInputStream((TEST_IMAGES_PATH + TEXTURE_DDS_BC5)));
     ConvertAssert();
 
+    /*
     // BC6H
     mImageFile.reset(new FileInputStream((TEST_IMAGES_PATH + TEXTURE_DDS_BC6H)));
     ConvertAssert();
@@ -670,9 +668,9 @@ TEST_F(ImageTest, ConvertErrors)
     ASSERT_NO_FATAL_FAILURE(LoadAssert(ImageFormat::RGB_UByte));
 
     // Conversion to unknown format
-    ASSERT_FALSE(mImage->Convert(ImageFormat::Unknown));
+    ASSERT_FALSE(ImageUtils::Convert(mImage.get(), ImageFormat::Unknown));
 
     // Conversion with no data - nothing to convert
     mImage->Release();
-    ASSERT_FALSE(mImage->Convert(ImageFormat::RGB_UByte));
+    ASSERT_FALSE(ImageUtils::Convert(mImage.get(), ImageFormat::RGB_UByte));
 }

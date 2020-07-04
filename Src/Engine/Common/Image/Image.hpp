@@ -23,17 +23,12 @@ class NFCOMMON_API Image
     int mHeight;
     ImageFormat mFormat;
 
-    bool DecompressDDS();
-    bool CompressDDS(ImageFormat destFormat);
-    bool GenerateMipmapsActual(MipmapFilter filterType, uint32 num);
-    bool ConvertActual(ImageFormat destFormat);
-
 public:
     Image();
     Image(const Image& src);
     Image(Image&& other) = delete;
-    Image& operator=(const Image& other) = delete;
-    Image& operator=(Image&& other) = delete;
+    Image& operator=(const Image& other);
+    Image& operator=(Image&& other);
     ~Image();
 
     static void ClearRegisteredTypesList();
@@ -42,20 +37,6 @@ public:
      * Free the image from memory.
      */
     void Release();
-
-    /**
-     * Generate mipmaps.
-     * @param num Number of mipmaps to generate. Leave this argument default to generate a full set
-     * @return true on success
-     */
-    bool GenerateMipmaps(MipmapFilter filterType, uint32 num = 0xFFFFFFFF);
-
-    /**
-     * Change pixel format. Currently converting from and to BC4-BC7 formats is unsupported.
-     * @param destFormat Destination image format
-     * @return true on success
-     */
-    bool Convert(ImageFormat destFormat);
 
     /**
      * Create an image with custom pixels buffer.
@@ -72,12 +53,7 @@ public:
      */
     bool SetData(DynArray<Mipmap>&& mipmaps, uint32 width, uint32 height, ImageFormat format);
 
-    /**
-     * Load image from a data stream. Supported file formats: BMP, JPEG, PNG, DDS.
-     * @param stream A pointer to a stream containing image file
-     * @return true on success
-     */
-    bool Load(InputStream* stream);
+    void SetTexel(const Color& v, uint32 x, uint32 y);
 
     /**
      * Get width of the image (in pixels).
@@ -110,13 +86,6 @@ public:
      * @param id Mipmap level.
      */
     const Mipmap* GetMipmap(uint32 id = 0) const;
-
-    /**
-     * Convert RGB pixel values to grayscale.
-     * Accepted formats are only: RGB_UByte, RGBA_UByte, RGBA_Float
-     * @return true on success
-     */
-    bool Grayscale();
 };
 
 } // namespace Common

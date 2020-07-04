@@ -106,50 +106,10 @@ bool ImageJPG::Load(Image* img, InputStream* stream)
 
 bool ImageJPG::Save(Image* img, OutputStream* stream)
 {
-    if (img->GetFormat() != ImageFormat::RGBA_UByte)
-    {
-        NFE_LOG_ERROR("To save image as JPG, RGBA_UByte format is needed.");
-        return false;
-    }
+    NFE_UNUSED(img);
+    NFE_UNUSED(stream);
 
-    CustomJpegOStream jpegStream(stream);
-    jpge::jpeg_encoder jpegEncoder;
-    jpge::params jpegParams;
-    jpegParams.m_quality = 100;
-
-    uint32 width = img->GetWidth();
-    uint32 height = img->GetHeight();
-
-    size_t bitsPerPix = BitsPerPixel(img->GetFormat());
-
-    if (!jpegEncoder.init(&jpegStream, width, height, static_cast<int>(bitsPerPix / 8), jpegParams))
-    {
-        NFE_LOG_ERROR("Error while initializing encoder");
-        jpegEncoder.deinit();
-        return false;
-    }
-
-    size_t lineSize = bitsPerPix / 8 * width * sizeof(uint8);
-    size_t streamSize = img->GetMipmap()->GetDataSize() / sizeof(uint8);
-    const uint8* linePtr = reinterpret_cast<const uint8*>(img->GetMipmap()->GetData());
-    for (size_t i = 0; i < streamSize; i += lineSize)
-        if (!jpegEncoder.process_scanline(linePtr + i))
-        {
-            NFE_LOG_ERROR("Error while processing line no. %i", i / lineSize);
-            jpegEncoder.deinit();
-            return false;
-        }
-
-    if (!jpegEncoder.process_scanline(nullptr))
-    {
-        NFE_LOG_ERROR("Error while finishing compression");
-        jpegEncoder.deinit();
-        return false;
-
-    }
-
-    jpegEncoder.deinit();
-    return true;
+    return false;
 }
 
 } // namespace Common

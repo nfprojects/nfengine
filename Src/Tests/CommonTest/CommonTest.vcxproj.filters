@@ -142,9 +142,6 @@
     <ClCompile Include="TestCases\System\ConditionVariableTest.cpp">
       <Filter>TestCases\System</Filter>
     </ClCompile>
-    <ClCompile Include="TestCases\Utils\ImageTest.cpp">
-      <Filter>TestCases\Utils</Filter>
-    </ClCompile>
     <ClCompile Include="TestCases\Utils\ConfigTest.cpp">
       <Filter>TestCases\Utils</Filter>
     </ClCompile>
@@ -237,6 +234,9 @@
     </ClCompile>
     <ClCompile Include="TestCases\Reflection\ReflectionTypeMismatchTest.cpp">
       <Filter>TestCases\Reflection</Filter>
+    </ClCompile>
+    <ClCompile Include="TestCases\Utils\ImageTest.cpp">
+      <Filter>TestCases\Utils</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

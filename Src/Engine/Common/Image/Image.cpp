@@ -8,17 +8,6 @@
 #include "PCH.hpp"
 #include "Image.hpp"
 #include "ImageType.hpp"
-#include "libsquish/squish.h"
-
-
-namespace {
-
-// TODO After BC6H-BC7 implementation refactor gDDSSrcFormat
-/**
- * Source format, from which DDS conversion is made
- */
-const NFE::Common::ImageFormat gDDSSrcFormat = NFE::Common::ImageFormat::RGBA_UByte;
-}
 
 namespace NFE {
 namespace Common {
@@ -42,6 +31,27 @@ Image::Image(const Image& other)
 Image::~Image()
 {
     Release();
+}
+
+Image& Image::operator=(const Image& other)
+{
+    if (&other == this)
+        return *this;
+
+    mWidth = other.mWidth;
+    mHeight = other.mHeight;
+    mFormat = other.mFormat;
+    mMipmaps = other.mMipmaps;
+    return *this;
+}
+
+Image& Image::operator=(Image&& other)
+{
+    std::swap(mFormat, other.mFormat);
+    std::swap(mHeight, other.mHeight);
+    std::swap(mWidth, other.mWidth);
+    mMipmaps = std::move(other.mMipmaps);
+    return *this;
 }
 
 void Image::ClearRegisteredTypesList()
@@ -104,22 +114,6 @@ bool Image::SetData(DynArray<Mipmap>&& mipmaps, uint32 width, uint32 height, Ima
     return true;
 }
 
-bool Image::Load(InputStream* stream)
-{
-    Release();
-
-    for (const auto& imageType : ImageType::GetTypes())
-    {
-        if (imageType->Check(stream))
-        {
-            return imageType->Load(this, stream);
-        }
-    }
-
-    NFE_LOG_ERROR("Stream was not recognized as any of the usable file formats.");
-    return false;
-}
-
 int Image::GetWidth() const
 {
     return mWidth;
@@ -149,6 +143,14 @@ uint32 Image::GetMipmapsNum() const
     return mMipmaps.Size();
 }
 
+void Image::SetTexel(const Color& v, uint32 x, uint32 y)
+{
+    if (!mMipmaps.Empty())
+    {
+        mMipmaps[0].SetTexel(v, x, y, mFormat);
+    }
+}
+
 const Mipmap* Image::GetMipmap(uint32 id) const
 {
     if (id < mMipmaps.Size())
@@ -158,372 +160,5 @@ const Mipmap* Image::GetMipmap(uint32 id) const
     return nullptr;
 }
 
-bool Image::DecompressDDS()
-{
-    // Find compression flag
-    int compressionFlag = 0;
-    switch (mFormat)
-    {
-    case ImageFormat::BC1:
-        compressionFlag = squish::kDxt1;
-        break;
-    case ImageFormat::BC2:
-        compressionFlag = squish::kDxt3;
-        break;
-    case ImageFormat::BC3:
-        compressionFlag = squish::kDxt5;
-        break;
-    default:
-        NFE_LOG_WARNING("BC Decompression cannot be done for %s pixel format.",
-            FormatToStr(mFormat));
-        return false;
-    }
-
-    // Calculate array sizes and allocate the memory
-    const int size = static_cast<int>(mWidth * mHeight
-                                        * BitsPerPixel(gDDSSrcFormat) / sizeof(uint8));
-
-    std::unique_ptr<uint8[]> pixels(new (std::nothrow) uint8[size]);
-    if (!pixels.get())
-    {
-        NFE_LOG_ERROR("Allocating memory for DDS decompression failed.");
-        return false;
-    }
-
-    const uint8* block = static_cast<const uint8*>(GetData());
-
-    // Decompress the first mipmap
-    squish::DecompressImage(pixels.get(), mWidth, mHeight, block, compressionFlag);
-    return SetData(pixels.get(), mWidth, mHeight, gDDSSrcFormat);
-}
-
-bool Image::CompressDDS(ImageFormat destFormat)
-{
-    if (mFormat != gDDSSrcFormat)
-    {
-        // TODO After BC6H-BC7 implementation refactor gDDSSrcFormat
-        NFE_LOG_WARNING("Compression to BC1-3 can only be made for %s pixel format.",
-            FormatToStr(gDDSSrcFormat));
-        return false;
-    }
-
-    // Find compression flag
-    int compressionFlag = 0;
-    switch (destFormat)
-    {
-    case ImageFormat::BC1:
-        compressionFlag = squish::kDxt1;
-        break;
-    case ImageFormat::BC2:
-        compressionFlag = squish::kDxt3;
-        break;
-    case ImageFormat::BC3:
-        compressionFlag = squish::kDxt5;
-        break;
-    default:
-        NFE_LOG_WARNING("BC Compression cannot be done for %s pixel format.",
-            FormatToStr(destFormat));
-        return false;
-    }
-
-    DynArray<Mipmap> newMipmaps;
-    // Get number of mipmaps to be compressed, apart from the 1st one
-    uint32 mipmapNum = static_cast<uint32>(GetMipmapsNum());
-
-    // Calculate array sizes and allocate the memory
-    size_t bitsPerPixel = BitsPerPixel(destFormat);
-    const Mipmap* mip = GetMipmap(0);
-    uint32 width = mip->GetWidth();
-    uint32 height = mip->GetHeight();
-    size_t size = width * height * bitsPerPixel;
-
-    const uint8* pixels = static_cast<const uint8*>(mip->GetData());
-    std::unique_ptr<uint8[]> block(new (std::nothrow) uint8[size / sizeof(uint8)]);
-    if (!block.get())
-    {
-        NFE_LOG_ERROR("Allocating memory for DDS compression failed.");
-        return false;
-    }
-
-    // Compress the first mipmap
-    squish::CompressImage(pixels, width, height, block.get(), compressionFlag);
-    newMipmaps.PushBack(Mipmap(block.get(), width, height, size));
-
-    // Compress the rest
-    for (uint32 i = 1; i < mipmapNum; i++)
-    {
-        mip = GetMipmap(i);
-        width = mip->GetWidth();
-        height = mip->GetHeight();
-
-        if (width < 4 || height < 4)
-            break;
-        size = width * height * bitsPerPixel;
-
-        pixels = static_cast<const uint8*>(mip->GetData());
-        block.reset(new (std::nothrow) uint8[size / sizeof(uint8)]);
-        if (!block.get())
-        {
-            NFE_LOG_ERROR("Compressing mipmap of level %d failed.", i);
-            return false;
-        }
-
-        squish::CompressImage(pixels, width, height, block.get(), compressionFlag);
-        newMipmaps.PushBack(Mipmap(block.get(), width, height, size));
-    }
-
-    Release();
-    mWidth = width;
-    mHeight = height;
-    mFormat = destFormat;
-    mMipmaps = std::move(newMipmaps);
-
-    return true;
-}
-
-bool Image::GenerateMipmaps(MipmapFilter filterType, uint32 num)
-{
-    // Empty image
-    if (!GetData())
-    {
-        NFE_LOG_WARNING("Tried to generate mMipmaps of an empty image");
-        return false;
-    }
-
-    if (mFormat == ImageFormat::BC4 || mFormat == ImageFormat::BC5 ||
-        mFormat == ImageFormat::BC6H || mFormat == ImageFormat::BC7)
-    {
-        NFE_LOG_ERROR("Block coded (BC4-BC7) pixel formats are unsupported");
-        return false;
-    }
-
-    if (mFormat == ImageFormat::Unknown)
-    {
-        NFE_LOG_ERROR("Invalid pixel format");
-        return false;
-    }
-
-    ImageFormat oldFormat = ImageFormat::Unknown;
-    if (IsSupportedBC(mFormat))
-    {
-        oldFormat = mFormat;
-        if (!Convert(gDDSSrcFormat))
-        {
-            NFE_LOG_ERROR("%s decompression failed. No mipmaps generated.",
-                        FormatToStr(oldFormat));
-            return false;
-        }
-    }
-
-    if (!GenerateMipmapsActual(filterType, num))
-        return false;
-
-    if (oldFormat != ImageFormat::Unknown)
-    {
-        if (!Convert(oldFormat))
-        {
-            NFE_LOG_ERROR("%s compression failed. Mipmaps generated in %s format.",
-                        FormatToStr(oldFormat), FormatToStr(mFormat));
-            return false;
-        }
-    }
-
-    return true;
-}
-
-bool Image::GenerateMipmapsActual(MipmapFilter filterType, uint32 num)
-{
-    // Erase all existing mipmaps apart from the first one
-    if (mMipmaps.Size() > 1)
-    {
-        mMipmaps.Erase(mMipmaps.Begin() + 1, mMipmaps.End());
-    }
-
-    // Start from most detailed mipmap
-    Mipmap::filterFunctor filter = nullptr;
-
-    // Resolve what filter should be used
-    switch (filterType)
-    {
-    case MipmapFilter::GammaCorrectedLinear:
-        filter = &Mipmap::FilterGammaCorrected;
-        break;
-
-    case MipmapFilter::Box:
-        filter = &Mipmap::FilterBox;
-        break;
-
-    default:
-        NFE_LOG_ERROR("Unknown filter specified for mipmap generation: %s.", FilterToStr(filterType));
-        return false;
-    }
-
-    // TODO  NEEDS CHANGE
-    auto isPowerOfTwo = [](int x){return !(x == 0) && !(x & (x - 1)); };
-    if (isPowerOfTwo(mMipmaps.Back().GetWidth()) || isPowerOfTwo(mMipmaps.Back().GetHeight()))
-        NFE_LOG_WARNING("No support for non-power-of-2 !");
-
-    // Generate mipmaps main loop
-    for (uint32 i = 0; i < num; i++)
-    {
-        const Mipmap& mipmap = mMipmaps.Back();
-
-        // Calculate the size of the new mipmap
-        uint32 nextMipWidth = (mipmap.GetWidth() / 2) + (mipmap.GetWidth() % 2);
-        uint32 nextMipHeight = (mipmap.GetHeight() / 2) + (mipmap.GetHeight() % 2);
-        if (nextMipWidth == 0)
-            nextMipWidth = 1;
-        if (nextMipHeight == 0)
-            nextMipHeight = 1;
-        size_t dataSize = nextMipWidth * nextMipHeight * BitsPerPixel(mFormat);
-
-        // Make empty data for the new mipmap so it allocates the space needed
-        std::unique_ptr<uint8[]> data(new (std::nothrow) uint8[dataSize / sizeof(uint8)]);
-        if (!data.get())
-        {
-            NFE_LOG_ERROR("Allocating memory for mipmap generation failed.");
-            return false;
-        }
-
-        Mipmap nextMip(data.get(), nextMipWidth, nextMipHeight, dataSize);
-
-        // Iterate through whole mipmap and acquire its texels
-        for (uint32 y = 0; y < nextMipHeight; y++)
-        {
-            for (uint32 x = 0; x < nextMipWidth; x++)
-            {
-                Color outputTexel = (mipmap.*filter)(x, y, mFormat);
-                nextMip.SetTexel(outputTexel, x, y, mFormat);
-            }
-        }
-        mMipmaps.PushBack(std::move(nextMip));
-
-        if (nextMipWidth == 1 && nextMipHeight == 1)
-            break;
-    }
-
-    return true;
-}
-
-bool Image::Convert(ImageFormat destFormat)
-{
-    // Empty image
-    if (GetData() == 0)
-    {
-        NFE_LOG_WARNING("Tried to convert pixel format of an empty image");
-        return false;
-    }
-
-    if (mFormat == ImageFormat::BC4 || mFormat == ImageFormat::BC5 ||
-        mFormat == ImageFormat::BC6H || mFormat == ImageFormat::BC7 ||
-        destFormat == ImageFormat::BC4 || destFormat == ImageFormat::BC5 ||
-        destFormat == ImageFormat::BC6H || destFormat == ImageFormat::BC7)
-    {
-        NFE_LOG_ERROR("Block coded (BC4-BC7) pixel formats are currently not supported");
-        return false;
-    }
-
-    // Invalid format
-    if (mFormat == ImageFormat::Unknown || destFormat == ImageFormat::Unknown)
-    {
-        NFE_LOG_ERROR("Trying to convert invalid pixel format");
-        return false;
-    }
-
-    // Same format
-    if (destFormat == mFormat)
-        return true;
-
-    if (IsSupportedBC(mFormat))
-    {
-        uint32 mipmapNum = static_cast<uint32>(GetMipmapsNum() - 1);
-        DecompressDDS();
-        GenerateMipmaps(MipmapFilter::Box, mipmapNum);
-
-        if (IsSupportedBC(destFormat))
-            return CompressDDS(destFormat);
-        else
-            return ConvertActual(destFormat);
-    }
-
-    if (IsSupportedBC(destFormat))
-    {
-        if (mFormat != gDDSSrcFormat)
-            ConvertActual(gDDSSrcFormat);
-        return CompressDDS(destFormat);
-    }
-    return ConvertActual(destFormat);
-}
-
-bool Image::ConvertActual(ImageFormat destFormat)
-{
-    DynArray<Mipmap> newMipmaps;
-    newMipmaps.Resize(mMipmaps.Size());
-
-    for (uint32 i = 0; i < mMipmaps.Size(); i++)
-    {
-        uint32 width = mMipmaps[i].GetWidth();
-        uint32 height = mMipmaps[i].GetHeight();
-        newMipmaps[i].mData.Resize(width * height * BitsPerPixel(destFormat));
-        newMipmaps[i].mHeight = height;
-        newMipmaps[i].mWidth = width;
-
-        Math::Vec4f tmp;
-
-        for (uint32 y = 0; y < height; y++)
-        {
-            for (uint32 x = 0; x < width; x++)
-            {
-                tmp = mMipmaps[i].GetTexel(x, y, mFormat);
-                newMipmaps[i].SetTexel(tmp, x, y, destFormat);
-            }
-        }
-    }
-
-    mMipmaps = std::move(newMipmaps);
-    mFormat = destFormat;
-
-    return true;
-}
-
-bool Image::Grayscale()
-{
-    if (mFormat == ImageFormat::RGB_UByte
-        || mFormat == ImageFormat::RGBA_UByte
-        || mFormat == ImageFormat::RGBA_Float)
-    {
-        // These are common values for luminance grayscale transformation
-        Color luminanceMask(0.21f, 0.72f, 0.07f, 1.0f);
-
-        for (uint32 i = 0; i < mMipmaps.Size(); i++)
-        {
-            uint32 width = mMipmaps[i].GetWidth();
-            uint32 height = mMipmaps[i].GetHeight();
-
-            Color tmp;
-
-            for (uint32 y = 0; y < height; y++)
-            {
-                for (uint32 x = 0; x < width; x++)
-                {
-                    // Get texel, so we can calculate dot product and use its alpha
-                    tmp = mMipmaps[i].GetTexel(x, y, mFormat);
-
-                    // Calculate grayscale value using luminance transformation
-                    float grayVal = Math::Vec4f::Dot3(tmp, luminanceMask);
-
-                    // Overwrite only color values, leaving alpha as it was
-                    mMipmaps[i].SetTexel(Color(grayVal, grayVal, grayVal, tmp.f[3]),
-                                           x, y, mFormat);
-                }
-            }
-        }
-
-        return true;
-    }
-
-    NFE_LOG_ERROR("Conversion to grayscale is not available for image format: %s.", FormatToStr(mFormat));
-    return false;
-}
 } // namespace Common
 } // namespace NFE
