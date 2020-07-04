@@ -94,7 +94,6 @@ private:
     UniquePtrBase& operator=(const UniquePtrBase&) = delete;
 };
 
-
 /**
  * Unique pointer - single object.
  */
@@ -150,12 +149,29 @@ public:
 };
 
 
+namespace detail {
+    template<typename>
+    constexpr bool is_unbounded_array_v = false;
+    template<typename T>
+    constexpr bool is_unbounded_array_v<T[]> = true;
+
+    template<typename>
+    constexpr bool is_bounded_array_v = false;
+    template<typename T, size_t N>
+    constexpr bool is_bounded_array_v<T[N]> = true;
+} // namespace detail
+
 /**
  * Create unique pointer.
  */
-template<typename T, typename ... Args>
-NFE_INLINE UniquePtr<T> MakeUniquePtr(Args&& ... args);
+template<typename T, typename... Args>
+NFE_INLINE std::enable_if_t<!std::is_array<T>::value, UniquePtr<T>> MakeUniquePtr(Args&& ... args);
 
+template<typename T>
+NFE_INLINE std::enable_if_t<detail::is_unbounded_array_v<T>, UniquePtr<T>> MakeUniquePtr(size_t n);
+
+template<typename T, typename... Args>
+NFE_INLINE std::enable_if_t<detail::is_bounded_array_v<T>, UniquePtr<T>> MakeUniquePtr(Args&& ...) = delete;
 
 /**
  * Static cast a unique pointer.

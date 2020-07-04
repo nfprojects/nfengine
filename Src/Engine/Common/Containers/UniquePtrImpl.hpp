@@ -179,11 +179,19 @@ UniquePtr<T[], Deleter>::operator UniquePtr<U[]>()
 
 //////////////////////////////////////////////////////////////////////////
 
-template<typename T, typename ... Args>
-UniquePtr<T> MakeUniquePtr(Args&& ... args)
+template<typename T, typename... Args>
+std::enable_if_t<!std::is_array<T>::value, UniquePtr<T>> MakeUniquePtr(Args&& ... args)
 {
     return UniquePtr<T>(new T(std::forward<Args>(args) ...));
 }
+
+template<typename T>
+std::enable_if_t<detail::is_unbounded_array_v<T>, UniquePtr<T>> MakeUniquePtr(size_t n)
+{
+    return UniquePtr<T>(new std::remove_extent_t<T>[n]());
+}
+
+//////////////////////////////////////////////////////////////////////////
 
 template<typename T, typename U>
 UniquePtr<T> StaticCast(UniquePtr<U>&& source)

@@ -235,6 +235,24 @@ TEST(UniquePtr, ArrayType)
     EXPECT_EQ(1, counterB);
 }
 
+TEST(UniquePtr, MakeUniquePtrArrayType)
+{
+    int counterA = 0;
+    int counterB = 0;
+
+    {
+        UniquePtr<TestClass[]> pointer = MakeUniquePtr<TestClass[]>(2);
+        pointer[0].SetCounter(&counterA);
+        pointer[1].SetCounter(&counterB);
+
+        ASSERT_NE(pointer, nullptr);
+        ASSERT_TRUE(pointer);
+    }
+
+    EXPECT_EQ(1, counterA);
+    EXPECT_EQ(1, counterB);
+}
+
 TEST(UniquePtr, CastToBaseClass_Array)
 {
     int counterA = 0;
