@@ -56,6 +56,11 @@ public:
     ~ResourceBindingLayout();
 
     bool Init(const ResourceBindingLayoutDesc& desc) override;
+
+    NFE_INLINE VkPipelineLayout GetPipelineLayout() const
+    {
+        return mPipelineLayout;
+    }
 };
 
 class ResourceBindingInstance : public IResourceBindingInstance

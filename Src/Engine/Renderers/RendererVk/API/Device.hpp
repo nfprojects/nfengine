@@ -15,6 +15,7 @@
 #include "Internal/RenderPassManager.hpp"
 #include "Internal/SemaphorePool.hpp"
 #include "Internal/RingBuffer.hpp"
+#include "Internal/ResourceState.hpp"
 
 #include "Engine/Common/Containers/UniquePtr.hpp"
 #include "Engine/Common/System/Window.hpp"
@@ -37,15 +38,16 @@ private:
     VkDevice mDevice;
     VkDescriptorPool mDescriptorPool;
     VkCommandPool mCommandPool;
-    VkSampler mDefaultSampler;
     Common::DynArray<VkCommandBuffer> mCommandBufferPool;
     uint32 mCurrentCommandBuffer;
+    VkSampler mDefaultSampler;
     uint32 mGraphicsQueueIndex;
     VkQueue mGraphicsQueue;
     VkPipelineCache mPipelineCache;
     Common::DynArray<VkSurfaceFormatKHR> mSupportedFormats;
     Common::UniquePtr<RenderPassManager> mRenderPassManager;
     Common::UniquePtr<RingBuffer> mRingBuffer;
+    ResourceState mResourceState;
     bool mDebugEnable;
 
     VkPhysicalDevice SelectPhysicalDevice(const Common::DynArray<VkPhysicalDevice>& devices, int preferredId);
@@ -109,9 +111,9 @@ public:
         return mRingBuffer.Get();
     }
 
-    NFE_INLINE const VkSampler& GetDefaultSampler() const
+    NFE_INLINE ResourceState& GetResourceState()
     {
-        return mDefaultSampler;
+        return mResourceState;
     }
 
     NFE_INLINE uint32 GetCurrentCommandBuffer() const
@@ -119,9 +121,13 @@ public:
         return mCurrentCommandBuffer;
     }
 
-    uint32 GetMemoryTypeIndex(uint32 typeBits, VkFlags properties);
+    NFE_INLINE const VkSampler& GetDefaultSampler() const
+    {
+        return mDefaultSampler;
+    }
 
-    VkCommandBuffer GetAvailableCommandBuffer();
+    uint32 GetMemoryTypeIndex(uint32 typeBits, VkFlags properties);
+    bool GetAvailableCommandBuffer(VkCommandBuffer& cb, uint32& cbID);
 
     // overrides
     void* GetHandle() const override;
@@ -142,7 +148,7 @@ public:
     ResourceBindingInstancePtr CreateResourceBindingInstance(const ResourceBindingSetPtr& set) override;
 
     CommandRecorderPtr CreateCommandRecorder() override;
-    bool Execute(CommandListID commandList) override;
+    bool Execute(const Common::ArrayView<ICommandList*> commandLists) override;
     bool WaitForGPU() override;
     bool FinishFrame() override;
 

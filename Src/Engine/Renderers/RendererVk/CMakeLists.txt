@@ -9,6 +9,7 @@ SET(NFE_RENDERERVK_DIRECTORY ${NFE_RENDERERS_DIRECTORY}/RendererVk)
 SET(NFRENDERERVK_SOURCES
     API/Backbuffer.cpp
     API/Buffer.cpp
+    API/CommandList.cpp
     API/CommandRecorder.cpp
     API/ComputePipelineState.cpp
     API/Device.cpp
@@ -19,10 +20,12 @@ SET(NFRENDERERVK_SOURCES
     API/Shader.cpp
     API/Texture.cpp
     API/VertexLayout.cpp
+    Internal/CommandBatch.cpp
     Internal/Debugger.cpp
     Internal/Extensions.cpp
     Internal/Instance.cpp
     Internal/RenderPassManager.cpp
+    Internal/ResourceState.cpp
     Internal/RingBuffer.cpp
     # Internal/SemaphorePool.cpp temporarily commented out
     Internal/ShaderIncluder.cpp
@@ -32,6 +35,7 @@ SET(NFRENDERERVK_SOURCES
 SET(NFRENDERERVK_HEADERS
     API/Backbuffer.hpp
     API/Buffer.hpp
+    API/CommandList.hpp
     API/CommandRecorder.hpp
     API/ComputePipelineState.hpp
     API/Device.hpp
@@ -43,12 +47,19 @@ SET(NFRENDERERVK_HEADERS
     API/Shader.hpp
     API/Texture.hpp
     API/VertexLayout.hpp
+    Internal/CommandBatch.hpp
+    Internal/CommandBufferState.hpp
+    Internal/Commands.hpp
     Internal/Debugger.hpp
     Internal/Extensions.hpp
     Internal/GetProc.hpp
+    Internal/ICommand.hpp
     Internal/Instance.hpp
+    Internal/LocalAllocator.hpp
+    Internal/LocalAllocatorObject.hpp
     Internal/RenderPassDesc.hpp
     Internal/RenderPassManager.hpp
+    Internal/ResourceState.hpp
     Internal/RingBuffer.hpp
     # Internal/SemaphorePool.hpp temporarily commented out
     Internal/ShaderIncluder.hpp
@@ -92,15 +103,31 @@ TARGET_COMPILE_DEFINITIONS(RendererVk
                            PRIVATE "-DVK_USE_PLATFORM_XCB_KHR"
 )
 
+TARGET_COMPILE_OPTIONS(RendererVk
+                       PRIVATE "-std=c++17"
+                       PRIVATE "-Wno-unused-function"
+)
+
+# Get Vulkan SDK location from env variables if possible
+# ...or fallback to /usr/include and /usr/lib
+IF(NOT "$ENV{VULKAN_SDK}" STREQUAL "")
+    SET(VKSDK $ENV{VULKAN_SDK})
+ELSE(NOT "$ENV{VULKAN_SDK}" STREQUAL "")
+    SET(VKSDK /usr)
+ENDIF(NOT "$ENV{VULKAN_SDK}" STREQUAL "")
+
+MESSAGE(STATUS "Vulkan SDK path: ${VKSDK}")
+
 TARGET_INCLUDE_DIRECTORIES(RendererVk
                            PRIVATE ${NFE_RENDERERVK_DIRECTORY}
                            PRIVATE ${NFE_SRC_DIRECTORY}
                            PRIVATE ${NFEDEPS_ROOT_DIRECTORY}
-                           PRIVATE ${VULKAN_SDK}/include
+                           PRIVATE ${VKSDK}/include
 )
 
 TARGET_LINK_DIRECTORIES(RendererVk
                         PRIVATE ${NFEDEPS_LIB_DIRECTORY}
+                        PRIVATE ${VKSDK}/lib
 )
 
 ADD_DEPENDENCIES(RendererVk RendererCommon)

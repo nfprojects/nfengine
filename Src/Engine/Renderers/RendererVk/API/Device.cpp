@@ -17,6 +17,7 @@
 #include "VertexLayout.hpp"
 #include "PipelineState.hpp"
 #include "ComputePipelineState.hpp"
+#include "CommandList.hpp"
 
 #include "Internal/Translations.hpp"
 #include "Internal/Debugger.hpp"
@@ -345,10 +346,10 @@ bool Device::Init(const DeviceInitParams* params)
     }
 
 
-    mRenderPassManager.Reset(new RenderPassManager(mDevice));
+    mRenderPassManager = Common::MakeUniquePtr<RenderPassManager>(mDevice);
 
 
-    mRingBuffer.Reset(new RingBuffer(mDevice));
+    mRingBuffer = Common::MakeUniquePtr<RingBuffer>(mDevice);
     mRingBuffer->Init(1024 * 1024);
 
 
@@ -399,15 +400,20 @@ uint32 Device::GetMemoryTypeIndex(uint32 typeBits, VkFlags properties)
     return UINT32_MAX;
 }
 
-VkCommandBuffer Device::GetAvailableCommandBuffer()
+bool Device::GetAvailableCommandBuffer(VkCommandBuffer& cb, uint32& cbID)
 {
+    // TODO mutex
+
     mCurrentCommandBuffer++;
     if (mCurrentCommandBuffer >= COMMAND_BUFFER_COUNT)
     {
         mCurrentCommandBuffer = 0;
     }
 
-    return mCommandBufferPool[mCurrentCommandBuffer];
+    cbID = mCurrentCommandBuffer;
+    cb = mCommandBufferPool[mCurrentCommandBuffer];
+
+    return true;
 }
 
 void* Device::GetHandle() const
@@ -581,25 +587,27 @@ bool Device::GetDeviceInfo(DeviceInfo& info)
     return true;
 }
 
-bool Device::Execute(CommandListID commandList)
+bool Device::Execute(const Common::ArrayView<ICommandList*> commandLists)
 {
-    if (commandList == INVALID_COMMAND_LIST_ID)
+    if (commandLists.Empty())
     {
-        NFE_LOG_ERROR("Invalid Command List ID provided for execution");
+        NFE_LOG_ERROR("No Command Lists provided for execution");
         return false;
     }
 
-    gDevice->WaitForGPU(); // TODO TEMPORARY
+    CommandList* cl = dynamic_cast<CommandList*>(commandLists[0]);
+    if (cl == nullptr)
+    {
+        NFE_LOG_ERROR("Invalid Command List provided for execution");
+    }
 
-    VkPipelineStageFlags pipelineStages = VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT;
+    gDevice->WaitForGPU(); // TODO TEMPORARY
 
     VkSubmitInfo submitInfo;
     VK_ZERO_MEMORY(submitInfo);
     submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
     submitInfo.commandBufferCount = 1;
-    submitInfo.pCommandBuffers = &mCommandBufferPool[commandList - 1];
-    submitInfo.pWaitDstStageMask = &pipelineStages;
-
+    submitInfo.pCommandBuffers = &mCommandBufferPool[cl->mCommandBufferID];
     VkResult result = vkQueueSubmit(mGraphicsQueue, 1, &submitInfo, VK_NULL_HANDLE);
     CHECK_VKRESULT(result, "Failed to submit graphics operations");
 
@@ -640,7 +648,7 @@ IDevice* Init(const DeviceInitParams* params)
 {
     if (gDevice == nullptr)
     {
-        gDevice.Reset(new Device);
+        gDevice = Common::MakeUniquePtr<Device>();
         if (!gDevice->Init(params))
         {
             gDevice.Reset();
@@ -649,9 +657,6 @@ IDevice* Init(const DeviceInitParams* params)
     }
 
     // initialize glslang library for shader processing
-    // TODO right now glslang leaks lots of memory (one leak per TShader object,
-    //      and one per glslang's Instance).
-    //      Bump glslang version, fix it by yourself, or use other library for GLSL/HLSL->SPV.
     glslang::InitializeProcess();
 
     return gDevice.Get();

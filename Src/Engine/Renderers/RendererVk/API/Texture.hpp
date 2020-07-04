@@ -40,8 +40,6 @@ public:
     virtual ~Texture();
     bool Init(const TextureDesc& desc);
 
-    void Transition(VkCommandBuffer cb, VkImageLayout dstLayout = VK_IMAGE_LAYOUT_UNDEFINED);
-
     const ShaderResourceType GetType() const override
     {
         return ShaderResourceType::Texture;

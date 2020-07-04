@@ -118,7 +118,7 @@ public:
         // TODO: switching to arbitrary scene (e.g. omitting a single scene should be
         //       possible, when a feature is not implemented in renderer
         mScenes.push_back(NFE::Common::MakeUniquePtr<BasicScene>());
-        // mScenes.push_back(NFE::Common::MakeUniquePtr<MultisampleScene>()); // WIP
+        //// mScenes.push_back(NFE::Common::MakeUniquePtr<MultisampleScene>()); // WIP
         mScenes.push_back(NFE::Common::MakeUniquePtr<DepthStencilScene>());
         mScenes.push_back(NFE::Common::MakeUniquePtr<RenderTargetsScene>());
         mScenes.push_back(NFE::Common::MakeUniquePtr<VertexBuffersScene>());

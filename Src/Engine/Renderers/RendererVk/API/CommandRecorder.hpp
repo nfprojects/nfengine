@@ -13,34 +13,30 @@
 #include "PipelineState.hpp"
 #include "Buffer.hpp"
 #include "Internal/RingBuffer.hpp"
-#include "Internal/CommandList.hpp"
+#include "Internal/ICommand.hpp"
+#include "Internal/CommandBufferState.hpp"
+#include "Internal/CommandBatch.hpp"
+#include "Internal/ResourceState.hpp"
 
 
 namespace NFE {
 namespace Renderer {
 
+
 class CommandRecorder: public ICommandRecorder
 {
     friend class Device;
 
-    // General fields
-    VkCommandBuffer mCommandBuffer;
+    VkCommandBuffer mCommandBuffer; // TODO remove
     VkCommandBufferBeginInfo mCommandBufferBeginInfo;
-
-    // Graphics resources
-    RenderTarget* mRenderTarget;
-    bool mActiveRenderPass;
-    ResourceBindingLayout* mResourceBindingLayout;
-    Buffer* mBoundVolatileBuffers[VK_MAX_VOLATILE_BUFFERS];
-    uint32 mBoundVolatileOffsets[VK_MAX_VOLATILE_BUFFERS];
-    bool mRebindDynamicBuffers;
-
-    // Compute resources
-    ResourceBindingLayout* mComputeResourceBindingLayout;
+    LocalAllocator<NFE_VK_COMMAND_MEMORY_SPACE> mCommandAllocator;
+    CommandBufferState mState;
+    Common::DynArray<CommandBatch> mCommands;
+    uint32 mCurrentBatch;
 
     bool WriteDynamicBuffer(Buffer* b, size_t offset, size_t size, const void* data);
     bool WriteVolatileBuffer(Buffer* b, size_t size, const void* data);
-    void RebindDynamicBuffers() const;
+    void SwitchToNewBatch();
 
 
 public:
@@ -54,7 +50,7 @@ public:
     void CopyTexture(const TexturePtr& src, const TexturePtr& dest) override;
     void CopyTexture(const TexturePtr& src, const BackbufferPtr& dest) override;
     bool WriteBuffer(const BufferPtr& buffer, size_t offset, size_t size, const void* data) override;
-    CommandListID Finish() override;
+    CommandListPtr Finish() override;
 
     /// Graphics pipeline methods
     void BindResources(uint32 slot, const ResourceBindingInstancePtr& bindingSetInstance) override;

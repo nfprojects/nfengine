@@ -33,18 +33,6 @@ public:
 
     void GetDimensions(int& width, int& height) override;
     bool Init(const RenderTargetDesc& desc) override;
-
-    NFE_INLINE void TransitionColorAttachments(VkCommandBuffer cmd, VkImageLayout dstLayout = VK_IMAGE_LAYOUT_UNDEFINED)
-    {
-        for (const auto& a: mAttachments)
-            a->Transition(cmd, dstLayout);
-    }
-
-    NFE_INLINE void TransitionDSAttachment(VkCommandBuffer cmd, VkImageLayout dstLayout = VK_IMAGE_LAYOUT_UNDEFINED)
-    {
-        if (mDepthAttachment)
-            mDepthAttachment->Transition(cmd, dstLayout);
-    }
 };
 
 } // namespace Renderer

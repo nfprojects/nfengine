@@ -92,6 +92,33 @@
     <ClInclude Include="Internal\ShaderIncluder.hpp">
       <Filter>Internal</Filter>
     </ClInclude>
+    <ClInclude Include="Internal\Commands.hpp">
+      <Filter>Internal</Filter>
+    </ClInclude>
+    <ClInclude Include="Internal\ICommand.hpp">
+      <Filter>Internal</Filter>
+    </ClInclude>
+    <ClInclude Include="Internal\LocalAllocator.hpp">
+      <Filter>Internal</Filter>
+    </ClInclude>
+    <ClInclude Include="Internal\LocalAllocatorObject.hpp">
+      <Filter>Internal</Filter>
+    </ClInclude>
+    <ClInclude Include="Internal\CommandBatch.hpp">
+      <Filter>Internal</Filter>
+    </ClInclude>
+    <ClInclude Include="Internal\CommandBufferState.hpp">
+      <Filter>Internal</Filter>
+    </ClInclude>
+    <ClInclude Include="Internal\ResourceState.hpp">
+      <Filter>Internal</Filter>
+    </ClInclude>
+    <ClInclude Include="API\CommandList.hpp">
+      <Filter>API</Filter>
+    </ClInclude>
+    <ClInclude Include="Internal\List.hpp">
+      <Filter>Internal</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp" />
@@ -165,6 +192,15 @@
     </ClCompile>
     <ClCompile Include="Internal\ShaderIncluder.cpp">
       <Filter>Internal</Filter>
+    </ClCompile>
+    <ClCompile Include="Internal\CommandBatch.cpp">
+      <Filter>Internal</Filter>
+    </ClCompile>
+    <ClCompile Include="Internal\ResourceState.cpp">
+      <Filter>Internal</Filter>
+    </ClCompile>
+    <ClCompile Include="API\CommandList.cpp">
+      <Filter>API</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

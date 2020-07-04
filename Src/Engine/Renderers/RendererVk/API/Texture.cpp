@@ -244,9 +244,26 @@ bool Texture::Init(const TextureDesc& desc)
     result = vkBeginCommandBuffer(copyCmdBuffer, &cmdBeginInfo);
     CHECK_VKRESULT(result, "Failed to begin command rendering for buffer copy operation");
 
+    VkImageMemoryBarrier imageBarrier;
+    VK_ZERO_MEMORY(imageBarrier);
+    imageBarrier.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
+    imageBarrier.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+    imageBarrier.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+    imageBarrier.srcAccessMask = 0;
+    imageBarrier.dstAccessMask = 0;
+    imageBarrier.oldLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+    imageBarrier.newLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+    imageBarrier.image = mImage;
+    imageBarrier.subresourceRange = mImageSubresRange;
+
     if (hasInitialData)
     {
-        Transition(copyCmdBuffer, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
+        imageBarrier.newLayout = VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL;
+
+        // assume all barriers are full blocking, like in D3D12 renderer
+        vkCmdPipelineBarrier(copyCmdBuffer,
+                             VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT, VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT, 0,
+                             0, nullptr, 0, nullptr, 1, &imageBarrier);
 
         VkBufferImageCopy imageCopyRegion;
         VK_ZERO_MEMORY(imageCopyRegion);
@@ -260,8 +277,15 @@ bool Texture::Init(const TextureDesc& desc)
         vkCmdCopyBufferToImage(copyCmdBuffer, stagingBuffer, mImage, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &imageCopyRegion);
     }
 
-    // TODO this is a 100% tempshit, get the transition to happen before using the Texture
-    Transition(copyCmdBuffer, mImageLayoutDefault);
+    // TODO this is a 100% tempshit, migrate transitions to ResourceState
+    imageBarrier.oldLayout = imageBarrier.newLayout;
+    imageBarrier.newLayout = mImageLayoutDefault;
+    mImageLayout = mImageLayoutDefault;
+
+    // assume all barriers are full blocking, like in D3D12 renderer
+    vkCmdPipelineBarrier(copyCmdBuffer,
+                         VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT, VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT, 0,
+                         0, nullptr, 0, nullptr, 1, &imageBarrier);
 
     result = vkEndCommandBuffer(copyCmdBuffer);
     CHECK_VKRESULT(result, "Failure during copy command buffer recording");
@@ -328,36 +352,6 @@ bool Texture::Init(const TextureDesc& desc)
 
     NFE_LOG_INFO("Texture initialized successfully");
     return true;
-}
-
-void Texture::Transition(VkCommandBuffer cb, VkImageLayout dstLayout)
-{
-    // no need to transition if destination is the same
-    if (dstLayout == mImageLayout)
-        return;
-
-    if (dstLayout == VK_IMAGE_LAYOUT_UNDEFINED)
-        dstLayout = mImageLayoutDefault; // revert to default
-
-    // TODO take access masks and pipeline stages into account
-    VkImageMemoryBarrier imageBarrier;
-    VK_ZERO_MEMORY(imageBarrier);
-    imageBarrier.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
-    imageBarrier.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
-    imageBarrier.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
-    imageBarrier.srcAccessMask = 0;
-    imageBarrier.dstAccessMask = 0;
-    imageBarrier.oldLayout = mImageLayout;
-    imageBarrier.newLayout = dstLayout;
-    imageBarrier.image = mImage;
-    imageBarrier.subresourceRange = mImageSubresRange;
-
-    // assume all barriers are full blocking, like in D3D12 renderer
-    vkCmdPipelineBarrier(cb,
-                         VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT, VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT, 0,
-                         0, nullptr, 0, nullptr, 1, &imageBarrier);
-
-    mImageLayout = dstLayout;
 }
 
 } // namespace Renderer

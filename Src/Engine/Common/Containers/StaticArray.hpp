@@ -175,7 +175,7 @@ public:
     NFE_INLINE Iterator end() { return this->End(); }
 
 private:
-    alignas(alignof(ElementType)) uint32 mData[MaxSize * sizeof(ElementType)];
+    alignas(alignof(ElementType)) uint8 mData[MaxSize * sizeof(ElementType)];
 
     // number of elements in the array
     uint32 mSize;
