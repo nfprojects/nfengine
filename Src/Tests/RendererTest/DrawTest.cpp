@@ -62,8 +62,8 @@ void DrawTest::EndTestFrame()
                                     mTargetTextures[i].readbackTexture);
     }
 
-    CommandListID commandList = mCommandBuffer->Finish();
-    ASSERT_NE(0u, commandList);
+    CommandListPtr commandList = mCommandBuffer->Finish();
+    ASSERT_TRUE(commandList != nullptr);
 
     ASSERT_TRUE(gRendererDevice->Execute(commandList));
     ASSERT_TRUE(gRendererDevice->FinishFrame());

@@ -10,6 +10,7 @@
 #include "Texture.hpp"
 
 #include "../../Common/Containers/Deque.hpp"
+#include "../../Common/System/RWLock.hpp"
 
 namespace NFE {
 namespace Renderer {
@@ -34,6 +35,8 @@ private:
     // queue holding 'tail' pointers for each frame
     Common::Deque<FinishedFrameOffset> mCompletedFrames;
 
+    Common::RWLock mLock;
+
 public:
     static const size_t INVALID_OFFSET;
 
@@ -46,10 +49,10 @@ public:
     size_t Allocate(size_t size);
 
     // should be called after a frame has been submitted
-    void FinishFrame(uint64 frameIndex);
+    void FinishFrame(uint64 fenceValue);
 
     // should be called after GPU finished rendering the frame
-    void OnFrameCompleted(uint64 frameIndex);
+    void OnFrameCompleted(uint64 fenceValue);
 
     NFE_INLINE void* GetCpuAddress() const
     {

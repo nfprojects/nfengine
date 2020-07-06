@@ -24,7 +24,18 @@
 namespace NFE {
 namespace Renderer {
 
-using CommandListID = uint32;
+
+/**
+ * Recorded command list, ready to execute.
+ */
+class ICommandList
+{
+public:
+    virtual ~ICommandList() {}
+};
+
+using CommandListPtr = Common::UniquePtr<ICommandList>;
+
 
 enum ClearFlags
 {
@@ -58,28 +69,14 @@ public:
      * Store all recorded commands to a command list and turn the command recorder into
      * non-recording state.
      *
-     * @return Recorded Command List ID or zero if recording had errors.
+     * @return Recorded Command List or nullptr if recording had errors.
      *
      * @note Command buffer must be in recording state for the method to succeed.
      * @remarks Generated Command List can be executed only once.
      *
      * @see @p Reset()
      */
-    virtual CommandListID Finish() = 0;
-
-    /**
-     * Map buffer content into process virtual memory.
-     * @param buffer Target buffer.
-     * @param type   Mapping type.
-     * @return Valid pointer on success or NULL on failure.
-     */
-    virtual void* MapBuffer(const BufferPtr& buffer, MapType type) = 0;
-
-    /**
-     * Unmap buffer content mapped with @p Map method.
-     * @param buffer Target buffer.
-     */
-    virtual void UnmapBuffer(const BufferPtr& buffer) = 0;
+    virtual CommandListPtr Finish() = 0;
 
     /**
      * Write data from the CPU memory to a GPU buffer.

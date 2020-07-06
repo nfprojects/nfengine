@@ -11,10 +11,10 @@
 
 class MultithreadedScene : public Scene
 {
-    using CollectedCommandLists = std::vector<NFE::Renderer::CommandListID>;
+    using CollectedCommandLists = NFE::Common::DynArray<NFE::Renderer::CommandListPtr>;
 
-    std::vector<CollectedCommandLists> mCollectedCommandLists; // separate for each thread
-    std::vector<NFE::Renderer::CommandRecorderPtr> mCommandRecorders;
+    NFE::Common::DynArray<CollectedCommandLists> mCollectedCommandLists; // separate for each thread
+    NFE::Common::DynArray<NFE::Renderer::CommandRecorderPtr> mCommandRecorders;
 
     NFE::Renderer::RenderTargetPtr mWindowRenderTarget;
     NFE::Renderer::PipelineStatePtr mPipelineState;

@@ -59,12 +59,6 @@ void Scene::RegisterSubScene(SubSceneInitializer initializer, const std::string&
 
 void Scene::ReleaseSubsceneResources()
 {
-    // HACK
-    // TODO remove (requires fix in D3D12 renderer)
-    if (mRendererDevice)
-    {
-        mRendererDevice->WaitForGPU();
-    }
 }
 
 bool Scene::Init(IDevice* rendererDevice, void* winHandle)

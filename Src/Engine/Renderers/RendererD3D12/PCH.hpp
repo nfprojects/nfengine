@@ -14,6 +14,7 @@
 #include <dxgi1_4.h>
 #include <dxcapi.h>
 #include <d3d12shader.h>
+#include <dxgidebug.h>
 
 #include <atomic>
 #include <memory>

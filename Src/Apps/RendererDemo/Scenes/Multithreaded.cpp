@@ -39,7 +39,7 @@ struct VertexCBuffer
 bool MultithreadedScene::CreateCommandRecorders()
 {
     uint32 num = ThreadPool::GetInstance().GetNumThreads();
-    mCommandRecorders.resize(num);
+    mCommandRecorders.Resize(num);
 
     for (uint32 i = 0; i < num; ++i)
     {
@@ -253,7 +253,7 @@ bool MultithreadedScene::CreateSubSceneNormal(BufferMode cbufferMode, int gridSi
 MultithreadedScene::MultithreadedScene()
     : Scene("Multithreaded")
 {
-    mCollectedCommandLists.resize(ThreadPool::GetInstance().GetNumThreads());
+    mCollectedCommandLists.Resize(ThreadPool::GetInstance().GetNumThreads());
 
     RegisterSubScene(std::bind(&MultithreadedScene::CreateSubSceneEmpty, this), "Empty");
 
@@ -288,7 +288,7 @@ void MultithreadedScene::ReleaseSubsceneResources()
     mResBindingLayout.Reset();
     mVSBindingSet.Reset();
 
-    mCommandRecorders.clear();
+    mCommandRecorders.Clear();
 }
 
 bool MultithreadedScene::OnInit(void* winHandle)
@@ -317,7 +317,7 @@ void MultithreadedScene::DrawTask(const Common::TaskContext& ctx, int i, int j)
     // this is extremely inefficient to draw single square in a separate task
     // and submit it as a single command list, but it's not performance test
 
-    NFE_ASSERT(ctx.threadId < mCommandRecorders.size(), "Invalid thread ID");
+    NFE_ASSERT(ctx.threadId < mCommandRecorders.Size(), "Invalid thread ID");
     const CommandRecorderPtr& recorder = mCommandRecorders[ctx.threadId];
 
     // reset bound resources and set them once again
@@ -360,7 +360,7 @@ void MultithreadedScene::DrawTask(const Common::TaskContext& ctx, int i, int j)
     // draw
     recorder->DrawIndexed(6, 1);
 
-    CommandListID commandList = recorder->Finish();
+    CommandListPtr commandList = recorder->Finish();
     mRendererDevice->Execute(commandList);
 }
 
@@ -382,7 +382,7 @@ void MultithreadedScene::Draw(float dt)
         const Vec4fU color(0.0f, 0.0f, 0.0f, 1.0f);
         mCommandBuffer->Clear(ClearFlagsColor, 1, nullptr, &color);
 
-        CommandListID clearCommandList = mCommandBuffer->Finish();
+        CommandListPtr clearCommandList = mCommandBuffer->Finish();
         mRendererDevice->Execute(clearCommandList);
     }
 
@@ -400,18 +400,16 @@ void MultithreadedScene::Draw(float dt)
             }
         }
     }
-    waitable.Wait();
-
-    // TODO execute some more command lists while recording
 
     // copy to back buffer
-    {
-        mCommandBuffer->Begin();
-        mCommandBuffer->CopyTexture(mWindowRenderTargetTexture, mWindowBackbuffer);
+    mCommandBuffer->Begin();
+    mCommandBuffer->CopyTexture(mWindowRenderTargetTexture, mWindowBackbuffer);
+    CommandListPtr commandList = mCommandBuffer->Finish();
 
-        CommandListID commandList = mCommandBuffer->Finish();
-        mRendererDevice->Execute(commandList);
-    }
+    // wait for threads so the commandlists are pushed in right order
+    waitable.Wait();
+
+    mRendererDevice->Execute(commandList);
 
     mWindowBackbuffer->Present();
     mRendererDevice->FinishFrame();

@@ -19,6 +19,7 @@
 
 #include "Engine/Common/Utils/StringUtils.hpp"
 #include "Engine/Common/Utils/LanguageUtils.hpp"
+#include "Engine/Common/Utils/ScopedLock.hpp"
 #include "Engine/Common/System/Timer.hpp"
 
 #include <thread> // TODO get rid of STL threads
@@ -48,17 +49,85 @@ Common::SharedPtr<Type> CreateGenericResource(const Desc& desc)
 
 } // namespace
 
+FenceData::FenceData()
+    : value(0)
+    , waitEvent(INVALID_HANDLE_VALUE)
+{}
+
+bool FenceData::Init(Device* device)
+{
+    HRESULT hr = D3D_CALL_CHECK(device->GetDevice()->CreateFence(UINT64_MAX, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(fenceObject.GetPtr())));
+    if (FAILED(hr))
+    {
+        NFE_LOG_ERROR("Failed to create D3D12 fence object");
+        return false;
+    }
+
+    // Create an event handle to use for frame synchronization.
+    waitEvent = CreateEvent(nullptr, FALSE, FALSE, nullptr);
+    if (waitEvent == INVALID_HANDLE_VALUE)
+    {
+        NFE_LOG_ERROR("Failed to create fence event object");
+        return false;
+    }
+
+    return true;
+}
+
+bool FenceData::Flush(ID3D12CommandQueue* queue)
+{
+    uint64 fenceValue;
+    {
+        // force ordering of fence values passed to Signal()
+        NFE_SCOPED_LOCK(lock);
+
+        fenceValue = value++;
+
+        if (FAILED(D3D_CALL_CHECK(queue->Signal(fenceObject.Get(), fenceValue))))
+        {
+            NFE_LOG_ERROR("Failed to enqueue fence value update");
+            return false;
+        }
+    }
+
+    // Wait for the fence value to be updated
+    if (FAILED(D3D_CALL_CHECK(fenceObject->SetEventOnCompletion(fenceValue, waitEvent))))
+    {
+        NFE_LOG_ERROR("Failed to set completion event for fence");
+        return false;
+    }
+
+    if (WaitForSingleObject(waitEvent, INFINITE) != WAIT_OBJECT_0)
+    {
+        NFE_LOG_ERROR("WaitForSingleObject failed");
+        return false;
+    }
+
+    HRESULT hr = D3D_CALL_CHECK(gDevice->GetDevice()->GetDeviceRemovedReason());
+    if (FAILED(hr))
+    {
+        return false;
+    }
+
+    uint64 completedFenceValue = fenceObject->GetCompletedValue();
+    NFE_ASSERT(completedFenceValue == fenceValue, "Invalid completed fence value");
+
+    return true;
+}
+
+void FenceData::Release()
+{
+    fenceObject.Reset();
+    CloseHandle(waitEvent);
+}
+
 Device::Device()
     : mCbvSrvUavHeapAllocator(HeapAllocator::Type::CbvSrvUav, 1024)
     , mRtvHeapAllocator(HeapAllocator::Type::Rtv, 512)
     , mDsvHeapAllocator(HeapAllocator::Type::Dsv, 512)
     , mAdapterInUse(-1)
     , mDebugLayerEnabled(false)
-    , mFrameBufferIndex(0)
-    , mBufferingDepth(2) // TODO this must be configurable
-    , mEnqueuedFrames(0)
 {
-    mFrameCounter = mFrameBufferIndex;
 }
 
 bool Device::Init(const DeviceInitParams* params)
@@ -68,6 +137,18 @@ bool Device::Init(const DeviceInitParams* params)
         params = &defaultParams;
 
     HRESULT hr;
+
+    if (params->debugLevel > 0)
+    {
+        if (PrepareDXGIDebugLayer())
+        {
+            NFE_LOG_INFO("Using DXGI debug layer");
+        }
+        else
+        {
+            NFE_LOG_ERROR("Failed to setup DXGI debug layer");
+        }
+    }
 
     if (!InitializeDevice(params))
     {
@@ -81,7 +162,11 @@ bool Device::Init(const DeviceInitParams* params)
 
     if (params->debugLevel > 0)
     {
-        if (!PrepareDebugLayer())
+        if (PrepareD3DDebugLayer())
+        {
+            NFE_LOG_INFO("Using Direct3D 12 debug layer");
+        }
+        else
         {
             NFE_LOG_ERROR("Failed to setup Direct3D 12 debug layer");
         }
@@ -107,55 +192,39 @@ bool Device::Init(const DeviceInitParams* params)
         }
     }
 
-    /// create command queue
-    D3D12_COMMAND_QUEUE_DESC queueDesc = {};
-    queueDesc.Flags = D3D12_COMMAND_QUEUE_FLAG_NONE;
-    queueDesc.Type = D3D12_COMMAND_LIST_TYPE_DIRECT;
-    hr = D3D_CALL_CHECK(mDevice->CreateCommandQueue(&queueDesc, IID_PPV_ARGS(mCommandQueue.GetPtr())));
-    if (FAILED(hr))
-        return false;
-
-    // create fence for frame synchronization
-    hr = D3D_CALL_CHECK(gDevice->mDevice->CreateFence(0, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(mFence.GetPtr())));
-    if (FAILED(hr))
+    /// create command queues
     {
-        NFE_LOG_ERROR("Failed to create D3D12 fence object");
-        return false;
+        D3D12_COMMAND_QUEUE_DESC queueDesc = {};
+        queueDesc.Flags = D3D12_COMMAND_QUEUE_FLAG_NONE;
+        queueDesc.Type = D3D12_COMMAND_LIST_TYPE_DIRECT;
+
+        hr = D3D_CALL_CHECK(mDevice->CreateCommandQueue(&queueDesc, IID_PPV_ARGS(mGraphicsQueue.GetPtr())));
+        if (FAILED(hr))
+        {
+            return false;
+        }
+
+        hr = D3D_CALL_CHECK(mDevice->CreateCommandQueue(&queueDesc, IID_PPV_ARGS(mResourceUploadQueue.GetPtr())));
+        if (FAILED(hr))
+        {
+            return false;
+        }
     }
 
-    // Create an event handle to use for frame synchronization.
-    mFenceEvent = CreateEvent(nullptr, FALSE, FALSE, nullptr);
-    if (mFenceEvent == nullptr)
+    mGraphicsQueueFence.Init(this);
+    mResourceUploadQueueFence.Init(this);
+
+    if (!mRingBuffer.Init(8 * 1024 * 1024))
     {
-        NFE_LOG_ERROR("Failed to create fence event object");
+        NFE_LOG_ERROR("Failed to initialize ring buffer");
         return false;
     }
-
-
-    // initialize fence values
-    if (!mFenceValues.Resize(mBufferingDepth))
-    {
-        NFE_LOG_ERROR("Failed to allocate array of fence values");
-        return false;
-    }
-
-    for (uint32 i = 0; i < mBufferingDepth; ++i)
-    {
-        mFenceValues[i] = std::numeric_limits<uint64>::max();
-    }
-
 
     // create command lists manager
     mCommandListManager = Common::MakeUniquePtr<CommandListManager>();
     if (!mCommandListManager)
     {
         NFE_LOG_ERROR("Failed to allocate command list manager");
-        return false;
-    }
-
-    if (!mCommandListManager->Init(mDevice.Get()))
-    {
-        NFE_LOG_ERROR("Failed to initialize command list manager");
         return false;
     }
 
@@ -180,11 +249,11 @@ Device::~Device()
 
     mDXGIFactory.Reset();
     mAdapters.Clear();
-    mCommandQueue.Reset();
-    mFence.Reset();
+    mGraphicsQueue.Reset();
+    mResourceUploadQueue.Reset();
+    mGraphicsQueueFence.Release();
+    mResourceUploadQueueFence.Release();
     mDevice.Reset();
-
-    ::CloseHandle(mFenceEvent);
 
     if (mDebugDevice)
     {
@@ -256,7 +325,7 @@ bool Device::InitializeDevice(const DeviceInitParams* params)
     return true;
 }
 
-bool Device::PrepareDebugLayer()
+bool Device::PrepareD3DDebugLayer()
 {
     HRESULT hr = D3D_CALL_CHECK(mDevice->QueryInterface(IID_PPV_ARGS(mDebugDevice.GetPtr())));
     if (FAILED(hr))
@@ -292,6 +361,35 @@ bool Device::PrepareDebugLayer()
     return success;
 }
 
+bool Device::PrepareDXGIDebugLayer()
+{
+    D3DPtr<IDXGIInfoQueue> dxgiInfoQueue;
+
+    typedef HRESULT(WINAPI* LPDXGIGETDEBUGINTERFACE)(REFIID, void**);
+
+    HMODULE dxgidebug = LoadLibraryEx(L"dxgidebug.dll", nullptr, LOAD_LIBRARY_SEARCH_SYSTEM32);
+    if (!dxgidebug)
+    {
+        NFE_LOG_ERROR("Failed to load DXGIDebug library");
+        return false;
+    }
+
+    auto dxgiGetDebugInterface = reinterpret_cast<LPDXGIGETDEBUGINTERFACE>(
+        reinterpret_cast<void*>(GetProcAddress(dxgidebug, "DXGIGetDebugInterface")));
+    if (FAILED(dxgiGetDebugInterface(IID_PPV_ARGS(dxgiInfoQueue.GetPtr()))))
+    {
+        NFE_LOG_ERROR("Failed to obtain DXGIGetDebugInterface");
+        return false;
+    }
+
+    bool success = true;
+
+    success &= SUCCEEDED(D3D_CALL_CHECK(dxgiInfoQueue->SetBreakOnSeverity(DXGI_DEBUG_ALL, DXGI_INFO_QUEUE_MESSAGE_SEVERITY_ERROR, true)));
+    success &= SUCCEEDED(D3D_CALL_CHECK(dxgiInfoQueue->SetBreakOnSeverity(DXGI_DEBUG_ALL, DXGI_INFO_QUEUE_MESSAGE_SEVERITY_CORRUPTION, true)));
+
+    return true;
+}
+
 bool Device::CreateResources()
 {
     if (!mCbvSrvUavHeapAllocator.Init())
@@ -319,16 +417,6 @@ bool Device::CreateResources()
     }
 
     return true;
-}
-
-ID3D12Device* Device::GetDevice() const
-{
-    return mDevice.Get();
-}
-
-ID3D12CommandQueue* Device::GetCommandQueue() const
-{
-    return mCommandQueue.Get();
 }
 
 void* Device::GetHandle() const
@@ -587,35 +675,34 @@ bool Device::IsBackbufferFormatSupported(Format format)
 
 CommandRecorderPtr Device::CreateCommandRecorder()
 {
-    auto commandRecorder = Common::MakeSharedPtr<CommandRecorder>();
-    if (!commandRecorder->Init(mDevice.Get(), mBufferingDepth))
-    {
-        return nullptr;
-    }
-
-    mCommandRecorders.PushBack(commandRecorder);
-
-    // Ideally, there should be one command allocator for each buffered frame for each thread,
-    // so the number of command recorders should be equal to number of threads
-    // (this does not include bundles).
-    if (mCommandRecorders.Size() > std::thread::hardware_concurrency())
-    {
-        NFE_LOG_WARNING("Lots of command recorders has been created (%u). Are you sure you are doing the things the right way?",
-                        mCommandRecorders.Size());
-    }
-
-    return commandRecorder;
+    return Common::MakeSharedPtr<CommandRecorder>();
 }
 
-bool Device::Execute(CommandListID commandList)
+bool Device::Execute(const Common::ArrayView<ICommandList*> commandLists)
 {
-    if (commandList == INVALID_COMMAND_LIST_ID)
+    uint64 fenceValue;
     {
-        NFE_LOG_ERROR("Invalid command list");
-        return false;
+        // force ordering of fence values passed to Signal()
+        NFE_SCOPED_LOCK(mGraphicsQueueFence.lock);
+
+        fenceValue = mGraphicsQueueFence.value++;
+        mCommandListManager->ExecuteCommandList(commandLists, fenceValue);
+        mGraphicsQueue->Signal(mGraphicsQueueFence.fenceObject.Get(), fenceValue);
     }
 
-    return mCommandListManager->OnExecuteCommandList(commandList, mFrameCounter);
+    mRingBuffer.FinishFrame(fenceValue);
+
+    // TODO this should be done on separate thread
+    {
+        uint64 completedFenceValue = mGraphicsQueueFence.fenceObject->GetCompletedValue();
+        if (completedFenceValue != UINT64_MAX)
+        {
+            mCommandListManager->OnFenveValueCompleted(completedFenceValue);
+            mRingBuffer.OnFrameCompleted(completedFenceValue);
+        }
+    }
+
+    return true;
 }
 
 bool Device::DownloadBuffer(const BufferPtr& buffer, size_t offset, size_t size, void* data)
@@ -662,176 +749,24 @@ bool Device::DownloadTexture(const TexturePtr& tex, void* data, uint32 mipmap, u
     return true;
 }
 
-void Device::NotifyCommandRecordersFrameCompleted(uint64 completedFrameIndex)
-{
-    // process command recorders being in use by the user
-    for (uint32 i = 0; i < mCommandRecorders.Size(); )
-    {
-        const CommandRecorderPtr& cr = mCommandRecorders[i];
-
-        if (cr.RefCount() > 1)
-        {
-            // command recorder is in use
-            CommandRecorder* commandRecorder = static_cast<CommandRecorder*>(cr.Get());
-            commandRecorder->OnFrameCompleted(completedFrameIndex, completedFrameIndex % mBufferingDepth);
-            i++;
-        }
-        else
-        {
-            // move the command recorder to "to remove" list
-            mCommandRecordersToRemove.EmplaceBack(std::move(mCommandRecorders[i]));
-            mCommandRecorders[i] = mCommandRecorders.Back();
-            mCommandRecorders.PopBack();
-        }
-    }
-
-    // process command recorders released by the user
-    for (uint32 i = 0; i < mCommandRecordersToRemove.Size(); )
-    {
-        const CommandRecorderPtr& cr = mCommandRecordersToRemove[i];
-        CommandRecorder* commandRecorder = static_cast<CommandRecorder*>(cr.Get());
-
-        if (!commandRecorder->CanBeDeleted())
-        {
-            // command recorder is in use
-            commandRecorder->OnFrameCompleted(completedFrameIndex, completedFrameIndex % mBufferingDepth);
-            i++;
-        }
-        else
-        {
-            // remove command recorder
-            mCommandRecordersToRemove[i] = mCommandRecordersToRemove.Back();
-            mCommandRecordersToRemove.PopBack();
-        }
-    }
-}
-
 bool Device::FinishFrame()
 {
-    const uint64 currentFenceValue = mFenceValues[mFrameBufferIndex];
-
-    // put a fence in the queue so we can wait on it later on
-    if (FAILED(D3D_CALL_CHECK(mCommandQueue->Signal(mFence.Get(), currentFenceValue))))
-    {
-        NFE_LOG_ERROR("Failed to enqueue fence value update");
-        return false;
-    }
-
-    // notify about finished frame
-    {
-        mCommandListManager->OnFinishFrame();
-
-        for (const auto& cr : mCommandRecorders)
-        {
-            CommandRecorder* commandRecorder = static_cast<CommandRecorder*>(cr.Get());
-            commandRecorder->OnFinishFrame(mFrameCounter, (mFrameCounter + 1) % mBufferingDepth);
-        }
-    }
-
-    // update counters
-    mFrameCounter++;
-    mFrameBufferIndex = mFrameCounter % mBufferingDepth;
-    mEnqueuedFrames = Math::Min(mBufferingDepth, mEnqueuedFrames + 1);
-
-    // wait for old frame
-    const uint64 requiredFenceValue = mFenceValues[mFrameBufferIndex];
-    uint64 completedValue = mFence->GetCompletedValue();
-    if (completedValue < requiredFenceValue || completedValue == std::numeric_limits<uint64>::max())
-    {
-        if (FAILED(D3D_CALL_CHECK(mFence->SetEventOnCompletion(requiredFenceValue, mFenceEvent))))
-        {
-            NFE_LOG_ERROR("Failed to set completion event for fence");
-            return false;
-        }
-
-        const DWORD ret = WaitForSingleObject(mFenceEvent, INFINITE);
-        if (ret != WAIT_OBJECT_0)
-        {
-            NFE_LOG_ERROR("WaitForSingleObject() failed, ret = %u", ret);
-            return false;
-        }
-
-        completedValue = mFence->GetCompletedValue();
-        NFE_ASSERT(completedValue >= requiredFenceValue, "Invalid fence value, completed: %llu, required: >=%llu", completedValue, requiredFenceValue);
-    }
-
-    if (mEnqueuedFrames == mBufferingDepth)
-    {
-        const uint64 completedFrameIndex = mFrameCounter - mBufferingDepth;
-        NFE_ASSERT(completedFrameIndex < mFrameCounter, "Invalid frame index");
-
-        // notify all the command recorders
-        NotifyCommandRecordersFrameCompleted(completedFrameIndex);
-
-        mEnqueuedFrames--;
-    }
-
-    mFenceValues[mFrameBufferIndex] = currentFenceValue + 1;
     return true;
 }
 
 bool Device::WaitForGPU()
 {
-    // flush the GPU pipeline
-    {
-        Common::Timer timer;
-        timer.Start();
+    Common::Timer timer;
+    timer.Start();
 
-        // find never-occurred fence value
-        uint64 fenceValue = 0;
-        for (uint64 v : mFenceValues)
-        {
-            fenceValue = Math::Max(fenceValue, v);
-        }
-        fenceValue++;
+    bool result = mGraphicsQueueFence.Flush(mGraphicsQueue.Get());
 
-        if (FAILED(D3D_CALL_CHECK(mCommandQueue->Signal(mFence.Get(), fenceValue))))
-        {
-            NFE_LOG_ERROR("Failed to enqueue fence value update");
-            return false;
-        }
+    NFE_LOG_WARNING("Waiting for GPU took %.3f ms", 1000.0 * timer.Stop());
 
-        // Wait for the fence value to be updated
-        if (FAILED(D3D_CALL_CHECK(mFence->SetEventOnCompletion(fenceValue, mFenceEvent))))
-        {
-            NFE_LOG_ERROR("Failed to set completion event for fence");
-            return false;
-        }
+    mCommandListManager->OnFenveValueCompleted(mGraphicsQueueFence.value);
+    mRingBuffer.OnFrameCompleted(mGraphicsQueueFence.value);
 
-        if (WaitForSingleObject(mFenceEvent, INFINITE) != WAIT_OBJECT_0)
-        {
-            NFE_LOG_ERROR("WaitForSingleObject failed");
-            return false;
-        }
-
-        HRESULT hr = D3D_CALL_CHECK(mDevice->GetDeviceRemovedReason());
-        if (FAILED(hr))
-        {
-            return false;
-        }
-
-        fenceValue++;
-
-        for (uint32 i = 0; i < mBufferingDepth; ++i)
-        {
-            mFenceValues[i] = fenceValue;
-        }
-
-        NFE_LOG_WARNING("Waiting for GPU took %.3f ms", 1000.0 * timer.Stop());
-    }
-
-    // notify command recorders about completed frame
-    for (uint32 i = 0; i < mEnqueuedFrames; ++i)
-    {
-        const uint64 completedFrameIndex = mFrameCounter - mEnqueuedFrames + i;
-        NFE_ASSERT(completedFrameIndex < mFrameCounter, "Invalid frame index");
-
-        // notify all the command recorders
-        NotifyCommandRecordersFrameCompleted(completedFrameIndex);
-    }
-    mEnqueuedFrames = 0;
-
-    return true;
+    return result;
 }
 
 } // namespace Renderer

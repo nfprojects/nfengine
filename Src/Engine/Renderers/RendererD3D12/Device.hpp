@@ -22,16 +22,34 @@
 namespace NFE {
 namespace Renderer {
 
+class Device;
 class CommandRecorder;
 class CommandListManager;
 
 using CommandRecorderWeakPtr = Common::WeakPtr<CommandRecorder>;
 
+struct FenceData
+{
+    FenceData();
+
+    bool Init(Device* device);
+    void Release();
+    bool Flush(ID3D12CommandQueue* queue);
+
+    D3DPtr<ID3D12Fence> fenceObject;
+    Common::RWLock lock;
+    std::atomic<uint64> value;
+    HANDLE waitEvent;
+};
+
 class Device : public IDevice
 {
     friend class Backbuffer;
     friend class CommandRecorder;
+    friend class InternalCommandList;
     friend class RenderTarget;
+    friend class Buffer;
+    friend class Texture;
 
     D3D_FEATURE_LEVEL mFeatureLevel;
 
@@ -40,20 +58,13 @@ class Device : public IDevice
 
     D3DPtr<IDXGIFactory4> mDXGIFactory;
     D3DPtr<ID3D12Device> mDevice;
-    D3DPtr<ID3D12CommandQueue> mCommandQueue;
+    D3DPtr<ID3D12CommandQueue> mGraphicsQueue;
+    D3DPtr<ID3D12CommandQueue> mResourceUploadQueue;
     D3DPtr<ID3D12DebugDevice> mDebugDevice;
     D3DPtr<ID3D12InfoQueue> mInfoQueue;
 
-    uint64 mFrameCounter;       // total frame counter
-    uint32 mBufferingDepth;     // number of queued frames
-    uint32 mFrameBufferIndex;   // current frame (command allocator index)
-    uint32 mEnqueuedFrames;     // number of frames submitted to the GPU
-
     // global D3D12 command lists manager
     Common::UniquePtr<CommandListManager> mCommandListManager;
-
-    // created command recorders, in-use by user
-    Common::DynArray<CommandRecorderPtr> mCommandRecorders;
 
     // List of command recorders which ref count reached 1, which means they are not in use by the user
     // However, they cannot be destroyed immediately, because they may keep references to resources
@@ -61,9 +72,10 @@ class Device : public IDevice
     Common::DynArray<CommandRecorderPtr> mCommandRecordersToRemove;
 
     // synchronization objects
-    D3DPtr<ID3D12Fence> mFence;
-    Common::DynArray<uint64> mFenceValues;
-    HANDLE mFenceEvent;
+    FenceData mGraphicsQueueFence;
+    FenceData mResourceUploadQueueFence;
+
+    RingBuffer mRingBuffer;
 
     HeapAllocator mCbvSrvUavHeapAllocator;
     HeapAllocator mRtvHeapAllocator;
@@ -73,12 +85,11 @@ class Device : public IDevice
 
     bool mDebugLayerEnabled;
 
-    void NotifyCommandRecordersFrameCompleted(uint64 completedFrameIndex);
-
     bool InitDebugLayer(int32 level);
     bool InitializeDevice(const DeviceInitParams* params);
     bool DetectFeatureLevel();
-    bool PrepareDebugLayer();
+    bool PrepareD3DDebugLayer();
+    bool PrepareDXGIDebugLayer();
     bool DetectVideoCards(int preferredId);
     bool CreateResources();
 
@@ -87,8 +98,9 @@ public:
     ~Device();
     bool Init(const DeviceInitParams* params);
 
-    ID3D12Device* GetDevice() const;
-    ID3D12CommandQueue* GetCommandQueue() const;
+    ID3D12Device* GetDevice() const { return mDevice.Get(); }
+    ID3D12CommandQueue* GetGraphicsQueue() const { return mGraphicsQueue.Get(); }
+    ID3D12CommandQueue* GetResourceUploadQueue() const { return mResourceUploadQueue.Get(); }
     void* GetHandle() const override;
     bool GetDeviceInfo(DeviceInfo& info) override;
     bool IsBackbufferFormatSupported(Format format) override;
@@ -109,7 +121,7 @@ public:
     ResourceBindingInstancePtr CreateResourceBindingInstance(const ResourceBindingSetPtr& set) override;
 
     CommandRecorderPtr CreateCommandRecorder() override;
-    bool Execute(CommandListID commandList) override;
+    bool Execute(const Common::ArrayView<ICommandList*> commandLists) override;
     bool FinishFrame() override;
 
     bool DownloadBuffer(const BufferPtr& buffer, size_t offset, size_t size, void* data) override;
@@ -145,6 +157,11 @@ public:
     bool IsDebugLayerEnabled() const
     {
         return mDebugLayerEnabled;
+    }
+
+    RingBuffer& GetRingBuffer()
+    {
+        return mRingBuffer;
     }
 };
 

@@ -13,7 +13,6 @@
 #include "CommandList.hpp"
 #include "ResourceStateCache.hpp"
 #include "Resource.hpp"
-#include "ReferencedResourcesList.hpp"
 
 #include "Engine/Common/Containers/HashSet.hpp"
 #include "Engine/Common/Containers/DynArray.hpp"
@@ -27,7 +26,7 @@ class RenderTarget;
 class PipelineState;
 class ComputePipelineState;
 class Buffer;
-class CommandList;
+class InternalCommandList;
 
 
 class CommandRecorder : public ICommandRecorder
@@ -35,16 +34,13 @@ class CommandRecorder : public ICommandRecorder
 public:
     CommandRecorder();
     ~CommandRecorder();
-    bool Init(ID3D12Device* device, uint32 frameCount);
 
     /// Common methods
     bool Begin() override;
-    void* MapBuffer(const BufferPtr& buffer, MapType type) override;
-    void UnmapBuffer(const BufferPtr& buffer) override;
     bool WriteBuffer(const BufferPtr& buffer, size_t offset, size_t size, const void* data) override;
     void CopyTexture(const TexturePtr& src, const TexturePtr& dest) override;
     void CopyTexture(const TexturePtr& src, const BackbufferPtr& dest) override;
-    CommandListID Finish() override;
+    CommandListPtr Finish() override;
 
     /// Compute pipeline methods
     void SetVertexBuffers(uint32 num, const BufferPtr* vertexBuffers, uint32* strides, uint32* offsets) override;
@@ -73,10 +69,6 @@ public:
     void EndDebugGroup() override;
     void InsertDebugMarker(const char* text) override;
 
-    bool CanBeDeleted() const;
-    bool OnFinishFrame(uint64 frameIndex, uint32 nextFrameBufferIndex);
-    bool OnFrameCompleted(uint64 frameIndex, uint32 frameBufferIndex);
-
 private:
     void Internal_UpdateStates();
     void Internal_UnsetRenderTarget();
@@ -86,21 +78,12 @@ private:
 
     ReferencedResourcesList& Internal_GetReferencedResources();
 
-    uint64 mLastFinishedFrameIndex;
-    uint64 mLastCompletedFrameIndex;
-    uint32 mFrameBufferIndex;   // current frame (command allocator index)
-
-    // TODO move to device?
-    Common::DynArray<D3DPtr<ID3D12CommandAllocator>> mCommandAllocators; // command allocator for each frame
-    Common::DynArray<ReferencedResourcesList> mReferencedResources; // referenced resources by each frame
-
-    CommandList* mCommandListObject;
+    InternalCommandListPtr mCommandListObject;
     ID3D12GraphicsCommandList* mCommandList; // cached D3D12 command list pointer
 
     ResourceStateCache mResourceStateCache;
 
     // ring buffer for dynamic buffers support
-    RingBuffer mRingBuffer;
     const Buffer* mBoundVolatileCBuffers[NFE_RENDERER_MAX_VOLATILE_CBUFFERS];
     const Buffer* mBoundComputeVolatileCBuffers[NFE_RENDERER_MAX_VOLATILE_CBUFFERS];
 

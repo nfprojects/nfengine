@@ -8,7 +8,7 @@
 #include "RingBuffer.hpp"
 #include "RendererD3D12.hpp"
 #include "Engine/Common/Logger/Logger.hpp"
-
+#include "Engine/Common/Utils/ScopedLock.hpp"
 
 namespace NFE {
 namespace Renderer {
@@ -85,9 +85,14 @@ bool RingBuffer::Init(size_t size)
 
 size_t RingBuffer::Allocate(size_t size)
 {
+    // TODO make lockless
+    NFE_SCOPED_LOCK(mLock);
+
     // buffer is full
     if (mUsed == mSize)
+    {
         return INVALID_OFFSET;
+    }
 
     if (mTail >= mHead)
     {
@@ -117,37 +122,42 @@ size_t RingBuffer::Allocate(size_t size)
     return INVALID_OFFSET;
 }
 
-void RingBuffer::FinishFrame(uint64 frameIndex)
+void RingBuffer::FinishFrame(uint64 fenceValue)
 {
-    mCompletedFrames.EmplaceBack(frameIndex, mTail);
+    // TODO make lockless
+    NFE_SCOPED_LOCK(mLock);
+
+    mCompletedFrames.EmplaceBack(fenceValue, mTail);
 }
 
-void RingBuffer::OnFrameCompleted(uint64 frameIndex)
+void RingBuffer::OnFrameCompleted(uint64 fenceValue)
 {
-    NFE_UNUSED(frameIndex);
-    NFE_ASSERT(!mCompletedFrames.Empty(), "");
-    NFE_ASSERT(mCompletedFrames.Front().first == frameIndex, "");
+    // TODO make lockless
+    NFE_SCOPED_LOCK(mLock);
 
-    size_t oldestFrameTail = mCompletedFrames.Front().second;
-    size_t newUsed = 0;
-
-    if (mUsed > 0)
+    while (!mCompletedFrames.Empty() && fenceValue >= mCompletedFrames.Front().first)
     {
-        if (oldestFrameTail >= mHead)
+        size_t oldestFrameTail = mCompletedFrames.Front().second;
+        size_t newUsed = 0;
+
+        if (mUsed > 0)
         {
-            newUsed = mUsed - oldestFrameTail + mHead;
+            if (oldestFrameTail >= mHead)
+            {
+                newUsed = mUsed - oldestFrameTail + mHead;
+            }
+            else
+            {
+                newUsed = mUsed - oldestFrameTail - mSize + mHead;
+            }
         }
-        else
-        {
-            newUsed = mUsed - oldestFrameTail - mSize + mHead;
-        }
+
+        NFE_ASSERT(newUsed <= mSize, "Ring buffer overrun");
+
+        mUsed = newUsed;
+        mHead = oldestFrameTail;
+        mCompletedFrames.PopFront();
     }
-
-    NFE_ASSERT(newUsed <= mSize, "Ring buffer overrun");
-
-    mUsed = newUsed;
-    mHead = oldestFrameTail;
-    mCompletedFrames.PopFront();
 }
 
 } // namespace Renderer

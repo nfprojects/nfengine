@@ -22,29 +22,22 @@ private:
     }
 };
 
-TEST_F(CommandList, ExecuteInvalid)
-{
-    EXPECT_FALSE(gRendererDevice->Execute(0));
-    EXPECT_FALSE(gRendererDevice->Execute(123456));
-}
-
 TEST_F(CommandList, FinishWithoutReset)
 {
     // finishing command buffer should fail, because it was not reset first
-    CommandListID commandList = commandRecorder->Finish();
-    ASSERT_EQ(0u, commandList);
+    ASSERT_EQ(commandRecorder->Finish(), nullptr);
 }
 
 TEST_F(CommandList, ResetAndFinish)
 {
     commandRecorder->Begin();
 
-    const CommandListID commandList = commandRecorder->Finish();
-    ASSERT_NE(0u, commandList);
+    const CommandListPtr commandList = commandRecorder->Finish();
+    ASSERT_NE(commandList, nullptr);
 
     // try to finish again - should fail, because command buffer must be reset
-    const CommandListID commandList2 = commandRecorder->Finish();
-    ASSERT_EQ(0u, commandList2);
+    const CommandListPtr commandList2 = commandRecorder->Finish();
+    ASSERT_EQ(commandList2, nullptr);
 
     EXPECT_TRUE(gRendererDevice->Execute(commandList));
 
