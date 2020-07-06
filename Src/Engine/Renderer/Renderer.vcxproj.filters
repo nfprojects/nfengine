@@ -1,0 +1,130 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="PCH">
+      <UniqueIdentifier>{bd29ba41-f88b-4a56-9ef2-0757a7aecb45}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resources">
+      <UniqueIdentifier>{ac3755ea-3680-4282-86ec-332da8174ea0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scene">
+      <UniqueIdentifier>{87d1433a-fe70-471a-9fdd-3c861acacae8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="RenderGraph">
+      <UniqueIdentifier>{545ef1bc-7a46-446b-ab8c-6ac2867349d5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ShaderManager">
+      <UniqueIdentifier>{e9bc0ee5-e1c7-4df1-a8fe-bb20c0efb26d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Viewport">
+      <UniqueIdentifier>{8274d6bd-ab1f-4f54-9324-e797edae0481}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Camera">
+      <UniqueIdentifier>{7ddd8b37-13e0-42f1-be60-9a2b90b90796}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="PCH.cpp">
+      <Filter>PCH</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene\RenderSceneObject_Light.cpp">
+      <Filter>Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene\RenderSceneObject_Mesh.cpp">
+      <Filter>Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene\RenderScene.cpp">
+      <Filter>Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene\RenderSceneObject.cpp">
+      <Filter>Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Resources\MeshResource.cpp">
+      <Filter>Resources</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderGraph\RenderGraph.cpp">
+      <Filter>RenderGraph</Filter>
+    </ClCompile>
+    <ClCompile Include="ShaderManager\ShaderManager.cpp">
+      <Filter>ShaderManager</Filter>
+    </ClCompile>
+    <ClCompile Include="Viewport\WindowViewport.cpp">
+      <Filter>Viewport</Filter>
+    </ClCompile>
+    <ClCompile Include="Viewport\Viewport.cpp">
+      <Filter>Viewport</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderGraph\RenderGraphNode.cpp">
+      <Filter>RenderGraph</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderGraph\RenderGraphContext.cpp">
+      <Filter>RenderGraph</Filter>
+    </ClCompile>
+    <ClCompile Include="Renderer.cpp" />
+    <ClCompile Include="ShaderManager\PsoManager.cpp">
+      <Filter>ShaderManager</Filter>
+    </ClCompile>
+    <ClCompile Include="Camera\RenderCamera.cpp">
+      <Filter>Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="Viewport\DebugDrawer.cpp">
+      <Filter>Viewport</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderGraph\RenderGraphResourceAllocator.cpp">
+      <Filter>RenderGraph</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="PCH.hpp">
+      <Filter>PCH</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene\RenderSceneObject_Light.hpp">
+      <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene\RenderSceneObject_Mesh.hpp">
+      <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene\RenderScene.hpp">
+      <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene\RenderSceneObject.hpp">
+      <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Resources\MeshResource.hpp">
+      <Filter>Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderGraph\RenderGraph.hpp">
+      <Filter>RenderGraph</Filter>
+    </ClInclude>
+    <ClInclude Include="ShaderManager\ShaderManager.hpp">
+      <Filter>ShaderManager</Filter>
+    </ClInclude>
+    <ClInclude Include="Viewport\WindowViewport.hpp">
+      <Filter>Viewport</Filter>
+    </ClInclude>
+    <ClInclude Include="Viewport\Viewport.hpp">
+      <Filter>Viewport</Filter>
+    </ClInclude>
+    <ClInclude Include="ForwardDeclarations.hpp" />
+    <ClInclude Include="RenderGraph\RenderGraphNode.hpp">
+      <Filter>RenderGraph</Filter>
+    </ClInclude>
+    <ClInclude Include="RendererApi.hpp" />
+    <ClInclude Include="RenderGraph\RenderGraphContext.hpp">
+      <Filter>RenderGraph</Filter>
+    </ClInclude>
+    <ClInclude Include="Renderer.hpp" />
+    <ClInclude Include="ShaderManager\PsoManager.hpp">
+      <Filter>ShaderManager</Filter>
+    </ClInclude>
+    <ClInclude Include="Camera\RenderCamera.hpp">
+      <Filter>Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="Viewport\DebugDrawer.hpp">
+      <Filter>Viewport</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderGraph\RenderGraphResourceAllocator.hpp">
+      <Filter>RenderGraph</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

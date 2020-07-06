@@ -30,7 +30,9 @@ const float MOVEMENT_SPEED_MULTIPLIER = 5.0f;
 
 
 FreeCameraController::FreeCameraController()
-    : mCameraYaw(0.0f)
+    : mMovementDirection(Vec4f::Zero())
+    , mMovementSpeed(0.0f)
+    , mCameraYaw(0.0f)
     , mCameraPitch(0.0f)
     , mInControl(false)
 {

@@ -42,6 +42,15 @@ struct BufferDesc : public CommonResourceDesc
 
     // structure size in bytes (only applicable for structured buffers)
     uint32 structSize = 0u;
+
+    bool operator == (const BufferDesc& rhs) const
+    {
+        return
+            mode == rhs.mode &&
+            usage == rhs.usage &&
+            size == rhs.size &&
+            structSize == rhs.structSize;
+    }
 };
 
 /**

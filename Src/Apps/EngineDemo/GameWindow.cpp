@@ -29,6 +29,13 @@ GameWindow::GameWindow()
 {
 }
 
+bool GameWindow::InitViewport()
+{
+    mViewport = MakeUniquePtr<Renderer::WindowViewport>(*this);
+
+    return mViewport != nullptr;
+}
+
 void GameWindow::InitCamera()
 {
     NFE_ASSERT(mScene, "Scene is not created");
@@ -327,6 +334,8 @@ void GameWindow::OnResize(uint32 width, uint32 height)
     {
         return;
     }
+
+    mViewport->Resize(width, height);
 
     Scene::CameraComponent* cameraComponent = mCameraEntity->GetComponent<Scene::CameraComponent>();
     NFE_ASSERT(cameraComponent, "Invalid camera component");

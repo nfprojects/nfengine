@@ -15,10 +15,10 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{C9DA778F-C44E-46F3-8F03-E98B05F7A87D}</ProjectGuid>
+    <ProjectGuid>{45EC53AA-102E-4DA9-8425-0AA1820BE9E3}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>Core</RootNamespace>
-    <ProjectName>Core</ProjectName>
+    <RootNamespace>Renderer</RootNamespace>
+    <ProjectName>Renderer</ProjectName>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -77,13 +77,13 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <PrecompiledHeader>Use</PrecompiledHeader>
-      <PreprocessorDefinitions>NF_CORE_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NFE_RENDERER_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)Deps\imgui;$(SolutionDir)Deps\rapidjson\include;$(SolutionDir)Deps\freetype2\include;$(SolutionDir)Deps\bullet\src;$(SolutionDir)Deps\nfenginedeps\rapidxml-1.13;$(SolutionDir)Src;..\FreeType\include\</AdditionalIncludeDirectories>
       <PrecompiledHeaderFile>PCH.hpp</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
-      <AdditionalDependencies>Renderer.lib;RendererCommon.lib;Common.lib;freetyped.lib;zlibstaticd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>RendererCommon.lib;Common.lib;freetyped.lib;zlibstaticd.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PreBuildEvent>
       <Command>
@@ -94,7 +94,7 @@
     <ClCompile>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <FunctionLevelLinking>true</FunctionLevelLinking>
-      <PreprocessorDefinitions>NF_CORE_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NFE_RENDERER_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <OmitFramePointers>true</OmitFramePointers>
       <FloatingPointModel>Fast</FloatingPointModel>
       <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)Deps\imgui;$(SolutionDir)Deps\rapidjson\include;$(SolutionDir)Deps\freetype2\include;$(SolutionDir)Deps\bullet\src;$(SolutionDir)Deps\nfenginedeps\rapidxml-1.13;$(SolutionDir)Src;..\..\SDK\bullet-2.80\src\;..\FreeType\include\</AdditionalIncludeDirectories>
@@ -107,7 +107,7 @@
       <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>Renderer.lib;RendererCommon.lib;Common.lib;freetype.lib;zlibstatic.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>RendererCommon.lib;Common.lib;freetype.lib;zlibstatic.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <Profile>true</Profile>
     </Link>
     <PreBuildEvent>
@@ -119,7 +119,7 @@
     <ClCompile>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <FunctionLevelLinking>true</FunctionLevelLinking>
-      <PreprocessorDefinitions>NF_CORE_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NFE_RENDERER_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <OmitFramePointers>true</OmitFramePointers>
       <FloatingPointModel>Fast</FloatingPointModel>
       <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)Deps\imgui;$(SolutionDir)Deps\rapidjson\include;$(SolutionDir)Deps\freetype2\include;$(SolutionDir)Deps\bullet\src;$(SolutionDir)Deps\nfenginedeps\rapidxml-1.13;$(SolutionDir)Src;..\..\SDK\bullet-2.80\src\;..\FreeType\include\</AdditionalIncludeDirectories>
@@ -132,7 +132,7 @@
       <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>Renderer.lib;RendererCommon.lib;Common.lib;freetype.lib;zlibstatic.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>RendererCommon.lib;Common.lib;freetype.lib;zlibstatic.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <Profile>true</Profile>
     </Link>
     <PreBuildEvent>
@@ -141,72 +141,72 @@
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Main.cpp" />
-    <ClCompile Include="Input\InputEvent.cpp" />
+    <ClCompile Include="Camera\RenderCamera.cpp" />
     <ClCompile Include="PCH.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Final|x64'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="Scene\Components\Component.cpp" />
-    <ClCompile Include="Scene\Components\ComponentCamera.cpp" />
-    <ClCompile Include="Scene\Components\ComponentController.cpp" />
-    <ClCompile Include="Scene\Components\ComponentLight.cpp" />
-    <ClCompile Include="Scene\Components\ComponentMesh.cpp" />
-    <ClCompile Include="Scene\Components\ComponentTrigger.cpp" />
-    <ClCompile Include="Scene\Entity.cpp" />
-    <ClCompile Include="Scene\EntityController.cpp" />
-    <ClCompile Include="Scene\Events\Event.cpp" />
-    <ClCompile Include="Scene\Events\Event_Input.cpp" />
-    <ClCompile Include="Scene\Events\Event_Tick.cpp" />
-    <ClCompile Include="Scene\Events\Event_Trigger.cpp" />
-    <ClCompile Include="Scene\Scene.cpp" />
-    <ClCompile Include="Scene\Systems\EntitySystem.cpp" />
-    <ClCompile Include="Scene\Systems\EventSystem.cpp" />
-    <ClCompile Include="Scene\Systems\InputSystem.cpp" />
-    <ClCompile Include="Scene\Systems\RendererSystem.cpp" />
-    <ClCompile Include="Scene\Systems\System.cpp" />
-    <ClCompile Include="Scene\Systems\TriggerSystem.cpp" />
-    <ClCompile Include="Utils\ConfigManager.cpp">
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">../PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Final|x64'">../PCH.hpp</PrecompiledHeaderFile>
+    <ClCompile Include="Renderer.cpp" />
+    <ClCompile Include="RenderGraph\RenderGraph.cpp" />
+    <ClCompile Include="RenderGraph\RenderGraphContext.cpp" />
+    <ClCompile Include="RenderGraph\RenderGraphNode.cpp" />
+    <ClCompile Include="RenderGraph\RenderGraphResourceAllocator.cpp" />
+    <ClCompile Include="Resources\MeshResource.cpp" />
+    <ClCompile Include="Scene\RenderScene.cpp" />
+    <ClCompile Include="Scene\RenderSceneObject.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Final|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="Utils\ConfigVariable.cpp">
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">../PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Final|x64'">../PCH.hpp</PrecompiledHeaderFile>
+    <ClCompile Include="Scene\RenderSceneObject_Light.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Final|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="Utils\Profiler.cpp" />
+    <ClCompile Include="Scene\RenderSceneObject_Mesh.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Final|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="ShaderManager\PsoManager.cpp" />
+    <ClCompile Include="ShaderManager\ShaderManager.cpp" />
+    <ClCompile Include="Viewport\DebugDrawer.cpp" />
+    <ClCompile Include="Viewport\Viewport.cpp" />
+    <ClCompile Include="Viewport\WindowViewport.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Camera\RenderCamera.hpp" />
+    <ClInclude Include="Renderer.hpp" />
+    <ClInclude Include="RendererApi.hpp" />
     <ClInclude Include="ForwardDeclarations.hpp" />
-    <ClInclude Include="Input\InputEvent.hpp" />
-    <ClInclude Include="Core.hpp" />
     <ClInclude Include="PCH.hpp" />
-    <ClInclude Include="Scene\Components\Component.hpp" />
-    <ClInclude Include="Scene\Components\ComponentCamera.hpp" />
-    <ClInclude Include="Scene\Components\ComponentController.hpp" />
-    <ClInclude Include="Scene\Components\ComponentLight.hpp" />
-    <ClInclude Include="Scene\Components\ComponentMesh.hpp" />
-    <ClInclude Include="Scene\Components\ComponentTrigger.hpp" />
-    <ClInclude Include="Scene\Entity.hpp" />
-    <ClInclude Include="Scene\EntityController.hpp" />
-    <ClInclude Include="Scene\Events\Event.hpp" />
-    <ClInclude Include="Scene\Events\Event_Input.hpp" />
-    <ClInclude Include="Scene\Events\Event_Tick.hpp" />
-    <ClInclude Include="Scene\Events\Event_Trigger.hpp" />
-    <ClInclude Include="Scene\Scene.hpp" />
-    <ClInclude Include="Scene\Systems\EntitySystem.hpp" />
-    <ClInclude Include="Scene\Systems\EventSystem.hpp" />
-    <ClInclude Include="Scene\Systems\InputSystem.hpp" />
-    <ClInclude Include="Scene\Systems\RendererSystem.hpp" />
-    <ClInclude Include="Scene\Systems\System.hpp" />
-    <ClInclude Include="Scene\Systems\TriggerSystem.hpp" />
-    <ClInclude Include="Utils\ConfigManager.hpp" />
-    <ClInclude Include="Utils\ConfigVariable.hpp" />
-    <ClInclude Include="Utils\Profiler.hpp" />
-    <ClInclude Include="Utils\SimpleInput.hpp" />
+    <ClInclude Include="RenderGraph\RenderGraph.hpp" />
+    <ClInclude Include="RenderGraph\RenderGraphContext.hpp" />
+    <ClInclude Include="RenderGraph\RenderGraphNode.hpp" />
+    <ClInclude Include="RenderGraph\RenderGraphResourceAllocator.hpp" />
+    <ClInclude Include="Resources\MeshResource.hpp" />
+    <ClInclude Include="Scene\RenderScene.hpp" />
+    <ClInclude Include="Scene\RenderSceneObject.hpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Final|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="Scene\RenderSceneObject_Light.hpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Final|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="Scene\RenderSceneObject_Mesh.hpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Final|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="ShaderManager\PsoManager.hpp" />
+    <ClInclude Include="ShaderManager\ShaderManager.hpp" />
+    <ClInclude Include="Viewport\DebugDrawer.hpp" />
+    <ClInclude Include="Viewport\Viewport.hpp" />
+    <ClInclude Include="Viewport\WindowViewport.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

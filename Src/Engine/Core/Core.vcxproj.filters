@@ -10,12 +10,6 @@
     <Filter Include="PCH">
       <UniqueIdentifier>{bd29ba41-f88b-4a56-9ef2-0757a7aecb45}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Renderer">
-      <UniqueIdentifier>{41ada418-96c2-459b-9938-5eef2c5e34a5}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Resources">
-      <UniqueIdentifier>{ac3755ea-3680-4282-86ec-332da8174ea0}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Utils">
       <UniqueIdentifier>{40738d35-8dbb-4074-bc98-84d31ffc6382}</UniqueIdentifier>
     </Filter>
@@ -115,9 +109,6 @@
     </ClInclude>
     <ClInclude Include="Utils\Profiler.hpp">
       <Filter>Utils</Filter>
-    </ClInclude>
-    <ClInclude Include="ShaderCommon.hpp">
-      <Filter>Renderer</Filter>
     </ClInclude>
     <ClInclude Include="Utils\ConfigVariable.hpp">
       <Filter>Utils</Filter>

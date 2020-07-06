@@ -8,6 +8,7 @@
 #include "ComponentCamera.hpp"
 #include "../Entity.hpp"
 #include "Engine/Common/Reflection/ReflectionClassDefine.hpp"
+#include "Engine/Renderer/Camera/RenderCamera.hpp"
 
 
 NFE_DEFINE_POLYMORPHIC_CLASS(NFE::Scene::CameraComponent)
@@ -19,13 +20,18 @@ namespace NFE {
 namespace Scene {
 
 using namespace Math;
+using namespace Common;
 using namespace Resource;
 
 
 CameraComponent::CameraComponent()
     : mProjMode(ProjectionMode::Perspective)
+    , mPerspective{}
 {
+    mRenderCamera = MakeSharedPtr<Renderer::Camera>();
 }
+
+CameraComponent::~CameraComponent() = default;
 
 Box CameraComponent::GetBoundingBox() const
 {

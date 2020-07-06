@@ -2,6 +2,7 @@
 #include "Main.hpp"
 #include "GameWindow.hpp"
 
+#include "Engine/Renderer/Renderer.hpp"
 #include "Engine/Common/System/Window.hpp"
 #include "Engine/Common/System/Assertion.hpp"
 #include "Engine/Common/Logger/Logger.hpp"
@@ -11,7 +12,6 @@
 namespace NFE {
 
 using namespace Math;
-using namespace Scene;
 using namespace Resource;
 
 Common::DynArray<Common::UniquePtr<GameWindow>> gWindows;
@@ -25,6 +25,7 @@ GameWindow* AddWindow(GameWindow* parent)
     window->SetSize(1920, 1080);
     window->SetTitle("NFEngine Demo");
     window->Open();
+    window->InitViewport();
     window->SetUpScene(parent);
 
     GameWindow* windowPtr = window.Get();
@@ -34,6 +35,8 @@ GameWindow* AddWindow(GameWindow* parent)
 
 void MainLoop()
 {
+    Renderer::Renderer& renderer = Renderer::Renderer::GetInstance();
+
     Common::DynArray<GameWindow*> windows;
     Common::Timer timer;
     timer.Start();
@@ -68,6 +71,16 @@ void MainLoop()
                 }
                 continue;
             }
+
+            Scene::SceneUpdateInfo sceneUpdateInfo;
+            sceneUpdateInfo.timeDelta = gDeltaTime;
+            window->GetScene()->Update(sceneUpdateInfo);
+
+            Renderer::WindowViewport* viewport = window->GetViewport();
+
+            Renderer::FrameInfo frameInfo;
+            frameInfo.viewport = viewport;
+            renderer.DrawFrame(frameInfo);
 
             //// Build list of scene update requests.
             //// They should not be duplicated (multiple windows can share the same scene).
@@ -110,11 +123,21 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
     const Common::StringView execDir = Common::FileSystem::GetParentDir(execPath);
     Common::FileSystem::ChangeDirectory(execDir + "/../../..");
 
+    Renderer::Renderer& renderer = Renderer::Renderer::GetInstance();
+    if (!renderer.Initialize())
+    {
+        return -1;
+    }
+
     // spawn default window
     AddWindow();
 
     // game loop
     MainLoop();
+
+    gWindows.Clear();
+
+    renderer.Shutdown();
 
     NFE::Common::ShutdownSubsystems();
 

@@ -10,9 +10,15 @@
 
 #include "../../../Common/Memory/Aligned.hpp"
 #include "../../../Common/Math/Frustum.hpp"
+#include "../../../Common/Containers/SharedPtr.hpp"
 
 
 namespace NFE {
+
+namespace Renderer {
+class Camera;
+}
+
 namespace Scene {
 
 /**
@@ -73,6 +79,7 @@ public:
     NFE_ALIGNED_CLASS(32)
 
     CameraComponent();
+    ~CameraComponent();
 
     // IComponent interface implementation
     virtual Math::Box GetBoundingBox() const override;
@@ -121,6 +128,9 @@ public:
     const Math::Frustum& GetFrustum() const { return mFrustum; }
 
 private:
+
+    Common::SharedPtr<Renderer::Camera> mRenderCamera;
+
     ProjectionMode mProjMode;
 
     union

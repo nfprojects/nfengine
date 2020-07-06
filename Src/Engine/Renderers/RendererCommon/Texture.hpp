@@ -75,6 +75,27 @@ struct TextureDesc : public CommonResourceDesc
         , defaultDepthClearValue(1.0f)
         , defaultStencilClearValue(0)
     {}
+
+    bool operator == (const TextureDesc& rhs) const
+    {
+        return
+            type == rhs.type &&
+            format == rhs.format &&
+            mode == rhs.mode &&
+            usage == rhs.usage &&
+            width == rhs.width &&
+            height == rhs.height &&
+            depth == rhs.depth &&
+            layers == rhs.layers &&
+            samplesNum == rhs.samplesNum &&
+            mipmaps == rhs.mipmaps &&
+            defaultColorClearValue[0] == rhs.defaultColorClearValue[0] &&
+            defaultColorClearValue[1] == rhs.defaultColorClearValue[1] &&
+            defaultColorClearValue[2] == rhs.defaultColorClearValue[2] &&
+            defaultColorClearValue[3] == rhs.defaultColorClearValue[3] &&
+            defaultDepthClearValue == rhs.defaultDepthClearValue &&
+            defaultStencilClearValue == rhs.defaultStencilClearValue;
+    }
 };
 
 class ITexture

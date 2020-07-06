@@ -955,9 +955,7 @@ void CommandRecorder::CopyTexture(const TexturePtr& src, const BackbufferPtr& de
 void CommandRecorder::Clear(uint32 flags, uint32 numTargets, const uint32* slots, const Math::Vec4fU* colors, float depthValue, uint8 stencilValue)
 {
     NFE_ASSERT(mQueueType == CommandQueueType::Graphics, "Invalid queue type");
-
-    if (mCurrRenderTarget == nullptr)
-        return;
+    NFE_ASSERT(mCurrRenderTarget != nullptr, "No render target bound");
 
     if (flags & ClearFlagsColor)
     {

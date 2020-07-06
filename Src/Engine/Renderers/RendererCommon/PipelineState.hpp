@@ -20,15 +20,15 @@ namespace Renderer {
  */
 struct RenderTargetBlendStateDesc
 {
-    bool enable;
+    bool enable             : 1;
 
-    BlendFunc srcColorFunc;
-    BlendFunc destColorFunc;
-    BlendFunc srcAlphaFunc;
-    BlendFunc destAlphaFunc;
+    BlendOp colorOperator   : 3;
+    BlendOp alphaOperator   : 3;
 
-    BlendOp colorOperator;
-    BlendOp alphaOperator;
+    BlendFunc srcColorFunc  : 4;
+    BlendFunc destColorFunc : 4;
+    BlendFunc srcAlphaFunc  : 4;
+    BlendFunc destAlphaFunc : 4;
 
     RenderTargetBlendStateDesc()
         : enable(false)
@@ -47,8 +47,8 @@ struct RenderTargetBlendStateDesc
 struct BlendStateDesc
 {
     Common::FixedArray<RenderTargetBlendStateDesc, MAX_RENDER_TARGETS> rtDescs;
-    bool independent; //< if set to false structure at index 0 is applied to all rendertargets
-    bool alphaToCoverage;
+    bool independent : 1; //< if set to false structure at index 0 is applied to all rendertargets
+    bool alphaToCoverage : 1;
 
     BlendStateDesc()
         : independent(false)
@@ -62,15 +62,12 @@ struct BlendStateDesc
  */
 struct RasterizerStateDesc
 {
-    CullMode cullMode;
-    FillMode fillMode;
-    bool scissorTest;
-    // TODO: more options
+    CullMode cullMode : 2;
+    FillMode fillMode : 1;
 
     RasterizerStateDesc()
         : cullMode(CullMode::Disabled)
         , fillMode(FillMode::Solid)
-        , scissorTest(false)
     {}
 };
 
@@ -81,29 +78,29 @@ struct RasterizerStateDesc
 struct DepthStateDesc
 {
     // enable testing pixels against depth buffer
-    bool depthTestEnable;
+    bool depthTestEnable : 1;
 
     // enable writing to depth buffer
-    bool depthWriteEnable;
+    bool depthWriteEnable : 1;
 
     // enable testing pixels against stencil buffer
-    bool stencilEnable;
+    bool stencilEnable : 1;
 
     // comparison function for depth tesing
-    CompareFunc depthCompareFunc;
+    CompareFunc depthCompareFunc : 3;
 
     uint8 stencilMask;
 
     // stencil buffer operation taken when stencil test fails
-    StencilOp stencilOpFail;
+    StencilOp stencilOpFail : 3;
 
     // stencil buffer operation taken when stencil test passes, but depth test fails
-    StencilOp stencilOpDepthFail;
+    StencilOp stencilOpDepthFail : 3;
 
     // stencil buffer operation taken when both stencil and depth tests pass
-    StencilOp stencilOpPass;
+    StencilOp stencilOpPass : 3;
 
-    CompareFunc stencilFunc;
+    CompareFunc stencilFunc : 3;
 
     DepthStateDesc()
         : depthTestEnable(false)
