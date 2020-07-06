@@ -21,6 +21,7 @@ Backbuffer::Backbuffer()
     , mHeight(0)
     , mFormat(DXGI_FORMAT_UNKNOWN)
     , mCurrentBuffer(0)
+    , mWaitableObject(INVALID_HANDLE_VALUE)
 { }
 
 Backbuffer::~Backbuffer()
@@ -64,7 +65,7 @@ bool Backbuffer::Init(const BackbufferDesc& desc)
     scd.SampleDesc.Count = 1;
 
     hr = D3D_CALL_CHECK(gDevice->mDXGIFactory->CreateSwapChainForHwnd(
-        gDevice->mCommandQueue.Get(), static_cast<HWND>(desc.windowHandle), &scd, nullptr, nullptr,
+        gDevice->GetGraphicsQueue(), static_cast<HWND>(desc.windowHandle), &scd, nullptr, nullptr,
         reinterpret_cast<IDXGISwapChain1**>(&mSwapChain)));
 
     if (FAILED(hr))

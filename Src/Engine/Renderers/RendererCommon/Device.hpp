@@ -92,11 +92,17 @@ public:
     virtual bool WaitForGPU() = 0;
 
     /**
-     * Execute a command list.
-     * @param commandList Command list to be executed.
+     * Execute a command lists.
+     * @param commandLists Array of command list to be executed.
      * @return True on success.
      */
-    virtual bool Execute(CommandListID commandList) = 0;
+    virtual bool Execute(const Common::ArrayView<ICommandList*> commandLists) = 0;
+
+    NFE_FORCE_INLINE bool Execute(const CommandListPtr& commandList)
+    {
+        ICommandList* commandListPtr = commandList.Get();
+        return Execute(Common::ArrayView<ICommandList*>(&commandListPtr, 1u));
+    }
 
     /**
      * Inform Renderer about finished frame.

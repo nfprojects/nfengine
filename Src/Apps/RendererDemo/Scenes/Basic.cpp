@@ -508,7 +508,7 @@ void BasicScene::Draw(float dt)
 
     mCommandBuffer->CopyTexture(mWindowRenderTargetTexture, mWindowBackbuffer);
 
-    CommandListID commandList = mCommandBuffer->Finish();
+    CommandListPtr commandList = mCommandBuffer->Finish();
     mRendererDevice->Execute(commandList);
     mWindowBackbuffer->Present();
     mRendererDevice->FinishFrame();

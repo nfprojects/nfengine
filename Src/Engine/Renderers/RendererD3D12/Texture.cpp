@@ -159,11 +159,8 @@ bool Texture::UploadData(const TextureDesc& desc)
         if (FAILED(D3D_CALL_CHECK(commandList->Close())))
             return false;
         ID3D12CommandList* commandLists[] = { commandList.Get() };
-        gDevice->GetCommandQueue()->ExecuteCommandLists(1, commandLists);
-
-
-        if (!gDevice->WaitForGPU())
-            return false;
+        gDevice->GetResourceUploadQueue()->ExecuteCommandLists(1, commandLists);
+        gDevice->mResourceUploadQueueFence.Flush(gDevice->mResourceUploadQueue.Get());
     }
 
     return true;

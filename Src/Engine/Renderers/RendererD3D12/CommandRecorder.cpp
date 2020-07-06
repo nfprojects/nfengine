@@ -34,9 +34,6 @@ CommandRecorder::CommandRecorder()
     , mCurrPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_UNDEFINED)
     , mCommandList(nullptr)
     , mCommandListObject(nullptr)
-    , mFrameBufferIndex(0)
-    , mLastFinishedFrameIndex(std::numeric_limits<uint64>::max())
-    , mLastCompletedFrameIndex(std::numeric_limits<uint64>::max())
 {
     for (uint32 i = 0; i < NFE_RENDERER_MAX_VOLATILE_CBUFFERS; ++i)
     {
@@ -48,44 +45,9 @@ CommandRecorder::CommandRecorder()
         mBoundVertexBuffers[i] = nullptr;
 }
 
-bool CommandRecorder::Init(ID3D12Device* device, uint32 frameCount)
-{
-    HRESULT hr;
-
-    mFrameBufferIndex = 0;
-
-    mReferencedResources.Resize(frameCount);
-    mCommandAllocators.Resize(frameCount);
-    for (uint32 i = 0; i < frameCount; ++i)
-    {
-        hr = D3D_CALL_CHECK(device->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT, IID_PPV_ARGS(mCommandAllocators[i].GetPtr())));
-        if (FAILED(hr))
-        {
-            NFE_LOG_ERROR("Failed to create D3D12 command allocator for frame %u (out of %u)", i, frameCount);
-            return false;
-        }
-
-        hr = D3D_CALL_CHECK(mCommandAllocators[i]->Reset());
-        if (FAILED(hr))
-        {
-            NFE_LOG_ERROR("Failed to reset command allocator for frame %u (out of %u)", i, frameCount);
-            return false;
-        }
-    }
-
-    if (!mRingBuffer.Init(8 * 1024 * 1024))
-    {
-        NFE_LOG_ERROR("Failed to initialize ring buffer");
-        return false;
-    }
-
-    return true;
-}
-
 CommandRecorder::~CommandRecorder()
 {
     NFE_ASSERT(mCommandList == nullptr, "Finish() not called before command buffer destruction");
-    NFE_ASSERT(CanBeDeleted(), "Destroying command recorder while there are some operations in-flight");
 }
 
 bool CommandRecorder::Begin()
@@ -93,13 +55,13 @@ bool CommandRecorder::Begin()
     NFE_ASSERT(mCommandList == nullptr, "Command recorder is already in recording state");
 
     // get a free command list from the command list manager
-    ID3D12CommandAllocator* currentCommandAllocator = mCommandAllocators[mFrameBufferIndex].Get();
-    mCommandListObject = gDevice->GetCommandListManager()->RequestCommandList(currentCommandAllocator);
+    mCommandListObject = gDevice->GetCommandListManager()->RequestCommandList();
     if (!mCommandListObject)
     {
         NFE_LOG_ERROR("Failed to optain command list");
         return false;
     }
+    NFE_ASSERT(mCommandListObject->GetState() == InternalCommandList::State::Recording, "Invalid command list state");
 
     mCommandList = mCommandListObject->GetD3DCommandList();
     NFE_ASSERT(mCommandList, "Invalid command list returned");
@@ -132,7 +94,7 @@ bool CommandRecorder::Begin()
     return true;
 }
 
-CommandListID CommandRecorder::Finish()
+CommandListPtr CommandRecorder::Finish()
 {
     NFE_ASSERT(mCommandList, "Command buffer is not in recording state");
 
@@ -147,64 +109,19 @@ CommandListID CommandRecorder::Finish()
         // recording failed
         mCommandListObject = nullptr;
         mCommandList = nullptr;
-        return INVALID_COMMAND_LIST_ID;
+        return nullptr;
     }
 
-    // TODO pass current frame ID to the command list
-    const CommandListID id = gDevice->GetCommandListManager()->OnCommandListRecorded(mCommandListObject);
+    CommandListPtr commandList = gDevice->GetCommandListManager()->OnCommandListRecorded(mCommandListObject);
     mCommandListObject = nullptr;
     mCommandList = nullptr;
-    return id;
-}
-
-bool CommandRecorder::CanBeDeleted() const
-{
-    return mLastCompletedFrameIndex == mLastFinishedFrameIndex;
-}
-
-bool CommandRecorder::OnFinishFrame(uint64 frameIndex, uint32 nextFrameBufferIndex)
-{
-    NFE_ASSERT(nullptr == mCommandList, "Command buffer is in recording state");
-    if (mLastFinishedFrameIndex != std::numeric_limits<uint64>::max())
-    {
-        NFE_ASSERT(frameIndex > mLastFinishedFrameIndex, "Invalid frame index");
-    }
-
-    mLastFinishedFrameIndex = frameIndex;
-    mFrameBufferIndex = nextFrameBufferIndex;
-
-    mRingBuffer.FinishFrame(frameIndex);
-    return true;
-}
-
-bool CommandRecorder::OnFrameCompleted(uint64 frameIndex, uint32 frameBufferIndex)
-{
-    if (mLastCompletedFrameIndex != std::numeric_limits<uint64>::max())
-    {
-        NFE_ASSERT(frameIndex > mLastCompletedFrameIndex, "Invalid frame index");
-    }
-    NFE_ASSERT(frameIndex != std::numeric_limits<uint64>::max(), "There was no frames finished");
-    NFE_ASSERT(frameIndex <= mLastFinishedFrameIndex, "Invalid frame index");
-    mLastCompletedFrameIndex = frameIndex;
-
-    // drop resources references
-    mReferencedResources[frameBufferIndex].Clear();
-
-    HRESULT hr = D3D_CALL_CHECK(mCommandAllocators[frameBufferIndex]->Reset());
-    if (FAILED(hr))
-    {
-        NFE_LOG_ERROR("Failed to reset command allocator for frame %u", mFrameBufferIndex);
-        return false;
-    }
-
-    mRingBuffer.OnFrameCompleted(frameIndex);
-    return true;
+    return commandList;
 }
 
 ReferencedResourcesList& CommandRecorder::Internal_GetReferencedResources()
 {
-    NFE_ASSERT(mCommandList, "Command buffer is not in recording state");
-    return mReferencedResources[mFrameBufferIndex];
+    NFE_ASSERT(mCommandListObject, "Command buffer is not in recording state");
+    return mCommandListObject->GetReferencedResources();
 }
 
 
@@ -232,23 +149,8 @@ void CommandRecorder::SetScissors(int32 left, int32 top, int32 right, int32 bott
     mCommandList->RSSetScissorRects(1, &rect);
 }
 
-void* CommandRecorder::MapBuffer(const BufferPtr& buffer, MapType type)
-{
-    NFE_UNUSED(buffer);
-    NFE_UNUSED(type);
-    return nullptr;
-}
-
-void CommandRecorder::UnmapBuffer(const BufferPtr& buffer)
-{
-    NFE_UNUSED(buffer);
-}
-
 void CommandRecorder::SetVertexBuffers(uint32 num, const BufferPtr* vertexBuffers, uint32* strides, uint32* offsets)
 {
-    // TODO
-    NFE_UNUSED(offsets);
-
     NFE_ASSERT(num < NFE_RENDERER_MAX_VERTEX_BUFFERS, "Too many vertex buffers");
 
     for (uint32 i = 0; i < num; ++i)
@@ -267,7 +169,7 @@ void CommandRecorder::SetVertexBuffers(uint32 num, const BufferPtr* vertexBuffer
             size = buffer->GetSize();
         }
 
-        mCurrVertexBufferViews[i].BufferLocation = gpuAddress;
+        mCurrVertexBufferViews[i].BufferLocation = gpuAddress + offsets[i];
         mCurrVertexBufferViews[i].SizeInBytes = size;
         mCurrVertexBufferViews[i].StrideInBytes = strides[i];
 
@@ -515,12 +417,14 @@ void CommandRecorder::SetStencilRef(uint8 ref)
 
 void CommandRecorder::Internal_WriteDynamicBuffer(Buffer* buffer, size_t offset, size_t size, const void* data)
 {
+    RingBuffer& ringBuffer = gDevice->GetRingBuffer();
+
     size_t alignedSize = (size + 255) & ~255;
-    size_t ringBufferOffset = mRingBuffer.Allocate(alignedSize);
+    size_t ringBufferOffset = ringBuffer.Allocate(alignedSize);
     NFE_ASSERT(ringBufferOffset != RingBuffer::INVALID_OFFSET, "Ring buffer allocation failed");
 
     // copy data from CPU memory to staging ring buffer
-    char* cpuPtr = reinterpret_cast<char*>(mRingBuffer.GetCpuAddress());
+    char* cpuPtr = reinterpret_cast<char*>(ringBuffer.GetCpuAddress());
     cpuPtr += ringBufferOffset;
     memcpy(cpuPtr, data, size);
 
@@ -537,7 +441,7 @@ void CommandRecorder::Internal_WriteDynamicBuffer(Buffer* buffer, size_t offset,
 
     // copy data from staging ring buffer to the target buffer
     mCommandList->CopyBufferRegion(buffer->GetResource(), static_cast<UINT64>(offset),
-                                   mRingBuffer.GetD3DResource(), static_cast<UINT64>(ringBufferOffset),
+                                   ringBuffer.GetD3DResource(), static_cast<UINT64>(ringBufferOffset),
                                    static_cast<UINT64>(size));
 
     // transit from copy-dest state
@@ -548,16 +452,18 @@ void CommandRecorder::Internal_WriteDynamicBuffer(Buffer* buffer, size_t offset,
 
 void CommandRecorder::Internal_WriteVolatileBuffer(Buffer* buffer, const void* data)
 {
+    RingBuffer& ringBuffer = gDevice->GetRingBuffer();
+
     size_t alignedSize = (buffer->GetSize() + 255) & ~255;
-    size_t ringBufferOffset = mRingBuffer.Allocate(alignedSize);
+    size_t ringBufferOffset = ringBuffer.Allocate(alignedSize);
     NFE_ASSERT(ringBufferOffset != RingBuffer::INVALID_OFFSET, "Ring buffer allocation failed");
 
     // copy data from CPU memory to ring buffer
-    char* cpuPtr = reinterpret_cast<char*>(mRingBuffer.GetCpuAddress());
+    char* cpuPtr = reinterpret_cast<char*>(ringBuffer.GetCpuAddress());
     cpuPtr += ringBufferOffset;
     memcpy(cpuPtr, data, buffer->GetSize());
 
-    D3D12_GPU_VIRTUAL_ADDRESS gpuPtr = mRingBuffer.GetGpuAddress();
+    D3D12_GPU_VIRTUAL_ADDRESS gpuPtr = ringBuffer.GetGpuAddress();
     gpuPtr += ringBufferOffset;
 
     // check if the buffer is not used as compute CBV

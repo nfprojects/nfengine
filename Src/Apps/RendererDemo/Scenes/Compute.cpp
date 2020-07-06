@@ -188,7 +188,7 @@ void ComputeScene::Draw(float dt)
     // copy result to backbuffer
     mCommandBuffer->CopyTexture(mTexture, mWindowBackbuffer);
 
-    CommandListID commandList = mCommandBuffer->Finish();
+    CommandListPtr commandList = mCommandBuffer->Finish();
     mRendererDevice->Execute(commandList);
     mWindowBackbuffer->Present();
     mRendererDevice->FinishFrame();

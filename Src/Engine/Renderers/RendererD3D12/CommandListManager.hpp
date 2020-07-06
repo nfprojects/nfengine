@@ -19,37 +19,33 @@ namespace Renderer {
 
 class CommandListManager
 {
-private:
-    Common::RWLock mLock;
-    Common::DynArray<CommandListPtr> mCommandLists;
-
 public:
     CommandListManager();
     ~CommandListManager();
 
-    bool Init(ID3D12Device* device);
-
     /**
      * Request a free command list.
      * If there is no free command list in the pool, a new will be created.
-     * Requested command list will be in recording state, that's why a command allocator is needed as parameter.
+     * Requested command list will be in recording state.
      */
-    CommandList* RequestCommandList(ID3D12CommandAllocator* commandAllocator);
+    InternalCommandListPtr RequestCommandList();
 
     /**
      * Called by CommandRecorder when command list is recorded (closed).
      */
-    CommandListID OnCommandListRecorded(CommandList* commandList);
+    CommandListPtr OnCommandListRecorded(const InternalCommandListPtr& commandList);
 
     /**
      * Called by Device when a command list is queued for execution.
      */
-    bool OnExecuteCommandList(CommandListID id, uint64 frameNumber);
+    bool ExecuteCommandList(const Common::ArrayView<ICommandList*> commandLists, uint64 fenceValue);
 
-    /**
-     * Called by Device::FinishFrame() to mark end of the previous frame.
-     */
-    bool OnFinishFrame();
+    // Called by Device when a fence value completed on GPU
+    void OnFenveValueCompleted(uint64 fenceValue);
+
+private:
+    Common::RWLock mLock;
+    Common::DynArray<InternalCommandListPtr> mCommandLists;
 };
 
 } // namespace Renderer
