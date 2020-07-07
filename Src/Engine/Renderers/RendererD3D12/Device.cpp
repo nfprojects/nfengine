@@ -204,6 +204,7 @@ bool Device::Init(const DeviceInitParams* params)
             return false;
         }
 
+        queueDesc.Type = D3D12_COMMAND_LIST_TYPE_COPY;
         hr = D3D_CALL_CHECK(mDevice->CreateCommandQueue(&queueDesc, IID_PPV_ARGS(mResourceUploadQueue.GetPtr())));
         if (FAILED(hr))
         {

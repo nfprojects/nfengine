@@ -15,6 +15,7 @@
 namespace NFE {
 namespace Renderer {
 
+using namespace Common;
 
 InternalCommandList::InternalCommandList(uint32 id)
     : mFrameNumber(UINT64_MAX)
@@ -39,9 +40,20 @@ bool InternalCommandList::Init()
         return false;
     }
 
+    // create D3D command list (for resource barrier injection)
+    hr = D3D_CALL_CHECK(device->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_DIRECT, mCommandAllocator.Get(),
+        nullptr, IID_PPV_ARGS(mResourceBarriersCommandList.GetPtr())));
+    if (FAILED(hr))
+    {
+        NFE_LOG_ERROR("Failed to create D3D12 command list");
+        return false;
+    }
+    // close immediately, we don't want that in recording state
+    mResourceBarriersCommandList->Close();
+
     // create D3D command list
     hr = D3D_CALL_CHECK(device->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_DIRECT, mCommandAllocator.Get(),
-                                                  nullptr, IID_PPV_ARGS(mCommandList.GetPtr())));
+        nullptr, IID_PPV_ARGS(mCommandList.GetPtr())));
     if (FAILED(hr))
     {
         NFE_LOG_ERROR("Failed to create D3D12 command list");
@@ -66,6 +78,86 @@ void InternalCommandList::OnExecuted()
     mReferencedResources.Clear();
     mState = State::Free;
     mFrameNumber = UINT64_MAX;
+}
+
+ID3D12GraphicsCommandList* InternalCommandList::GenerateResourceBarriersCommandList()
+{
+    DynArray<D3D12_RESOURCE_BARRIER> barriers;
+
+    D3D12_RESOURCE_BARRIER barrierDesc = {};
+    barrierDesc.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
+
+    for (const auto& iter : mInitialResourceStates)
+    {
+        const Resource* resource = iter.first;
+        const ResourceState& resourceStateBefore = resource->GetState();
+        const ResourceState& resourceStateAfter = iter.second;
+
+        barrierDesc.Transition.pResource = resource->GetD3DResource();
+
+        if (resourceStateAfter.isGlobalState && resourceStateBefore.isGlobalState)
+        {
+            barrierDesc.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
+            barrierDesc.Transition.StateBefore = resourceStateBefore.globalState;
+            barrierDesc.Transition.StateAfter = resourceStateAfter.globalState;
+
+            if (barrierDesc.Transition.StateBefore != barrierDesc.Transition.StateAfter)
+            {
+                barriers.PushBack(barrierDesc);
+            }
+        }
+        else
+        {
+            for (uint32 i = 0; i < resourceStateAfter.subresourceStates.Size(); ++i)
+            {
+                barrierDesc.Transition.Subresource = i;
+                barrierDesc.Transition.StateBefore = resourceStateBefore.Get(i);
+                barrierDesc.Transition.StateAfter = resourceStateAfter.Get(i);
+
+                if (barrierDesc.Transition.StateBefore != barrierDesc.Transition.StateAfter)
+                {
+                    barriers.PushBack(barrierDesc);
+                }
+            }
+        }
+    }
+
+    mInitialResourceStates.Clear();
+
+    if (barriers.Empty())
+    {
+        // no barriers required
+        return nullptr;
+    }
+
+    HRESULT hr = D3D_CALL_CHECK(mResourceBarriersCommandList->Reset(mCommandAllocator.Get(), nullptr));
+    if (FAILED(hr))
+    {
+        return nullptr;
+    }
+
+    mResourceBarriersCommandList->ResourceBarrier(barriers.Size(), barriers.Data());
+
+    hr = D3D_CALL_CHECK(mResourceBarriersCommandList->Close());
+    if (FAILED(hr))
+    {
+        return nullptr;
+    }
+
+    return mResourceBarriersCommandList.Get();
+}
+
+void InternalCommandList::ApplyFinalResourceStates()
+{
+    for (const auto& iter : mFinalResourceStates)
+    {
+        Resource* resource = iter.first;
+        const ResourceState& finalResourceState = iter.second;
+
+        resource->mState = finalResourceState;
+    }
+
+    mFinalResourceStates.Clear();
 }
 
 } // namespace Renderer

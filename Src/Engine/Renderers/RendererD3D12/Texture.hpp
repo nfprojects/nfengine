@@ -20,8 +20,6 @@ class Texture : public Resource, public ITexture
 
 protected:
 
-    D3DPtr<ID3D12Resource> mResource;
-
     DXGI_FORMAT mSrvFormat;
     DXGI_FORMAT mDsvFormat;
 

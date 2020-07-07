@@ -115,7 +115,14 @@ bool CommandListManager::ExecuteCommandList(const Common::ArrayView<ICommandList
             NFE_ASSERT(internalCommandList != nullptr, "Same commandlist cannot be executed twice");
             NFE_ASSERT(internalCommandList->GetState() == InternalCommandList::State::Recorded, "Invalid command list State. This indicates reuse from previous frame or data corruption");
 
+            if (ID3D12GraphicsCommandList* injectedResourceBarriersCommandList = internalCommandList->GenerateResourceBarriersCommandList())
+            {
+                d3dCommandListsToExecute.PushBack(injectedResourceBarriersCommandList);
+            }
+
             d3dCommandListsToExecute.PushBack(internalCommandList->GetD3DCommandList());
+
+            internalCommandList->ApplyFinalResourceStates();
 
             typedCommandList->internalCommandList.Reset();
             internalCommandList->mState = InternalCommandList::State::Executing;
