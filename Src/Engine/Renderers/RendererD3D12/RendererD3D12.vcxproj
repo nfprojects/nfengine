@@ -148,6 +148,7 @@ COPY "$(WindowsSdkDir)redist\d3d\x64\dxil.dll" "$(SolutionDir)Bin\$(Platform)\$(
     <ClCompile Include="ReferencedResourcesList.cpp" />
     <ClCompile Include="RendererD3D12.cpp" />
     <ClCompile Include="RenderTarget.cpp" />
+    <ClCompile Include="Resource.cpp" />
     <ClCompile Include="ResourceBinding.cpp" />
     <ClCompile Include="ResourceStateCache.cpp" />
     <ClCompile Include="RingBuffer.cpp" />

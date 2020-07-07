@@ -54,6 +54,8 @@ bool CommandRecorder::Begin()
 {
     NFE_ASSERT(mCommandList == nullptr, "Command recorder is already in recording state");
 
+    mResourceStateCache.OnBeginCommandBuffer();
+
     // get a free command list from the command list manager
     mCommandListObject = gDevice->GetCommandListManager()->RequestCommandList();
     if (!mCommandListObject)
@@ -100,8 +102,10 @@ CommandListPtr CommandRecorder::Finish()
 
     Internal_UnsetRenderTarget();
 
-    // verify resource states
-    mResourceStateCache.OnFinishCommandBuffer();
+    mResourceStateCache.FlushPendingBarriers(mCommandList);
+
+    // pass resource states to the command list object
+    mResourceStateCache.OnFinishCommandBuffer(mCommandListObject->mInitialResourceStates, mCommandListObject->mFinalResourceStates);
 
     HRESULT hr = D3D_CALL_CHECK(mCommandList->Close());
     if (FAILED(hr))
@@ -260,12 +264,6 @@ void CommandRecorder::SetRenderTarget(const RenderTargetPtr& renderTarget)
         return;
     }
 
-    Common::StaticArray<D3D12_RESOURCE_BARRIER, MAX_RENDER_TARGETS + 1> barriers;
-
-    D3D12_RESOURCE_BARRIER rb = {};
-    rb.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
-    rb.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
-
     Internal_GetReferencedResources().renderTargets.Insert(renderTarget);
 
     HeapAllocator& allocator = gDevice->GetRtvHeapAllocator();
@@ -284,17 +282,7 @@ void CommandRecorder::SetRenderTarget(const RenderTargetPtr& renderTarget)
         rtvs[i] = allocator.GetCpuHandle();
         rtvs[i].ptr += mCurrRenderTarget->GetRTV(i) * allocator.GetDescriptorSize();
 
-        const D3D12_RESOURCE_STATES targetState = D3D12_RESOURCE_STATE_RENDER_TARGET;
-        const D3D12_RESOURCE_STATES previousState = mResourceStateCache.SetResourceState(tex.Get(), subResource, targetState);
-        if (previousState != targetState)
-        {
-            rb.Transition.pResource = tex->GetResource();
-            rb.Transition.Subresource = subResource;
-            rb.Transition.StateBefore = previousState;
-            rb.Transition.StateAfter = targetState;
-
-            barriers.PushBack(rb);
-        }
+        mResourceStateCache.EnsureResourceState(tex.Get(), D3D12_RESOURCE_STATE_RENDER_TARGET, subResource);
     }
 
     if (mCurrRenderTarget->GetDSV() != -1)
@@ -302,29 +290,11 @@ void CommandRecorder::SetRenderTarget(const RenderTargetPtr& renderTarget)
         const InternalTexturePtr& tex = mCurrRenderTarget->GetDepthTexture();
         uint32 subResource = mCurrRenderTarget->GetDepthTexSubresourceID();
 
-        // TODO sometimes we may need only read access
-        const D3D12_RESOURCE_STATES targetState = D3D12_RESOURCE_STATE_DEPTH_WRITE;
-        const D3D12_RESOURCE_STATES previousState = mResourceStateCache.SetResourceState(tex.Get(), subResource, targetState);
-        if (previousState != targetState)
-        {
-            rb.Transition.pResource = tex->GetResource();
-            rb.Transition.Subresource = subResource;
-            rb.Transition.StateBefore = previousState;
-            rb.Transition.StateAfter = targetState;
-
-            barriers.PushBack(rb);
-        }
+        mResourceStateCache.EnsureResourceState(tex.Get(), D3D12_RESOURCE_STATE_DEPTH_WRITE, subResource);
 
         dsv = dsvAllocator.GetCpuHandle();
         dsv.ptr += mCurrRenderTarget->GetDSV() * dsvAllocator.GetDescriptorSize();
         setDsv = true;
-    }
-
-    // TODO
-    // resource barriers can be merged together with Internal_UnsetRenderTarget
-    if (!barriers.Empty())
-    {
-        mCommandList->ResourceBarrier(barriers.Size(), barriers.Data());
     }
 
     mCommandList->OMSetRenderTargets(static_cast<UINT>(numTargets), rtvs, FALSE, setDsv ? &dsv : nullptr);
@@ -332,61 +302,6 @@ void CommandRecorder::SetRenderTarget(const RenderTargetPtr& renderTarget)
 
 void CommandRecorder::Internal_UnsetRenderTarget()
 {
-    if (mCurrRenderTarget == nullptr)
-        return;
-
-    // render targets + depth buffer
-    Common::StaticArray<D3D12_RESOURCE_BARRIER, MAX_RENDER_TARGETS + 1> barriers;
-
-    D3D12_RESOURCE_BARRIER rb = {};
-    rb.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
-    rb.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
-
-    const uint32 numTargets = mCurrRenderTarget->GetNumTargets();
-    for (uint32 i = 0; i < numTargets; ++i)
-    {
-        const InternalTexturePtr& tex = mCurrRenderTarget->GetTexture(i);
-        uint32 subResource = mCurrRenderTarget->GetSubresourceID(i);
-
-        const D3D12_RESOURCE_STATES targetState = tex->GetDefaultState();
-        const D3D12_RESOURCE_STATES previousState = mResourceStateCache.SetResourceState(tex.Get(), subResource, targetState);
-
-        if (previousState != targetState)
-        {
-            rb.Transition.pResource = tex->GetResource();
-            rb.Transition.Subresource = subResource;
-            rb.Transition.StateBefore = previousState;
-            rb.Transition.StateAfter = targetState;
-
-            barriers.PushBack(rb);
-        }
-    }
-
-    // unset depth texture if used
-    if (mCurrRenderTarget->GetDepthTexture() != nullptr)
-    {
-        const InternalTexturePtr& tex = mCurrRenderTarget->GetDepthTexture();
-        uint32 subResource = mCurrRenderTarget->GetDepthTexSubresourceID();
-
-        const D3D12_RESOURCE_STATES targetState = tex->GetDefaultState();
-        const D3D12_RESOURCE_STATES previousState = mResourceStateCache.SetResourceState(tex.Get(), subResource, targetState);
-
-        if (previousState != targetState)
-        {
-            rb.Transition.pResource = tex->GetResource();
-            rb.Transition.Subresource = subResource;
-            rb.Transition.StateBefore = previousState;
-            rb.Transition.StateAfter = targetState;
-
-            barriers.PushBack(rb);
-        }
-    }
-
-    if (!barriers.Empty())
-    {
-        mCommandList->ResourceBarrier(barriers.Size(), barriers.Data());
-    }
-
     mCurrRenderTarget = nullptr;
 }
 
@@ -428,26 +343,13 @@ void CommandRecorder::Internal_WriteDynamicBuffer(Buffer* buffer, size_t offset,
     cpuPtr += ringBufferOffset;
     memcpy(cpuPtr, data, size);
 
-    D3D12_RESOURCE_BARRIER rb = {};
-    rb.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
-    rb.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
-    rb.Transition.pResource = buffer->GetResource();
-    rb.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
-
-    // transit to copy-dest state
-    rb.Transition.StateBefore = D3D12_RESOURCE_STATE_GENERIC_READ;
-    rb.Transition.StateAfter = D3D12_RESOURCE_STATE_COPY_DEST;
-    mCommandList->ResourceBarrier(1, &rb);
+    mResourceStateCache.EnsureResourceState(buffer, D3D12_RESOURCE_STATE_COPY_DEST);
+    mResourceStateCache.FlushPendingBarriers(mCommandList);
 
     // copy data from staging ring buffer to the target buffer
     mCommandList->CopyBufferRegion(buffer->GetResource(), static_cast<UINT64>(offset),
                                    ringBuffer.GetD3DResource(), static_cast<UINT64>(ringBufferOffset),
                                    static_cast<UINT64>(size));
-
-    // transit from copy-dest state
-    rb.Transition.StateBefore = D3D12_RESOURCE_STATE_COPY_DEST;
-    rb.Transition.StateAfter = D3D12_RESOURCE_STATE_GENERIC_READ;
-    mCommandList->ResourceBarrier(1, &rb);
 }
 
 void CommandRecorder::Internal_WriteVolatileBuffer(Buffer* buffer, const void* data)
@@ -566,37 +468,9 @@ void CommandRecorder::CopyTexture(const TexturePtr& src, const TexturePtr& dest)
         return;
     }
 
-    Common::StaticArray<D3D12_RESOURCE_BARRIER, 2> barriers;
-
-    D3D12_RESOURCE_BARRIER rb = {};
-    rb.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
-    rb.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
-    rb.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
-
-    // transit source texture to "copy source" state
-    const D3D12_RESOURCE_STATES prevSrcTextureState = mResourceStateCache.SetResourceState(srcTex, 0, D3D12_RESOURCE_STATE_COPY_SOURCE);
-    if (prevSrcTextureState != D3D12_RESOURCE_STATE_COPY_SOURCE)
-    {
-        rb.Transition.pResource = srcTex->GetResource();
-        rb.Transition.StateBefore = prevSrcTextureState;
-        rb.Transition.StateAfter = D3D12_RESOURCE_STATE_COPY_SOURCE;
-        barriers.PushBack(rb);
-    }
-
-    // transit destination texture to "copy destination" state
-    const D3D12_RESOURCE_STATES prevDestTextureState = mResourceStateCache.SetResourceState(destTex, 0, D3D12_RESOURCE_STATE_COPY_DEST);
-    if (prevDestTextureState != D3D12_RESOURCE_STATE_COPY_DEST)
-    {
-        rb.Transition.pResource = destTex->GetResource();
-        rb.Transition.StateBefore = prevDestTextureState;
-        rb.Transition.StateAfter = D3D12_RESOURCE_STATE_COPY_DEST;
-        barriers.PushBack(rb);
-    }
-
-    if (!barriers.Empty())
-    {
-        mCommandList->ResourceBarrier(barriers.Size(), barriers.Data());
-    }
+    mResourceStateCache.EnsureResourceState(srcTex, D3D12_RESOURCE_STATE_COPY_SOURCE);
+    mResourceStateCache.EnsureResourceState(destTex, D3D12_RESOURCE_STATE_COPY_DEST);
+    mResourceStateCache.FlushPendingBarriers(mCommandList);
 
     // perform copy
     if (destTex->GetMode() == BufferMode::Readback)
@@ -621,35 +495,6 @@ void CommandRecorder::CopyTexture(const TexturePtr& src, const TexturePtr& dest)
     {
         // copy texture to texture
         mCommandList->CopyResource(destTex->GetResource(), srcTex->GetResource());
-    }
-
-    barriers.Clear();
-
-    // transit source texture to previous state
-    if (prevSrcTextureState != D3D12_RESOURCE_STATE_COPY_SOURCE)
-    {
-        rb.Transition.pResource = srcTex->GetResource();
-        rb.Transition.StateBefore = D3D12_RESOURCE_STATE_COPY_SOURCE;
-        rb.Transition.StateAfter = prevSrcTextureState;
-        barriers.PushBack(rb);
-
-        mResourceStateCache.SetResourceState(srcTex, 0, prevSrcTextureState);
-    }
-
-    // transit destination texture to previous state
-    if (prevDestTextureState != D3D12_RESOURCE_STATE_COPY_DEST)
-    {
-        rb.Transition.pResource = destTex->GetResource();
-        rb.Transition.StateBefore = D3D12_RESOURCE_STATE_COPY_DEST;
-        rb.Transition.StateAfter = prevDestTextureState;
-        barriers.PushBack(rb);
-
-        mResourceStateCache.SetResourceState(destTex, 0, prevDestTextureState);
-    }
-
-    if (!barriers.Empty())
-    {
-        mCommandList->ResourceBarrier(barriers.Size(), barriers.Data());
     }
 }
 
@@ -676,40 +521,12 @@ void CommandRecorder::CopyTexture(const TexturePtr& src, const BackbufferPtr& de
     Backbuffer* backbuffer = dynamic_cast<Backbuffer*>(dest.Get());
     NFE_ASSERT(backbuffer, "Invalid 'dest' pointer");
 
-    Common::StaticArray<D3D12_RESOURCE_BARRIER, 2> barriers;
-
-    D3D12_RESOURCE_BARRIER rb = {};
-    rb.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
-    rb.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
-    rb.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
-
     const D3D12_RESOURCE_STATES srcTextureState = srcTex->GetSamplesNum() == 1 ? D3D12_RESOURCE_STATE_COPY_SOURCE : D3D12_RESOURCE_STATE_RESOLVE_SOURCE;
     const D3D12_RESOURCE_STATES destTextureState = srcTex->GetSamplesNum() == 1 ? D3D12_RESOURCE_STATE_COPY_DEST : D3D12_RESOURCE_STATE_RESOLVE_DEST;
 
-    // transit source texture to "copy source" state
-    const D3D12_RESOURCE_STATES prevSrcTextureState = mResourceStateCache.SetResourceState(srcTex, 0, srcTextureState);
-    if (prevSrcTextureState != srcTextureState)
-    {
-        rb.Transition.pResource = srcTex->GetResource();
-        rb.Transition.StateBefore = prevSrcTextureState;
-        rb.Transition.StateAfter = srcTextureState;
-        barriers.PushBack(rb);
-    }
-
-    // transit destination backbuffer to "copy destination" state
-    const D3D12_RESOURCE_STATES prevDestTextureState = mResourceStateCache.SetResourceState(backbuffer, 0, destTextureState);
-    NFE_ASSERT(prevDestTextureState == D3D12_RESOURCE_STATE_PRESENT, "Backbuffer is expected to be in 'Present' state");
-    {
-        rb.Transition.pResource = backbuffer->GetCurrentBuffer();
-        rb.Transition.StateBefore = D3D12_RESOURCE_STATE_PRESENT;
-        rb.Transition.StateAfter = destTextureState;
-        barriers.PushBack(rb);
-    }
-
-    if (!barriers.Empty())
-    {
-        mCommandList->ResourceBarrier(barriers.Size(), barriers.Data());
-    }
+    mResourceStateCache.EnsureResourceState(srcTex, srcTextureState);
+    mResourceStateCache.EnsureResourceState(backbuffer, destTextureState);
+    mResourceStateCache.FlushPendingBarriers(mCommandList);
 
     // perform copy
     if (srcTex->GetSamplesNum() == 1)
@@ -721,33 +538,8 @@ void CommandRecorder::CopyTexture(const TexturePtr& src, const BackbufferPtr& de
         mCommandList->ResolveSubresource(backbuffer->GetCurrentBuffer(), 0, srcTex->GetResource(), 0, destBackbuffer->GetFormat());
     }
 
-    barriers.Clear();
-
-    // transit source texture to previous state
-    if (prevSrcTextureState != srcTextureState)
-    {
-        rb.Transition.pResource = srcTex->GetResource();
-        rb.Transition.StateBefore = srcTextureState;
-        rb.Transition.StateAfter = prevSrcTextureState;
-        barriers.PushBack(rb);
-
-        mResourceStateCache.SetResourceState(srcTex, 0, prevSrcTextureState);
-    }
-
-    // transit destination backbuffer to "present" state
-    {
-        rb.Transition.pResource = backbuffer->GetCurrentBuffer();
-        rb.Transition.StateBefore = destTextureState;
-        rb.Transition.StateAfter = D3D12_RESOURCE_STATE_PRESENT;
-        barriers.PushBack(rb);
-
-        mResourceStateCache.SetResourceState(backbuffer, 0, prevDestTextureState);
-    }
-
-    if (!barriers.Empty())
-    {
-        mCommandList->ResourceBarrier(barriers.Size(), barriers.Data());
-    }
+    // a bit hacky
+    mResourceStateCache.EnsureResourceState(backbuffer, D3D12_RESOURCE_STATE_PRESENT);
 }
 
 void CommandRecorder::Clear(uint32 flags, uint32 numTargets, const uint32* slots, const Math::Vec4fU* colors, float depthValue, uint8 stencilValue)
@@ -776,8 +568,8 @@ void CommandRecorder::Clear(uint32 flags, uint32 numTargets, const uint32* slots
             const InternalTexturePtr& tex = mCurrRenderTarget->GetTexture(i);
             uint32 subResource = mCurrRenderTarget->GetSubresourceID(i);
 
-            const auto currentResourceState = mResourceStateCache.GetResourceState(tex.Get(), subResource);
-            NFE_ASSERT(currentResourceState == D3D12_RESOURCE_STATE_RENDER_TARGET, "Invalid resource state");
+            mResourceStateCache.EnsureResourceState(tex.Get(), D3D12_RESOURCE_STATE_RENDER_TARGET, subResource);
+            mResourceStateCache.FlushPendingBarriers(mCommandList);
 
             D3D12_CPU_DESCRIPTOR_HANDLE handle = allocator.GetCpuHandle();
             handle.ptr += mCurrRenderTarget->GetRTV(slot) * allocator.GetDescriptorSize();

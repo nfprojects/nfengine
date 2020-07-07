@@ -20,66 +20,96 @@ ResourceStateCache::ResourceStateCache()
 
 ResourceStateCache::~ResourceStateCache()
 {
-    OnFinishCommandBuffer();
+    NFE_ASSERT(mPendingResourceBarriers.Empty(), "All barriers should be flushed at this stage");
+    NFE_ASSERT(mInitialStates.Empty(), "Initial states cache should be empty at this stage");
+    NFE_ASSERT(mCache.Empty(), "States cache should be empty at this stage");
 }
 
-void ResourceStateCache::OnFinishCommandBuffer()
+void ResourceStateCache::OnBeginCommandBuffer()
 {
-#ifndef NFE_CONFIGURATION_FINAL
-    // check if all resources in the cache are in default state
-    for (const auto& pair : mCache)
-    {
-        NFE_ASSERT(pair.first.resource->GetDefaultState() == pair.second,
-                   "Some of renderer resources are not in default state when finishing command buffer recording");
-    }
-#endif // NFE_CONFIGURATION_FINAL
-
-    mCache.Clear();
+    NFE_ASSERT(mPendingResourceBarriers.Empty(), "All barriers should be empty at this stage");
+    NFE_ASSERT(mInitialStates.Empty(), "Initial states cache should be empty at this stage");
+    NFE_ASSERT(mCache.Empty(), "States cache should be empty at this stage");
 }
 
-D3D12_RESOURCE_STATES ResourceStateCache::GetResourceState(const Resource* resource, uint32 subResource) const
+void ResourceStateCache::OnFinishCommandBuffer(ResourceStateMap& outExpectedInitialStates, ResourceStateMap& outFinalResourceStates)
 {
-    NFE_ASSERT(resource, "Invalid resource");
+    NFE_ASSERT(mPendingResourceBarriers.Empty(), "All barriers should be flushed at this stage");
 
-    D3D12_RESOURCE_STATES state = resource->GetDefaultState();
+    outExpectedInitialStates = std::move(mInitialStates);
+    outFinalResourceStates = std::move(mCache);
+}
 
-    const ResourceStateCacheKey key(resource, subResource);
-    const auto it = mCache.Find(key);
+void ResourceStateCache::EnsureResourceState(Resource* resource, D3D12_RESOURCE_STATES d3dState, uint32 subresource)
+{
+    const auto it = mCache.Find(resource);
     if (it != mCache.End())
     {
-        state = it->second;
+        ResourceState& state = it->second;
+
+        if (subresource == UINT32_MAX)
+        {
+            if (state.isGlobalState)
+            {
+                const D3D12_RESOURCE_STATES prevState = state.globalState;
+                PushPendingBarrier(resource, UINT32_MAX, prevState, d3dState);
+            }
+            else
+            {
+                for (uint32 i = 0; i < state.subresourceStates.Size(); ++i)
+                {
+                    PushPendingBarrier(resource, i, state.subresourceStates[i], d3dState);
+                }
+            }
+        }
+        else
+        {
+            const D3D12_RESOURCE_STATES prevState = state.Get(subresource);
+            PushPendingBarrier(resource, subresource, prevState, d3dState);
+        }
+
+        // update state in the cache
+        state.Set(subresource, d3dState);
     }
     else
     {
-        // TODO double lookup could be avoided
-        mCache.Insert(key, state);
+        // TODO if seting a subresource state, it will default all other subresource states to D3D12_RESOURCE_STATE_COMMON
+        // ideally, other subresource states should be undefined
+
+        ResourceState newState;
+        newState.Set(subresource, d3dState);
+
+        mCache.Insert(resource, newState);
+        mInitialStates.Insert(resource, newState);
     }
 
-    return state;
 }
 
-D3D12_RESOURCE_STATES ResourceStateCache::SetResourceState(const Resource* resource, uint32 subResource, D3D12_RESOURCE_STATES newState)
+void ResourceStateCache::PushPendingBarrier(const Resource* resource, uint32 subresource, D3D12_RESOURCE_STATES stateBefore, D3D12_RESOURCE_STATES stateAfter)
 {
-    NFE_ASSERT(resource, "Invalid resource");
-
-    D3D12_RESOURCE_STATES oldState = resource->GetDefaultState();
-
-    const ResourceStateCacheKey key(resource, subResource);
-    const auto it = mCache.Find(key);
-    if (it != mCache.End())
+    if (stateBefore != stateAfter)
     {
-        // TODO double lookup could be avoided
-        D3D12_RESOURCE_STATES& entry = mCache[key];
-        oldState = entry;
-        entry = newState;
-    }
-    else
-    {
-        // TODO double lookup could be avoided
-        mCache.Insert(key, newState);
-    }
+        // TODO check for duplicate barriers
 
-    return oldState;
+        D3D12_RESOURCE_BARRIER barrierDesc = {};
+        barrierDesc.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
+        barrierDesc.Transition.pResource = resource->GetD3DResource();
+        barrierDesc.Transition.Subresource = subresource;
+        barrierDesc.Transition.StateBefore = stateBefore;
+        barrierDesc.Transition.StateAfter = stateAfter;
+
+        mPendingResourceBarriers.PushBack(barrierDesc);
+    }
+}
+
+void ResourceStateCache::FlushPendingBarriers(ID3D12GraphicsCommandList* d3dCommandList)
+{
+    if (!mPendingResourceBarriers.Empty())
+    {
+        d3dCommandList->ResourceBarrier(mPendingResourceBarriers.Size(), mPendingResourceBarriers.Data());
+
+        mPendingResourceBarriers.Clear();
+    }
 }
 
 

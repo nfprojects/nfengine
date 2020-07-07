@@ -74,7 +74,7 @@ bool Texture::UploadData(const TextureDesc& desc)
         // TODO this is extremly inefficient
 
         D3DPtr<ID3D12CommandAllocator> commandAllocator;
-        hr = D3D_CALL_CHECK(gDevice->GetDevice()->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT,
+        hr = D3D_CALL_CHECK(gDevice->GetDevice()->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_COPY,
                                                                          IID_PPV_ARGS(commandAllocator.GetPtr())));
         if (FAILED(hr))
             return false;
@@ -83,7 +83,7 @@ bool Texture::UploadData(const TextureDesc& desc)
             return false;
 
         D3DPtr<ID3D12GraphicsCommandList> commandList;
-        hr = D3D_CALL_CHECK(gDevice->GetDevice()->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_DIRECT,
+        hr = D3D_CALL_CHECK(gDevice->GetDevice()->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_COPY,
                                                                     commandAllocator.Get(), nullptr,
                                                                     IID_PPV_ARGS(commandList.GetPtr())));
         if (FAILED(hr))
@@ -143,17 +143,6 @@ bool Texture::UploadData(const TextureDesc& desc)
 
             commandList->CopyTextureRegion(&dest, 0, 0, 0, &src, nullptr);
         }
-
-        // Enqueue resource barrier
-        D3D12_RESOURCE_BARRIER resBarrier;
-        resBarrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
-        resBarrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
-        resBarrier.Transition.pResource = mResource.Get();
-        resBarrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
-        resBarrier.Transition.StateBefore = D3D12_RESOURCE_STATE_COPY_DEST;
-        resBarrier.Transition.StateAfter = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE | D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE;
-        commandList->ResourceBarrier(1, &resBarrier);
-
 
         // close the command list and send it to the command queue
         if (FAILED(D3D_CALL_CHECK(commandList->Close())))
@@ -291,8 +280,6 @@ bool Texture::Init(const TextureDesc& desc)
         resourceDesc.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
         resourceDesc.Flags = D3D12_RESOURCE_FLAG_NONE;
 
-        mDefaultState = D3D12_RESOURCE_STATE_COPY_DEST;
-
         hr = D3D_CALL_CHECK(gDevice->GetDevice()->CreateCommittedResource(&heapProperties,
                                                                           D3D12_HEAP_FLAG_NONE,
                                                                           &resourceDesc,
@@ -390,9 +377,6 @@ bool Texture::Init(const TextureDesc& desc)
             return false;
         }
 
-        // TODO reduce state range
-        mDefaultState = initialState;
-
         if (desc.mode == BufferMode::Static)
         {
             if (desc.dataDesc)
@@ -401,9 +385,13 @@ bool Texture::Init(const TextureDesc& desc)
                     return false;
             }
             else
+            {
                 NFE_LOG_WARNING("No initial data for read-only texture provided");
+            }
         }
     }
+
+    mState.Set(initialState);
 
     if (desc.debugName && !SetDebugName(mResource.Get(), Common::StringView(desc.debugName)))
     {

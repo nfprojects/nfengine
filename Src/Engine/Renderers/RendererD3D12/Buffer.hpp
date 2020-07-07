@@ -17,7 +17,6 @@ namespace Renderer {
 
 class Buffer : public IBuffer, public Resource
 {
-    D3DPtr<ID3D12Resource> mResource;
     uint32 mSize;
     BufferType mType;
     BufferMode mMode;

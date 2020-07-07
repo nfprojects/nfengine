@@ -79,7 +79,7 @@ bool Buffer::UploadData(const BufferDesc& desc)
         // TODO this is extremly inefficient
 
         D3DPtr<ID3D12CommandAllocator> commandAllocator;
-        hr = D3D_CALL_CHECK(gDevice->GetDevice()->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT,
+        hr = D3D_CALL_CHECK(gDevice->GetDevice()->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_COPY,
                                                                          IID_PPV_ARGS(commandAllocator.GetPtr())));
         if (FAILED(hr))
             return false;
@@ -88,7 +88,7 @@ bool Buffer::UploadData(const BufferDesc& desc)
             return false;
 
         D3DPtr<ID3D12GraphicsCommandList> commandList;
-        hr = D3D_CALL_CHECK(gDevice->GetDevice()->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_DIRECT,
+        hr = D3D_CALL_CHECK(gDevice->GetDevice()->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_COPY,
                                                                     commandAllocator.Get(), nullptr,
                                                                     IID_PPV_ARGS(commandList.GetPtr())));
         if (FAILED(hr))
@@ -114,17 +114,6 @@ bool Buffer::UploadData(const BufferDesc& desc)
         uploadBuffer->Unmap(0, NULL);
 
         commandList->CopyResource(mResource.Get(), uploadBuffer.Get());
-
-        // Enqueue resource barrier
-        D3D12_RESOURCE_BARRIER resBarrier;
-        resBarrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
-        resBarrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
-        resBarrier.Transition.pResource = mResource.Get();
-        resBarrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
-        resBarrier.Transition.StateBefore = D3D12_RESOURCE_STATE_COPY_DEST;
-        resBarrier.Transition.StateAfter = D3D12_RESOURCE_STATE_GENERIC_READ;
-        commandList->ResourceBarrier(1, &resBarrier);
-
 
         // close the command list and send it to the command queue
         if (FAILED(D3D_CALL_CHECK(commandList->Close())))
@@ -193,6 +182,8 @@ bool Buffer::Init(const BufferDesc& desc)
                                                                       IID_PPV_ARGS(mResource.GetPtr())));
     if (FAILED(hr))
         return false;
+
+    mState.Set(initialState);
 
     if (desc.debugName && !SetDebugName(mResource.Get(), Common::StringView(desc.debugName)))
     {

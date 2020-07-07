@@ -7,7 +7,7 @@
 #pragma once
 
 #include "../RendererCommon/CommandRecorder.hpp"
-#include "Common.hpp"
+#include "ResourceStateCache.hpp"
 #include "CommandList.hpp"
 #include "ReferencedResourcesList.hpp"
 #include "Engine/Common/Containers/WeakPtr.hpp"
@@ -27,6 +27,7 @@ class InternalCommandList final
     NFE_MAKE_NONCOPYABLE(InternalCommandList)
 
     friend class CommandListManager;
+    friend class CommandRecorder;
 
 public:
     enum class State
@@ -56,18 +57,30 @@ public:
     State GetState() const { return mState; }
     ReferencedResourcesList& GetReferencedResources() { return mReferencedResources; }
 
+    // Generate a command list with injected resource barriers that has to be executed before the actual command list
+    ID3D12GraphicsCommandList* GenerateResourceBarriersCommandList();
+
+    void ApplyFinalResourceStates();
+
 private:
 
     void OnExecuted();
 
     uint64 mFrameNumber;
-    D3DPtr<ID3D12GraphicsCommandList> mCommandList;
-    D3DPtr<ID3D12CommandAllocator> mCommandAllocator;
     uint32 mID;
     State mState;
 
+    D3DPtr<ID3D12GraphicsCommandList> mCommandList;
+    D3DPtr<ID3D12CommandAllocator> mCommandAllocator;
+
+    // note: it's reusing the same command allocator
+    D3DPtr<ID3D12GraphicsCommandList> mResourceBarriersCommandList;
+
     // resources referenced by this commandlist
     ReferencedResourcesList mReferencedResources;
+
+    ResourceStateMap mInitialResourceStates;
+    ResourceStateMap mFinalResourceStates;
 };
 
 using InternalCommandListPtr = Common::SharedPtr<InternalCommandList>;

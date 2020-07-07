@@ -35,6 +35,11 @@ public:
         return mBuffers[mCurrentBuffer].Get();
     }
 
+    NFE_FORCE_INLINE virtual ID3D12Resource* GetD3DResource() const override
+    {
+        return GetCurrentBuffer();
+    }
+
 private:
     uint32 mWidth;
     uint32 mHeight;

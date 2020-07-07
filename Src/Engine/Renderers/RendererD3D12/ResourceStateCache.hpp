@@ -6,8 +6,7 @@
 
 #pragma once
 
-#include "../RendererCommon/CommandRecorder.hpp"
-#include "Common.hpp"
+#include "Resource.hpp"
 
 #include "Engine/Common/Containers/HashMap.hpp"
 
@@ -41,6 +40,7 @@ NFE_INLINE uint32 GetHash(const ResourceStateCacheKey& key)
 
 //////////////////////////////////////////////////////////////////////////
 
+using ResourceStateMap = Common::HashMap<Resource*, ResourceState>;
 
 class ResourceStateCache final
 {
@@ -50,26 +50,28 @@ public:
     ResourceStateCache();
     ~ResourceStateCache();
 
-    /**
-     * Get current resource state.
-     */
-    D3D12_RESOURCE_STATES GetResourceState(const Resource* resource, uint32 subResource = 0u) const;
+    // Set target expected state for given resource
+    void EnsureResourceState(Resource* resource, D3D12_RESOURCE_STATES state, uint32 subresource = UINT32_MAX);
 
-    /**
-     * Set new resource state.
-     * @return  Old resource state.
-     */
-    D3D12_RESOURCE_STATES SetResourceState(const Resource* resource, uint32 subResource, D3D12_RESOURCE_STATES newState);
+    // Make all requested resource state changes effective
+    // This should be called just before executive command (CopyResource, Draw, Dispatch, Clear, etc.)
+    void FlushPendingBarriers(ID3D12GraphicsCommandList* d3dCommandList);
 
-    /**
-     * Called when command buffer was recorded.
-     * Verifies, if all the resources are in default state.
-     */
-    void OnFinishCommandBuffer();
+    void OnBeginCommandBuffer();
+
+    // Called on commandlist finalize
+    // Returns a list what the resource states should be at the beginning of command list (required for barrier injection)
+    // and a list of final resource state.
+    void OnFinishCommandBuffer(ResourceStateMap& outExpectedInitialStates, ResourceStateMap& outFinalResourceStates);
 
 private:
 
-    mutable Common::HashMap<ResourceStateCacheKey, D3D12_RESOURCE_STATES> mCache;
+    void PushPendingBarrier(const Resource* resource, uint32 subresource, D3D12_RESOURCE_STATES stateBefore, D3D12_RESOURCE_STATES stateAfter);
+
+    Common::DynArray<D3D12_RESOURCE_BARRIER> mPendingResourceBarriers;
+
+    ResourceStateMap mCache;
+    ResourceStateMap mInitialStates;
 };
 
 
