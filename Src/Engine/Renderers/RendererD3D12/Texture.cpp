@@ -402,7 +402,7 @@ bool Texture::Init(const TextureDesc& desc)
     mFormat = desc.format;
     mWidth = static_cast<uint16>(desc.width);
     mHeight = static_cast<uint16>(desc.height);
-    mLayers = static_cast<uint16>(desc.layers);
+    mLayersNumOrDepth = mType == TextureType::Texture3D ? static_cast<uint16>(desc.depth) : static_cast<uint16>(desc.layers);
     mMipmapsNum = static_cast<uint8>(desc.mipmaps);
     mSamplesNum = static_cast<uint8>(desc.samplesNum);
     mMode = desc.mode;

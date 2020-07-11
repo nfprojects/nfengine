@@ -61,7 +61,7 @@ bool RenderTarget::Init(const RenderTargetDesc& desc)
         switch (tex->mType)
         {
         case TextureType::Texture1D:
-            if (tex->mLayers > 1)
+            if (tex->GetLayersNum())
             {
                 rtvDesc.ViewDimension = D3D12_RTV_DIMENSION_TEXTURE1DARRAY;
                 rtvDesc.Texture1DArray.MipSlice = desc.targets[i].level;
@@ -79,13 +79,13 @@ bool RenderTarget::Init(const RenderTargetDesc& desc)
         case TextureType::TextureCube:
             if (tex->mSamplesNum == 1)
             {
-                if (tex->mLayers == 1)
+                if (tex->GetLayersNum() == 1)
                 {
                     rtvDesc.ViewDimension = D3D12_RTV_DIMENSION_TEXTURE2D;
                     rtvDesc.Texture2D.MipSlice = 0;
                     rtvDesc.Texture2D.PlaneSlice = 0;
                 }
-                else if (tex->mLayers > 1)
+                else if (tex->GetLayersNum() > 1)
                 {
                     rtvDesc.ViewDimension = D3D12_RTV_DIMENSION_TEXTURE2DARRAY;
                     rtvDesc.Texture2DArray.MipSlice = desc.targets[i].level;
@@ -101,11 +101,11 @@ bool RenderTarget::Init(const RenderTargetDesc& desc)
             }
             else if (tex->mSamplesNum > 1 )
             {
-                if (tex->mLayers == 1)
+                if (tex->GetLayersNum() == 1)
                 {
                     rtvDesc.ViewDimension = D3D12_RTV_DIMENSION_TEXTURE2DMS;
                 }
-                else if (tex->mLayers > 1)
+                else if (tex->GetLayersNum() > 1)
                 {
                     NFE_ASSERT(desc.targets[i].level == 0, "Mipmapping for multisampled, multilayered texture are not supported");
                     rtvDesc.ViewDimension = D3D12_RTV_DIMENSION_TEXTURE2DMSARRAY;

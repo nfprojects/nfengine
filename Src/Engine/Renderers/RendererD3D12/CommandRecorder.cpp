@@ -16,6 +16,7 @@
 #include "RenderTarget.hpp"
 #include "ComputePipelineState.hpp"
 #include "Backbuffer.hpp"
+#include "Translations.hpp"
 
 #include "Engine/Common/Math/Vec4fU.hpp"
 #include "Engine/Common/Containers/StaticArray.hpp"
@@ -334,8 +335,7 @@ void CommandRecorder::Internal_WriteDynamicBuffer(Buffer* buffer, size_t offset,
 {
     RingBuffer& ringBuffer = gDevice->GetRingBuffer();
 
-    size_t alignedSize = (size + 255) & ~255;
-    size_t ringBufferOffset = ringBuffer.Allocate(alignedSize);
+    size_t ringBufferOffset = ringBuffer.Allocate(size, D3D12_CONSTANT_BUFFER_DATA_PLACEMENT_ALIGNMENT);
     NFE_ASSERT(ringBufferOffset != RingBuffer::INVALID_OFFSET, "Ring buffer allocation failed");
 
     // copy data from CPU memory to staging ring buffer
@@ -356,8 +356,7 @@ void CommandRecorder::Internal_WriteVolatileBuffer(Buffer* buffer, const void* d
 {
     RingBuffer& ringBuffer = gDevice->GetRingBuffer();
 
-    size_t alignedSize = (buffer->GetSize() + 255) & ~255;
-    size_t ringBufferOffset = ringBuffer.Allocate(alignedSize);
+    size_t ringBufferOffset = ringBuffer.Allocate(buffer->GetSize(), D3D12_CONSTANT_BUFFER_DATA_PLACEMENT_ALIGNMENT);
     NFE_ASSERT(ringBufferOffset != RingBuffer::INVALID_OFFSET, "Ring buffer allocation failed");
 
     // copy data from CPU memory to ring buffer
@@ -438,6 +437,115 @@ bool CommandRecorder::WriteBuffer(const BufferPtr& buffer, size_t offset, size_t
         NFE_LOG_ERROR("Specified buffer can not be CPU-written");
         return false;
     }
+
+    return true;
+}
+
+bool CommandRecorder::WriteTexture(const TexturePtr& texture, const void* data, const TextureWriteParams* writeParams)
+{
+    Texture* texturePtr = static_cast<Texture*>(texture.Get());
+    NFE_ASSERT(texturePtr, "Invalid texture");
+    NFE_ASSERT(texturePtr->GetMode() == BufferMode::Dynamic || texturePtr->GetMode() == BufferMode::GPUOnly, "Invalid texture type");
+
+    uint32 targetMipmap = 0u, targetLayer = 0u;
+    uint32 writeX = 0u, writeY = 0u, writeZ = 0u;
+    uint32 writeWidth = texturePtr->GetWidth();
+    uint32 writeHeight = texturePtr->GetHeight();
+    uint32 writeDepth = texturePtr->GetDepth();
+
+    if (writeParams)
+    {
+        targetMipmap = writeParams->targetMip;
+        targetLayer = writeParams->targetLayer;
+
+        writeX = writeParams->destX;
+        writeY = writeParams->destY;
+        writeZ = writeParams->destZ;
+
+        writeWidth = writeParams->width;
+        writeHeight = writeParams->height;
+        writeDepth = writeParams->depth;
+
+        NFE_ASSERT(
+            writeWidth > 0u && writeHeight >= 0u && writeDepth >= 0u,
+            "Invalid texture region");
+
+        NFE_ASSERT(
+            writeX < texturePtr->GetWidth() &&
+            writeY < texturePtr->GetHeight() &&
+            writeZ < texturePtr->GetDepth(),
+            "Invalid texture region");
+
+        NFE_ASSERT(
+            writeX + writeWidth <= texturePtr->GetWidth() &&
+            writeY + writeHeight <= texturePtr->GetHeight() &&
+            writeZ + writeDepth <= texturePtr->GetDepth(),
+            "Invalid texture region");
+    }
+
+    // validate subresource index
+    NFE_ASSERT(targetMipmap < texturePtr->GetMipmapsNum(), "Invalid mipmap");
+    NFE_ASSERT(targetLayer < texturePtr->GetLayersNum(), "Invalid mipmap");
+
+    const uint32 subresourceIndex = targetMipmap + targetLayer * texturePtr->GetMipmapsNum();
+
+    // compute src row size & stride
+    const uint32 srcRowSize = writeWidth * GetElementFormatSize(texturePtr->GetFormat()); 
+    uint32 srcRowStride = srcRowSize;
+    if (writeParams && writeParams->srcRowStride > 0u)
+    {
+        NFE_ASSERT(writeParams->srcRowStride >= srcRowSize, "Row stride is too small");
+        srcRowStride = writeParams->srcRowStride;
+    }
+
+    // compute data layout of source texture data
+    D3D12_SUBRESOURCE_FOOTPRINT subresourceFootprint;
+    subresourceFootprint.Format = TranslateElementFormat(texturePtr->GetFormat());
+    subresourceFootprint.Width = writeWidth;
+    subresourceFootprint.Height = writeHeight;
+    subresourceFootprint.Depth = writeDepth;
+    subresourceFootprint.RowPitch = (srcRowSize + D3D12_TEXTURE_DATA_PITCH_ALIGNMENT - 1u) & ~(D3D12_TEXTURE_DATA_PITCH_ALIGNMENT - 1u);
+
+    RingBuffer& ringBuffer = gDevice->GetRingBuffer();
+    size_t ringBufferOffset = 0;
+    {
+        // texture data must be aligned to 512 bytes
+        const size_t totalBytes = writeDepth * writeHeight * subresourceFootprint.RowPitch;
+        ringBufferOffset = ringBuffer.Allocate(totalBytes, D3D12_TEXTURE_DATA_PLACEMENT_ALIGNMENT);
+        NFE_ASSERT(ringBufferOffset != RingBuffer::INVALID_OFFSET, "Ring buffer allocation failed");
+
+        // copy data from CPU memory to staging ring buffer
+        uint8* destCpuPtr = reinterpret_cast<uint8*>(ringBuffer.GetCpuAddress()) + ringBufferOffset;
+        const uint8* srcCpuPtr = reinterpret_cast<const uint8*>(data);
+
+        for (uint32 z = 0; z < writeDepth; ++z)
+        {
+            for (uint32 y = 0; y < writeHeight; ++y)
+            {
+                memcpy(destCpuPtr, srcCpuPtr, srcRowSize);
+                destCpuPtr += subresourceFootprint.RowPitch;
+                srcCpuPtr += srcRowStride;
+            }
+        }
+    }
+
+    Internal_GetReferencedResources().textures.Insert(texture);
+    mResourceStateCache.EnsureResourceState(texturePtr, D3D12_RESOURCE_STATE_COPY_DEST, subresourceIndex);
+    mResourceStateCache.FlushPendingBarriers(mCommandList);
+
+    D3D12_TEXTURE_COPY_LOCATION src;
+    src.pResource = ringBuffer.GetD3DResource();
+    src.PlacedFootprint.Footprint = subresourceFootprint;
+    src.PlacedFootprint.Offset = ringBufferOffset;
+    src.Type = D3D12_TEXTURE_COPY_TYPE_PLACED_FOOTPRINT;
+
+    D3D12_TEXTURE_COPY_LOCATION dest;
+    dest.pResource = texturePtr->GetD3DResource();
+    dest.SubresourceIndex = subresourceIndex;
+    dest.Type = D3D12_TEXTURE_COPY_TYPE_SUBRESOURCE_INDEX;
+
+    // copy data from staging ring buffer to the target texture
+    mCommandList->CopyTextureRegion(&dest, writeX, writeY, writeZ, &src, nullptr);
 
     return true;
 }

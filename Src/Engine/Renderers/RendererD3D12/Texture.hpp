@@ -25,10 +25,10 @@ protected:
 
     uint32 mRowPitch;
     uint16 mWidth;
-    uint16 mLayers;
     uint16 mHeight;
-    uint8 mMipmapsNum;
-    uint8 mSamplesNum;
+    uint16 mLayersNumOrDepth;
+    uint8 mMipmapsNum : 4;
+    uint8 mSamplesNum : 4;
     TextureType mType;
     BufferMode mMode;
     Format mFormat;
@@ -57,9 +57,14 @@ public:
         return mHeight;
     }
 
+    NFE_INLINE uint16 GetDepth() const
+    {
+        return mType == TextureType::Texture3D ? mLayersNumOrDepth : 1;
+    }
+
     NFE_INLINE uint16 GetLayersNum() const
     {
-        return mLayers;
+        return mType == TextureType::Texture3D ? 1 : mLayersNumOrDepth;
     }
 
     NFE_INLINE uint8 GetMipmapsNum() const
@@ -85,6 +90,11 @@ public:
     NFE_INLINE uint8 GetSamplesNum() const
     {
         return mSamplesNum;
+    }
+
+    NFE_INLINE TextureType GetType() const
+    {
+        return mType;
     }
 };
 

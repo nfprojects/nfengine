@@ -44,6 +44,25 @@ enum ClearFlags
     ClearFlagsStencil   = (1 << 2),
 };
 
+struct TextureWriteParams
+{
+    // target texture mip & layer
+    uint16 targetMip = 0;
+    uint16 targetLayer = 0;
+
+    // target copy location
+    uint32 destX = 0;
+    uint32 destY = 0;
+    uint32 destZ = 0;
+
+    // texture write region size
+    uint32 width = 1;
+    uint32 height = 1;
+    uint32 depth = 1;
+
+    // optional row stride of the source CPU data
+    uint32 srcRowStride = 0;
+};
 
 /**
  * Interface allowing to control rendering pipeline state and executing rendering commands.
@@ -89,6 +108,15 @@ public:
     virtual bool WriteBuffer(const BufferPtr& buffer, size_t offset, size_t size, const void* data) = 0;
 
     /**
+     * Write data from the CPU memory to a GPU texture.
+     * @param texture       Target texture
+     * @param data          Pointer to source CPU texture data
+     * @param writeParams   Optional texture write parameters (to allow subregion update). If null, the whole texture is updated.
+     * @return true on success.
+     */
+    virtual bool WriteTexture(const TexturePtr& texture, const void* data, const TextureWriteParams* writeParams = nullptr) = 0;
+
+    /**
      * Copy contents of texture @p src to @p dest.
      * The textures source and destination texture must be the same type, size, format
      * and sample count.
@@ -122,7 +150,7 @@ public:
      * @param bindingSetInstance Binding set instance to be bound to the pipeline or NULL
      *                           to clear all bound resources for this set.
      */
-    virtual void BindResources(uint32 slot, const ResourceBindingInstancePtr& bindingSetInstance) = 0;
+    virtual void BindResources(uint32 setIndex, const ResourceBindingInstancePtr& bindingSetInstance) = 0;
 
     /**
      * Bind dynamic buffer to the graphics pipeline.

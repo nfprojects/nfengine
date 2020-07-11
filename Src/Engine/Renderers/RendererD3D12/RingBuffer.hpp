@@ -46,7 +46,7 @@ public:
     bool Init(size_t size);
 
     // Allocate space and return offset from the beginning of the buffer
-    size_t Allocate(size_t size);
+    size_t Allocate(size_t size, size_t alignment);
 
     // should be called after a frame has been submitted
     void FinishFrame(uint64 fenceValue);

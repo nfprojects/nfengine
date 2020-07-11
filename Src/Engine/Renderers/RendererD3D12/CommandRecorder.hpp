@@ -38,6 +38,7 @@ public:
     /// Common methods
     bool Begin() override;
     bool WriteBuffer(const BufferPtr& buffer, size_t offset, size_t size, const void* data) override;
+    bool WriteTexture(const TexturePtr& texture, const void* data, const TextureWriteParams* writeParams) override;
     void CopyTexture(const TexturePtr& src, const TexturePtr& dest) override;
     void CopyTexture(const TexturePtr& src, const BackbufferPtr& dest) override;
     CommandListPtr Finish() override;

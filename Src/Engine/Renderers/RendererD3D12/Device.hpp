@@ -30,6 +30,8 @@ using CommandRecorderWeakPtr = Common::WeakPtr<CommandRecorder>;
 
 struct FenceData
 {
+    static constexpr uint64 InitialFenceValue = 0xfefefefefefefefeULL;
+
     FenceData();
 
     bool Init(Device* device);

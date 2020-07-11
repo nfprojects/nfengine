@@ -55,7 +55,7 @@ FenceData::FenceData()
 
 bool FenceData::Init(Device* device)
 {
-    HRESULT hr = D3D_CALL_CHECK(device->GetDevice()->CreateFence(UINT64_MAX, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(fenceObject.GetPtr())));
+    HRESULT hr = D3D_CALL_CHECK(device->GetDevice()->CreateFence(InitialFenceValue, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(fenceObject.GetPtr())));
     if (FAILED(hr))
     {
         NFE_LOG_ERROR("Failed to create D3D12 fence object");
@@ -89,27 +89,36 @@ bool FenceData::Flush(ID3D12CommandQueue* queue)
         }
     }
 
-    // Wait for the fence value to be updated
-    if (FAILED(D3D_CALL_CHECK(fenceObject->SetEventOnCompletion(fenceValue, waitEvent))))
+    for (;;)
     {
-        NFE_LOG_ERROR("Failed to set completion event for fence");
-        return false;
-    }
+        uint64 completedFenceValue = fenceObject->GetCompletedValue();
+        if (completedFenceValue == UINT64_MAX)
+        {
+            HRESULT hr = D3D_CALL_CHECK(gDevice->GetDevice()->GetDeviceRemovedReason());
+            if (FAILED(hr))
+            {
+                return false;
+            }
+        }
+        
+        if (completedFenceValue != InitialFenceValue && completedFenceValue >= fenceValue)
+        {
+            break;
+        }
 
-    if (WaitForSingleObject(waitEvent, INFINITE) != WAIT_OBJECT_0)
-    {
-        NFE_LOG_ERROR("WaitForSingleObject failed");
-        return false;
-    }
+        // Wait for the fence value to be updated
+        if (FAILED(D3D_CALL_CHECK(fenceObject->SetEventOnCompletion(fenceValue, waitEvent))))
+        {
+            NFE_LOG_ERROR("Failed to set completion event for fence");
+            return false;
+        }
 
-    HRESULT hr = D3D_CALL_CHECK(gDevice->GetDevice()->GetDeviceRemovedReason());
-    if (FAILED(hr))
-    {
-        return false;
+        if (WaitForSingleObject(waitEvent, INFINITE) != WAIT_OBJECT_0)
+        {
+            NFE_LOG_ERROR("WaitForSingleObject failed");
+            return false;
+        }
     }
-
-    uint64 completedFenceValue = fenceObject->GetCompletedValue();
-    NFE_ASSERT(completedFenceValue == fenceValue, "Invalid completed fence value");
 
     return true;
 }

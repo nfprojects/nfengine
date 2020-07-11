@@ -16,6 +16,7 @@
 #include "Scenes/Compute.hpp"
 #include "Scenes/Multithreaded.hpp"
 #include "Scenes/Multisample.hpp"
+#include "Scenes/DynamicTexture.hpp"
 
 #include "Engine/Renderers/RendererCommon/Device.hpp"
 
@@ -125,6 +126,7 @@ public:
         mScenes.push_back(NFE::Common::MakeUniquePtr<TessellationScene>());
         mScenes.push_back(NFE::Common::MakeUniquePtr<ComputeScene>());
         mScenes.push_back(NFE::Common::MakeUniquePtr<MultithreadedScene>());
+        mScenes.push_back(NFE::Common::MakeUniquePtr<DynamicTextureScene>());
     }
 
     /**

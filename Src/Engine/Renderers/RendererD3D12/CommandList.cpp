@@ -108,7 +108,8 @@ ID3D12GraphicsCommandList* InternalCommandList::GenerateResourceBarriersCommandL
         }
         else
         {
-            for (uint32 i = 0; i < resourceStateAfter.subresourceStates.Size(); ++i)
+            uint32 numTransitions = Math::Max(resourceStateBefore.subresourceStates.Size(), resourceStateAfter.subresourceStates.Size());
+            for (uint32 i = 0; i < numTransitions; ++i)
             {
                 barrierDesc.Transition.Subresource = i;
                 barrierDesc.Transition.StateBefore = resourceStateBefore.Get(i);

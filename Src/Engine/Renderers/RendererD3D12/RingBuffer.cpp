@@ -83,8 +83,10 @@ bool RingBuffer::Init(size_t size)
     return true;
 }
 
-size_t RingBuffer::Allocate(size_t size)
+size_t RingBuffer::Allocate(size_t size, size_t alignment)
 {
+    NFE_ASSERT(Math::IsPowerOfTwo(alignment), "Invalid alignment");
+
     // TODO make lockless
     NFE_SCOPED_LOCK(mLock);
 
@@ -94,14 +96,15 @@ size_t RingBuffer::Allocate(size_t size)
         return INVALID_OFFSET;
     }
 
-    if (mTail >= mHead)
+    const size_t alignedTail = (mTail + alignment - 1u) & ~(alignment - 1u);
+
+    if (alignedTail >= mHead)
     {
-        if (mTail + size <= mSize)
+        if (alignedTail + size <= mSize)
         {
-            size_t offset = mTail;
-            mTail += size;
-            mUsed += size;
-            return offset;
+            mUsed += size + (alignedTail - mTail);
+            mTail = alignedTail + size;
+            return alignedTail;
         }
         else if (size <= mHead)
         {
@@ -113,10 +116,9 @@ size_t RingBuffer::Allocate(size_t size)
     }
     else if (mTail + size <= mHead)
     {
-        auto Offset = mTail;
-        mTail += size;
-        mUsed += size;
-        return Offset;
+        mUsed += size + (alignedTail - mTail);
+        mTail = alignedTail + size;
+        return alignedTail;
     }
 
     return INVALID_OFFSET;
