@@ -113,6 +113,7 @@ bool ComputeScene::CreateSubSceneSimple()
     textureDesc.mode = BufferMode::GPUOnly;
     textureDesc.width = WINDOW_WIDTH;
     textureDesc.height = WINDOW_HEIGHT;
+    textureDesc.debugName = "ComputeScene::mTexture";
     mTexture = mRendererDevice->CreateTexture(textureDesc);
     if (!mTexture)
         return false;

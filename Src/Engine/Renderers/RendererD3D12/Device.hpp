@@ -36,6 +36,7 @@ struct FenceData
 
     bool Init(Device* device);
     void Release();
+    bool Wait(uint64 targetValue);
     bool Flush(ID3D12CommandQueue* queue);
 
     D3DPtr<ID3D12Fence> fenceObject;
@@ -63,7 +64,8 @@ class Device : public IDevice
     D3DPtr<ID3D12CommandQueue> mGraphicsQueue;
     D3DPtr<ID3D12CommandQueue> mResourceUploadQueue;
     D3DPtr<ID3D12DebugDevice> mDebugDevice;
-    D3DPtr<ID3D12InfoQueue> mInfoQueue;
+    D3DPtr<ID3D12InfoQueue> mInfoQueueD3D;
+    D3DPtr<IDXGIInfoQueue> mInfoQueueDXGI;
 
     // global D3D12 command lists manager
     Common::UniquePtr<CommandListManager> mCommandListManager;
@@ -74,6 +76,7 @@ class Device : public IDevice
     Common::DynArray<CommandRecorderPtr> mCommandRecordersToRemove;
 
     // synchronization objects
+    FenceData mFrameFence;
     FenceData mGraphicsQueueFence;
     FenceData mResourceUploadQueueFence;
 
@@ -87,11 +90,9 @@ class Device : public IDevice
 
     bool mDebugLayerEnabled;
 
-    bool InitDebugLayer(int32 level);
     bool InitializeDevice(const DeviceInitParams* params);
     bool DetectFeatureLevel();
     bool PrepareD3DDebugLayer();
-    bool PrepareDXGIDebugLayer();
     bool DetectVideoCards(int preferredId);
     bool CreateResources();
 

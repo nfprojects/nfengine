@@ -9,7 +9,7 @@
 #include "../RendererCommon/Backbuffer.hpp"
 #include "Common.hpp"
 #include "Resource.hpp"
-#include "Engine/Common/Containers/DynArray.hpp"
+#include "Engine/Common/Containers/StaticArray.hpp"
 
 namespace NFE {
 namespace Renderer {
@@ -19,6 +19,7 @@ class Backbuffer : public Resource, public IBackbuffer
     friend class CommandRecorder;
 
 public:
+
     Backbuffer();
     ~Backbuffer();
     bool Resize(int newWidth, int newHeight);
@@ -52,7 +53,7 @@ private:
     D3DPtr<IDXGISwapChain3> mSwapChain;
 
     // textures for each backbuffer slice
-    Common::DynArray<D3DPtr<ID3D12Resource>> mBuffers;
+    Common::StaticArray<D3DPtr<ID3D12Resource>, DXGI_MAX_SWAP_CHAIN_BUFFERS> mBuffers;
 
     uint32 mCurrentBuffer;
     HANDLE mWaitableObject;

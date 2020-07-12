@@ -13,7 +13,7 @@ namespace NFE {
 namespace Renderer {
 
 Buffer::Buffer()
-    : Resource(D3D12_RESOURCE_STATE_GENERIC_READ)
+    : Resource(D3D12_RESOURCE_STATE_COMMON)
     , mSize(0)
 {
 }
@@ -113,11 +113,29 @@ bool Buffer::UploadData(const BufferDesc& desc)
         memcpy(mappedData, desc.initialData, desc.size);
         uploadBuffer->Unmap(0, NULL);
 
+        D3D12_RESOURCE_BARRIER barrier = {};
+        barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
+        barrier.Transition.pResource = mResource.Get();
+        barrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
+
+        // resource must be in COMMON state before first use on copy queue
+        barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_COMMON;
+        barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_COPY_DEST;
+        commandList->ResourceBarrier(1, &barrier);
+
         commandList->CopyResource(mResource.Get(), uploadBuffer.Get());
+
+        // resource must be in COMMON state after use on copy queue
+        barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_COPY_DEST;
+        barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_COMMON;
+        commandList->ResourceBarrier(1, &barrier);
 
         // close the command list and send it to the command queue
         if (FAILED(D3D_CALL_CHECK(commandList->Close())))
+        {
             return false;
+        }
+
         ID3D12CommandList* commandLists[] = { commandList.Get() };
         gDevice->GetResourceUploadQueue()->ExecuteCommandLists(1, commandLists);
         gDevice->mResourceUploadQueueFence.Flush(gDevice->mResourceUploadQueue.Get());
@@ -171,19 +189,17 @@ bool Buffer::Init(const BufferDesc& desc)
     resourceDesc.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
     resourceDesc.Flags = D3D12_RESOURCE_FLAG_NONE;
 
-    D3D12_RESOURCE_STATES initialState = desc.initialData ? D3D12_RESOURCE_STATE_COPY_DEST : D3D12_RESOURCE_STATE_GENERIC_READ;
-
     HRESULT hr;
     hr = D3D_CALL_CHECK(gDevice->GetDevice()->CreateCommittedResource(&heapProperties,
                                                                       D3D12_HEAP_FLAG_NONE,
                                                                       &resourceDesc,
-                                                                      initialState,
+                                                                      D3D12_RESOURCE_STATE_COMMON,
                                                                       nullptr,
                                                                       IID_PPV_ARGS(mResource.GetPtr())));
     if (FAILED(hr))
+    {
         return false;
-
-    mState.Set(initialState);
+    }
 
     if (desc.debugName && !SetDebugName(mResource.Get(), Common::StringView(desc.debugName)))
     {
@@ -194,7 +210,9 @@ bool Buffer::Init(const BufferDesc& desc)
     if (desc.initialData)
     {
         if (!UploadData(desc))
+        {
             return false;
+        }
     }
     else if (desc.mode == BufferMode::Static)
     {

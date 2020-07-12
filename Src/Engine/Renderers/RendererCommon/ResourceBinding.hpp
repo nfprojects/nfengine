@@ -13,6 +13,9 @@
 namespace NFE {
 namespace Renderer {
 
+// max supported number of binding sets per layout
+#define NFE_RENDERER_MAX_BINDING_SETS 16
+
 struct ResourceBindingDesc
 {
     ShaderResourceType resourceType;

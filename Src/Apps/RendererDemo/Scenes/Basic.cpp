@@ -212,6 +212,7 @@ bool BasicScene::CreateConstantBuffer(BufferMode cbufferMode)
     cbufferDesc.type = BufferType::Constant;
     cbufferDesc.mode = cbufferMode;
     cbufferDesc.size = sizeof(VertexCBuffer);
+    cbufferDesc.debugName = "BasicScene::CreateConstantBuffer";
 
     if (cbufferMode == BufferMode::Static)
     {
@@ -251,6 +252,7 @@ bool BasicScene::CreateTexture()
     textureDesc.mipmaps = 1;
     textureDesc.dataDesc = &textureDataDesc;
     textureDesc.layers = 1;
+    textureDesc.debugName = "BasicScene::CreateTexture";
     mTexture = mRendererDevice->CreateTexture(textureDesc);
     if (!mTexture)
         return false;

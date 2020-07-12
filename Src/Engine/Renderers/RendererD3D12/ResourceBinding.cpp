@@ -229,6 +229,8 @@ bool ResourceBindingInstance::Init(const ResourceBindingSetPtr& bindingSet)
         return false;
     }
 
+    mResources.Resize(mSet->mBindings.Size(), nullptr);
+
     // TODO ranges support
     HeapAllocator& allocator = gDevice->GetCbvSrvUavHeapAllocator();
     mDescriptorHeapOffset = allocator.Allocate(mSet->mBindings.Size());
@@ -237,14 +239,14 @@ bool ResourceBindingInstance::Init(const ResourceBindingSetPtr& bindingSet)
 
 bool ResourceBindingInstance::WriteTextureView(uint32 slot, const TexturePtr& texture)
 {
-    // TODO this won't work if there are multiple buffers (frames) in the texture
-
-    const Texture* tex = dynamic_cast<Texture*>(texture.Get());
+    Texture* tex = static_cast<Texture*>(texture.Get());
     if (!tex || !tex->mResource)
     {
         NFE_LOG_ERROR("Invalid texture");
         return false;
     }
+
+    mResources[slot] = tex;
 
     D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc;
     srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
@@ -297,12 +299,14 @@ bool ResourceBindingInstance::WriteTextureView(uint32 slot, const TexturePtr& te
 
 bool ResourceBindingInstance::WriteCBufferView(uint32 slot, const BufferPtr& buffer)
 {
-    const Buffer* cbuffer = dynamic_cast<Buffer*>(buffer.Get());
+    Buffer* cbuffer = static_cast<Buffer*>(buffer.Get());
     if (!buffer || !cbuffer->GetResource())
     {
         NFE_LOG_ERROR("Invalid buffer");
         return false;
     }
+
+    mResources[slot] = cbuffer;
 
     D3D12_CONSTANT_BUFFER_VIEW_DESC cbvDesc;
     cbvDesc.BufferLocation = cbuffer->GetResource()->GetGPUVirtualAddress();
@@ -318,12 +322,14 @@ bool ResourceBindingInstance::WriteCBufferView(uint32 slot, const BufferPtr& buf
 
 bool ResourceBindingInstance::WriteWritableTextureView(uint32 slot, const TexturePtr& texture)
 {
-    const Texture* tex = dynamic_cast<Texture*>(texture.Get());
+    Texture* tex = static_cast<Texture*>(texture.Get());
     if (!tex || !tex->mResource)
     {
         NFE_LOG_ERROR("Invalid texture");
         return false;
     }
+
+    mResources[slot] = tex;
 
     D3D12_UNORDERED_ACCESS_VIEW_DESC uavDesc;
     uavDesc.Format = tex->mSrvFormat;

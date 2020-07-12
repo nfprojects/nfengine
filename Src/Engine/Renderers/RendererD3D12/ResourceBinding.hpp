@@ -7,7 +7,7 @@
 #pragma once
 
 #include "../RendererCommon/ResourceBinding.hpp"
-#include "Common.hpp"
+#include "Resource.hpp"
 #include "../../Common/Containers/DynArray.hpp"
 
 
@@ -66,6 +66,8 @@ class ResourceBindingInstance : public IResourceBindingInstance
 
     InternalResourceBindingSetPtr mSet;
     uint32 mDescriptorHeapOffset;
+
+    Common::DynArray<Resource*> mResources;
 
 public:
     ResourceBindingInstance() : mDescriptorHeapOffset(0), mSet(nullptr) { }

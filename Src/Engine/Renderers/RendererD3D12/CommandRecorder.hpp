@@ -35,13 +35,13 @@ public:
     CommandRecorder();
     ~CommandRecorder();
 
-    /// Common methods
     bool Begin() override;
+    CommandListPtr Finish() override;
+
     bool WriteBuffer(const BufferPtr& buffer, size_t offset, size_t size, const void* data) override;
     bool WriteTexture(const TexturePtr& texture, const void* data, const TextureWriteParams* writeParams) override;
     void CopyTexture(const TexturePtr& src, const TexturePtr& dest) override;
     void CopyTexture(const TexturePtr& src, const BackbufferPtr& dest) override;
-    CommandListPtr Finish() override;
 
     /// Compute pipeline methods
     void SetVertexBuffers(uint32 num, const BufferPtr* vertexBuffers, uint32* strides, uint32* offsets) override;
@@ -71,7 +71,20 @@ public:
     void InsertDebugMarker(const char* text) override;
 
 private:
-    void Internal_UpdateStates();
+
+    void ResetState();
+
+    void Internal_UpdateGraphicsPipelineState();
+    void Internal_UpdateGraphicsResourceBindingLayout();
+    void Internal_UpdateGraphicsResourceBindings();
+    void Internal_UpdateVetexAndIndexBuffers();
+    void Internal_PrepareForDraw();
+
+    void Internal_UpdateComputePipelineState();
+    void Internal_UpdateComputeResourceBindingLayout();
+    void Internal_UpdateComputeResourceBindings();
+    void Internal_PrepareForDispatch();
+
     void Internal_UnsetRenderTarget();
 
     void Internal_WriteDynamicBuffer(Buffer* buffer, size_t offset, size_t size, const void* data);
@@ -84,24 +97,38 @@ private:
 
     ResourceStateCache mResourceStateCache;
 
+    // TODO instead of having everything duplicated maybe keep some bit mask of what was changed?
+
+    bool mVertexBufferChanged : 1;
+    bool mIndexBufferChanged : 1;
+    bool mGraphicsPipelineStateChanged : 1;
+    bool mComputePipelineStateChanged : 1;
+    bool mGraphicsBindingLayoutChanged : 1;
+    bool mComputeBindingLayoutChanged : 1;
+    bool mGraphicsBindingInstancesChanged : 1;  // TODO bitmask (one bit per slot)
+    bool mComputeBindingInstancesChanged : 1;   // TODO bitmask (one bit per slot)
+
     // ring buffer for dynamic buffers support
     const Buffer* mBoundVolatileCBuffers[NFE_RENDERER_MAX_VOLATILE_CBUFFERS];
-    const Buffer* mBoundComputeVolatileCBuffers[NFE_RENDERER_MAX_VOLATILE_CBUFFERS];
 
     RenderTarget* mCurrRenderTarget;
-    ResourceBindingLayout* mBindingLayout;
-    ResourceBindingLayout* mCurrBindingLayout;
-    PipelineState* mCurrPipelineState;
-    PipelineState* mPipelineState;
-
-    ResourceBindingLayout* mComputeBindingLayout;
-    ComputePipelineState* mCurrComputePipelineState;
+    PipelineState* mGraphicsPipelineState;
+    ResourceBindingLayout* mGraphicsBindingLayout;
+    ResourceBindingInstance* mGraphicsBindingInstances[NFE_RENDERER_MAX_BINDING_SETS];
 
     D3D12_PRIMITIVE_TOPOLOGY mCurrPrimitiveTopology;
 
+    D3D12_INDEX_BUFFER_VIEW mCurrIndexBufferView;
+    Buffer* mBoundIndexBuffer;
+
     D3D12_VERTEX_BUFFER_VIEW mCurrVertexBufferViews[NFE_RENDERER_MAX_VERTEX_BUFFERS];
-    const Buffer* mBoundVertexBuffers[NFE_RENDERER_MAX_VERTEX_BUFFERS];
-    uint32 mNumBoundVertexBuffers;
+    Buffer* mBoundVertexBuffers[NFE_RENDERER_MAX_VERTEX_BUFFERS];
+    uint8 mNumBoundVertexBuffers;
+
+    ComputePipelineState* mComputePipelineState;
+    ResourceBindingLayout* mComputeBindingLayout;
+    ResourceBindingInstance* mComputeBindingInstances[NFE_RENDERER_MAX_BINDING_SETS];
+    const Buffer* mBoundComputeVolatileCBuffers[NFE_RENDERER_MAX_VOLATILE_CBUFFERS];
 };
 
 } // namespace Renderer

@@ -138,6 +138,8 @@ bool CommandListManager::ExecuteCommandList(const Common::ArrayView<ICommandList
 
 void CommandListManager::OnFenveValueCompleted(uint64 fenceValue)
 {
+    NFE_ASSERT(fenceValue != UINT64_MAX && fenceValue != FenceData::InitialFenceValue, "Invalid fence value");
+
     NFE_SCOPED_LOCK(mLock);
 
     for (const InternalCommandListPtr& commandList : mCommandLists)

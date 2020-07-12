@@ -89,6 +89,11 @@ bool FenceData::Flush(ID3D12CommandQueue* queue)
         }
     }
 
+    return Wait(fenceValue);
+}
+
+bool FenceData::Wait(uint64 targetValue)
+{
     for (;;)
     {
         uint64 completedFenceValue = fenceObject->GetCompletedValue();
@@ -100,14 +105,14 @@ bool FenceData::Flush(ID3D12CommandQueue* queue)
                 return false;
             }
         }
-        
-        if (completedFenceValue != InitialFenceValue && completedFenceValue >= fenceValue)
+
+        if (completedFenceValue != InitialFenceValue && completedFenceValue >= targetValue)
         {
             break;
         }
 
         // Wait for the fence value to be updated
-        if (FAILED(D3D_CALL_CHECK(fenceObject->SetEventOnCompletion(fenceValue, waitEvent))))
+        if (FAILED(D3D_CALL_CHECK(fenceObject->SetEventOnCompletion(targetValue, waitEvent))))
         {
             NFE_LOG_ERROR("Failed to set completion event for fence");
             return false;
@@ -146,18 +151,6 @@ bool Device::Init(const DeviceInitParams* params)
 
     HRESULT hr;
 
-    if (params->debugLevel > 0)
-    {
-        if (PrepareDXGIDebugLayer())
-        {
-            NFE_LOG_INFO("Using DXGI debug layer");
-        }
-        else
-        {
-            NFE_LOG_ERROR("Failed to setup DXGI debug layer");
-        }
-    }
-
     if (!InitializeDevice(params))
     {
         return false;
@@ -170,11 +163,7 @@ bool Device::Init(const DeviceInitParams* params)
 
     if (params->debugLevel > 0)
     {
-        if (PrepareD3DDebugLayer())
-        {
-            NFE_LOG_INFO("Using Direct3D 12 debug layer");
-        }
-        else
+        if (!PrepareD3DDebugLayer())
         {
             NFE_LOG_ERROR("Failed to setup Direct3D 12 debug layer");
         }
@@ -220,6 +209,7 @@ bool Device::Init(const DeviceInitParams* params)
         }
     }
 
+    mFrameFence.Init(this);
     mGraphicsQueueFence.Init(this);
     mResourceUploadQueueFence.Init(this);
 
@@ -261,64 +251,72 @@ Device::~Device()
     mGraphicsQueue.Reset();
     mResourceUploadQueue.Reset();
     mGraphicsQueueFence.Release();
+    mFrameFence.Release();
     mResourceUploadQueueFence.Release();
     mDevice.Reset();
 
     if (mDebugDevice)
     {
-        mInfoQueue->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_WARNING, FALSE);
-        mInfoQueue.Reset();
+        mInfoQueueD3D->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_WARNING, FALSE);
+        mInfoQueueD3D.Reset();
 
         mDebugDevice->ReportLiveDeviceObjects(D3D12_RLDO_DETAIL | D3D12_RLDO_IGNORE_INTERNAL);
     }
-}
-
-bool Device::InitDebugLayer(int32 level)
-{
-    if (level > 0)
-    {
-        D3DPtr<ID3D12Debug> debugController;
-        if (SUCCEEDED(D3D12GetDebugInterface(IID_PPV_ARGS(debugController.GetPtr()))))
-        {
-            NFE_LOG_INFO("D3D12 device: Enabling debug layer");
-            debugController->EnableDebugLayer();
-        }
-        else
-        {
-            return false;
-        }
-
-        if (level > 1)
-        {
-            D3DPtr<ID3D12Debug1> debugController1;
-            if (SUCCEEDED(debugController->QueryInterface(IID_PPV_ARGS(debugController1.GetPtr()))))
-            {
-                NFE_LOG_INFO("D3D12 device: Enabling GPU based validation");
-                debugController1->SetEnableGPUBasedValidation(TRUE);
-            }
-            else
-            {
-                return false;
-            }
-        }
-    }
-
-    return true;
 }
 
 bool Device::InitializeDevice(const DeviceInitParams* params)
 {
     HRESULT hr;
 
-    // Enable the D3D12 debug layer
-    if (!InitDebugLayer(params->debugLevel))
+    DWORD dxgiFactoryFlags = 0;
+
+    if (params->debugLevel > 0)
+    {
+        D3DPtr<ID3D12Debug> debugController;
+        if (SUCCEEDED(D3D12GetDebugInterface(IID_PPV_ARGS(debugController.GetPtr()))))
+        {
+            NFE_LOG_INFO("Enabling D3D12 debug layer");
+            debugController->EnableDebugLayer();
+        }
+        else
+        {
+            NFE_LOG_WARNING("D3D12 Debug Device is not available");
+        }
+
+        if (debugController && params->debugLevel > 1)
+        {
+            D3DPtr<ID3D12Debug1> debugController1;
+            if (SUCCEEDED(debugController->QueryInterface(IID_PPV_ARGS(debugController1.GetPtr()))))
+            {
+                NFE_LOG_INFO("Enabling GPU-based validation");
+                debugController1->SetEnableGPUBasedValidation(TRUE);
+            }
+            else
+            {
+                NFE_LOG_WARNING("D3D12 GPU-based validation is not available");
+            }
+        }
+
+        if (SUCCEEDED(DXGIGetDebugInterface1(0, IID_PPV_ARGS(mInfoQueueDXGI.GetPtr()))))
+        {
+            dxgiFactoryFlags = DXGI_CREATE_FACTORY_DEBUG;
+            mInfoQueueDXGI->SetBreakOnSeverity(DXGI_DEBUG_ALL, DXGI_INFO_QUEUE_MESSAGE_SEVERITY_ERROR, true);
+            mInfoQueueDXGI->SetBreakOnSeverity(DXGI_DEBUG_ALL, DXGI_INFO_QUEUE_MESSAGE_SEVERITY_WARNING, true);
+            mInfoQueueDXGI->SetBreakOnSeverity(DXGI_DEBUG_ALL, DXGI_INFO_QUEUE_MESSAGE_SEVERITY_CORRUPTION, true);
+
+            NFE_LOG_INFO("Enabling DXGI debug layer");
+        }
+        else
+        {
+            NFE_LOG_WARNING("DXGI debugging is not available");
+        }
+    }
+
+    hr = D3D_CALL_CHECK(CreateDXGIFactory2(dxgiFactoryFlags, IID_PPV_ARGS(mDXGIFactory.GetPtr())));
+    if (FAILED(hr))
     {
         return false;
     }
-
-    hr = D3D_CALL_CHECK(CreateDXGIFactory1(IID_PPV_ARGS(mDXGIFactory.GetPtr())));
-    if (FAILED(hr))
-        return false;
 
     int preferredCardId = params != nullptr ? params->preferredCardId : -1;
     if (!DetectVideoCards(preferredCardId))
@@ -329,7 +327,9 @@ bool Device::InitializeDevice(const DeviceInitParams* params)
 
     hr = D3D_CALL_CHECK(D3D12CreateDevice(mAdapters[mAdapterInUse].Get(), D3D_FEATURE_LEVEL_11_0, IID_PPV_ARGS(mDevice.GetPtr())));
     if (FAILED(hr))
+    {
         return false;
+    }
 
     return true;
 }
@@ -344,7 +344,7 @@ bool Device::PrepareD3DDebugLayer()
     }
 
     mDebugLayerEnabled = true;
-    if (FAILED(mDevice->QueryInterface(IID_PPV_ARGS(mInfoQueue.GetPtr()))))
+    if (FAILED(mDevice->QueryInterface(IID_PPV_ARGS(mInfoQueueD3D.GetPtr()))))
     {
         NFE_LOG_ERROR("Failed to query ID3D12InfoQueue interface");
         return false;
@@ -362,41 +362,12 @@ bool Device::PrepareD3DDebugLayer()
     memset(&filter, 0, sizeof(filter));
     filter.DenyList.NumIDs = _countof(messagesToHide);
     filter.DenyList.pIDList = messagesToHide;
-    success &= SUCCEEDED(D3D_CALL_CHECK(mInfoQueue->AddStorageFilterEntries(&filter)));
-    success &= SUCCEEDED(D3D_CALL_CHECK(mInfoQueue->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_CORRUPTION, TRUE)));
-    success &= SUCCEEDED(D3D_CALL_CHECK(mInfoQueue->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_ERROR, TRUE)));
-    success &= SUCCEEDED(D3D_CALL_CHECK(mInfoQueue->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_WARNING, TRUE)));
+    success &= SUCCEEDED(D3D_CALL_CHECK(mInfoQueueD3D->AddStorageFilterEntries(&filter)));
+    success &= SUCCEEDED(D3D_CALL_CHECK(mInfoQueueD3D->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_CORRUPTION, TRUE)));
+    success &= SUCCEEDED(D3D_CALL_CHECK(mInfoQueueD3D->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_ERROR, TRUE)));
+    success &= SUCCEEDED(D3D_CALL_CHECK(mInfoQueueD3D->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_WARNING, TRUE)));
 
     return success;
-}
-
-bool Device::PrepareDXGIDebugLayer()
-{
-    D3DPtr<IDXGIInfoQueue> dxgiInfoQueue;
-
-    typedef HRESULT(WINAPI* LPDXGIGETDEBUGINTERFACE)(REFIID, void**);
-
-    HMODULE dxgidebug = LoadLibraryEx(L"dxgidebug.dll", nullptr, LOAD_LIBRARY_SEARCH_SYSTEM32);
-    if (!dxgidebug)
-    {
-        NFE_LOG_ERROR("Failed to load DXGIDebug library");
-        return false;
-    }
-
-    auto dxgiGetDebugInterface = reinterpret_cast<LPDXGIGETDEBUGINTERFACE>(
-        reinterpret_cast<void*>(GetProcAddress(dxgidebug, "DXGIGetDebugInterface")));
-    if (FAILED(dxgiGetDebugInterface(IID_PPV_ARGS(dxgiInfoQueue.GetPtr()))))
-    {
-        NFE_LOG_ERROR("Failed to obtain DXGIGetDebugInterface");
-        return false;
-    }
-
-    bool success = true;
-
-    success &= SUCCEEDED(D3D_CALL_CHECK(dxgiInfoQueue->SetBreakOnSeverity(DXGI_DEBUG_ALL, DXGI_INFO_QUEUE_MESSAGE_SEVERITY_ERROR, true)));
-    success &= SUCCEEDED(D3D_CALL_CHECK(dxgiInfoQueue->SetBreakOnSeverity(DXGI_DEBUG_ALL, DXGI_INFO_QUEUE_MESSAGE_SEVERITY_CORRUPTION, true)));
-
-    return true;
 }
 
 bool Device::CreateResources()
@@ -697,6 +668,16 @@ bool Device::Execute(const Common::ArrayView<ICommandList*> commandLists)
         fenceValue = mGraphicsQueueFence.value++;
         mCommandListManager->ExecuteCommandList(commandLists, fenceValue);
         mGraphicsQueue->Signal(mGraphicsQueueFence.fenceObject.Get(), fenceValue);
+
+        uint64 completedValue = mGraphicsQueueFence.fenceObject->GetCompletedValue();
+        if (completedValue != FenceData::InitialFenceValue)
+        {
+            uint64 numPending = fenceValue - completedValue;
+            if (numPending >= 16)
+            {
+                NFE_LOG_WARNING("Command queue is pending %llu Execute() calls, this may lead to huge memory consumption and frame delay", numPending);
+            }
+        }
     }
 
     mRingBuffer.FinishFrame(fenceValue);
@@ -704,7 +685,7 @@ bool Device::Execute(const Common::ArrayView<ICommandList*> commandLists)
     // TODO this should be done on separate thread
     {
         uint64 completedFenceValue = mGraphicsQueueFence.fenceObject->GetCompletedValue();
-        if (completedFenceValue != UINT64_MAX)
+        if (completedFenceValue != UINT64_MAX && completedFenceValue != FenceData::InitialFenceValue)
         {
             mCommandListManager->OnFenveValueCompleted(completedFenceValue);
             mRingBuffer.OnFrameCompleted(completedFenceValue);
@@ -760,6 +741,16 @@ bool Device::DownloadTexture(const TexturePtr& tex, void* data, uint32 mipmap, u
 
 bool Device::FinishFrame()
 {
+    const uint32 maxBufferedFrames = 2;
+
+    uint64 fenceValue = mFrameFence.value++;
+    mGraphicsQueue->Signal(mFrameFence.fenceObject.Get(), fenceValue);
+
+    if (fenceValue >= maxBufferedFrames - 1)
+    {
+        mFrameFence.Wait(fenceValue - (maxBufferedFrames - 1));
+    }
+
     return true;
 }
 

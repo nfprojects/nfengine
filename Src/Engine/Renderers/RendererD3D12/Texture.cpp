@@ -9,13 +9,14 @@
 #include "RendererD3D12.hpp"
 #include "Translations.hpp"
 #include "Engine/Common/Logger/Logger.hpp"
+#include "Engine/Common/System/Timer.hpp"
 
 
 namespace NFE {
 namespace Renderer {
 
 Texture::Texture()
-    : Resource(D3D12_RESOURCE_STATE_GENERIC_READ)
+    : Resource(D3D12_RESOURCE_STATE_COMMON)
 {
 }
 
@@ -26,6 +27,8 @@ Texture::~Texture()
 bool Texture::UploadData(const TextureDesc& desc)
 {
     // Create temporary upload buffer on upload heap
+
+    Common::Timer timer;
 
     D3D12_HEAP_PROPERTIES heapProperties;
     heapProperties.Type = D3D12_HEAP_TYPE_UPLOAD;
@@ -128,6 +131,16 @@ bool Texture::UploadData(const TextureDesc& desc)
         }
         uploadBuffer->Unmap(0, NULL);
 
+        D3D12_RESOURCE_BARRIER barrier = {};
+        barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
+        barrier.Transition.pResource = mResource.Get();
+        barrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
+
+        // resource must be in COMMON state before first use on copy queue
+        barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_COMMON;
+        barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_COPY_DEST;
+        commandList->ResourceBarrier(1, &barrier);
+
         // Copy data from upload buffer to the texture
         for (uint32 i = 0; i < desc.mipmaps; ++i)
         {
@@ -144,12 +157,19 @@ bool Texture::UploadData(const TextureDesc& desc)
             commandList->CopyTextureRegion(&dest, 0, 0, 0, &src, nullptr);
         }
 
+        // resource must be in COMMON state after use on copy queue
+        barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_COPY_DEST;
+        barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_COMMON;
+        commandList->ResourceBarrier(1, &barrier);
+
         // close the command list and send it to the command queue
         if (FAILED(D3D_CALL_CHECK(commandList->Close())))
             return false;
         ID3D12CommandList* commandLists[] = { commandList.Get() };
         gDevice->GetResourceUploadQueue()->ExecuteCommandLists(1, commandLists);
         gDevice->mResourceUploadQueueFence.Flush(gDevice->mResourceUploadQueue.Get());
+
+        NFE_LOG_INFO("Uploating texture took %.3f ms", 1000.0 * timer.Stop());
     }
 
     return true;
@@ -220,11 +240,7 @@ bool Texture::Init(const TextureDesc& desc)
 
     bool passClearValue = false;
     D3D12_CLEAR_VALUE clearValue;
-    D3D12_RESOURCE_STATES initialState = D3D12_RESOURCE_STATE_GENERIC_READ;
-
-    // for Static and Readback textures, the first operation performed will be copy to this texture
-    if ((desc.mode == BufferMode::Static && desc.dataDesc) || (desc.mode == BufferMode::Readback))
-        initialState = D3D12_RESOURCE_STATE_COPY_DEST;
+    D3D12_RESOURCE_STATES initialState = D3D12_RESOURCE_STATE_COMMON;
 
     switch (desc.type)
     {

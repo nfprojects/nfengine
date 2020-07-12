@@ -61,7 +61,7 @@ bool Backbuffer::Init(const BackbufferDesc& desc)
     scd.Height = desc.height;
     scd.Format = mFormat;
     scd.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;
-    scd.Flags = DXGI_SWAP_CHAIN_FLAG_FRAME_LATENCY_WAITABLE_OBJECT;
+    scd.Flags = 0; // DXGI_SWAP_CHAIN_FLAG_FRAME_LATENCY_WAITABLE_OBJECT;
     scd.SampleDesc.Count = 1;
 
     hr = D3D_CALL_CHECK(gDevice->mDXGIFactory->CreateSwapChainForHwnd(
@@ -74,8 +74,8 @@ bool Backbuffer::Init(const BackbufferDesc& desc)
         return false;
     }
 
-    mSwapChain->SetMaximumFrameLatency(1);
-    mWaitableObject = mSwapChain->GetFrameLatencyWaitableObject();
+    //mSwapChain->SetMaximumFrameLatency(1);
+    //mWaitableObject = mSwapChain->GetFrameLatencyWaitableObject();
 
     // disable Alt-Enter
     gDevice->mDXGIFactory->MakeWindowAssociation(mWindow, DXGI_MWA_NO_ALT_ENTER);
@@ -90,6 +90,11 @@ bool Backbuffer::Init(const BackbufferDesc& desc)
             NFE_LOG_ERROR("Failed to get swap chain buffer for n = %u", n);
             return false;
         }
+
+        if (!SetDebugName(mBuffers[n].Get(), "Backbuffer"))
+        {
+            NFE_LOG_WARNING("Failed to set debug name");
+        }
     }
 
     NFE_LOG_DEBUG("Swapchain created successfully (width=%i, height=%i, format=%s)", desc.width, desc.height, GetElementFormatName(desc.format));
@@ -98,11 +103,14 @@ bool Backbuffer::Init(const BackbufferDesc& desc)
 
 bool Backbuffer::Present()
 {
-    const DWORD result = WaitForSingleObjectEx(mWaitableObject, INFINITE, TRUE);
-    if (result == WAIT_TIMEOUT)
+    if (mWaitableObject != INVALID_HANDLE_VALUE)
     {
-        NFE_LOG_ERROR("Waiting for swapchain waitable object failed");
-        return false;
+        const DWORD result = WaitForSingleObjectEx(mWaitableObject, INFINITE, TRUE);
+        if (result == WAIT_TIMEOUT)
+        {
+            NFE_LOG_ERROR("Waiting for swapchain waitable object failed");
+            return false;
+        }
     }
 
     HRESULT hr = D3D_CALL_CHECK(mSwapChain->Present(mVSync ? 1 : 0, 0));

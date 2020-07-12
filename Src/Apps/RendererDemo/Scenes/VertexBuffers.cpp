@@ -280,6 +280,7 @@ void VertexBuffersScene::Draw(float dt)
     mCommandBuffer->SetRenderTarget(mWindowRenderTarget);
 
     mCommandBuffer->SetPipelineState(mPipelineState);
+    mCommandBuffer->SetResourceBindingLayout(mResBindingLayout);
 
     mCommandBuffer->SetIndexBuffer(mIndexBuffer, IndexBufferFormat::Uint16);
 
