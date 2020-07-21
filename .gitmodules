@@ -3,7 +3,7 @@
 	url = https://github.com/jarro2783/cxxopts.git
 [submodule "Deps/freetype2"]
 	path = Deps/freetype2
-	url = git://git.sv.nongnu.org/freetype/freetype2.git
+	url = https://git.savannah.gnu.org/cgit/freetype/freetype2.git
 [submodule "Deps/glslang"]
 	path = Deps/glslang
 	url = https://github.com/KhronosGroup/glslang.git
@@ -42,4 +42,4 @@
 	url = https://github.com/Tencent/rapidjson.git
 [submodule "Deps/imgui_sw"]
 	path = Deps/imgui_sw
-	url = https://github.com/emilk/imgui_software_renderer
+	url = https://github.com/nfprojects/imgui_software_renderer.git
