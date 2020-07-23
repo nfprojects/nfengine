@@ -1,5 +1,7 @@
 nfEngine
 ========
+[![Build status](https://ci.appveyor.com/api/projects/status/88110fd07t2jbeu2?svg=true)](https://ci.appveyor.com/project/nfe/nfengine-windows)
+[![Build status](https://ci.appveyor.com/api/projects/status/ne107qh2vvurh212?svg=true)](https://ci.appveyor.com/project/nfe/nfengine-ubu)
 
 The main purpose of this project is to create an open-source, multi-platform, efficient and universal 3D game engine. At the moment the engine is in early development state. Detailed list of features can be found in a section below.
 

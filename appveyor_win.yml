@@ -1,0 +1,87 @@
+#---------------------------------#
+#      general configuration      #
+#---------------------------------#
+
+version: {branch}-0.0.{build}
+
+branches:
+  only:
+    - devel
+
+artifacts:
+  - path: .\Bin\*\*\*.exe
+
+cache:
+  - Deps\Bin -> Deps
+
+
+#---------------------------------#
+#    environment configuration    #
+#---------------------------------#
+
+image:
+  - Visual Studio 2019
+
+configuration:
+  - Debug
+  - Release
+  
+environment:
+  PY_PYTHON: 3.8.3
+  Path: C:\Python38-x64;%Path%
+  APPVEYOR_SAVE_CACHE_ON_ERROR: true
+  TESTS_TO_SKIP: WindowTest.*:ImageTest.*:FileAsyncTest.*
+
+
+#---------------------------------#
+#       build configuration       #
+#---------------------------------#
+
+# scripts that run after cloning repository
+install:
+- cmd: |-
+    git submodule update --init --recursive
+    cd Deps\glslang
+    py.exe update_glslang_sources.py
+    cd ..\..
+    py.exe Deps\deps_builder.py --noanim
+
+# scripts for building
+build_script:
+- cmd: |-
+    cd %APPVEYOR_BUILD_FOLDER%
+    for %%T in (Common CommonPerf) do (msbuild %APPVEYOR_BUILD_FOLDER%\Engine.sln /t:Tests\%%TTest /p:Configuration=%configuration% /p:Platform=x64 /m /verbosity:minimal /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll")
+
+# scripts for running tests
+test_script:
+- ps: |-
+    $tests = @("Common")
+    $foundFail = $false
+    cd $Env:APPVEYOR_BUILD_FOLDER\Bin\x64\$Env:configuration
+    FOREACH ($test in $tests){
+        Write-Host "Running $($test)Test for $($Env:configuration)..."
+        $testname = "$($test).$($Env:configuration)"
+        $cmd = ".\$($test)Test.exe"
+        $args = "--gtest_output=xml:test_detail.xml", "--gtest_filter=-$($Env:TESTS_TO_SKIP)"
+        $testrun_result = & $cmd $args 2>&1
+        [xml]$userfile = Get-Content test_detail.xml
+        if ($userfile) {
+            FOREACH ($c in $userfile.testsuites.testsuite.testcase){
+                $tcname = $c.classname + "::" + $c.name
+                $time = $c.time.replace(".","")
+                if ($c.failure){
+                    $foundFail = $true
+                    Add-AppveyorTest -Name $tcname -FileName $testname -Outcome "Failed" -Duration $time -ErrorMessage $c.failure[0].message
+                } else {
+                    Add-AppveyorTest -Name $tcname -FileName $testname -Outcome "Passed" -Duration $time
+                }
+            }
+        }
+        Write-Host "Done"
+    }
+    if ($foundFail) {
+        Write-Host "Tests finished with an error."
+        $host.SetShouldExit(1)
+    } else {
+        Write-Host "Tests finished successully."
+    }

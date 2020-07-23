@@ -1,0 +1,108 @@
+#---------------------------------#
+#      general configuration      #
+#---------------------------------#
+
+version: {branch}-0.0.{build}
+
+branches:
+  only:
+    - devel
+
+artifacts:
+  - path: ./Bin/*/*/Common*Test
+
+cache:
+  - Deps/Bin -> Deps
+  
+  
+#---------------------------------#
+#    environment configuration    #
+#---------------------------------#
+
+image:
+  - Ubuntu1804
+
+configuration:
+  - Debug
+  - Release
+
+environment:
+  PY_PYTHON: 3.8.3
+  APPVEYOR_SAVE_CACHE_ON_ERROR: true
+  TESTS_TO_SKIP: WindowTest.*:ImageTest.*
+
+
+#---------------------------------#
+#       build configuration       #
+#---------------------------------#
+
+# scripts that run before cloning repository
+init:
+- sh: |-
+    echo "$CONFIGURATION"
+    wget -qO - https://packages.lunarg.com/lunarg-signing-key-pub.asc | sudo apt-key add -
+    sudo wget -qO /etc/apt/sources.list.d/lunarg-vulkan-1.2.141-bionic.list https://packages.lunarg.com/vulkan/1.2.141/lunarg-vulkan-1.2.141-bionic.list
+    sudo apt-get -y update
+    sudo apt-get -y install vulkan-sdk libx11-xcb-dev libxcb-image0-dev xmlstarlet
+
+# scripts that run after cloning repository
+install:
+- sh: |-
+    git submodule update --init --recursive
+    cd "$APPVEYOR_BUILD_FOLDER/Deps/glslang"
+    $HOME/venv3.9.0/bin/python ./update_glslang_sources.py
+    cd "$APPVEYOR_BUILD_FOLDER"
+    cat >gtest_transform.xslt <<EOL
+    <?xml version="1.0" encoding="utf-8"?>
+    <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+      <xsl:param name="testName"/>
+      <xsl:variable name="new-line" select="'&#10;'" />
+      <xsl:output method="xml" indent="yes" omit-xml-declaration="yes"/>
+      <xsl:strip-space elements="*"/>
+      <xsl:template match="testsuites">
+        <xsl:apply-templates select="testsuite/testcase"/>
+      </xsl:template>
+      <xsl:template match="testsuites/testsuite/testcase">
+        {
+        "testName": "<xsl:value-of select="@classname" />::<xsl:value-of select="@name" />",
+        "fileName": "<xsl:value-of select="\$testName" />",
+        "durationMilliseconds": "<xsl:value-of select="translate(@time, '.', '')" />",
+        <xsl:if test="failure">"outcome": "Failed",
+        "ErrorMessage": "<xsl:value-of select="translate(translate(failure[1]/@message, '\\', '/'), \$new-line, '    ')" />"</xsl:if>
+        <xsl:if test="not(failure)">"outcome": "Passed"</xsl:if>
+        },
+      </xsl:template>
+    </xsl:stylesheet>
+    EOL
+
+# scripts for building
+build_script:
+- sh: |-
+    cd $APPVEYOR_BUILD_FOLDER
+    mkdir build; cd build
+    cmake ..
+    make CMAKE_BUILD_TYPE=$CONFIGURATION
+
+# scripts for running tests
+test_script:
+- sh: |-
+    testList=("Common")
+    echo "[" >> $APPVEYOR_BUILD_FOLDER/testjson.json
+    cd "$APPVEYOR_BUILD_FOLDER/Bin/x86_64/${CONFIGURATION}"
+    for test in "${testList[@]}"; do
+        echo "Running ${test}Test for ${CONFIGURATION}..."
+        ./"${test}Test" --gtest_output=xml --gtest_filter=-${TESTS_TO_SKIP} > $APPVEYOR_BUILD_FOLDER/tmpRes.txt
+        xmlstarlet tr $APPVEYOR_BUILD_FOLDER/gtest_transform.xslt -s testName="${test}.${CONFIGURATION}" test_detail.xml >> $APPVEYOR_BUILD_FOLDER/testjson.json
+        echo "Done"
+    done
+    echo "]" >> $APPVEYOR_BUILD_FOLDER/testjson.json
+    cd "$APPVEYOR_BUILD_FOLDER"
+    curl -H "Content-Type: application/json" -d @testjson.json "${APPVEYOR_API_URL}api/tests/batch"
+    failCases=$( grep -c "FAILED" $APPVEYOR_BUILD_FOLDER/tmpRes.txt )
+    if [ $failCases -gt 0 ] 
+    then
+        echo "Tests finished with an error."
+        false
+    else
+        echo "Tests finished successully."
+    fi
