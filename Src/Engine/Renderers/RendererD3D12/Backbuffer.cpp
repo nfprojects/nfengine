@@ -21,7 +21,6 @@ Backbuffer::Backbuffer()
     , mHeight(0)
     , mFormat(DXGI_FORMAT_UNKNOWN)
     , mCurrentBuffer(0)
-    , mWaitableObject(INVALID_HANDLE_VALUE)
 { }
 
 Backbuffer::~Backbuffer()
@@ -53,16 +52,21 @@ bool Backbuffer::Init(const BackbufferDesc& desc)
     mVSync = desc.vSync;
     mFormat = TranslateElementFormat(desc.format);
 
-    mBuffers.Resize(3); // make it configurable
+    mBuffers.Resize(2); // make it configurable
 
     DXGI_SWAP_CHAIN_DESC1 scd = {};
     scd.BufferCount = mBuffers.Size();
     scd.Width = desc.width;
     scd.Height = desc.height;
     scd.Format = mFormat;
+    scd.Scaling = DXGI_SCALING_NONE;
     scd.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;
-    scd.Flags = 0; // DXGI_SWAP_CHAIN_FLAG_FRAME_LATENCY_WAITABLE_OBJECT;
     scd.SampleDesc.Count = 1;
+
+    if (gDevice->GetCaps().tearingSupport)
+    {
+        scd.Flags |= DXGI_SWAP_CHAIN_FLAG_ALLOW_TEARING;
+    }
 
     hr = D3D_CALL_CHECK(gDevice->mDXGIFactory->CreateSwapChainForHwnd(
         gDevice->GetGraphicsQueue(), static_cast<HWND>(desc.windowHandle), &scd, nullptr, nullptr,
@@ -73,9 +77,6 @@ bool Backbuffer::Init(const BackbufferDesc& desc)
         NFE_LOG_ERROR("Failed to create swap chain");
         return false;
     }
-
-    //mSwapChain->SetMaximumFrameLatency(1);
-    //mWaitableObject = mSwapChain->GetFrameLatencyWaitableObject();
 
     // disable Alt-Enter
     gDevice->mDXGIFactory->MakeWindowAssociation(mWindow, DXGI_MWA_NO_ALT_ENTER);
@@ -103,17 +104,20 @@ bool Backbuffer::Init(const BackbufferDesc& desc)
 
 bool Backbuffer::Present()
 {
-    if (mWaitableObject != INVALID_HANDLE_VALUE)
+    uint32 vsyncInterval = 0;
+    uint32 presentFlags = 0;
+
+    if (gDevice->GetCaps().tearingSupport /* && windowedMode */)
     {
-        const DWORD result = WaitForSingleObjectEx(mWaitableObject, INFINITE, TRUE);
-        if (result == WAIT_TIMEOUT)
-        {
-            NFE_LOG_ERROR("Waiting for swapchain waitable object failed");
-            return false;
-        }
+        presentFlags |= DXGI_PRESENT_ALLOW_TEARING;
     }
 
-    HRESULT hr = D3D_CALL_CHECK(mSwapChain->Present(mVSync ? 1 : 0, 0));
+    if (mVSync)
+    {
+        vsyncInterval = 1;
+    }
+
+    HRESULT hr = D3D_CALL_CHECK(mSwapChain->Present(vsyncInterval, presentFlags));
     if (FAILED(hr))
         return false;
 

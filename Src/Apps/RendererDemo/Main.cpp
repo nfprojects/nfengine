@@ -19,6 +19,7 @@
 #include "Scenes/DynamicTexture.hpp"
 
 #include "Engine/Renderers/RendererCommon/Device.hpp"
+#include "Engine/Renderers/RendererCommon/Fence.hpp"
 
 #include "Engine/Common/System/Library.hpp"
 #include "Engine/Common/FileSystem/FileSystem.hpp"
@@ -26,17 +27,20 @@
 #include "Engine/Common/System/Timer.hpp"
 #include "Engine/Common/System/KeyCodes.hpp"
 #include "Engine/Common/Logger/Logger.hpp"
+#include "Engine/Common/Utils/TaskBuilder.hpp"
+#include "Engine/Common/Utils/Waitable.hpp"
 
 #include <algorithm>
 #include <string.h>
 
 using namespace NFE;
+using namespace NFE::Common;
 using namespace NFE::Renderer;
 
-class DemoWindow : public NFE::Common::Window
+class DemoWindow : public Window
 {
     size_t mCurrentScene;
-    NFE::Common::Library mRendererLib;
+    Library mRendererLib;
     IDevice* mRendererDevice;
     SceneArrayType mScenes;
     float mDeltaTime;
@@ -59,7 +63,8 @@ class DemoWindow : public NFE::Common::Window
 
         mScenes[mCurrentScene]->Release();
 
-        mRendererDevice->WaitForGPU();
+        // make backbuffer is destroyed before creating new scene (it may be still in be some commandlist)
+        mRendererDevice->WaitForGPU()->Wait();
 
         if (mScenes[scene]->Init(mRendererDevice, GetHandle()))
         {
@@ -118,15 +123,15 @@ public:
         // TODO: move scene registration to their source files
         // TODO: switching to arbitrary scene (e.g. omitting a single scene should be
         //       possible, when a feature is not implemented in renderer
-        mScenes.push_back(NFE::Common::MakeUniquePtr<BasicScene>());
-        // mScenes.push_back(NFE::Common::MakeUniquePtr<MultisampleScene>()); // WIP
-        mScenes.push_back(NFE::Common::MakeUniquePtr<DepthStencilScene>());
-        mScenes.push_back(NFE::Common::MakeUniquePtr<RenderTargetsScene>());
-        mScenes.push_back(NFE::Common::MakeUniquePtr<VertexBuffersScene>());
-        mScenes.push_back(NFE::Common::MakeUniquePtr<TessellationScene>());
-        mScenes.push_back(NFE::Common::MakeUniquePtr<ComputeScene>());
-        mScenes.push_back(NFE::Common::MakeUniquePtr<MultithreadedScene>());
-        mScenes.push_back(NFE::Common::MakeUniquePtr<DynamicTextureScene>());
+        mScenes.push_back(MakeUniquePtr<BasicScene>());
+        // mScenes.push_back(MakeUniquePtr<MultisampleScene>()); // WIP
+        mScenes.push_back(MakeUniquePtr<DepthStencilScene>());
+        mScenes.push_back(MakeUniquePtr<RenderTargetsScene>());
+        mScenes.push_back(MakeUniquePtr<VertexBuffersScene>());
+        mScenes.push_back(MakeUniquePtr<TessellationScene>());
+        mScenes.push_back(MakeUniquePtr<ComputeScene>());
+        mScenes.push_back(MakeUniquePtr<MultithreadedScene>());
+        mScenes.push_back(MakeUniquePtr<DynamicTextureScene>());
     }
 
     /**
@@ -146,7 +151,7 @@ public:
      * @param preferredCardId   ID of preferred video card
      * @return True on success, false otherwise
      *
-     * The method opens Renderer library using NFE::Common::Library class, then extracts the init
+     * The method opens Renderer library using Library class, then extracts the init
      * function for renderer and creates NFE::Renderer::IDevice this way. Should be called only
      * once during Demo lifespan (switching renderers on-the-fly is not supported).
      */
@@ -196,7 +201,7 @@ public:
      */
     void DrawLoop()
     {
-        NFE::Common::Timer timer;
+        Timer timer;
         timer.Start();
 
         float timeElapsed = 0.0f;
@@ -245,7 +250,7 @@ public:
         mRendererLib.Close();
     }
 
-    void OnKeyPress(NFE::Common::KeyCode key)
+    void OnKeyPress(KeyCode key)
     {
         // keep temporarily the IDs
         size_t newSceneId = mCurrentScene;
@@ -255,7 +260,7 @@ public:
 
         switch (key)
         {
-        case NFE::Common::KeyCode::Right:
+        case KeyCode::Right:
             if (newSceneId >= mScenes.size() - 1)
                 newSceneId = 0;
             else
@@ -263,7 +268,7 @@ public:
             SwitchScene(newSceneId);
             break;
 
-        case NFE::Common::KeyCode::Left:
+        case KeyCode::Left:
             if (newSceneId == 0)
                 newSceneId = mScenes.size() - 1;
             else
@@ -271,14 +276,14 @@ public:
             SwitchScene(newSceneId);
             break;
 
-        case NFE::Common::KeyCode::Up:
+        case KeyCode::Up:
             newSubSceneId++;
             if (newSubSceneId > numScenes)
                 newSubSceneId = 0;
             SwitchSubScene(newSubSceneId);
             break;
 
-        case NFE::Common::KeyCode::Down:
+        case KeyCode::Down:
             if (newSubSceneId == 0)
                 newSubSceneId = numScenes;
             else
@@ -295,9 +300,9 @@ public:
 
 int InnerMain(int argc, char* argv[])
 {
-    const NFE::Common::String execPath = NFE::Common::FileSystem::GetExecutablePath();
-    const NFE::Common::StringView execDir = NFE::Common::FileSystem::GetParentDir(execPath);
-    NFE::Common::FileSystem::ChangeDirectory(execDir + "/../../..");
+    const String execPath = FileSystem::GetExecutablePath();
+    const StringView execDir = FileSystem::GetParentDir(execPath);
+    FileSystem::ChangeDirectory(execDir + "/../../..");
 
     Common::String selectedBackend;
     int initialScene = 0;
@@ -421,15 +426,15 @@ int InnerMain(int argc, char* argv[])
 
 int main(int argc, char* argv[])
 {
-    if (!NFE::Common::InitSubsystems())
+    if (!InitSubsystems())
     {
-        NFE::Common::ShutdownSubsystems();
+        ShutdownSubsystems();
         return -1;
     }
 
     int ret = InnerMain(argc, argv);
 
-    NFE::Common::ShutdownSubsystems();
+    ShutdownSubsystems();
 
     // enable memory leak detection at the process exit (Windows only)
 #ifdef _CRTDBG_MAP_ALLOC

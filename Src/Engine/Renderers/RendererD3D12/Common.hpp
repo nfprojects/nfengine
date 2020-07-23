@@ -25,20 +25,7 @@ HRESULT D3DError(HRESULT hr, const char* srcFile, int line);
 #define D3D_CALL_CHECK(x) D3DError((x), __FILE__, __LINE__)
 #endif
 
-template<typename T>
-bool SetDebugName(T* obj, const Common::StringView name)
-{
-    if (gDevice->IsDebugLayerEnabled() && !name.Empty())
-    {
-        Common::Utf16String longName;
-        if (Common::UTF8ToUTF16(name, longName))
-            return SUCCEEDED(D3D_CALL_CHECK(obj->SetName(longName.c_str())));
-        else
-            return false;
-    }
-
-    return true;
-}
+bool SetDebugName(ID3D12Object* obj, const Common::StringView name);
 
 } // namespace Renderer
 } // namespace NFE

@@ -84,6 +84,8 @@ bool Buffer::UploadData(const BufferDesc& desc)
         if (FAILED(hr))
             return false;
 
+        SetDebugName(commandAllocator.Get(), "Buffer upload command allocator");
+
         if (FAILED(D3D_CALL_CHECK(commandAllocator->Reset())))
             return false;
 
@@ -93,6 +95,8 @@ bool Buffer::UploadData(const BufferDesc& desc)
                                                                     IID_PPV_ARGS(commandList.GetPtr())));
         if (FAILED(hr))
             return false;
+
+        SetDebugName(commandList.Get(), "Buffer upload commandlist");
 
         if (FAILED(D3D_CALL_CHECK(commandList->Close())))
             return false;
@@ -138,7 +142,10 @@ bool Buffer::UploadData(const BufferDesc& desc)
 
         ID3D12CommandList* commandLists[] = { commandList.Get() };
         gDevice->GetResourceUploadQueue()->ExecuteCommandLists(1, commandLists);
-        gDevice->mResourceUploadQueueFence.Flush(gDevice->mResourceUploadQueue.Get());
+
+        // TODO get rid of wait, return the fence instead
+        // then the command list and allocator must come from command list manager
+        gDevice->mResourceUploadQueueFence.Signal(gDevice->mResourceUploadQueue.Get())->Wait();
     }
 
     return true;

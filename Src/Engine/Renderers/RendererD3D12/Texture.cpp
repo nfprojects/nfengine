@@ -82,6 +82,8 @@ bool Texture::UploadData(const TextureDesc& desc)
         if (FAILED(hr))
             return false;
 
+        SetDebugName(commandAllocator.Get(), "Texture upload command allocator");
+
         if (FAILED(D3D_CALL_CHECK(commandAllocator->Reset())))
             return false;
 
@@ -91,6 +93,8 @@ bool Texture::UploadData(const TextureDesc& desc)
                                                                     IID_PPV_ARGS(commandList.GetPtr())));
         if (FAILED(hr))
             return false;
+
+        SetDebugName(commandList.Get(), "Texture upload commandlist");
 
         if (FAILED(D3D_CALL_CHECK(commandList->Close())))
             return false;
@@ -167,7 +171,10 @@ bool Texture::UploadData(const TextureDesc& desc)
             return false;
         ID3D12CommandList* commandLists[] = { commandList.Get() };
         gDevice->GetResourceUploadQueue()->ExecuteCommandLists(1, commandLists);
-        gDevice->mResourceUploadQueueFence.Flush(gDevice->mResourceUploadQueue.Get());
+
+        // TODO get rid of wait, return the fence instead
+        // then the command list and allocator must come from command list manager
+        gDevice->mResourceUploadQueueFence.Signal(gDevice->mResourceUploadQueue.Get())->Wait();
 
         NFE_LOG_INFO("Uploating texture took %.3f ms", 1000.0 * timer.Stop());
     }

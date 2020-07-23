@@ -90,6 +90,19 @@ void TaskBuilder::Task(const char* debugName, const TaskFunction& func)
     mPendingTasks.PushBack(taskID);
 }
 
+void TaskBuilder::CustomTask(TaskID customTask)
+{
+    ThreadPool& tp = ThreadPool::GetInstance();
+
+    TaskDesc desc;
+    desc.debugName = "TaskBuilder::CustomTask";
+    desc.parent = mParentTask;
+    desc.dependency = customTask;
+
+    TaskID taskID = tp.CreateTask(desc);
+    mPendingTasks.PushBack(taskID);
+}
+
 void TaskBuilder::ParallelFor(const char* debugName, uint32 arraySize, const ParallelForTaskFunction& func)
 {
     ThreadPool& tp = ThreadPool::GetInstance();

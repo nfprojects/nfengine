@@ -56,7 +56,6 @@ private:
     Common::StaticArray<D3DPtr<ID3D12Resource>, DXGI_MAX_SWAP_CHAIN_BUFFERS> mBuffers;
 
     uint32 mCurrentBuffer;
-    HANDLE mWaitableObject;
 };
 
 } // namespace Renderer

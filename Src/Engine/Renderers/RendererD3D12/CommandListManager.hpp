@@ -38,7 +38,7 @@ public:
     /**
      * Called by Device when a command list is queued for execution.
      */
-    bool ExecuteCommandList(const Common::ArrayView<ICommandList*> commandLists, uint64 fenceValue);
+    void ExecuteCommandList(const Common::ArrayView<ICommandList*> commandLists);
 
     // Called by Device when a fence value completed on GPU
     void OnFenveValueCompleted(uint64 fenceValue);

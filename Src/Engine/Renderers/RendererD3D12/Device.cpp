@@ -20,19 +20,25 @@
 #include "Engine/Common/Utils/StringUtils.hpp"
 #include "Engine/Common/Utils/LanguageUtils.hpp"
 #include "Engine/Common/Utils/ScopedLock.hpp"
+#include "Engine/Common/Utils/TaskBuilder.hpp"
+#include "Engine/Common/Utils/Waitable.hpp"
 #include "Engine/Common/System/Timer.hpp"
 #include "Engine/Common/System/Thread.hpp"
+
+#include <dxgi1_5.h>
 
 
 namespace NFE {
 namespace Renderer {
 
+using namespace Common;
+
 namespace {
 
 template<typename Type, typename Desc>
-Common::SharedPtr<Type> CreateGenericResource(const Desc& desc)
+SharedPtr<Type> CreateGenericResource(const Desc& desc)
 {
-    auto resource = Common::MakeSharedPtr<Type>();
+    auto resource = MakeSharedPtr<Type>();
     if (!resource)
     {
         return nullptr;
@@ -48,91 +54,6 @@ Common::SharedPtr<Type> CreateGenericResource(const Desc& desc)
 
 } // namespace
 
-FenceData::FenceData()
-    : value(0)
-    , waitEvent(INVALID_HANDLE_VALUE)
-{}
-
-bool FenceData::Init(Device* device)
-{
-    HRESULT hr = D3D_CALL_CHECK(device->GetDevice()->CreateFence(InitialFenceValue, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(fenceObject.GetPtr())));
-    if (FAILED(hr))
-    {
-        NFE_LOG_ERROR("Failed to create D3D12 fence object");
-        return false;
-    }
-
-    // Create an event handle to use for frame synchronization.
-    waitEvent = CreateEvent(nullptr, FALSE, FALSE, nullptr);
-    if (waitEvent == INVALID_HANDLE_VALUE)
-    {
-        NFE_LOG_ERROR("Failed to create fence event object");
-        return false;
-    }
-
-    return true;
-}
-
-bool FenceData::Flush(ID3D12CommandQueue* queue)
-{
-    uint64 fenceValue;
-    {
-        // force ordering of fence values passed to Signal()
-        NFE_SCOPED_LOCK(lock);
-
-        fenceValue = value++;
-
-        if (FAILED(D3D_CALL_CHECK(queue->Signal(fenceObject.Get(), fenceValue))))
-        {
-            NFE_LOG_ERROR("Failed to enqueue fence value update");
-            return false;
-        }
-    }
-
-    return Wait(fenceValue);
-}
-
-bool FenceData::Wait(uint64 targetValue)
-{
-    for (;;)
-    {
-        uint64 completedFenceValue = fenceObject->GetCompletedValue();
-        if (completedFenceValue == UINT64_MAX)
-        {
-            HRESULT hr = D3D_CALL_CHECK(gDevice->GetDevice()->GetDeviceRemovedReason());
-            if (FAILED(hr))
-            {
-                return false;
-            }
-        }
-
-        if (completedFenceValue != InitialFenceValue && completedFenceValue >= targetValue)
-        {
-            break;
-        }
-
-        // Wait for the fence value to be updated
-        if (FAILED(D3D_CALL_CHECK(fenceObject->SetEventOnCompletion(targetValue, waitEvent))))
-        {
-            NFE_LOG_ERROR("Failed to set completion event for fence");
-            return false;
-        }
-
-        if (WaitForSingleObject(waitEvent, INFINITE) != WAIT_OBJECT_0)
-        {
-            NFE_LOG_ERROR("WaitForSingleObject failed");
-            return false;
-        }
-    }
-
-    return true;
-}
-
-void FenceData::Release()
-{
-    fenceObject.Reset();
-    CloseHandle(waitEvent);
-}
 
 Device::Device()
     : mCbvSrvUavHeapAllocator(HeapAllocator::Type::CbvSrvUav, 1024)
@@ -140,8 +61,7 @@ Device::Device()
     , mDsvHeapAllocator(HeapAllocator::Type::Dsv, 512)
     , mAdapterInUse(-1)
     , mDebugLayerEnabled(false)
-{
-}
+{}
 
 bool Device::Init(const DeviceInitParams* params)
 {
@@ -178,7 +98,7 @@ bool Device::Init(const DeviceInitParams* params)
             NFE_LOG_INFO("GPU name: %s", deviceInfo.description.Str());
             NFE_LOG_INFO("GPU info: %s", deviceInfo.misc.Str());
 
-            Common::String features;
+            String features;
             for (uint32 i = 0; i < deviceInfo.features.Size(); ++i)
             {
                 if (i > 0)
@@ -209,9 +129,18 @@ bool Device::Init(const DeviceInitParams* params)
         }
     }
 
-    mFrameFence.Init(this);
-    mGraphicsQueueFence.Init(this);
-    mResourceUploadQueueFence.Init(this);
+    mFrameFence.Init(&mFenceManager, this);
+    mGraphicsQueueFence.Init(&mFenceManager, this);
+    mResourceUploadQueueFence.Init(&mFenceManager, this);
+
+    // tick command list manager and global ringbuffer automatically when fence is completed on GPU
+    mGraphicsQueueFence.SetCallback([this](uint64 completedFenceValue)
+    {
+        mCommandListManager->OnFenveValueCompleted(completedFenceValue);
+        mRingBuffer.OnFrameCompleted(completedFenceValue);
+    });
+
+    mFenceManager.Initialize();
 
     if (!mRingBuffer.Init(8 * 1024 * 1024))
     {
@@ -220,7 +149,7 @@ bool Device::Init(const DeviceInitParams* params)
     }
 
     // create command lists manager
-    mCommandListManager = Common::MakeUniquePtr<CommandListManager>();
+    mCommandListManager = MakeUniquePtr<CommandListManager>();
     if (!mCommandListManager)
     {
         NFE_LOG_ERROR("Failed to allocate command list manager");
@@ -238,7 +167,7 @@ bool Device::Init(const DeviceInitParams* params)
 
 Device::~Device()
 {
-    WaitForGPU();
+    WaitForGPU()->Wait();
 
     mCommandListManager.Reset();
 
@@ -248,11 +177,15 @@ Device::~Device()
 
     mDXGIFactory.Reset();
     mAdapters.Clear();
-    mGraphicsQueue.Reset();
-    mResourceUploadQueue.Reset();
+
+    mFenceManager.Uninitialize();
     mGraphicsQueueFence.Release();
     mFrameFence.Release();
     mResourceUploadQueueFence.Release();
+
+    mGraphicsQueue.Reset();
+    mResourceUploadQueue.Reset();
+
     mDevice.Reset();
 
     if (mDebugDevice)
@@ -316,6 +249,17 @@ bool Device::InitializeDevice(const DeviceInitParams* params)
     if (FAILED(hr))
     {
         return false;
+    }
+
+    // determine tearing support
+    {
+        D3DPtr<IDXGIFactory5> factory5;
+        if (SUCCEEDED(mDXGIFactory->QueryInterface(IID_PPV_ARGS(factory5.GetPtr()))))
+        {
+            BOOL allowTearing = FALSE;
+            hr = factory5->CheckFeatureSupport(DXGI_FEATURE_PRESENT_ALLOW_TEARING, &allowTearing, sizeof(allowTearing));
+            mCaps.tearingSupport = SUCCEEDED(hr) && allowTearing;
+        }
     }
 
     int preferredCardId = params != nullptr ? params->preferredCardId : -1;
@@ -484,9 +428,9 @@ bool Device::DetectVideoCards(int preferredId)
         adapter->GetDesc1(&adapterDesc);
 
         // get GPU description
-        Common::Utf16String wideDesc = adapterDesc.Description;
-        Common::String descString;
-        Common::UTF16ToUTF8(wideDesc, descString);
+        Utf16String wideDesc = adapterDesc.Description;
+        String descString;
+        UTF16ToUTF8(wideDesc, descString);
 
         if (adapterDesc.Flags & DXGI_ADAPTER_FLAG_SOFTWARE)
             descString += " [software adapter]";
@@ -567,8 +511,8 @@ bool Device::GetDeviceInfo(DeviceInfo& info)
         return false;
 
     // get GPU description
-    Common::Utf16String wideDesc = adapterDesc.Description;
-    Common::UTF16ToUTF8(wideDesc, info.description);
+    Utf16String wideDesc = adapterDesc.Description;
+    UTF16ToUTF8(wideDesc, info.description);
 
     // get various GPU information
     info.misc =
@@ -655,42 +599,30 @@ bool Device::IsBackbufferFormatSupported(Format format)
 
 CommandRecorderPtr Device::CreateCommandRecorder()
 {
-    return Common::MakeSharedPtr<CommandRecorder>();
+    return MakeSharedPtr<CommandRecorder>();
 }
 
-bool Device::Execute(const Common::ArrayView<ICommandList*> commandLists)
+bool Device::Execute(const ArrayView<ICommandList*> commandLists)
 {
-    uint64 fenceValue;
+    mCommandListManager->ExecuteCommandList(commandLists);
+
+    uint64 fenceValue = mGraphicsQueueFence.SignalValue(mGraphicsQueue.Get());
+
+    // assign fenceValue to command lists
+    for (ICommandList* commandList : commandLists)
     {
-        // force ordering of fence values passed to Signal()
-        NFE_SCOPED_LOCK(mGraphicsQueueFence.lock);
+        NFE_ASSERT(commandList != nullptr, "Invalid command list ptr");
+        CommandList* typedCommandList = static_cast<CommandList*>(commandList);
 
-        fenceValue = mGraphicsQueueFence.value++;
-        mCommandListManager->ExecuteCommandList(commandLists, fenceValue);
-        mGraphicsQueue->Signal(mGraphicsQueueFence.fenceObject.Get(), fenceValue);
+        InternalCommandListPtr internalCommandList = typedCommandList->internalCommandList.Lock();
+        NFE_ASSERT(internalCommandList != nullptr);
 
-        uint64 completedValue = mGraphicsQueueFence.fenceObject->GetCompletedValue();
-        if (completedValue != FenceData::InitialFenceValue)
-        {
-            uint64 numPending = fenceValue - completedValue;
-            if (numPending >= 16)
-            {
-                NFE_LOG_WARNING("Command queue is pending %llu Execute() calls, this may lead to huge memory consumption and frame delay", numPending);
-            }
-        }
+        internalCommandList->AssignFenceValue(fenceValue);
+
+        typedCommandList->internalCommandList.Reset();
     }
 
     mRingBuffer.FinishFrame(fenceValue);
-
-    // TODO this should be done on separate thread
-    {
-        uint64 completedFenceValue = mGraphicsQueueFence.fenceObject->GetCompletedValue();
-        if (completedFenceValue != UINT64_MAX && completedFenceValue != FenceData::InitialFenceValue)
-        {
-            mCommandListManager->OnFenveValueCompleted(completedFenceValue);
-            mRingBuffer.OnFrameCompleted(completedFenceValue);
-        }
-    }
 
     return true;
 }
@@ -716,7 +648,8 @@ bool Device::DownloadTexture(const TexturePtr& tex, void* data, uint32 mipmap, u
         return false;
     }
 
-    WaitForGPU();
+    // TODO
+    WaitForGPU()->Wait();
 
     char* mappedData;
     HRESULT hr = texture->GetResource()->Map(0, NULL, reinterpret_cast<void**>(&mappedData));
@@ -741,32 +674,26 @@ bool Device::DownloadTexture(const TexturePtr& tex, void* data, uint32 mipmap, u
 
 bool Device::FinishFrame()
 {
-    const uint32 maxBufferedFrames = 2;
-
-    uint64 fenceValue = mFrameFence.value++;
-    mGraphicsQueue->Signal(mFrameFence.fenceObject.Get(), fenceValue);
-
-    if (fenceValue >= maxBufferedFrames - 1)
+    FencePtr fence;
+    if (mPendingFramesFences.Size() >= MaxPendingFrames)
     {
-        mFrameFence.Wait(fenceValue - (maxBufferedFrames - 1));
+        fence = std::move(mPendingFramesFences.Front());
+        mPendingFramesFences.Erase(mPendingFramesFences.Begin(), mPendingFramesFences.Begin() + 1);
+    }
+
+    mPendingFramesFences.PushBack(mGraphicsQueueFence.Signal(mGraphicsQueue.Get()));
+
+    if (fence)
+    {
+        fence->Wait();
     }
 
     return true;
 }
 
-bool Device::WaitForGPU()
+FencePtr Device::WaitForGPU()
 {
-    Common::Timer timer;
-    timer.Start();
-
-    bool result = mGraphicsQueueFence.Flush(mGraphicsQueue.Get());
-
-    NFE_LOG_WARNING("Waiting for GPU took %.3f ms", 1000.0 * timer.Stop());
-
-    mCommandListManager->OnFenveValueCompleted(mGraphicsQueueFence.value);
-    mRingBuffer.OnFrameCompleted(mGraphicsQueueFence.value);
-
-    return result;
+    return mGraphicsQueueFence.Signal(mGraphicsQueue.Get());
 }
 
 } // namespace Renderer

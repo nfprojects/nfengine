@@ -234,7 +234,7 @@ void CommandRecorder::BindResources(uint32 slot, const ResourceBindingInstancePt
     if (instance != mGraphicsBindingInstances[slot])
     {
         mGraphicsBindingInstances[slot] = instance;
-        Internal_GetReferencedResources().bindingSetInstances.Insert(bindingSetInstance);
+        Internal_ReferenceBindingSetInstance(bindingSetInstance);
         mGraphicsBindingInstancesChanged = true;
     }
 }
@@ -814,21 +814,31 @@ void CommandRecorder::Internal_UpdateGraphicsResourceBindings()
         // TODO pass proper subresource (based on resource view that is written to resource binding)
         for (uint32 i = 0; i < instance->mResources.Size(); ++i)
         {
-            if (Resource* resource = instance->mResources[i])
+            const ResourceBindingInstance::Resource& resource = instance->mResources[i];
+
+            Texture* textureResource = static_cast<Texture*>(resource.texture.Get());
+            Buffer* bufferResource = static_cast<Buffer*>(resource.buffer.Get());
+
+            if (textureResource || bufferResource)
             {
                 switch (instance->mSet->mBindings[i].resourceType)
                 {
                 case ShaderResourceType::CBuffer:
-                    mResourceStateCache.EnsureResourceState(resource, D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER);
+                    mResourceStateCache.EnsureResourceState(bufferResource, D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER);
                     break;
                 case ShaderResourceType::Texture:
+                    // TODO limit shader visibility (based on binding layout properties)
+                    mResourceStateCache.EnsureResourceState(textureResource, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE | D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE);
+                    break;
                 case ShaderResourceType::StructuredBuffer:
                     // TODO limit shader visibility (based on binding layout properties)
-                    mResourceStateCache.EnsureResourceState(resource, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE | D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE);
+                    mResourceStateCache.EnsureResourceState(bufferResource, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE | D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE);
                     break;
                 case ShaderResourceType::WritableTexture:
+                    mResourceStateCache.EnsureResourceState(textureResource, D3D12_RESOURCE_STATE_UNORDERED_ACCESS);
+                    break;
                 case ShaderResourceType::WritableStructuredBuffer:
-                    mResourceStateCache.EnsureResourceState(resource, D3D12_RESOURCE_STATE_UNORDERED_ACCESS);
+                    mResourceStateCache.EnsureResourceState(bufferResource, D3D12_RESOURCE_STATE_UNORDERED_ACCESS);
                     break;
                 }
             }
@@ -872,21 +882,31 @@ void CommandRecorder::Internal_UpdateComputeResourceBindings()
         // TODO pass proper subresource (based on resource view that is written to resource binding)
         for (uint32 i = 0; i < instance->mResources.Size(); ++i)
         {
-            if (Resource* resource = instance->mResources[i])
+            const ResourceBindingInstance::Resource& resource = instance->mResources[i];
+
+            Texture* textureResource = static_cast<Texture*>(resource.texture.Get());
+            Buffer* bufferResource = static_cast<Buffer*>(resource.buffer.Get());
+
+            if (textureResource || bufferResource)
             {
                 switch (instance->mSet->mBindings[i].resourceType)
                 {
                 case ShaderResourceType::CBuffer:
-                    mResourceStateCache.EnsureResourceState(resource, D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER);
+                    mResourceStateCache.EnsureResourceState(bufferResource, D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER);
                     break;
                 case ShaderResourceType::Texture:
+                    // TODO limit shader visibility (based on binding layout properties)
+                    mResourceStateCache.EnsureResourceState(textureResource, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE | D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE);
+                    break;
                 case ShaderResourceType::StructuredBuffer:
                     // TODO limit shader visibility (based on binding layout properties)
-                    mResourceStateCache.EnsureResourceState(resource, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE | D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE);
+                    mResourceStateCache.EnsureResourceState(bufferResource, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE | D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE);
                     break;
                 case ShaderResourceType::WritableTexture:
+                    mResourceStateCache.EnsureResourceState(textureResource, D3D12_RESOURCE_STATE_UNORDERED_ACCESS);
+                    break;
                 case ShaderResourceType::WritableStructuredBuffer:
-                    mResourceStateCache.EnsureResourceState(resource, D3D12_RESOURCE_STATE_UNORDERED_ACCESS);
+                    mResourceStateCache.EnsureResourceState(bufferResource, D3D12_RESOURCE_STATE_UNORDERED_ACCESS);
                     break;
                 }
             }
@@ -944,7 +964,7 @@ void CommandRecorder::BindComputeResources(uint32 slot, const ResourceBindingIns
     if (instance != mComputeBindingInstances[slot])
     {
         mComputeBindingInstances[slot] = instance;
-        Internal_GetReferencedResources().bindingSetInstances.Insert(bindingSetInstance);
+        Internal_ReferenceBindingSetInstance(bindingSetInstance);
         mComputeBindingInstancesChanged = true;
     }
 }
@@ -995,6 +1015,36 @@ void CommandRecorder::Dispatch(uint32 x, uint32 y, uint32 z)
     Internal_PrepareForDispatch();
 
     mCommandList->Dispatch(x, y, z);
+}
+
+void CommandRecorder::Internal_ReferenceBindingSetInstance(const ResourceBindingInstancePtr& bindingSetInstance)
+{
+    if (!bindingSetInstance)
+    {
+        return;
+    }
+
+    ReferencedResourcesList& referencedResources = Internal_GetReferencedResources();
+
+    referencedResources.bindingSetInstances.Insert(bindingSetInstance);
+
+    ResourceBindingInstance* instance = static_cast<ResourceBindingInstance*>(bindingSetInstance.Get());
+
+    // add all resources used by this set as well
+    for (uint32 i = 0; i < instance->mResources.Size(); ++i)
+    {
+        const ResourceBindingInstance::Resource& resource = instance->mResources[i];
+
+        if (resource.texture)
+        {
+            referencedResources.textures.Insert(resource.texture);
+        }
+
+        if (resource.buffer)
+        {
+            referencedResources.buffers.Insert(resource.buffer);
+        }
+    }
 }
 
 void CommandRecorder::BeginDebugGroup(const char* text)

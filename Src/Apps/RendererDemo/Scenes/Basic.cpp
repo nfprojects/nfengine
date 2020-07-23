@@ -12,6 +12,7 @@
 #include "Engine/Common/Math/Math.hpp"
 #include "Engine/Common/Math/Matrix4.hpp"
 #include "Engine/Common/Logger/Logger.hpp"
+#include "Engine/Renderers/RendererCommon/Fence.hpp"
 
 #include <vector>
 #include <functional>
@@ -439,6 +440,7 @@ void BasicScene::Draw(float dt)
 {
     // reset bound resources and set them once again
     mCommandBuffer->Begin();
+
     mCommandBuffer->SetViewport(0.0f, (float)WINDOW_WIDTH, 0.0f, (float)WINDOW_HEIGHT, 0.0f, 1.0f);
     mCommandBuffer->SetScissors(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
     mCommandBuffer->SetRenderTarget(mWindowRenderTarget);
@@ -509,9 +511,9 @@ void BasicScene::Draw(float dt)
     }
 
     mCommandBuffer->CopyTexture(mWindowRenderTargetTexture, mWindowBackbuffer);
-
     CommandListPtr commandList = mCommandBuffer->Finish();
     mRendererDevice->Execute(commandList);
+
     mWindowBackbuffer->Present();
     mRendererDevice->FinishFrame();
 }

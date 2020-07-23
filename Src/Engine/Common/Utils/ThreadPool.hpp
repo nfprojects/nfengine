@@ -83,6 +83,7 @@ public:
 
     static constexpr uint32 TasksCapacity = 1024 * 128;
     static constexpr uint32 NumPriorities = 3;
+    static constexpr uint32 MaxPriority = NumPriorities - 1;
 
     ThreadPool();
     ~ThreadPool();
@@ -119,7 +120,7 @@ private:
     // create "num" additional worker threads
     void SpawnWorkerThreads(uint32 num);
 
-    bool ResizeTasksTable(uint32 newSize);
+    bool InitTasksTable(uint32 newSize);
 
     // Worker threads variables:
     DynArray<WorkerThreadPtr> mThreads;

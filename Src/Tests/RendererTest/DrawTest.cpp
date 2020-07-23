@@ -1,6 +1,7 @@
 #include "PCH.hpp"
 #include "Backends.hpp"
 #include "DrawTest.hpp"
+#include "Engine/Renderers/RendererCommon/Fence.hpp"
 
 
 void DrawTest::BeginTestFrame(uint32 width, uint32 height, size_t numTargets, const Format* formats)
@@ -67,7 +68,7 @@ void DrawTest::EndTestFrame()
 
     ASSERT_TRUE(gRendererDevice->Execute(commandList));
     ASSERT_TRUE(gRendererDevice->FinishFrame());
-    gRendererDevice->WaitForGPU();
+    gRendererDevice->WaitForGPU()->Wait();
 
     // download pixel data from readback texture
     for (size_t i = 0; i < mTargetTextures.size(); ++i)

@@ -25,6 +25,10 @@ public:
     // Note: multiple pushed tasks can run in parallel
     void Task(const char* debugName, const TaskFunction& func);
 
+    // Push a custom task
+    // Note: The task must be created, but not yet dispatched
+    void CustomTask(TaskID customTask);
+
     // push parallel-for task
     void ParallelFor(const char* debugName, uint32 arraySize, const ParallelForTaskFunction& func);
 

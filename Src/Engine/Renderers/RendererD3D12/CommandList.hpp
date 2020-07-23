@@ -62,11 +62,13 @@ public:
 
     void ApplyFinalResourceStates();
 
+    void AssignFenceValue(uint64 fenceValue);
+
 private:
 
     void OnExecuted();
 
-    uint64 mFrameNumber;
+    uint64 mFenceValue;
     uint32 mID;
     State mState;
 

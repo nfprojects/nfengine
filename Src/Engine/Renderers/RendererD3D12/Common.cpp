@@ -8,6 +8,7 @@
 
 #include "PCH.hpp"
 #include "Common.hpp"
+#include "RendererD3D12.hpp"
 #include "Engine/Common/Logger/Logger.hpp"
 
 
@@ -57,6 +58,28 @@ HRESULT D3DError(HRESULT hr, const char* srcFile, int line)
     }
 
     return hr;
+}
+
+bool SetDebugName(ID3D12Object* obj, const Common::StringView name)
+{
+    if (gDevice->IsDebugLayerEnabled() && !name.Empty())
+    {
+        Common::Utf16String longName;
+        if (Common::UTF8ToUTF16(name, longName))
+        {
+            if (FAILED(D3D_CALL_CHECK(obj->SetName(longName.c_str()))))
+            {
+                NFE_LOG_ERROR("Failed to set debug name for D3D object: '%.*s'", name.Length(), name.Data());
+                return false;
+            }
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    return true;
 }
 
 } // namespace Renderer

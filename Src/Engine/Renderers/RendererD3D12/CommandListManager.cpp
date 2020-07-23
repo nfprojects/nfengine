@@ -98,7 +98,7 @@ CommandListPtr CommandListManager::OnCommandListRecorded(const InternalCommandLi
     return MakeUniquePtr<CommandList>(commandList);
 }
 
-bool CommandListManager::ExecuteCommandList(const Common::ArrayView<ICommandList*> commandLists, uint64 fenceValue)
+void CommandListManager::ExecuteCommandList(const Common::ArrayView<ICommandList*> commandLists)
 {
     const uint32 maxCommandLists = 256;
     StaticArray<ID3D12CommandList*, maxCommandLists> d3dCommandListsToExecute;
@@ -123,22 +123,17 @@ bool CommandListManager::ExecuteCommandList(const Common::ArrayView<ICommandList
             d3dCommandListsToExecute.PushBack(internalCommandList->GetD3DCommandList());
 
             internalCommandList->ApplyFinalResourceStates();
-
-            typedCommandList->internalCommandList.Reset();
             internalCommandList->mState = InternalCommandList::State::Executing;
-            internalCommandList->mFrameNumber = fenceValue;
         }
     }
 
     // TODO multiple queues support
     gDevice->GetGraphicsQueue()->ExecuteCommandLists(d3dCommandListsToExecute.Size(), d3dCommandListsToExecute.Data());
-
-    return true;
 }
 
 void CommandListManager::OnFenveValueCompleted(uint64 fenceValue)
 {
-    NFE_ASSERT(fenceValue != UINT64_MAX && fenceValue != FenceData::InitialFenceValue, "Invalid fence value");
+    NFE_ASSERT(fenceValue != FenceData::InvalidValue, "Invalid fence value");
 
     NFE_SCOPED_LOCK(mLock);
 
@@ -146,7 +141,7 @@ void CommandListManager::OnFenveValueCompleted(uint64 fenceValue)
     {
         if (commandList->GetState() == InternalCommandList::State::Executing)
         {
-            if (commandList->mFrameNumber <= fenceValue)
+            if (commandList->mFenceValue <= fenceValue)
             {
                 commandList->OnExecuted();
             }

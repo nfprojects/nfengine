@@ -67,7 +67,14 @@ class ResourceBindingInstance : public IResourceBindingInstance
     InternalResourceBindingSetPtr mSet;
     uint32 mDescriptorHeapOffset;
 
-    Common::DynArray<Resource*> mResources;
+    struct Resource
+    {
+        // TODO make common class for ITexture and IBuffer
+        TexturePtr texture;
+        BufferPtr buffer;
+    };
+
+    Common::DynArray<Resource> mResources;
 
 public:
     ResourceBindingInstance() : mDescriptorHeapOffset(0), mSet(nullptr) { }

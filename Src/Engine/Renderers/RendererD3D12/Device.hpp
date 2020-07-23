@@ -7,13 +7,14 @@
 #pragma once
 
 #include "../RendererCommon/Device.hpp"
-#include "Common.hpp"
+#include "Fence.hpp"
 #include "PipelineState.hpp"
 #include "HeapAllocator.hpp"
 #include "RingBuffer.hpp"
 #include "ShaderCompiler.hpp"
 
 #include "Engine/Common/Containers/DynArray.hpp"
+#include "Engine/Common/Containers/StaticArray.hpp"
 #include "Engine/Common/Containers/WeakPtr.hpp"
 
 #include <atomic>
@@ -28,21 +29,9 @@ class CommandListManager;
 
 using CommandRecorderWeakPtr = Common::WeakPtr<CommandRecorder>;
 
-struct FenceData
+struct DeviceCaps
 {
-    static constexpr uint64 InitialFenceValue = 0xfefefefefefefefeULL;
-
-    FenceData();
-
-    bool Init(Device* device);
-    void Release();
-    bool Wait(uint64 targetValue);
-    bool Flush(ID3D12CommandQueue* queue);
-
-    D3DPtr<ID3D12Fence> fenceObject;
-    Common::RWLock lock;
-    std::atomic<uint64> value;
-    HANDLE waitEvent;
+    bool tearingSupport = false;
 };
 
 class Device : public IDevice
@@ -53,6 +42,8 @@ class Device : public IDevice
     friend class RenderTarget;
     friend class Buffer;
     friend class Texture;
+
+    DeviceCaps mCaps;
 
     D3D_FEATURE_LEVEL mFeatureLevel;
 
@@ -80,6 +71,11 @@ class Device : public IDevice
     FenceData mGraphicsQueueFence;
     FenceData mResourceUploadQueueFence;
 
+    FenceManager mFenceManager;
+
+    static constexpr uint32 MaxPendingFrames = 2;
+    Common::StaticArray<FencePtr, MaxPendingFrames> mPendingFramesFences;
+
     RingBuffer mRingBuffer;
 
     HeapAllocator mCbvSrvUavHeapAllocator;
@@ -101,6 +97,7 @@ public:
     ~Device();
     bool Init(const DeviceInitParams* params);
 
+    const DeviceCaps& GetCaps() const { return mCaps; }
     ID3D12Device* GetDevice() const { return mDevice.Get(); }
     ID3D12CommandQueue* GetGraphicsQueue() const { return mGraphicsQueue.Get(); }
     ID3D12CommandQueue* GetResourceUploadQueue() const { return mResourceUploadQueue.Get(); }
@@ -130,7 +127,7 @@ public:
     bool DownloadBuffer(const BufferPtr& buffer, size_t offset, size_t size, void* data) override;
     bool DownloadTexture(const TexturePtr& tex, void* data, uint32 mipmap, uint32 layer) override;
 
-    bool WaitForGPU() override;
+    FencePtr WaitForGPU() override;
 
     CommandListManager* GetCommandListManager() const
     {

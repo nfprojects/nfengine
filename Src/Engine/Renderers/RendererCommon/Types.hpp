@@ -28,6 +28,7 @@ class IComputePipelineState;
 class IRenderTarget;
 class IShader;
 class IVertexLayout;
+class IFence;
 
 // TODO discuss if unique_ptr wouldn't fit better
 using CommandRecorderPtr = Common::SharedPtr<ICommandRecorder>;
@@ -44,6 +45,7 @@ using ComputePipelineStatePtr = Common::SharedPtr<IComputePipelineState>;
 using RenderTargetPtr = Common::SharedPtr<IRenderTarget>;
 using ShaderPtr = Common::SharedPtr<IShader>;
 using VertexLayoutPtr = Common::SharedPtr<IVertexLayout>;
+using FencePtr = Common::SharedPtr<IFence>;
 
 #define MAX_RENDER_TARGETS 8
 #define MAX_MIPMAP_LEVELS 16

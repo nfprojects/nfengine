@@ -87,9 +87,9 @@ public:
 
     /**
      * Waits until all operations sent to the command queue has been completed.
-     * @return True on success.
+     * @return Fence object.
      */
-    virtual bool WaitForGPU() = 0;
+    virtual FencePtr WaitForGPU() = 0;
 
     /**
      * Execute a command lists.

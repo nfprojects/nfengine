@@ -128,6 +128,7 @@ COPY "$(WindowsSdkDir)redist\d3d\x64\dxil.dll" "$(SolutionDir)Bin\$(Platform)\$(
     <ClCompile Include="CommandList.cpp" />
     <ClCompile Include="CommandListManager.cpp" />
     <ClCompile Include="ComputePipelineState.cpp" />
+    <ClCompile Include="Fence.cpp" />
     <ClCompile Include="HeapAllocator.cpp" />
     <ClCompile Include="PipelineState.cpp" />
     <ClCompile Include="Buffer.cpp" />
@@ -175,6 +176,7 @@ COPY "$(WindowsSdkDir)redist\d3d\x64\dxil.dll" "$(SolutionDir)Bin\$(Platform)\$(
     <ClInclude Include="D3DPtr.hpp" />
     <ClInclude Include="D:\DEV\EXTERNAL\DirectX-Graphics-Samples\Libraries\D3DX12\d3dx12.h" />
     <ClInclude Include="Device.hpp" />
+    <ClInclude Include="Fence.hpp" />
     <ClInclude Include="Format.hpp" />
     <ClInclude Include="HeapAllocator.hpp" />
     <ClInclude Include="PipelineState.hpp" />

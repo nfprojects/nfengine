@@ -39,7 +39,7 @@ ThreadPool::ThreadPool()
     : mFirstFreeTask(InvalidTaskID)
 {
     // TODO make it configurable
-    ResizeTasksTable(TasksCapacity);
+    InitTasksTable(TasksCapacity);
     SpawnWorkerThreads(Thread::GetSystemThreadsCount());
 }
 
@@ -60,8 +60,9 @@ ThreadPool::~ThreadPool()
     mThreads.Clear();
 }
 
-bool ThreadPool::ResizeTasksTable(uint32 newSize)
+bool ThreadPool::InitTasksTable(uint32 newSize)
 {
+    /*
     const uint32 oldSize = mTasks.Size();
     newSize = Math::Max(1u, newSize);
 
@@ -84,6 +85,20 @@ bool ThreadPool::ResizeTasksTable(uint32 newSize)
         }
         mFirstFreeTask = lastFreeTask;
     }
+    */
+
+    if (!mTasks.Resize(newSize))
+    {
+        NFE_LOG_ERROR("Failed to reserve space for threadpool's tasks buffer");
+        return false;
+    }
+
+    mFirstFreeTask = 0;
+    for (uint32 i = 0; i < newSize - 1; ++i)
+    {
+        mTasks[i].mNextFree = i + 1;
+    }
+    mTasks[newSize - 1].mNextFree = InvalidTaskID;
 
     return true;
 }

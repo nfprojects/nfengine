@@ -87,6 +87,8 @@ private:
 
     void Internal_UnsetRenderTarget();
 
+    void Internal_ReferenceBindingSetInstance(const ResourceBindingInstancePtr& bindingSetInstance);
+
     void Internal_WriteDynamicBuffer(Buffer* buffer, size_t offset, size_t size, const void* data);
     void Internal_WriteVolatileBuffer(Buffer* buffer, const void* data);
 

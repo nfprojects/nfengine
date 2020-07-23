@@ -5,9 +5,11 @@
  */
 
 #include "PCH.hpp"
+#include "RendererD3D12.hpp"
 #include "CommandListManager.hpp"
 #include "CommandList.hpp"
-#include "RendererD3D12.hpp"
+#include "Fence.hpp"
+#include "Common.hpp"
 
 #include "Engine/Common/Logger/Logger.hpp"
 
@@ -18,7 +20,7 @@ namespace Renderer {
 using namespace Common;
 
 InternalCommandList::InternalCommandList(uint32 id)
-    : mFrameNumber(UINT64_MAX)
+    : mFenceValue(FenceData::InvalidValue)
     , mState(State::Invalid)
     , mID(id)
 { }
@@ -40,6 +42,8 @@ bool InternalCommandList::Init()
         return false;
     }
 
+    SetDebugName(mCommandAllocator.Get(), "InternalCommandList::mCommandAllocator");
+
     // create D3D command list (for resource barrier injection)
     hr = D3D_CALL_CHECK(device->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_DIRECT, mCommandAllocator.Get(),
         nullptr, IID_PPV_ARGS(mResourceBarriersCommandList.GetPtr())));
@@ -48,6 +52,9 @@ bool InternalCommandList::Init()
         NFE_LOG_ERROR("Failed to create D3D12 command list");
         return false;
     }
+
+    SetDebugName(mResourceBarriersCommandList.Get(), "InternalCommandList::mResourceBarriersCommandList");
+
     // close immediately, we don't want that in recording state
     mResourceBarriersCommandList->Close();
 
@@ -60,6 +67,8 @@ bool InternalCommandList::Init()
         return false;
     }
 
+    SetDebugName(mResourceBarriersCommandList.Get(), "InternalCommandList::mCommandList");
+
     // created D3D12 command list is in recording state by default
     mState = State::Recording;
 
@@ -67,17 +76,27 @@ bool InternalCommandList::Init()
     return true;
 }
 
+void InternalCommandList::AssignFenceValue(uint64 fenceValue)
+{
+    NFE_ASSERT(fenceValue != FenceData::InvalidValue, "Invalid fence value");
+    NFE_ASSERT(fenceValue != FenceData::InitialValue, "Invalid fence value");
+    NFE_ASSERT(mFenceValue == FenceData::InvalidValue, "Already has fence value");
+
+    mFenceValue = fenceValue;
+}
+
 void InternalCommandList::OnExecuted()
 {
-    NFE_ASSERT(mFrameNumber < UINT64_MAX);
+    NFE_ASSERT(mFenceValue != FenceData::InvalidValue);
+    NFE_ASSERT(mFenceValue != FenceData::InitialValue);
     NFE_ASSERT(mState == State::Executing);
 
-    uint64 completedValue = gDevice->mGraphicsQueueFence.fenceObject->GetCompletedValue();
-    NFE_ASSERT(completedValue >= mFrameNumber);
+    uint64 completedValue = gDevice->mGraphicsQueueFence.GetCompletedValue();
+    NFE_ASSERT(completedValue >= mFenceValue);
 
     mReferencedResources.Clear();
     mState = State::Free;
-    mFrameNumber = UINT64_MAX;
+    mFenceValue = FenceData::InvalidValue;
 }
 
 ID3D12GraphicsCommandList* InternalCommandList::GenerateResourceBarriersCommandList()
