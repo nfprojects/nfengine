@@ -31,7 +31,8 @@
     <ClInclude Include="API\VertexLayout.hpp" />
     <ClInclude Include="Defines.hpp" />
     <ClInclude Include="Internal\CommandBatch.hpp" />
-    <ClInclude Include="Internal\CommandBufferState.hpp" />
+    <ClInclude Include="Internal\CommandBatchState.hpp" />
+    <ClInclude Include="Internal\CommandRecording.hpp" />
     <ClInclude Include="Internal\Commands.hpp" />
     <ClInclude Include="Internal\Debugger.hpp" />
     <ClInclude Include="Internal\Extensions.hpp" />
@@ -43,6 +44,7 @@
     <ClInclude Include="Internal\LocalAllocatorObject.hpp" />
     <ClInclude Include="Internal\RenderPassDesc.hpp" />
     <ClInclude Include="Internal\RenderPassManager.hpp" />
+    <ClInclude Include="Internal\RenderPassState.hpp" />
     <ClInclude Include="Internal\ResourceState.hpp" />
     <ClInclude Include="Internal\RingBuffer.hpp" />
     <ClInclude Include="Internal\SemaphorePool.hpp">
@@ -89,6 +91,11 @@
     <ClCompile Include="Internal\Extensions.cpp" />
     <ClCompile Include="Internal\Instance.cpp" />
     <ClCompile Include="Internal\RenderPassManager.cpp" />
+    <ClCompile Include="Internal\RenderPassState.cpp">
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../PCH.hpp</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Final|x64'">../PCH.hpp</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">../PCH.hpp</PrecompiledHeaderFile>
+    </ClCompile>
     <ClCompile Include="Internal\ResourceState.cpp">
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../PCH.hpp</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Final|x64'">../PCH.hpp</PrecompiledHeaderFile>

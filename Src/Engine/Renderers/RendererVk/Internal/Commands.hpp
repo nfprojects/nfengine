@@ -19,7 +19,7 @@ public:
     {
     }
 
-    void Execute(VkCommandBuffer commandBuffer, CommandBufferState& state) override
+    void Execute(VkCommandBuffer commandBuffer, CommandBatchState& state) override
     {
         NFE_UNUSED(state);
         vkCmdEndRenderPass(commandBuffer);
@@ -44,7 +44,7 @@ public:
     {
     }
 
-    void Execute(VkCommandBuffer commandBuffer, CommandBufferState& state) override
+    void Execute(VkCommandBuffer commandBuffer, CommandBatchState& state) override
     {
         NFE_UNUSED(commandBuffer);
         state.mPipelineLayout = mPipelineLayout;
@@ -69,7 +69,7 @@ public:
     {
     }
 
-    void Execute(VkCommandBuffer commandBuffer, CommandBufferState& state) override
+    void Execute(VkCommandBuffer commandBuffer, CommandBatchState& state) override
     {
         NFE_UNUSED(state);
         vkCmdBindPipeline(commandBuffer, mBindPoint, mPipeline);
@@ -98,7 +98,7 @@ public:
     {
     }
 
-    void Execute(VkCommandBuffer commandBuffer, CommandBufferState& state) override
+    void Execute(VkCommandBuffer commandBuffer, CommandBatchState& state) override
     {
         vkCmdBindDescriptorSets(commandBuffer, mBindPoint,
                                 state.mPipelineLayout,
@@ -129,7 +129,7 @@ public:
         memcpy(mOffsets, offsets, sizeof(uint32) * mOffsetCount);
     }
 
-    void Execute(VkCommandBuffer commandBuffer, CommandBufferState& state) override
+    void Execute(VkCommandBuffer commandBuffer, CommandBatchState& state) override
     {
         // TODO
         vkCmdBindDescriptorSets(commandBuffer, mBindPoint,
@@ -161,7 +161,7 @@ public:
         memcpy(mOffsets, offsets, sizeof(VkDeviceSize) * bindingCount);
     }
 
-    void Execute(VkCommandBuffer commandBuffer, CommandBufferState& state) override
+    void Execute(VkCommandBuffer commandBuffer, CommandBatchState& state) override
     {
         NFE_UNUSED(state);
         vkCmdBindVertexBuffers(commandBuffer, mFirstBinding, mBindingCount, mBuffers, mOffsets);
@@ -188,7 +188,7 @@ public:
     {
     }
 
-    void Execute(VkCommandBuffer commandBuffer, CommandBufferState& state) override
+    void Execute(VkCommandBuffer commandBuffer, CommandBatchState& state) override
     {
         NFE_UNUSED(state);
         vkCmdBindIndexBuffer(commandBuffer, mBuffer, mOffset, mIndexType);
@@ -220,7 +220,7 @@ public:
         memcpy(mImageBarriers, imageBarriers, sizeof(VkImageMemoryBarrier) * mImageBarrierCount);
     }
 
-    void Execute(VkCommandBuffer commandBuffer, CommandBufferState& state) override
+    void Execute(VkCommandBuffer commandBuffer, CommandBatchState& state) override
     {
         NFE_UNUSED(state);
         vkCmdPipelineBarrier(commandBuffer,
@@ -248,7 +248,7 @@ public:
     {
     }
 
-    void Execute(VkCommandBuffer commandBuffer, CommandBufferState& state) override
+    void Execute(VkCommandBuffer commandBuffer, CommandBatchState& state) override
     {
         state.mRenderTargetRect = mInfo.renderArea;
         vkCmdBeginRenderPass(commandBuffer, &mInfo, VK_SUBPASS_CONTENTS_INLINE);
@@ -277,7 +277,7 @@ public:
         memcpy(mClearAttachments, clearAttachments, sizeof(VkClearAttachment) * mClearAttachmentsNum);
     }
 
-    void Execute(VkCommandBuffer commandBuffer, CommandBufferState& state) override
+    void Execute(VkCommandBuffer commandBuffer, CommandBatchState& state) override
     {
         VkClearRect clearRect;
         clearRect.baseArrayLayer = 0;
@@ -303,7 +303,7 @@ public:
     {
     }
 
-    void Execute(VkCommandBuffer commandBuffer, CommandBufferState& state) override
+    void Execute(VkCommandBuffer commandBuffer, CommandBatchState& state) override
     {
         NFE_UNUSED(state);
         vkCmdSetScissor(commandBuffer, 0, 1, &mScissor);
@@ -326,7 +326,7 @@ public:
     {
     }
 
-    void Execute(VkCommandBuffer commandBuffer, CommandBufferState& state) override
+    void Execute(VkCommandBuffer commandBuffer, CommandBatchState& state) override
     {
         NFE_UNUSED(state);
         vkCmdSetStencilReference(commandBuffer, VK_STENCIL_FACE_FRONT_BIT | VK_STENCIL_FACE_BACK_BIT, mReference);
@@ -349,7 +349,7 @@ public:
     {
     }
 
-    void Execute(VkCommandBuffer commandBuffer, CommandBufferState& state) override
+    void Execute(VkCommandBuffer commandBuffer, CommandBatchState& state) override
     {
         NFE_UNUSED(state);
         vkCmdSetViewport(commandBuffer, 0, 1, &mViewport);
@@ -375,7 +375,7 @@ public:
     {
     }
 
-    void Execute(VkCommandBuffer commandBuffer, CommandBufferState& state) override
+    void Execute(VkCommandBuffer commandBuffer, CommandBatchState& state) override
     {
         NFE_UNUSED(state);
         vkCmdBlitImage(commandBuffer,
@@ -404,7 +404,7 @@ public:
     {
     }
 
-    void Execute(VkCommandBuffer commandBuffer, CommandBufferState& state) override
+    void Execute(VkCommandBuffer commandBuffer, CommandBatchState& state) override
     {
         NFE_UNUSED(state);
         vkCmdCopyImage(commandBuffer,
@@ -432,7 +432,7 @@ public:
     {
     }
 
-    void Execute(VkCommandBuffer commandBuffer, CommandBufferState& state) override
+    void Execute(VkCommandBuffer commandBuffer, CommandBatchState& state) override
     {
         NFE_UNUSED(state);
         vkCmdDispatch(commandBuffer, mX, mY, mZ);
@@ -461,7 +461,7 @@ public:
     {
     }
 
-    void Execute(VkCommandBuffer commandBuffer, CommandBufferState& state) override
+    void Execute(VkCommandBuffer commandBuffer, CommandBatchState& state) override
     {
         NFE_UNUSED(state);
         vkCmdDraw(commandBuffer, mVertexNum, mInstancesNum, mVertexOffset, mInstanceOffset);
@@ -492,7 +492,7 @@ public:
     {
     }
 
-    void Execute(VkCommandBuffer commandBuffer, CommandBufferState& state) override
+    void Execute(VkCommandBuffer commandBuffer, CommandBatchState& state) override
     {
         NFE_UNUSED(state);
         vkCmdDrawIndexed(commandBuffer, mIndexNum, mInstancesNum, mIndexOffset, mVertexOffset, mInstanceOffset);
@@ -512,7 +512,7 @@ public:
     {
     }
 
-    void Execute(VkCommandBuffer commandBuffer, CommandBufferState& state) override
+    void Execute(VkCommandBuffer commandBuffer, CommandBatchState& state) override
     {
         NFE_UNUSED(commandBuffer);
         NFE_UNUSED(state);

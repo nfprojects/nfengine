@@ -14,9 +14,11 @@
 #include "Buffer.hpp"
 #include "Internal/RingBuffer.hpp"
 #include "Internal/ICommand.hpp"
-#include "Internal/CommandBufferState.hpp"
+#include "Internal/CommandBatchState.hpp"
 #include "Internal/CommandBatch.hpp"
 #include "Internal/ResourceState.hpp"
+#include "Internal/CommandRecording.hpp"
+#include "Internal/RenderPassState.hpp"
 
 
 namespace NFE {
@@ -27,17 +29,15 @@ class CommandRecorder: public ICommandRecorder
 {
     friend class Device;
 
-    VkCommandBuffer mCommandBuffer; // TODO remove
     VkCommandBufferBeginInfo mCommandBufferBeginInfo;
-    LocalAllocator<NFE_VK_COMMAND_MEMORY_SPACE> mCommandAllocator;
-    CommandBufferState mState;
-    Common::DynArray<CommandBatch> mCommands;
-    uint32 mCurrentBatch;
+    CommandBatchState mState;
+    CommandRecording mRecording;
+    RenderPassState mRenderPassState;
 
     bool WriteDynamicBuffer(Buffer* b, size_t offset, size_t size, const void* data);
     bool WriteVolatileBuffer(Buffer* b, size_t size, const void* data);
-    void SwitchToNewBatch();
-
+    void ProcessRenderPasses();
+    void ProcessResourceStates();
 
 public:
     CommandRecorder();

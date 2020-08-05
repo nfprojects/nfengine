@@ -25,6 +25,7 @@ SET(NFRENDERERVK_SOURCES
     Internal/Extensions.cpp
     Internal/Instance.cpp
     Internal/RenderPassManager.cpp
+    Internal/RenderPassState.cpp
     Internal/ResourceState.cpp
     Internal/RingBuffer.cpp
     # Internal/SemaphorePool.cpp temporarily commented out
@@ -48,7 +49,8 @@ SET(NFRENDERERVK_HEADERS
     API/Texture.hpp
     API/VertexLayout.hpp
     Internal/CommandBatch.hpp
-    Internal/CommandBufferState.hpp
+    Internal/CommandBatchState.hpp
+    Internal/CommandRecording.hpp
     Internal/Commands.hpp
     Internal/Debugger.hpp
     Internal/Extensions.hpp
@@ -59,6 +61,7 @@ SET(NFRENDERERVK_HEADERS
     Internal/LocalAllocatorObject.hpp
     Internal/RenderPassDesc.hpp
     Internal/RenderPassManager.hpp
+    Internal/RenderPassState.hpp
     Internal/ResourceState.hpp
     Internal/RingBuffer.hpp
     # Internal/SemaphorePool.hpp temporarily commented out

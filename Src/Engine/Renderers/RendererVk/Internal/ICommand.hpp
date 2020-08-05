@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Defines.hpp"
-#include "CommandBufferState.hpp"
+#include "CommandBatchState.hpp"
 #include "LocalAllocatorObject.hpp"
 
 #include "API/RenderTarget.hpp"
@@ -33,7 +33,7 @@ public:
     {
     }
 
-    virtual void Execute(VkCommandBuffer commandBuffer, CommandBufferState& state) = 0;
+    virtual void Execute(VkCommandBuffer commandBuffer, CommandBatchState& state) = 0;
     virtual const char* GetName() const { return nullptr; }
     NFE_FORCE_INLINE uint32 GetPriority() const { return mPriority; }
 };

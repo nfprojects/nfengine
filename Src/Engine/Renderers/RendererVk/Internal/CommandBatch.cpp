@@ -8,18 +8,26 @@ namespace NFE {
 namespace Renderer {
 
 
+const char* BatchTypeToString(CommandBatchType type)
+{
+    switch (type)
+    {
+    case CommandBatchType::Draw: return "Draw";
+    case CommandBatchType::Dispatch: return "Dispatch";
+    case CommandBatchType::Copy: return "Copy";
+    default: return "Unknown";
+    };
+}
+
+
 void CommandBatch::Print() const
 {
-    NFE_LOG_DEBUG("Commands order is :");
     for (uint32 i = 0; i < mCommands.Size(); ++i)
         NFE_LOG_DEBUG(" -> (%d) %s", mCommands[i]->GetPriority(), mCommands[i]->GetName());
 }
 
-void CommandBatch::Commit(VkCommandBuffer commandBuffer, CommandBufferState& state)
+void CommandBatch::Submit(VkCommandBuffer commandBuffer, CommandBatchState& state)
 {
-    // DEBUG - REMOVE
-    Print();
-
     for (uint32 i = 0; i < mCommands.Size(); ++i)
         mCommands[i]->Execute(commandBuffer, state);
 }

@@ -32,12 +32,8 @@ namespace Renderer {
 
 
 CommandRecorder::CommandRecorder()
-    : mCommandBuffer(VK_NULL_HANDLE)
-    , mCommandBufferBeginInfo()
-    , mCommandAllocator()
+    : mCommandBufferBeginInfo()
     , mState()
-    , mCommands()
-    , mCurrentBatch(0)
 {
 }
 
@@ -117,10 +113,15 @@ bool CommandRecorder::WriteVolatileBuffer(Buffer* b, size_t size, const void* da
     return false;
 }
 
-void CommandRecorder::SwitchToNewBatch()
+void CommandRecorder::ProcessRenderPasses()
 {
-    mCommands.EmplaceBack(mCommandAllocator);
-    mCurrentBatch++;
+    mRenderPassState.End(mRecording.CurrentBatch());
+    mRenderPassState.Print();
+}
+
+void CommandRecorder::ProcessResourceStates()
+{
+    // TODO
 }
 
 
@@ -142,11 +143,6 @@ bool CommandRecorder::Init()
 bool CommandRecorder::Begin()
 {
     mState.Clear();
-    mCommandAllocator.Clear();
-
-    mCommands.EmplaceBack(mCommandAllocator);
-    mCurrentBatch = 0;
-
     return true;
 }
 
@@ -170,7 +166,7 @@ void CommandRecorder::CopyTexture(const TexturePtr& src, const TexturePtr& dest)
     copyRegion.extent.width = s->mWidth;
     copyRegion.extent.height = s->mHeight;
     copyRegion.extent.depth = 1;
-    mCommands[mCurrentBatch].Record<CopyTextureCommand>(s->mImage, d->mImage, copyRegion);
+    mRecording.Record<CopyTextureCommand>(s->mImage, d->mImage, copyRegion);
 }
 
 void CommandRecorder::CopyTexture(const TexturePtr& src, const BackbufferPtr& dest)
@@ -181,9 +177,7 @@ void CommandRecorder::CopyTexture(const TexturePtr& src, const BackbufferPtr& de
     NFE_ASSERT(s != nullptr, "Invalid source texture provided");
     NFE_ASSERT(d != nullptr, "Invalid destination backbuffer provided");
 
-    // TEMPORARY - this should be injected on Finish()
-    mCommands[mCurrentBatch].Record<EndRenderPassCommand>();
-
+    // TODO insert via ResourceState
     VkImageMemoryBarrier imageBarriers[2];
     VK_ZERO_MEMORY(imageBarriers[0]);
     imageBarriers[0].sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
@@ -205,8 +199,8 @@ void CommandRecorder::CopyTexture(const TexturePtr& src, const BackbufferPtr& de
     imageBarriers[1].newLayout = VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL;
     imageBarriers[1].image = d->mImages[d->mCurrentImage];
     imageBarriers[1].subresourceRange = d->mImageSubresRange;
-    mCommands[mCurrentBatch].Record<PipelineBarrierCommand>(VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT, VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT,
-                                                            2, imageBarriers);
+    mRecording.Record<PipelineBarrierCommand>(VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT, VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT,
+                                              2, imageBarriers);
 
     if ((s->mFormat == d->mFormat) && (s->mWidth == d->mWidth) && (s->mHeight == d->mHeight))
     {
@@ -222,7 +216,7 @@ void CommandRecorder::CopyTexture(const TexturePtr& src, const BackbufferPtr& de
         copyRegion.extent.width = s->mWidth;
         copyRegion.extent.height = s->mHeight;
         copyRegion.extent.depth = 1;
-        mCommands[mCurrentBatch].Record<CopyTextureCommand>(s->mImage, d->mImages[d->mCurrentImage], copyRegion);
+        mRecording.Record<CopyTextureCommand>(s->mImage, d->mImages[d->mCurrentImage], copyRegion);
     }
     else
     {
@@ -244,18 +238,18 @@ void CommandRecorder::CopyTexture(const TexturePtr& src, const BackbufferPtr& de
         blitRegion.dstOffsets[1].x = d->mWidth;
         blitRegion.dstOffsets[1].y = d->mHeight;
         blitRegion.dstOffsets[1].z = 1;
-        mCommands[mCurrentBatch].Record<BlitTextureCommand>(s->mImage, d->mImages[d->mCurrentImage], blitRegion);
+        mRecording.Record<BlitTextureCommand>(s->mImage, d->mImages[d->mCurrentImage], blitRegion);
     }
 
-    SwitchToNewBatch();
+    mRecording.FinishBatch(CommandBatchType::Copy);
 
-    // TODO Move to ResourceState
+    // TODO Insert via ResourceState
     imageBarriers[0].oldLayout = VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL;
     imageBarriers[0].newLayout = s->mImageLayoutDefault;
     imageBarriers[1].oldLayout = VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL;
     imageBarriers[1].newLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
-    mCommands[mCurrentBatch].Record<PipelineBarrierCommand>(VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT, VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT,
-                                                            2, imageBarriers);
+    mRecording.Record<PipelineBarrierCommand>(VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT, VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT,
+                                              2, imageBarriers);
 }
 
 bool CommandRecorder::WriteBuffer(const BufferPtr& buffer, size_t offset, size_t size, const void* data)
@@ -291,10 +285,8 @@ bool CommandRecorder::WriteBuffer(const BufferPtr& buffer, size_t offset, size_t
 
 CommandListPtr CommandRecorder::Finish()
 {
-    // TODO before actually recording commands, drop extra commands:
-    //  - Pipeline barriers from ResourceState
-    //  - EndRenderPass and BeginRenderPass if there are necessary barriers in-between batches
-    //  - EndRenderPass at last batch
+    ProcessRenderPasses();
+    ProcessResourceStates();
 
     VkCommandBuffer commandBuffer;
     uint32 cbID = 0;
@@ -306,18 +298,16 @@ CommandListPtr CommandRecorder::Finish()
 
     vkBeginCommandBuffer(commandBuffer, &mCommandBufferBeginInfo);
 
-    for (uint32 i = 0; i < mCommands.Size(); ++i)
-        mCommands[i].Commit(commandBuffer, mState);
+    mRecording.PrintBatches();
+    mRecording.Submit(commandBuffer, mState);
 
     VkResult result = vkEndCommandBuffer(commandBuffer);
     if (result != VK_SUCCESS)
     {
         NFE_LOG_ERROR("Error during Constant Buffer recording: %d (%s)",
-                  result, TranslateVkResultToString(result));
+                      result, TranslateVkResultToString(result));
         return nullptr;
     }
-
-    mCommands.Clear();
 
     return Common::MakeUniquePtr<CommandList>(cbID);
 }
@@ -404,7 +394,7 @@ void CommandRecorder::Clear(uint32 flags, uint32 numTargets, const uint32* slots
         clearAttsNum++;
     }
 
-    mCommands[mCurrentBatch].Record<ClearCommand>(clearAtts, clearAttsNum);
+    mRecording.Record<ClearCommand>(clearAtts, clearAttsNum);
 }
 
 void CommandRecorder::SetIndexBuffer(const BufferPtr& indexBuffer, IndexBufferFormat format)
@@ -412,23 +402,26 @@ void CommandRecorder::SetIndexBuffer(const BufferPtr& indexBuffer, IndexBufferFo
     Buffer* ib = dynamic_cast<Buffer*>(indexBuffer.Get());
     NFE_ASSERT(ib != nullptr, "Incorrect Index Buffer provided");
 
-    mCommands[mCurrentBatch].Record<BindIndexBufferCommand>(ib->mBuffer, 0, TranslateIndexBufferFormatToVkIndexType(format));
+    mRecording.Record<BindIndexBufferCommand>(ib->mBuffer, 0, TranslateIndexBufferFormatToVkIndexType(format));
 }
 
 void CommandRecorder::SetRenderTarget(const RenderTargetPtr& renderTarget)
 {
+    if (!renderTarget)
+    {
+        mRenderPassState.End(mRecording.CurrentBatch());
+        return;
+    }
+
     RenderTarget* rt = dynamic_cast<RenderTarget*>(renderTarget.Get());
     NFE_ASSERT(rt != nullptr, "Invalid Render Target provided");
 
-    VkRenderPassBeginInfo rpBeginInfo;
-    VK_ZERO_MEMORY(rpBeginInfo);
-    rpBeginInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
-    rpBeginInfo.renderPass = rt->mRenderPass;
-    rpBeginInfo.framebuffer = rt->mFramebuffer;
-    rpBeginInfo.renderArea.offset = { 0, 0 };
-    rpBeginInfo.renderArea.extent = { static_cast<uint32>(rt->mWidth),
-                                      static_cast<uint32>(rt->mHeight) };
-    mCommands[mCurrentBatch].Record<BeginRenderPassCommand>(rpBeginInfo);
+    VkRect2D renderArea;
+    renderArea.offset = { 0, 0 };
+    renderArea.extent = { static_cast<uint32>(rt->mWidth),
+                          static_cast<uint32>(rt->mHeight) };
+
+    mRenderPassState.Register(renderArea, rt->mRenderPass, rt->mFramebuffer, mRecording.CurrentBatch());
 }
 
 void CommandRecorder::SetResourceBindingLayout(const ResourceBindingLayoutPtr& layout)
@@ -436,7 +429,7 @@ void CommandRecorder::SetResourceBindingLayout(const ResourceBindingLayoutPtr& l
     ResourceBindingLayout* rbl = dynamic_cast<ResourceBindingLayout*>(layout.Get());
     NFE_ASSERT(rbl != nullptr, "Incorrect binding layout provided");
 
-    mCommands[mCurrentBatch].Record<BindPipelineLayoutCommand>(rbl->mPipelineLayout);
+    mRecording.Record<BindPipelineLayoutCommand>(rbl->mPipelineLayout);
 }
 
 void CommandRecorder::SetPipelineState(const PipelineStatePtr& state)
@@ -444,7 +437,7 @@ void CommandRecorder::SetPipelineState(const PipelineStatePtr& state)
     PipelineState* ps = dynamic_cast<PipelineState*>(state.Get());
     NFE_ASSERT(ps != nullptr, "Incorrect pipeline state provided");
 
-    mCommands[mCurrentBatch].Record<BindPipelineCommand>(VK_PIPELINE_BIND_POINT_GRAPHICS, ps->mPipeline);
+    mRecording.Record<BindPipelineCommand>(VK_PIPELINE_BIND_POINT_GRAPHICS, ps->mPipeline);
 }
 
 void CommandRecorder::SetScissors(int32 left, int32 top, int32 right, int32 bottom)
@@ -454,12 +447,12 @@ void CommandRecorder::SetScissors(int32 left, int32 top, int32 right, int32 bott
     scissor.offset.y = top;
     scissor.extent.width = right - left;
     scissor.extent.height = bottom - top;
-    mCommands[mCurrentBatch].Record<SetScissorCommand>(scissor);
+    mRecording.Record<SetScissorCommand>(scissor);
 }
 
 void CommandRecorder::SetStencilRef(unsigned char ref)
 {
-    mCommands[mCurrentBatch].Record<SetStencilRefCommand>(ref);
+    mRecording.Record<SetStencilRefCommand>(ref);
 }
 
 void CommandRecorder::SetVertexBuffers(uint32 num, const BufferPtr* vertexBuffers, uint32* strides, uint32* offsets)
@@ -487,7 +480,7 @@ void CommandRecorder::SetVertexBuffers(uint32 num, const BufferPtr* vertexBuffer
     }
 
     // TODO assumes start slot 0
-    mCommands[mCurrentBatch].Record<BindVertexBuffersCommand>(0, num, buffers, offs);
+    mRecording.Record<BindVertexBuffersCommand>(0, num, buffers, offs);
 }
 
 void CommandRecorder::SetViewport(float left, float width, float top, float height, float minDepth, float maxDepth)
@@ -499,19 +492,19 @@ void CommandRecorder::SetViewport(float left, float width, float top, float heig
     viewport.height = -height;
     viewport.minDepth = minDepth;
     viewport.maxDepth = maxDepth;
-    mCommands[mCurrentBatch].Record<SetViewportCommand>(viewport);
+    mRecording.Record<SetViewportCommand>(viewport);
 }
 
 void CommandRecorder::Draw(uint32 vertexNum, uint32 instancesNum, uint32 vertexOffset, uint32 instanceOffset)
 {
-    mCommands[mCurrentBatch].Record<DrawCommand>(vertexNum, instancesNum, vertexOffset, instanceOffset);
-    SwitchToNewBatch();
+    mRecording.Record<DrawCommand>(vertexNum, instancesNum, vertexOffset, instanceOffset);
+    mRecording.FinishBatch(CommandBatchType::Draw);
 }
 
 void CommandRecorder::DrawIndexed(uint32 indexNum, uint32 instancesNum, uint32 indexOffset, int32 vertexOffset, uint32 instanceOffset)
 {
-    mCommands[mCurrentBatch].Record<DrawIndexedCommand>(indexNum, instancesNum, indexOffset, vertexOffset, instanceOffset);
-    SwitchToNewBatch();
+    mRecording.Record<DrawIndexedCommand>(indexNum, instancesNum, indexOffset, vertexOffset, instanceOffset);
+    mRecording.FinishBatch(CommandBatchType::Draw);
 }
 
 
@@ -526,9 +519,9 @@ void CommandRecorder::BindComputeResources(uint32 slot, const ResourceBindingIns
         return; // there is no "unbind" of descriptor sets in Vulkan
 
     // TODO ResourceState has to transition the layout
-    mCommands[mCurrentBatch].Record<BindDescriptorSetCommand>(VK_PIPELINE_BIND_POINT_COMPUTE,
-                                                              static_cast<uint32>(rbi->mSet->mSetSlot),
-                                                              rbi->mDescriptorSet);
+    mRecording.Record<BindDescriptorSetCommand>(VK_PIPELINE_BIND_POINT_COMPUTE,
+                                                static_cast<uint32>(rbi->mSet->mSetSlot),
+                                                rbi->mDescriptorSet);
 }
 
 void CommandRecorder::BindComputeVolatileCBuffer(uint32 slot, const BufferPtr& buffer)
@@ -555,7 +548,7 @@ void CommandRecorder::SetComputePipelineState(const ComputePipelineStatePtr& sta
     ComputePipelineState* cps = dynamic_cast<ComputePipelineState*>(state.Get());
     NFE_ASSERT(cps != nullptr, "Invalid Compute Pipeline State provided");
 
-    mCommands[mCurrentBatch].Record<BindPipelineCommand>(VK_PIPELINE_BIND_POINT_COMPUTE, cps->mPipeline);
+    mRecording.Record<BindPipelineCommand>(VK_PIPELINE_BIND_POINT_COMPUTE, cps->mPipeline);
 }
 
 void CommandRecorder::SetComputeResourceBindingLayout(const ResourceBindingLayoutPtr& layout)
@@ -563,13 +556,13 @@ void CommandRecorder::SetComputeResourceBindingLayout(const ResourceBindingLayou
     ResourceBindingLayout* rbl = dynamic_cast<ResourceBindingLayout*>(layout.Get());
     NFE_ASSERT(rbl != nullptr, "Invalid Compute Resource Binding Layout provided");
 
-    mCommands[mCurrentBatch].Record<BindPipelineLayoutCommand>(rbl->mPipelineLayout);
+    mRecording.Record<BindPipelineLayoutCommand>(rbl->mPipelineLayout);
 }
 
 void CommandRecorder::Dispatch(uint32 x, uint32 y, uint32 z)
 {
-    mCommands[mCurrentBatch].Record<DispatchCommand>(x, y, z);
-    SwitchToNewBatch();
+    mRecording.Record<DispatchCommand>(x, y, z);
+    mRecording.FinishBatch(CommandBatchType::Dispatch);
 }
 
 

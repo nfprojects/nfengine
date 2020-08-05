@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Defines.hpp"
+
 #include <Engine/Common/nfCommon.hpp>
 #include <Engine/Common/System/Assertion.hpp>
 

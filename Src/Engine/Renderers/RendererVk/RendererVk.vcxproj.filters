@@ -107,9 +107,6 @@
     <ClInclude Include="Internal\CommandBatch.hpp">
       <Filter>Internal</Filter>
     </ClInclude>
-    <ClInclude Include="Internal\CommandBufferState.hpp">
-      <Filter>Internal</Filter>
-    </ClInclude>
     <ClInclude Include="Internal\ResourceState.hpp">
       <Filter>Internal</Filter>
     </ClInclude>
@@ -117,6 +114,15 @@
       <Filter>API</Filter>
     </ClInclude>
     <ClInclude Include="Internal\List.hpp">
+      <Filter>Internal</Filter>
+    </ClInclude>
+    <ClInclude Include="Internal\CommandBatchState.hpp">
+      <Filter>Internal</Filter>
+    </ClInclude>
+    <ClInclude Include="Internal\RenderPassState.hpp">
+      <Filter>Internal</Filter>
+    </ClInclude>
+    <ClInclude Include="Internal\CommandRecording.hpp">
       <Filter>Internal</Filter>
     </ClInclude>
   </ItemGroup>
@@ -186,7 +192,6 @@
     <ClCompile Include="API\Win\WinDevice.cpp">
       <Filter>API\Win</Filter>
     </ClCompile>
-    <ClCompile Include="Internal\Win\WinExtensions.cpp" />
     <ClCompile Include="..\..\..\..\Deps\glslang\StandAlone\ResourceLimits.cpp">
       <Filter>External</Filter>
     </ClCompile>
@@ -201,6 +206,12 @@
     </ClCompile>
     <ClCompile Include="API\CommandList.cpp">
       <Filter>API</Filter>
+    </ClCompile>
+    <ClCompile Include="Internal\Win\WinExtensions.cpp">
+      <Filter>Internal\Win</Filter>
+    </ClCompile>
+    <ClCompile Include="Internal\RenderPassState.cpp">
+      <Filter>Internal</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

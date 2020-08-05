@@ -10,6 +10,16 @@
 namespace NFE {
 namespace Renderer {
 
+enum class CommandBatchType: unsigned char
+{
+    Unknown = 0,
+    Draw,
+    Dispatch,
+    Copy
+};
+
+const char* BatchTypeToString(CommandBatchType type);
+
 
 // Keeps a batch of commands together in predefied priority order - see CommandPriority.hpp.
 // It is assumed that one batch contains commands in between Draw/Dispatch/Copy calls.
@@ -22,11 +32,13 @@ class CommandBatch
     using Batch = Common::StaticArray<ICommand*, NFE_VK_MAX_COMMANDS_IN_BATCH>;
 
     CommandAllocator& mCommandAllocator;
+    CommandBatchType mType;
     Batch mCommands;
 
 public:
     CommandBatch(CommandAllocator& allocator)
         : mCommandAllocator(allocator)
+        , mType(CommandBatchType::Unknown)
         , mCommands()
     {
     }
@@ -55,11 +67,20 @@ public:
         }
     }
 
+    NFE_FORCE_INLINE void SetType(CommandBatchType type)
+    {
+        mType = type;
+    }
+
+    NFE_FORCE_INLINE CommandBatchType GetType() const
+    {
+        return mType;
+    }
+
     void Print() const;
-    void Commit(VkCommandBuffer commandBuffer, CommandBufferState& state);
+    void Submit(VkCommandBuffer commandBuffer, CommandBatchState& state);
     void Clear();
 };
-
 
 } // namespace Renderer
 } // namespace NFE
