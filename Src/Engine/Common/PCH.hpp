@@ -71,7 +71,6 @@
 #include <iomanip>          // TODO remove
 
 #include <atomic>
-#include <thread>
 
 #include <memory>
 #include <functional>

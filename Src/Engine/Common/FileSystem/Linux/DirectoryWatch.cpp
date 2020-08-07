@@ -25,14 +25,14 @@ DirectoryWatch::DirectoryWatch()
     if (inotifyFd == -1)
         NFE_LOG_ERROR("inotify_init() failed: %s", strerror(errno));
 
-    mRunning.store(true);
-    mWatchThread = std::thread(&DirectoryWatch::WatchRoutine, this);
+    mRunning = true;
+    mWatchThread.Run(&DirectoryWatch::WatchRoutine, this);
 }
 
 DirectoryWatch::~DirectoryWatch()
 {
-    mRunning.store(false);
-    mWatchThread.join();
+    mRunning = false;
+    mWatchThread.Wait();
 
     if (inotifyFd != -1)
         ::close(inotifyFd);

@@ -9,6 +9,7 @@
 #include "Logger/Logger.hpp"
 #include "Utils/ScopedLock.hpp"
 #include "Containers/UniquePtr.hpp"
+#include "System/Thread.hpp"
 
 namespace NFE {
 namespace Common {
@@ -70,8 +71,8 @@ bool setupIo(::aio_context_t& ctx)
 
 int FileAsync::mEventFD = eventfd(0);
 ::aio_context_t FileAsync::mCtx = 0;
-std::thread FileAsync::mCallbackThread;
-bool FileAsync::mQuitThreadFlag = false;
+Thread FileAsync::mCallbackThread;
+std::atomic<bool> FileAsync::mQuitThreadFlag = false;
 
 // This structure is declared in source file because of platform specific data
 struct FileAsync::AsyncDataStruct
@@ -92,12 +93,8 @@ FileAsync::FileAsync(CallbackFuncRef callbackFunc)
     , mMode(AccessMode::No)
     , mCallback(callbackFunc)
 {
-
-    if(!mCallbackThread.joinable())
-    {
-        mQuitThreadFlag = false;
-        mCallbackThread = std::thread(&FileAsync::CallbackDispatcher);
-    }
+    mQuitThreadFlag = false;
+    mCallbackThread.Run(&FileAsync::CallbackDispatcher);
 
     if (!mEventFD)
         mEventFD = eventfd(0);
@@ -111,11 +108,8 @@ FileAsync::FileAsync(const StringView& path, AccessMode mode, CallbackFuncRef ca
     , mMode(AccessMode::No)
     , mCallback(callbackFunc)
 {
-    if(!mCallbackThread.joinable())
-    {
-        mQuitThreadFlag = false;
-        mCallbackThread = std::thread(&FileAsync::CallbackDispatcher);
-    }
+    mQuitThreadFlag = false;
+    mCallbackThread.Run(&FileAsync::CallbackDispatcher);
 
     if (!mEventFD)
         mEventFD = eventfd(0);
@@ -140,7 +134,7 @@ FileAsync::FileAsync(FileAsync&& other)
 FileAsync::~FileAsync()
 {
     mQuitThreadFlag = true;
-    mCallbackThread.join();
+    mCallbackThread.Wait();
     Close();
 }
 

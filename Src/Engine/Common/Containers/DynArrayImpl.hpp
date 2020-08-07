@@ -141,7 +141,7 @@ template<typename ElementType>
 DynArray<ElementType>::DynArray(uint32 size)
     : DynArray()
 {
-    static_assert(std::is_trivially_constructible<ElementType>::value, "Element type is not trivially constructible");
+    static_assert(std::is_default_constructible_v<ElementType>, "Element type is not default-constructible");
 
     if (!Reserve(size))
     {

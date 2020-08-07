@@ -7,27 +7,63 @@
 #include "PCH.hpp"
 #include "Engine/Common/System/Thread.hpp"
 
+using namespace NFE;
 using namespace NFE::Common;
 
-// Global variables for the tests
-const int testThreadNumber = 100;
-const int maxThreadNameLength = 16;
-
 // Simple function to test Thread::SetPriority
-void simpleFunc()
+static void SimpleFunc(int32 testValue)
 {
+    ASSERT_EQ(123, testValue);
 }
 
 // Simple function to test differences in thread Id
-void idTestFunc(size_t* id)
+static void idTestFunc(size_t* id)
 {
-    *id = Thread::GetCurrentThreadId();
+    *id = Thread::GetCurrentThreadID();
 }
 
 // Simple function to test if setting thread name went good
-void setNameTestFunc(const std::string& threadName, bool shouldSuccess)
+static void SetNameTestFunc(const std::string& threadName)
 {
-    ASSERT_EQ(shouldSuccess, Thread::SetCurrentThreadName(threadName.c_str()));
+    Thread::SetCurrentThreadName(threadName.c_str());
+}
+
+TEST(ThreadTest, Constructor_Empty)
+{
+    Thread thread;
+}
+
+TEST(ThreadTest, Run)
+{
+    Thread thread;
+    thread.Run(SimpleFunc, 123);
+}
+
+TEST(ThreadTest, RunAndWait)
+{
+    std::atomic<bool> finished = false;
+
+    {
+        Thread thread;
+        thread.Run([&]()
+        {
+            Thread::SleepCurrentThread(0.1);
+            finished = true;
+        });
+    }
+
+    ASSERT_TRUE(finished.load());
+}
+
+TEST(ThreadTest, IsMainThread)
+{
+    Thread thread;
+    thread.Run([&]()
+    {
+        ASSERT_FALSE(Thread::IsMainThread());
+    });
+
+    ASSERT_TRUE(Thread::IsMainThread());
 }
 
 TEST(ThreadTest, SetPriority)
@@ -38,10 +74,12 @@ TEST(ThreadTest, SetPriority)
     assertionVal = true;
 #endif
 
-    auto threadTestLambda = [&assertionVal](ThreadPriority pr) {
-        std::thread testThread(simpleFunc);
-        ASSERT_EQ(assertionVal, Thread::SetThreadPriority(testThread, pr));
-        testThread.join();
+    auto threadTestLambda = [&assertionVal](ThreadPriority pr)
+    {
+        Thread testThread;
+        ASSERT_TRUE(testThread.Run(SimpleFunc, 123));
+        ASSERT_EQ(assertionVal, testThread.SetPriority(pr));
+        testThread.Wait();
     };
 
     threadTestLambda(ThreadPriority::Idle);
@@ -55,21 +93,25 @@ TEST(ThreadTest, SetPriority)
 
 TEST(ThreadTest, ThreadId)
 {
-    std::array<size_t, testThreadNumber> testIds;
-    std::array<std::thread, testThreadNumber> testThreads;
+    const uint32 TestThreadNumber = 10;
 
-    for (int i = 0; i < testThreadNumber; i++)
+    std::array<size_t, TestThreadNumber> testIds;
+    std::array<Thread, TestThreadNumber> testThreads;
+
+    for (uint32 i = 0; i < TestThreadNumber; i++)
     {
-        testThreads[i] = std::thread(idTestFunc, &testIds[i]);
+        testThreads[i].Run(idTestFunc, &testIds[i]);
     }
 
     // Wait till all threads do their work
-    for (int i = 0; i < testThreadNumber; i++)
-        testThreads[i].join();
+    for (uint32 i = 0; i < TestThreadNumber; i++)
+    {
+        testThreads[i].Wait();
+    }
 
     // Create and resize container for unique values
     std::vector<size_t> idsUniqueCopy;
-    idsUniqueCopy.reserve(testThreadNumber);
+    idsUniqueCopy.reserve(TestThreadNumber);
 
     // Sort in place and then create a unique-values copy
     std::sort(testIds.begin(), testIds.end());
@@ -86,35 +128,20 @@ TEST(ThreadTest, ThreadId)
 
 TEST(ThreadTest, SetThreadNameNormal)
 {
-    std::array<std::thread, testThreadNumber> testThreads;
+    const uint32 TestThreadNumber = 10;
+
+    std::array<Thread, TestThreadNumber> testThreads;
     std::string threadName = "thread No";
 
-    for (int i = 0; i < testThreadNumber; i++)
+    for (uint32 i = 0; i < TestThreadNumber; i++)
     {
         std::string name = threadName + std::to_string(i);
-        name.resize(maxThreadNameLength);
-        testThreads[i] = std::thread(setNameTestFunc, name, true);
+        testThreads[i].Run(SetNameTestFunc, name);
     }
 
     // Assure that all threads succeeded
-    for (int i = 0; i < testThreadNumber; i++)
-        testThreads[i].join();
-}
-
-TEST(ThreadTest, SetThreadNameInvalid)
-{
-    std::array<std::thread, testThreadNumber> testThreads;
-    std::string threadName = "thread";
-
-    for (int i = 0; i < testThreadNumber; i++)
+    for (uint32 i = 0; i < TestThreadNumber; i++)
     {
-        std::string name = threadName + std::to_string(i);
-        while (name.size() <= maxThreadNameLength)
-            name += name;
-        testThreads[i] = std::thread(setNameTestFunc, name, false);
+        testThreads[i].Wait();
     }
-
-    // Assure that all threads succeeded
-    for (int i = 0; i < testThreadNumber; i++)
-        testThreads[i].join();
 }

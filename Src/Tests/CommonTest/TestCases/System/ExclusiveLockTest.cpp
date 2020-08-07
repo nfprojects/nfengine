@@ -10,6 +10,8 @@
 #include "Engine/Common/System/SpinLock.hpp"
 #include "Engine/Common/System/RWLock.hpp"
 #include "Engine/Common/System/RWSpinLock.hpp"
+#include "Engine/Common/System/Thread.hpp"
+#include "Engine/Common/Containers/DynArray.hpp"
 
 using namespace NFE;
 using namespace NFE::Common;
@@ -81,18 +83,15 @@ TYPED_TEST(ExclusiveLockTest, Multithreaded)
         }
     };
 
-    const size_t numThreads = std::min<size_t>(1024, std::thread::hardware_concurrency());
-    std::vector<std::thread> threads;
+    const uint32 numThreads = std::min(1024u, Thread::GetSystemThreadsCount());
+    DynArray<Thread> threads(numThreads);
 
-    for (size_t i = 0; i < numThreads; ++i)
+    for (uint32 i = 0; i < numThreads; ++i)
     {
-        threads.emplace_back(func);
+        threads[i].Run(func);
     }
 
-    for (size_t i = 0; i < numThreads; ++i)
-    {
-        threads[i].join();
-    }
+    threads.Clear();
 
     ASSERT_EQ(counter, static_cast<uint32>(numThreads) * maxIterations);
 }

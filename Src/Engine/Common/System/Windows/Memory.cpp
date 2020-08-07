@@ -7,6 +7,7 @@
 
 #include "PCH.hpp"
 #include "../Memory.hpp"
+#include "../../Logger/Logger.hpp"
 
 #define WIN32_LEAN_AND_MEAN
 #define NOMINMAX
@@ -16,8 +17,15 @@ namespace Common {
 
 bool MemoryCheck(const void* ptr, size_t size)
 {
+    ::SetLastError(0);
+
     MEMORY_BASIC_INFORMATION info;
-    VirtualQuery(ptr, &info, sizeof(info));
+    if (0 == ::VirtualQuery(ptr, &info, sizeof(info)))
+    {
+        const DWORD errorCode = ::GetLastError();
+        NFE_LOG_ERROR("VirtualQuery failed (ptr=%p, size=%zu), error code: %u", ptr, size, errorCode);
+        return false;
+    }
 
     if ((reinterpret_cast<size_t>(info.BaseAddress) + info.RegionSize) <=
         (reinterpret_cast<size_t>(ptr) + size))

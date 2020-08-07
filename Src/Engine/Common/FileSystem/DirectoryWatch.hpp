@@ -8,6 +8,7 @@
 
 #include "../nfCommon.hpp"
 #include "../System/Mutex.hpp"
+#include "../System/Thread.hpp"
 #include "../Containers/UniquePtr.hpp"
 #include "../Containers/HashMap.hpp"
 #include "../Containers/DynArray.hpp"
@@ -24,7 +25,6 @@
 #include <memory>
 #include <type_traits>
 #include <atomic>
-#include <thread>
 
 
 namespace NFE {
@@ -80,7 +80,7 @@ private:
     static void CALLBACK TerminateProc(ULONG_PTR arg);
 
 #elif defined(__LINUX__) | defined(__linux__)
-    std::thread mWatchThread;  //< worker thread
+    Thread mWatchThread;  //< worker thread
     int inotifyFd;             //< inotify file descriptor
 
     HashMap<String, int> mWatchPathMap;

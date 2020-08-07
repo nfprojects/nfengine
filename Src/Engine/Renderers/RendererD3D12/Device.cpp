@@ -20,8 +20,7 @@
 #include "Engine/Common/Utils/StringUtils.hpp"
 #include "Engine/Common/Utils/LanguageUtils.hpp"
 #include "Engine/Common/System/Timer.hpp"
-
-#include <thread> // TODO get rid of STL threads
+#include "Engine/Common/System/Thread.hpp"
 
 
 namespace NFE {
@@ -598,7 +597,7 @@ CommandRecorderPtr Device::CreateCommandRecorder()
     // Ideally, there should be one command allocator for each buffered frame for each thread,
     // so the number of command recorders should be equal to number of threads
     // (this does not include bundles).
-    if (mCommandRecorders.Size() > std::thread::hardware_concurrency())
+    if (mCommandRecorders.Size() > Common::Thread::GetSystemThreadsCount())
     {
         NFE_LOG_WARNING("Lots of command recorders has been created (%u). Are you sure you are doing the things the right way?",
                         mCommandRecorders.Size());

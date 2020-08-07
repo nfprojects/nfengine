@@ -9,6 +9,7 @@
 #include "BackendConsole.hpp"
 #include "System/Console.hpp"
 #include "../../Containers/StringView.hpp"
+#include "../../System/Thread.hpp"
 
 
 namespace NFE {
@@ -45,9 +46,12 @@ ConsoleColor LogTypeToColor(LogType logType)
 void LoggerBackendConsole::Log(LogType type, const char* srcFile, int line, const char* str,
                                double timeElapsed)
 {
+    const uint32 currentThreadID = Thread::GetCurrentThreadID();
+
     PrintColored(LogTypeToColor(type),
-                 "%.4f [%-7s] %s:%i: %s\n",
+                 "%.4f {%u} [%-7s] %s:%i: %s\n",
                  timeElapsed,
+                 currentThreadID,
                  Logger::LogTypeToString(type),
                  srcFile, line,
                  str);

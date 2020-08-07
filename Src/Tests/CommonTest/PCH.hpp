@@ -37,7 +37,6 @@
 #include <string>
 #include <iostream>
 #include <type_traits>
-#include <thread>
 #include <limits>
 #include <fstream>
 #include <functional>

@@ -1,5 +1,6 @@
 #include "PCH.hpp"
 #include "Engine/Common/Containers/SharedPtr.hpp"
+#include "Engine/Common/System/Thread.hpp"
 
 
 using namespace NFE::Common;
@@ -339,14 +340,16 @@ TEST(SharedPtr, CopyConstructor_MultiThreaded)
         }
     };
 
-    std::thread threadA(func);
-    std::thread threadB(func);
+    Thread threadA, threadB;
 
-    std::this_thread::sleep_for(std::chrono::milliseconds(400));
+    ASSERT_TRUE(threadA.Run(func));
+    ASSERT_TRUE(threadB.Run(func));
+
+    Thread::SleepCurrentThread(0.4);
     finish = true;
 
-    threadA.join();
-    threadB.join();
+    threadA.Wait();
+    threadB.Wait();
 
     ASSERT_EQ(0, counter);
 }

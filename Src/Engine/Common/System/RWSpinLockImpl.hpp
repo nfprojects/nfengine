@@ -6,9 +6,8 @@
 #pragma once
 
 #include "RWSpinLock.hpp"
+#include "Thread.hpp"
 #include "Assertion.hpp"
-
-#include <thread>
 
 namespace NFE {
 namespace Common {
@@ -44,7 +43,7 @@ void RWSpinLock::AcquireShared()
             }
         }
 
-        std::this_thread::yield();
+        Thread::YieldCurrentThread();
     }
 
     atomic_thread_fence(std::memory_order_acquire);
@@ -82,7 +81,7 @@ void RWSpinLock::AcquireExclusive()
             break;
         }
 
-        std::this_thread::yield();
+        Thread::YieldCurrentThread();
     }
 
     atomic_thread_fence(std::memory_order_acquire);

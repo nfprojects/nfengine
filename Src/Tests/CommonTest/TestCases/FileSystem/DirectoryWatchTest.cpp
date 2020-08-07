@@ -4,6 +4,7 @@
 #include "Engine/Common/FileSystem/File.hpp"
 #include "Engine/Common/Utils/Latch.hpp"
 #include "Engine/Common/Containers/String.hpp"
+#include "Engine/Common/System/Thread.hpp"
 
 using namespace NFE::Common;
 
@@ -48,7 +49,7 @@ protected:
 TEST_F(DirectoryWatchTest, Constructor)
 {
     DirectoryWatch watch;
-    std::this_thread::sleep_for(std::chrono::milliseconds(100));
+    Thread::SleepCurrentThread(0.1);
 }
 
 TEST_F(DirectoryWatchTest, Simple)
@@ -401,7 +402,7 @@ TEST_F(DirectoryWatchTest, ModifyFile)
     // wait for DirectoryWatch event
     EXPECT_TRUE(latch.Wait(LATCH_TIMEOUT));
     // make sure that only 1 event was recorded
-    std::this_thread::sleep_for(std::chrono::milliseconds(100));
+    Thread::SleepCurrentThread(0.1);
     EXPECT_EQ(1, modifyCount);
     EXPECT_TRUE(pathMatches);
 }
@@ -425,7 +426,7 @@ TEST_F(DirectoryWatchTest, RemoveWatch)
 
     EXPECT_TRUE(FileSystem::Remove(TEST_DIR1_FILE1));
 
-    std::this_thread::sleep_for(std::chrono::milliseconds(100));
+    Thread::SleepCurrentThread(0.1);
 
     EXPECT_FALSE(callbackCalled);
 }

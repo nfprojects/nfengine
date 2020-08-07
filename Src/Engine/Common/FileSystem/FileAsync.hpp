@@ -9,11 +9,11 @@
 #include "../nfCommon.hpp"
 #include "File.hpp"
 #include "../System/Mutex.hpp"
+#include "../System/Thread.hpp"
 #include "../Containers/String.hpp"
 #include "../Containers/HashSet.hpp"
 
 #include <functional>
-#include <thread>
 
 #if defined(WIN32)
 #define WIN32_LEAN_AND_MEAN
@@ -63,8 +63,8 @@ private:
     int mFD;
     static int mEventFD;
     static aio_context_t mCtx;
-    static std::thread mCallbackThread;
-    static bool mQuitThreadFlag;
+    static Thread mCallbackThread;
+    static std::atomic<bool> mQuitThreadFlag;
 
     // Handler for finished read/write calls
     static void FinishedOperationsHandler(int64_t result, void* allocStructData);

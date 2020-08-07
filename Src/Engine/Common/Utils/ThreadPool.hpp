@@ -9,12 +9,12 @@
 #include "../nfCommon.hpp"
 #include "ThreadPoolTask.hpp"
 #include "../System/ConditionVariable.hpp"
+#include "../System/Thread.hpp"
 #include "../Containers/UniquePtr.hpp"
 #include "../Containers/DynArray.hpp"
 #include "../Containers/Deque.hpp"
 
 #include <inttypes.h>
-#include <thread>
 
 
 namespace NFE {
@@ -57,7 +57,7 @@ class WorkerThread
     NFE_MAKE_NONCOPYABLE(WorkerThread)
     NFE_MAKE_NONMOVEABLE(WorkerThread)
 
-    std::thread mThread;
+    Thread mThread;
     uint32 mId;                     // thread number
     std::atomic<bool> mStarted;     // if set to false, exit the thread
 

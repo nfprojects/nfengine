@@ -6,6 +6,7 @@
 
 #include "PCH.hpp"
 #include "Engine/Common/System/ConditionVariable.hpp"
+#include "Engine/Common/System/Thread.hpp"
 
 
 using namespace NFE;
@@ -36,7 +37,8 @@ TEST(ConditionVariableTest, WaitFor_Multithreaded)
         cv.SignalOne();
     };
 
-    std::thread thread(threadFunc);
+    Thread thread;
+    ASSERT_TRUE(thread.Run(threadFunc));
 
     ScopedExclusiveLock<Mutex> lock(mutex);
     while (!signaled)
@@ -44,7 +46,7 @@ TEST(ConditionVariableTest, WaitFor_Multithreaded)
         EXPECT_TRUE(cv.WaitFor(lock, 1000));
     }
 
-    thread.join();
+    thread.Wait();
 }
 
 
@@ -65,7 +67,8 @@ TEST(ConditionVariableTest, WaitMultipleTimes)
         }
     };
 
-    std::thread thread(threadFunc);
+    Thread thread;
+    ASSERT_TRUE(thread.Run(threadFunc));
 
     {
         ScopedExclusiveLock<Mutex> lock(mutex);
@@ -75,5 +78,5 @@ TEST(ConditionVariableTest, WaitMultipleTimes)
         }
     }
 
-    thread.join();
+    thread.Wait();
 }

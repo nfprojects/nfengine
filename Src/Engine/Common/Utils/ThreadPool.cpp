@@ -8,7 +8,6 @@
 #include "ThreadPool.hpp"
 #include "Waitable.hpp"
 
-
 namespace NFE {
 namespace Common {
 
@@ -16,12 +15,15 @@ WorkerThread::WorkerThread(ThreadPool* pool, uint32 id)
     : mId(id)
     , mStarted(true)
 {
-    mThread = std::thread(&ThreadPool::SchedulerCallback, pool, this);
+    mThread.Run(&ThreadPool::SchedulerCallback, pool, this);
+
+    char threadName[64];
+    snprintf(threadName, sizeof(threadName), "NFE::Common::ThreadPool worker #%u", id);
+    mThread.SetName(threadName);
 }
 
 WorkerThread::~WorkerThread()
 {
-    mThread.join();
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -38,7 +40,7 @@ ThreadPool::ThreadPool()
 {
     // TODO make it configurable
     ResizeTasksTable(TasksCapacity);
-    SpawnWorkerThreads(std::thread::hardware_concurrency());
+    SpawnWorkerThreads(Thread::GetSystemThreadsCount());
 }
 
 ThreadPool::~ThreadPool()

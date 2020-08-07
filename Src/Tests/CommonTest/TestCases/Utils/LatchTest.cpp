@@ -6,6 +6,7 @@
 
 #include "PCH.hpp"
 #include "Engine/Common/Utils/Latch.hpp"
+#include "Engine/Common/System/Thread.hpp"
 
 
 namespace {
@@ -16,28 +17,32 @@ using namespace NFE::Common;
 
 TEST(Latch, Wait)
 {
-    Latch l;
-    std::thread t([&l]() {
-        l.Set();
-    });
+    Latch latch;
+    Thread thread;
+    
+    ASSERT_TRUE(thread.Run([&latch]() {
+        latch.Set();
+    }));
 
-    t.join();
-    l.Wait();
+    thread.Wait();
+    latch.Wait();
 }
 
 TEST(Latch, WaitFor)
 {
-    Latch l;
-    std::thread t([&l]() {
-        l.Set();
-    });
+    Latch latch;
+    Thread thread;
 
-    t.join();
-    ASSERT_TRUE(l.Wait(TIMEOUT));
+    ASSERT_TRUE(thread.Run([&latch]() {
+        latch.Set();
+    }));
+
+    thread.Wait();
+    ASSERT_TRUE(latch.Wait(TIMEOUT));
 }
 
 TEST(Latch, Timeout)
 {
-    Latch l;
-    ASSERT_FALSE(l.Wait(TIMEOUT));
+    Latch latch;
+    ASSERT_FALSE(latch.Wait(TIMEOUT));
 }

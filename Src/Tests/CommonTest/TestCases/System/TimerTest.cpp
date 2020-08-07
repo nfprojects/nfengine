@@ -1,7 +1,6 @@
 #include "PCH.hpp"
 #include "Engine/Common/System/Timer.hpp"
-
-// required to test because of multi-platform sleep - std::this_thread::sleep_for
+#include "Engine/Common/System/Thread.hpp"
 
 
 namespace {
@@ -9,11 +8,13 @@ const double SLEEP_FOR_ACCURACY = 0.002; // 2 ms
 const double TOLERANCE = 0.01; // 10 ms
 } // namespace
 
+using namespace NFE;
+using namespace Common;
 
 class TimerTest : public testing::Test
 {
 protected:
-    NFE::Common::Timer mTimer;
+    Timer mTimer;
 };
 
 
@@ -29,11 +30,11 @@ TEST_F(TimerTest, ImmediateStartStopTest)
 
 TEST_F(TimerTest, BasicUseTest)
 {
-    const double expected = 1.0;
+    const double expected = 0.5;
     double result;
 
     mTimer.Start();
-    std::this_thread::sleep_for(std::chrono::seconds(static_cast<int>(expected)));
+    Thread::SleepCurrentThread(0.5);
     result = mTimer.Stop();
 
     // make sure we got positive value
@@ -51,9 +52,9 @@ TEST_F(TimerTest, MultipleStopTest)
     double result1, result2;
 
     mTimer.Start();
-    std::this_thread::sleep_for(std::chrono::seconds(1));
+    Thread::SleepCurrentThread(1.0);
     result1 = mTimer.Stop();
-    std::this_thread::sleep_for(std::chrono::milliseconds(500));
+    Thread::SleepCurrentThread(0.5);
     result2 = mTimer.Stop();
 
     ASSERT_GT(result1, 0.0);
@@ -66,11 +67,11 @@ TEST_F(TimerTest, MultipleStartTest)
     double result1, result2;
 
     mTimer.Start();
-    std::this_thread::sleep_for(std::chrono::seconds(1));
+    Thread::SleepCurrentThread(1.0);
     result1 = mTimer.Stop();
 
     mTimer.Start();
-    std::this_thread::sleep_for(std::chrono::milliseconds(500));
+    Thread::SleepCurrentThread(0.5);
     result2 = mTimer.Stop();
 
     ASSERT_GT(result1, 0.0);

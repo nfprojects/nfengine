@@ -9,6 +9,7 @@
 #include "BackendTxt.hpp"
 #include "BackendCommon.hpp"
 #include "../../Containers/StringView.hpp"
+#include "../../System/Thread.hpp"
 
 
 namespace NFE {
@@ -24,7 +25,7 @@ LoggerBackendTxt::LoggerBackendTxt()
 bool LoggerBackendTxt::Init()
 {
     const static StringView gLogIntro("nfEngine - log file\n"
-        "[Seconds elapsed] [LogType] [SourceFile]:[LineOfCode]: [Message]\n");
+        "[Seconds elapsed] [ThreadID] [LogType] [SourceFile]:[LineOfCode]: [Message]\n");
 
     const StringView logFileName("log.txt");
     mBuffer.Resize(NFE_MAX_LOG_MESSAGE_LENGTH);
@@ -53,12 +54,14 @@ void LoggerBackendTxt::Log(LogType type, const char* srcFile, int line, const ch
     if (!mFile.IsOpened())
         return;
 
-    const char* format = "%.4f [%-7s] %s:%i: %s\n";
+    const char* format = "%.4f {%u} [%-7s] %s:%i: %s\n";
+
+    const uint32 currentThreadID = Thread::GetCurrentThreadID();
 
     size_t pathOffset = Logger::GetInstance()->GetPathPrefixLen();
 
     int len = snprintf(mBuffer.Data(), mBuffer.Size(), format,
-                       timeElapsed, Logger::LogTypeToString(type),
+                       timeElapsed, currentThreadID, Logger::LogTypeToString(type),
                        srcFile + pathOffset, line, str);
     if (len < 0)
     {
@@ -75,7 +78,7 @@ void LoggerBackendTxt::Log(LogType type, const char* srcFile, int line, const ch
         }
 
         snprintf(mBuffer.Data(), mBuffer.Size(), format,
-                 timeElapsed, Logger::LogTypeToString(type),
+                 timeElapsed, currentThreadID, Logger::LogTypeToString(type),
                  srcFile + pathOffset, line, str);
     }
 

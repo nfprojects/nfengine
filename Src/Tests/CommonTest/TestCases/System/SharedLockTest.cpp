@@ -9,6 +9,7 @@
 #include "Engine/Common/System/RWLock.hpp"
 #include "Engine/Common/System/RWSpinLock.hpp"
 #include "Engine/Common/Math/Math.hpp"
+#include "Engine/Common/Containers/DynArray.hpp"
 
 using namespace NFE;
 using namespace NFE::Common;
@@ -110,17 +111,17 @@ TYPED_TEST(SharedLockTest, Multithreaded_Simple)
     canContinue = false;
 
     // spawn threads
-    const size_t numThreads = std::min<size_t>(1024, std::thread::hardware_concurrency());
-    std::vector<std::thread> threads;
-    for (size_t i = 0; i < numThreads; ++i)
+    const uint32 numThreads = std::min(1024u, Thread::GetSystemThreadsCount());
+    DynArray<Thread> threads(numThreads);
+    for (uint32 i = 0; i < numThreads; ++i)
     {
-        threads.emplace_back(func);
+        threads[i].Run(func);
     }
 
     // wait until all the threads reach synchronization point
     {
         ScopedExclusiveLock<Mutex> lock(hasEnteredMutex);
-        while (counter < static_cast<uint32>(numThreads))
+        while (counter < numThreads)
         {
             hasEnteredCV.Wait(lock);
         }
@@ -137,10 +138,7 @@ TYPED_TEST(SharedLockTest, Multithreaded_Simple)
         canContinueCV.SignalAll();
     }
 
-    for (size_t i = 0; i < numThreads; ++i)
-    {
-        threads[i].join();
-    }
+    threads.Clear();
 
     ASSERT_EQ(counter, static_cast<uint32>(numThreads));
 }
@@ -206,30 +204,23 @@ TYPED_TEST(SharedLockTest, Multithreaded_Validate)
         }
     };
 
-    const size_t numReaderThreads = Math::Clamp<size_t>(std::thread::hardware_concurrency() / 2, 4, 64);
-    const size_t numWriterThreads = Math::Clamp<size_t>(std::thread::hardware_concurrency() / 4, 2, 32);
+    const uint32 numReaderThreads = Math::Clamp(Thread::GetSystemThreadsCount() / 2, 4u, 64u);
+    const uint32 numWriterThreads = Math::Clamp(Thread::GetSystemThreadsCount() / 4, 2u, 32u);
 
-    std::vector<std::thread> readerThreads;
-    for (size_t i = 0; i < numReaderThreads; ++i)
+    DynArray<Thread> readerThreads(numReaderThreads);
+    for (uint32 i = 0; i < numReaderThreads; ++i)
     {
-        readerThreads.emplace_back(readerFunc);
+        readerThreads[i].Run(readerFunc);
     }
 
-    std::vector<std::thread> writerThreads;
-    for (size_t i = 0; i < numWriterThreads; ++i)
+    DynArray<Thread> writerThreads(numWriterThreads);
+    for (uint32 i = 0; i < numWriterThreads; ++i)
     {
-        writerThreads.emplace_back(writerFunc);
+        writerThreads[i].Run(writerFunc);
     }
 
-    for (size_t i = 0; i < numWriterThreads; ++i)
-    {
-        writerThreads[i].join();
-    }
-
-    for (size_t i = 0; i < numReaderThreads; ++i)
-    {
-        readerThreads[i].join();
-    }
+    readerThreads.Clear();
+    writerThreads.Clear();
 
     ASSERT_FALSE(errorFound);
 }
