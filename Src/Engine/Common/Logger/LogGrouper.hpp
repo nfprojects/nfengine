@@ -52,13 +52,13 @@ do {                                                                    \
         group.Log(type, stream.str().c_str(), __LINE__, __FILE__);      \
 } while (0)
 
-#ifdef _DEBUG
+#ifdef NFE_CONFIGURATION_DEBUG
 #define LOG_DEBUG_GROUP(group, ...)     LOG_ANY_GROUP(group, NFE::Common::LogType::Debug, __VA_ARGS__)
 #define LOG_DEBUG_S_GROUP(group, msg)   LOG_ANY_STREAM_GROUP(group, NFE::Common::LogType::Debug, msg)
 #else
 #define LOG_DEBUG_GROUP(...)   do { } while (0)
 #define LOG_DEBUG_S_GROUP(...) do { } while (0)
-#endif // _DEBUG
+#endif // NFE_CONFIGURATION_DEBUG
 
 #define LOG_INFO_GROUP(group, ...)      LOG_ANY_GROUP(group, NFE::Common::LogType::Info, __VA_ARGS__)
 #define LOG_INFO_S_GROUP(group, msg)    LOG_ANY_STREAM_GROUP(group, NFE::Common::LogType::Info, msg)

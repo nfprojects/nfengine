@@ -127,7 +127,7 @@ TEST(FileTest, Overwrite)
  *
  * TODO: introduce "access share" flag in File::Open() method
  */
-#ifdef WIN32
+#ifdef NFE_PLATFORM_WINDOWS
 TEST(FileTest, AccessShare)
 {
     const String filePath("access_share_test_file");
@@ -152,4 +152,4 @@ TEST(FileTest, AccessShare)
     // cleanup
     EXPECT_TRUE(FileSystem::Remove(filePath));
 }
-#endif // WIN32
+#endif // NFE_PLATFORM_WINDOWS

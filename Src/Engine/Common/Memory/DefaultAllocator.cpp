@@ -65,10 +65,9 @@ void* DefaultAllocator::Malloc(size_t size, size_t alignment, const char* source
 
     void* ptr = nullptr;
 
-#if defined(WIN32)
+#if defined(NFE_PLATFORM_WINDOWS)
     ptr = _aligned_malloc_dbg(size, alignment, sourceFile, sourceLine);
-
-#elif defined(__LINUX__) | defined(__linux__)
+#elif defined(NFE_PLATFORM_LINUX)
     alignment = std::max(alignment, sizeof(void*));
     int ret = posix_memalign(&ptr, alignment, size);
     if (ret != 0)
@@ -76,7 +75,9 @@ void* DefaultAllocator::Malloc(size_t size, size_t alignment, const char* source
         NFE_LOG_ERROR("posix_memalign() returned %i", ret);
         ptr = nullptr;
     }
-#endif // defined(WIN32)
+#else
+#error Invalid platform
+#endif // defined(NFE_PLATFORM_WINDOWS)
 
     if (ptr)
     {
@@ -100,12 +101,12 @@ void DefaultAllocator::Free(void* ptr)
 
     mAllocationsNum--;
 
-#if defined(WIN32)
+#if defined(NFE_PLATFORM_WINDOWS)
     _aligned_free(ptr);
 
-#elif defined(__LINUX__) | defined(__linux__)
+#elif defined(NFE_PLATFORM_LINUX)
     free(ptr);
-#endif // defined(WIN32)
+#endif // defined(NFE_PLATFORM_WINDOWS)
 }
 
 void DefaultAllocator::ReportAllocations()

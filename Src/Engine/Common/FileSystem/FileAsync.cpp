@@ -12,7 +12,7 @@
 namespace NFE {
 namespace Common {
 
-#if defined(WIN32)
+#if defined(NFE_PLATFORM_WINDOWS)
 struct FileAsync::AsyncDataStruct
 {
     OVERLAPPED   overlapped;     //< OS-specific data
@@ -22,7 +22,7 @@ struct FileAsync::AsyncDataStruct
     void*        userData;       //< Pointer to user-defined object
     void*        dataBuffer;     //< Parameter for Read/Write
 };
-#elif defined(__LINUX__) | defined(__linux__)
+#elif defined(NFE_PLATFORM_LINUX)
 struct FileAsync::AsyncDataStruct
 {
     iocb       ioData;      //< OS-specific data
@@ -30,7 +30,9 @@ struct FileAsync::AsyncDataStruct
     FileAsync* instancePtr; //< 'this' pointer
     void*      userData;    //< Pointer to user-defined object
 };
-#endif // defined(WIN32)
+#else
+#error Invalid platform
+#endif
 
 bool FileAsync::SafeErasePtr(AsyncDataStruct* ptrToErase)
 {

@@ -11,9 +11,9 @@
 #include "Utils/ScopedLock.hpp"
 #include "Containers/DynArray.hpp"
 
-#ifdef WIN32
+#ifdef NFE_PLATFORM_WINDOWS
 #include "System/Windows/Common.hpp"
-#endif // WIN32
+#endif // NFE_PLATFORM_WINDOWS
 
 
 namespace NFE {
@@ -64,7 +64,7 @@ bool Logger::Init()
     // Transition Logger state to mark the beginning of initialization
     mInitialized.store(InitStage::Initializing);
 
-#ifdef WIN32
+#ifdef NFE_PLATFORM_WINDOWS
     wchar_t* wideRootDir = NFE_ROOT_DIRECTORY;
     UTF16ToUTF8(wideRootDir, mPathPrefix);
 #else

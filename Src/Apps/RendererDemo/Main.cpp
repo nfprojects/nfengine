@@ -301,7 +301,7 @@ int InnerMain(int argc, char* argv[])
     int initialScene = 0;
     int selectedCard = -1;
     int debugLevel = 0;
-#ifdef _DEBUG
+#ifdef NFE_CONFIGURATION_DEBUG
     debugLevel = 1;
 #endif
 

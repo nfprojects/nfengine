@@ -46,12 +46,12 @@ bool Instance::Init(int debugLevel)
     Common::DynArray<const char*> enabledExtensions;
     enabledExtensions.PushBack(VK_KHR_SURFACE_EXTENSION_NAME);
 
-#ifdef WIN32
+#ifdef NFE_PLATFORM_WINDOWS
     enabledExtensions.PushBack(VK_KHR_WIN32_SURFACE_EXTENSION_NAME);
-#elif defined(__linux__) || defined(__LINUX__)
+#elif defined(NFE_PLATFORM_LINUX)
     enabledExtensions.PushBack(VK_KHR_XCB_SURFACE_EXTENSION_NAME);
 #else
-#error "Target platform not supported."
+#error Invalid platform
 #endif
 
     if (enableDebug)

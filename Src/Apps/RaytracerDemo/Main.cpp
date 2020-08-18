@@ -100,9 +100,9 @@ int main(int argc, char* argv[])
 
     NFE_ASSERT(Math::GetFlushDenormalsToZero(), "Something disabled flushing denormal float to zero");
 
-#if defined(_DEBUG) && defined(WIN32)
+#if defined(NFE_CONFIGURATION_DEBUG) && defined(NFE_PLATFORM_WINDOWS)
     _CrtDumpMemoryLeaks();
-#endif // _DEBUG
+#endif // NFE_CONFIGURATION_DEBUG
 
     return 0;
 }

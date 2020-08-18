@@ -5,11 +5,11 @@
 #pragma warning (disable: 4100)
 
 // enable memory allocation tracking (Windows only)
-#if defined(WIN32) && defined(_DEBUG)
+#if defined(NFE_PLATFORM_WINDOWS) && defined(NFE_CONFIGURATION_DEBUG)
 #define _CRTDBG_MAP_ALLOC
 #include <stdlib.h>
 #include <crtdbg.h>
-#endif // defined(WIN32) && defined(_DEBUG)
+#endif // defined(NFE_PLATFORM_WINDOWS) && defined(NFE_CONFIGURATION_DEBUG)
 
 #include <string>
 #include <map>
@@ -17,11 +17,11 @@
 #include <set>
 #include <algorithm>
 
-#if defined(WIN32)
+#if defined(NFE_PLATFORM_WINDOWS)
 #define WIN32_LEAN_AND_MEAN
 #define NOMINMAX
 #include <Windows.h>
-#endif // defined(WIN32)
+#endif // defined(NFE_PLATFORM_WINDOWS)
 
 #ifdef GetWindowFont
 #undef GetWindowFont  // ImGui workaround - GetWindowFont is both WinAPI macro and ImGui function

@@ -19,12 +19,12 @@ class Backbuffer : public IBackbuffer
 
     VkSurfaceKHR mSurface;
 
-#ifdef WIN32
+#ifdef NFE_PLATFORM_WINDOWS
     HWND mHWND;
-#elif defined(__linux__) || defined(__LINUX__)
+#elif defined(NFE_PLATFORM_LINUX)
     xcb_connection_t* mConnection;
 #else
-#error Target platform not supported.
+#error Invalid platform
 #endif
 
     struct ImageExtraData

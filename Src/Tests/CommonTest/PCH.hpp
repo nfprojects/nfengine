@@ -1,17 +1,17 @@
 #pragma once
 
 // enable memory allocation tracking (Windows only)
-#if defined(WIN32) && defined(_DEBUG)
+#if defined(NFE_PLATFORM_WINDOWS) && defined(NFE_CONFIGURATION_DEBUG)
 #define _CRTDBG_MAP_ALLOC
 #include <stdlib.h>
 #include <crtdbg.h>
-#endif // defined(WIN32) && defined(_DEBUG)
+#endif // defined(NFE_PLATFORM_WINDOWS) && defined(NFE_CONFIGURATION_DEBUG)
 
-#ifdef WIN32
+#ifdef NFE_PLATFORM_WINDOWS
 #define WIN32_LEAN_AND_MEAN
 #define NOMINMAX
 #include <Windows.h>
-#endif // WIN32
+#endif // NFE_PLATFORM_WINDOWS
 
 
 #ifdef NFE_USE_SSE
@@ -53,6 +53,6 @@
 #endif
 
 // workaround for Windows/Linux mkdir difference
-#if defined(__LINUX__) | defined(__linux__)
+#if defined(NFE_PLATFORM_LINUX)
 #define _mkdir(x) mkdir(x, 0777)
-#endif // defined(__LINUX__) | defined(__linux__)
+#endif // defined(NFE_PLATFORM_LINUX)

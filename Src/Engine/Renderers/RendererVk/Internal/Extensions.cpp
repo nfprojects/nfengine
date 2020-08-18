@@ -13,9 +13,9 @@
 
 #include "Engine/Common/Logger/Logger.hpp"
 
-#ifdef WIN32
+#ifdef NFE_PLATFORM_WINDOWS
 #include "Win/WinExtensions.hpp"
-#elif defined(__linux__) | defined(__LINUX__)
+#elif defined(NFE_PLATFORM_LINUX)
 #include "Linux/XcbExtensions.hpp"
 #else
 #error "Target platform not supported."
@@ -29,14 +29,14 @@ bool nfvkInstanceExtensionsInit(VkInstance instance)
 {
     bool allExtensionsAvailable = true;
 
-#ifdef WIN32
+#ifdef NFE_PLATFORM_WINDOWS
     if (!nfvkWinInstanceExtensionsInit(instance))
         NFE_LOG_WARNING("Win32 extensions failed to init, some Vulkan Win32 APIs might be unavailable.");
-#elif defined(__linux__) | defined(__LINUX__)
+#elif defined(NFE_PLATFORM_LINUX)
     if (!nfvkXcbInstanceExtensionsInit(instance))
         NFE_LOG_WARNING("Xcb extensions failed to init, some Vulkan Xcb APIs might be unavailable.");
 #else
-#error "Target platform not supported."
+#error Invalid platform
 #endif
 
     return allExtensionsAvailable;

@@ -21,7 +21,7 @@ int main(int argc, char* argv[])
 
     gPreferedCardId = -1;
     gDebugLevel = 0;
-#ifdef _DEBUG
+#ifdef NFE_CONFIGURATION_DEBUG
     gDebugLevel = 1;
 #endif
 

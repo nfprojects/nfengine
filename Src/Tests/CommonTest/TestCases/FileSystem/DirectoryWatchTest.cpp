@@ -433,7 +433,7 @@ TEST_F(DirectoryWatchTest, RemoveWatch)
 
 
 // on Windows, ReadDirectoryChangesW does not report changes to the watched directory itself
-#ifndef WIN32
+#ifndef NFE_PLATFORM_WINDOWS
 
 // moves watched directory
 TEST_F(DirectoryWatchTest, MoveWatchedDir)
@@ -467,4 +467,4 @@ TEST_F(DirectoryWatchTest, MoveWatchedDir)
     EXPECT_TRUE(typeMatches);
 }
 
-#endif // ifndef WIN32
+#endif // ifndef NFE_PLATFORM_WINDOWS

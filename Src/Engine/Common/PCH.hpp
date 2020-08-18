@@ -7,19 +7,19 @@
 #pragma once
 
 // enable memory allocation tracking (Windows only)
-#if defined(WIN32) && defined(_DEBUG)
+#if defined(NFE_PLATFORM_WINDOWS) && defined(NFE_CONFIGURATION_DEBUG)
 #define _CRTDBG_MAP_ALLOC
 #include <stdlib.h>
 #include <crtdbg.h>
-#endif // defined(WIN32) && defined(_DEBUG)
+#endif // defined(NFE_PLATFORM_WINDOWS) && defined(NFE_CONFIGURATION_DEBUG)
 
-#if defined(WIN32)
+#if defined(NFE_PLATFORM_WINDOWS)
 #define WIN32_LEAN_AND_MEAN
 #define NOMINMAX
 #include <Windows.h>
 #include <windowsx.h>
 #include <VersionHelpers.h>
-#endif // defined(WIN32)
+#endif // defined(NFE_PLATFORM_WINDOWS)
 
 
 #ifdef NFE_USE_SSE
@@ -30,7 +30,7 @@
 #endif // NFE_USE_SSE
 
 
-#if defined(__LINUX__) | defined(__linux__)
+#if defined(NFE_PLATFORM_LINUX)
 #ifndef _LARGEFILE64_SOURCE
 #define _LARGEFILE64_SOURCE
 #endif
@@ -47,7 +47,7 @@
 #include <dirent.h>
 #include <poll.h>
 #include <pthread.h>
-#endif // defined(__LINUX__) | defined(__linux__)
+#endif // defined(NFE_PLATFORM_LINUX)
 
 /// C lib
 #include <stdlib.h>

@@ -2,19 +2,19 @@
 #include "Entropy.hpp"
 #include "../Logger/Logger.hpp"
 
-#if defined(__LINUX__) | defined(__linux__)
+#if defined(NFE_PLATFORM_LINUX)
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <unistd.h>
-#endif // __LINUX__
+#endif // NFE_PLATFORM_LINUX
 
 namespace NFE {
 namespace Common {
 
 Entropy::Entropy()
 {
-#if defined(WIN32)
+#if defined(NFE_PLATFORM_WINDOWS)
 
     mCryptProv = NULL;
     const LPCSTR userName = "MyKeyContainer";
@@ -36,7 +36,7 @@ Entropy::Entropy()
 
     }
 
-#elif defined(__LINUX__) | defined(__linux__)
+#elif defined(NFE_PLATFORM_LINUX)
 
     mRandomSourceFD = ::open("/dev/urandom", O_RDONLY);
     if (mRandomSourceFD == -1)
@@ -44,41 +44,47 @@ Entropy::Entropy()
         NFE_LOG_ERROR("Failed to open /dev/urandom, error code: %u", errno);
     }
 
-#endif // WIN32
+#else
+#error Invalid platform
+#endif
 }
 
 Entropy::~Entropy()
 {
-#if defined(WIN32)
+#if defined(NFE_PLATFORM_WINDOWS)
 
     ::CryptReleaseContext(mCryptProv, 0);
 
-#elif defined(__LINUX__) | defined(__linux__)
+#elif defined(NFE_PLATFORM_LINUX)
 
     if (mRandomSourceFD != -1)
     {
         ::close(mRandomSourceFD);
     }
 
-#endif // WIN32
+#else
+#error Invalid platform
+#endif
 }
 
 uint32 Entropy::GetInt()
 {
     uint32 result = 0;
 
-#if defined(WIN32)
+#if defined(NFE_PLATFORM_WINDOWS)
 
     ::CryptGenRandom(mCryptProv, sizeof(result), (BYTE*)&result);
 
-#elif defined(__LINUX__) | defined(__linux__)
+#elif defined(NFE_PLATFORM_LINUX)
 
     if (mRandomSourceFD != -1)
     {
         ::read(mRandomSourceFD, &result, sizeof(result));
     }
 
-#endif // WIN32
+#else
+#error Invalid platform
+#endif
 
     // TODO combine with RTRND?
 

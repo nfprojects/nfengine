@@ -88,7 +88,7 @@ void ClassType::PrintInfo() const
 {
     Type::PrintInfo();
 
-#ifdef _DEBUG
+#ifdef NFE_CONFIGURATION_DEBUG
     if (mParent)
     {
         NFE_LOG_DEBUG("    - Parent type: %s", mParent->GetName().Str());
@@ -98,7 +98,7 @@ void ClassType::PrintInfo() const
     {
         NFE_LOG_DEBUG("    - Member '%s': type=%s, offset=%u", member.GetName(), member.GetType()->GetName().Str(), member.GetOffset());
     }
-#endif // _DEBUG
+#endif // NFE_CONFIGURATION_DEBUG
 }
 
 bool ClassType::IsA(const Type* baseType) const

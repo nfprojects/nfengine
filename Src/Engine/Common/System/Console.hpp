@@ -6,10 +6,10 @@
 
 #include "../nfCommon.hpp"
 
-#if defined(WIN32)
+#if defined(NFE_PLATFORM_WINDOWS)
 #include "Windows/Console.hpp"
-#elif defined(__LINUX__) | defined(__linux__)
+#elif defined(NFE_PLATFORM_LINUX)
 #include "Linux/Console.hpp"
 #else
-#error "Target system not supported!"
-#endif // ifdef WIN32 elif __LINUX__  | __linux__
+#error Invalid platform
+#endif

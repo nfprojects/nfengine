@@ -8,9 +8,9 @@
 #include "LogGrouper.hpp"
 #include "LoggerImpl.hpp"
 
-#ifdef WIN32
+#ifdef NFE_PLATFORM_WINDOWS
 #include "System/Windows/Common.hpp"
-#endif // WIN32
+#endif // NFE_PLATFORM_WINDOWS
 
 
 namespace NFE {

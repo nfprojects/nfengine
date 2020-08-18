@@ -94,7 +94,7 @@ bool ShaderCompiler::Compile(const char* source, uint32 sourceSize, const char* 
 
     Common::DynArray<const wchar_t*> arguments;
     arguments.EmplaceBack(L"-Ges");
-#ifdef _DEBUG
+#ifdef NFE_CONFIGURATION_DEBUG
     arguments.EmplaceBack(L"-Od");
     arguments.EmplaceBack(L"-Zi");
 #else

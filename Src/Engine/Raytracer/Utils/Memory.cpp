@@ -7,7 +7,7 @@ namespace RT {
 
 /*
 
-#if defined(WIN32)
+#if defined(NFE_PLATFORM_WINDOWS)
 
 static bool TogglePrivilege(TCHAR* pszPrivilege, BOOL bEnable)
 {
@@ -77,7 +77,7 @@ static void EnableLargePagesSupport()
     // TODO
 }
 
-#endif // WIN32
+#endif // NFE_PLATFORM_WINDOWS
 
 void InitMemory(const MemoryInitOptions& options)
 {
@@ -90,9 +90,9 @@ void InitMemory(const MemoryInitOptions& options)
 void* DefaultAllocator::Allocate(size_t size, size_t alignment)
 {
     void* ptr = nullptr;
-#if defined(WIN32)
+#if defined(NFE_PLATFORM_WINDOWS)
     ptr = _aligned_malloc(size, alignment);
-#elif defined(__LINUX__) | defined(__linux__)
+#elif defined(NFE_PLATFORM_LINUX)
     alignment = std::max(alignment, sizeof(void*));
     int ret = posix_memalign(&ptr, alignment, size);
     if (ret != 0)
@@ -100,17 +100,21 @@ void* DefaultAllocator::Allocate(size_t size, size_t alignment)
         NFE_ASSERT("posix_memalign() returned %i", ret);
         ptr = nullptr;
     }
-#endif // defined(WIN32)
+#else
+#error Invalid platform
+#endif
     return ptr;
 }
 
 void DefaultAllocator::Free(void* ptr)
 {
-#if defined(WIN32)
+#if defined(NFE_PLATFORM_WINDOWS)
     _aligned_free(ptr);
-#elif defined(__LINUX__) | defined(__linux__)
+#elif defined(NFE_PLATFORM_LINUX)
     free(ptr);
-#endif // defined(WIN32)
+#else
+#error Invalid platform
+#endif
 }
 
 
@@ -123,7 +127,7 @@ void* SystemAllocator::Allocate(size_t size, size_t alignment)
 
     void* ptr = nullptr;
 
-#if defined(WIN32)
+#if defined(NFE_PLATFORM_WINDOWS)
 
     if (size < 64u * 1024u)
     {
@@ -158,24 +162,28 @@ void* SystemAllocator::Allocate(size_t size, size_t alignment)
         }
     }
 
-#elif defined(__LINUX__) | defined(__linux__)
+#elif defined(NFE_PLATFORM_LINUX)
 
     // TODO
     DefaultAllocator::Allocate(size, alignment);
 
-#endif // 
+#else
+#error Invalid platform
+#endif
     
     return ptr;
 }
 
 void SystemAllocator::Free(void* ptr)
 {
-#if defined(WIN32)
+#if defined(NFE_PLATFORM_WINDOWS)
     ::VirtualFree(ptr, 0, MEM_RELEASE);
-#elif defined(__LINUX__) | defined(__linux__)
+#elif defined(NFE_PLATFORM_LINUX)
     // TODO
     DefaultAllocator::Free(ptr);
-#endif // 
+#else
+#error Invalid platform
+#endif
 }
 
 */

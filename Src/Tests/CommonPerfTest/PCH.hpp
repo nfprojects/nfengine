@@ -11,10 +11,10 @@
 
 #include <fstream>
 
-#if defined(WIN32)
+#if defined(NFE_PLATFORM_WINDOWS)
 #define WIN32_LEAN_AND_MEAN
 #define NOMINMAX
 #include <Windows.h>
-#endif // defined(WIN32)
+#endif // defined(NFE_PLATFORM_WINDOWS)
 
 #include "gtest/gtest.h"

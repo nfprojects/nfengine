@@ -39,104 +39,108 @@
 
 
 #if defined(__GNUC__)
-#define NFE_UNNAMED_STRUCT __extension__
+    #define NFE_UNNAMED_STRUCT __extension__
 #else
-#define NFE_UNNAMED_STRUCT
+    #define NFE_UNNAMED_STRUCT
 #endif
 
 
 // detect CPU architecture
 #if defined(_M_X64) || defined(__amd64__) || defined(_M_AMD64)
-#define NFE_ARCH_X64
+    #define NFE_ARCH_X64
 #elif defined(_M_IX86) || defined(__i386__) || defined(__i386)
-#define NFE_ARCH_X86
+    #define NFE_ARCH_X86
 #else
-#error "Target architecture not supported!"
+    #error "Target architecture not supported!"
 #endif
 
 
 // DLL import / export macro
-#ifdef WIN32
-#define NFE_API_EXPORT __declspec(dllexport)
-#define NFE_API_IMPORT __declspec(dllimport)
-#else // WIN32
-#define NFE_API_EXPORT __attribute__((visibility("default")))
-#define NFE_API_IMPORT __attribute__((visibility("default")))
-#endif // WIN32
+#ifdef NFE_PLATFORM_WINDOWS
+    #define NFE_API_EXPORT __declspec(dllexport)
+    #define NFE_API_IMPORT __declspec(dllimport)
+#else // NFE_PLATFORM_WINDOWS
+    #define NFE_API_EXPORT __attribute__((visibility("default")))
+    #define NFE_API_IMPORT __attribute__((visibility("default")))
+#endif // NFE_PLATFORM_WINDOWS
 
 // DLL import / export macro
-#ifdef WIN32
-#ifdef NFCOMMON_EXPORTS
-#define NFCOMMON_API NFE_API_EXPORT
-#else // NFCOMMON_EXPORTS
-#define NFCOMMON_API NFE_API_IMPORT
-#endif // NFCOMMON_EXPORTS
-#else // WIN32
-#define NFCOMMON_API __attribute__((visibility("default")))
-#endif // WIN32
+#ifdef NFE_PLATFORM_WINDOWS
+    #ifdef NFCOMMON_EXPORTS
+        #define NFCOMMON_API NFE_API_EXPORT
+    #else // NFCOMMON_EXPORTS
+        #define NFCOMMON_API NFE_API_IMPORT
+    #endif // NFCOMMON_EXPORTS
+#else // NFE_PLATFORM_WINDOWS
+    #define NFCOMMON_API __attribute__((visibility("default")))
+#endif // NFE_PLATFORM_WINDOWS
 
 
 // force global variable definition to be shared across all compilation units
-#if defined(WIN32)
-#define NFE_GLOBAL_CONST extern const __declspec(selectany)
+#if defined(NFE_PLATFORM_WINDOWS)
+    #define NFE_GLOBAL_CONST extern const __declspec(selectany)
 #elif defined(__LINUX__) | defined(__linux__)
-#define NFE_GLOBAL_CONST const
+    #define NFE_GLOBAL_CONST const
 #else
-#error "Target system not supported!"
-#endif // defined(WIN32)
+    #error Invalid platform
+#endif
 
 
 #define NFE_INLINE inline
 
 // macro forcing a function to be inlined
-#if defined(__LINUX__) | defined(__linux__)
-#define NFE_FORCE_INLINE inline __attribute__((always_inline))
-#elif defined(WIN32)
-#define NFE_FORCE_INLINE __forceinline
-#endif // defined(__LINUX__) | defined(__linux__)
+#if defined(NFE_PLATFORM_LINUX)
+    #define NFE_FORCE_INLINE inline __attribute__((always_inline))
+#elif defined(NFE_PLATFORM_WINDOWS)
+    #define NFE_FORCE_INLINE __forceinline
+#else
+    #error Invalid platform
+#endif
 
 
 // macro forcing a function not to be inlined
-#ifdef WIN32
-#define NFE_FORCE_NOINLINE __declspec(noinline)
-#elif defined(__LINUX__) || defined(__linux__)
-#define NFE_FORCE_NOINLINE __attribute__((noinline))
-#endif // WIN32
+#if defined(NFE_PLATFORM_WINDOWS)
+    #define NFE_FORCE_NOINLINE __declspec(noinline)
+#elif defined(NFE_PLATFORM_LINUX)
+    #define NFE_FORCE_NOINLINE __attribute__((noinline))
+#else
+    #error Invalid platform
+#endif
 
 
 // aligning macro for objects using SIMD registers
-#if defined(WIN32)
-#define NFE_ALIGN(bytes) __declspec(align(bytes))
-#elif defined(__LINUX__) | defined(__linux__)
-#define NFE_ALIGN(bytes) __attribute__((aligned(bytes)))
+#if defined(NFE_PLATFORM_WINDOWS)
+    #define NFE_ALIGN(bytes) __declspec(align(bytes))
+#elif defined(NFE_PLATFORM_LINUX)
+    #define NFE_ALIGN(bytes) __attribute__((aligned(bytes)))
 #else
-#error "Target system not supported!"
-#endif // defined(WIN32)
+    #error Invalid platform
+#endif
 
 
 #define NFE_CACHE_LINE_SIZE 64u
 
 
 // macro for data prefetching from RAM to CPU cache.
-#ifdef WIN32
-#ifdef NFE_USE_SSE
-#define NFE_PREFETCH_L1(addr) _mm_prefetch(reinterpret_cast<const char*>(addr), _MM_HINT_T0)
-#else
-#define NFE_PREFETCH_L1(addr)
-#endif // NFE_USE_SSE
-#elif defined(__LINUX__) || defined(__linux__)
-#define NFE_PREFETCH_L1(addr) __builtin_prefetch(addr, 0, 3) // prefetch for read to all cache levels
+#if defined(NFE_PLATFORM_WINDOWS)
+    #ifdef NFE_USE_SSE
+        #define NFE_PREFETCH_L1(addr) _mm_prefetch(reinterpret_cast<const char*>(addr), _MM_HINT_T0)
+    #else
+        #define NFE_PREFETCH_L1(addr)
+    #endif // NFE_USE_SSE
+#elif defined(NFE_PLATFORM_LINUX)
+    #define NFE_PREFETCH_L1(addr) __builtin_prefetch(addr, 0, 3) // prefetch for read to all cache levels
 #endif // WIN32
 
 
 // debug break
-#if defined(WIN32)
-#define NFE_BREAK() __debugbreak()
-#elif defined(__LINUX__) | defined(__linux__)
-#define NFE_BREAK() __builtin_trap()
+#if defined(NFE_PLATFORM_WINDOWS)
+    #define NFE_BREAK() __debugbreak()
+#elif defined(NFE_PLATFORM_LINUX)
+    #define NFE_BREAK() __builtin_trap()
 #else
-#error "Target system not supported!"
-#endif // defined(WIN32)
+    #error Invalid platform
+#endif
 
 
 // use this inside a class declaration to make it non-copyable

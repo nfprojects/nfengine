@@ -24,11 +24,11 @@ const NFE::Common::String GLSL_SHADER_EXTENSION(".glsl");
 
 NFE::Common::DynArray<NFE::Common::String> GetDefaultBackend()
 {
-#ifdef WIN32
+#ifdef NFE_PLATFORM_WINDOWS
     return { D3D12_BACKEND, HLSL5_SHADER_PATH_PREFIX, HLSL5_SHADER_EXTENSION };
-#elif defined(__linux__) | defined(__LINUX__)
+#elif defined(NFE_PLATFORM_LINUX)
     return { VK_BACKEND, GLSL_SHADER_PATH_PREFIX, GLSL_SHADER_EXTENSION };
 #else
-#error "Target platform not supported!"
+#error Invalid platform
 #endif
 }

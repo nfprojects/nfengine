@@ -70,7 +70,7 @@ TEST(ThreadTest, SetPriority)
 {
     // SetPriority is not possible on linux OS
     bool assertionVal = false;
-#if defined(WIN32)
+#if defined(NFE_PLATFORM_WINDOWS)
     assertionVal = true;
 #endif
 

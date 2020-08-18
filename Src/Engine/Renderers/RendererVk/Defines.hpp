@@ -7,15 +7,15 @@
 #pragma once
 
 // DLL import / export macro
-#ifdef WIN32
-#ifdef RENDERERVK_EXPORTS
-#define RENDERER_API __declspec(dllexport)
-#else // RENDERERVK_EXPORTS
-#define RENDERER_API __declspec(dllimport)
-#endif // RENDERERVK_EXPORTS
-#else // WIN32
-#define RENDERER_API __attribute__((visibility("default")))
-#endif // WIN32
+#if defined(NFE_PLATFORM_WINDOWS)
+    #ifdef RENDERERVK_EXPORTS
+        #define RENDERER_API __declspec(dllexport)
+    #else // RENDERERVK_EXPORTS
+        #define RENDERER_API __declspec(dllimport)
+    #endif // RENDERERVK_EXPORTS
+#else // NFE_PLATFORM_WINDOWS
+    #define RENDERER_API __attribute__((visibility("default")))
+#endif // NFE_PLATFORM_WINDOWS
 
 #include "Engine/Common/nfCommon.hpp"
 #include "Engine/Common/Logger/Logger.hpp"

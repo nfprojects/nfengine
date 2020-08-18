@@ -1,18 +1,18 @@
 #pragma once
 
-#if defined(_DEBUG) && defined(WIN32)
+#if defined(NFE_CONFIGURATION_DEBUG) && defined(NFE_PLATFORM_WINDOWS)
 #define _CRTDBG_MAP_ALLOC
 #include <stdlib.h>
 #include <crtdbg.h>
-#endif // _DEBUG
+#endif // NFE_CONFIGURATION_DEBUG
 
-#if defined(WIN32)
+#if defined(NFE_PLATFORM_WINDOWS)
 #define WIN32_LEAN_AND_MEAN
 #define NOMINMAX
 #include <Windows.h>
 #include <windowsx.h>
 #include <VersionHelpers.h>
-#endif // defined(WIN32)
+#endif // defined(NFE_PLATFORM_WINDOWS)
 
 #ifdef NFE_USE_SSE
 #include <xmmintrin.h>

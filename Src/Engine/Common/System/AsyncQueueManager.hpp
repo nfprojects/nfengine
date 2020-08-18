@@ -6,8 +6,10 @@
 
 #pragma once
 
-#if defined(WIN32)
+#if defined(NFE_PLATFORM_WINDOWS)
 #include "Windows/AsyncQueueManager.hpp"
-#elif defined(__LINUX__) | defined(__linux__)
+#elif defined(NFE_PLATFORM_LINUX)
 #include "Linux/AsyncQueueManager.hpp"
+#else
+#error Invalid platform
 #endif

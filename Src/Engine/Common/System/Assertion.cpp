@@ -8,9 +8,9 @@
 #include "Assertion.hpp"
 #include "Console.hpp"
 
-#if defined(__LINUX__) | defined(__linux__)
+#if defined(NFE_PLATFORM_LINUX)
 #include <signal.h>
-#endif // defined(__LINUX__) | defined(__linux__)
+#endif // defined(NFE_PLATFORM_LINUX)
 
 
 namespace NFE {
@@ -63,7 +63,7 @@ void HandleFatalAssertion(const char* expressionStr, const char* functionStr, co
     message << "Function: " << functionStr << "\n";
     message << "Message: " << (formattedStr ? formattedStr : "(vsnprintf failed)");
 
-#if defined(WIN32)
+#if defined(NFE_PLATFORM_WINDOWS)
     message << "\n\nPress 'YES' to continue (not recommended) or 'NO' to abort.";
     if (IDYES == ::MessageBoxA(NULL, message.str().c_str(), "Assertion failed", MB_ICONERROR | MB_YESNO))
     {
@@ -71,11 +71,13 @@ void HandleFatalAssertion(const char* expressionStr, const char* functionStr, co
     }
 
     ::ExitProcess(1);
-#elif defined(__LINUX__) | defined(__linux__)
+#elif defined(NFE_PLATFORM_LINUX)
     PrintColored(ConsoleColor::Red, message.str().c_str());
     fflush(stdout);
     ::raise(SIGTRAP);
-#endif // defined(WIN32)
+#else
+#error Invalid platform
+#endif
 }
 
 } // namespace Common

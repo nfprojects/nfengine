@@ -54,12 +54,12 @@ void EnumType::PrintInfo() const
 {
     Type::PrintInfo();
 
-#ifdef _DEBUG
+#ifdef NFE_CONFIGURATION_DEBUG
     for (const EnumOption& option : mOptions)
     {
         NFE_LOG_DEBUG("    option '%.*s'=%llu", option.name.Length(), option.name.Data(), option.value);
     }
-#endif // _DEBUG
+#endif // NFE_CONFIGURATION_DEBUG
 }
 
 const EnumOptions& EnumType::GetOptions() const
