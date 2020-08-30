@@ -59,7 +59,6 @@ Device::Device()
     : mCbvSrvUavHeapAllocator(HeapAllocator::Type::CbvSrvUav, 1024)
     , mRtvHeapAllocator(HeapAllocator::Type::Rtv, 512)
     , mDsvHeapAllocator(HeapAllocator::Type::Dsv, 512)
-    , mAdapterInUse(-1)
     , mDebugLayerEnabled(false)
 {}
 
@@ -135,10 +134,10 @@ bool Device::Init(const DeviceInitParams* params)
 
     // tick command list manager and global ringbuffer automatically when fence is completed on GPU
     mGraphicsQueueFence.SetCallback([this](uint64 completedFenceValue)
-    {
-        mCommandListManager->OnFenveValueCompleted(completedFenceValue);
-        mRingBuffer.OnFrameCompleted(completedFenceValue);
-    });
+        {
+            mCommandListManager->OnFenveValueCompleted(completedFenceValue);
+            mRingBuffer.OnFrameCompleted(completedFenceValue);
+        });
 
     mFenceManager.Initialize();
 
@@ -176,7 +175,7 @@ Device::~Device()
     mDsvHeapAllocator.Release();
 
     mDXGIFactory.Reset();
-    mAdapters.Clear();
+    mAdapter.Reset();
 
     mFenceManager.Uninitialize();
     mGraphicsQueueFence.Release();
@@ -269,7 +268,9 @@ bool Device::InitializeDevice(const DeviceInitParams* params)
         return false;
     }
 
-    hr = D3D_CALL_CHECK(D3D12CreateDevice(mAdapters[mAdapterInUse].Get(), D3D_FEATURE_LEVEL_11_0, IID_PPV_ARGS(mDevice.GetPtr())));
+    DetectMonitors();
+
+    hr = D3D_CALL_CHECK(D3D12CreateDevice(mAdapter.Get(), D3D_FEATURE_LEVEL_11_0, IID_PPV_ARGS(mDevice.GetPtr())));
     if (FAILED(hr))
     {
         return false;
@@ -410,6 +411,8 @@ ResourceBindingInstancePtr Device::CreateResourceBindingInstance(const ResourceB
 
 bool Device::DetectVideoCards(int preferredId)
 {
+    mAdapter.Reset();
+
     for (uint32 i = 0; ; ++i)
     {
         IDXGIAdapter1* adapter;
@@ -433,25 +436,18 @@ bool Device::DetectVideoCards(int preferredId)
         UTF16ToUTF8(wideDesc, descString);
 
         if (adapterDesc.Flags & DXGI_ADAPTER_FLAG_SOFTWARE)
+        {
             descString += " [software adapter]";
-        else if (mAdapterInUse < 0)
-            mAdapterInUse = i;
-
-        if (static_cast<uint32>(preferredId) == i)
-            mAdapterInUse = i;
+        }
+        else if (!mAdapter || static_cast<uint32>(preferredId) == i)
+        {
+            mAdapter = D3DPtr<IDXGIAdapter>(adapter);
+        }
 
         NFE_LOG_INFO("Adapter found at slot %u: %s", i, descString.Str());
-        mAdapters.PushBack(D3DPtr<IDXGIAdapter>(adapter));
     }
 
-    if (mAdapters.Size() > 0)
-    {
-        if (mAdapterInUse < 0)
-            mAdapterInUse = 0;
-        return true;
-    }
-
-    return false;
+    return mAdapter;
 }
 
 bool Device::DetectFeatureLevel()
@@ -506,7 +502,7 @@ bool Device::GetDeviceInfo(DeviceInfo& info)
 
     HRESULT hr;
     DXGI_ADAPTER_DESC adapterDesc;
-    hr = D3D_CALL_CHECK(mAdapters[mAdapterInUse]->GetDesc(&adapterDesc));
+    hr = D3D_CALL_CHECK(mAdapter->GetDesc(&adapterDesc));
     if (FAILED(hr))
         return false;
 
@@ -526,57 +522,169 @@ bool Device::GetDeviceInfo(DeviceInfo& info)
 
     D3D12_FEATURE_DATA_D3D12_OPTIONS d3d12options;
     hr = mDevice->CheckFeatureSupport(D3D12_FEATURE_D3D12_OPTIONS, &d3d12options, sizeof(d3d12options));
-    if (FAILED(hr))
+    if (SUCCEEDED(hr))
     {
-        NFE_LOG_ERROR("Failed to obtain D3D12 options info");
+        info.features.PushBack("TiledResourcesTier=" + ToString(static_cast<uint32>(d3d12options.TiledResourcesTier)));
+        info.features.PushBack("ResourceBindingTier=" + ToString(static_cast<uint32>(d3d12options.ResourceBindingTier)));
+        info.features.PushBack("ResourceHeapTier=" + ToString(static_cast<uint32>(d3d12options.ResourceHeapTier)));
+        info.features.PushBack("DoublePrecisionFloatShaderOps=" + ToString(d3d12options.DoublePrecisionFloatShaderOps));
+        info.features.PushBack("OutputMergerLogicOp=" + ToString(d3d12options.OutputMergerLogicOp));
+        info.features.PushBack("PSSpecifiedStencilRefSupported=" + ToString(d3d12options.PSSpecifiedStencilRefSupported));
+        info.features.PushBack("TypedUAVLoadAdditionalFormats=" + ToString(d3d12options.TypedUAVLoadAdditionalFormats));
+        info.features.PushBack("ROVsSupported=" + ToString(d3d12options.ROVsSupported));
+        info.features.PushBack("ConservativeRasterizationTier=" + ToString(d3d12options.ConservativeRasterizationTier));
+        info.features.PushBack("MaxGPUVirtualAddressBitsPerResource=" + ToString(d3d12options.MaxGPUVirtualAddressBitsPerResource));
+        info.features.PushBack("StandardSwizzle64KBSupported=" + ToString(d3d12options.StandardSwizzle64KBSupported));
+        info.features.PushBack("CrossAdapterRowMajorTextureSupported=" + ToString(d3d12options.CrossAdapterRowMajorTextureSupported));
+
+        // minimum precision support
+        {
+            const char* minPrecissionSupportStr = "none";
+            switch (d3d12options.MinPrecisionSupport)
+            {
+            case D3D12_SHADER_MIN_PRECISION_SUPPORT_10_BIT:
+                minPrecissionSupportStr = "10 bit";
+                break;
+            case D3D12_SHADER_MIN_PRECISION_SUPPORT_16_BIT:
+                minPrecissionSupportStr = "16 bit";
+                break;
+            }
+            info.features.PushBack(String("MinPrecisionSupport=") + minPrecissionSupportStr);
+        }
+
+        // cross-node sharing support
+        {
+            const char* crossNodeSharingStr = "notSupported";
+            switch (d3d12options.CrossNodeSharingTier)
+            {
+            case D3D12_CROSS_NODE_SHARING_TIER_1_EMULATED:
+                crossNodeSharingStr = "1_emulated";
+                break;
+            case D3D12_CROSS_NODE_SHARING_TIER_1:
+                crossNodeSharingStr = "1";
+                break;
+            case D3D12_CROSS_NODE_SHARING_TIER_2:
+                crossNodeSharingStr = "2";
+                break;
+            }
+            info.features.PushBack(String("CrossNodeSharingTier=") + crossNodeSharingStr);
+        }
+    }
+
+    D3D12_FEATURE_DATA_D3D12_OPTIONS1 d3d12options1;
+    hr = mDevice->CheckFeatureSupport(D3D12_FEATURE_D3D12_OPTIONS1, &d3d12options1, sizeof(d3d12options1));
+    if (SUCCEEDED(hr))
+    {
+        info.features.PushBack("WaveOps=" + ToString(d3d12options1.WaveOps));
+        info.features.PushBack("WaveLaneCountMin=" + ToString(d3d12options1.WaveLaneCountMin));
+        info.features.PushBack("WaveLaneCountMax=" + ToString(d3d12options1.WaveLaneCountMax));
+        info.features.PushBack("TotalLaneCount=" + ToString(d3d12options1.TotalLaneCount));
+        info.features.PushBack("ExpandedComputeResourceStates=" + ToString(d3d12options1.ExpandedComputeResourceStates));
+        info.features.PushBack("Int64ShaderOps=" + ToString(d3d12options1.Int64ShaderOps));
+    }
+
+    D3D12_FEATURE_DATA_D3D12_OPTIONS2 d3d12options2;
+    hr = mDevice->CheckFeatureSupport(D3D12_FEATURE_D3D12_OPTIONS2, &d3d12options2, sizeof(d3d12options2));
+    if (SUCCEEDED(hr))
+    {
+        info.features.PushBack("DepthBoundsTestSupported=" + ToString(d3d12options2.DepthBoundsTestSupported));
+        info.features.PushBack("ProgrammableSamplePositionsTier=" + ToString(static_cast<uint32>(d3d12options2.ProgrammableSamplePositionsTier)));
+    }
+
+    D3D12_FEATURE_DATA_D3D12_OPTIONS3 d3d12options3;
+    hr = mDevice->CheckFeatureSupport(D3D12_FEATURE_D3D12_OPTIONS3, &d3d12options3, sizeof(d3d12options3));
+    if (SUCCEEDED(hr))
+    {
+        info.features.PushBack("CopyQueueTimestampQueriesSupported=" + ToString(d3d12options3.CopyQueueTimestampQueriesSupported));
+        info.features.PushBack("CastingFullyTypedFormatSupported=" + ToString(d3d12options3.CastingFullyTypedFormatSupported));
+        info.features.PushBack("ViewInstancingTier=" + ToString(static_cast<uint32>(d3d12options3.ViewInstancingTier)));
+        info.features.PushBack("BarycentricsSupported=" + ToString(d3d12options3.BarycentricsSupported));
+    }
+
+    D3D12_FEATURE_DATA_D3D12_OPTIONS4 d3d12options4;
+    hr = mDevice->CheckFeatureSupport(D3D12_FEATURE_D3D12_OPTIONS4, &d3d12options4, sizeof(d3d12options4));
+    if (SUCCEEDED(hr))
+    {
+        info.features.PushBack("MSAA64KBAlignedTextureSupported=" + ToString(d3d12options4.MSAA64KBAlignedTextureSupported));
+        info.features.PushBack("SharedResourceCompatibilityTier=" + ToString(static_cast<uint32>(d3d12options4.SharedResourceCompatibilityTier)));
+        info.features.PushBack("Native16BitShaderOpsSupported=" + ToString(d3d12options4.Native16BitShaderOpsSupported));
+    }
+
+    D3D12_FEATURE_DATA_D3D12_OPTIONS5 d3d12options5;
+    hr = mDevice->CheckFeatureSupport(D3D12_FEATURE_D3D12_OPTIONS5, &d3d12options5, sizeof(d3d12options5));
+    if (SUCCEEDED(hr))
+    {
+        info.features.PushBack("SRVOnlyTiledResourceTier3=" + ToString(d3d12options5.SRVOnlyTiledResourceTier3));
+        info.features.PushBack("RenderPassesTier=" + ToString(static_cast<uint32>(d3d12options5.RenderPassesTier)));
+        info.features.PushBack("RaytracingTier=" + ToString(static_cast<uint32>(d3d12options5.RaytracingTier)));
+    }
+
+    return true;
+}
+
+DynArray<MonitorInfo> Device::GetMonitorsInfo() const
+{
+    DynArray<MonitorInfo> monitors;
+
+    for (uint32 i = 0;; i++)
+    {
+        IDXGIOutput* pOutput = nullptr;
+        if (mAdapter->EnumOutputs(i, &pOutput) == DXGI_ERROR_NOT_FOUND)
+        {
+            break;
+        }
+
+        if (!pOutput)
+        {
+            break;
+        }
+
+        DXGI_OUTPUT_DESC outputDesc;
+        D3D_CALL_CHECK(pOutput->GetDesc(&outputDesc));
+        pOutput->Release();
+
+        MonitorInfo monitorInfo;
+        if (!Common::UTF16ToUTF8(Utf16String(outputDesc.DeviceName), monitorInfo.name))
+        {
+            monitorInfo.name = "<unknown>";
+        }
+
+        monitorInfo.x = outputDesc.DesktopCoordinates.left;
+        monitorInfo.y = outputDesc.DesktopCoordinates.top;
+        monitorInfo.width = outputDesc.DesktopCoordinates.right - outputDesc.DesktopCoordinates.left;
+        monitorInfo.height = outputDesc.DesktopCoordinates.bottom - outputDesc.DesktopCoordinates.top;
+        monitorInfo.valid = outputDesc.AttachedToDesktop != 0;
+
+        MONITORINFOEX mi = {};
+        mi.cbSize = sizeof(MONITORINFOEX);
+        GetMonitorInfoA(outputDesc.Monitor, &mi);
+
+
+        monitors.PushBack(monitorInfo);
+    }
+
+    return monitors;
+}
+
+bool Device::DetectMonitors()
+{
+    const DynArray<MonitorInfo> monitors = GetMonitorsInfo();
+
+    if (monitors.Empty())
+    {
+        NFE_LOG_WARNING("No monitors detected");
         return false;
     }
 
-    info.features.PushBack("TiledResourcesTier=" + ToString(static_cast<uint32>(d3d12options.TiledResourcesTier)));
-    info.features.PushBack("ResourceBindingTier=" + ToString(static_cast<uint32>(d3d12options.ResourceBindingTier)));
-    info.features.PushBack("ResourceHeapTier=" + ToString(static_cast<uint32>(d3d12options.ResourceHeapTier)));
-
-    info.features.PushBack("DoublePrecisionFloatShaderOps=" + ToString(d3d12options.DoublePrecisionFloatShaderOps));
-    info.features.PushBack("OutputMergerLogicOp=" + ToString(d3d12options.OutputMergerLogicOp));
-    info.features.PushBack("PSSpecifiedStencilRefSupported=" + ToString(d3d12options.PSSpecifiedStencilRefSupported));
-    info.features.PushBack("TypedUAVLoadAdditionalFormats=" + ToString(d3d12options.TypedUAVLoadAdditionalFormats));
-    info.features.PushBack("ROVsSupported=" + ToString(d3d12options.ROVsSupported));
-    info.features.PushBack("ConservativeRasterizationTier=" + ToString(d3d12options.ConservativeRasterizationTier));
-    info.features.PushBack("MaxGPUVirtualAddressBitsPerResource=" + ToString(d3d12options.MaxGPUVirtualAddressBitsPerResource));
-    info.features.PushBack("StandardSwizzle64KBSupported=" + ToString(d3d12options.StandardSwizzle64KBSupported));
-    info.features.PushBack("CrossAdapterRowMajorTextureSupported=" + ToString(d3d12options.CrossAdapterRowMajorTextureSupported));
-
-    // minimum precision support
+    for (uint32 i = 0; i < monitors.Size(); ++i)
     {
-        const char* minPrecissionSupportStr = "none";
-        switch (d3d12options.MinPrecisionSupport)
-        {
-        case D3D12_SHADER_MIN_PRECISION_SUPPORT_10_BIT:
-            minPrecissionSupportStr = "10 bit";
-            break;
-        case D3D12_SHADER_MIN_PRECISION_SUPPORT_16_BIT:
-            minPrecissionSupportStr = "16 bit";
-            break;
-        }
-        info.features.PushBack(String("MinPrecisionSupport=") + minPrecissionSupportStr);
-    }
+        const MonitorInfo& monitor = monitors[i];
 
-    // cross-node sharing support
-    {
-        const char* crossNodeSharingStr = "notSupported";
-        switch (d3d12options.CrossNodeSharingTier)
-        {
-        case D3D12_CROSS_NODE_SHARING_TIER_1_EMULATED:
-            crossNodeSharingStr = "1_emulated";
-            break;
-        case D3D12_CROSS_NODE_SHARING_TIER_1:
-            crossNodeSharingStr = "1";
-            break;
-        case D3D12_CROSS_NODE_SHARING_TIER_2:
-            crossNodeSharingStr = "2";
-            break;
-        }
-        info.features.PushBack(String("CrossNodeSharingTier=") + crossNodeSharingStr);
+        NFE_LOG_INFO("Monitor #%u detected", i);
+        NFE_LOG_INFO("    Name: %s", monitor.name.Str());
+        NFE_LOG_INFO("    Dimensions: %ux%u", monitor.width, monitor.height);
+        NFE_LOG_INFO("    Offset: %d,%d", monitor.x, monitor.y);
+        NFE_LOG_INFO("    Valid: %d", monitor.valid);
     }
 
     return true;

@@ -29,6 +29,16 @@ class CommandListManager;
 
 using CommandRecorderWeakPtr = Common::WeakPtr<CommandRecorder>;
 
+struct MonitorInfo
+{
+    Common::String name;
+    int32 x;
+    int32 y;
+    uint32 width;
+    uint32 height;
+    bool valid;
+};
+
 struct DeviceCaps
 {
     bool tearingSupport = false;
@@ -47,9 +57,7 @@ class Device : public IDevice
 
     D3D_FEATURE_LEVEL mFeatureLevel;
 
-    Common::DynArray<D3DPtr<IDXGIAdapter>> mAdapters;
-    int mAdapterInUse;
-
+    D3DPtr<IDXGIAdapter> mAdapter;
     D3DPtr<IDXGIFactory4> mDXGIFactory;
     D3DPtr<ID3D12Device> mDevice;
     D3DPtr<ID3D12CommandQueue> mGraphicsQueue;
@@ -90,6 +98,7 @@ class Device : public IDevice
     bool DetectFeatureLevel();
     bool PrepareD3DDebugLayer();
     bool DetectVideoCards(int preferredId);
+    bool DetectMonitors();
     bool CreateResources();
 
 public:
@@ -104,6 +113,7 @@ public:
     void* GetHandle() const override;
     bool GetDeviceInfo(DeviceInfo& info) override;
     bool IsBackbufferFormatSupported(Format format) override;
+    Common::DynArray<MonitorInfo> GetMonitorsInfo() const;
 
     /// Resources creation functions
 
