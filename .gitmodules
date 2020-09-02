@@ -43,3 +43,6 @@
 [submodule "Deps/imgui_sw"]
 	path = Deps/imgui_sw
 	url = https://github.com/nfprojects/imgui_software_renderer.git
+[submodule "Deps/D3D12MemoryAllocator"]
+	path = Deps/D3D12MemoryAllocator
+	url = https://github.com/GPUOpen-LibrariesAndSDKs/D3D12MemoryAllocator.git
