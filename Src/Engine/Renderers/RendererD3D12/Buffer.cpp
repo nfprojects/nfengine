@@ -53,6 +53,7 @@ bool Buffer::UploadData(const BufferDesc& desc)
     resourceDesc.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
     resourceDesc.Flags = D3D12_RESOURCE_FLAG_NONE;
 
+    // TODO get rid of that, use existing ring buffer for resource uploads
     hr = D3D_CALL_CHECK(gDevice->GetDevice()->CreateCommittedResource(&heapProperties,
                                                                       D3D12_HEAP_FLAG_NONE,
                                                                       &resourceDesc,
@@ -176,13 +177,6 @@ bool Buffer::Init(const BufferDesc& desc)
         return true;
     }
 
-    D3D12_HEAP_PROPERTIES heapProperties;
-    heapProperties.Type = D3D12_HEAP_TYPE_DEFAULT;
-    heapProperties.CPUPageProperty = D3D12_CPU_PAGE_PROPERTY_UNKNOWN;
-    heapProperties.MemoryPoolPreference = D3D12_MEMORY_POOL_UNKNOWN;
-    heapProperties.CreationNodeMask = 1;
-    heapProperties.VisibleNodeMask = 1;
-
     D3D12_RESOURCE_DESC resourceDesc;
     resourceDesc.Dimension = D3D12_RESOURCE_DIMENSION_BUFFER;
     resourceDesc.Alignment = 0;
@@ -196,13 +190,17 @@ bool Buffer::Init(const BufferDesc& desc)
     resourceDesc.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
     resourceDesc.Flags = D3D12_RESOURCE_FLAG_NONE;
 
-    HRESULT hr;
-    hr = D3D_CALL_CHECK(gDevice->GetDevice()->CreateCommittedResource(&heapProperties,
-                                                                      D3D12_HEAP_FLAG_NONE,
-                                                                      &resourceDesc,
-                                                                      D3D12_RESOURCE_STATE_COMMON,
-                                                                      nullptr,
-                                                                      IID_PPV_ARGS(mResource.GetPtr())));
+    D3D12MA::ALLOCATION_DESC allocationDesc = {};
+    allocationDesc.HeapType = D3D12_HEAP_TYPE_DEFAULT;
+
+    HRESULT hr = D3D_CALL_CHECK(gDevice->GetAllocator()->CreateResource(
+        &allocationDesc,
+        &resourceDesc,
+        D3D12_RESOURCE_STATE_COMMON,
+        nullptr,
+        mAllocation.GetPtr(),
+        IID_PPV_ARGS(mResource.GetPtr())));
+
     if (FAILED(hr))
     {
         return false;

@@ -29,11 +29,22 @@ bool DynamicTextureScene::CreateSubSceneSimple()
     textureDesc.mode = BufferMode::GPUOnly;
     textureDesc.width = WINDOW_WIDTH;
     textureDesc.height = WINDOW_HEIGHT;
+    textureDesc.binding = NFE_RENDERER_TEXTURE_BIND_RENDERTARGET;
     mTexture = mRendererDevice->CreateTexture(textureDesc);
     if (!mTexture)
     {
         return false;
     }
+
+    // create rendertarget (for clearing)
+    RenderTargetElement rtTarget;
+    rtTarget.texture = mTexture;
+    RenderTargetDesc rtDesc;
+    rtDesc.numTargets = 1;
+    rtDesc.targets = &rtTarget;
+    mRenderTarget = mRendererDevice->CreateRenderTarget(rtDesc);
+    if (!mRenderTarget)
+        return false;
 
     mTextureData.Resize(TexRegionWidth * TexRegionHeight);
 
@@ -84,6 +95,14 @@ void DynamicTextureScene::Draw(float dt)
 
     mCommandBuffer->Begin();
 
+    mCommandBuffer->SetRenderTarget(mRenderTarget);
+
+    // clear target
+    const Vec4fU color(0.0f, 0.0f, 0.0f, 1.0f);
+    mCommandBuffer->Clear(ClearFlagsColor, 1, nullptr, &color);
+
+    mCommandBuffer->SetRenderTarget(nullptr);
+
     {
         for (uint32 i = 0; i < TexRegionWidth * TexRegionHeight; ++i)
         {
@@ -131,6 +150,7 @@ void DynamicTextureScene::Release()
 {
     ReleaseSubsceneResources();
 
+    mRenderTarget.Reset();
     mWindowBackbuffer.Reset();
     mCommandBuffer.Reset();
     mRendererDevice = nullptr;

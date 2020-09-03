@@ -75,6 +75,18 @@ bool Device::Init(const DeviceInitParams* params)
         return false;
     }
 
+    {
+        D3D12MA::ALLOCATOR_DESC allocatorDesc = {};
+        allocatorDesc.pDevice = mDevice.Get();
+        allocatorDesc.pAdapter = mAdapter.Get();
+
+        if (FAILED(D3D12MA::CreateAllocator(&allocatorDesc, &mAllocator)))
+        {
+            NFE_LOG_ERROR("Failed to initialize D3D12MemoryAllocator");
+            return false;
+        }
+    }
+
     if (!DetectFeatureLevel())
     {
         return false;
@@ -184,6 +196,12 @@ Device::~Device()
 
     mGraphicsQueue.Reset();
     mResourceUploadQueue.Reset();
+
+    if (mAllocator)
+    {
+        mAllocator->Release();
+        mAllocator = nullptr;
+    }
 
     mDevice.Reset();
 

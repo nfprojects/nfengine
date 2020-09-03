@@ -91,8 +91,7 @@ void InternalCommandList::OnExecuted()
     NFE_ASSERT(mFenceValue != FenceData::InitialValue);
     NFE_ASSERT(mState == State::Executing);
 
-    uint64 completedValue = gDevice->mGraphicsQueueFence.GetCompletedValue();
-    NFE_ASSERT(completedValue >= mFenceValue);
+    NFE_ASSERT(gDevice->mGraphicsQueueFence.GetCompletedValue() >= mFenceValue);
 
     mReferencedResources.Clear();
     mState = State::Free;

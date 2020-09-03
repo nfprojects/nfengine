@@ -1,0 +1,78 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="Backbuffer.cpp" />
+    <ClCompile Include="CommandList.cpp" />
+    <ClCompile Include="CommandListManager.cpp" />
+    <ClCompile Include="ComputePipelineState.cpp" />
+    <ClCompile Include="Fence.cpp" />
+    <ClCompile Include="HeapAllocator.cpp" />
+    <ClCompile Include="PipelineState.cpp" />
+    <ClCompile Include="Buffer.cpp" />
+    <ClCompile Include="CommandRecorder.cpp" />
+    <ClCompile Include="Device.cpp" />
+    <ClCompile Include="Main.cpp" />
+    <ClCompile Include="ReferencedResourcesList.cpp" />
+    <ClCompile Include="RendererD3D12.cpp" />
+    <ClCompile Include="RenderTarget.cpp" />
+    <ClCompile Include="Resource.cpp" />
+    <ClCompile Include="ResourceBinding.cpp" />
+    <ClCompile Include="ResourceStateCache.cpp" />
+    <ClCompile Include="RingBuffer.cpp" />
+    <ClCompile Include="Sampler.cpp" />
+    <ClCompile Include="Shader.cpp" />
+    <ClCompile Include="PCH.cpp" />
+    <ClCompile Include="ShaderCompiler.cpp" />
+    <ClCompile Include="Texture.cpp" />
+    <ClCompile Include="Translations.cpp" />
+    <ClCompile Include="VertexLayout.cpp" />
+    <ClCompile Include="..\..\..\..\Deps\D3D12MemoryAllocator\src\D3D12MemAlloc.cpp">
+      <Filter>External\D3D12MemoryAllocator</Filter>
+    </ClCompile>
+    <ClCompile Include="Common.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Backbuffer.hpp" />
+    <ClInclude Include="Buffer.hpp" />
+    <ClInclude Include="CommandRecorder.hpp" />
+    <ClInclude Include="CommandList.hpp" />
+    <ClInclude Include="CommandListManager.hpp" />
+    <ClInclude Include="ComputePipelineState.hpp" />
+    <ClInclude Include="D3DPtr.hpp" />
+    <ClInclude Include="D:\DEV\EXTERNAL\DirectX-Graphics-Samples\Libraries\D3DX12\d3dx12.h" />
+    <ClInclude Include="Device.hpp" />
+    <ClInclude Include="Fence.hpp" />
+    <ClInclude Include="Format.hpp" />
+    <ClInclude Include="HeapAllocator.hpp" />
+    <ClInclude Include="PipelineState.hpp" />
+    <ClInclude Include="PCH.hpp" />
+    <ClInclude Include="ReferencedResourcesList.hpp" />
+    <ClInclude Include="RendererD3D12.hpp" />
+    <ClInclude Include="RenderTarget.hpp" />
+    <ClInclude Include="Resource.hpp" />
+    <ClInclude Include="ResourceBinding.hpp" />
+    <ClInclude Include="ResourceStateCache.hpp" />
+    <ClInclude Include="RingBuffer.hpp" />
+    <ClInclude Include="Sampler.hpp" />
+    <ClInclude Include="Shader.hpp" />
+    <ClInclude Include="ShaderCompiler.hpp" />
+    <ClInclude Include="Texture.hpp" />
+    <ClInclude Include="Translations.hpp" />
+    <ClInclude Include="VertexLayout.hpp" />
+    <ClInclude Include="..\..\..\..\Deps\D3D12MemoryAllocator\src\D3D12MemAlloc.h">
+      <Filter>External\D3D12MemoryAllocator</Filter>
+    </ClInclude>
+    <ClInclude Include="Common.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="D:\DEV\EXTERNAL\DirectX-Graphics-Samples\Libraries\D3DX12\readme.md" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="External">
+      <UniqueIdentifier>{b7365f50-284a-4654-82f7-dc13288b4399}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="External\D3D12MemoryAllocator">
+      <UniqueIdentifier>{f6a8f3fc-047d-43c2-8c67-78dc899b99df}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

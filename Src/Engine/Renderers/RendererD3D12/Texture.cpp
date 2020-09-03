@@ -61,6 +61,7 @@ bool Texture::UploadData(const TextureDesc& desc)
     resourceDesc.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
     resourceDesc.Flags = D3D12_RESOURCE_FLAG_NONE;
 
+    // TODO get rid of that, use existing ring buffer for resource uploads
     hr = D3D_CALL_CHECK(gDevice->GetDevice()->CreateCommittedResource(&heapProperties,
                                                                       D3D12_HEAP_FLAG_NONE,
                                                                       &resourceDesc,
@@ -227,13 +228,6 @@ bool Texture::Init(const TextureDesc& desc)
 
     // Create texture resource on the default heap
 
-    D3D12_HEAP_PROPERTIES heapProperties;
-    heapProperties.Type = (desc.mode == BufferMode::Readback) ? D3D12_HEAP_TYPE_READBACK : D3D12_HEAP_TYPE_DEFAULT;
-    heapProperties.CPUPageProperty = D3D12_CPU_PAGE_PROPERTY_UNKNOWN;
-    heapProperties.MemoryPoolPreference = D3D12_MEMORY_POOL_UNKNOWN;
-    heapProperties.CreationNodeMask = 1;
-    heapProperties.VisibleNodeMask = 1;
-
     D3D12_RESOURCE_DESC resourceDesc;
     resourceDesc.Alignment = 0;
     resourceDesc.MipLevels = static_cast<UINT16>(desc.mipmaps);
@@ -303,12 +297,17 @@ bool Texture::Init(const TextureDesc& desc)
         resourceDesc.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
         resourceDesc.Flags = D3D12_RESOURCE_FLAG_NONE;
 
-        hr = D3D_CALL_CHECK(gDevice->GetDevice()->CreateCommittedResource(&heapProperties,
-                                                                          D3D12_HEAP_FLAG_NONE,
-                                                                          &resourceDesc,
-                                                                          initialState,
-                                                                          nullptr,
-                                                                          IID_PPV_ARGS(mResource.GetPtr())));
+        D3D12MA::ALLOCATION_DESC allocationDesc = {};
+        allocationDesc.HeapType = D3D12_HEAP_TYPE_READBACK;
+
+        hr = D3D_CALL_CHECK(gDevice->GetAllocator()->CreateResource(
+            &allocationDesc,
+            &resourceDesc,
+            initialState,
+            nullptr,
+            mAllocation.GetPtr(),
+            IID_PPV_ARGS(mResource.GetPtr())));
+
         if (FAILED(hr))
         {
             NFE_LOG_ERROR("Failed to create readback buffer");
@@ -389,11 +388,18 @@ bool Texture::Init(const TextureDesc& desc)
         gDevice->GetDevice()->GetCopyableFootprints(&resourceDesc, 0, 1, 0, nullptr, nullptr, nullptr, &requiredSize);
         NFE_LOG_DEBUG("Allocating texture '%s' requires %llu bytes", desc.debugName, requiredSize);
 
+        D3D12MA::ALLOCATION_DESC allocationDesc = {};
+        allocationDesc.HeapType = (desc.mode == BufferMode::Readback) ? D3D12_HEAP_TYPE_READBACK : D3D12_HEAP_TYPE_DEFAULT;
+
         // create the texture resource
-        hr = D3D_CALL_CHECK(gDevice->GetDevice()->CreateCommittedResource(&heapProperties, D3D12_HEAP_FLAG_NONE,
-                                                                          &resourceDesc, initialState,
-                                                                          passClearValue ? &clearValue : nullptr,
-                                                                          IID_PPV_ARGS(mResource.GetPtr())));
+        hr = D3D_CALL_CHECK(gDevice->GetAllocator()->CreateResource(
+            &allocationDesc,
+            &resourceDesc,
+            initialState,
+            passClearValue ? &clearValue : nullptr,
+            mAllocation.GetPtr(),
+            IID_PPV_ARGS(mResource.GetPtr())));
+
         if (FAILED(hr))
         {
             NFE_LOG_ERROR("Failed to create texture resource");

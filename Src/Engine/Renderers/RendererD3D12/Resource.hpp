@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Common.hpp"
+#include "D3D12MemAlloc.h"
 #include "Engine/Common/Containers/DynArray.hpp"
 
 
@@ -59,6 +60,7 @@ protected:
     { }
 
     D3DPtr<ID3D12Resource> mResource;
+    D3DPtr<D3D12MA::Allocation> mAllocation;
     ResourceState mState;
 };
 

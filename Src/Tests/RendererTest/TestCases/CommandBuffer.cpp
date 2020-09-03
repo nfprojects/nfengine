@@ -2,6 +2,7 @@
 #include "../RendererTest.hpp"
 
 #include "Engine/Renderers/RendererCommon/CommandRecorder.hpp"
+#include "Engine/Renderers/RendererCommon/Fence.hpp"
 
 class CommandList : public RendererTest
 {
@@ -18,7 +19,7 @@ private:
     void TearDown() override
     {
         commandRecorder.Reset();
-        ASSERT_TRUE(gRendererDevice->WaitForGPU());
+        gRendererDevice->WaitForGPU()->Wait();
     }
 };
 

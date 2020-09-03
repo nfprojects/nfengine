@@ -13,6 +13,8 @@
 #include "RingBuffer.hpp"
 #include "ShaderCompiler.hpp"
 
+#include "D3D12MemAlloc.h"
+
 #include "Engine/Common/Containers/DynArray.hpp"
 #include "Engine/Common/Containers/StaticArray.hpp"
 #include "Engine/Common/Containers/WeakPtr.hpp"
@@ -66,6 +68,8 @@ class Device : public IDevice
     D3DPtr<ID3D12InfoQueue> mInfoQueueD3D;
     D3DPtr<IDXGIInfoQueue> mInfoQueueDXGI;
 
+    D3D12MA::Allocator* mAllocator = nullptr;
+
     // global D3D12 command lists manager
     Common::UniquePtr<CommandListManager> mCommandListManager;
 
@@ -114,6 +118,8 @@ public:
     bool GetDeviceInfo(DeviceInfo& info) override;
     bool IsBackbufferFormatSupported(Format format) override;
     Common::DynArray<MonitorInfo> GetMonitorsInfo() const;
+
+    D3D12MA::Allocator* GetAllocator() const { return mAllocator; }
 
     /// Resources creation functions
 

@@ -12,6 +12,7 @@
 class DynamicTextureScene : public Scene
 {
     NFE::Renderer::TexturePtr mTexture;
+    NFE::Renderer::RenderTargetPtr mRenderTarget;
 
     // using some weird resolution to make sure it works as intended
     static constexpr NFE::uint32 TexRegionWidth = 191;

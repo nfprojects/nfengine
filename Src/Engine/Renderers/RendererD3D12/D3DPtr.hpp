@@ -21,8 +21,6 @@ namespace Renderer {
 template<typename T>
 struct D3DPointerDeleter
 {
-    static_assert(std::is_base_of<IUnknown, T>::value, "D3DPointerDeleter only accepts IUnknown-based types");
-
     static void Delete(T* pointer)
     {
         if (pointer)
