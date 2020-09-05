@@ -27,6 +27,17 @@ namespace Renderer {
 #define NFE_RENDERER_TEXTURE_BIND_SHADER_WRITABLE (1 << 3)
 
 /**
+ * Texture subresource's range specified when binding a texture.
+ */
+struct TextureView
+{
+    uint32 baseMip = 0;
+    uint32 baseLayer = 0;
+    uint32 numMips = UINT32_MAX;
+    uint32 numLayers = UINT32_MAX;
+};
+
+/**
  * Initial texture data descriptor.
  */
 struct TextureDataDesc
@@ -44,7 +55,6 @@ struct TextureDesc
     TextureType type;
     Format format;
     BufferMode mode;
-    DepthBufferFormat depthBufferFormat; //< set when texture is used as depth buffer
     int binding;        //< texture binding mode
     uint32 width;       //< texture width in texels
     uint32 height;      //< texture height in texels, used only for 2D and 3D textures
@@ -70,7 +80,6 @@ struct TextureDesc
         : type(TextureType::Texture2D)
         , format(Format::R8G8B8A8_U_Norm)
         , mode(BufferMode::Static)
-        , depthBufferFormat(DepthBufferFormat::Unknown)
         , binding(0)
         , width(1)
         , height(1)

@@ -171,8 +171,10 @@ bool PipelineState::Init(const PipelineStateDesc& desc)
     }
 
     for (uint32 i = desc.numRenderTargets; i < MAX_RENDER_TARGETS; ++i)
+    {
         psd.RTVFormats[i] = DXGI_FORMAT_UNKNOWN;
-    psd.DSVFormat = TranslateDepthFormat(desc.depthFormat);
+    }
+    psd.DSVFormat = TranslateElementFormat(desc.depthFormat);
 
     psd.SampleDesc.Count = desc.numSamples;
     psd.SampleDesc.Quality = 0;

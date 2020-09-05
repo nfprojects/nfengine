@@ -94,6 +94,17 @@ void InternalCommandList::OnExecuted()
     NFE_ASSERT(gDevice->mGraphicsQueueFence.GetCompletedValue() >= mFenceValue);
 
     mReferencedResources.Clear();
+
+    // release temporary descriptors
+    {
+        HeapAllocator& heapAllocator = gDevice->GetCbvSrvUavHeapAllocator();
+        for (const HeapAllocator::DescriptorRange& range : mReferencedDescriptorsRanges)
+        {
+            heapAllocator.Free(range);
+        }
+        mReferencedDescriptorsRanges.Clear();
+    }
+
     mState = State::Free;
     mFenceValue = FenceData::InvalidValue;
 }
@@ -170,7 +181,7 @@ void InternalCommandList::ApplyFinalResourceStates()
 {
     for (const auto& iter : mFinalResourceStates)
     {
-        Resource* resource = iter.first;
+        Resource* resource = const_cast<Resource*>(iter.first);
         const ResourceState& finalResourceState = iter.second;
 
         resource->mState = finalResourceState;

@@ -9,6 +9,9 @@ namespace NFE {
 namespace Renderer {
 
 
+enum class BufferMode : uint8;
+
+
 struct ResourceState
 {
     // "global state" means "all subresource states are the same"
@@ -49,6 +52,11 @@ public:
         return mResource.Get();
     }
 
+    NFE_FORCE_INLINE BufferMode GetMode() const
+    {
+        return mMode;
+    }
+
     NFE_FORCE_INLINE const ResourceState& GetState() const
     {
         return mState;
@@ -62,6 +70,7 @@ protected:
     D3DPtr<ID3D12Resource> mResource;
     D3DPtr<D3D12MA::Allocation> mAllocation;
     ResourceState mState;
+    BufferMode mMode;
 };
 
 using ResourcePtr = Common::SharedPtr<Resource>;

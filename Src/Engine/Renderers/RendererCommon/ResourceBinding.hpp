@@ -9,12 +9,17 @@
 #include "Shader.hpp"
 #include "Types.hpp"
 #include "Texture.hpp"
+#include "Buffer.hpp"
 
 namespace NFE {
 namespace Renderer {
 
 // max supported number of binding sets per layout
 #define NFE_RENDERER_MAX_BINDING_SETS 16
+
+// max supported number of resources in one set
+// TODO this is quite low right now, which makes things more convenient in D3D12 implementation, bump it later
+#define NFE_RENDERER_MAX_RESOURCES_IN_SET 64
 
 struct ResourceBindingDesc
 {
@@ -142,6 +147,7 @@ public:
 /**
  * Instance of shader resource binding set.
  * Contains an actual list of shader resource views that can be bound to the pipeline.
+ * Binding instance cannot be used before it's finalized.
  */
 class IResourceBindingInstance
 {
@@ -157,14 +163,21 @@ public:
      * @param texture  Texture resource.
      * @return True on success.
      */
-    virtual bool WriteTextureView(uint32 slot, const TexturePtr& texture) = 0;
+    virtual bool SetTextureView(uint32 slot, const TexturePtr& texture, const TextureView& view = TextureView()) = 0;
+
+    /**
+     * Create a buffer view in the binding instance.
+     * @param slot Target slot within the binding set.
+     * @return True on success.
+     */
+    virtual bool SetBufferView(uint32 slot, const BufferPtr& buffer, const BufferView& view = BufferView()) = 0;
 
     /**
      * Create a constant buffer view in the binding instance.
      * @param slot Target slot within the binding set.
      * @return True on success.
      */
-    virtual bool WriteCBufferView(uint32 slot, const BufferPtr& buffer) = 0;
+    virtual bool SetCBufferView(uint32 slot, const BufferPtr& buffer) = 0;
 
     /**
      * Create a writable texture view in the binding instance.
@@ -172,7 +185,20 @@ public:
      * @param texture  Shader-writable texture resource.
      * @return True on success.
      */
-    virtual bool WriteWritableTextureView(uint32 slot, const TexturePtr& texture) = 0;
+    virtual bool SetWritableTextureView(uint32 slot, const TexturePtr& texture, const TextureView& view = TextureView()) = 0;
+
+    /**
+     * Create a writable buffer view in the binding instance.
+     * @param slot     Target slot within the binding set.
+     * @param texture  Shader-writable buffer resource.
+     * @return True on success.
+     */
+    virtual bool SetWritableBufferView(uint32 slot, const BufferPtr& buffer, const BufferView& view = BufferView()) = 0;
+
+    /**
+     * Finalize instance building. No further changes can be applied afterwards.
+     */
+    virtual bool Finalize() = 0;
 };
 
 

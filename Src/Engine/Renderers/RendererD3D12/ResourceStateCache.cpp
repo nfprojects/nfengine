@@ -40,8 +40,16 @@ void ResourceStateCache::OnFinishCommandBuffer(ResourceStateMap& outExpectedInit
     outFinalResourceStates = std::move(mCache);
 }
 
-void ResourceStateCache::EnsureResourceState(Resource* resource, D3D12_RESOURCE_STATES d3dState, uint32 subresource)
+void ResourceStateCache::EnsureResourceState(const Resource* resource, D3D12_RESOURCE_STATES d3dState, uint32 subresource)
 {
+    NFE_ASSERT(resource, "NULL resource");
+
+    if (resource->GetMode() == BufferMode::Static)
+    {
+        // static resources are in COMMON state and are promoted to appropriate read state automatically 
+        return;
+    }
+
     const auto it = mCache.Find(resource);
     if (it != mCache.End())
     {

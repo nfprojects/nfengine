@@ -10,6 +10,7 @@
 #include "ResourceStateCache.hpp"
 #include "CommandList.hpp"
 #include "ReferencedResourcesList.hpp"
+#include "HeapAllocator.hpp"
 #include "Engine/Common/Containers/WeakPtr.hpp"
 
 
@@ -39,6 +40,8 @@ public:
         Executing,   // after IDevice::Execute()
     };
 
+    using ReferencedDescriptorsRanges = Common::DynArray<HeapAllocator::DescriptorRange>;
+
     explicit InternalCommandList(uint32 id);
     InternalCommandList(InternalCommandList&&) = default;
     InternalCommandList& operator = (InternalCommandList&&) = default;
@@ -56,6 +59,7 @@ public:
     // Get command list's state
     State GetState() const { return mState; }
     ReferencedResourcesList& GetReferencedResources() { return mReferencedResources; }
+    ReferencedDescriptorsRanges& GetReferencedDescriptorsRanges() { return mReferencedDescriptorsRanges; }
 
     // Generate a command list with injected resource barriers that has to be executed before the actual command list
     ID3D12GraphicsCommandList* GenerateResourceBarriersCommandList();
@@ -80,6 +84,9 @@ private:
 
     // resources referenced by this commandlist
     ReferencedResourcesList mReferencedResources;
+
+    // temporary descriptor tables referenced by this commandlist (can be released as soon as commandlist finishes execution)
+    ReferencedDescriptorsRanges mReferencedDescriptorsRanges;
 
     ResourceStateMap mInitialResourceStates;
     ResourceStateMap mFinalResourceStates;

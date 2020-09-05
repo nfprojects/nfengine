@@ -138,7 +138,7 @@ struct PipelineStateDesc
 
     uint32 numRenderTargets;
     Common::FixedArray<Format, MAX_RENDER_TARGETS> rtFormats;
-    DepthBufferFormat depthFormat;
+    Format depthFormat;
     uint32 numSamples; // for multisampling
 
     ResourceBindingLayoutPtr resBindingLayout;
@@ -157,11 +157,11 @@ struct PipelineStateDesc
         , numControlPoints(0)
         , vertexLayout(nullptr)
         , numRenderTargets(1)
-        , depthFormat(DepthBufferFormat::Unknown)
+        , depthFormat(Format::Unknown)
         , numSamples(1)
         , resBindingLayout(nullptr)
         , debugName(nullptr)
-        , rtFormats(Format::B8G8R8A8_U_Norm)
+        , rtFormats(Format::Unknown)
     {
     }
 };

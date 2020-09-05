@@ -90,7 +90,8 @@ class Device : public IDevice
 
     RingBuffer mRingBuffer;
 
-    HeapAllocator mCbvSrvUavHeapAllocator;
+    HeapAllocator mCbvSrvUavHeapStagingAllocator;   // CPU visible
+    HeapAllocator mCbvSrvUavHeapAllocator;          // GPU visible
     HeapAllocator mRtvHeapAllocator;
     HeapAllocator mDsvHeapAllocator;
 
@@ -145,40 +146,18 @@ public:
 
     FencePtr WaitForGPU() override;
 
-    CommandListManager* GetCommandListManager() const
-    {
-        return mCommandListManager.Get();
-    }
+    CommandListManager* GetCommandListManager() const { return mCommandListManager.Get(); }
 
-    HeapAllocator& GetCbvSrvUavHeapAllocator()
-    {
-        return mCbvSrvUavHeapAllocator;
-    }
+    HeapAllocator& GetCbvSrvUavHeapStagingAllocator() { return mCbvSrvUavHeapStagingAllocator; }
+    HeapAllocator& GetCbvSrvUavHeapAllocator() { return mCbvSrvUavHeapAllocator; }
+    HeapAllocator& GetRtvHeapAllocator() { return mRtvHeapAllocator; }
+    HeapAllocator& GetDsvHeapAllocator() { return mDsvHeapAllocator; }
 
-    HeapAllocator& GetRtvHeapAllocator()
-    {
-        return mRtvHeapAllocator;
-    }
+    ShaderCompiler& GetShaderCompiler() { return mShaderCompiler; }
 
-    HeapAllocator& GetDsvHeapAllocator()
-    {
-        return mDsvHeapAllocator;
-    }
+    bool IsDebugLayerEnabled() const { return mDebugLayerEnabled; }
 
-    ShaderCompiler& GetShaderCompiler()
-    {
-        return mShaderCompiler;
-    }
-
-    bool IsDebugLayerEnabled() const
-    {
-        return mDebugLayerEnabled;
-    }
-
-    RingBuffer& GetRingBuffer()
-    {
-        return mRingBuffer;
-    }
+    RingBuffer& GetRingBuffer() { return mRingBuffer; }
 };
 
 } // namespace Renderer

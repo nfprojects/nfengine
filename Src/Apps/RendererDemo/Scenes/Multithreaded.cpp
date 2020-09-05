@@ -200,7 +200,9 @@ bool MultithreadedScene::CreateConstantBuffer(BufferMode cbufferMode)
         mVSBindingInstance = mRendererDevice->CreateResourceBindingInstance(mVSBindingSet);
         if (!mVSBindingInstance)
             return false;
-        if (!mVSBindingInstance->WriteCBufferView(0, mConstantBuffer))
+        if (!mVSBindingInstance->SetCBufferView(0, mConstantBuffer))
+            return false;
+        if (!mVSBindingInstance->Finalize())
             return false;
     }
 
@@ -332,13 +334,13 @@ void MultithreadedScene::DrawTask(const Common::TaskContext& ctx, int i, int j)
     recorder->SetVertexBuffers(1, &vb, &stride, &offset);
     recorder->SetIndexBuffer(mIndexBuffer, IndexBufferFormat::Uint16);
 
-    recorder->SetResourceBindingLayout(mResBindingLayout);
+    recorder->SetResourceBindingLayout(PipelineType::Graphics, mResBindingLayout);
     recorder->SetPipelineState(mPipelineState);
 
     if (mCBufferMode == BufferMode::Static || mCBufferMode == BufferMode::Dynamic)
-        recorder->BindResources(mVSBindingSlot, mVSBindingInstance);
+        recorder->BindResources(PipelineType::Graphics, mVSBindingSlot, mVSBindingInstance);
     else if (mCBufferMode == BufferMode::Volatile)
-        recorder->BindVolatileCBuffer(0, mConstantBuffer);
+        recorder->BindVolatileCBuffer(PipelineType::Graphics, 0, mConstantBuffer);
 
 
     const float scaleCoeff = 1.0f / static_cast<float>(mGridSize);

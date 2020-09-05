@@ -120,10 +120,12 @@ bool DepthStencilScene::CreateBasicResources(bool withDepth, bool withStencil)
     psd.resBindingLayout = mResBindingLayout;
 
     if (withDepth && !withStencil)
-        psd.depthFormat = DepthBufferFormat::Depth16;
+    {
+        psd.depthFormat = Format::Depth16;
+    }
     else if (withDepth)
     {
-        psd.depthFormat = DepthBufferFormat::Depth24_Stencil8;
+        psd.depthFormat = Format::Depth24_Stencil8;
         psd.depthState.depthWriteEnable = false;
         psd.depthState.depthTestEnable = false;
         psd.depthState.stencilOpPass = StencilOp::Replace;
@@ -232,8 +234,7 @@ bool DepthStencilScene::CreateDepthBuffer(bool withStencil)
     depthBufferDesc.height = static_cast<uint16>(WINDOW_HEIGHT);
     depthBufferDesc.binding = NFE_RENDERER_TEXTURE_BIND_DEPTH;
     depthBufferDesc.mipmaps = 1;
-    depthBufferDesc.depthBufferFormat = withStencil ?
-        DepthBufferFormat::Depth24_Stencil8 : DepthBufferFormat::Depth16;
+    depthBufferDesc.format = withStencil ? Format::Depth24_Stencil8 : Format::Depth16;
     depthBufferDesc.debugName = "DepthStencilScene::mDepthBuffer";
     mDepthBuffer = mRendererDevice->CreateTexture(depthBufferDesc);
     if (!mDepthBuffer)
@@ -310,8 +311,8 @@ void DepthStencilScene::Draw(float dt)
                                 static_cast<float>(WINDOW_HEIGHT), 0.0f, 1.0f);
     mCommandBuffer->SetScissors(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
     mCommandBuffer->SetRenderTarget(mWindowRenderTarget);
-    mCommandBuffer->SetResourceBindingLayout(mResBindingLayout);
-    mCommandBuffer->BindVolatileCBuffer(0, mConstantBuffer);
+    mCommandBuffer->SetResourceBindingLayout(PipelineType::Graphics, mResBindingLayout);
+    mCommandBuffer->BindVolatileCBuffer(PipelineType::Graphics, 0, mConstantBuffer);
 
     uint32 stride = 9 * sizeof(float);
     uint32 offset = 0;

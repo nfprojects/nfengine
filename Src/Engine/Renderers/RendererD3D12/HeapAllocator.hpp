@@ -9,6 +9,7 @@
 #include "Common.hpp"
 
 #include "Engine/Common/Containers/DynArray.hpp"
+#include "Engine/Common/System/RWLock.hpp"
 
 
 namespace NFE {
@@ -17,6 +18,12 @@ namespace Renderer {
 class HeapAllocator
 {
 public:
+    struct DescriptorRange
+    {
+        uint32 offset;
+        uint32 size;
+    };
+
     enum class Type
     {
         CbvSrvUav,
@@ -27,6 +34,10 @@ public:
 private:
     Type mType;
     uint32 mSize;
+    bool mShaderVisible;
+
+    Common::RWLock mLock;
+
     Common::DynArray<bool> mBitmap;
 
     D3DPtr<ID3D12DescriptorHeap> mHeap;
@@ -39,15 +50,15 @@ private:
     HeapAllocator& operator=(const HeapAllocator&) = delete;
 
 public:
-    HeapAllocator(Type type, uint32 initialSize);
+    HeapAllocator(Type type, uint32 initialSize, bool shaderVisible = false);
     ~HeapAllocator();
 
     bool Init();
     void Release();
 
-    uint32 Allocate(uint32 numDescriptors);
+    DescriptorRange Allocate(uint32 numDescriptors);
 
-    void Free(uint32 offset, uint32 numDescriptors);
+    void Free(const DescriptorRange& range);
 
     NFE_INLINE ID3D12DescriptorHeap* GetHeap() const
     {

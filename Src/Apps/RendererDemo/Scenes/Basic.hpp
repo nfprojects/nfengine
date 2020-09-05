@@ -46,6 +46,9 @@ class BasicScene: public Scene
     int mVSBindingSlot;
     int mPSBindingSlot;
 
+    // bind resources via binding instance or directly
+    bool mUseBindingInstance;
+
     // cbuffer mode
     NFE::Renderer::BufferMode mCBufferMode;
 
@@ -64,8 +67,8 @@ class BasicScene: public Scene
     bool CreateSubSceneEmpty();
     bool CreateSubSceneVertexBuffer();
     bool CreateSubSceneIndexBuffer();
-    bool CreateSubSceneConstantBuffer(NFE::Renderer::BufferMode cbufferMode);
-    bool CreateSubSceneTexture(NFE::Renderer::BufferMode cbufferMode, int gridSize = 1);
+    bool CreateSubSceneConstantBuffer(NFE::Renderer::BufferMode cbufferMode, bool useBindingInstance);
+    bool CreateSubSceneTexture(NFE::Renderer::BufferMode cbufferMode, bool useBindingInstance, int gridSize = 1);
 
 public:
     BasicScene();

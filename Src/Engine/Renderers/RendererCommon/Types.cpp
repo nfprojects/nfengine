@@ -72,8 +72,12 @@ NFE_BEGIN_DEFINE_ENUM(NFE::Renderer::Format)
     NFE_ENUM_OPTION(BC6H_S_Float)
     NFE_ENUM_OPTION(BC7_U_Norm)
     NFE_ENUM_OPTION(BC7_U_Norm_sRGB)
+    NFE_ENUM_OPTION(Depth16)
+    NFE_ENUM_OPTION(Depth24_Stencil8)
+    NFE_ENUM_OPTION(Depth32)
+    NFE_ENUM_OPTION(Depth32_Stencil8)
 NFE_END_DEFINE_ENUM()
-static_assert(64 == (int)NFE::Renderer::Format::Max, "Format list changed, update the list above");
+static_assert(68 == (int)NFE::Renderer::Format::Max, "Format list changed, update the list above");
 
 namespace NFE {
 namespace Renderer {
@@ -95,6 +99,8 @@ uint32 GetElementFormatChannels(const Format format)
     case Format::R32_U_Int:
     case Format::R32_S_Int:
     case Format::R32_Float:
+    case Format::Depth16:
+    case Format::Depth32:
         return 1;
 
     case Format::R8G8_U_Int:
@@ -109,6 +115,8 @@ uint32 GetElementFormatChannels(const Format format)
     case Format::R32G32_U_Int:
     case Format::R32G32_S_Int:
     case Format::R32G32_Float:
+    case Format::Depth24_Stencil8:
+    case Format::Depth32_Stencil8:
         return 2;
 
     case Format::R32G32B32_U_Int:
@@ -163,7 +171,7 @@ uint32 GetElementFormatChannels(const Format format)
         return 3;
     }
 
-    static_assert(64 == (uint32)Format::Max, "Format list changed, update the switch above");
+    static_assert(68 == (uint32)Format::Max, "Format list changed, update the switch above");
 
     return 0;
 }
@@ -250,9 +258,15 @@ uint32 GetElementFormatSize(const Format format)
     case Format::BC7_U_Norm:
     case Format::BC7_U_Norm_sRGB:
         return 16;
+    case Format::Depth16:
+    case Format::Depth32:
+    case Format::Depth24_Stencil8:
+    case Format::Depth32_Stencil8:
+        NFE_FATAL("Depth formats are hardware dependent");
+        return 0;
     }
 
-    static_assert(64 == (uint32)Format::Max, "Format list changed, update the switch above");
+    static_assert(68 == (uint32)Format::Max, "Format list changed, update the switch above");
 
     return 0;
 }

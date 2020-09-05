@@ -218,7 +218,7 @@ void MultisampleScene::Draw(float dt)
 
     if (mResBindingLayout)
     {
-        mCommandBuffer->SetResourceBindingLayout(mResBindingLayout);
+        mCommandBuffer->SetResourceBindingLayout(PipelineType::Graphics, mResBindingLayout);
     }
 
     if (mPipelineState)

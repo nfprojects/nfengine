@@ -32,6 +32,15 @@ struct BufferDesc
 };
 
 /**
+ * Buffer's view for binding
+ */
+struct BufferView
+{
+    uint32 firstElement = 0;
+    uint32 numElements = UINT32_MAX;
+};
+
+/**
  * GPU data buffer which can act as a vertex, index or a constant buffer.
  */
 class IBuffer

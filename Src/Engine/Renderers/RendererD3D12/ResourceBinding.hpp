@@ -27,6 +27,9 @@ class ResourceBindingSet : public IResourceBindingSet
     ShaderType mShaderVisibility;
 
 public:
+    // TODO range support
+    uint32 GetNumResources() const { return mBindings.Size(); }
+
     bool Init(const ResourceBindingSetDesc& desc) override;
 };
 
@@ -64,8 +67,9 @@ class ResourceBindingInstance : public IResourceBindingInstance
 {
     friend class CommandRecorder;
 
-    InternalResourceBindingSetPtr mSet;
-    uint32 mDescriptorHeapOffset;
+    uint32 mCpuDescriptorHeapOffset;
+    uint32 mGpuDescriptorHeapOffset;
+    bool mIsFinalized;
 
     struct Resource
     {
@@ -77,14 +81,31 @@ class ResourceBindingInstance : public IResourceBindingInstance
     Common::DynArray<Resource> mResources;
 
 public:
-    ResourceBindingInstance() : mDescriptorHeapOffset(0), mSet(nullptr) { }
+    ResourceBindingInstance();
     ~ResourceBindingInstance();
+
+    bool IsFinalized() const { return mIsFinalized; }
+    uint32 GetNumResources() const { return mResources.Size(); }
+
     bool Init(const ResourceBindingSetPtr& bindingSet) override;
-    bool WriteTextureView(uint32 slot, const TexturePtr& texture) override;
-    bool WriteCBufferView(uint32 slot, const BufferPtr& buffer) override;
-    bool WriteWritableTextureView(uint32 slot, const TexturePtr& texture) override;
+    bool SetTextureView(uint32 slot, const TexturePtr& texture, const TextureView& view) override;
+    bool SetBufferView(uint32 slot, const BufferPtr& buffer, const BufferView& view) override;
+    bool SetCBufferView(uint32 slot, const BufferPtr& buffer) override;
+    bool SetWritableTextureView(uint32 slot, const TexturePtr& texture, const TextureView& view) override;
+    bool SetWritableBufferView(uint32 slot, const BufferPtr& buffer, const BufferView& view) override;
+    bool Finalize() override;
 };
 
+
+//////////////////////////////////////////////////////////////////////////
+
+class Texture;
+class Buffer;
+
+void CreateTextureSRV(const Texture* texture, const TextureView& view, D3D12_CPU_DESCRIPTOR_HANDLE descriptorHandle);
+void CreateTextureUAV(const Texture* texture, const TextureView& view, D3D12_CPU_DESCRIPTOR_HANDLE descriptorHandle);
+void CreateBufferSRV(const Buffer* buffer, const BufferView& view, D3D12_CPU_DESCRIPTOR_HANDLE descriptorHandle);
+void CreateBufferUAV(const Buffer* buffer, const BufferView& view, D3D12_CPU_DESCRIPTOR_HANDLE descriptorHandle);
 
 } // namespace Renderer
 } // namespace NFE

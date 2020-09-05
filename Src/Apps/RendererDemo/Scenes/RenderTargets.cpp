@@ -73,7 +73,6 @@ bool RenderTargetsScene::CreateBasicResources(bool multipleRT, bool withDepthBuf
     PipelineStateDesc pipelineStateDesc;
     pipelineStateDesc.rtFormats[0] = Format::R8G8B8A8_U_Norm;
     pipelineStateDesc.vertexShader = mVertexShader;
-    pipelineStateDesc.depthFormat = DepthBufferFormat::Unknown;
     pipelineStateDesc.resBindingLayout = mResBindingLayout;
     pipelineStateDesc.primitiveType = PrimitiveType::Triangles;
     pipelineStateDesc.vertexLayout = mVertexLayout;
@@ -101,7 +100,7 @@ bool RenderTargetsScene::CreateBasicResources(bool multipleRT, bool withDepthBuf
     pipelineStateDesc.rtFormats[0] = Format::R8G8B8A8_U_Norm;
     pipelineStateDesc.rtFormats[1] = Format::R8G8B8A8_U_Norm;
     pipelineStateDesc.pixelShader = mRTPixelShader;
-    pipelineStateDesc.depthFormat = withDepthBuffer ? DepthBufferFormat::Depth16 : DepthBufferFormat::Unknown;
+    pipelineStateDesc.depthFormat = withDepthBuffer ? Format::Depth16 : Format::Unknown;
     pipelineStateDesc.numRenderTargets = multipleRT ? 2 : 1;
     pipelineStateDesc.depthState.depthWriteEnable = withDepthBuffer;
     pipelineStateDesc.depthState.depthTestEnable = withDepthBuffer;
@@ -201,7 +200,9 @@ bool RenderTargetsScene::CreateRenderTarget(bool withDepthBuffer, bool multipleR
         mPSBindingInstancePrimary = mRendererDevice->CreateResourceBindingInstance(mPSBindingSet);
         if (!mPSBindingInstancePrimary)
             return false;
-        if (!mPSBindingInstancePrimary->WriteTextureView(0, mRenderTargetTextures[0]))
+        if (!mPSBindingInstancePrimary->SetTextureView(0, mRenderTargetTextures[0]))
+            return false;
+        if (!mPSBindingInstancePrimary->Finalize())
             return false;
     }
 
@@ -220,7 +221,9 @@ bool RenderTargetsScene::CreateRenderTarget(bool withDepthBuffer, bool multipleR
         mPSBindingInstanceSecondary = mRendererDevice->CreateResourceBindingInstance(mPSBindingSet);
         if (!mPSBindingInstanceSecondary)
             return false;
-        if (!mPSBindingInstanceSecondary->WriteTextureView(0, mRenderTargetTextures[1]))
+        if (!mPSBindingInstanceSecondary->SetTextureView(0, mRenderTargetTextures[1]))
+            return false;
+        if (!mPSBindingInstanceSecondary->Finalize())
             return false;
     }
 
@@ -228,7 +231,7 @@ bool RenderTargetsScene::CreateRenderTarget(bool withDepthBuffer, bool multipleR
     if (withDepthBuffer)
     {
         texDesc.binding = NFE_RENDERER_TEXTURE_BIND_DEPTH | NFE_RENDERER_TEXTURE_BIND_SHADER;
-        texDesc.depthBufferFormat = DepthBufferFormat::Depth16;
+        texDesc.format = Format::Depth16;
         texDesc.debugName = "RenderTargetsScene::mDepthBuffer";
         mDepthBuffer = mRendererDevice->CreateTexture(texDesc);
         if (!mDepthBuffer)
@@ -238,7 +241,9 @@ bool RenderTargetsScene::CreateRenderTarget(bool withDepthBuffer, bool multipleR
         mPSBindingInstanceDepth = mRendererDevice->CreateResourceBindingInstance(mPSBindingSet);
         if (!mPSBindingInstanceDepth)
             return false;
-        if (!mPSBindingInstanceDepth->WriteTextureView(0, mDepthBuffer))
+        if (!mPSBindingInstanceDepth->SetTextureView(0, mDepthBuffer))
+            return false;
+        if (!mPSBindingInstanceDepth->Finalize())
             return false;
     }
 
@@ -416,10 +421,10 @@ void RenderTargetsScene::Draw(float dt)
     const BufferPtr vertexBuffers[] = { mVertexBuffer };
     mCommandBuffer->SetVertexBuffers(1, vertexBuffers, &stride, &offset);
     mCommandBuffer->SetIndexBuffer(mIndexBuffer, IndexBufferFormat::Uint16);
-    mCommandBuffer->SetResourceBindingLayout(mResBindingLayout);
+    mCommandBuffer->SetResourceBindingLayout(PipelineType::Graphics, mResBindingLayout);
 
     BufferPtr cb = mConstantBuffer;
-    mCommandBuffer->BindVolatileCBuffer(0, cb);
+    mCommandBuffer->BindVolatileCBuffer(PipelineType::Graphics, 0, cb);
 
     // render cube to a texture
     {
@@ -450,7 +455,7 @@ void RenderTargetsScene::Draw(float dt)
 
     // begin rendering to the window
     mCommandBuffer->SetPipelineState(mPrimaryTargetPipelineState);
-    mCommandBuffer->BindResources(0, mPSBindingInstancePrimary);
+    mCommandBuffer->BindResources(PipelineType::Graphics, 0, mPSBindingInstancePrimary);
     mCommandBuffer->SetRenderTarget(mWindowRenderTarget);
     mCommandBuffer->SetViewport(0.0f, (float)WINDOW_WIDTH, 0.0f, (float)WINDOW_HEIGHT, 0.0f, 1.0f);
     mCommandBuffer->SetScissors(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
@@ -479,7 +484,7 @@ void RenderTargetsScene::Draw(float dt)
         mCommandBuffer->WriteBuffer(cb, 0, sizeof(VertexCBuffer), &cbuffer);
 
         mCommandBuffer->SetPipelineState(mDepthPipelineState);
-        mCommandBuffer->BindResources(0, mPSBindingInstanceDepth);
+        mCommandBuffer->BindResources(PipelineType::Graphics, 0, mPSBindingInstanceDepth);
         mCommandBuffer->DrawIndexed(2 * 3,      // 2 triangles
                                     1,          // no instancing
                                     2 * 6 * 3); // omit cube vertices
@@ -494,14 +499,14 @@ void RenderTargetsScene::Draw(float dt)
         mCommandBuffer->WriteBuffer(cb, 0, sizeof(VertexCBuffer), &cbuffer);
 
         mCommandBuffer->SetPipelineState(mSecondTargetPipelineState);
-        mCommandBuffer->BindResources(0, mPSBindingInstanceSecondary);
+        mCommandBuffer->BindResources(PipelineType::Graphics, 0, mPSBindingInstanceSecondary);
         mCommandBuffer->DrawIndexed(2 * 3,      // 2 triangles
                                     1,          // no instancing
                                     2 * 6 * 3); // omit cube vertices
     }
 
     // unbind texture from pixel shader, because we will be rendering to it in the next frame
-    mCommandBuffer->BindResources(0, nullptr);
+    mCommandBuffer->BindResources(PipelineType::Graphics, 0, nullptr);
 
     mCommandBuffer->CopyTexture(mWindowRenderTargetTexture, mWindowBackbuffer);
 

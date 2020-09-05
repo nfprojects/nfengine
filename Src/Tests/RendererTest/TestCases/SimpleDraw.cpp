@@ -172,7 +172,7 @@ TEST_F(SimpleDrawTest, Culling)
             uint32 offset = 0;
             mCommandBuffer->SetVertexBuffers(1, &vb, &stride, &offset);
             mCommandBuffer->SetIndexBuffer(mIndexBuffer, IndexBufferFormat::Uint16);
-            mCommandBuffer->SetResourceBindingLayout(resBindingLayout);
+            mCommandBuffer->SetResourceBindingLayout(PipelineType::Graphics, resBindingLayout);
             mCommandBuffer->SetPipelineState(pipelineState);
 
             mCommandBuffer->DrawIndexed(6, 1);
@@ -479,7 +479,8 @@ TEST_F(SimpleDrawTest, StaticCBuffer)
 
     resBindingInstance = gRendererDevice->CreateResourceBindingInstance(resBindingSet);
     ASSERT_NE(nullptr, resBindingInstance.Get());
-    ASSERT_TRUE(resBindingInstance->WriteCBufferView(0, constatnBuffer));
+    ASSERT_TRUE(resBindingInstance->SetCBufferView(0, constatnBuffer));
+    ASSERT_TRUE(resBindingInstance->Finalize());
 
     ResourceBindingSetPtr sets[] = { resBindingSet };
     resBindingLayout = gRendererDevice->CreateResourceBindingLayout(ResourceBindingLayoutDesc(sets, 1));
@@ -507,9 +508,9 @@ TEST_F(SimpleDrawTest, StaticCBuffer)
         uint32 offset = 0;
         mCommandBuffer->SetVertexBuffers(1, &vb, &stride, &offset);
         mCommandBuffer->SetIndexBuffer(mIndexBuffer, IndexBufferFormat::Uint16);
-        mCommandBuffer->SetResourceBindingLayout(resBindingLayout);
+        mCommandBuffer->SetResourceBindingLayout(PipelineType::Graphics, resBindingLayout);
         mCommandBuffer->SetPipelineState(pipelineState);
-        mCommandBuffer->BindResources(0, resBindingInstance);
+        mCommandBuffer->BindResources(PipelineType::Graphics, 0, resBindingInstance);
 
         mCommandBuffer->DrawIndexed(6, 1);
     }

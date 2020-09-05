@@ -13,6 +13,7 @@
 #include "Translations.hpp"
 #include "RendererD3D12.hpp"
 #include "Engine/Common/Logger/Logger.hpp"
+#include "Engine/Common/Math/Math.hpp"
 
 
 namespace NFE {
@@ -64,16 +65,19 @@ bool ResourceBindingSet::Init(const ResourceBindingSetDesc& desc)
 
 bool ResourceBindingLayout::Init(const ResourceBindingLayoutDesc& desc)
 {
-    const uint32 maxSets = 16;
-    const uint32 maxBindings = 64;
-
-    D3D12_STATIC_SAMPLER_DESC staticSamplers[maxBindings];
-    D3D12_DESCRIPTOR_RANGE descriptorRanges[maxBindings];
-    D3D12_ROOT_PARAMETER rootParameters[maxSets];
+    D3D12_STATIC_SAMPLER_DESC staticSamplers[NFE_RENDERER_MAX_RESOURCES_IN_SET];
+    D3D12_DESCRIPTOR_RANGE descriptorRanges[NFE_RENDERER_MAX_RESOURCES_IN_SET];
+    D3D12_ROOT_PARAMETER rootParameters[NFE_RENDERER_MAX_BINDING_SETS];
 
     D3D12_ROOT_SIGNATURE_DESC rsd;
     rsd.Flags = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
     rsd.pParameters = rootParameters;
+
+    if (desc.numBindingSets > NFE_RENDERER_MAX_BINDING_SETS)
+    {
+        NFE_LOG_ERROR("Too many sets in a binding layout");
+        return false;
+    }
 
     mBindingSets.Reserve(desc.numBindingSets);
 
@@ -104,7 +108,7 @@ bool ResourceBindingLayout::Init(const ResourceBindingLayoutDesc& desc)
         // iterate through descriptors within the set
         for (uint32 j = 0; j < bindingSet->mBindings.Size(); ++j)
         {
-            if (rangeCounter >= maxBindings)
+            if (rangeCounter >= NFE_RENDERER_MAX_RESOURCES_IN_SET)
             {
                 NFE_LOG_ERROR("Max supported number of bindings exceeded");
                 return false;
@@ -211,34 +215,46 @@ bool ResourceBindingLayout::Init(const ResourceBindingLayoutDesc& desc)
     return true;
 }
 
+ResourceBindingInstance::ResourceBindingInstance()
+    : mCpuDescriptorHeapOffset(UINT32_MAX)
+    , mGpuDescriptorHeapOffset(UINT32_MAX)
+    , mIsFinalized(false)
+{ }
+
 ResourceBindingInstance::~ResourceBindingInstance()
 {
-    if (mSet)
+    if (mCpuDescriptorHeapOffset != UINT32_MAX)
     {
-        HeapAllocator& allocator = gDevice->GetCbvSrvUavHeapAllocator();
-        allocator.Free(mDescriptorHeapOffset, mSet->mBindings.Size());
+        gDevice->GetCbvSrvUavHeapStagingAllocator().Free({ mCpuDescriptorHeapOffset, mResources.Size() });
+    }
+
+    if (mGpuDescriptorHeapOffset != UINT32_MAX)
+    {
+        gDevice->GetCbvSrvUavHeapAllocator().Free({ mGpuDescriptorHeapOffset, mResources.Size() });
     }
 }
 
 bool ResourceBindingInstance::Init(const ResourceBindingSetPtr& bindingSet)
 {
-    mSet = Common::StaticCast<ResourceBindingSet>(bindingSet);
-    if (!mSet)
+    const InternalResourceBindingSetPtr& set = Common::StaticCast<ResourceBindingSet>(bindingSet);
+    if (!set)
     {
         NFE_LOG_ERROR("Invalid resource binding set");
         return false;
     }
 
-    mResources.Resize(mSet->mBindings.Size());
+    mResources.Resize(set->mBindings.Size());
 
-    // TODO ranges support
-    HeapAllocator& allocator = gDevice->GetCbvSrvUavHeapAllocator();
-    mDescriptorHeapOffset = allocator.Allocate(mSet->mBindings.Size());
-    return mDescriptorHeapOffset != -1;
+    mCpuDescriptorHeapOffset = gDevice->GetCbvSrvUavHeapStagingAllocator().Allocate(set->mBindings.Size()).offset;
+    mGpuDescriptorHeapOffset = gDevice->GetCbvSrvUavHeapAllocator().Allocate(set->mBindings.Size()).offset;
+
+    return mCpuDescriptorHeapOffset != UINT32_MAX && mGpuDescriptorHeapOffset != UINT32_MAX;
 }
 
-bool ResourceBindingInstance::WriteTextureView(uint32 slot, const TexturePtr& texture)
+bool ResourceBindingInstance::SetTextureView(uint32 slot, const TexturePtr& texture, const TextureView& view)
 {
+    NFE_ASSERT(!mIsFinalized, "Binding instance is finalized");
+
     Texture* tex = static_cast<Texture*>(texture.Get());
     if (!tex || !tex->mResource)
     {
@@ -248,57 +264,43 @@ bool ResourceBindingInstance::WriteTextureView(uint32 slot, const TexturePtr& te
 
     mResources[slot].texture = texture;
 
-    D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc;
-    srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
-    srvDesc.Format = tex->mSrvFormat;
+    NFE_ASSERT(view.baseMip < tex->GetMipmapsNum(), "Invalid base mip: texture has %u mips, %u specified", tex->GetMipmapsNum(), view.baseMip);
 
-    switch (tex->mType)
-    {
-    case TextureType::Texture1D:
-        srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE1D;
-        srvDesc.Texture1D.MipLevels = tex->mMipmapsNum;
-        srvDesc.Texture1D.MostDetailedMip = 0;
-        srvDesc.Texture1D.ResourceMinLODClamp = 0.0f;
-        break;
-    case TextureType::Texture2D:
-        if (tex->mSamplesNum > 1)
-        {
-            srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2DMS;
-        }
-        else
-        {
-            srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
-            srvDesc.Texture2D.MipLevels = tex->mMipmapsNum;
-            srvDesc.Texture2D.MostDetailedMip = 0;
-            srvDesc.Texture2D.ResourceMinLODClamp = 0.0f;
-            srvDesc.Texture2D.PlaneSlice = 0;
-        }
-        break;
-    case TextureType::TextureCube:
-        srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURECUBE;
-        srvDesc.TextureCube.MipLevels = tex->mMipmapsNum;
-        srvDesc.TextureCube.MostDetailedMip = 0;
-        srvDesc.TextureCube.ResourceMinLODClamp = 0.0f;
-        break;
-    case TextureType::Texture3D:
-        srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE3D;
-        srvDesc.Texture3D.MipLevels = tex->mMipmapsNum;
-        srvDesc.Texture3D.MostDetailedMip = 0;
-        srvDesc.Texture3D.ResourceMinLODClamp = 0.0f;
-        break;
-    // TODO multisampled and multilayered textures
-    }
-
-    HeapAllocator& allocator = gDevice->GetCbvSrvUavHeapAllocator();
+    HeapAllocator& allocator = gDevice->GetCbvSrvUavHeapStagingAllocator();
     D3D12_CPU_DESCRIPTOR_HANDLE handle = allocator.GetCpuHandle();
-    handle.ptr += allocator.GetDescriptorSize() * (mDescriptorHeapOffset + slot);
-    gDevice->GetDevice()->CreateShaderResourceView(tex->mResource.Get(), &srvDesc, handle);
+    handle.ptr += allocator.GetDescriptorSize() * static_cast<size_t>(mCpuDescriptorHeapOffset + slot);
+    CreateTextureSRV(tex, view, handle);
 
     return true;
 }
 
-bool ResourceBindingInstance::WriteCBufferView(uint32 slot, const BufferPtr& buffer)
+bool ResourceBindingInstance::SetBufferView(uint32 slot, const BufferPtr& buffer, const BufferView& view)
 {
+    NFE_ASSERT(!mIsFinalized, "Binding instance is finalized");
+
+    Buffer* buf = static_cast<Buffer*>(buffer.Get());
+    if (!buf || !buf->mResource)
+    {
+        NFE_LOG_ERROR("Invalid texture");
+        return false;
+    }
+
+    mResources[slot].buffer = buffer;
+
+    // TODO validate buffer view
+
+    HeapAllocator& allocator = gDevice->GetCbvSrvUavHeapStagingAllocator();
+    D3D12_CPU_DESCRIPTOR_HANDLE handle = allocator.GetCpuHandle();
+    handle.ptr += allocator.GetDescriptorSize() * static_cast<size_t>(mCpuDescriptorHeapOffset + slot);
+    CreateBufferSRV(buf, view, handle);
+
+    return true;
+}
+
+bool ResourceBindingInstance::SetCBufferView(uint32 slot, const BufferPtr& buffer)
+{
+    NFE_ASSERT(!mIsFinalized, "Binding instance is finalized");
+
     Buffer* cbuffer = static_cast<Buffer*>(buffer.Get());
     if (!buffer || !cbuffer->GetResource())
     {
@@ -312,16 +314,18 @@ bool ResourceBindingInstance::WriteCBufferView(uint32 slot, const BufferPtr& buf
     cbvDesc.BufferLocation = cbuffer->GetResource()->GetGPUVirtualAddress();
     cbvDesc.SizeInBytes = cbuffer->GetRealSize();
 
-    HeapAllocator& allocator = gDevice->GetCbvSrvUavHeapAllocator();
+    HeapAllocator& allocator = gDevice->GetCbvSrvUavHeapStagingAllocator();
     D3D12_CPU_DESCRIPTOR_HANDLE target = allocator.GetCpuHandle();
-    target.ptr += allocator.GetDescriptorSize() * (mDescriptorHeapOffset + slot);
+    target.ptr += allocator.GetDescriptorSize() * static_cast<size_t>(mCpuDescriptorHeapOffset + slot);
     gDevice->GetDevice()->CreateConstantBufferView(&cbvDesc, target);
 
     return true;
 }
 
-bool ResourceBindingInstance::WriteWritableTextureView(uint32 slot, const TexturePtr& texture)
+bool ResourceBindingInstance::SetWritableTextureView(uint32 slot, const TexturePtr& texture, const TextureView& view)
 {
+    NFE_ASSERT(!mIsFinalized, "Binding instance is finalized");
+
     Texture* tex = static_cast<Texture*>(texture.Get());
     if (!tex || !tex->mResource)
     {
@@ -329,37 +333,225 @@ bool ResourceBindingInstance::WriteWritableTextureView(uint32 slot, const Textur
         return false;
     }
 
+    NFE_ASSERT(tex->GetMode() == BufferMode::GPUOnly, "Invalid texture mode");
+
     mResources[slot].texture = texture;
 
-    D3D12_UNORDERED_ACCESS_VIEW_DESC uavDesc;
-    uavDesc.Format = tex->mSrvFormat;
-
-    switch (tex->mType)
-    {
-    case TextureType::Texture1D:
-        uavDesc.ViewDimension = D3D12_UAV_DIMENSION_TEXTURE1D;
-        uavDesc.Texture1D.MipSlice = 0;
-        break;
-    case TextureType::Texture2D:
-        uavDesc.ViewDimension = D3D12_UAV_DIMENSION_TEXTURE2D;
-        uavDesc.Texture2D.MipSlice = 0;
-        uavDesc.Texture2D.PlaneSlice = 0;
-        break;
-    case TextureType::Texture3D:
-        uavDesc.ViewDimension = D3D12_UAV_DIMENSION_TEXTURE3D;
-        uavDesc.Texture3D.FirstWSlice = 0;
-        uavDesc.Texture3D.MipSlice = 0;
-        uavDesc.Texture3D.WSize = 0xFFFFFFFF;
-        break;
-        // TODO multisampled and multilayered textures, etc.
-    }
-
-    HeapAllocator& allocator = gDevice->GetCbvSrvUavHeapAllocator();
+    HeapAllocator& allocator = gDevice->GetCbvSrvUavHeapStagingAllocator();
     D3D12_CPU_DESCRIPTOR_HANDLE handle = allocator.GetCpuHandle();
-    handle.ptr += allocator.GetDescriptorSize() * (mDescriptorHeapOffset + slot);
-    gDevice->GetDevice()->CreateUnorderedAccessView(tex->mResource.Get(), nullptr, &uavDesc, handle);
+    handle.ptr += allocator.GetDescriptorSize() * static_cast<size_t>(mCpuDescriptorHeapOffset + slot);
+    CreateTextureUAV(tex, view, handle);
 
     return true;
+}
+
+bool ResourceBindingInstance::SetWritableBufferView(uint32 slot, const BufferPtr& buffer, const BufferView& view)
+{
+    NFE_ASSERT(!mIsFinalized, "Binding instance is finalized");
+
+    Buffer* buf = static_cast<Buffer*>(buffer.Get());
+    if (!buf || !buf->mResource)
+    {
+        NFE_LOG_ERROR("Invalid texture");
+        return false;
+    }
+
+    NFE_ASSERT(buf->GetMode() == BufferMode::GPUOnly, "Invalid buffer mode");
+
+    mResources[slot].buffer = buffer;
+
+    // TODO validate buffer view
+
+    HeapAllocator& allocator = gDevice->GetCbvSrvUavHeapStagingAllocator();
+    D3D12_CPU_DESCRIPTOR_HANDLE handle = allocator.GetCpuHandle();
+    handle.ptr += allocator.GetDescriptorSize() * static_cast<size_t>(mCpuDescriptorHeapOffset + slot);
+    CreateBufferUAV(buf, view, handle);
+
+    return true;
+}
+
+bool ResourceBindingInstance::Finalize()
+{
+    NFE_ASSERT(!mIsFinalized, "Binding instance is already finalized");
+
+    // copy descriptors from non-shader visible to shader visible heap
+
+    HeapAllocator& stagingAllocator = gDevice->GetCbvSrvUavHeapStagingAllocator();
+    D3D12_CPU_DESCRIPTOR_HANDLE srcHandle = stagingAllocator.GetCpuHandle();
+    srcHandle.ptr += stagingAllocator.GetDescriptorSize() * static_cast<size_t>(mCpuDescriptorHeapOffset);
+
+    HeapAllocator& allocator = gDevice->GetCbvSrvUavHeapAllocator();
+    D3D12_CPU_DESCRIPTOR_HANDLE destHandle = allocator.GetCpuHandle();
+    destHandle.ptr += allocator.GetDescriptorSize() * static_cast<size_t>(mGpuDescriptorHeapOffset);
+
+    gDevice->GetDevice()->CopyDescriptorsSimple(mResources.Size(), destHandle, srcHandle, D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
+
+    mIsFinalized = true;
+    return true;
+}
+
+//////////////////////////////////////////////////////////////////////////
+
+void CreateTextureSRV(const Texture* tex, const TextureView& view, D3D12_CPU_DESCRIPTOR_HANDLE descriptorHandle)
+{
+    D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc;
+    srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
+    srvDesc.Format = tex->GetSrvFormat();
+
+    if (tex->GetType() == TextureType::Texture1D)
+    {
+        if (tex->GetLayersNum() > 1)
+        {
+            srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE1DARRAY;
+            srvDesc.Texture1DArray.MostDetailedMip = view.baseMip;
+            srvDesc.Texture1DArray.FirstArraySlice = view.baseLayer;
+            srvDesc.Texture1DArray.MipLevels = view.numMips;
+            srvDesc.Texture1DArray.ArraySize = view.numLayers;
+            srvDesc.Texture1DArray.ResourceMinLODClamp = 0.0f;
+        }
+        else
+        {
+            srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE1D;
+            srvDesc.Texture1D.MostDetailedMip = view.baseMip;
+            srvDesc.Texture1D.MipLevels = view.numMips;
+            srvDesc.Texture1D.ResourceMinLODClamp = 0.0f;
+        }
+    }
+    else if (tex->GetType() == TextureType::Texture2D)
+    {
+        if (tex->GetSamplesNum() > 1)
+        {
+            if (tex->GetLayersNum() > 1)
+            {
+                srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2DMSARRAY;
+                srvDesc.Texture2DMSArray.FirstArraySlice = view.baseLayer;
+                srvDesc.Texture2DMSArray.ArraySize = view.numLayers;
+            }
+            else
+            {
+                srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2DMS;
+            }
+        }
+        else
+        {
+            if (tex->GetLayersNum() > 1)
+            {
+                srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2DARRAY;
+                srvDesc.Texture2DArray.MostDetailedMip = view.baseMip;
+                srvDesc.Texture2DArray.FirstArraySlice = view.baseLayer;
+                srvDesc.Texture2DArray.MipLevels = view.numMips;
+                srvDesc.Texture2DArray.ArraySize = view.numLayers;
+                srvDesc.Texture2DArray.ResourceMinLODClamp = 0.0f;
+            }
+            else
+            {
+                srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
+                srvDesc.Texture2D.MostDetailedMip = view.baseMip;
+                srvDesc.Texture2D.MipLevels = view.numMips;
+                srvDesc.Texture2D.ResourceMinLODClamp = 0.0f;
+                srvDesc.Texture2D.PlaneSlice = 0;
+            }
+        }
+    }
+    else if (tex->GetType() == TextureType::TextureCube)
+    {
+        // TODO cube texture array
+        srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURECUBE;
+        srvDesc.TextureCube.MostDetailedMip = view.baseMip;
+        srvDesc.TextureCube.MipLevels = view.numMips;
+        srvDesc.TextureCube.ResourceMinLODClamp = 0.0f;
+    }
+    else if (tex->GetType() == TextureType::Texture3D)
+    {
+        srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE3D;
+        srvDesc.Texture3D.MostDetailedMip = view.baseMip;
+        srvDesc.Texture3D.MipLevels = view.numMips;
+        srvDesc.Texture3D.ResourceMinLODClamp = 0.0f;
+    }
+    else
+    {
+        NFE_FATAL("Invalid texture type");
+        return;
+    }
+
+    gDevice->GetDevice()->CreateShaderResourceView(tex->GetD3DResource(), &srvDesc, descriptorHandle);
+}
+
+void CreateTextureUAV(const Texture* tex, const TextureView& view, D3D12_CPU_DESCRIPTOR_HANDLE descriptorHandle)
+{
+    D3D12_UNORDERED_ACCESS_VIEW_DESC uavDesc;
+    uavDesc.Format = tex->GetSrvFormat();
+
+    if (tex->GetType() == TextureType::Texture1D)
+    {
+        if (tex->GetLayersNum() > 1)
+        {
+            uavDesc.ViewDimension = D3D12_UAV_DIMENSION_TEXTURE1DARRAY;
+            uavDesc.Texture1DArray.FirstArraySlice = view.baseLayer;
+            uavDesc.Texture1DArray.MipSlice = view.baseMip;
+            uavDesc.Texture1DArray.ArraySize = view.numLayers;
+        }
+        else
+        {
+            uavDesc.ViewDimension = D3D12_UAV_DIMENSION_TEXTURE1D;
+            uavDesc.Texture1D.MipSlice = view.baseMip;
+        }
+    }
+    else if (tex->GetType() == TextureType::Texture2D)
+    {
+        if (tex->GetLayersNum() > 1)
+        {
+            uavDesc.ViewDimension = D3D12_UAV_DIMENSION_TEXTURE2DARRAY;
+            uavDesc.Texture2DArray.FirstArraySlice = view.baseLayer;
+            uavDesc.Texture2DArray.MipSlice = view.baseMip;
+            uavDesc.Texture2DArray.ArraySize = view.numLayers;
+            uavDesc.Texture2DArray.PlaneSlice = 0;
+        }
+        else
+        {
+            uavDesc.ViewDimension = D3D12_UAV_DIMENSION_TEXTURE2D;
+            uavDesc.Texture2D.MipSlice = view.baseMip;
+            uavDesc.Texture2D.PlaneSlice = 0;
+        }
+    }
+    else if (tex->GetType() == TextureType::Texture3D)
+    {
+        uavDesc.ViewDimension = D3D12_UAV_DIMENSION_TEXTURE3D;
+        uavDesc.Texture3D.FirstWSlice = view.baseLayer;
+        uavDesc.Texture3D.MipSlice = view.baseMip;
+        uavDesc.Texture3D.WSize = view.numLayers;
+    }
+    else
+    {
+        NFE_FATAL("Invalid texture type");
+        return;
+    }
+
+    gDevice->GetDevice()->CreateUnorderedAccessView(tex->GetD3DResource(), nullptr, &uavDesc, descriptorHandle);
+}
+
+void CreateBufferSRV(const Buffer* buf, const BufferView& view, D3D12_CPU_DESCRIPTOR_HANDLE descriptorHandle)
+{
+    D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
+    srvDesc.ViewDimension = D3D12_SRV_DIMENSION_BUFFER;
+    srvDesc.Format = DXGI_FORMAT_UNKNOWN;
+    srvDesc.Buffer.FirstElement = view.firstElement;
+    srvDesc.Buffer.NumElements = view.numElements;
+    srvDesc.Buffer.StructureByteStride = 0; // TODO
+
+    gDevice->GetDevice()->CreateShaderResourceView(buf->GetD3DResource(), &srvDesc, descriptorHandle);
+}
+
+void CreateBufferUAV(const Buffer* buf, const BufferView& view, D3D12_CPU_DESCRIPTOR_HANDLE descriptorHandle)
+{
+    D3D12_UNORDERED_ACCESS_VIEW_DESC uavDesc = {};
+    uavDesc.ViewDimension = D3D12_UAV_DIMENSION_BUFFER;
+    uavDesc.Format = DXGI_FORMAT_UNKNOWN;
+    uavDesc.Buffer.FirstElement = view.firstElement;
+    uavDesc.Buffer.NumElements = view.numElements;
+    uavDesc.Buffer.StructureByteStride = 0; // TODO
+
+    gDevice->GetDevice()->CreateUnorderedAccessView(buf->GetD3DResource(), nullptr, &uavDesc, descriptorHandle);
 }
 
 } // namespace Renderer

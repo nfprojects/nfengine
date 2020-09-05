@@ -65,41 +65,48 @@ bool CommandRecorder::Begin()
     return true;
 }
 
+void CommandRecorder::ResourceBindingState::Reset()
+{
+    bindingLayoutChanged = false;
+    bindingInstancesChanged = false;
+
+    bindingLayout = nullptr;
+
+    for (uint32 i = 0; i < NFE_RENDERER_MAX_VOLATILE_CBUFFERS; ++i)
+    {
+        volatileCBuffers[i] = nullptr;
+    }
+
+    for (uint32 i = 0; i < NFE_RENDERER_MAX_BINDING_SETS; ++i)
+    {
+        bindingInstances[i] = nullptr;
+    }
+
+    pendingDirectResourceBinds.Clear();
+}
+
 void CommandRecorder::ResetState()
 {
+    mGraphicsBindingState.Reset();
+    mComputeBindingState.Reset();
+
     mCurrRenderTarget = nullptr;
     mGraphicsPipelineState = nullptr;
-    mGraphicsBindingLayout = nullptr;
     mComputePipelineState = nullptr;
-    mComputeBindingLayout = nullptr;
+
+    mGraphicsPipelineStateChanged = false;
+    mComputePipelineStateChanged = false;
+
     mCurrPrimitiveTopology = D3D_PRIMITIVE_TOPOLOGY_UNDEFINED;
     mNumBoundVertexBuffers = 0u;
     mBoundIndexBuffer = nullptr;
 
     mVertexBufferChanged = false;
     mIndexBufferChanged = false;
-    mGraphicsPipelineStateChanged = false;
-    mComputePipelineStateChanged = false;
-    mGraphicsBindingLayoutChanged = false;
-    mComputeBindingLayoutChanged = false;
-    mGraphicsBindingInstancesChanged = false;
-    mComputeBindingInstancesChanged = false;
-
-    for (uint32 i = 0; i < NFE_RENDERER_MAX_VOLATILE_CBUFFERS; ++i)
-    {
-        mBoundVolatileCBuffers[i] = nullptr;
-        mBoundComputeVolatileCBuffers[i] = nullptr;
-    }
 
     for (uint32 i = 0; i < NFE_RENDERER_MAX_VERTEX_BUFFERS; ++i)
     {
         mBoundVertexBuffers[i] = nullptr;
-    }
-
-    for (uint32 i = 0; i < NFE_RENDERER_MAX_BINDING_SETS; ++i)
-    {
-        mGraphicsBindingInstances[i] = nullptr;
-        mComputeBindingInstances[i] = nullptr;
     }
 }
 
@@ -224,29 +231,149 @@ void CommandRecorder::SetIndexBuffer(const BufferPtr& indexBuffer, IndexBufferFo
     mIndexBufferChanged = true;
 }
 
-void CommandRecorder::BindResources(uint32 slot, const ResourceBindingInstancePtr& bindingSetInstance)
+void CommandRecorder::BindResources(PipelineType pipelineType, uint32 setIndex, const ResourceBindingInstancePtr& bindingSetInstance)
 {
-    NFE_ASSERT(slot < NFE_RENDERER_MAX_BINDING_SETS, "Invalid binding slot");
-    NFE_ASSERT(mGraphicsBindingLayout, "Binding layout is not set");
-    NFE_ASSERT(slot < mGraphicsBindingLayout->mBindingSets.Size(), "Binding set index out of bounds");
+    ResourceBindingState& bindingState = GetBindingState(pipelineType);
+
+    NFE_ASSERT(setIndex < NFE_RENDERER_MAX_BINDING_SETS, "Invalid binding slot");
+    NFE_ASSERT(bindingState.bindingLayout, "Binding layout is not set");
+    NFE_ASSERT(setIndex < bindingState.bindingLayout->mBindingSets.Size(), "Binding set index out of bounds");
 
     ResourceBindingInstance* instance = static_cast<ResourceBindingInstance*>(bindingSetInstance.Get());
-    if (instance != mGraphicsBindingInstances[slot])
+
+    if (instance)
     {
-        mGraphicsBindingInstances[slot] = instance;
-        Internal_ReferenceBindingSetInstance(bindingSetInstance);
-        mGraphicsBindingInstancesChanged = true;
+        NFE_ASSERT(instance->IsFinalized(), "Binding instance is not finalized");
     }
+
+    if (instance != bindingState.bindingInstances[setIndex])
+    {
+        bindingState.bindingInstances[setIndex] = instance;
+        Internal_ReferenceBindingSetInstance(bindingSetInstance);
+        bindingState.bindingInstancesChanged = true;
+    }
+
+    // TODO clear direct bindings to that set
 }
 
-void CommandRecorder::BindVolatileCBuffer(uint32 slot, const BufferPtr& buffer)
+void CommandRecorder::BindTexture(PipelineType pipelineType, uint32 setIndex, uint32 slotInSet, const TexturePtr& texture, const TextureView& view)
 {
+    ResourceBindingState& bindingState = GetBindingState(pipelineType);
+
+    Texture* texturePtr = static_cast<Texture*>(texture.Get());
+    NFE_ASSERT(texturePtr, "Invalid texture");
+
+    NFE_ASSERT(setIndex < NFE_RENDERER_MAX_BINDING_SETS, "Invalid binding slot");
+    NFE_ASSERT(bindingState.bindingLayout, "Binding layout is not set");
+    NFE_ASSERT(setIndex < bindingState.bindingLayout->mBindingSets.Size(), "Binding set index out of bounds");
+    
+    const InternalResourceBindingSetPtr& bindingSet = bindingState.bindingLayout->mBindingSets[setIndex];
+    NFE_ASSERT(slotInSet < bindingSet->mBindings.Size(), "Binding slot index within set is out of bounds");
+
+    Internal_GetReferencedResources().textures.Insert(texture);
+
+    PendingDirectResourceBind resourceBind;
+    resourceBind.setIndex = setIndex;
+    resourceBind.slotInSet = slotInSet;
+    resourceBind.type = ResourceType::Texture;
+    resourceBind.shaderWritable = false;
+    resourceBind.texture = texturePtr;
+    resourceBind.textureView = view;
+
+    bindingState.pendingDirectResourceBinds.PushBack(std::move(resourceBind));
+}
+
+void CommandRecorder::BindWritableTexture(PipelineType pipelineType, uint32 setIndex, uint32 slotInSet, const TexturePtr& texture, const TextureView& view)
+{
+    ResourceBindingState& bindingState = GetBindingState(pipelineType);
+
+    Texture* texturePtr = static_cast<Texture*>(texture.Get());
+    NFE_ASSERT(texturePtr, "Invalid texture");
+
+    NFE_ASSERT(setIndex < NFE_RENDERER_MAX_BINDING_SETS, "Invalid binding slot");
+    NFE_ASSERT(bindingState.bindingLayout, "Binding layout is not set");
+    NFE_ASSERT(setIndex < bindingState.bindingLayout->mBindingSets.Size(), "Binding set index out of bounds");
+
+    const InternalResourceBindingSetPtr& bindingSet = bindingState.bindingLayout->mBindingSets[setIndex];
+    NFE_ASSERT(slotInSet < bindingSet->mBindings.Size(), "Binding slot index within set is out of bounds");
+
+    Internal_GetReferencedResources().textures.Insert(texture);
+
+    PendingDirectResourceBind resourceBind;
+    resourceBind.setIndex = setIndex;
+    resourceBind.slotInSet = slotInSet;
+    resourceBind.type = ResourceType::Texture;
+    resourceBind.shaderWritable = true;
+    resourceBind.texture = texturePtr;
+    resourceBind.textureView = view;
+
+    bindingState.pendingDirectResourceBinds.PushBack(std::move(resourceBind));
+}
+
+void CommandRecorder::BindBuffer(PipelineType pipelineType, uint32 setIndex, uint32 slotInSet, const BufferPtr& buffer, const BufferView& view)
+{
+    ResourceBindingState& bindingState = GetBindingState(pipelineType);
+
+    Buffer* bufferPtr = static_cast<Buffer*>(buffer.Get());
+    NFE_ASSERT(bufferPtr, "Invalid buffer");
+
+    NFE_ASSERT(setIndex < NFE_RENDERER_MAX_BINDING_SETS, "Invalid binding slot");
+    NFE_ASSERT(bindingState.bindingLayout, "Binding layout is not set");
+    NFE_ASSERT(setIndex < bindingState.bindingLayout->mBindingSets.Size(), "Binding set index out of bounds");
+
+    const InternalResourceBindingSetPtr& bindingSet = bindingState.bindingLayout->mBindingSets[setIndex];
+    NFE_ASSERT(slotInSet < bindingSet->mBindings.Size(), "Binding slot index within set is out of bounds");
+
+    Internal_GetReferencedResources().buffers.Insert(buffer);
+
+    PendingDirectResourceBind resourceBind;
+    resourceBind.setIndex = setIndex;
+    resourceBind.slotInSet = slotInSet;
+    resourceBind.type = ResourceType::Buffer;
+    resourceBind.shaderWritable = false;
+    resourceBind.buffer = bufferPtr;
+    resourceBind.bufferView = view;
+
+    bindingState.pendingDirectResourceBinds.PushBack(std::move(resourceBind));
+}
+
+void CommandRecorder::BindWritableBuffer(PipelineType pipelineType, uint32 setIndex, uint32 slotInSet, const BufferPtr& buffer, const BufferView& view)
+{
+    ResourceBindingState& bindingState = GetBindingState(pipelineType);
+
+    Buffer* bufferPtr = static_cast<Buffer*>(buffer.Get());
+    NFE_ASSERT(bufferPtr, "Invalid buffer");
+
+    NFE_ASSERT(setIndex < NFE_RENDERER_MAX_BINDING_SETS, "Invalid binding slot");
+    NFE_ASSERT(bindingState.bindingLayout, "Binding layout is not set");
+    NFE_ASSERT(setIndex < bindingState.bindingLayout->mBindingSets.Size(), "Binding set index out of bounds");
+
+    const InternalResourceBindingSetPtr& bindingSet = bindingState.bindingLayout->mBindingSets[setIndex];
+    NFE_ASSERT(slotInSet < bindingSet->mBindings.Size(), "Binding slot index within set is out of bounds");
+
+    Internal_GetReferencedResources().buffers.Insert(buffer);
+
+    PendingDirectResourceBind resourceBind;
+    resourceBind.setIndex = setIndex;
+    resourceBind.slotInSet = slotInSet;
+    resourceBind.type = ResourceType::Buffer;
+    resourceBind.shaderWritable = true;
+    resourceBind.buffer = bufferPtr;
+    resourceBind.bufferView = view;
+
+    bindingState.pendingDirectResourceBinds.PushBack(std::move(resourceBind));
+}
+
+void CommandRecorder::BindVolatileCBuffer(PipelineType pipelineType, uint32 slot, const BufferPtr& buffer)
+{
+    ResourceBindingState& bindingState = GetBindingState(pipelineType);
+
     NFE_ASSERT(slot < NFE_RENDERER_MAX_VOLATILE_CBUFFERS, "Invalid volatile buffer slot number");
 
     const Buffer* bufferPtr = static_cast<Buffer*>(buffer.Get());
     NFE_ASSERT(bufferPtr->GetMode() == BufferMode::Volatile, "Buffer mode must be volatile");
 
-    mBoundVolatileCBuffers[slot] = bufferPtr;
+    bindingState.volatileCBuffers[slot] = bufferPtr;
 }
 
 void CommandRecorder::SetRenderTarget(const RenderTargetPtr& renderTarget)
@@ -303,19 +430,22 @@ void CommandRecorder::Internal_UnsetRenderTarget()
     mCurrRenderTarget = nullptr;
 }
 
-void CommandRecorder::SetResourceBindingLayout(const ResourceBindingLayoutPtr& layout)
+void CommandRecorder::SetResourceBindingLayout(PipelineType pipelineType, const ResourceBindingLayoutPtr& layout)
 {
+    ResourceBindingState& bindingState = GetBindingState(pipelineType);
+
     if (layout)
     {
         Internal_GetReferencedResources().bindingSetLayouts.Insert(layout);
     }
 
     ResourceBindingLayout* layoutPtr = static_cast<ResourceBindingLayout*>(layout.Get());
+    NFE_ASSERT(layoutPtr, "Invalid layout");
 
-    if (layoutPtr != mGraphicsBindingLayout)
+    if (layoutPtr != bindingState.bindingLayout)
     {
-        mGraphicsBindingLayout = layoutPtr;
-        mGraphicsBindingLayoutChanged = true;
+        bindingState.bindingLayout = layoutPtr;
+        bindingState.bindingLayoutChanged = true;
     }
 }
 
@@ -327,6 +457,7 @@ void CommandRecorder::SetPipelineState(const PipelineStatePtr& state)
     }
 
     PipelineState* pipelineStatePtr = static_cast<PipelineState*>(state.Get());
+    NFE_ASSERT(pipelineStatePtr, "Invalid pipeline state");
 
     if (pipelineStatePtr != mGraphicsPipelineState)
     {
@@ -379,26 +510,19 @@ void CommandRecorder::Internal_WriteVolatileBuffer(Buffer* buffer, const void* d
     Internal_UpdateGraphicsResourceBindingLayout();
     Internal_UpdateComputeResourceBindingLayout();
 
-    // check if the buffer is not used as compute CBV
-    if (mComputeBindingLayout)
-    {
-        for (uint32 i = 0; i < NFE_RENDERER_MAX_VOLATILE_CBUFFERS; ++i)
-        {
-            if (mBoundComputeVolatileCBuffers[i] == buffer)
-            {
-                const uint32 rootParamIndex = mComputeBindingLayout->mBindingSets.Size() + i;
-                mCommandList->SetComputeRootConstantBufferView(rootParamIndex, gpuPtr);
-            }
-        }
-    }
-
     // check if the buffer is not used as CBV
     for (uint32 i = 0; i < NFE_RENDERER_MAX_VOLATILE_CBUFFERS; ++i)
     {
-        if (mBoundVolatileCBuffers[i] == buffer)
+        if (mGraphicsBindingState.volatileCBuffers[i] == buffer)
         {
-            const uint32 rootParamIndex = mGraphicsBindingLayout->mBindingSets.Size() + i;
+            const uint32 rootParamIndex = mGraphicsBindingState.bindingLayout->mBindingSets.Size() + i;
             mCommandList->SetGraphicsRootConstantBufferView(rootParamIndex, gpuPtr);
+        }
+
+        if (mComputeBindingState.volatileCBuffers[i] == buffer)
+        {
+            const uint32 rootParamIndex = mComputeBindingState.bindingLayout->mBindingSets.Size() + i;
+            mCommandList->SetComputeRootConstantBufferView(rootParamIndex, gpuPtr);
         }
     }
 
@@ -771,7 +895,7 @@ void CommandRecorder::Internal_UpdateVetexAndIndexBuffers()
     {
         for (uint32 i = 0; i < mNumBoundVertexBuffers; ++i)
         {
-            Buffer* buffer = mBoundVertexBuffers[i];
+            const Buffer* buffer = mBoundVertexBuffers[i];
             if (buffer->GetResource())
             {
                 mResourceStateCache.EnsureResourceState(mBoundVertexBuffers[i], D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER);
@@ -785,26 +909,128 @@ void CommandRecorder::Internal_UpdateVetexAndIndexBuffers()
 
 void CommandRecorder::Internal_UpdateGraphicsResourceBindingLayout()
 {
-    if (mGraphicsBindingLayoutChanged)
+    if (mGraphicsBindingState.bindingLayoutChanged)
     {
-        mGraphicsBindingLayoutChanged = false;
+        mGraphicsBindingState.bindingLayoutChanged = false;
 
-        mCommandList->SetGraphicsRootSignature(mGraphicsBindingLayout->mRootSignature.Get());
+        mCommandList->SetGraphicsRootSignature(mGraphicsBindingState.bindingLayout->mRootSignature.Get());
     }
 }
 
-void CommandRecorder::Internal_UpdateGraphicsResourceBindings()
+HeapAllocator::DescriptorRange CommandRecorder::Internal_GenerateDescriptorTableOverride(ResourceBindingState& state, uint32 setIndex, const ResourceBindingInstance* bindingInstance)
 {
-    if (!mGraphicsBindingInstancesChanged)
+    NFE_ASSERT(state.bindingLayout, "Invalid layout");
+    const uint32 numResourcesInSet = state.bindingLayout->mBindingSets[setIndex]->GetNumResources();
+
+    HeapAllocator& stagingHeapAllocator = gDevice->GetCbvSrvUavHeapStagingAllocator();
+    HeapAllocator& heapAllocator = gDevice->GetCbvSrvUavHeapAllocator();
+
+    // allocate descriptor table for the override
+    // TODO instead of using generic allocator, maybe switch to ring buffer for temporary descriptors
+    HeapAllocator::DescriptorRange descriptorRange = heapAllocator.Allocate(numResourcesInSet);
+    NFE_ASSERT(descriptorRange.offset != UINT32_MAX, "Descriptor table allocation failed");
+
+    // copy descriptors from existing binding instance
+    if (bindingInstance)
+    {
+        D3D12_CPU_DESCRIPTOR_HANDLE srcHandle = stagingHeapAllocator.GetCpuHandle();
+        srcHandle.ptr += stagingHeapAllocator.GetDescriptorSize() * static_cast<size_t>(bindingInstance->mCpuDescriptorHeapOffset);
+
+        D3D12_CPU_DESCRIPTOR_HANDLE destHandle = heapAllocator.GetCpuHandle();
+        destHandle.ptr += heapAllocator.GetDescriptorSize() * static_cast<size_t>(descriptorRange.offset);
+
+        gDevice->GetDevice()->CopyDescriptorsSimple(numResourcesInSet, destHandle, srcHandle, D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
+
+    }
+
+    // create descriptors for the overrides
+    for (const PendingDirectResourceBind& resourceBind : state.pendingDirectResourceBinds)
+    {
+        if (resourceBind.setIndex == setIndex)
+        {
+            D3D12_CPU_DESCRIPTOR_HANDLE targetDescriptor = heapAllocator.GetCpuHandle();
+            targetDescriptor.ptr += heapAllocator.GetDescriptorSize() * static_cast<size_t>(descriptorRange.offset + resourceBind.slotInSet);
+
+            if (resourceBind.type == ResourceType::Texture)
+            {
+                if (resourceBind.shaderWritable)
+                {
+                    CreateTextureUAV(resourceBind.texture, resourceBind.textureView, targetDescriptor);
+
+                    mResourceStateCache.EnsureResourceState(resourceBind.texture, D3D12_RESOURCE_STATE_UNORDERED_ACCESS);
+                }
+                else
+                {
+                    CreateTextureSRV(resourceBind.texture, resourceBind.textureView, targetDescriptor);
+
+                    // TODO limit shader visibility (based on binding layout properties)
+                    mResourceStateCache.EnsureResourceState(resourceBind.texture, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE|D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE);
+                }
+            }
+            else if(resourceBind.type == ResourceType::Buffer)
+            {
+                if (resourceBind.shaderWritable)
+                {
+                    CreateBufferUAV(resourceBind.buffer, resourceBind.bufferView, targetDescriptor);
+
+                    mResourceStateCache.EnsureResourceState(resourceBind.buffer, D3D12_RESOURCE_STATE_UNORDERED_ACCESS);
+                }
+                else
+                {
+                    CreateBufferSRV(resourceBind.buffer, resourceBind.bufferView, targetDescriptor);
+
+                    // TODO limit shader visibility (based on binding layout properties)
+                    mResourceStateCache.EnsureResourceState(resourceBind.buffer, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE|D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE);
+                }
+            }
+            else
+            {
+                NFE_FATAL("Invalid resource type");
+            }
+        }
+    }
+
+    // add to referenced list so it will be released automatically later
+    mCommandListObject->GetReferencedDescriptorsRanges().PushBack(descriptorRange);
+
+    // TODO verify if all resources in the set are bound, if not - assert, because it may crash the driver
+    // TODO ensure proper resource states (the non-overwritten ones)
+
+    return descriptorRange;
+}
+
+void CommandRecorder::Internal_UpdateResourceBindings(PipelineType pipelineType)
+{
+    ResourceBindingState& state = GetBindingState(pipelineType);
+
+    if (!state.bindingInstancesChanged && state.pendingDirectResourceBinds.Empty())
     {
         return;
     }
 
-    mGraphicsBindingInstancesChanged = false;
+    // determine, which sets require custom descriptor table
+    uint32 directBindingSetMask = 0;
+    for (const PendingDirectResourceBind& resourceBind : state.pendingDirectResourceBinds)
+    {
+        directBindingSetMask |= 1u << resourceBind.setIndex;
+    }
 
     for (uint32 setIndex = 0; setIndex < NFE_RENDERER_MAX_BINDING_SETS; ++setIndex)
     {
-        ResourceBindingInstance* instance = mGraphicsBindingInstances[setIndex];
+        const ResourceBindingInstance* instance = state.bindingInstances[setIndex];
+
+        if (1u == ((directBindingSetMask >> setIndex) & 1u))
+        {
+            HeapAllocator::DescriptorRange descriptorRange = Internal_GenerateDescriptorTableOverride(state, setIndex, instance);
+
+            HeapAllocator& allocator = gDevice->GetCbvSrvUavHeapAllocator();
+            D3D12_GPU_DESCRIPTOR_HANDLE ptr = allocator.GetGpuHandle();
+            ptr.ptr += (uint64)descriptorRange.offset * allocator.GetDescriptorSize();
+            mCommandList->SetGraphicsRootDescriptorTable(setIndex, ptr);
+
+            continue;
+        }
+
         if (!instance)
         {
             continue;
@@ -821,18 +1047,18 @@ void CommandRecorder::Internal_UpdateGraphicsResourceBindings()
 
             if (textureResource || bufferResource)
             {
-                switch (instance->mSet->mBindings[i].resourceType)
+                switch (state.bindingLayout->mBindingSets[setIndex]->mBindings[i].resourceType)
                 {
                 case ShaderResourceType::CBuffer:
                     mResourceStateCache.EnsureResourceState(bufferResource, D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER);
                     break;
                 case ShaderResourceType::Texture:
                     // TODO limit shader visibility (based on binding layout properties)
-                    mResourceStateCache.EnsureResourceState(textureResource, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE | D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE);
+                    mResourceStateCache.EnsureResourceState(textureResource, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE|D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE);
                     break;
                 case ShaderResourceType::StructuredBuffer:
                     // TODO limit shader visibility (based on binding layout properties)
-                    mResourceStateCache.EnsureResourceState(bufferResource, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE | D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE);
+                    mResourceStateCache.EnsureResourceState(bufferResource, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE|D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE);
                     break;
                 case ShaderResourceType::WritableTexture:
                     mResourceStateCache.EnsureResourceState(textureResource, D3D12_RESOURCE_STATE_UNORDERED_ACCESS);
@@ -846,76 +1072,29 @@ void CommandRecorder::Internal_UpdateGraphicsResourceBindings()
 
         HeapAllocator& allocator = gDevice->GetCbvSrvUavHeapAllocator();
         D3D12_GPU_DESCRIPTOR_HANDLE ptr = allocator.GetGpuHandle();
-        ptr.ptr += (uint64)instance->mDescriptorHeapOffset * allocator.GetDescriptorSize();
-        mCommandList->SetGraphicsRootDescriptorTable(setIndex, ptr);
+        ptr.ptr += (uint64)instance->mGpuDescriptorHeapOffset * allocator.GetDescriptorSize();
+
+        if (pipelineType == PipelineType::Compute)
+        {
+            mCommandList->SetComputeRootDescriptorTable(setIndex, ptr);
+        }
+        else
+        {
+            mCommandList->SetGraphicsRootDescriptorTable(setIndex, ptr);
+        }
     }
+
+    state.bindingInstancesChanged = false;
+    state.pendingDirectResourceBinds.Clear();
 }
 
 void CommandRecorder::Internal_UpdateComputeResourceBindingLayout()
 {
-    if (mComputeBindingLayoutChanged)
+    if (mComputeBindingState.bindingLayoutChanged)
     {
-        mComputeBindingLayoutChanged = false;
+        mComputeBindingState.bindingLayoutChanged = false;
 
-        mCommandList->SetComputeRootSignature(mComputeBindingLayout->mRootSignature.Get());
-    }
-}
-
-void CommandRecorder::Internal_UpdateComputeResourceBindings()
-{
-    if (!mComputeBindingInstancesChanged)
-    {
-        return;
-    }
-
-    mComputeBindingInstancesChanged = false;
-
-    for (uint32 setIndex = 0; setIndex < NFE_RENDERER_MAX_BINDING_SETS; ++setIndex)
-    {
-        ResourceBindingInstance* instance = mComputeBindingInstances[setIndex];
-        if (!instance)
-        {
-            continue;
-        }
-
-        // transition resources
-        // TODO pass proper subresource (based on resource view that is written to resource binding)
-        for (uint32 i = 0; i < instance->mResources.Size(); ++i)
-        {
-            const ResourceBindingInstance::Resource& resource = instance->mResources[i];
-
-            Texture* textureResource = static_cast<Texture*>(resource.texture.Get());
-            Buffer* bufferResource = static_cast<Buffer*>(resource.buffer.Get());
-
-            if (textureResource || bufferResource)
-            {
-                switch (instance->mSet->mBindings[i].resourceType)
-                {
-                case ShaderResourceType::CBuffer:
-                    mResourceStateCache.EnsureResourceState(bufferResource, D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER);
-                    break;
-                case ShaderResourceType::Texture:
-                    // TODO limit shader visibility (based on binding layout properties)
-                    mResourceStateCache.EnsureResourceState(textureResource, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE | D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE);
-                    break;
-                case ShaderResourceType::StructuredBuffer:
-                    // TODO limit shader visibility (based on binding layout properties)
-                    mResourceStateCache.EnsureResourceState(bufferResource, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE | D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE);
-                    break;
-                case ShaderResourceType::WritableTexture:
-                    mResourceStateCache.EnsureResourceState(textureResource, D3D12_RESOURCE_STATE_UNORDERED_ACCESS);
-                    break;
-                case ShaderResourceType::WritableStructuredBuffer:
-                    mResourceStateCache.EnsureResourceState(bufferResource, D3D12_RESOURCE_STATE_UNORDERED_ACCESS);
-                    break;
-                }
-            }
-        }
-
-        HeapAllocator& allocator = gDevice->GetCbvSrvUavHeapAllocator();
-        D3D12_GPU_DESCRIPTOR_HANDLE ptr = allocator.GetGpuHandle();
-        ptr.ptr += (uint64)instance->mDescriptorHeapOffset * allocator.GetDescriptorSize();
-        mCommandList->SetComputeRootDescriptorTable(setIndex, ptr);
+        mCommandList->SetComputeRootSignature(mComputeBindingState.bindingLayout->mRootSignature.Get());
     }
 }
 
@@ -924,7 +1103,7 @@ void CommandRecorder::Internal_PrepareForDraw()
     Internal_UpdateGraphicsPipelineState();
     Internal_UpdateGraphicsResourceBindingLayout();
     Internal_UpdateVetexAndIndexBuffers();
-    Internal_UpdateGraphicsResourceBindings();
+    Internal_UpdateResourceBindings(PipelineType::Graphics);
 
     NFE_ASSERT(mGraphicsPipelineState, "Graphics pipeline state not set");
 
@@ -935,7 +1114,7 @@ void CommandRecorder::Internal_PrepareForDispatch()
 {
     Internal_UpdateComputePipelineState();
     Internal_UpdateComputeResourceBindingLayout();
-    Internal_UpdateComputeResourceBindings();
+    Internal_UpdateResourceBindings(PipelineType::Compute);
 
     NFE_ASSERT(mComputePipelineState, "Compute pipeline state not set");
 
@@ -952,48 +1131,6 @@ void CommandRecorder::DrawIndexed(uint32 indexNum, uint32 instancesNum, uint32 i
 {
     Internal_PrepareForDraw();
     mCommandList->DrawIndexedInstanced(indexNum, instancesNum, indexOffset, vertexOffset, instanceOffset);
-}
-
-void CommandRecorder::BindComputeResources(uint32 slot, const ResourceBindingInstancePtr& bindingSetInstance)
-{
-    NFE_ASSERT(slot < NFE_RENDERER_MAX_BINDING_SETS, "Invalid binding slot");
-    NFE_ASSERT(mComputeBindingLayout, "Binding layout is not set");
-    NFE_ASSERT(slot < mComputeBindingLayout->mBindingSets.Size(), "Binding set index out of bounds");
-
-    ResourceBindingInstance* instance = static_cast<ResourceBindingInstance*>(bindingSetInstance.Get());
-    if (instance != mComputeBindingInstances[slot])
-    {
-        mComputeBindingInstances[slot] = instance;
-        Internal_ReferenceBindingSetInstance(bindingSetInstance);
-        mComputeBindingInstancesChanged = true;
-    }
-}
-
-void CommandRecorder::BindComputeVolatileCBuffer(uint32 slot, const BufferPtr& buffer)
-{
-    NFE_ASSERT(slot < NFE_RENDERER_MAX_VOLATILE_CBUFFERS, "Invalid volatile buffer slot number");
-
-    const Buffer* bufferPtr = static_cast<Buffer*>(buffer.Get());
-    NFE_ASSERT(bufferPtr->GetMode() == BufferMode::Volatile, "Buffer mode must be volatile");
-
-    mBoundComputeVolatileCBuffers[slot] = bufferPtr;
-}
-
-void CommandRecorder::SetComputeResourceBindingLayout(const ResourceBindingLayoutPtr& layout)
-{
-    if (layout)
-    {
-        Internal_GetReferencedResources().bindingSetLayouts.Insert(layout);
-    }
-
-    ResourceBindingLayout* newLayout = static_cast<ResourceBindingLayout*>(layout.Get());
-    NFE_ASSERT(newLayout, "Invalid layout");
-
-    if (newLayout != mComputeBindingLayout)
-    {
-        mComputeBindingLayout = newLayout;
-        mComputeBindingLayoutChanged = true;
-    }
 }
 
 void CommandRecorder::SetComputePipelineState(const ComputePipelineStatePtr& state)

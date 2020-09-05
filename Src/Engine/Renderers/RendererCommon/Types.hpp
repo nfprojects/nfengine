@@ -53,6 +53,16 @@ using FencePtr = Common::SharedPtr<IFence>;
 // number of "graphics" shader types
 #define NFE_GRAPHICS_SHADER_TYPES_NUM 5
 
+
+enum class ResourceType : uint8
+{
+    Texture,
+    Buffer,
+
+    Max,
+};
+
+
 /**
  * GPU resources data format.
  */
@@ -147,18 +157,13 @@ enum class Format : uint8
     BC7_U_Norm,         //< aka. BPTC;  unsigned, normalized RGB/RGBA values; 16 bytes per 4x4 block
     BC7_U_Norm_sRGB,    //< aka. BPTC;  unsigned, normalized RGB/RGBA values; 16 bytes per 4x4 block
 
-    Max
-};
+    // depth formats
+    Depth16,            // 16-bit depth buffer
+    Depth24_Stencil8,   // 24-bit depth buffer + 8-bit stencil buffer
+    Depth32,            // 32-bit depth buffer
+    Depth32_Stencil8,   // 32-bit depth buffer + 8-bit stencil buffer
 
-/**
- * Depth buffer format
- */
-enum class DepthBufferFormat : uint8
-{
-    Unknown,
-    Depth16,          // 16-bit depth buffer
-    Depth24_Stencil8, // 24-bit depth buffer + 8-bit stencil buffer
-    Depth32,          // 32-bit depth buffer
+    Max
 };
 
 enum class TextureType : uint8
@@ -380,6 +385,40 @@ NFE_RENDERER_COMMON_API uint32 GetElementFormatSize(const Format format);
  * Convert format to string.
  */
 NFE_RENDERER_COMMON_API const char* GetElementFormatName(const Format format);
+
+
+NFE_INLINE bool IsDepthFormat(const Format format)
+{
+    return format == Format::Depth16 || format == Format::Depth24_Stencil8 || format == Format::Depth32 || format == Format::Depth32_Stencil8;
+}
+
+NFE_INLINE bool IsStencilFormat(const Format format)
+{
+    return format == Format::Depth24_Stencil8 || format == Format::Depth32_Stencil8;
+}
+
+NFE_INLINE bool IsFormatBlockCompressed(const Format format)
+{
+    return
+        format == Format::BC1_U_Norm || format == Format::BC1_U_Norm_sRGB ||
+        format == Format::BC2_U_Norm || format == Format::BC2_U_Norm_sRGB ||
+        format == Format::BC3_U_Norm || format == Format::BC3_U_Norm_sRGB ||
+        format == Format::BC4_U_Norm || format == Format::BC4_S_Norm ||
+        format == Format::BC5_U_Norm || format == Format::BC5_S_Norm ||
+        format == Format::BC6H_U_Float || format == Format::BC6H_S_Float ||
+        format == Format::BC7_U_Norm || format == Format::BC7_U_Norm_sRGB;
+}
+
+NFE_INLINE bool IsFormatSRGB(const Format format)
+{
+    return
+        format == Format::R8G8B8A8_U_Norm_sRGB ||
+        format == Format::B8G8R8A8_U_Norm_sRGB ||
+        format == Format::BC1_U_Norm_sRGB ||
+        format == Format::BC2_U_Norm_sRGB ||
+        format == Format::BC3_U_Norm_sRGB ||
+        format == Format::BC7_U_Norm_sRGB;
+}
 
 
 } // namespace Renderer

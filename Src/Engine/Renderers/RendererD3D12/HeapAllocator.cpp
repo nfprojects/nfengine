@@ -8,6 +8,7 @@
 #include "HeapAllocator.hpp"
 #include "RendererD3D12.hpp"
 #include "Engine/Common/Logger/Logger.hpp"
+#include "Engine/Common/Utils/ScopedLock.hpp"
 
 
 namespace NFE {
@@ -32,9 +33,10 @@ const char* GetHeapName(HeapAllocator::Type type)
 
 } // namespace
 
-HeapAllocator::HeapAllocator(Type type, uint32 initialSize)
+HeapAllocator::HeapAllocator(Type type, uint32 initialSize, bool shaderVisible)
     : mType(type)
     , mSize(initialSize)
+    , mShaderVisible(shaderVisible)
 {
     mBitmap.Resize(initialSize);
     for (uint32 i = 0; i < initialSize; ++i)
@@ -75,7 +77,6 @@ bool HeapAllocator::Init()
     {
     case Type::CbvSrvUav:
         heapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
-        heapDesc.Flags |= D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
         break;
     case Type::Rtv:
         heapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_RTV;
@@ -83,6 +84,11 @@ bool HeapAllocator::Init()
     case Type::Dsv:
         heapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_DSV;
         break;
+    }
+
+    if (mShaderVisible)
+    {
+        heapDesc.Flags |= D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
     }
 
     HRESULT hr = D3D_CALL_CHECK(gDevice->GetDevice()->CreateDescriptorHeap(&heapDesc, IID_PPV_ARGS(mHeap.GetPtr())));
@@ -97,16 +103,20 @@ bool HeapAllocator::Init()
     mCpuHandle = mHeap->GetCPUDescriptorHandleForHeapStart();
     mGpuHandle = mHeap->GetGPUDescriptorHandleForHeapStart();
     mDescriptorSize = gDevice->GetDevice()->GetDescriptorHandleIncrementSize(heapDesc.Type);
-    NFE_LOG_DEBUG("%s descriptor heap handle increment: %u", GetHeapName(mType), mDescriptorSize);
+
+    NFE_LOG_DEBUG("%s descriptor heap (%s) handle increment: %u",
+        GetHeapName(mType), mShaderVisible ? "shader visible" : "non shader visible", mDescriptorSize);
 
     return true;
 }
 
 
 
-uint32 HeapAllocator::Allocate(uint32 numDescriptors)
+HeapAllocator::DescriptorRange HeapAllocator::Allocate(uint32 numDescriptors)
 {
     // TODO this allocator is extremly slow
+
+    NFE_SCOPED_LOCK(mLock);
 
     uint32 first = 0;
     uint32 count = 0;
@@ -124,21 +134,23 @@ uint32 HeapAllocator::Allocate(uint32 numDescriptors)
         {
             for (uint32 j = first; j < first + numDescriptors; ++j)
                 mBitmap[j] = true;
-            return first;
+            return { first, numDescriptors };
         }
     }
 
     NFE_LOG_ERROR("Descriptor heap allocation failed");
-    return UINT32_MAX;
+    return { UINT32_MAX, 0 };
 }
 
-void HeapAllocator::Free(uint32 offset, uint32 numDescriptors)
+void HeapAllocator::Free(const DescriptorRange& range)
 {
-    assert(offset + numDescriptors <= mSize);
+    NFE_ASSERT(range.offset + range.size <= mSize, "Invalid range");
 
-    for (uint32 i = offset; i < offset + numDescriptors; ++i)
+    NFE_SCOPED_LOCK(mLock);
+
+    for (uint32 i = range.offset; i < range.offset + range.size; ++i)
     {
-        assert(mBitmap[i]);
+        NFE_ASSERT(mBitmap[i], "Not allocated");
         mBitmap[i] = false;
     }
 }

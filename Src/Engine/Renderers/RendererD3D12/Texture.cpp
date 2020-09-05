@@ -351,8 +351,7 @@ bool Texture::Init(const TextureDesc& desc)
                 return false;
             }
 
-            if (!TranslateDepthBufferTypes(desc.depthBufferFormat,
-                                           resourceDesc.Format, mSrvFormat, mDsvFormat))
+            if (!TranslateDepthBufferTypes(desc.format, resourceDesc.Format, mSrvFormat, mDsvFormat))
             {
                 NFE_LOG_ERROR("Invalid depth buffer format");
                 return false;

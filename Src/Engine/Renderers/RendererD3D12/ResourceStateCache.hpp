@@ -40,7 +40,7 @@ NFE_INLINE uint32 GetHash(const ResourceStateCacheKey& key)
 
 //////////////////////////////////////////////////////////////////////////
 
-using ResourceStateMap = Common::HashMap<Resource*, ResourceState>;
+using ResourceStateMap = Common::HashMap<const Resource*, ResourceState>;
 
 class ResourceStateCache final
 {
@@ -51,7 +51,7 @@ public:
     ~ResourceStateCache();
 
     // Set target expected state for given resource
-    void EnsureResourceState(Resource* resource, D3D12_RESOURCE_STATES state, uint32 subresource = UINT32_MAX);
+    void EnsureResourceState(const Resource* resource, D3D12_RESOURCE_STATES state, uint32 subresource = UINT32_MAX);
 
     // Make all requested resource state changes effective
     // This should be called just before executive command (CopyResource, Draw, Dispatch, Clear, etc.)

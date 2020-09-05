@@ -87,9 +87,14 @@ NFE_INLINE DXGI_FORMAT TranslateElementFormat(Format format)
     case Format::BC6H_S_Float:          return DXGI_FORMAT_BC6H_SF16;
     case Format::BC7_U_Norm:            return DXGI_FORMAT_BC7_UNORM;
     case Format::BC7_U_Norm_sRGB:       return DXGI_FORMAT_BC7_UNORM_SRGB;
+
+    case Format::Depth16:               return DXGI_FORMAT_D16_UNORM;
+    case Format::Depth24_Stencil8:      return DXGI_FORMAT_D24_UNORM_S8_UINT;
+    case Format::Depth32:               return DXGI_FORMAT_D32_FLOAT;
+    case Format::Depth32_Stencil8:      return DXGI_FORMAT_D32_FLOAT_S8X24_UINT;
     }
 
-    static_assert(64 == (uint32)Format::Max, "Format list changed, update the switch above");
+    static_assert(68 == (uint32)Format::Max, "Format list changed, update the switch above");
 
     return DXGI_FORMAT_UNKNOWN;
 }

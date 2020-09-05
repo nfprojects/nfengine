@@ -30,7 +30,6 @@ protected:
     uint8 mMipmapsNum : 4;
     uint8 mSamplesNum : 4;
     TextureType mType;
-    BufferMode mMode;
     Format mFormat;
 
     // upload initial data
@@ -41,61 +40,17 @@ public:
     virtual ~Texture();
     bool Init(const TextureDesc& desc);
 
-    // get row size (in bytes, for Readback textures only)
-    NFE_INLINE uint32 GetRowPitch() const
-    {
-        return mRowPitch;
-    }
-
-    NFE_INLINE uint16 GetWidth() const
-    {
-        return mWidth;
-    }
-
-    NFE_INLINE uint16 GetHeight() const
-    {
-        return mHeight;
-    }
-
-    NFE_INLINE uint16 GetDepth() const
-    {
-        return mType == TextureType::Texture3D ? mLayersNumOrDepth : 1;
-    }
-
-    NFE_INLINE uint16 GetLayersNum() const
-    {
-        return mType == TextureType::Texture3D ? 1 : mLayersNumOrDepth;
-    }
-
-    NFE_INLINE uint8 GetMipmapsNum() const
-    {
-        return mMipmapsNum;
-    }
-
-    NFE_INLINE ID3D12Resource* GetResource() const
-    {
-        return mResource.Get();
-    }
-
-    NFE_INLINE BufferMode GetMode() const
-    {
-        return mMode;
-    }
-
-    NFE_INLINE Format GetFormat() const
-    {
-        return mFormat;
-    }
-
-    NFE_INLINE uint8 GetSamplesNum() const
-    {
-        return mSamplesNum;
-    }
-
-    NFE_INLINE TextureType GetType() const
-    {
-        return mType;
-    }
+    NFE_FORCE_INLINE uint32 GetRowPitch() const { return mRowPitch; }
+    NFE_FORCE_INLINE uint16 GetWidth() const { return mWidth; }
+    NFE_FORCE_INLINE uint16 GetHeight() const { return mHeight; }
+    NFE_FORCE_INLINE uint16 GetDepth() const { return mType == TextureType::Texture3D ? mLayersNumOrDepth : 1; }
+    NFE_FORCE_INLINE uint16 GetLayersNum() const { return mType == TextureType::Texture3D ? 1 : mLayersNumOrDepth; }
+    NFE_FORCE_INLINE uint8 GetMipmapsNum() const { return mMipmapsNum; }
+    NFE_FORCE_INLINE ID3D12Resource* GetResource() const { return mResource.Get(); }
+    NFE_FORCE_INLINE Format GetFormat() const { return mFormat; }
+    NFE_FORCE_INLINE uint8 GetSamplesNum() const { return mSamplesNum; }
+    NFE_FORCE_INLINE TextureType GetType() const { return mType; }
+    NFE_FORCE_INLINE DXGI_FORMAT GetSrvFormat() const { return mSrvFormat; }
 };
 
 using InternalTexturePtr = Common::SharedPtr<Texture>;

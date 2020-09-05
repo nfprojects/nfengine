@@ -122,9 +122,11 @@ bool ComputeScene::CreateSubSceneSimple()
     mBindingInstance = mRendererDevice->CreateResourceBindingInstance(mBindingSet);
     if (!mBindingInstance)
         return false;
-    if (!mBindingInstance->WriteCBufferView(0, mConstantBuffer))
+    if (!mBindingInstance->SetCBufferView(0, mConstantBuffer))
         return false;
-    if (!mBindingInstance->WriteWritableTextureView(1, mTexture))
+    if (!mBindingInstance->SetWritableTextureView(1, mTexture))
+        return false;
+    if (!mBindingInstance->Finalize())
         return false;
 
     return true;
@@ -179,8 +181,8 @@ void ComputeScene::Draw(float dt)
     mCommandBuffer->Begin();
 
     // bind resources
-    mCommandBuffer->SetComputeResourceBindingLayout(mResBindingLayout);
-    mCommandBuffer->BindComputeResources(0, mBindingInstance);
+    mCommandBuffer->SetResourceBindingLayout(PipelineType::Compute, mResBindingLayout);
+    mCommandBuffer->BindResources(PipelineType::Compute, 0, mBindingInstance);
     mCommandBuffer->SetComputePipelineState(mPipelineState);
 
     // execute compute shader

@@ -64,6 +64,12 @@ struct TextureWriteParams
     uint32 srcRowStride = 0;
 };
 
+enum class PipelineType
+{
+    Graphics,
+    Compute,
+};
+
 /**
  * Interface allowing to control rendering pipeline state and executing rendering commands.
  */
@@ -137,33 +143,62 @@ public:
 
 
     /**
-     * CommandBufferGraphics    Graphics pipeline methods.
+     * CommandBufferBinding     Resource binding methods.
      * @{
      */
 
-    virtual void SetVertexBuffers(uint32 num, const BufferPtr* vertexBuffers, uint32* strides, uint32* offsets) = 0;
-    virtual void SetIndexBuffer(const BufferPtr& indexBuffer, IndexBufferFormat format) = 0;
-
     /**
      * Bind shader resources via setting a binding set instance.
-     * @param slot               Target binding set slot within current binding layout.
-     * @param bindingSetInstance Binding set instance to be bound to the pipeline or NULL
-     *                           to clear all bound resources for this set.
+     * @param setIndex              Target binding set slot within current binding layout.
+     * @param bindingSetInstance    Binding set instance to be bound to the pipeline or NULL
+     *                              to clear all bound resources for this set.
      */
-    virtual void BindResources(uint32 setIndex, const ResourceBindingInstancePtr& bindingSetInstance) = 0;
+    virtual void BindResources(PipelineType pipelineType, uint32 setIndex, const ResourceBindingInstancePtr& bindingSetInstance) = 0;
+
+    /**
+     * Bind texture directly without using binding set instance.
+     * Only given resource set slot will be affected, all other bound resources will be unaffected.
+     * @param setIndex              Target binding set slot within current binding layout.
+     * @param slotInSet             Resource slot in given binding set.
+     * @param texture,view          Texture and its view to be bound
+     */
+    virtual void BindTexture(PipelineType pipelineType, uint32 setIndex, uint32 slotInSet, const TexturePtr& texture, const TextureView& view = TextureView()) = 0;
+    virtual void BindWritableTexture(PipelineType pipelineType, uint32 setIndex, uint32 slotInSet, const TexturePtr& texture, const TextureView& view = TextureView()) = 0;
+
+    /**
+     * Bind a buffer directly without using binding set instance.
+     * Only given resource set slot will be affected, all other bound resources will be unaffected.
+     * @param setIndex              Target binding set slot within current binding layout.
+     * @param slotInSet             Resource slot in given binding set.
+     * @param buffer,view           Buffer and its view to be bound
+     */
+    virtual void BindBuffer(PipelineType pipelineType, uint32 setIndex, uint32 slotInSet, const BufferPtr& buffer, const BufferView& view) = 0;
+    virtual void BindWritableBuffer(PipelineType pipelineType, uint32 setIndex, uint32 slotInSet, const BufferPtr& buffer, const BufferView& view) = 0;
 
     /**
      * Bind dynamic buffer to the graphics pipeline.
      * @param slot      Dynamic buffer slot in the current resource binding layout.
      * @param buffer    Buffer to bind.
      */
-    virtual void BindVolatileCBuffer(uint32 slot, const BufferPtr& buffer) = 0;
+    virtual void BindVolatileCBuffer(PipelineType pipelineType, uint32 slot, const BufferPtr& buffer) = 0;
 
     /**
      * Set new shaders resources binding layout for graphics pipeline.
      * @param layout Resource binding layout
      */
-    virtual void SetResourceBindingLayout(const ResourceBindingLayoutPtr& layout) = 0;
+    virtual void SetResourceBindingLayout(PipelineType pipelineType, const ResourceBindingLayoutPtr& layout) = 0;
+
+    /**@}*/
+
+
+
+    /**
+     * CommandBufferGraphics    Graphics pipeline methods.
+     * @{
+     */
+
+    virtual void SetVertexBuffers(uint32 num, const BufferPtr* vertexBuffers, uint32* strides, uint32* offsets) = 0;
+    virtual void SetIndexBuffer(const BufferPtr& indexBuffer, IndexBufferFormat format) = 0;
 
     /**
      * Bind render target object.
@@ -197,8 +232,8 @@ public:
     /**
      * Draw geometry.
      *
-     * @param vertexNum      Vertices number per instance.
      * @param instancesNum   Number of instances to draw. Set to a negative value to disable
+     * @param vertexNum      Vertices number per instance.
      *                       instancing.
      * @param vertexOffset   Vertex buffer offset (in elements).
      * @param instanceOffset Per-instance buffer offset (in elements).
@@ -227,27 +262,6 @@ public:
      * CommandBufferCompute     Compute pipeline methods.
      * @{
      */
-
-    /**
-     * Bind compute shader resources via setting a binding set instance.
-     * @param slot               Target binding set slot within current binding layout.
-     * @param bindingSetInstance Binding set instance to be bound to the pipeline or NULL
-     *                           to clear all bound resources for this set.
-     */
-    virtual void BindComputeResources(uint32 slot, const ResourceBindingInstancePtr& bindingSetInstance) = 0;
-
-    /**
-     * Bind dynamic buffer to the compute pipeline.
-     * @param slot      Dynamic buffer slot in the current resource binding layout.
-     * @param buffer    Buffer to bind.
-     */
-    virtual void BindComputeVolatileCBuffer(uint32 slot, const BufferPtr& buffer) = 0;
-
-    /**
-     * Set new shaders resources binding layout for compute pipeline.
-     * @param layout Resource binding layout
-     */
-    virtual void SetComputeResourceBindingLayout(const ResourceBindingLayoutPtr& layout) = 0;
 
     /**
      * Set compute pipeline state.

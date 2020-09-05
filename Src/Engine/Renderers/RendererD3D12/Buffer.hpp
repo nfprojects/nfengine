@@ -19,7 +19,6 @@ class Buffer : public IBuffer, public Resource
 {
     uint32 mSize;
     BufferType mType;
-    BufferMode mMode;
 
     // Upload data (used for Static buffers only)
     bool UploadData(const BufferDesc& desc);
@@ -44,11 +43,6 @@ public:
     NFE_INLINE uint32 GetRealSize() const
     {
         return (mSize + 255) & ~255;
-    }
-
-    NFE_INLINE BufferMode GetMode() const
-    {
-        return mMode;
     }
 };
 

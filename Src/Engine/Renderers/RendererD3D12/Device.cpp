@@ -56,9 +56,10 @@ SharedPtr<Type> CreateGenericResource(const Desc& desc)
 
 
 Device::Device()
-    : mCbvSrvUavHeapAllocator(HeapAllocator::Type::CbvSrvUav, 1024)
-    , mRtvHeapAllocator(HeapAllocator::Type::Rtv, 512)
-    , mDsvHeapAllocator(HeapAllocator::Type::Dsv, 512)
+    : mCbvSrvUavHeapStagingAllocator(HeapAllocator::Type::CbvSrvUav, 64)
+    , mCbvSrvUavHeapAllocator(HeapAllocator::Type::CbvSrvUav, 2 * 64, true)
+    , mRtvHeapAllocator(HeapAllocator::Type::Rtv, 64)
+    , mDsvHeapAllocator(HeapAllocator::Type::Dsv, 64)
     , mDebugLayerEnabled(false)
 {}
 
@@ -182,6 +183,7 @@ Device::~Device()
 
     mCommandListManager.Reset();
 
+    mCbvSrvUavHeapStagingAllocator.Release();
     mCbvSrvUavHeapAllocator.Release();
     mRtvHeapAllocator.Release();
     mDsvHeapAllocator.Release();
@@ -335,9 +337,15 @@ bool Device::PrepareD3DDebugLayer()
 
 bool Device::CreateResources()
 {
+    if (!mCbvSrvUavHeapStagingAllocator.Init())
+    {
+        NFE_LOG_ERROR("Failed to initialize heap allocator for CBV, SRV and UAV (non shader visible)");
+        return false;
+    }
+
     if (!mCbvSrvUavHeapAllocator.Init())
     {
-        NFE_LOG_ERROR("Failed to initialize heap allocator for CBV, SRV and UAV");
+        NFE_LOG_ERROR("Failed to initialize heap allocator for CBV, SRV and UAV (shader visible)");
         return false;
     }
 
