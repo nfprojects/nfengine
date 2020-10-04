@@ -1,12 +1,12 @@
 #pragma once
 
 #include "Counters.h"
-#include "RendererContext.h"
 
 #include "../Traversal/RayPacket.h"
 #include "../Traversal/HitPoint.h"
 #include "../Color/RayColor.h"
 #include "../Sampling/GenericSampler.h"
+#include "../Renderers/RendererContext.h"
 #include "../../Common/Math/Random.hpp"
 #include "../../Common/Containers/UniquePtr.hpp"
 #include "../../Common/Memory/Aligned.hpp"
@@ -16,6 +16,7 @@
 namespace NFE {
 namespace RT {
 
+class IRendererContext;
 using RendererContextPtr = Common::UniquePtr<IRendererContext>;
 
 struct PixelBreakpoint
@@ -46,6 +47,7 @@ public:
 
     NFE_RAYTRACER_API RenderingContext();
     NFE_RAYTRACER_API RenderingContext(RenderingContext&& other) = default;
+    NFE_RAYTRACER_API ~RenderingContext();
 
     const Camera* camera = nullptr;
 

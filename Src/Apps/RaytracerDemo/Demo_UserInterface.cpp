@@ -5,7 +5,7 @@
 #include "Engine/Raytracer/Material/Material.h"
 #include "Engine/Raytracer/Scene/Object/SceneObject.h"
 #include "Engine/Raytracer/Scene/Light/BackgroundLight.h"
-#include "Engine/Raytracer/Rendering/Renderer.h"
+#include "Engine/Raytracer/Renderers/Renderer.h"
 #include "Engine/Raytracer/Utils/Profiler.h"
 
 #include "Engine/Common/Reflection/Types/ReflectionUniquePtrType.hpp"

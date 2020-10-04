@@ -23,17 +23,10 @@
     <ClInclude Include="Mesh\Mesh.h" />
     <ClInclude Include="PCH.h" />
     <ClInclude Include="Rendering\Counters.h" />
-    <ClInclude Include="Rendering\DebugRenderer.h" />
     <ClInclude Include="Rendering\Film.h" />
-    <ClInclude Include="Rendering\LightTracer.h" />
     <ClInclude Include="Rendering\PathDebugging.h" />
-    <ClInclude Include="Rendering\PathTracer.h" />
-    <ClInclude Include="Rendering\PathTracerMIS.h" />
     <ClInclude Include="Rendering\PostProcess.h" />
-    <ClInclude Include="Rendering\Renderer.h" />
-    <ClInclude Include="Rendering\RendererContext.h" />
     <ClInclude Include="Rendering\ShadingData.h" />
-    <ClInclude Include="Rendering\VertexConnectionAndMerging.h" />
     <ClInclude Include="Rendering\Viewport.h" />
     <ClInclude Include="Sampling\GenericSampler.h" />
     <ClInclude Include="Sampling\HaltonSampler.h" />
@@ -98,6 +91,14 @@
     <ClInclude Include="Color\MonochromaticColor.h" />
     <ClInclude Include="Traversal\RayPacketTypes.h" />
     <ClInclude Include="..\..\..\Deps\tinyexr\tinyexr.h" />
+    <ClInclude Include="Rendering\AdaptiveRendering.h" />
+    <ClInclude Include="Renderers\PathTracer.h" />
+    <ClInclude Include="Renderers\PathTracerMIS.h" />
+    <ClInclude Include="Renderers\Renderer.h" />
+    <ClInclude Include="Renderers\VertexConnectionAndMerging.h" />
+    <ClInclude Include="Renderers\DebugRenderer.h" />
+    <ClInclude Include="Renderers\LightTracer.h" />
+    <ClInclude Include="Renderers\RendererContext.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BVH\BVH.cpp" />
@@ -116,15 +117,8 @@
     <ClCompile Include="Material\BSDF\RoughPlasticBSDF.cpp" />
     <ClCompile Include="Material\Material.cpp" />
     <ClCompile Include="PCH.cpp" />
-    <ClCompile Include="Rendering\DebugRenderer.cpp" />
     <ClCompile Include="Rendering\Film.cpp" />
-    <ClCompile Include="Rendering\LightTracer.cpp" />
-    <ClCompile Include="Rendering\PathTracer.cpp" />
-    <ClCompile Include="Rendering\PathTracerMIS.cpp" />
     <ClCompile Include="Rendering\PostProcess.cpp" />
-    <ClCompile Include="Rendering\Renderer.cpp" />
-    <ClCompile Include="Rendering\RendererContext.cpp" />
-    <ClCompile Include="Rendering\VertexConnectionAndMerging.cpp" />
     <ClCompile Include="Rendering\Viewport.cpp" />
     <ClCompile Include="Sampling\GenericSampler.cpp" />
     <ClCompile Include="Sampling\HaltonSampler.cpp" />
@@ -181,6 +175,14 @@
     <ClCompile Include="Color\BlackBodyColor.cpp" />
     <ClCompile Include="Color\MonochromaticColor.cpp" />
     <ClCompile Include="..\..\..\Deps\tinyexr\tinyexr.cc" />
+    <ClCompile Include="Rendering\AdaptiveRendering.cpp" />
+    <ClCompile Include="Renderers\PathTracerMIS.cpp" />
+    <ClCompile Include="Renderers\Renderer.cpp" />
+    <ClCompile Include="Renderers\VertexConnectionAndMerging.cpp" />
+    <ClCompile Include="Renderers\DebugRenderer.cpp" />
+    <ClCompile Include="Renderers\LightTracer.cpp" />
+    <ClCompile Include="Renderers\PathTracer.cpp" />
+    <ClCompile Include="Renderers\RendererContext.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Math">

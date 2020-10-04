@@ -3,7 +3,7 @@
 #include "SceneLoader.h"
 
 #include "Engine/Raytracer/Utils/Profiler.h"
-#include "Engine/Raytracer/Rendering/Renderer.h"
+#include "Engine/Raytracer/Renderers/Renderer.h"
 #include "Engine/Raytracer/Rendering/Film.h"
 #include "Engine/Raytracer/Traversal/TraversalContext.h"
 #include "Engine/Raytracer/Textures/Texture.h"

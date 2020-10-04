@@ -6,6 +6,8 @@ namespace RT {
 
 RenderingContext::RenderingContext() = default;
 
+RenderingContext::~RenderingContext() = default;
+
 void SpectrumDebugData::Clear()
 {
     for (float& x : samples)

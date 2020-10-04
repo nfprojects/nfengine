@@ -6,7 +6,7 @@
 #include "RenderingContext.h"
 #include "Counters.h"
 #include "PostProcess.h"
-#include "Renderer.h"
+#include "../Renderers/Renderer.h"
 #include "../Sampling/HaltonSampler.h"
 #include "../Sampling/GenericSampler.h"
 #include "../Utils/Bitmap.h"
