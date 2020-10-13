@@ -10,6 +10,7 @@
 #include "Engine/Raytracer/Scene/Object/SceneObject_Shape.h"
 
 #include "Engine/Common/System/Timer.hpp"
+#include "Engine/Common/Utils/ThreadPool.hpp"
 #include "Engine/Common/Logger/Logger.hpp"
 #include "Engine/Common/Reflection/Types/ReflectionClassType.hpp"
 #include "Engine/Common/Utils/Waitable.hpp"
@@ -40,9 +41,11 @@ DemoWindow::DemoWindow()
     , mTotalRenderTime(0.0)
     , mSelectedMaterial(nullptr)
     , mSelectedObject(nullptr)
+    , mRenderingTaskId(InvalidTaskID)
 {
     ResetFrame();
     ResetCounters();
+    InitializeRenderingTaskRoot();
 
     mSpectrumDebugData.samples.Resize(64);
 }
@@ -211,14 +214,16 @@ void DemoWindow::SwitchScene(const String& sceneName)
     mSelectedObject = nullptr;
 
     mRenderer = CreateRenderer(gOptions.rendererName, *mScene);
-    mViewport->SetRenderer(mRenderer.Get());
 }
 
 void DemoWindow::ResetFrame()
 {
     if (mViewport)
     {
+        WaitForRenderingTask();
         mViewport->Reset();
+        InitializeRenderingTaskRoot();
+        StartRenderingTask();
     }
 
     ResetCounters();
@@ -238,7 +243,12 @@ void DemoWindow::OnResize(uint32 width, uint32 height)
 {
     if (mViewport)
     {
+        // can't resize viewport when rendering is ongoing
+        WaitForRenderingTask();
         mViewport->Resize(width, height);
+
+        InitializeRenderingTaskRoot();
+        StartRenderingTask();
     }
 
     UpdateCamera();
@@ -412,10 +422,6 @@ void DemoWindow::OnKeyPress(KeyCode key)
     {
         mEnableUI = !mEnableUI;
     }
-    else if (key == KeyCode::P && IsMouseButtonDown(MouseButton::Right))
-    {
-        mViewport->GetFrontBuffer().SaveBMP("screenshot.bmp", true);
-    }
 
     mLastKeyDown = key;
 }
@@ -431,6 +437,82 @@ void DemoWindow::OnFileDrop(const String& filePath)
     SwitchScene(filePath);
 }
 
+void DemoWindow::InitializeRenderingTaskRoot()
+{
+    NFE_ASSERT(!mRenderingTaskWaitable, "Waitable object should not exist yet");
+    mRenderingTaskWaitable = MakeUniquePtr<Waitable>();
+
+    TaskDesc desc;
+    desc.debugName = "RenderingTaskRoot";
+    desc.waitable = mRenderingTaskWaitable.Get();
+    mRenderingTaskRootId = ThreadPool::GetInstance().CreateTask(desc);
+}
+
+void DemoWindow::StartRenderingTask()
+{
+    NFE_SCOPED_LOCK(mRenderingTaskLock);
+
+    NFE_ASSERT(mRenderingTaskRootId != InvalidTaskID, "Invalid root task");
+
+    TaskDesc desc;
+    desc.debugName = "RenderingTask";
+    desc.dependency = mRenderingTaskId;
+    desc.parent = mRenderingTaskRootId;
+    Common::TaskID newRenderingTaskId = ThreadPool::GetInstance().CreateTask(desc);
+
+    {
+        // TODO async
+        // apply any pending changes to scene, params, etc.
+
+        const RenderingSetup setup =
+        {
+            *mScene,
+            mCamera,
+            IsPreview() ? mPreviewRenderingParams : mRenderingParams,
+            mPostprocessParams,
+            mRenderer.Get(),
+        };
+
+        // TODO async measure frame time
+        TaskBuilder taskBuilder(newRenderingTaskId);
+        mViewport->StartRendering(setup, taskBuilder);
+
+        if (!mViewport->IsAborted())
+        {
+            taskBuilder.Fence();
+            taskBuilder.Task("SpawnRenderingTask", [this](const TaskContext& context)
+            {
+                if (!mViewport->IsAborted())
+                {
+                    StartRenderingTask();
+                }
+            });
+        }
+    }
+
+    mRenderingTaskId = newRenderingTaskId;
+    ThreadPool::GetInstance().DispatchTask(newRenderingTaskId);
+}
+
+void DemoWindow::WaitForRenderingTask()
+{
+    mViewport->AbortRendering(true);
+    {
+        NFE_SCOPED_LOCK(mRenderingTaskLock);
+
+        NFE_ASSERT(mRenderingTaskRootId != InvalidTaskID, "Invalid root task");
+
+        ThreadPool::GetInstance().DispatchTask(mRenderingTaskRootId);
+        mRenderingTaskWaitable->Wait();
+        mRenderingTaskWaitable.Reset();
+
+        mRenderingTaskId = InvalidTaskID;
+        mRenderingTaskRootId = InvalidTaskID;
+    }
+    NFE_ASSERT(mViewport->IsAborted(), "Rendering should be aborted");
+    mViewport->AbortRendering(false);
+}
+
 bool DemoWindow::Loop()
 {
     Timer localTimer;
@@ -441,6 +523,10 @@ bool DemoWindow::Loop()
 
     while (!IsClosed())
     {
+        NFE_SCOPED_TIMER(Loop);
+
+        Sleep(10);
+
         CheckSceneFileModificationTime();
 
         const RenderingProgress& progress = mViewport->GetProgress();
@@ -466,27 +552,15 @@ bool DemoWindow::Loop()
             resetFrame |= RenderUI();
         }
 
-        mViewport->SetRenderingParams(IsPreview() ? mPreviewRenderingParams : mRenderingParams);
-
         if (resetFrame)
         {
             ResetFrame();
         }
 
-        //// render
-        localTimer.Start();
-        mViewport->Render(*mScene, mCamera);
-        mRenderDeltaTime = localTimer.Stop();
-
-        if (mVisualizeAdaptiveRenderingBlocks)
-        {
-           // mViewport->VisualizeActiveBlocks(mImage);
-        }
-
         {
             NFE_SCOPED_TIMER(Draw);
 
-            const Bitmap& frontBuffer = mViewport->GetFrontBuffer();
+            const Bitmap& frontBuffer = mViewport->LockFrontBuffer();
 
             DemoRenderer::DrawParams drawParams;
             drawParams.imageData = frontBuffer.GetData();
@@ -495,6 +569,8 @@ bool DemoWindow::Loop()
             drawParams.imageStride = frontBuffer.GetStride();
 
             mDemoRenderer.Draw(drawParams);
+
+            mViewport->UnlockFrontBuffer();
         }
 
         mLastKeyDown = KeyCode::Invalid;
@@ -510,6 +586,8 @@ bool DemoWindow::Loop()
         // handle window input
         ProcessMessages();
     }
+
+    WaitForRenderingTask();
 
     return true;
 }

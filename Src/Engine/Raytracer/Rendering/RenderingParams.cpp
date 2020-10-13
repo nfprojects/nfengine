@@ -18,6 +18,7 @@ NFE_END_DEFINE_ENUM()
 NFE_DEFINE_CLASS(NFE::RT::AdaptiveRenderingSettings)
 {
     NFE_CLASS_MEMBER(enable);
+    NFE_CLASS_MEMBER(visualizeBlocks);
     NFE_CLASS_MEMBER(numInitialPasses).Min(1).Max(100);
     NFE_CLASS_MEMBER(minBlockSize).Min(1).Max(64);
     NFE_CLASS_MEMBER(maxBlockSize).Min(1).Max(64);

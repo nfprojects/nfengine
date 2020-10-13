@@ -3,6 +3,7 @@
 #include "DemoRenderer.h"
 
 #include "Engine/Common/System/Window.hpp"
+#include "Engine/Common/Utils/Waitable.hpp"
 #include "Engine/Raytracer/Scene/Scene.h"
 #include "Engine/Raytracer/Scene/Camera.h"
 #include "Engine/Raytracer/Rendering/Viewport.h"
@@ -42,6 +43,9 @@ public:
 
     bool Initialize();
 
+    void StartRenderingTask();
+    void WaitForRenderingTask();
+
     /**
      * Main loop.
      */
@@ -54,6 +58,11 @@ private:
     DemoRenderer mDemoRenderer;
 
     Common::UniquePtr<RT::Viewport> mViewport;
+
+    Common::UniquePtr<Common::Waitable> mRenderingTaskWaitable;
+    Common::TaskID mRenderingTaskRootId;
+    Common::TaskID mRenderingTaskId;
+    Common::Mutex mRenderingTaskLock;
 
     Common::KeyCode mLastKeyDown;
 
@@ -83,7 +92,6 @@ private:
     RT::RendererPtr mRenderer;
 
     bool mEnableUI = true;
-    bool mVisualizeAdaptiveRenderingBlocks = false;
 
     // debugging
     RT::PathDebugData mPathDebugData;
@@ -95,6 +103,7 @@ private:
     RT::SpectrumDebugData mSpectrumDebugData;
 
     void InitializeUI();
+    void InitializeRenderingTaskRoot();
 
     void CheckSceneFileModificationTime();
     void SwitchScene(const Common::String& sceneName);

@@ -36,6 +36,7 @@ struct AdaptiveRenderingSettings
 
 public:
     bool enable = false;
+    bool visualizeBlocks = false;
     uint16 numInitialPasses = 10;
     uint16 minBlockSize = 4;
     uint16 maxBlockSize = 256;

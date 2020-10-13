@@ -305,10 +305,11 @@ void DemoWindow::RenderUI_Debugging_Color()
     Vec4f ldrColor = Vec4f::Zero();
     if (x >= 0 && y >= 0 && (uint32)x < width && (uint32)y < height)
     {
+        // TODO async rendering
         // TODO this is incorrect, each pixel can have different number of samples
-        const uint32 numSamples = mViewport->GetProgress().passesFinished;
-        hdrColor = mViewport->GetSumBuffer().GetPixel(x, y) / static_cast<float>(numSamples);
-        ldrColor = mViewport->GetFrontBuffer().GetPixel(x, y);
+        //const uint32 numSamples = mViewport->GetProgress().passesFinished;
+        //hdrColor = mViewport->GetSumBuffer().GetPixel(x, y) / static_cast<float>(numSamples);
+        //ldrColor = mViewport->GetFrontBuffer().GetPixel(x, y);
     }
 
     ImGui::Text("HDR color:");
@@ -350,7 +351,6 @@ bool DemoWindow::RenderUI_Settings()
 
     if (EditObject("Renderer", mRenderer))
     {
-        mViewport->SetRenderer(mRenderer.Get());
         resetFrame = true;
     }
 
@@ -367,7 +367,10 @@ bool DemoWindow::RenderUI_Settings()
 
     if (EditObject("Postprocess Params", mPostprocessParams))
     {
-        mViewport->SetPostprocessParams(mPostprocessParams);
+        // TODO async
+        // notify Viewport that params has changed, which requires full frame refresh
+        // otherwise, only rendered parts of viewport need postprocessing being applied
+        //mViewport->SetPostprocessParams(mPostprocessParams);
     }
 
     if (mSelectedObject)
@@ -390,6 +393,8 @@ bool DemoWindow::RenderUI_Settings()
     }
 
     // screenshot saving
+    // TODO async
+    /*
     {
         if (ImGui::Button("LDR screenshot"))
         {
@@ -405,6 +410,7 @@ bool DemoWindow::RenderUI_Settings()
             mViewport->GetSumBuffer().SaveEXR("screenshot.exr", colorScale);
         }
     }
+    */
 
     return resetFrame;
 }

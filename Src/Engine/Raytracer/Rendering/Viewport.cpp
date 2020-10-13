@@ -20,6 +20,8 @@
 #include "../Common/Reflection/Types/ReflectionUniquePtrType.hpp"
 #include "../Common/Reflection/ReflectionUtils.hpp"
 
+#pragma optimize("",off)
+
 namespace NFE {
 namespace RT {
 
@@ -30,6 +32,9 @@ static const uint32 MAX_IMAGE_SZIE = 1 << 16;
 
 Viewport::Viewport()
     : mRenderer(nullptr)
+    , mAbortRendering(false)
+    , mRenderingOngoing(false)
+    , mCurrentFramebufferIndex(0)
 {
     InitThreadData();
 
@@ -38,7 +43,10 @@ Viewport::Viewport()
     PrepareHilbertCurve(mParams.tileSize);
 }
 
-Viewport::~Viewport() = default;
+Viewport::~Viewport()
+{
+    NFE_ASSERT(!mRenderingOngoing, "Rendering ongoing while destroying viewport");
+}
 
 void Viewport::InitThreadData()
 {
@@ -83,6 +91,8 @@ bool Viewport::InitBluredImages()
 
 bool Viewport::Resize(uint32 width, uint32 height)
 {
+    NFE_ASSERT(!mRenderingOngoing, "Can't resize viewport when rendering is ongoing");
+
     if (width > MAX_IMAGE_SZIE || height > MAX_IMAGE_SZIE || width == 0 || height == 0)
     {
         NFE_LOG_ERROR("Invalid viewport size");
@@ -114,9 +124,13 @@ bool Viewport::Resize(uint32 width, uint32 height)
 
     initData.linearSpace = false;
     initData.format = Bitmap::Format::R8G8B8A8_UNorm;
-    if (!mFrontBuffer.Init(initData))
+    for (uint32 i = 0; i < NumFrameBuffers; ++i)
     {
-        return false;
+        if (!mFramebuffers[i].Init(initData))
+        {
+            NFE_LOG_ERROR("Viewport: Failed to initialize framebuffer #%u", i);
+            return false;
+        }
     }
 
     mPassesPerPixel.Resize(width * height);
@@ -132,6 +146,17 @@ bool Viewport::Resize(uint32 width, uint32 height)
     return true;
 }
 
+const Bitmap& Viewport::LockFrontBuffer()
+{
+    // TODO lock
+    return mFramebuffers[1u - mCurrentFramebufferIndex];
+}
+
+void Viewport::UnlockFrontBuffer()
+{
+    // TODO unlock
+}
+
 void Viewport::SetPixelBreakpoint(uint32 x, uint32 y)
 {
 #ifndef NFE_CONFIGURATION_FINAL
@@ -145,6 +170,8 @@ void Viewport::SetPixelBreakpoint(uint32 x, uint32 y)
 
 void Viewport::Reset()
 {
+    NFE_ASSERT(!mRenderingOngoing, "Can't reset viewport when rendering is ongoing");
+
     mPostprocessParams.fullUpdateRequired = true;
 
     mProgress = RenderingProgress();
@@ -157,15 +184,6 @@ void Viewport::Reset()
     memset(mPassesPerPixel.Data(), 0, sizeof(uint32) * GetWidth() * GetHeight());
 
     BuildInitialBlocksList();
-}
-
-bool Viewport::SetRenderer(IRenderer* renderer)
-{
-    mRenderer = renderer;
-
-    InitThreadData();
-
-    return true;
 }
 
 void Viewport::PrepareHilbertCurve(uint32 tileSize)
@@ -195,53 +213,28 @@ void Viewport::PrepareHilbertCurve(uint32 tileSize)
     }
 }
 
-bool Viewport::SetRenderingParams(const RenderingParams& params)
-{
-    NFE_ASSERT(params.antiAliasingSpread >= 0.0f, "");
-    NFE_ASSERT(params.motionBlurStrength >= 0.0f && params.motionBlurStrength <= 1.0f, "");
-
-    mParams = params;
-
-    PrepareHilbertCurve(mParams.tileSize);
-
-    return true;
-}
-
-bool Viewport::SetPostprocessParams(const PostprocessParams& params)
-{
-    if (mBlurredImages.Size() != params.bloom.elements.Size())
-    {
-        mBlurredImages.Resize(params.bloom.elements.Size());
-        InitBluredImages();
-    }
-
-    if (!RTTI::Compare(mPostprocessParams.params.lutParams, params.lutParams) ||
-        !RTTI::Compare(mPostprocessParams.params.colorGradingParams, params.colorGradingParams) ||
-        !RTTI::Compare(mPostprocessParams.params.tonemapper, params.tonemapper))
-    {
-        mPostprocessParams.lutGenerationRequired = true;
-    }
-
-    if (!RTTI::Compare(mPostprocessParams.params, params))
-    {
-        RTTI::GetType<PostprocessParams>()->Clone(&mPostprocessParams.params, &params);
-        mPostprocessParams.fullUpdateRequired = true;
-    }
-
-    // TODO validation
-
-    return true;
-}
-
 void Viewport::ComputeError()
 {
     const Block fullImageBlock(0, GetWidth(), 0, GetHeight());
     mProgress.averageError = ComputeBlockError(fullImageBlock);
 }
 
-bool Viewport::Render(const Scene& scene, const Camera& camera)
+void Viewport::AbortRendering(bool abortState)
 {
-    NFE_SCOPED_TIMER(Render);
+    mAbortRendering = abortState;
+}
+
+bool Viewport::HandleRenderAbort()
+{
+    NFE_ASSERT(mRenderingOngoing, "This is expected to be called during rendering");
+    return mAbortRendering;
+}
+
+bool Viewport::StartRendering(const RenderingSetup& setup, TaskBuilder& taskBuilder)
+{
+    NFE_SCOPED_TIMER(StartRendering);
+
+    NFE_ASSERT(!mRenderingOngoing, "Can't kickoff rendering when another is ongoing");
 
     const uint32 width = GetWidth();
     const uint32 height = GetHeight();
@@ -250,11 +243,46 @@ bool Viewport::Render(const Scene& scene, const Camera& camera)
         return false;
     }
 
-    if (!mRenderer)
+    if (!setup.renderer)
     {
         NFE_LOG_ERROR("Viewport: Missing renderer");
         return false;
     }
+
+    // update params
+    {
+        mParams = setup.renderingParams;
+
+        if (mBlurredImages.Size() != setup.postprocessParams.bloom.elements.Size())
+        {
+            mBlurredImages.Resize(setup.postprocessParams.bloom.elements.Size());
+            InitBluredImages();
+        }
+
+        if (!RTTI::GetType<PostprocessParams>()->Compare(&mPostprocessParams.params, &setup.postprocessParams))
+        {
+            RTTI::GetType<PostprocessParams>()->Clone(&mPostprocessParams.params, &setup.postprocessParams);
+            mPostprocessParams.fullUpdateRequired = true;
+        }
+
+        {
+            const bool newRenderer = mRenderer != setup.renderer;
+            mRenderer = setup.renderer;
+
+            if (newRenderer)
+            {
+                InitThreadData();
+            }
+        }
+    }
+
+    // early exit if aborted
+    if (mAbortRendering)
+    {
+        return true;
+    }
+
+    mRenderingOngoing = true;
 
     DynArray<uint32> seed(mHaltonSequence.GetNumDimensions());
     {
@@ -265,83 +293,119 @@ bool Viewport::Render(const Scene& scene, const Camera& camera)
         mHaltonSequence.NextSampleLeap();
     }
 
-    Film film(mSum, mProgress.passesFinished % 2 == 0 ? &mSecondarySum : nullptr);
-    const IRenderer::RenderParam renderParam = { scene, camera, mProgress.passesFinished, film };
+    mFilm = MakeUniquePtr<Film>(mSum, mProgress.passesFinished % 2 == 0 ? &mSecondarySum : nullptr);
+    const IRenderer::RenderParam renderParam = { setup.scene, setup.camera, mProgress.passesFinished, *mFilm };
 
-    Waitable waitable;
+    for (uint32 i = 0; i < mThreadData.Size(); ++i)
     {
-        TaskBuilder taskBuilder(waitable);
-
-        for (uint32 i = 0; i < mThreadData.Size(); ++i)
-        {
-            RenderingContext& ctx = mThreadData[i];
-            ctx.counters.Reset();
-            ctx.params = &mParams;
-            ctx.camera = &camera;
+        RenderingContext& ctx = mThreadData[i];
+        ctx.counters.Reset();
+        ctx.params = &mParams;
+        ctx.camera = &setup.camera;
 #ifndef NFE_CONFIGURATION_FINAL
-            ctx.pixelBreakpoint = mPendingPixelBreakpoint;
+        ctx.pixelBreakpoint = mPendingPixelBreakpoint;
 #endif // NFE_CONFIGURATION_FINAL
 
-            ctx.sampler.ResetFrame(seed, ctx.params->samplingParams.useBlueNoiseDithering);
-        }
+        ctx.sampler.ResetFrame(seed, ctx.params->samplingParams.useBlueNoiseDithering);
+    }
 
 #ifndef NFE_CONFIGURATION_FINAL
-        mPendingPixelBreakpoint.x = UINT32_MAX;
-        mPendingPixelBreakpoint.y = UINT32_MAX;
+    mPendingPixelBreakpoint.x = UINT32_MAX;
+    mPendingPixelBreakpoint.y = UINT32_MAX;
 #endif // NFE_CONFIGURATION_FINAL
 
-        if (mRenderingTiles.Empty() || mProgress.passesFinished == 0)
+    if (mRenderingTiles.Empty() || mProgress.passesFinished == 0)
+    {
+        GenerateRenderingTiles();
+    }
+
+    // randomize pixel offset (antialiasing)
+    const Vec4f pixelOffset = SamplingHelpers::GetFloatNormal2(mRandomGenerator.GetVec2f());
+
+    // pre-rendering pass
+    mRenderer->PreRender(taskBuilder, renderParam, mThreadData);
+
+    taskBuilder.Fence();
+
+    // render tiles
+    taskBuilder.ParallelFor("Render", mRenderingTiles.Size(), [this, pixelOffset, renderParam] (const TaskContext& context, uint32 index)
+    {
+        if (HandleRenderAbort())
         {
-            GenerateRenderingTiles();
+            return;
         }
 
-        // randomize pixel offset (antialiasing)
-        const Vec4f pixelOffset = SamplingHelpers::GetFloatNormal2(mRandomGenerator.GetVec2f());
-
-        // pre-rendering pass
-        mRenderer->PreRender(taskBuilder, renderParam, mThreadData);
-
-        taskBuilder.Fence();
-
-        // render tiles
-        taskBuilder.ParallelFor("Render", mRenderingTiles.Size(), [pixelOffset, this, &renderParam] (const TaskContext& context, uint32 index)
+        const TileRenderingContext tileContext =
         {
-            const TileRenderingContext tileContext =
-            {
-                *mRenderer,
-                renderParam,
-                pixelOffset* mThreadData[0].params->antiAliasingSpread
-            };
-            RenderTile(tileContext, mThreadData[context.threadId], mRenderingTiles[index]);
-        });
+            *mRenderer,
+            renderParam,
+            pixelOffset* mThreadData[0].params->antiAliasingSpread
+        };
+        RenderTile(tileContext, mThreadData[context.threadId], mRenderingTiles[index]);
+    });
 
-        taskBuilder.Fence();
+    taskBuilder.Fence();
+
+    taskBuilder.Task("PostRender", [this](const TaskContext& taskContext)
+    {
+        NFE_ASSERT(mRenderingOngoing, "");
+
+        if (HandleRenderAbort())
+        {
+            return; // rendering was aborted, skip post processing
+        }
+
+        TaskBuilder taskBuilder{ taskContext };
 
         PerformPostProcess(taskBuilder);
-    }
-    waitable.Wait();
 
-    mProgress.passesFinished++;
+        taskBuilder.Fence();
 
-    if ((mProgress.passesFinished > 0) && (mProgress.passesFinished % 2 == 0))
-    {
-        if (mParams.adaptiveSettings.enable)
+        if (mParams.adaptiveSettings.visualizeBlocks)
         {
-            UpdateBlocksList();
-            GenerateRenderingTiles();
+            taskBuilder.Task("VisualizeActiveBlocks", [this](const TaskContext&)
+            {
+                VisualizeActiveBlocks();
+            });
+            taskBuilder.Fence();
         }
-        else
-        {
-            ComputeError();
-        }
-    }
 
-    // accumulate counters
-    mCounters.Reset();
-    for (const RenderingContext& ctx : mThreadData)
+        taskBuilder.Task("Finalize", [this](const TaskContext&)
+        {
+            mCurrentFramebufferIndex ^= 1;
+
+            mProgress.passesFinished++;
+
+            if ((mProgress.passesFinished > 0) && (mProgress.passesFinished % 2 == 0))
+            {
+                if (mParams.adaptiveSettings.enable)
+                {
+                    UpdateBlocksList();
+                    GenerateRenderingTiles();
+                }
+                else
+                {
+                    ComputeError();
+                }
+            }
+
+            // accumulate counters
+            mCounters.Reset();
+            for (const RenderingContext& ctx : mThreadData)
+            {
+                mCounters.Append(ctx.counters);
+            }
+        });
+    });
+
+    taskBuilder.Fence();
+
+    taskBuilder.Task("Finalize", [this](const TaskContext&)
     {
-        mCounters.Append(ctx.counters);
-    }
+        NFE_ASSERT(mRenderingOngoing, "Something cleared 'rendering ongoing' flag");
+        mRenderingOngoing = false;
+        // DO NOT PERFOM ANY RENDERING AT THIS POINT
+    });
 
     return true;
 }
@@ -373,6 +437,11 @@ void Viewport::RenderTile(const TileRenderingContext& tileContext, RenderingCont
             if (x >= tile.maxX || y >= tile.maxY)
             {
                 continue;
+            }
+
+            if (HandleRenderAbort())
+            {
+                return;
             }
 
             const uint32 realY = GetHeight() - 1u - y;
@@ -446,6 +515,11 @@ void Viewport::RenderTile(const TileRenderingContext& tileContext, RenderingCont
 
             for (uint32 x = tile.minX; x < tile.maxX; x += rayGroupSizeX)
             {
+                if (HandleRenderAbort())
+                {
+                    return;
+                }
+
                 // generate ray group with following layout:
                 //  0 1 2 3
                 //  4 5 6 7
@@ -481,6 +555,11 @@ void Viewport::RenderTile(const TileRenderingContext& tileContext, RenderingCont
 
             for (uint32 x = tile.minX; x < tile.maxX; x += rayGroupSizeX)
             {
+                if (HandleRenderAbort())
+                {
+                    return;
+                }
+
                 // generate ray group with following layout:
                 //  0 1 2 3
                 //  4 5 6 7
@@ -517,6 +596,11 @@ void Viewport::RenderTile(const TileRenderingContext& tileContext, RenderingCont
 
             for (uint32 x = tile.minX; x < tile.maxX; x += rayGroupSizeX)
             {
+                if (HandleRenderAbort())
+                {
+                    return;
+                }
+
                 Vec2x16f coords{ Vec16f::FromInteger(x), Vec16f::FromInteger(realY) };
                 coords.x += Vec16f(0.0f, 1.0f, 2.0f, 3.0f, 0.0f, 1.0f, 2.0f, 3.0f, 0.0f, 1.0f, 2.0f, 3.0f, 0.0f, 1.0f, 2.0f, 3.0f);
                 coords.y -= Vec16f(0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 2.0f, 2.0f, 2.0f, 2.0f, 3.0f, 3.0f, 3.0f, 3.0f);
@@ -585,6 +669,11 @@ void Viewport::PerformPostProcess(TaskBuilder& taskBuilder)
 
         const auto taskCallback = [this, numTiles] (const TaskContext& context, uint32 index)
         {
+            if (HandleRenderAbort())
+            {
+                return;
+            }
+
             Block block;
             block.minY = GetHeight() * index / numTiles;
             block.maxY = GetHeight() * (index + 1) / numTiles;
@@ -606,12 +695,19 @@ void Viewport::PerformPostProcess(TaskBuilder& taskBuilder)
         {
             const auto taskCallback = [this] (const TaskContext& context, uint32 index)
             {
+                if (HandleRenderAbort())
+                {
+                    return;
+                }
+
                 PostProcessTile(mRenderingTiles[index], context.threadId);
             };
 
             taskBuilder.ParallelFor("PostProcess", mRenderingTiles.Size(), taskCallback);
         }
     }
+
+    taskBuilder.Fence();
 }
 
 static void ApplyDither(Vec4f& color, Random& randomGenerator)
@@ -648,6 +744,7 @@ void Viewport::PostProcessTile(const Block& block, uint32 threadID)
     NFE_SCOPED_TIMER(Viewport_PostProcessTile);
 
     Random& randomGenerator = mThreadData[threadID].randomGenerator;
+    Bitmap& backBuffer = mFramebuffers[mCurrentFramebufferIndex];
 
     const PostprocessParams& params = mPostprocessParams.params;
     NFE_ASSERT(params.tonemapper, "Tonemapper missing");
@@ -715,7 +812,7 @@ void Viewport::PostProcessTile(const Block& block, uint32 threadID)
                 ApplyDither(rgbColor, randomGenerator);
             }
 
-            mFrontBuffer.GetPixelRef<uint32>(x, y) = rgbColor.ToRGBA();
+            backBuffer.GetPixelRef<uint32>(x, y) = rgbColor.ToRGBA();
         }
     }
 }
@@ -912,9 +1009,11 @@ void Viewport::UpdateBlocksList()
     mProgress.activeBlocks = mBlocks.Size();
 }
 
-void Viewport::VisualizeActiveBlocks(Bitmap& bitmap) const
+void Viewport::VisualizeActiveBlocks()
 {
     NFE_SCOPED_TIMER(VisualizeActiveBlocks);
+
+    Bitmap& bitmap = mFramebuffers[mCurrentFramebufferIndex];
 
     const LdrColorRGBA color = LdrColorRGBA::Red();
     const uint8 alpha = 64;

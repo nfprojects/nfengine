@@ -15,6 +15,7 @@
 #include "../../Common/Math/Rectangle.hpp"
 #include "../../Common/Memory/Aligned.hpp"
 #include "../../Common/Utils/TaskBuilder.hpp"
+#include "../../Common/System/RWLock.hpp"
 
 namespace NFE {
 namespace RT {
@@ -30,6 +31,16 @@ struct RenderingProgress
     float averageError = std::numeric_limits<float>::infinity();
 };
 
+struct RenderingSetup
+{
+    const Scene& scene;
+    const Camera& camera;
+    const RenderingParams& renderingParams;
+    const PostprocessParams& postprocessParams;
+    IRenderer* renderer;
+    // TODO screenshot
+};
+
 class NFE_ALIGN(32) Viewport
 {
     NFE_MAKE_NONCOPYABLE(Viewport)
@@ -41,25 +52,33 @@ public:
     NFE_RAYTRACER_API Viewport();
     NFE_RAYTRACER_API ~Viewport();
 
+    // begin async frame rendering
+    // this will accumulate samples to internal framebuffers
+    // NOTE: it's illegal to start rendering if another is in flight
+    NFE_RAYTRACER_API bool StartRendering(const RenderingSetup & setup, Common::TaskBuilder & taskBuilder);
+
+    // quickly skip any ongoing rendering tasks (the result will be incomplete)
+    NFE_RAYTRACER_API void AbortRendering(bool abortState);
+    NFE_RAYTRACER_API bool IsAborted() const { return mAbortRendering; }
+
+    // resize viewport
     NFE_RAYTRACER_API bool Resize(uint32 width, uint32 height);
-    NFE_RAYTRACER_API bool SetRenderingParams(const RenderingParams& params);
-    NFE_RAYTRACER_API bool SetRenderer(IRenderer* renderer);
-    NFE_RAYTRACER_API bool SetPostprocessParams(const PostprocessParams& params);
-    NFE_RAYTRACER_API bool Render(const Scene& scene, const Camera& camera);
+
+    // clear already accumulated samples
     NFE_RAYTRACER_API void Reset();
 
     NFE_RAYTRACER_API void SetPixelBreakpoint(uint32 x, uint32 y);
 
-    NFE_FORCE_INLINE const Bitmap& GetFrontBuffer() const { return mFrontBuffer; }
-    NFE_FORCE_INLINE const Bitmap& GetSumBuffer() const { return mSum; }
+    // access front buffer texture
+    // NOTE: must be locked so no rendering thread will write to it
+    NFE_RAYTRACER_API const Bitmap& LockFrontBuffer();
+    NFE_RAYTRACER_API void UnlockFrontBuffer();
 
     NFE_FORCE_INLINE uint32 GetWidth() const { return mSum.GetWidth(); }
     NFE_FORCE_INLINE uint32 GetHeight() const { return mSum.GetHeight(); }
 
     NFE_FORCE_INLINE const RenderingProgress& GetProgress() const { return mProgress; }
     NFE_FORCE_INLINE const RayTracingCounters& GetCounters() const { return mCounters; }
-
-    NFE_RAYTRACER_API void VisualizeActiveBlocks(Bitmap& bitmap) const;
 
 private:
     void InitThreadData();
@@ -102,11 +121,14 @@ private:
 
     void UpdateBlocksList();
 
+    bool HandleRenderAbort();
+
     // raytrace single image tile (will be called from multiple threads)
     void RenderTile(const TileRenderingContext& tileContext, RenderingContext& renderingContext, const Block& tile);
 
     bool InitBluredImages();
     void PerformPostProcess(Common::TaskBuilder& taskBuilder);
+    void VisualizeActiveBlocks();
 
     // generate "front buffer" image from "sum" image
     void PostProcessTile(const Block& tile, uint32 threadID);
@@ -121,17 +143,25 @@ private:
     Common::DynArray<GenericSampler> mSamplers;
     Common::DynArray<RenderingContext> mThreadData;
 
-    Bitmap mSum;                        // image with accumulated samples (floating point, high dynamic range)
-    Bitmap mSecondarySum;               // contains image with every second sample - required for adaptive rendering
-    Bitmap mFrontBuffer;                // postprocesses image (low dynamic range)
+    static constexpr uint32 NumFrameBuffers = 2;
+
+    std::atomic<bool> mAbortRendering;
+    std::atomic<bool> mRenderingOngoing;
+    Common::RWLock mFramebuffersLock;
+    uint32 mCurrentFramebufferIndex;            // index of a frame buffer that we render to
+
+    Bitmap mSum;                                // image with accumulated samples (floating point, high dynamic range)
+    Bitmap mSecondarySum;                       // contains image with every second sample - required for adaptive rendering
+    Bitmap mFramebuffers[NumFrameBuffers];      // final, postprocesses image (low dynamic range)
     Common::DynArray<Bitmap> mBlurredImages;    // blurred images for bloom
     Common::DynArray<uint32> mPassesPerPixel;
-    Common::DynArray<Math::Vec2f> mPixelSalt; // salt value for each pixel
+    Common::DynArray<Math::Vec2f> mPixelSalt;   // salt value for each pixel
     Common::DynArray<TileOffset> mTileOffsets;
 
     RenderingParams mParams;
     PostprocessParamsInternal mPostprocessParams;
     PostprocessLUT mPostprocessLUT;
+    Common::UniquePtr<Film> mFilm;
 
     RayTracingCounters mCounters;
 
