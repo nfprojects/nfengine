@@ -1,39 +1,14 @@
 #pragma once
 
 #include "Common.hpp"
+#include "ResourceState.hpp"
 #include "D3D12MemAlloc.h"
-#include "Engine/Common/Containers/DynArray.hpp"
 
 
 namespace NFE {
 namespace Renderer {
 
-
 enum class BufferMode : uint8;
-
-
-struct ResourceState
-{
-    // "global state" means "all subresource states are the same"
-    bool isGlobalState;
-    D3D12_RESOURCE_STATES globalState;
-
-    Common::DynArray<D3D12_RESOURCE_STATES> subresourceStates;
-
-    ResourceState(D3D12_RESOURCE_STATES state = D3D12_RESOURCE_STATE_COMMON)
-        : globalState(state), isGlobalState(true) {}
-    ResourceState(const ResourceState& other) = default;
-    ResourceState(ResourceState&& other) = default;
-    ResourceState& operator = (const ResourceState& other) = default;
-    ResourceState& operator = (ResourceState && other) = default;
-
-    void Set(D3D12_RESOURCE_STATES d3dState);
-    void Set(uint32 subresource, D3D12_RESOURCE_STATES d3dState);
-    D3D12_RESOURCE_STATES Get(uint32 subresource) const;
-    bool Matches(uint32 subresource, D3D12_RESOURCE_STATES d3dState) const;
-    void Shrink();
-};
-
 
 /**
  * Generic D3D12 resource.
@@ -63,9 +38,7 @@ public:
     }
 
 protected:
-    NFE_INLINE explicit Resource(const D3D12_RESOURCE_STATES defaultState)
-        : mState(defaultState)
-    { }
+    explicit Resource(const D3D12_RESOURCE_STATES defaultState);
 
     D3DPtr<ID3D12Resource> mResource;
     D3DPtr<D3D12MA::Allocation> mAllocation;

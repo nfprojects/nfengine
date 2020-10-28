@@ -159,6 +159,7 @@ COPY "$(WindowsSdkDir)redist\d3d\x64\dxil.dll" "$(SolutionDir)Bin\$(Platform)\$(
     <ClCompile Include="RenderTarget.cpp" />
     <ClCompile Include="Resource.cpp" />
     <ClCompile Include="ResourceBinding.cpp" />
+    <ClCompile Include="ResourceState.cpp" />
     <ClCompile Include="ResourceStateCache.cpp" />
     <ClCompile Include="RingBuffer.cpp" />
     <ClCompile Include="Sampler.cpp" />
@@ -195,6 +196,7 @@ COPY "$(WindowsSdkDir)redist\d3d\x64\dxil.dll" "$(SolutionDir)Bin\$(Platform)\$(
     <ClInclude Include="RenderTarget.hpp" />
     <ClInclude Include="Resource.hpp" />
     <ClInclude Include="ResourceBinding.hpp" />
+    <ClInclude Include="ResourceState.hpp" />
     <ClInclude Include="ResourceStateCache.hpp" />
     <ClInclude Include="RingBuffer.hpp" />
     <ClInclude Include="Sampler.hpp" />

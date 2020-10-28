@@ -199,6 +199,8 @@ enum class ShaderType : uint8
  */
 enum class BufferMode : uint8
 {
+    Invalid,
+
     /**
      * GPU read-only resource, for example a static mesh or texture.
      * The resource content must be specified during creation.

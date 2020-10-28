@@ -51,6 +51,7 @@ bool Backbuffer::Init(const BackbufferDesc& desc)
     mWindow = static_cast<HWND>(desc.windowHandle);
     mVSync = desc.vSync;
     mFormat = TranslateElementFormat(desc.format);
+    mMode = BufferMode::GPUOnly;
 
     mBuffers.Resize(2); // make it configurable
 
