@@ -10,7 +10,7 @@
 
 #pragma once
 
-#include "CommandRecorder.hpp"
+#include "CommandQueue.hpp"
 
 #include "../../Common/Containers/DynArray.hpp"
 #include "../../Common/Containers/String.hpp"
@@ -31,6 +31,8 @@ struct DeviceInfo
     Common::String misc;         //< miscellaneous GPU info
     Common::DynArray<Common::String> features; //< list of supported features (depends on low-level API)
 };
+
+using ResourceDownloadCallback = std::function<void(const void*, size_t dataSize, size_t rowPitch)>;
 
 /**
  * Rendering device interface.
@@ -86,23 +88,9 @@ public:
     virtual CommandRecorderPtr CreateCommandRecorder() = 0;
 
     /**
-     * Waits until all operations sent to the command queue has been completed.
-     * @return Fence object.
+     * Create a command queue.
      */
-    virtual FencePtr WaitForGPU() = 0;
-
-    /**
-     * Execute a command lists.
-     * @param commandLists Array of command list to be executed.
-     * @return True on success.
-     */
-    virtual bool Execute(const Common::ArrayView<ICommandList*> commandLists) = 0;
-
-    NFE_FORCE_INLINE bool Execute(const CommandListPtr& commandList)
-    {
-        ICommandList* commandListPtr = commandList.Get();
-        return Execute(Common::ArrayView<ICommandList*>(&commandListPtr, 1u));
-    }
+    virtual CommandQueuePtr CreateCommandQueue(CommandQueueType type) = 0;
 
     /**
      * Inform Renderer about finished frame.
@@ -115,20 +103,21 @@ public:
 
     /**
      * Read data from a GPU buffer to the CPU memory.
-     * @param      buffer Source buffer.
-     * @param      offset Offset in the GPU buffer (in bytes).
-     * @param      size   Number of bytes to read.
-     * @param[out] data   Pointer to target CPU buffer.
+     * @param   buffer      Source buffer.
+     * @param   callback    Callback to process the data, called when buffer data is downloaded.
+     * @param   builder     Task builder to synchronize other tasks dependent on the data read.
+     * @param   offset      Offset in the GPU buffer (in bytes).
+     * @param   size        Number of bytes to read.
      * @return true on success.
      */
-    virtual bool DownloadBuffer(const BufferPtr& buffer, size_t offset, size_t size, void* data) = 0;
+    virtual bool DownloadBuffer(const BufferPtr& buffer, const ResourceDownloadCallback& callback, Common::TaskBuilder& builder, uint32 offset = 0, uint32 size = 0) = 0;
 
     /**
      * Read texture content to a CPU buffer.
      * @param      tex  Texture to read.
      * @param[out] data Target CPU buffer.
      */
-    virtual bool DownloadTexture(const TexturePtr& tex, void* data, uint32 mipmap = 0, uint32 layer = 0) = 0;
+    virtual bool DownloadTexture(const TexturePtr& tex, const ResourceDownloadCallback& callback, Common::TaskBuilder& builder, uint32 mipmap = 0, uint32 layer = 0) = 0;
 };
 
 

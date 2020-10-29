@@ -44,18 +44,18 @@ class VertexBuffersScene : public Scene
     // for dynamic vertex buffers
     std::vector<InstanceData> mInstancesData;
     std::vector<NFE::Math::Vec2f> mVelocities;
-    NFE::Renderer::BufferMode mVertexBufferMode;
+    NFE::Renderer::ResourceAccessMode mVertexBufferMode;
 
     // Releases only subscene-related resources. Backbuffer, RT and BlendState stay intact.
     void ReleaseSubsceneResources() override;
 
     // Resource creators for subscenes
     bool LoadShaders(bool useInstancing);
-    bool CreateBuffers(bool withInstanceBuffer, NFE::Renderer::BufferMode vertexBufferMode);
+    bool CreateBuffers(bool withInstanceBuffer, NFE::Renderer::ResourceAccessMode vertexBufferMode);
 
     // Subscenes
     bool CreateSubSceneSimple();
-    bool CreateSubSceneInstancing(NFE::Renderer::BufferMode vertexBufferMode);
+    bool CreateSubSceneInstancing(NFE::Renderer::ResourceAccessMode vertexBufferMode);
 
 public:
     VertexBuffersScene();

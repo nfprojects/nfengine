@@ -8,7 +8,7 @@
 namespace NFE {
 namespace Renderer {
 
-enum class BufferMode : uint8;
+enum class ResourceAccessMode : uint8;
 
 /**
  * Generic D3D12 resource.
@@ -27,7 +27,7 @@ public:
         return mResource.Get();
     }
 
-    NFE_FORCE_INLINE BufferMode GetMode() const
+    NFE_FORCE_INLINE ResourceAccessMode GetMode() const
     {
         return mMode;
     }
@@ -43,7 +43,7 @@ protected:
     D3DPtr<ID3D12Resource> mResource;
     D3DPtr<D3D12MA::Allocation> mAllocation;
     ResourceState mState;
-    BufferMode mMode;
+    ResourceAccessMode mMode;
 };
 
 using ResourcePtr = Common::SharedPtr<Resource>;

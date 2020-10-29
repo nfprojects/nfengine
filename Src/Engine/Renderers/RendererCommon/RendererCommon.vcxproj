@@ -119,6 +119,7 @@
     <ClInclude Include="Fence.hpp" />
     <ClInclude Include="PCH.hpp" />
     <ClInclude Include="PipelineState.hpp" />
+    <ClInclude Include="CommandQueue.hpp" />
     <ClInclude Include="RendererCommon.hpp" />
     <ClInclude Include="RenderTarget.hpp" />
     <ClInclude Include="ResourceBinding.hpp" />

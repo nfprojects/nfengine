@@ -10,7 +10,6 @@
 #include "Fence.hpp"
 #include "PipelineState.hpp"
 #include "HeapAllocator.hpp"
-#include "RingBuffer.hpp"
 #include "ShaderCompiler.hpp"
 
 #include "D3D12MemAlloc.h"
@@ -28,6 +27,8 @@ namespace Renderer {
 class Device;
 class CommandRecorder;
 class CommandListManager;
+class CommandQueue;
+class RingBuffer;
 
 using CommandRecorderWeakPtr = Common::WeakPtr<CommandRecorder>;
 
@@ -61,9 +62,7 @@ class Device : public IDevice
 
     D3DPtr<IDXGIAdapter> mAdapter;
     D3DPtr<IDXGIFactory4> mDXGIFactory;
-    D3DPtr<ID3D12Device> mDevice;
-    D3DPtr<ID3D12CommandQueue> mGraphicsQueue;
-    D3DPtr<ID3D12CommandQueue> mResourceUploadQueue;
+    D3DPtr<ID3D12Device1> mDevice;
     D3DPtr<ID3D12DebugDevice> mDebugDevice;
     D3DPtr<ID3D12InfoQueue> mInfoQueueD3D;
     D3DPtr<IDXGIInfoQueue> mInfoQueueDXGI;
@@ -73,22 +72,12 @@ class Device : public IDevice
     // global D3D12 command lists manager
     Common::UniquePtr<CommandListManager> mCommandListManager;
 
-    // List of command recorders which ref count reached 1, which means they are not in use by the user
-    // However, they cannot be destroyed immediately, because they may keep references to resources
-    // that are used by the GPU.
-    Common::DynArray<CommandRecorderPtr> mCommandRecordersToRemove;
-
-    // synchronization objects
-    FenceData mFrameFence;
-    FenceData mGraphicsQueueFence;
-    FenceData mResourceUploadQueueFence;
+    Common::DynArray<Common::WeakPtr<CommandQueue>> mCommandQueues;
+    Common::RWLock mCommandQueuesLock;
 
     FenceManager mFenceManager;
 
-    static constexpr uint32 MaxPendingFrames = 2;
-    Common::StaticArray<FencePtr, MaxPendingFrames> mPendingFramesFences;
-
-    RingBuffer mRingBuffer;
+    Common::UniquePtr<RingBuffer> mRingBuffer;
 
     HeapAllocator mCbvSrvUavHeapStagingAllocator;   // CPU visible
     HeapAllocator mCbvSrvUavHeapAllocator;          // GPU visible
@@ -106,47 +95,47 @@ class Device : public IDevice
     bool DetectMonitors();
     bool CreateResources();
 
+    uint32 ReleaseUnusedCommandQueues();
+
 public:
     Device();
     ~Device();
     bool Init(const DeviceInitParams* params);
 
     const DeviceCaps& GetCaps() const { return mCaps; }
-    ID3D12Device* GetDevice() const { return mDevice.Get(); }
-    ID3D12CommandQueue* GetGraphicsQueue() const { return mGraphicsQueue.Get(); }
-    ID3D12CommandQueue* GetResourceUploadQueue() const { return mResourceUploadQueue.Get(); }
-    void* GetHandle() const override;
-    bool GetDeviceInfo(DeviceInfo& info) override;
-    bool IsBackbufferFormatSupported(Format format) override;
+    ID3D12Device1* GetDevice() const { return mDevice.Get(); }
+    virtual void* GetHandle() const override;
+    virtual bool GetDeviceInfo(DeviceInfo& info) override;
+    virtual bool IsBackbufferFormatSupported(Format format) override;
     Common::DynArray<MonitorInfo> GetMonitorsInfo() const;
 
     D3D12MA::Allocator* GetAllocator() const { return mAllocator; }
 
     /// Resources creation functions
 
-    VertexLayoutPtr CreateVertexLayout(const VertexLayoutDesc& desc) override;
-    BufferPtr CreateBuffer(const BufferDesc& desc) override;
-    TexturePtr CreateTexture(const TextureDesc& desc) override;
-    BackbufferPtr CreateBackbuffer(const BackbufferDesc& desc) override;
-    RenderTargetPtr CreateRenderTarget(const RenderTargetDesc& desc) override;
-    PipelineStatePtr CreatePipelineState(const PipelineStateDesc& desc) override;
-    ComputePipelineStatePtr CreateComputePipelineState(const ComputePipelineStateDesc& desc) override;
-    SamplerPtr CreateSampler(const SamplerDesc& desc) override;
-    ShaderPtr CreateShader(const ShaderDesc& desc) override;
-    ResourceBindingSetPtr CreateResourceBindingSet(const ResourceBindingSetDesc& desc) override;
-    ResourceBindingLayoutPtr CreateResourceBindingLayout(const ResourceBindingLayoutDesc& desc) override;
-    ResourceBindingInstancePtr CreateResourceBindingInstance(const ResourceBindingSetPtr& set) override;
+    virtual VertexLayoutPtr CreateVertexLayout(const VertexLayoutDesc& desc) override;
+    virtual BufferPtr CreateBuffer(const BufferDesc& desc) override;
+    virtual TexturePtr CreateTexture(const TextureDesc& desc) override;
+    virtual BackbufferPtr CreateBackbuffer(const BackbufferDesc& desc) override;
+    virtual RenderTargetPtr CreateRenderTarget(const RenderTargetDesc& desc) override;
+    virtual PipelineStatePtr CreatePipelineState(const PipelineStateDesc& desc) override;
+    virtual ComputePipelineStatePtr CreateComputePipelineState(const ComputePipelineStateDesc& desc) override;
+    virtual SamplerPtr CreateSampler(const SamplerDesc& desc) override;
+    virtual ShaderPtr CreateShader(const ShaderDesc& desc) override;
+    virtual ResourceBindingSetPtr CreateResourceBindingSet(const ResourceBindingSetDesc& desc) override;
+    virtual ResourceBindingLayoutPtr CreateResourceBindingLayout(const ResourceBindingLayoutDesc& desc) override;
+    virtual ResourceBindingInstancePtr CreateResourceBindingInstance(const ResourceBindingSetPtr& set) override;
 
-    CommandRecorderPtr CreateCommandRecorder() override;
-    bool Execute(const Common::ArrayView<ICommandList*> commandLists) override;
-    bool FinishFrame() override;
+    virtual CommandRecorderPtr CreateCommandRecorder() override;
+    virtual CommandQueuePtr CreateCommandQueue(CommandQueueType type) override;
+    virtual bool FinishFrame() override;
 
-    bool DownloadBuffer(const BufferPtr& buffer, size_t offset, size_t size, void* data) override;
-    bool DownloadTexture(const TexturePtr& tex, void* data, uint32 mipmap, uint32 layer) override;
-
-    FencePtr WaitForGPU() override;
+    virtual bool DownloadBuffer(const BufferPtr& buf, const ResourceDownloadCallback& callback, Common::TaskBuilder& builder, uint32 offset, uint32 size) override;
+    virtual bool DownloadTexture(const TexturePtr& tex, const ResourceDownloadCallback& callback, Common::TaskBuilder& builder, uint32 mipmap, uint32 layer) override;
 
     CommandListManager* GetCommandListManager() const { return mCommandListManager.Get(); }
+    FenceManager& GetFenceManager() { return mFenceManager; }
+    RingBuffer* GetRingBuffer() { return mRingBuffer.Get(); }
 
     HeapAllocator& GetCbvSrvUavHeapStagingAllocator() { return mCbvSrvUavHeapStagingAllocator; }
     HeapAllocator& GetCbvSrvUavHeapAllocator() { return mCbvSrvUavHeapAllocator; }
@@ -156,8 +145,6 @@ public:
     ShaderCompiler& GetShaderCompiler() { return mShaderCompiler; }
 
     bool IsDebugLayerEnabled() const { return mDebugLayerEnabled; }
-
-    RingBuffer& GetRingBuffer() { return mRingBuffer; }
 };
 
 } // namespace Renderer

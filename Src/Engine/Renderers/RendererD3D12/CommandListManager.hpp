@@ -17,6 +17,8 @@
 namespace NFE {
 namespace Renderer {
 
+class CommandQueue;
+
 class CommandListManager
 {
 public:
@@ -28,7 +30,7 @@ public:
      * If there is no free command list in the pool, a new will be created.
      * Requested command list will be in recording state.
      */
-    InternalCommandListPtr RequestCommandList();
+    InternalCommandListPtr RequestCommandList(CommandQueueType queueType);
 
     /**
      * Called by CommandRecorder when command list is recorded (closed).
@@ -38,14 +40,22 @@ public:
     /**
      * Called by Device when a command list is queued for execution.
      */
-    void ExecuteCommandList(const Common::ArrayView<ICommandList*> commandLists);
+    void ExecuteCommandList(const CommandQueue& queue, const Common::ArrayView<ICommandList*> commandLists);
 
-    // Called by Device when a fence value completed on GPU
-    void OnFenveValueCompleted(uint64 fenceValue);
+    // Called by fence manager's loop when a fence value completed on GPU
+    void OnFenceValueCompleted(const FenceData* fenceData, uint64 fenceValue);
 
 private:
+
     Common::RWLock mLock;
-    Common::DynArray<InternalCommandListPtr> mCommandLists;
+
+    struct PerQueueTypeData
+    {
+        Common::DynArray<InternalCommandListPtr> commandLists;
+    };
+
+    static constexpr uint32 NumQueueTypes = (uint32)CommandQueueType::Max;
+    PerQueueTypeData mPerQueueTypeData[NumQueueTypes];
 };
 
 } // namespace Renderer

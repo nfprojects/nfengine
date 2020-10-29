@@ -1,5 +1,6 @@
 #include "PCH.hpp"
 #include "Waitable.hpp"
+#include "../System/Thread.hpp"
 
 namespace NFE {
 namespace Common {
@@ -15,6 +16,8 @@ Waitable::~Waitable()
 
 void Waitable::Wait()
 {
+    NFE_ASSERT(Thread::IsMainThread(), "Nothing should wait on non-main thread as it may cause deadlock");
+
     if (!mFinished)
     {
         ScopedExclusiveLock<Mutex> lock(mMutex);

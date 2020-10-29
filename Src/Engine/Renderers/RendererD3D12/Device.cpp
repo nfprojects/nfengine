@@ -8,6 +8,7 @@
 #include "Device.hpp"
 #include "CommandRecorder.hpp"
 #include "CommandListManager.hpp"
+#include "CommandQueue.hpp"
 #include "RendererD3D12.hpp"
 #include "VertexLayout.hpp"
 #include "Buffer.hpp"
@@ -69,8 +70,6 @@ bool Device::Init(const DeviceInitParams* params)
     if (!params)
         params = &defaultParams;
 
-    HRESULT hr;
-
     if (!InitializeDevice(params))
     {
         return false;
@@ -113,48 +112,17 @@ bool Device::Init(const DeviceInitParams* params)
             String features;
             for (uint32 i = 0; i < deviceInfo.features.Size(); ++i)
             {
-                if (i > 0)
-                    features += ", ";
+                features += "\n    ";
                 features += deviceInfo.features[i];
             }
             NFE_LOG_INFO("GPU features: %s", features.Str());
         }
     }
 
-    /// create command queues
-    {
-        D3D12_COMMAND_QUEUE_DESC queueDesc = {};
-        queueDesc.Flags = D3D12_COMMAND_QUEUE_FLAG_NONE;
-        queueDesc.Type = D3D12_COMMAND_LIST_TYPE_DIRECT;
-
-        hr = D3D_CALL_CHECK(mDevice->CreateCommandQueue(&queueDesc, IID_PPV_ARGS(mGraphicsQueue.GetPtr())));
-        if (FAILED(hr))
-        {
-            return false;
-        }
-
-        queueDesc.Type = D3D12_COMMAND_LIST_TYPE_COPY;
-        hr = D3D_CALL_CHECK(mDevice->CreateCommandQueue(&queueDesc, IID_PPV_ARGS(mResourceUploadQueue.GetPtr())));
-        if (FAILED(hr))
-        {
-            return false;
-        }
-    }
-
-    mFrameFence.Init(&mFenceManager, this);
-    mGraphicsQueueFence.Init(&mFenceManager, this);
-    mResourceUploadQueueFence.Init(&mFenceManager, this);
-
-    // tick command list manager and global ringbuffer automatically when fence is completed on GPU
-    mGraphicsQueueFence.SetCallback([this](uint64 completedFenceValue)
-        {
-            mCommandListManager->OnFenveValueCompleted(completedFenceValue);
-            mRingBuffer.OnFrameCompleted(completedFenceValue);
-        });
-
     mFenceManager.Initialize();
 
-    if (!mRingBuffer.Init(8 * 1024 * 1024))
+    mRingBuffer = MakeUniquePtr<RingBuffer>();
+    if (!mRingBuffer->Init(8 * 1024 * 1024))
     {
         NFE_LOG_ERROR("Failed to initialize ring buffer");
         return false;
@@ -179,7 +147,8 @@ bool Device::Init(const DeviceInitParams* params)
 
 Device::~Device()
 {
-    WaitForGPU()->Wait();
+    const uint32 numQueues = ReleaseUnusedCommandQueues();
+    NFE_ASSERT(numQueues == 0u, "There are still %u command queues alive", numQueues);
 
     mCommandListManager.Reset();
 
@@ -192,12 +161,6 @@ Device::~Device()
     mAdapter.Reset();
 
     mFenceManager.Uninitialize();
-    mGraphicsQueueFence.Release();
-    mFrameFence.Release();
-    mResourceUploadQueueFence.Release();
-
-    mGraphicsQueue.Reset();
-    mResourceUploadQueue.Reset();
 
     if (mAllocator)
     {
@@ -433,6 +396,16 @@ ResourceBindingLayoutPtr Device::CreateResourceBindingLayout(const ResourceBindi
 ResourceBindingInstancePtr Device::CreateResourceBindingInstance(const ResourceBindingSetPtr& set)
 {
     return CreateGenericResource<ResourceBindingInstance, ResourceBindingSetPtr>(set);
+}
+
+CommandQueuePtr Device::CreateCommandQueue(CommandQueueType type)
+{
+    SharedPtr<CommandQueue> queue = CreateGenericResource<CommandQueue, CommandQueueType>(type);
+    {
+        NFE_SCOPED_LOCK(mCommandQueuesLock);
+        mCommandQueues.PushBack(queue);
+    }
+    return queue;
 }
 
 bool Device::DetectVideoCards(int preferredId)
@@ -736,98 +709,359 @@ CommandRecorderPtr Device::CreateCommandRecorder()
     return MakeSharedPtr<CommandRecorder>();
 }
 
-bool Device::Execute(const ArrayView<ICommandList*> commandLists)
+uint32 Device::ReleaseUnusedCommandQueues()
 {
-    mCommandListManager->ExecuteCommandList(commandLists);
-
-    uint64 fenceValue = mGraphicsQueueFence.SignalValue(mGraphicsQueue.Get());
-
-    // assign fenceValue to command lists
-    for (ICommandList* commandList : commandLists)
+    NFE_SCOPED_LOCK(mCommandQueuesLock);
+    for (uint32 i = 0; i < mCommandQueues.Size(); ++i)
     {
-        NFE_ASSERT(commandList != nullptr, "Invalid command list ptr");
-        CommandList* typedCommandList = static_cast<CommandList*>(commandList);
-
-        InternalCommandListPtr internalCommandList = typedCommandList->internalCommandList.Lock();
-        NFE_ASSERT(internalCommandList != nullptr);
-
-        internalCommandList->AssignFenceValue(fenceValue);
-
-        typedCommandList->internalCommandList.Reset();
+        if (!mCommandQueues[i].Lock())
+        {
+            mCommandQueues[i] = std::move(mCommandQueues.Back());
+            mCommandQueues.PopBack();
+            i--;
+        }
     }
-
-    mRingBuffer.FinishFrame(fenceValue);
-
-    return true;
+    return mCommandQueues.Size();
 }
 
-bool Device::DownloadBuffer(const BufferPtr& buffer, size_t offset, size_t size, void* data)
+bool Device::DownloadBuffer(const BufferPtr& buf, const ResourceDownloadCallback& callback, Common::TaskBuilder& builder, uint32 offset, uint32 size)
 {
-    NFE_UNUSED(buffer);
+    NFE_UNUSED(buf);
+    NFE_UNUSED(callback);
+    NFE_UNUSED(builder);
     NFE_UNUSED(offset);
     NFE_UNUSED(size);
-    NFE_UNUSED(data);
     return false;
-}
 
-bool Device::DownloadTexture(const TexturePtr& tex, void* data, uint32 mipmap, uint32 layer)
-{
-    NFE_UNUSED(mipmap);
-    NFE_UNUSED(layer);
-
-    const Texture* texture = dynamic_cast<Texture*>(tex.Get());
-    if (!texture)
+    /*
+    const Buffer* buffer = dynamic_cast<Buffer*>(buf.Get());
+    if (!buffer)
     {
-        NFE_LOG_ERROR("Invalid texture pointer");
+        NFE_FATAL("Invalid buffer pointer");
+        return nullptr;
+    }
+
+    if (size == 0)
+    {
+        size = buffer->GetSize();
+    }
+
+    if ((uint64)offset + (uint64)size > (uint64)buffer->GetSize())
+    {
+        NFE_FATAL("Buffer read is out of range: offset=%u, readSize=%u, bufferSize=%u", offset, size, buffer->GetSize());
+        return nullptr;
+    }
+
+    // Create temporary buffer on readback heap
+
+    D3D12_HEAP_PROPERTIES heapProperties;
+    heapProperties.Type = D3D12_HEAP_TYPE_READBACK;
+    heapProperties.CPUPageProperty = D3D12_CPU_PAGE_PROPERTY_UNKNOWN;
+    heapProperties.MemoryPoolPreference = D3D12_MEMORY_POOL_UNKNOWN;
+    heapProperties.CreationNodeMask = 1;
+    heapProperties.VisibleNodeMask = 1;
+
+    D3D12_RESOURCE_DESC resourceDesc = {};
+    resourceDesc.Dimension = D3D12_RESOURCE_DIMENSION_BUFFER;
+    resourceDesc.Width = size;
+    resourceDesc.Height = 1;
+    resourceDesc.DepthOrArraySize = 1;
+    resourceDesc.MipLevels = 1;
+    resourceDesc.Format = DXGI_FORMAT_UNKNOWN;
+    resourceDesc.SampleDesc.Count = 1;
+    resourceDesc.SampleDesc.Quality = 0;
+    resourceDesc.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
+    resourceDesc.Flags = D3D12_RESOURCE_FLAG_NONE;
+
+    // TODO get rid of that, use some existing buffer for resource downloads
+    D3DPtr<ID3D12Resource> readbackBuffer;
+    HRESULT hr = D3D_CALL_CHECK(mDevice->CreateCommittedResource(
+        &heapProperties,
+        D3D12_HEAP_FLAG_NONE,
+        &resourceDesc,
+        D3D12_RESOURCE_STATE_COPY_DEST,
+        nullptr,
+        IID_PPV_ARGS(readbackBuffer.GetPtr())));
+    if (FAILED(hr))
+    {
         return false;
     }
 
-    // TODO
-    WaitForGPU()->Wait();
+    SetDebugName(readbackBuffer.Get(), "ReadbackBuffer");
 
-    char* mappedData;
-    HRESULT hr = texture->GetResource()->Map(0, NULL, reinterpret_cast<void**>(&mappedData));
+    // Create temporary command allocator and command list
+    // TODO this is extremly inefficient
+
+    D3DPtr<ID3D12CommandAllocator> commandAllocator;
+    hr = D3D_CALL_CHECK(mDevice->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_COPY, IID_PPV_ARGS(commandAllocator.GetPtr())));
     if (FAILED(hr))
     {
-        return 0;
+        return false;
     }
 
-    size_t rowSize = static_cast<size_t>(GetElementFormatSize(texture->GetFormat())) * static_cast<size_t>(texture->GetWidth());
-    size_t rowPitch = texture->GetRowPitch();
-    for (uint16 i = 0; i < texture->GetHeight(); ++i)
+    SetDebugName(commandAllocator.Get(), "Buffer readback command allocator");
+
+    if (FAILED(D3D_CALL_CHECK(commandAllocator->Reset())))
     {
-        char* targetRow = reinterpret_cast<char*>(data) + rowSize * i;
-        const char* sourceRow = reinterpret_cast<const char*>(mappedData) + rowPitch * i;
-        memcpy(targetRow, sourceRow, rowSize);
+        return false;
     }
 
-    texture->GetResource()->Unmap(0, NULL);
+    D3DPtr<ID3D12GraphicsCommandList> commandList;
+    hr = D3D_CALL_CHECK(mDevice->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_COPY, commandAllocator.Get(), nullptr, IID_PPV_ARGS(commandList.GetPtr())));
+    if (FAILED(hr))
+        return false;
+
+    SetDebugName(commandList.Get(), "Buffer upload commandlist");
+
+    if (FAILED(D3D_CALL_CHECK(commandList->Close())))
+    {
+        return false;
+    }
+
+    if (FAILED(D3D_CALL_CHECK(commandList->Reset(commandAllocator.Get(), nullptr))))
+    {
+        return false;
+    }
+
+    // TODO command queue
+
+    D3D12_RESOURCE_BARRIER barrier = {};
+    barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
+    barrier.Transition.pResource = buffer->GetD3DResource();
+    barrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
+    barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_COMMON; // resource must be in COMMON state before first use on copy queue
+    barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_COPY_SOURCE;
+    commandList->ResourceBarrier(1, &barrier);
+
+    commandList->CopyBufferRegion(readbackBuffer.Get(), 0, buffer->GetD3DResource(), offset, size);
+
+    barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_COPY_SOURCE;
+    barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_COMMON; // resource must be in COMMON state after use on copy queue
+    commandList->ResourceBarrier(1, &barrier);
+
+    // close the command list and send it to the command queue
+    if (FAILED(D3D_CALL_CHECK(commandList->Close())))
+    {
+        return false;
+    }
+
+    ID3D12CommandList* commandLists[] = { commandList.Get() };
+    GetResourceUploadQueue()->ExecuteCommandLists(1, commandLists);
+
+    // wait for the copy to complete
+    const FencePtr fence = mResourceUploadQueueFence.Signal(mResourceUploadQueue.Get());
+    fence->Sync(builder);
+
+    builder.Fence();
+
+    // promote to shared ptr, as std::function must be copyable
+    SharedPtr<ID3D12Resource> readbackBufferShared{ std::move(readbackBuffer) };
+
+    TaskFunction func = [callback, size, readbackBuffer = std::move(readbackBufferShared)](const TaskContext&)
+    {
+        void* mappedData = nullptr;
+        HRESULT hr = D3D_CALL_CHECK(readbackBuffer->Map(0, NULL, &mappedData));
+
+        if (SUCCEEDED(hr))
+        {
+            // read data
+            callback(mappedData, size, 0);
+
+            readbackBuffer->Unmap(0, NULL);
+        }
+        else
+        {
+            NFE_LOG_ERROR("Failed to map upload buffer");
+
+            // notify about failure by passing null
+            callback(nullptr, 0, 0);
+        }
+    };
+
+    builder.Task("ReadBuffer", std::move(func));
 
     return true;
+    */
+}
+
+bool Device::DownloadTexture(const TexturePtr& tex, const ResourceDownloadCallback& callback, Common::TaskBuilder& builder, uint32 mipmap, uint32 layer)
+{
+    NFE_UNUSED(tex);
+    NFE_UNUSED(callback);
+    NFE_UNUSED(builder);
+    NFE_UNUSED(mipmap);
+    NFE_UNUSED(layer);
+    return false;
+
+    /*
+    const Texture* texture = dynamic_cast<Texture*>(tex.Get());
+    if (!texture)
+    {
+        NFE_FATAL("Invalid texture pointer");
+        return false;
+    }
+
+    NFE_ASSERT(mipmap < texture->GetMipmapsNum(), "Invalid mipmap index: %u requested, but the texture has %u", mipmap, texture->GetMipmapsNum());
+    NFE_ASSERT(layer < texture->GetLayersNum(), "Invalid layer index: %u requested, but the texture has %u", layer, texture->GetLayersNum());
+
+    const D3D12_RESOURCE_DESC d3dResDesc = texture->GetD3DResource()->GetDesc();
+
+    const uint32 subresourceIndex = mipmap + layer * d3dResDesc.MipLevels;
+    NFE_ASSERT(subresourceIndex < D3D12_REQ_SUBRESOURCES, "Invalid subresource index");
+
+    UINT64 requiredSize = 0;
+    D3D12_PLACED_SUBRESOURCE_FOOTPRINT layout;
+    mDevice->GetCopyableFootprints(&d3dResDesc, subresourceIndex, 1, 0, &layout, nullptr, nullptr, &requiredSize);
+    const uint32 rowPitch = layout.Footprint.RowPitch;
+
+    // Create temporary buffer on readback heap
+
+    D3D12_HEAP_PROPERTIES heapProperties;
+    heapProperties.Type = D3D12_HEAP_TYPE_READBACK;
+    heapProperties.CPUPageProperty = D3D12_CPU_PAGE_PROPERTY_UNKNOWN;
+    heapProperties.MemoryPoolPreference = D3D12_MEMORY_POOL_UNKNOWN;
+    heapProperties.CreationNodeMask = 1;
+    heapProperties.VisibleNodeMask = 1;
+
+    D3D12_RESOURCE_DESC resourceDesc = {};
+    resourceDesc.Dimension = D3D12_RESOURCE_DIMENSION_BUFFER;
+    resourceDesc.Width = requiredSize;
+    resourceDesc.Height = 1;
+    resourceDesc.DepthOrArraySize = 1;
+    resourceDesc.MipLevels = 1;
+    resourceDesc.Format = DXGI_FORMAT_UNKNOWN;
+    resourceDesc.SampleDesc.Count = 1;
+    resourceDesc.SampleDesc.Quality = 0;
+    resourceDesc.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
+    resourceDesc.Flags = D3D12_RESOURCE_FLAG_NONE;
+
+    // TODO get rid of that, use some existing buffer for resource downloads
+    D3DPtr<ID3D12Resource> readbackBuffer;
+    HRESULT hr = D3D_CALL_CHECK(mDevice->CreateCommittedResource(
+        &heapProperties,
+        D3D12_HEAP_FLAG_NONE,
+        &resourceDesc,
+        D3D12_RESOURCE_STATE_COPY_DEST,
+        nullptr,
+        IID_PPV_ARGS(readbackBuffer.GetPtr())));
+    if (FAILED(hr))
+    {
+        return false;
+    }
+
+    SetDebugName(readbackBuffer.Get(), "ReadbackBuffer");
+
+    // Create temporary command allocator and command list
+    // TODO this is extremly inefficient
+
+    // TODO command queue
+
+    D3DPtr<ID3D12CommandAllocator> commandAllocator;
+    hr = D3D_CALL_CHECK(mDevice->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_COPY, IID_PPV_ARGS(commandAllocator.GetPtr())));
+    if (FAILED(hr))
+    {
+        return false;
+    }
+
+    SetDebugName(commandAllocator.Get(), "Buffer readback command allocator");
+
+    if (FAILED(D3D_CALL_CHECK(commandAllocator->Reset())))
+    {
+        return false;
+    }
+
+    D3DPtr<ID3D12GraphicsCommandList> commandList;
+    hr = D3D_CALL_CHECK(mDevice->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_COPY, commandAllocator.Get(), nullptr, IID_PPV_ARGS(commandList.GetPtr())));
+    if (FAILED(hr))
+        return false;
+
+    SetDebugName(commandList.Get(), "Buffer upload commandlist");
+
+    if (FAILED(D3D_CALL_CHECK(commandList->Close())))
+    {
+        return false;
+    }
+
+    if (FAILED(D3D_CALL_CHECK(commandList->Reset(commandAllocator.Get(), nullptr))))
+    {
+        return false;
+    }
+
+    D3D12_RESOURCE_BARRIER barrier = {};
+    barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
+    barrier.Transition.pResource = texture->GetD3DResource();
+    barrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
+    barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_COMMON; // resource must be in COMMON state before first use on copy queue
+    barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_COPY_SOURCE;
+    commandList->ResourceBarrier(1, &barrier);
+
+    {
+        D3D12_TEXTURE_COPY_LOCATION src;
+        src.pResource = texture->GetD3DResource();
+        src.SubresourceIndex = subresourceIndex;
+        src.Type = D3D12_TEXTURE_COPY_TYPE_SUBRESOURCE_INDEX;
+
+        D3D12_TEXTURE_COPY_LOCATION dest;
+        dest.pResource = readbackBuffer.Get();
+        dest.PlacedFootprint = layout;
+        dest.Type = D3D12_TEXTURE_COPY_TYPE_PLACED_FOOTPRINT;
+
+        // TODO src box
+        commandList->CopyTextureRegion(&dest, 0, 0, 0, &src, nullptr);
+    }
+
+    barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_COPY_SOURCE;
+    barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_COMMON; // resource must be in COMMON state after use on copy queue
+    commandList->ResourceBarrier(1, &barrier);
+
+    // close the command list and send it to the command queue
+    if (FAILED(D3D_CALL_CHECK(commandList->Close())))
+    {
+        return false;
+    }
+
+    ID3D12CommandList* commandLists[] = { commandList.Get() };
+    GetResourceUploadQueue()->ExecuteCommandLists(1, commandLists);
+
+    // wait for the copy to complete
+    const FencePtr fence = mResourceUploadQueueFence.Signal(mResourceUploadQueue.Get());
+    fence->Sync(builder);
+
+    builder.Fence();
+
+    // promote to shared ptr, as std::function must be copyable
+    SharedPtr<ID3D12Resource> readbackBufferShared{ std::move(readbackBuffer) };
+
+    TaskFunction func = [callback, requiredSize, rowPitch, readbackBuffer = std::move(readbackBufferShared)](const TaskContext&)
+    {
+        void* mappedData = nullptr;
+        HRESULT hr = D3D_CALL_CHECK(readbackBuffer->Map(0, NULL, &mappedData));
+
+        if (SUCCEEDED(hr))
+        {
+            // read data
+            callback(mappedData, requiredSize, rowPitch);
+
+            readbackBuffer->Unmap(0, NULL);
+        }
+        else
+        {
+            NFE_LOG_ERROR("Failed to map upload buffer");
+
+            // notify about failure by passing null
+            callback(nullptr, 0, 0);
+        }
+    };
+
+    builder.Task("ReadBuffer", std::move(func));
+
+    return true;
+    */
 }
 
 bool Device::FinishFrame()
 {
-    FencePtr fence;
-    if (mPendingFramesFences.Size() >= MaxPendingFrames)
-    {
-        fence = std::move(mPendingFramesFences.Front());
-        mPendingFramesFences.Erase(mPendingFramesFences.Begin(), mPendingFramesFences.Begin() + 1);
-    }
-
-    mPendingFramesFences.PushBack(mGraphicsQueueFence.Signal(mGraphicsQueue.Get()));
-
-    if (fence)
-    {
-        fence->Wait();
-    }
-
     return true;
-}
-
-FencePtr Device::WaitForGPU()
-{
-    return mGraphicsQueueFence.Signal(mGraphicsQueue.Get());
 }
 
 } // namespace Renderer

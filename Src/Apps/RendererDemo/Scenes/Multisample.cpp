@@ -74,8 +74,7 @@ bool MultisampleScene::CreateVertexBuffer()
     };
 
     BufferDesc vbDesc;
-    vbDesc.type = BufferType::Vertex;
-    vbDesc.mode = BufferMode::Static;
+    vbDesc.mode = ResourceAccessMode::Static;
     vbDesc.size = sizeof(vbData);
     vbDesc.initialData = vbData;
     mVertexBuffer = mRendererDevice->CreateBuffer(vbDesc);
@@ -98,7 +97,7 @@ bool MultisampleScene::CreateVertexBuffer()
 
     TextureDesc texDesc;
     texDesc.type = TextureType::Texture2D;
-    texDesc.mode = BufferMode::GPUOnly;
+    texDesc.mode = ResourceAccessMode::GPUOnly;
     texDesc.width = WINDOW_WIDTH;
     texDesc.height = WINDOW_HEIGHT;
     texDesc.mipmaps = 1;
@@ -202,7 +201,7 @@ void MultisampleScene::Draw(float dt)
     NFE_UNUSED(dt);
 
     // reset bound resources and set them once again
-    mCommandBuffer->Begin();
+    mCommandBuffer->Begin(CommandQueueType::Graphics);
     mCommandBuffer->SetViewport(0.0f, (float)WINDOW_WIDTH, 0.0f, (float)WINDOW_HEIGHT, 0.0f, 1.0f);
     mCommandBuffer->SetScissors(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
     mCommandBuffer->SetRenderTarget(mRenderTarget);
@@ -235,7 +234,7 @@ void MultisampleScene::Draw(float dt)
     mCommandBuffer->CopyTexture(mRenderTargetTexture, mWindowBackbuffer);
 
     CommandListPtr commandList = mCommandBuffer->Finish();
-    mRendererDevice->Execute(commandList);
+    mGraphicsQueue->Execute(commandList);
     mWindowBackbuffer->Present();
     mRendererDevice->FinishFrame();
 }

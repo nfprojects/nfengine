@@ -14,7 +14,7 @@ namespace Renderer {
 
 Resource::Resource(const D3D12_RESOURCE_STATES defaultState)
     : mState(defaultState)
-    , mMode(BufferMode::Invalid)
+    , mMode(ResourceAccessMode::Invalid)
 { }
 
 } // namespace Renderer

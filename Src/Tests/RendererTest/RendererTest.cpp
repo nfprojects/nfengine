@@ -5,6 +5,7 @@
 /// static members definitions
 Common::Library RendererTest::gRendererLib;
 IDevice* RendererTest::gRendererDevice = nullptr;
+CommandQueuePtr RendererTest::gMainCommandQueue;
 
 void RendererTest::SetUpTestCase()
 {
@@ -19,10 +20,14 @@ void RendererTest::SetUpTestCase()
     params.debugLevel = gDebugLevel;
     gRendererDevice = proc(&params);
     ASSERT_TRUE(gRendererDevice != nullptr);
+
+    gMainCommandQueue = gRendererDevice->CreateCommandQueue(CommandQueueType::Graphics);
 }
 
 void RendererTest::TearDownTestCase()
 {
+    gMainCommandQueue.Reset();
+
     if (gRendererDevice != nullptr)
     {
         gRendererDevice = nullptr;

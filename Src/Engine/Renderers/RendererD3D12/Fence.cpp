@@ -8,6 +8,7 @@
 #include "Fence.hpp"
 #include "RendererD3D12.hpp"
 #include "CommandListManager.hpp"
+#include "Device.hpp"
 
 #include "Engine/Common/Utils/ScopedLock.hpp"
 #include "Engine/Common/Utils/ThreadPool.hpp"
@@ -23,8 +24,6 @@ using namespace Common;
 FenceData::FenceData()
     : mLastSignaledValue(InitialValue)
     , mLastCompletedValue(InitialValue)
-    , mWaitEvent(INVALID_HANDLE_VALUE)
-    , mFenceManager(nullptr)
 {
 }
 
@@ -36,33 +35,18 @@ FenceData::~FenceData()
 void FenceData::Release()
 {
     mFenceObject.Reset();
-
-    if (mWaitEvent != INVALID_HANDLE_VALUE)
-    {
-        ::CloseHandle(mWaitEvent);
-        mWaitEvent = INVALID_HANDLE_VALUE;
-    }
 }
 
-bool FenceData::Init(FenceManager* fenceManager, Device* device)
+bool FenceData::Init()
 {
-    mFenceManager = fenceManager;
-    mFenceManager->RegisterFenceData(this);
-
-    HRESULT hr = D3D_CALL_CHECK(device->GetDevice()->CreateFence(InitialValue, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(mFenceObject.GetPtr())));
+    HRESULT hr = D3D_CALL_CHECK(gDevice->GetDevice()->CreateFence(InitialValue, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(mFenceObject.GetPtr())));
     if (FAILED(hr))
     {
         NFE_LOG_ERROR("Failed to create D3D12 fence object");
         return false;
     }
 
-    // Create an event handle to use for frame synchronization.
-    mWaitEvent = ::CreateEvent(nullptr, FALSE, FALSE, L"NFE::Renderer::FenceData::mWaitEvent");
-    if (mWaitEvent == INVALID_HANDLE_VALUE)
-    {
-        NFE_LOG_ERROR("Failed to create fence event object");
-        return false;
-    }
+    gDevice->GetFenceManager().RegisterFenceData(this);
 
     return true;
 }
@@ -77,30 +61,7 @@ uint64 FenceData::GetCompletedValue() const
     return mFenceObject->GetCompletedValue();
 }
 
-uint64 FenceData::SignalValue(ID3D12CommandQueue* queue)
-{
-    NFE_ASSERT(mFenceObject, "Fence object not created");
-
-    FencePtr fence;
-
-    uint64 fenceValue;
-    {
-        // force ordering of fence values passed to Signal()
-        NFE_SCOPED_LOCK(mLock);
-
-        fenceValue = ++mLastSignaledValue;
-
-        if (FAILED(D3D_CALL_CHECK(queue->Signal(mFenceObject.Get(), fenceValue))))
-        {
-            NFE_LOG_ERROR("Failed to enqueue fence value update");
-            fenceValue = InvalidValue;
-        }
-    }
-
-    return fenceValue;
-}
-
-FencePtr FenceData::Signal(ID3D12CommandQueue* queue)
+uint64 FenceData::Signal(ID3D12CommandQueue* queue, FencePtr* outFencePtr)
 {
     NFE_ASSERT(mFenceObject, "Fence object not created");
 
@@ -113,19 +74,22 @@ FencePtr FenceData::Signal(ID3D12CommandQueue* queue)
 
         fenceValue = ++mLastSignaledValue;
 
-        fence = MakeSharedPtr<Fence>(fenceValue);
+        if (outFencePtr)
+        {
+            fence = MakeSharedPtr<Fence>(fenceValue, mFenceObject.Get());
+            *outFencePtr = fence;
+        }
 
         // add to pending list before signaling it
-        mFenceManager->OnFenceRequested(this, fenceValue, fence);
+        gDevice->GetFenceManager().OnFenceRequested(this, fenceValue, fence);
 
         if (FAILED(D3D_CALL_CHECK(queue->Signal(mFenceObject.Get(), fenceValue))))
         {
             NFE_LOG_ERROR("Failed to enqueue fence value update");
-            return nullptr;
+            return InvalidValue;
         }
     }
-
-    return fence;
+    return fenceValue;
 }
 
 void FenceData::OnValueCompleted(uint64 completedValue)
@@ -147,9 +111,10 @@ void FenceData::OnValueCompleted(uint64 completedValue)
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-Fence::Fence(uint64 fenceValue)
+Fence::Fence(uint64 fenceValue, ID3D12Fence* fenceObject)
     : mIsFinished(false)
     , mFenceValue(fenceValue)
+    , mFenceObject(fenceObject)
 {
     TaskDesc desc;
     desc.debugName = "NFE::Renderer::Fence::mDependencyTask";
@@ -198,20 +163,30 @@ void Fence::Sync(TaskBuilder& taskBuilder)
 FenceManager::FenceManager()
     : mFinish(false)
     , mLoopEvent(INVALID_HANDLE_VALUE)
+    , mFenceWaitEvent(INVALID_HANDLE_VALUE)
 {
 }
 
 FenceManager::~FenceManager()
 {
-    mFinish = true;
+    NFE_ASSERT(mFinish, "Fence manager must be finished");
 }
 
-void FenceManager::Initialize()
+bool FenceManager::Initialize()
 {
     mLoopEvent = ::CreateEvent(nullptr, FALSE, FALSE, L"NFE::Renderer::FenceManager::mLoopEvent");
     if (mLoopEvent == INVALID_HANDLE_VALUE)
     {
-        return;
+        NFE_LOG_ERROR("Failed to create event object");
+        return false;
+    }
+
+    // Create an event handle to use for frame synchronization.
+    mFenceWaitEvent = ::CreateEvent(nullptr, FALSE, FALSE, L"NFE::Renderer::FenceData::mWaitEvent");
+    if (mFenceWaitEvent == INVALID_HANDLE_VALUE)
+    {
+        NFE_LOG_ERROR("Failed to create fence event object");
+        return false;
     }
 
     mThread.RunFunction([this]()
@@ -219,6 +194,8 @@ void FenceManager::Initialize()
         Loop();
     });
     mThread.SetName("NFE::Renderer::FenceManager");
+
+    return true;
 }
 
 void FenceManager::Uninitialize()
@@ -227,6 +204,18 @@ void FenceManager::Uninitialize()
     ::SetEvent(mLoopEvent);
 
     mThread.Wait();
+
+    if (mLoopEvent != INVALID_HANDLE_VALUE)
+    {
+        ::CloseHandle(mLoopEvent);
+        mLoopEvent = INVALID_HANDLE_VALUE;
+    }
+
+    if (mFenceWaitEvent != INVALID_HANDLE_VALUE)
+    {
+        ::CloseHandle(mFenceWaitEvent);
+        mFenceWaitEvent = INVALID_HANDLE_VALUE;
+    }
 }
 
 void FenceManager::OnFenceRequested(FenceData* fenceData, uint64 value, const FencePtr& fence)
@@ -246,7 +235,10 @@ void FenceManager::OnFenceRequested(FenceData* fenceData, uint64 value, const Fe
     PendingFences newPendingFencesList;
     newPendingFencesList.fenceData = fenceData;
     newPendingFencesList.value = value;
-    newPendingFencesList.fences.PushBack(fence);
+    if (fence)
+    {
+        newPendingFencesList.fences.PushBack(fence);
+    }
     mPendingFences.PushBack(std::move(newPendingFencesList));
 
     ::SetEvent(mLoopEvent);
@@ -254,36 +246,64 @@ void FenceManager::OnFenceRequested(FenceData* fenceData, uint64 value, const Fe
 
 void FenceManager::RegisterFenceData(const FenceData* fenceData)
 {
+    NFE_SCOPED_LOCK(mFenceDataLock);
+
     mFenceData.PushBack(fenceData);
+}
+
+void FenceManager::UnregisterFenceData(const FenceData* fenceData)
+{
+    NFE_SCOPED_LOCK(mFenceDataLock);
+
+    // TODO command queue
+    NFE_UNUSED(fenceData);
 }
 
 void FenceManager::Loop()
 {
-    constexpr uint32 MaxEvents = 8;
-    static_assert(MaxEvents <= MAXIMUM_WAIT_OBJECTS, "Too many events");
-    StaticArray<HANDLE, MaxEvents> events;
+    constexpr uint32 MaxFences = 8;
+    StaticArray<ID3D12Fence*, MaxFences> fencesToWait;
+    StaticArray<uint64, MaxFences> valuesToWait;
 
     while (!mFinish)
     {
         // build list of events to wait on
         {
-            events.Clear();
+            fencesToWait.Clear();
+            valuesToWait.Clear();
 
-            events.PushBack(mLoopEvent);
+            NFE_SCOPED_SHARED_LOCK(mFenceDataLock);
 
             for (const FenceData* fenceData : mFenceData)
             {
-                HANDLE handle = fenceData->mWaitEvent;
-                uint64 expectedValue = fenceData->mLastSignaledValue;
-                fenceData->mFenceObject->SetEventOnCompletion(expectedValue, handle);
-                events.PushBack(handle);
+                // only wait for pending fences
+                if (fenceData->mLastSignaledValue > fenceData->mLastCompletedValue)
+                {
+                    const uint64 expectedValue = fenceData->mLastCompletedValue + 1;
+                    fencesToWait.PushBack(fenceData->mFenceObject.Get());
+                    valuesToWait.PushBack(expectedValue);
+                }
             }
         }
 
-        uint32 timeout = 1000;
+        if (!fencesToWait.Empty())
+        {
+            // TODO this may crash if command queue is destroyed in the meantime
+            // we should keep fence object reference here
+            HRESULT hr = D3D_CALL_CHECK(gDevice->GetDevice()->SetEventOnMultipleFenceCompletion(
+                fencesToWait.Data(), valuesToWait.Data(), fencesToWait.Size(), D3D12_MULTIPLE_FENCE_WAIT_FLAG_ANY, mFenceWaitEvent));
+            if (FAILED(hr))
+            {
+                NFE_LOG_ERROR("FenceManager: Failed to setup wait event on %u fences, error code: %u", fencesToWait.Size(), hr);
+            }
+        }
+
+        uint32 timeout = 10000;
 
         ::SetLastError(0);
-        const DWORD waitResult = ::WaitForMultipleObjects(events.Size(), events.Data(), false, timeout);
+        const HANDLE events[] = { mLoopEvent, mFenceWaitEvent };
+        const uint32 numEvents = fencesToWait.Empty() ? 1u : 2u;
+        const DWORD waitResult = ::WaitForMultipleObjects(numEvents, events, false, timeout);
 
         if (waitResult == WAIT_FAILED)
         {
@@ -297,7 +317,11 @@ void FenceManager::Loop()
             continue;
         }
 
-        FlushFinishedFences();
+        // flush fences only when mFenceWaitEvent triggered
+        if (!fencesToWait.Empty() && waitResult == 1u)
+        {
+            FlushFinishedFences();
+        }
     }
 }
 
@@ -305,14 +329,12 @@ void FenceManager::FlushFinishedFences()
 {
     NFE_SCOPED_LOCK(mPendingFencesLock);
 
-    // TODO this is a bit lame...
-    // could at least use event index returned from WaitForMultipleObjects to narrow the search
-
     for (uint32 i = 0; i < mPendingFences.Size(); ++i)
     {
         PendingFences& pendingFencesList = mPendingFences[i];
 
         const uint64 completedValue = pendingFencesList.fenceData->GetCompletedValue();
+        NFE_ASSERT(completedValue >= pendingFencesList.fenceData->mLastCompletedValue, "Invalid completed fence value");
 
         if (completedValue < pendingFencesList.value)
         {

@@ -31,6 +31,7 @@
     </ClCompile>
     <ClCompile Include="Common.cpp" />
     <ClCompile Include="ResourceState.cpp" />
+    <ClCompile Include="CommandQueue.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Backbuffer.hpp" />
@@ -65,6 +66,7 @@
     </ClInclude>
     <ClInclude Include="Common.hpp" />
     <ClInclude Include="ResourceState.hpp" />
+    <ClInclude Include="CommandQueue.hpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="D:\DEV\EXTERNAL\DirectX-Graphics-Samples\Libraries\D3DX12\readme.md" />

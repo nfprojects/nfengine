@@ -24,6 +24,10 @@ Buffer::~Buffer()
 
 bool Buffer::UploadData(const BufferDesc& desc)
 {
+    NFE_UNUSED(desc);
+
+    /*
+
     // Create temporary upload buffer on upload heap
 
     D3D12_HEAP_PROPERTIES heapProperties;
@@ -60,6 +64,10 @@ bool Buffer::UploadData(const BufferDesc& desc)
                                                                       D3D12_RESOURCE_STATE_GENERIC_READ,
                                                                       nullptr,
                                                                       IID_PPV_ARGS(uploadBuffer.GetPtr())));
+    if (FAILED(hr))
+    {
+        return false;
+    }
 
     if (desc.debugName)
     {
@@ -69,10 +77,6 @@ bool Buffer::UploadData(const BufferDesc& desc)
             NFE_LOG_WARNING("Failed to set debug name");
         }
     }
-
-    if (FAILED(hr))
-        return false;
-
 
     if (desc.initialData)
     {
@@ -148,18 +152,13 @@ bool Buffer::UploadData(const BufferDesc& desc)
         // then the command list and allocator must come from command list manager
         gDevice->mResourceUploadQueueFence.Signal(gDevice->mResourceUploadQueue.Get())->Wait();
     }
+    */
 
     return true;
 }
 
 bool Buffer::Init(const BufferDesc& desc)
 {
-    if (desc.mode == BufferMode::GPUOnly || desc.mode == BufferMode::Readback)
-    {
-        NFE_LOG_ERROR("This access mode is not supported yet.");
-        return false;
-    }
-
     if (desc.size == 0)
     {
         NFE_LOG_ERROR("Cannot create zero-sized buffer");
@@ -168,10 +167,9 @@ bool Buffer::Init(const BufferDesc& desc)
 
     // buffer size is required to be 256-byte aligned
     mSize = static_cast<uint32>(desc.size);
-    mType = desc.type;
     mMode = desc.mode;
 
-    if (desc.mode == BufferMode::Volatile)
+    if (desc.mode == ResourceAccessMode::Volatile)
     {
         // volatile buffers are handled via ring buffer
         return true;
@@ -191,12 +189,35 @@ bool Buffer::Init(const BufferDesc& desc)
     resourceDesc.Flags = D3D12_RESOURCE_FLAG_NONE;
 
     D3D12MA::ALLOCATION_DESC allocationDesc = {};
-    allocationDesc.HeapType = D3D12_HEAP_TYPE_DEFAULT;
+    D3D12_RESOURCE_STATES initialState = D3D12_RESOURCE_STATE_COMMON;
+
+    if (desc.mode == ResourceAccessMode::GPUOnly || desc.mode == ResourceAccessMode::Static)
+    {
+        initialState = D3D12_RESOURCE_STATE_COMMON;
+        allocationDesc.HeapType = D3D12_HEAP_TYPE_DEFAULT;
+    }
+    else if (desc.mode == ResourceAccessMode::Upload)
+    {
+        initialState = D3D12_RESOURCE_STATE_GENERIC_READ;
+        allocationDesc.HeapType = D3D12_HEAP_TYPE_UPLOAD;
+    }
+    else if (desc.mode == ResourceAccessMode::Readback)
+    {
+        initialState = D3D12_RESOURCE_STATE_COPY_DEST;
+        allocationDesc.HeapType = D3D12_HEAP_TYPE_READBACK;
+    }
+    else
+    {
+        NFE_FATAL("Invalid resource access mode");
+        return false;
+    }
+
+    mState = initialState;
 
     HRESULT hr = D3D_CALL_CHECK(gDevice->GetAllocator()->CreateResource(
         &allocationDesc,
         &resourceDesc,
-        D3D12_RESOURCE_STATE_COMMON,
+        initialState,
         nullptr,
         mAllocation.GetPtr(),
         IID_PPV_ARGS(mResource.GetPtr())));
@@ -214,12 +235,36 @@ bool Buffer::Init(const BufferDesc& desc)
     // write initial data if provided
     if (desc.initialData)
     {
-        if (!UploadData(desc))
+        if (desc.mode == ResourceAccessMode::GPUOnly || desc.mode == ResourceAccessMode::Static)
         {
+            if (!UploadData(desc))
+            {
+                return false;
+            }
+        }
+        else if (desc.mode == ResourceAccessMode::Upload)
+        {
+            void* mappedData = nullptr;
+            hr = D3D_CALL_CHECK(mResource->Map(0, NULL, &mappedData));
+
+            if (SUCCEEDED(hr))
+            {
+                memcpy(mappedData, desc.initialData, desc.size);
+                mResource->Unmap(0, NULL);
+            }
+            else
+            {
+                NFE_LOG_ERROR("Failed to map upload buffer");
+                return false;
+            }
+        }
+        else if (desc.mode == ResourceAccessMode::Readback)
+        {
+            NFE_LOG_ERROR("Readback buffers can't have initial data specified");
             return false;
         }
     }
-    else if (desc.mode == BufferMode::Static)
+    else if (desc.mode == ResourceAccessMode::Static)
     {
         NFE_LOG_ERROR("Initial data for static buffer was not provided.");
         return false;

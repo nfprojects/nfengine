@@ -135,6 +135,7 @@ COPY "$(WindowsSdkDir)redist\d3d\x64\dxil.dll" "$(SolutionDir)Bin\$(Platform)\$(
     <ClCompile Include="Backbuffer.cpp" />
     <ClCompile Include="CommandList.cpp" />
     <ClCompile Include="CommandListManager.cpp" />
+    <ClCompile Include="CommandQueue.cpp" />
     <ClCompile Include="Common.cpp" />
     <ClCompile Include="ComputePipelineState.cpp" />
     <ClCompile Include="Fence.cpp" />
@@ -178,6 +179,7 @@ COPY "$(WindowsSdkDir)redist\d3d\x64\dxil.dll" "$(SolutionDir)Bin\$(Platform)\$(
     <ClInclude Include="..\..\..\..\Deps\D3D12MemoryAllocator\src\D3D12MemAlloc.h" />
     <ClInclude Include="Backbuffer.hpp" />
     <ClInclude Include="Buffer.hpp" />
+    <ClInclude Include="CommandQueue.hpp" />
     <ClInclude Include="CommandRecorder.hpp" />
     <ClInclude Include="CommandList.hpp" />
     <ClInclude Include="CommandListManager.hpp" />

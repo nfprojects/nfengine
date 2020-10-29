@@ -40,21 +40,21 @@ class MultithreadedScene : public Scene
     int mVSBindingSlot;
 
     // cbuffer mode
-    NFE::Renderer::BufferMode mCBufferMode;
+    NFE::Renderer::ResourceAccessMode mCBufferMode;
 
     // Releases only subscene-related resources. Backbuffer, RT and BlendState stay intact.
     void ReleaseSubsceneResources() override;
 
     // Resource creators for subscenes
     bool CreateCommandRecorders();
-    bool CreateShaders(NFE::Renderer::BufferMode cbufferMode);
+    bool CreateShaders(NFE::Renderer::ResourceAccessMode cbufferMode);
     bool CreateVertexBuffer();
     bool CreateIndexBuffer();
-    bool CreateConstantBuffer(NFE::Renderer::BufferMode cbufferMode);
+    bool CreateConstantBuffer(NFE::Renderer::ResourceAccessMode cbufferMode);
 
     // Subscenes
     bool CreateSubSceneEmpty();
-    bool CreateSubSceneNormal(NFE::Renderer::BufferMode cbufferMode, int gridSize);
+    bool CreateSubSceneNormal(NFE::Renderer::ResourceAccessMode cbufferMode, int gridSize);
 
     // drawing task (will be called from thread pool)
     void DrawTask(const NFE::Common::TaskContext& ctx, int i, int j);

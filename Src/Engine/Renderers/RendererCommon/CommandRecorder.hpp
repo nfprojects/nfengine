@@ -24,6 +24,7 @@
 namespace NFE {
 namespace Renderer {
 
+enum class CommandQueueType : uint8;
 
 /**
  * Recorded command list, ready to execute.
@@ -88,7 +89,7 @@ public:
      *
      * @return True on success.
      */
-    virtual bool Begin() = 0;
+    virtual bool Begin(CommandQueueType queueType) = 0;
 
     /**
      * Store all recorded commands to a command list and turn the command recorder into
@@ -121,6 +122,16 @@ public:
      * @return true on success.
      */
     virtual bool WriteTexture(const TexturePtr& texture, const void* data, const TextureWriteParams* writeParams = nullptr) = 0;
+
+    /**
+     * Copy contents of buffer @p src to @p dest.
+     * @param src           Source buffer object
+     * @param dest          Destination buffer object
+     * @param size          Number of bytes to copy. If zero specified, source buffer size is assumed
+     * @param srcOffset     Offset in source buffer, in bytes
+     * @param destOffset    Offset in destination buffer, in bytes
+     */
+    virtual void CopyBuffer(const BufferPtr& src, const BufferPtr& dest, size_t size = 0, size_t srcOffset = 0, size_t destOffset = 0) = 0;
 
     /**
      * Copy contents of texture @p src to @p dest.

@@ -19,7 +19,11 @@ namespace Renderer {
  */
 class NFE_RENDERER_COMMON_API IFence
 {
+    NFE_MAKE_NONCOPYABLE(IFence)
+    NFE_MAKE_NONMOVEABLE(IFence)
+
 public:
+    IFence() = default;
     virtual ~IFence();
 
     /**

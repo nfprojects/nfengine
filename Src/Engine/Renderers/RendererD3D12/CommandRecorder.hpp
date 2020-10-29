@@ -27,7 +27,7 @@ class PipelineState;
 class ComputePipelineState;
 class Buffer;
 class InternalCommandList;
-
+enum class CommandQueueType : uint8;
 
 class CommandRecorder : public ICommandRecorder
 {
@@ -35,11 +35,12 @@ public:
     CommandRecorder();
     ~CommandRecorder();
 
-    bool Begin() override;
+    bool Begin(CommandQueueType queueType) override;
     CommandListPtr Finish() override;
 
     bool WriteBuffer(const BufferPtr& buffer, size_t offset, size_t size, const void* data) override;
     bool WriteTexture(const TexturePtr& texture, const void* data, const TextureWriteParams* writeParams) override;
+    void CopyBuffer(const BufferPtr& src, const BufferPtr& dest, size_t size, size_t srcOffset, size_t destOffset) override;
     void CopyTexture(const TexturePtr& src, const TexturePtr& dest) override;
     void CopyTexture(const TexturePtr& src, const BackbufferPtr& dest) override;
 
@@ -146,7 +147,7 @@ private:
 
     ReferencedResourcesList& Internal_GetReferencedResources();
 
-
+    CommandQueueType mQueueType;
     InternalCommandListPtr mCommandListObject;
     ID3D12GraphicsCommandList* mCommandList; // cached D3D12 command list pointer
 

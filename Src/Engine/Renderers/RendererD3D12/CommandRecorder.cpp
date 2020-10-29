@@ -4,13 +4,10 @@
  * @brief   D3D12 implementation of renderer's command recorder
  */
 
-// TODO:
-// 1. Improve logging, but be careful - functions from this source file will be called thousands
-//    times per frame. Too much messages could flood a logger output.
-
 #include "PCH.hpp"
 #include "CommandRecorder.hpp"
 #include "CommandListManager.hpp"
+#include "CommandQueue.hpp"
 #include "RendererD3D12.hpp"
 #include "Buffer.hpp"
 #include "RenderTarget.hpp"
@@ -27,6 +24,7 @@ namespace Renderer {
 CommandRecorder::CommandRecorder()
     : mCommandList(nullptr)
     , mCommandListObject(nullptr)
+    , mQueueType(CommandQueueType::Invalid)
 {
     ResetState();
 }
@@ -36,14 +34,16 @@ CommandRecorder::~CommandRecorder()
     NFE_ASSERT(mCommandList == nullptr, "Finish() not called before command buffer destruction");
 }
 
-bool CommandRecorder::Begin()
+bool CommandRecorder::Begin(CommandQueueType queueType)
 {
     NFE_ASSERT(mCommandList == nullptr, "Command recorder is already in recording state");
 
     mResourceStateCache.OnBeginCommandBuffer();
 
+    mQueueType = queueType;
+
     // get a free command list from the command list manager
-    mCommandListObject = gDevice->GetCommandListManager()->RequestCommandList();
+    mCommandListObject = gDevice->GetCommandListManager()->RequestCommandList(queueType);
     if (!mCommandListObject)
     {
         NFE_LOG_ERROR("Failed to optain command list");
@@ -54,11 +54,14 @@ bool CommandRecorder::Begin()
     mCommandList = mCommandListObject->GetD3DCommandList();
     NFE_ASSERT(mCommandList, "Invalid command list returned");
 
-    ID3D12DescriptorHeap* heaps[] =
+    if (mQueueType != CommandQueueType::Copy)
     {
-        gDevice->GetCbvSrvUavHeapAllocator().GetHeap(),
-    };
-    mCommandList->SetDescriptorHeaps(1, heaps);
+        ID3D12DescriptorHeap* heaps[] =
+        {
+            gDevice->GetCbvSrvUavHeapAllocator().GetHeap(),
+        };
+        mCommandList->SetDescriptorHeaps(1, heaps);
+    }
 
     ResetState();
 
@@ -121,6 +124,8 @@ CommandListPtr CommandRecorder::Finish()
     // pass resource states to the command list object
     mResourceStateCache.OnFinishCommandBuffer(mCommandListObject->mInitialResourceStates, mCommandListObject->mFinalResourceStates);
 
+    mQueueType = CommandQueueType::Invalid;
+
     HRESULT hr = D3D_CALL_CHECK(mCommandList->Close());
     if (FAILED(hr))
     {
@@ -147,6 +152,8 @@ ReferencedResourcesList& CommandRecorder::Internal_GetReferencedResources()
 
 void CommandRecorder::SetViewport(float left, float width, float top, float height, float minDepth, float maxDepth)
 {
+    NFE_ASSERT(mQueueType == CommandQueueType::Graphics, "Invalid queue type");
+
     D3D12_VIEWPORT viewport;
     viewport.TopLeftX = left;
     viewport.TopLeftY = top;
@@ -159,6 +166,8 @@ void CommandRecorder::SetViewport(float left, float width, float top, float heig
 
 void CommandRecorder::SetScissors(int32 left, int32 top, int32 right, int32 bottom)
 {
+    NFE_ASSERT(mQueueType == CommandQueueType::Graphics, "Invalid queue type");
+
     D3D12_RECT rect;
     rect.left = left;
     rect.top = top;
@@ -170,6 +179,7 @@ void CommandRecorder::SetScissors(int32 left, int32 top, int32 right, int32 bott
 void CommandRecorder::SetVertexBuffers(uint32 num, const BufferPtr* vertexBuffers, uint32* strides, uint32* offsets)
 {
     NFE_ASSERT(num < NFE_RENDERER_MAX_VERTEX_BUFFERS, "Too many vertex buffers");
+    NFE_ASSERT(mQueueType == CommandQueueType::Graphics, "Invalid queue type");
 
     for (uint32 i = 0; i < num; ++i)
     {
@@ -200,6 +210,8 @@ void CommandRecorder::SetVertexBuffers(uint32 num, const BufferPtr* vertexBuffer
 
 void CommandRecorder::SetIndexBuffer(const BufferPtr& indexBuffer, IndexBufferFormat format)
 {
+    NFE_ASSERT(mQueueType == CommandQueueType::Graphics, "Invalid queue type");
+
     mCurrIndexBufferView.BufferLocation = 0;
     mCurrIndexBufferView.SizeInBytes = 0;
 
@@ -371,13 +383,15 @@ void CommandRecorder::BindVolatileCBuffer(PipelineType pipelineType, uint32 slot
     NFE_ASSERT(slot < NFE_RENDERER_MAX_VOLATILE_CBUFFERS, "Invalid volatile buffer slot number");
 
     const Buffer* bufferPtr = static_cast<Buffer*>(buffer.Get());
-    NFE_ASSERT(bufferPtr->GetMode() == BufferMode::Volatile, "Buffer mode must be volatile");
+    NFE_ASSERT(bufferPtr->GetMode() == ResourceAccessMode::Volatile, "Buffer mode must be volatile");
 
     bindingState.volatileCBuffers[slot] = bufferPtr;
 }
 
 void CommandRecorder::SetRenderTarget(const RenderTargetPtr& renderTarget)
 {
+    NFE_ASSERT(mQueueType == CommandQueueType::Graphics, "Invalid queue type");
+
     if (mCurrRenderTarget == renderTarget.Get())
         return;
 
@@ -468,18 +482,21 @@ void CommandRecorder::SetPipelineState(const PipelineStatePtr& state)
 
 void CommandRecorder::SetStencilRef(uint8 ref)
 {
+    NFE_ASSERT(mQueueType == CommandQueueType::Graphics, "Invalid queue type");
+
     mCommandList->OMSetStencilRef(ref);
 }
 
 void CommandRecorder::Internal_WriteDynamicBuffer(Buffer* buffer, size_t offset, size_t size, const void* data)
 {
-    RingBuffer& ringBuffer = gDevice->GetRingBuffer();
+    RingBuffer* ringBuffer = gDevice->GetRingBuffer();
+    NFE_ASSERT(ringBuffer, "No ring buffer");
 
-    size_t ringBufferOffset = ringBuffer.Allocate(size, D3D12_CONSTANT_BUFFER_DATA_PLACEMENT_ALIGNMENT);
+    size_t ringBufferOffset = ringBuffer->Allocate(size, D3D12_CONSTANT_BUFFER_DATA_PLACEMENT_ALIGNMENT);
     NFE_ASSERT(ringBufferOffset != RingBuffer::INVALID_OFFSET, "Ring buffer allocation failed");
 
     // copy data from CPU memory to staging ring buffer
-    char* cpuPtr = reinterpret_cast<char*>(ringBuffer.GetCpuAddress());
+    char* cpuPtr = reinterpret_cast<char*>(ringBuffer->GetCpuAddress());
     cpuPtr += ringBufferOffset;
     memcpy(cpuPtr, data, size);
 
@@ -488,23 +505,24 @@ void CommandRecorder::Internal_WriteDynamicBuffer(Buffer* buffer, size_t offset,
 
     // copy data from staging ring buffer to the target buffer
     mCommandList->CopyBufferRegion(buffer->GetResource(), static_cast<UINT64>(offset),
-                                   ringBuffer.GetD3DResource(), static_cast<UINT64>(ringBufferOffset),
+                                   ringBuffer->GetD3DResource(), static_cast<UINT64>(ringBufferOffset),
                                    static_cast<UINT64>(size));
 }
 
 void CommandRecorder::Internal_WriteVolatileBuffer(Buffer* buffer, const void* data)
 {
-    RingBuffer& ringBuffer = gDevice->GetRingBuffer();
+    RingBuffer* ringBuffer = gDevice->GetRingBuffer();
+    NFE_ASSERT(ringBuffer, "No ring buffer");
 
-    size_t ringBufferOffset = ringBuffer.Allocate(buffer->GetSize(), D3D12_CONSTANT_BUFFER_DATA_PLACEMENT_ALIGNMENT);
+    size_t ringBufferOffset = ringBuffer->Allocate(buffer->GetSize(), D3D12_CONSTANT_BUFFER_DATA_PLACEMENT_ALIGNMENT);
     NFE_ASSERT(ringBufferOffset != RingBuffer::INVALID_OFFSET, "Ring buffer allocation failed");
 
     // copy data from CPU memory to ring buffer
-    char* cpuPtr = reinterpret_cast<char*>(ringBuffer.GetCpuAddress());
+    char* cpuPtr = reinterpret_cast<char*>(ringBuffer->GetCpuAddress());
     cpuPtr += ringBufferOffset;
     memcpy(cpuPtr, data, buffer->GetSize());
 
-    D3D12_GPU_VIRTUAL_ADDRESS gpuPtr = ringBuffer.GetGpuAddress();
+    D3D12_GPU_VIRTUAL_ADDRESS gpuPtr = ringBuffer->GetGpuAddress();
     gpuPtr += ringBufferOffset;
 
     Internal_UpdateGraphicsResourceBindingLayout();
@@ -551,7 +569,7 @@ bool CommandRecorder::WriteBuffer(const BufferPtr& buffer, size_t offset, size_t
 
     Internal_GetReferencedResources().buffers.Insert(buffer);
 
-    if (bufferPtr->GetMode() == BufferMode::Dynamic)
+    if (bufferPtr->GetMode() == ResourceAccessMode::GPUOnly || bufferPtr->GetMode() == ResourceAccessMode::Static)
     {
         if (size > bufferPtr->GetSize())
         {
@@ -561,7 +579,7 @@ bool CommandRecorder::WriteBuffer(const BufferPtr& buffer, size_t offset, size_t
 
         Internal_WriteDynamicBuffer(bufferPtr, offset, size, data);
     }
-    else if (bufferPtr->GetMode() == BufferMode::Volatile)
+    else if (bufferPtr->GetMode() == ResourceAccessMode::Volatile)
     {
         NFE_ASSERT(offset == 0, "Offset not supported");
         NFE_ASSERT(size == bufferPtr->GetSize(), "Size must cover the whole buffer");
@@ -570,18 +588,60 @@ bool CommandRecorder::WriteBuffer(const BufferPtr& buffer, size_t offset, size_t
     }
     else
     {
-        NFE_LOG_ERROR("Specified buffer can not be CPU-written");
+        NFE_FATAL("Specified buffer can not be CPU-written");
         return false;
     }
 
     return true;
 }
 
+void CommandRecorder::CopyBuffer(const BufferPtr& src, const BufferPtr& dest, size_t size, size_t srcOffset, size_t destOffset)
+{
+    Buffer* srcBuffer = static_cast<Buffer*>(src.Get());
+    NFE_ASSERT(srcBuffer, "Invalid buffer");
+
+    Buffer* destBuffer = static_cast<Buffer*>(dest.Get());
+    NFE_ASSERT(destBuffer, "Invalid buffer");
+
+    Internal_GetReferencedResources().buffers.Insert(src);
+    Internal_GetReferencedResources().buffers.Insert(dest);
+
+    if (srcBuffer->GetMode() != ResourceAccessMode::Upload &&
+        srcBuffer->GetMode() != ResourceAccessMode::Static &&
+        srcBuffer->GetMode() != ResourceAccessMode::GPUOnly)
+    {
+        NFE_FATAL("Invalid source buffer access mode");
+    }
+
+    if (destBuffer->GetMode() != ResourceAccessMode::GPUOnly &&
+        destBuffer->GetMode() != ResourceAccessMode::Readback)
+    {
+        NFE_FATAL("Invalid destination buffer access mode");
+    }
+
+    if (size == 0)
+    {
+        size = srcBuffer->GetSize();
+    }
+
+    NFE_ASSERT(srcOffset + size <= srcBuffer->GetSize(), "Out of source buffer range: offset=%u, readSize=%u, bufferSize=%u", srcOffset, size, srcBuffer->GetSize());
+    NFE_ASSERT(destOffset + size <= destBuffer->GetSize(), "Out of destination buffer range: offset=%u, readSize=%u, bufferSize=%u", destOffset, size, destBuffer->GetSize());
+
+    mResourceStateCache.EnsureResourceState(srcBuffer, D3D12_RESOURCE_STATE_COPY_SOURCE);
+    mResourceStateCache.EnsureResourceState(destBuffer, D3D12_RESOURCE_STATE_COPY_DEST);
+    mResourceStateCache.FlushPendingBarriers(mCommandList);
+
+    mCommandList->CopyBufferRegion(
+        destBuffer->GetResource(), srcOffset,
+        srcBuffer->GetResource(), destOffset,
+        size);
+}
+
 bool CommandRecorder::WriteTexture(const TexturePtr& texture, const void* data, const TextureWriteParams* writeParams)
 {
     Texture* texturePtr = static_cast<Texture*>(texture.Get());
     NFE_ASSERT(texturePtr, "Invalid texture");
-    NFE_ASSERT(texturePtr->GetMode() == BufferMode::Dynamic || texturePtr->GetMode() == BufferMode::GPUOnly, "Invalid texture type");
+    NFE_ASSERT(texturePtr->GetMode() == ResourceAccessMode::GPUOnly, "Invalid texture type");
 
     uint32 targetMipmap = 0u, targetLayer = 0u;
     uint32 writeX = 0u, writeY = 0u, writeZ = 0u;
@@ -642,16 +702,18 @@ bool CommandRecorder::WriteTexture(const TexturePtr& texture, const void* data, 
     subresourceFootprint.Depth = writeDepth;
     subresourceFootprint.RowPitch = (srcRowSize + D3D12_TEXTURE_DATA_PITCH_ALIGNMENT - 1u) & ~(D3D12_TEXTURE_DATA_PITCH_ALIGNMENT - 1u);
 
-    RingBuffer& ringBuffer = gDevice->GetRingBuffer();
+    RingBuffer* ringBuffer = gDevice->GetRingBuffer();
+    NFE_ASSERT(ringBuffer, "No ring buffer");
+
     size_t ringBufferOffset = 0;
     {
         // texture data must be aligned to 512 bytes
         const size_t totalBytes = (size_t)writeDepth * (size_t)writeHeight * (size_t)subresourceFootprint.RowPitch;
-        ringBufferOffset = ringBuffer.Allocate(totalBytes, D3D12_TEXTURE_DATA_PLACEMENT_ALIGNMENT);
+        ringBufferOffset = ringBuffer->Allocate(totalBytes, D3D12_TEXTURE_DATA_PLACEMENT_ALIGNMENT);
         NFE_ASSERT(ringBufferOffset != RingBuffer::INVALID_OFFSET, "Ring buffer allocation failed");
 
         // copy data from CPU memory to staging ring buffer
-        uint8* destCpuPtr = reinterpret_cast<uint8*>(ringBuffer.GetCpuAddress()) + ringBufferOffset;
+        uint8* destCpuPtr = reinterpret_cast<uint8*>(ringBuffer->GetCpuAddress()) + ringBufferOffset;
         const uint8* srcCpuPtr = reinterpret_cast<const uint8*>(data);
 
         for (uint32 z = 0; z < writeDepth; ++z)
@@ -670,7 +732,7 @@ bool CommandRecorder::WriteTexture(const TexturePtr& texture, const void* data, 
     mResourceStateCache.FlushPendingBarriers(mCommandList);
 
     D3D12_TEXTURE_COPY_LOCATION src;
-    src.pResource = ringBuffer.GetD3DResource();
+    src.pResource = ringBuffer->GetD3DResource();
     src.PlacedFootprint.Footprint = subresourceFootprint;
     src.PlacedFootprint.Offset = ringBufferOffset;
     src.Type = D3D12_TEXTURE_COPY_TYPE_PLACED_FOOTPRINT;
@@ -697,7 +759,7 @@ void CommandRecorder::CopyTexture(const TexturePtr& src, const TexturePtr& dest)
     Texture* srcTex = dynamic_cast<Texture*>(src.Get());
     NFE_ASSERT(src, "Invalid 'src' pointer");
 
-    if (srcTex->GetMode() == BufferMode::Readback || srcTex->GetMode() == BufferMode::Volatile)
+    if (srcTex->GetMode() == ResourceAccessMode::Readback || srcTex->GetMode() == ResourceAccessMode::Volatile)
     {
         NFE_LOG_ERROR("Can't copy from this texture");
         return;
@@ -706,7 +768,7 @@ void CommandRecorder::CopyTexture(const TexturePtr& src, const TexturePtr& dest)
     Texture* destTex = dynamic_cast<Texture*>(dest.Get());
     NFE_ASSERT(destTex, "Invalid 'dest' pointer");
 
-    if (destTex->GetMode() == BufferMode::Static || destTex->GetMode() == BufferMode::Volatile)
+    if (destTex->GetMode() == ResourceAccessMode::Static || destTex->GetMode() == ResourceAccessMode::Volatile)
     {
         NFE_LOG_ERROR("Can't copy to this texture");
         return;
@@ -717,7 +779,7 @@ void CommandRecorder::CopyTexture(const TexturePtr& src, const TexturePtr& dest)
     mResourceStateCache.FlushPendingBarriers(mCommandList);
 
     // perform copy
-    if (destTex->GetMode() == BufferMode::Readback)
+    if (destTex->GetMode() == ResourceAccessMode::Readback)
     {
         D3D12_TEXTURE_COPY_LOCATION sourceLoc;
         sourceLoc.pResource = srcTex->GetResource();
@@ -756,7 +818,7 @@ void CommandRecorder::CopyTexture(const TexturePtr& src, const BackbufferPtr& de
     Backbuffer* destBackbuffer = static_cast<Backbuffer*>(dest.Get());
     NFE_ASSERT(src, "Invalid 'src' pointer");
 
-    if (srcTex->GetMode() == BufferMode::Readback || srcTex->GetMode() == BufferMode::Volatile)
+    if (srcTex->GetMode() == ResourceAccessMode::Readback || srcTex->GetMode() == ResourceAccessMode::Volatile)
     {
         NFE_LOG_ERROR("Can't copy from this texture");
         return;
@@ -788,6 +850,8 @@ void CommandRecorder::CopyTexture(const TexturePtr& src, const BackbufferPtr& de
 
 void CommandRecorder::Clear(uint32 flags, uint32 numTargets, const uint32* slots, const Math::Vec4fU* colors, float depthValue, uint8 stencilValue)
 {
+    NFE_ASSERT(mQueueType == CommandQueueType::Graphics, "Invalid queue type");
+
     if (mCurrRenderTarget == nullptr)
         return;
 
@@ -1123,12 +1187,16 @@ void CommandRecorder::Internal_PrepareForDispatch()
 
 void CommandRecorder::Draw(uint32 vertexNum, uint32 instancesNum, uint32 vertexOffset, uint32 instanceOffset)
 {
+    NFE_ASSERT(mQueueType == CommandQueueType::Graphics, "Invalid queue type");
+
     Internal_PrepareForDraw();
     mCommandList->DrawInstanced(vertexNum, instancesNum, vertexOffset, instanceOffset);
 }
 
 void CommandRecorder::DrawIndexed(uint32 indexNum, uint32 instancesNum, uint32 indexOffset, int32 vertexOffset, uint32 instanceOffset)
 {
+    NFE_ASSERT(mQueueType == CommandQueueType::Graphics, "Invalid queue type");
+
     Internal_PrepareForDraw();
     mCommandList->DrawIndexedInstanced(indexNum, instancesNum, indexOffset, vertexOffset, instanceOffset);
 }
@@ -1149,6 +1217,8 @@ void CommandRecorder::SetComputePipelineState(const ComputePipelineStatePtr& sta
 
 void CommandRecorder::Dispatch(uint32 x, uint32 y, uint32 z)
 {
+    NFE_ASSERT(mQueueType == CommandQueueType::Graphics || mQueueType == CommandQueueType::Compute, "Invalid queue type");
+
     Internal_PrepareForDispatch();
 
     mCommandList->Dispatch(x, y, z);

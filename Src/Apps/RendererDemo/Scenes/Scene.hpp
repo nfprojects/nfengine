@@ -33,6 +33,8 @@ class Scene
 protected:
     // Renderer interfaces
     NFE::Renderer::IDevice* mRendererDevice;
+    NFE::Renderer::CommandQueuePtr mGraphicsQueue;
+    NFE::Renderer::CommandQueuePtr mCopyQueue;
     NFE::Renderer::CommandRecorderPtr mCommandBuffer;
     NFE::Renderer::Format mBackbufferFormat;
 
@@ -71,7 +73,7 @@ public:
      * The method provides rendererDevice for further devices initialization, and winHandle in case
      * Backbuffer must be initialized.
      */
-    bool Init(NFE::Renderer::IDevice* rendererDevice, void* winHandle);
+    bool Init(NFE::Renderer::IDevice* rendererDevice, const NFE::Renderer::CommandQueuePtr& graphicsQueue, const NFE::Renderer::CommandQueuePtr& copyQueue, void* winHandle);
 
     /**
      * Switches the SubScene in current Scene

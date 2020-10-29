@@ -14,14 +14,14 @@ class DrawTest : public RendererTest
     struct TargetTexture
     {
         TexturePtr texture;            // render target texture
-        TexturePtr readbackTexture;    // texture used for GPU -> CPU data transfer
-        std::unique_ptr<char[]> pixelData;
+        Common::UniquePtr<uint8[]> pixelData;
         size_t textureSize;
+        size_t textureRowPitch;
         Format format;
     };
 
     RenderTargetPtr mTestRenderTarget;
-    std::vector<TargetTexture> mTargetTextures;
+    Common::DynArray<TargetTexture> mTargetTextures;
 
     uint32 mTestTextureWidth;
     uint32 mTestTextureHeight;
@@ -36,7 +36,7 @@ protected:
      * @param formats           Render target textures formats
      * @see EndFrame
      */
-    void BeginTestFrame(uint32 width, uint32 height, size_t numTargets, const Format* formats);
+    void BeginTestFrame(uint32 width, uint32 height, uint32 numTargets, const Format* formats);
 
     /**
      * Finish rendering into test render target texture and read rendered pixels buffer.
@@ -47,15 +47,14 @@ protected:
 
 
     template<typename T>
-    void VerifyPixelsInteger(size_t id, const T* expected)
+    void VerifyPixelsInteger(uint32 id, const T* expected)
     {
         // Graphics APIs assume that there can be some formats conversion tolerance
         const T maxError = 2;
 
-        ASSERT_LT(id, mTargetTextures.size());
         const TargetTexture& target = mTargetTextures[id];
         uint32 channels = GetElementFormatChannels(target.format);
-        const T* pixelData = reinterpret_cast<const T*>(target.pixelData.get());
+        const T* pixelData = reinterpret_cast<const T*>(target.pixelData.Get());
 
         for (uint32 y = 0; y < mTestTextureHeight; ++y)
         {
@@ -74,12 +73,11 @@ protected:
         }
     }
 
-    void VerifyPixelsFloat(size_t id, const float* expected)
+    void VerifyPixelsFloat(uint32 id, const float* expected)
     {
-        ASSERT_LT(id, mTargetTextures.size());
         const TargetTexture& target = mTargetTextures[id];
         uint32 channels = GetElementFormatChannels(target.format);
-        const float* pixelData = reinterpret_cast<const float*>(target.pixelData.get());
+        const float* pixelData = reinterpret_cast<const float*>(target.pixelData.Get());
 
         for (uint32 y = 0; y < mTestTextureHeight; ++y)
         {

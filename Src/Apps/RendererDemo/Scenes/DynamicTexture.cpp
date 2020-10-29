@@ -26,7 +26,7 @@ bool DynamicTextureScene::CreateSubSceneSimple()
     TextureDesc textureDesc;
     textureDesc.binding = 0;
     textureDesc.format = mBackbufferFormat; // match with backbuffer format, because we copy the data directly
-    textureDesc.mode = BufferMode::GPUOnly;
+    textureDesc.mode = ResourceAccessMode::GPUOnly;
     textureDesc.width = WINDOW_WIDTH;
     textureDesc.height = WINDOW_HEIGHT;
     textureDesc.binding = NFE_RENDERER_TEXTURE_BIND_RENDERTARGET;
@@ -93,7 +93,7 @@ void DynamicTextureScene::Draw(float dt)
         mTime -= 1.0f;
     }
 
-    mCommandBuffer->Begin();
+    mCommandBuffer->Begin(CommandQueueType::Graphics);
 
     mCommandBuffer->SetRenderTarget(mRenderTarget);
 
@@ -141,7 +141,7 @@ void DynamicTextureScene::Draw(float dt)
     mCommandBuffer->CopyTexture(mTexture, mWindowBackbuffer);
 
     CommandListPtr commandList = mCommandBuffer->Finish();
-    mRendererDevice->Execute(commandList);
+    mGraphicsQueue->Execute(commandList);
     mWindowBackbuffer->Present();
     mRendererDevice->FinishFrame();
 }

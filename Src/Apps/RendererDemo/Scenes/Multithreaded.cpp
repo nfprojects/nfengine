@@ -51,7 +51,7 @@ bool MultithreadedScene::CreateCommandRecorders()
     return true;
 }
 
-bool MultithreadedScene::CreateShaders(BufferMode cbufferMode)
+bool MultithreadedScene::CreateShaders(ResourceAccessMode cbufferMode)
 {
     mCBufferSlot = -1;
 
@@ -76,7 +76,7 @@ bool MultithreadedScene::CreateShaders(BufferMode cbufferMode)
     if (mCBufferSlot < 0)
         return false;
 
-    if (cbufferMode == BufferMode::Static || cbufferMode == BufferMode::Dynamic)
+    if (cbufferMode == ResourceAccessMode::Static || cbufferMode == ResourceAccessMode::GPUOnly)
     {
         ResourceBindingDesc vertexShaderBinding(ShaderResourceType::CBuffer, mCBufferSlot);
         mVSBindingSet = mRendererDevice->CreateResourceBindingSet(ResourceBindingSetDesc(&vertexShaderBinding, 1, ShaderType::Vertex));
@@ -87,7 +87,7 @@ bool MultithreadedScene::CreateShaders(BufferMode cbufferMode)
         bindingSets[mVSBindingSlot] = mVSBindingSet;
     }
 
-    bool useVolatileCBufferBinding = cbufferMode == BufferMode::Volatile;
+    bool useVolatileCBufferBinding = cbufferMode == ResourceAccessMode::Volatile;
     VolatileCBufferBinding volatileCBufferBinding(ShaderType::Vertex,
                                                   ShaderResourceType::CBuffer,
                                                   mCBufferSlot, sizeof(VertexCBuffer));
@@ -115,8 +115,7 @@ bool MultithreadedScene::CreateVertexBuffer()
     };
 
     BufferDesc vbDesc;
-    vbDesc.type = BufferType::Vertex;
-    vbDesc.mode = BufferMode::Static;
+    vbDesc.mode = ResourceAccessMode::Static;
     vbDesc.size = sizeof(vbDataExtra);
     vbDesc.initialData = vbDataExtra;
     mVertexBuffer = mRendererDevice->CreateBuffer(vbDesc);
@@ -163,8 +162,7 @@ bool MultithreadedScene::CreateIndexBuffer()
     };
 
     BufferDesc ibDesc;
-    ibDesc.type = BufferType::Index;
-    ibDesc.mode = BufferMode::Static;
+    ibDesc.mode = ResourceAccessMode::Static;
     ibDesc.size = sizeof(ibData);
     ibDesc.initialData = ibData;
     mIndexBuffer = mRendererDevice->CreateBuffer(ibDesc);
@@ -174,18 +172,17 @@ bool MultithreadedScene::CreateIndexBuffer()
     return true;
 }
 
-bool MultithreadedScene::CreateConstantBuffer(BufferMode cbufferMode)
+bool MultithreadedScene::CreateConstantBuffer(ResourceAccessMode cbufferMode)
 {
     const Matrix4 rotMatrix = Matrix4::MakeRotationNormal(Vec4f(0.0f, 0.0f, 1.0f), Constants::pi<float>);
     mAngle = 0.0f;
     mCBufferMode = cbufferMode;
 
     BufferDesc cbufferDesc;
-    cbufferDesc.type = BufferType::Constant;
     cbufferDesc.mode = cbufferMode;
     cbufferDesc.size = sizeof(VertexCBuffer);
 
-    if (cbufferMode == BufferMode::Static)
+    if (cbufferMode == ResourceAccessMode::Static)
     {
         cbufferDesc.initialData = &rotMatrix;
     }
@@ -194,7 +191,7 @@ bool MultithreadedScene::CreateConstantBuffer(BufferMode cbufferMode)
     if (!mConstantBuffer)
         return false;
 
-    if (cbufferMode == BufferMode::Static || cbufferMode == BufferMode::Dynamic)
+    if (cbufferMode == ResourceAccessMode::Static || cbufferMode == ResourceAccessMode::GPUOnly)
     {
         // create and fill binding set instance
         mVSBindingInstance = mRendererDevice->CreateResourceBindingInstance(mVSBindingSet);
@@ -223,10 +220,10 @@ bool MultithreadedScene::CreateSubSceneEmpty()
     if (!CreateCommandRecorders())
         return false;
 
-    return CreateShaders(BufferMode::Static);
+    return CreateShaders(ResourceAccessMode::Static);
 }
 
-bool MultithreadedScene::CreateSubSceneNormal(BufferMode cbufferMode, int gridSize)
+bool MultithreadedScene::CreateSubSceneNormal(ResourceAccessMode cbufferMode, int gridSize)
 {
     mGridSize = gridSize;
 
@@ -259,13 +256,13 @@ MultithreadedScene::MultithreadedScene()
 
     RegisterSubScene(std::bind(&MultithreadedScene::CreateSubSceneEmpty, this), "Empty");
 
-    RegisterSubScene(std::bind(&MultithreadedScene::CreateSubSceneNormal, this, BufferMode::Dynamic, 1), "1x1, dynamic cbuffer");
-    RegisterSubScene(std::bind(&MultithreadedScene::CreateSubSceneNormal, this, BufferMode::Dynamic, 4), "4x4, dynamic cbuffer");
-    RegisterSubScene(std::bind(&MultithreadedScene::CreateSubSceneNormal, this, BufferMode::Dynamic, 10), "10x10, dynamic cbuffer");
+    RegisterSubScene(std::bind(&MultithreadedScene::CreateSubSceneNormal, this, ResourceAccessMode::GPUOnly, 1), "1x1, dynamic cbuffer");
+    RegisterSubScene(std::bind(&MultithreadedScene::CreateSubSceneNormal, this, ResourceAccessMode::GPUOnly, 4), "4x4, dynamic cbuffer");
+    RegisterSubScene(std::bind(&MultithreadedScene::CreateSubSceneNormal, this, ResourceAccessMode::GPUOnly, 10), "10x10, dynamic cbuffer");
 
-    RegisterSubScene(std::bind(&MultithreadedScene::CreateSubSceneNormal, this, BufferMode::Volatile, 1), "1x1, volatile cbuffer");
-    RegisterSubScene(std::bind(&MultithreadedScene::CreateSubSceneNormal, this, BufferMode::Volatile, 4), "4x4, volatile cbuffer");
-    RegisterSubScene(std::bind(&MultithreadedScene::CreateSubSceneNormal, this, BufferMode::Volatile, 10), "10x10, volatile cbuffer");
+    RegisterSubScene(std::bind(&MultithreadedScene::CreateSubSceneNormal, this, ResourceAccessMode::Volatile, 1), "1x1, volatile cbuffer");
+    RegisterSubScene(std::bind(&MultithreadedScene::CreateSubSceneNormal, this, ResourceAccessMode::Volatile, 4), "4x4, volatile cbuffer");
+    RegisterSubScene(std::bind(&MultithreadedScene::CreateSubSceneNormal, this, ResourceAccessMode::Volatile, 10), "10x10, volatile cbuffer");
 }
 
 MultithreadedScene::~MultithreadedScene()
@@ -323,7 +320,7 @@ void MultithreadedScene::DrawTask(const Common::TaskContext& ctx, int i, int j)
     const CommandRecorderPtr& recorder = mCommandRecorders[ctx.threadId];
 
     // reset bound resources and set them once again
-    recorder->Begin();
+    recorder->Begin(CommandQueueType::Graphics);
     recorder->SetViewport(0.0f, (float)WINDOW_WIDTH, 0.0f, (float)WINDOW_HEIGHT, 0.0f, 1.0f);
     recorder->SetScissors(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
     recorder->SetRenderTarget(mWindowRenderTarget);
@@ -337,14 +334,14 @@ void MultithreadedScene::DrawTask(const Common::TaskContext& ctx, int i, int j)
     recorder->SetResourceBindingLayout(PipelineType::Graphics, mResBindingLayout);
     recorder->SetPipelineState(mPipelineState);
 
-    if (mCBufferMode == BufferMode::Static || mCBufferMode == BufferMode::Dynamic)
+    if (mCBufferMode == ResourceAccessMode::Static || mCBufferMode == ResourceAccessMode::GPUOnly)
         recorder->BindResources(PipelineType::Graphics, mVSBindingSlot, mVSBindingInstance);
-    else if (mCBufferMode == BufferMode::Volatile)
+    else if (mCBufferMode == ResourceAccessMode::Volatile)
         recorder->BindVolatileCBuffer(PipelineType::Graphics, 0, mConstantBuffer);
 
 
     const float scaleCoeff = 1.0f / static_cast<float>(mGridSize);
-    if (mConstantBuffer && (mCBufferMode == BufferMode::Dynamic || mCBufferMode == BufferMode::Volatile))
+    if (mConstantBuffer && (mCBufferMode == ResourceAccessMode::GPUOnly || mCBufferMode == ResourceAccessMode::Volatile))
     {
         float xOffset = 2.0f * (static_cast<float>(i) + 0.5f) * scaleCoeff - 1.0f;
         float yOffset = 2.0f * (static_cast<float>(j) + 0.5f) * scaleCoeff - 1.0f;
@@ -363,7 +360,7 @@ void MultithreadedScene::DrawTask(const Common::TaskContext& ctx, int i, int j)
     recorder->DrawIndexed(6, 1);
 
     CommandListPtr commandList = recorder->Finish();
-    mRendererDevice->Execute(commandList);
+    mGraphicsQueue->Execute(commandList);
 }
 
 void MultithreadedScene::Draw(float dt)
@@ -375,7 +372,7 @@ void MultithreadedScene::Draw(float dt)
 
     // clear only once
     {
-        mCommandBuffer->Begin();
+        mCommandBuffer->Begin(CommandQueueType::Graphics);
         mCommandBuffer->SetViewport(0.0f, (float)WINDOW_WIDTH, 0.0f, (float)WINDOW_HEIGHT, 0.0f, 1.0f);
         mCommandBuffer->SetScissors(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
         mCommandBuffer->SetRenderTarget(mWindowRenderTarget);
@@ -385,7 +382,7 @@ void MultithreadedScene::Draw(float dt)
         mCommandBuffer->Clear(ClearFlagsColor, 1, nullptr, &color);
 
         CommandListPtr clearCommandList = mCommandBuffer->Finish();
-        mRendererDevice->Execute(clearCommandList);
+        mGraphicsQueue->Execute(clearCommandList);
     }
 
     Waitable waitable;
@@ -404,14 +401,14 @@ void MultithreadedScene::Draw(float dt)
     }
 
     // copy to back buffer
-    mCommandBuffer->Begin();
+    mCommandBuffer->Begin(CommandQueueType::Copy);
     mCommandBuffer->CopyTexture(mWindowRenderTargetTexture, mWindowBackbuffer);
     CommandListPtr commandList = mCommandBuffer->Finish();
 
     // wait for threads so the commandlists are pushed in right order
     waitable.Wait();
 
-    mRendererDevice->Execute(commandList);
+    mGraphicsQueue->Execute(commandList);
 
     mWindowBackbuffer->Present();
     mRendererDevice->FinishFrame();

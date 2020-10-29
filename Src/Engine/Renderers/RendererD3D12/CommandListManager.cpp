@@ -6,6 +6,7 @@
 
 #include "PCH.hpp"
 #include "CommandListManager.hpp"
+#include "CommandQueue.hpp"
 #include "RendererD3D12.hpp"
 
 #include "Engine/Common/Logger/Logger.hpp"
@@ -27,23 +28,28 @@ CommandListManager::~CommandListManager()
     NFE_SCOPED_LOCK(mLock);
 
 #ifndef NFE_CONFIGURATION_FINAL
-    for (const InternalCommandListPtr& commandList : mCommandLists)
+    for (const PerQueueTypeData& perQueueTypeData : mPerQueueTypeData)
     {
-        NFE_ASSERT(commandList->GetState() == InternalCommandList::State::Free, "All command list must be free before destroying the command list manager");
+        for (const InternalCommandListPtr& commandList : perQueueTypeData.commandLists)
+        {
+            NFE_ASSERT(commandList->GetState() == InternalCommandList::State::Free, "All command list must be free before destroying the command list manager");
+        }
     }
 #endif // NFE_CONFIGURATION_FINAL
 }
 
-InternalCommandListPtr CommandListManager::RequestCommandList()
+InternalCommandListPtr CommandListManager::RequestCommandList(CommandQueueType queueType)
 {
     HRESULT hr;
+
+    PerQueueTypeData& perQueueTypeData = mPerQueueTypeData[(uint32)queueType];
 
     InternalCommandListPtr foundCommandList;
     {
         NFE_SCOPED_LOCK(mLock);
 
         // find a free command list
-        for (const InternalCommandListPtr& commandList : mCommandLists)
+        for (const InternalCommandListPtr& commandList : perQueueTypeData.commandLists)
         {
             if (commandList->GetState() == InternalCommandList::State::Free)
             {
@@ -54,15 +60,18 @@ InternalCommandListPtr CommandListManager::RequestCommandList()
 
         if (!foundCommandList)
         {
+            const uint32 commandListNumber = perQueueTypeData.commandLists.Size();
+            NFE_ASSERT(commandListNumber < 1024, "Huge amount of command lists created, isn't something leaking?");
+
             // command list not found - create a new one
-            InternalCommandListPtr newCommandList = Common::MakeUniquePtr<InternalCommandList>(mCommandLists.Size());
-            if (!newCommandList->Init())
+            InternalCommandListPtr newCommandList = Common::MakeUniquePtr<InternalCommandList>(commandListNumber);
+            if (!newCommandList->Init(queueType))
             {
                 return nullptr;
             }
 
             foundCommandList = newCommandList;
-            mCommandLists.PushBack(std::move(newCommandList));
+            perQueueTypeData.commandLists.PushBack(std::move(newCommandList));
             return foundCommandList;
         }
 
@@ -98,7 +107,7 @@ CommandListPtr CommandListManager::OnCommandListRecorded(const InternalCommandLi
     return MakeUniquePtr<CommandList>(commandList);
 }
 
-void CommandListManager::ExecuteCommandList(const Common::ArrayView<ICommandList*> commandLists)
+void CommandListManager::ExecuteCommandList(const CommandQueue& queue, const Common::ArrayView<ICommandList*> commandLists)
 {
     const uint32 maxCommandLists = 256;
     StaticArray<ID3D12CommandList*, maxCommandLists> d3dCommandListsToExecute;
@@ -127,23 +136,26 @@ void CommandListManager::ExecuteCommandList(const Common::ArrayView<ICommandList
         }
     }
 
-    // TODO multiple queues support
-    gDevice->GetGraphicsQueue()->ExecuteCommandLists(d3dCommandListsToExecute.Size(), d3dCommandListsToExecute.Data());
+    queue.GetQueue()->ExecuteCommandLists(d3dCommandListsToExecute.Size(), d3dCommandListsToExecute.Data());
 }
 
-void CommandListManager::OnFenveValueCompleted(uint64 fenceValue)
+void CommandListManager::OnFenceValueCompleted(const FenceData* fenceData, uint64 fenceValue)
 {
     NFE_ASSERT(fenceValue != FenceData::InvalidValue, "Invalid fence value");
 
     NFE_SCOPED_LOCK(mLock);
 
-    for (const InternalCommandListPtr& commandList : mCommandLists)
+    // TODO make the fence value queue-type-specific?
+    for (const PerQueueTypeData& perQueueTypeData : mPerQueueTypeData)
     {
-        if (commandList->GetState() == InternalCommandList::State::Executing)
+        for (const InternalCommandListPtr& commandList : perQueueTypeData.commandLists)
         {
-            if (commandList->mFenceValue <= fenceValue)
+            if (commandList->GetState() == InternalCommandList::State::Executing)
             {
-                commandList->OnExecuted();
+                if (commandList->mFenceData == fenceData && commandList->mFenceValue <= fenceValue)
+                {
+                    commandList->OnExecuted();
+                }
             }
         }
     }

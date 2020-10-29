@@ -18,7 +18,6 @@ namespace Renderer {
 class Buffer : public IBuffer, public Resource
 {
     uint32 mSize;
-    BufferType mType;
 
     // Upload data (used for Static buffers only)
     bool UploadData(const BufferDesc& desc);

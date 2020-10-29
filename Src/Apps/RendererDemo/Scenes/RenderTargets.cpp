@@ -145,24 +145,21 @@ bool RenderTargetsScene::CreateBasicResources(bool multipleRT, bool withDepthBuf
     };
 
     BufferDesc bufferDesc;
-    bufferDesc.type = BufferType::Vertex;
-    bufferDesc.mode = BufferMode::Static;
+    bufferDesc.mode = ResourceAccessMode::Static;
     bufferDesc.size = sizeof(vbData);
     bufferDesc.initialData = vbData;
     mVertexBuffer = mRendererDevice->CreateBuffer(bufferDesc);
     if (!mVertexBuffer)
         return false;
 
-    bufferDesc.type = BufferType::Index;
-    bufferDesc.mode = BufferMode::Static;
+    bufferDesc.mode = ResourceAccessMode::Static;
     bufferDesc.size = sizeof(ibData);
     bufferDesc.initialData = ibData;
     mIndexBuffer = mRendererDevice->CreateBuffer(bufferDesc);
     if (!mIndexBuffer)
         return false;
 
-    bufferDesc.type = BufferType::Constant;
-    bufferDesc.mode = BufferMode::Volatile;
+    bufferDesc.mode = ResourceAccessMode::Volatile;
     bufferDesc.size = sizeof(VertexCBuffer);
     bufferDesc.initialData = nullptr;
     mConstantBuffer = mRendererDevice->CreateBuffer(bufferDesc);
@@ -176,7 +173,7 @@ bool RenderTargetsScene::CreateRenderTarget(bool withDepthBuffer, bool multipleR
 {
     TextureDesc texDesc;
     texDesc.type = TextureType::Texture2D;
-    texDesc.mode = BufferMode::GPUOnly;
+    texDesc.mode = ResourceAccessMode::GPUOnly;
     texDesc.width = static_cast<uint16>(WINDOW_WIDTH / 2);
     texDesc.height = static_cast<uint16>(WINDOW_HEIGHT / 2);
     texDesc.mipmaps = 1;
@@ -414,7 +411,7 @@ void RenderTargetsScene::Draw(float dt)
     Matrix4 projMatrix = Matrix4::MakePerspective((float)WINDOW_WIDTH / (float)WINDOW_HEIGHT,
                                                 DegToRad(70.0f), 5.0f, 1.0f);
 
-    mCommandBuffer->Begin();
+    mCommandBuffer->Begin(CommandQueueType::Graphics);
 
     uint32 stride = 9 * sizeof(float);
     uint32 offset = 0;
@@ -511,7 +508,7 @@ void RenderTargetsScene::Draw(float dt)
     mCommandBuffer->CopyTexture(mWindowRenderTargetTexture, mWindowBackbuffer);
 
     CommandListPtr commandList = mCommandBuffer->Finish();
-    mRendererDevice->Execute(commandList);
+    mGraphicsQueue->Execute(commandList);
     mWindowBackbuffer->Present();
     mRendererDevice->FinishFrame();
 }

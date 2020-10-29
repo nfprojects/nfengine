@@ -8,6 +8,7 @@
 
 
 #include "Engine/Common/Containers/UniquePtr.hpp"
+#include "Engine/Common/Containers/SharedPtr.hpp"
 
 
 #ifndef D3D_SAFE_RELEASE
@@ -34,7 +35,6 @@ struct D3DPointerDeleter
 // helper class template for automatic releasing of Direct3D objects
 template<typename T>
 using D3DPtr = Common::UniquePtr<T, D3DPointerDeleter<T>>;
-
 
 } // namespace Renderer
 } // namespace NFE

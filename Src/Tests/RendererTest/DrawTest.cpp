@@ -1,28 +1,31 @@
 #include "PCH.hpp"
 #include "Backends.hpp"
 #include "DrawTest.hpp"
+#include "Engine/Common/Utils/TaskBuilder.hpp"
+#include "Engine/Common/Utils/Waitable.hpp"
 #include "Engine/Renderers/RendererCommon/Fence.hpp"
 
 
-void DrawTest::BeginTestFrame(uint32 width, uint32 height, size_t numTargets, const Format* formats)
+void DrawTest::BeginTestFrame(uint32 width, uint32 height, uint32 numTargets, const Format* formats)
 {
     mTestTextureWidth = width;
     mTestTextureHeight = height;
 
-    mTargetTextures.clear();
+    mTargetTextures.Clear();
 
     mCommandBuffer = gRendererDevice->CreateCommandRecorder();
     ASSERT_FALSE(!mCommandBuffer);
 
-    for (size_t i = 0; i < numTargets; ++i)
+    for (uint32 i = 0; i < numTargets; ++i)
     {
         TargetTexture targetTexture;
         targetTexture.format = formats[i];
-        targetTexture.textureSize = width * height * GetElementFormatSize(formats[i]);
+        targetTexture.textureRowPitch = width * GetElementFormatSize(formats[i]);
+        targetTexture.textureSize = width * targetTexture.textureRowPitch;
 
         TextureDesc texDesc;
         texDesc.binding = NFE_RENDERER_TEXTURE_BIND_RENDERTARGET;
-        texDesc.mode = BufferMode::GPUOnly;
+        texDesc.mode = ResourceAccessMode::GPUOnly;
         texDesc.format = formats[i];
         texDesc.width = width;
         texDesc.height = height;
@@ -37,15 +40,10 @@ void DrawTest::BeginTestFrame(uint32 width, uint32 height, size_t numTargets, co
         mTestRenderTarget = gRendererDevice->CreateRenderTarget(rtDesc);
         ASSERT_FALSE(!mTestRenderTarget);
 
-        texDesc.binding = 0;
-        texDesc.mode = BufferMode::Readback;
-        targetTexture.readbackTexture = gRendererDevice->CreateTexture(texDesc);
-        ASSERT_FALSE(!targetTexture.readbackTexture);
-
-        mTargetTextures.emplace_back(std::move(targetTexture));
+        mTargetTextures.EmplaceBack(std::move(targetTexture));
     }
 
-    ASSERT_TRUE(mCommandBuffer->Begin());
+    ASSERT_TRUE(mCommandBuffer->Begin(CommandQueueType::Graphics));
     mCommandBuffer->SetRenderTarget(mTestRenderTarget);
     mCommandBuffer->SetScissors(0, 0, width, height);
     mCommandBuffer->SetViewport(0.0f, static_cast<float>(width),
@@ -54,27 +52,36 @@ void DrawTest::BeginTestFrame(uint32 width, uint32 height, size_t numTargets, co
 
 void DrawTest::EndTestFrame()
 {
-    mCommandBuffer->SetRenderTarget(nullptr);
-
-    // copy texture to readback texture
-    for (size_t i = 0; i < mTargetTextures.size(); ++i)
-    {
-        mCommandBuffer->CopyTexture(mTargetTextures[i].texture,
-                                    mTargetTextures[i].readbackTexture);
-    }
-
     CommandListPtr commandList = mCommandBuffer->Finish();
     ASSERT_TRUE(commandList != nullptr);
 
-    ASSERT_TRUE(gRendererDevice->Execute(commandList));
+    gMainCommandQueue->Execute(commandList);
     ASSERT_TRUE(gRendererDevice->FinishFrame());
-    gRendererDevice->WaitForGPU()->Wait();
 
-    // download pixel data from readback texture
-    for (size_t i = 0; i < mTargetTextures.size(); ++i)
+    Common::Waitable waitable;
     {
-        TargetTexture& target = mTargetTextures[i];
-        target.pixelData.reset(new char[target.textureSize]);
-        ASSERT_TRUE(gRendererDevice->DownloadTexture(target.readbackTexture, target.pixelData.get()));
+        Common::TaskBuilder builder{ waitable };
+
+        for (TargetTexture& targetTexture : mTargetTextures)
+        {
+            targetTexture.pixelData = Common::MakeUniquePtr<uint8[]>(targetTexture.textureSize);
+
+            const auto readCallback = [&](const void* data, size_t totalSize, size_t rowPitch)
+            {
+                NFE_ASSERT(totalSize >= targetTexture.textureSize, "Invalid read size");
+                NFE_ASSERT(rowPitch >= targetTexture.textureRowPitch, "Invalid row pitch");
+
+                for (uint32 row = 0; row < mTestTextureHeight; ++row)
+                {
+                    memcpy(
+                        targetTexture.pixelData.Get() + row * mTestTextureWidth * sizeof(uint32),
+                        (const uint8*)data + row * rowPitch,
+                        mTestTextureWidth * sizeof(uint32));
+                }
+            };
+
+            ASSERT_TRUE(gRendererDevice->DownloadTexture(targetTexture.texture, readCallback, builder));
+        }
     }
+    waitable.Wait();
 }

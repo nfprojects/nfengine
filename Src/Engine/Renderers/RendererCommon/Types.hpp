@@ -23,6 +23,8 @@ class IResourceBindingSet;
 class IResourceBindingLayout;
 class IResourceBindingInstance;
 class ICommandRecorder;
+class ICommandQueue;
+class ICommandList;
 class IPipelineState;
 class IComputePipelineState;
 class IRenderTarget;
@@ -30,9 +32,9 @@ class IShader;
 class IVertexLayout;
 class IFence;
 
-// TODO discuss if unique_ptr wouldn't fit better
 using CommandRecorderPtr = Common::SharedPtr<ICommandRecorder>;
-
+using CommandQueuePtr = Common::SharedPtr<ICommandQueue>;
+using CommandListPtr = Common::UniquePtr<ICommandList>;
 using TexturePtr = Common::SharedPtr<ITexture>;
 using BufferPtr = Common::SharedPtr<IBuffer>;
 using SamplerPtr = Common::SharedPtr<ISampler>;
@@ -195,11 +197,17 @@ enum class ShaderType : uint8
 };
 
 /**
- * GPU buffer modes.
+ * GPU resource access modes.
  */
-enum class BufferMode : uint8
+enum class ResourceAccessMode : uint8
 {
     Invalid,
+
+    /**
+     * GPU read-write resource, for example a texture used as a render target.
+     * The content can't be accessed by the CPU.
+     */
+    GPUOnly,
 
     /**
      * GPU read-only resource, for example a static mesh or texture.
@@ -211,7 +219,7 @@ enum class BufferMode : uint8
      * GPU read-only resource, for example a constant buffer.
      * The content can be written by the CPU.
      */
-    Dynamic,
+    Upload,
 
     /**
      * GPU read-only resource, frequently written by CPU.
@@ -220,12 +228,6 @@ enum class BufferMode : uint8
      * to write data.
      */
     Volatile,
-
-    /**
-     * GPU read-write resource, for example a texture used as a render target.
-     * The content can't be accessed by the CPU.
-     */
-    GPUOnly,
 
     /**
      * Readback resource, for example a screenshot texture.

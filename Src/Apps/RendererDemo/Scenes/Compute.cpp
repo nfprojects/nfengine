@@ -97,8 +97,7 @@ bool ComputeScene::CreateSubSceneSimple()
     cubfferData.resolutionInverse = Vec4fU(1.0f / static_cast<float>(WINDOW_WIDTH),
                                            1.0f / static_cast<float>(WINDOW_HEIGHT), 0.0f, 0.0f);
     BufferDesc cbufferDesc;
-    cbufferDesc.type = BufferType::Constant;
-    cbufferDesc.mode = BufferMode::Static;
+    cbufferDesc.mode = ResourceAccessMode::Static;
     cbufferDesc.size = sizeof(CBuffer);
     cbufferDesc.initialData = &cubfferData;
     mConstantBuffer = mRendererDevice->CreateBuffer(cbufferDesc);
@@ -110,7 +109,7 @@ bool ComputeScene::CreateSubSceneSimple()
     TextureDesc textureDesc;
     textureDesc.binding = NFE_RENDERER_TEXTURE_BIND_SHADER_WRITABLE;
     textureDesc.format = mBackbufferFormat; // match with backbuffer format, because we copy the data directly
-    textureDesc.mode = BufferMode::GPUOnly;
+    textureDesc.mode = ResourceAccessMode::GPUOnly;
     textureDesc.width = WINDOW_WIDTH;
     textureDesc.height = WINDOW_HEIGHT;
     textureDesc.debugName = "ComputeScene::mTexture";
@@ -178,7 +177,7 @@ void ComputeScene::Draw(float dt)
     NFE_UNUSED(dt);
 
     // reset bound resources and set them once again
-    mCommandBuffer->Begin();
+    mCommandBuffer->Begin(CommandQueueType::Graphics);
 
     // bind resources
     mCommandBuffer->SetResourceBindingLayout(PipelineType::Compute, mResBindingLayout);
@@ -192,7 +191,7 @@ void ComputeScene::Draw(float dt)
     mCommandBuffer->CopyTexture(mTexture, mWindowBackbuffer);
 
     CommandListPtr commandList = mCommandBuffer->Finish();
-    mRendererDevice->Execute(commandList);
+    mGraphicsQueue->Execute(commandList);
     mWindowBackbuffer->Present();
     mRendererDevice->FinishFrame();
 }

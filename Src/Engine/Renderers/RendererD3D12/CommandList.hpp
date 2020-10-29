@@ -17,7 +17,7 @@
 namespace NFE {
 namespace Renderer {
 
-
+class FenceData;
 class CommandListManager;
 
 /**
@@ -50,7 +50,7 @@ public:
     /**
      * Initialize the command list.
      */
-    bool Init();
+    bool Init(CommandQueueType queueType);
 
     // Get raw D3D12 command list object
     ID3D12GraphicsCommandList* GetD3DCommandList() const { return mCommandList.Get(); }
@@ -66,12 +66,13 @@ public:
 
     void ApplyFinalResourceStates();
 
-    void AssignFenceValue(uint64 fenceValue);
+    void AssignFenceValue(const FenceData* fenceData, uint64 fenceValue);
 
 private:
 
     void OnExecuted();
 
+    const FenceData* mFenceData;
     uint64 mFenceValue;
     uint32 mID;
     State mState;

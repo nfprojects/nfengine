@@ -8,6 +8,7 @@
 #include "RendererD3D12.hpp"
 #include "CommandListManager.hpp"
 #include "CommandList.hpp"
+#include "CommandQueue.hpp"
 #include "Fence.hpp"
 #include "Common.hpp"
 
@@ -21,6 +22,7 @@ using namespace Common;
 
 InternalCommandList::InternalCommandList(uint32 id)
     : mFenceValue(FenceData::InvalidValue)
+    , mFenceData(nullptr)
     , mState(State::Invalid)
     , mID(id)
 { }
@@ -30,12 +32,14 @@ InternalCommandList::~InternalCommandList()
     NFE_ASSERT(mState == State::Free || mState == State::Invalid, "Destroying command list that is being used");
 }
 
-bool InternalCommandList::Init()
+bool InternalCommandList::Init(CommandQueueType queueType)
 {
     HRESULT hr;
     ID3D12Device* device = gDevice->GetDevice();
 
-    hr = D3D_CALL_CHECK(device->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT, IID_PPV_ARGS(mCommandAllocator.GetPtr())));
+    const D3D12_COMMAND_LIST_TYPE commandListType = TranslateCommandListType(queueType);
+
+    hr = D3D_CALL_CHECK(device->CreateCommandAllocator(commandListType, IID_PPV_ARGS(mCommandAllocator.GetPtr())));
     if (FAILED(hr))
     {
         NFE_LOG_ERROR("Failed to create D3D12 command allocator");
@@ -45,7 +49,7 @@ bool InternalCommandList::Init()
     SetDebugName(mCommandAllocator.Get(), "InternalCommandList::mCommandAllocator");
 
     // create D3D command list (for resource barrier injection)
-    hr = D3D_CALL_CHECK(device->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_DIRECT, mCommandAllocator.Get(),
+    hr = D3D_CALL_CHECK(device->CreateCommandList(0, commandListType, mCommandAllocator.Get(),
         nullptr, IID_PPV_ARGS(mResourceBarriersCommandList.GetPtr())));
     if (FAILED(hr))
     {
@@ -59,7 +63,7 @@ bool InternalCommandList::Init()
     mResourceBarriersCommandList->Close();
 
     // create D3D command list
-    hr = D3D_CALL_CHECK(device->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_DIRECT, mCommandAllocator.Get(),
+    hr = D3D_CALL_CHECK(device->CreateCommandList(0, commandListType, mCommandAllocator.Get(),
         nullptr, IID_PPV_ARGS(mCommandList.GetPtr())));
     if (FAILED(hr))
     {
@@ -76,12 +80,15 @@ bool InternalCommandList::Init()
     return true;
 }
 
-void InternalCommandList::AssignFenceValue(uint64 fenceValue)
+void InternalCommandList::AssignFenceValue(const FenceData* fenceData, uint64 fenceValue)
 {
+    NFE_ASSERT(fenceData, "Invalid fence value");
     NFE_ASSERT(fenceValue != FenceData::InvalidValue, "Invalid fence value");
     NFE_ASSERT(fenceValue != FenceData::InitialValue, "Invalid fence value");
     NFE_ASSERT(mFenceValue == FenceData::InvalidValue, "Already has fence value");
+    NFE_ASSERT(!mFenceData, "Already has fence value");
 
+    mFenceData = fenceData;
     mFenceValue = fenceValue;
 }
 
@@ -90,8 +97,6 @@ void InternalCommandList::OnExecuted()
     NFE_ASSERT(mFenceValue != FenceData::InvalidValue);
     NFE_ASSERT(mFenceValue != FenceData::InitialValue);
     NFE_ASSERT(mState == State::Executing);
-
-    NFE_ASSERT(gDevice->mGraphicsQueueFence.GetCompletedValue() >= mFenceValue);
 
     mReferencedResources.Clear();
 
@@ -106,6 +111,7 @@ void InternalCommandList::OnExecuted()
     }
 
     mState = State::Free;
+    mFenceData = nullptr;
     mFenceValue = FenceData::InvalidValue;
 }
 

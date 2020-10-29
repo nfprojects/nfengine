@@ -8,6 +8,12 @@
 
 #include "Types.hpp"
 
+#define NFE_RENDERER_BUFFER_USAGE_INDEX_BUFFER              (1<<0)
+#define NFE_RENDERER_BUFFER_USAGE_VERTEX_BUFFER             (1<<1)
+#define NFE_RENDERER_BUFFER_USAGE_CONSTANT_BUFFER           (1<<2)
+#define NFE_RENDERER_BUFFER_USAGE_STRUCT_BUFFER             (1<<3)
+#define NFE_RENDERER_BUFFER_USAGE_WRITABLE_STRUCT_BUFFER    (1<<4)
+
 namespace NFE {
 namespace Renderer {
 
@@ -16,17 +22,17 @@ namespace Renderer {
  */
 struct BufferDesc
 {
-    BufferType type;
-    BufferMode mode;
+    ResourceAccessMode mode;
+    uint32 usage;
     const void* initialData;
     size_t size;
     const char* debugName;   //< optional debug name
 
     BufferDesc()
-        : type(BufferType::Vertex)
-        , mode(BufferMode::Static)
+        : mode(ResourceAccessMode::Static)
+        , usage(0u)
         , initialData(nullptr)
-        , size(0)
+        , size(0u)
         , debugName(nullptr)
     {}
 };

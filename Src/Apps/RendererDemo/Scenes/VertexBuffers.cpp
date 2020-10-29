@@ -45,12 +45,11 @@ bool VertexBuffersScene::LoadShaders(bool useInstancing)
     return true;
 }
 
-bool VertexBuffersScene::CreateBuffers(bool withInstanceBuffer, BufferMode vertexBufferMode)
+bool VertexBuffersScene::CreateBuffers(bool withInstanceBuffer, ResourceAccessMode vertexBufferMode)
 {
     /// create vertex buffers
     BufferDesc vbDesc;
-    vbDesc.type = BufferType::Vertex;
-    vbDesc.mode = BufferMode::Static;
+    vbDesc.mode = ResourceAccessMode::Static;
 
 
     float vbPositionData[] =
@@ -93,8 +92,7 @@ bool VertexBuffersScene::CreateBuffers(bool withInstanceBuffer, BufferMode verte
     };
 
     BufferDesc ibDesc;
-    ibDesc.type = BufferType::Index;
-    ibDesc.mode = BufferMode::Static;
+    ibDesc.mode = ResourceAccessMode::Static;
     ibDesc.size = sizeof(ibData);
     ibDesc.initialData = ibData;
     mIndexBuffer = mRendererDevice->CreateBuffer(ibDesc);
@@ -191,13 +189,13 @@ bool VertexBuffersScene::CreateSubSceneSimple()
     if (!LoadShaders(false))
         return false;
 
-    if (!CreateBuffers(false, BufferMode::Static))
+    if (!CreateBuffers(false, ResourceAccessMode::Static))
         return false;
 
     return true;
 }
 
-bool VertexBuffersScene::CreateSubSceneInstancing(BufferMode vertexBufferMode)
+bool VertexBuffersScene::CreateSubSceneInstancing(ResourceAccessMode vertexBufferMode)
 {
     gFrameIndex = 0;
 
@@ -219,11 +217,11 @@ VertexBuffersScene::VertexBuffersScene()
 {
     RegisterSubScene(std::bind(&VertexBuffersScene::CreateSubSceneSimple, this),
                      "Simple: Static vertex buffer (2 vertex buffers)");
-    RegisterSubScene(std::bind(&VertexBuffersScene::CreateSubSceneInstancing, this, BufferMode::Static),
+    RegisterSubScene(std::bind(&VertexBuffersScene::CreateSubSceneInstancing, this, ResourceAccessMode::Static),
                      "Instancing: Static vertex buffer (3 vertex buffers)");
-    RegisterSubScene(std::bind(&VertexBuffersScene::CreateSubSceneInstancing, this, BufferMode::Dynamic),
+    RegisterSubScene(std::bind(&VertexBuffersScene::CreateSubSceneInstancing, this, ResourceAccessMode::GPUOnly),
                      "Instancing: Dynamic vertex buffer (3 vertex buffers)");
-    RegisterSubScene(std::bind(&VertexBuffersScene::CreateSubSceneInstancing, this, BufferMode::Volatile),
+    RegisterSubScene(std::bind(&VertexBuffersScene::CreateSubSceneInstancing, this, ResourceAccessMode::Volatile),
                      "Instancing: Volatile vertex buffer (3 vertex buffers)");
 }
 
@@ -273,7 +271,7 @@ bool VertexBuffersScene::OnInit(void* winHandle)
 void VertexBuffersScene::Draw(float dt)
 {
     // reset bound resources and set them once again
-    mCommandBuffer->Begin();
+    mCommandBuffer->Begin(CommandQueueType::Graphics);
     mCommandBuffer->SetViewport(0.0f, static_cast<float>(WINDOW_WIDTH), 0.0f,
                                 static_cast<float>(WINDOW_HEIGHT), 0.0f, 1.0f);
     mCommandBuffer->SetScissors(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
@@ -292,7 +290,7 @@ void VertexBuffersScene::Draw(float dt)
         mCommandBuffer->SetVertexBuffers(3, vertexBuffers, strides, offsets);
 
         // update dynamic/volatile buffer
-        if (mVertexBufferMode == BufferMode::Dynamic || mVertexBufferMode == BufferMode::Volatile)
+        if (mVertexBufferMode == ResourceAccessMode::GPUOnly || mVertexBufferMode == ResourceAccessMode::Volatile)
         {
             for (int i = 0; i < gInstancesNumber; ++i)
             {
@@ -334,7 +332,7 @@ void VertexBuffersScene::Draw(float dt)
     mCommandBuffer->CopyTexture(mWindowRenderTargetTexture, mWindowBackbuffer);
 
     CommandListPtr commandList = mCommandBuffer->Finish();
-    mRendererDevice->Execute(commandList);
+    mGraphicsQueue->Execute(commandList);
     mWindowBackbuffer->Present();
     mRendererDevice->FinishFrame();
 

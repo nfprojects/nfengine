@@ -72,9 +72,10 @@
         <DisplayString>StaticArray {{ size={mSize} }}</DisplayString>
         <Expand>
             <Item Name="Size" ExcludeView="simple">mSize</Item>
+            <Item Name="Capacity" ExcludeView="simple">$T2</Item>
             <ArrayItems>
                 <Size>mSize</Size>
-                <ValuePointer>mData</ValuePointer>
+                <ValuePointer>($T1*)mData</ValuePointer>
             </ArrayItems>
         </Expand>
     </Type>

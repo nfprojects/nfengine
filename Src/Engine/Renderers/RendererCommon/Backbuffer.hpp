@@ -8,6 +8,7 @@
 
 #include "Texture.hpp"
 #include "Types.hpp"
+#include "CommandQueue.hpp"
 
 namespace NFE {
 namespace Renderer {
@@ -17,12 +18,13 @@ namespace Renderer {
  */
 struct BackbufferDesc
 {
-    void* windowHandle; //< platform dependent window handle
-    int width;
-    int height;
+    CommandQueuePtr commandQueue;   //< command queue to be used for presenting
+    void* windowHandle;             //< platform dependent window handle
+    uint32 width;
+    uint32 height;
     Format format;
     bool vSync;
-    const char* debugName; //< optional debug name
+    const char* debugName;          //< optional debug name
     // TODO: options such as: UAV usage, mulitsampling, texture format, etc.
     // TODO: buffers number (double buffering, triple buffering, etc.)
 

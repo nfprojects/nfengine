@@ -68,8 +68,7 @@ protected:
         };
 
         BufferDesc vbDesc;
-        vbDesc.type = BufferType::Vertex;
-        vbDesc.mode = BufferMode::Static;
+        vbDesc.mode = ResourceAccessMode::Static;
         vbDesc.size = sizeof(vbData);
         vbDesc.initialData = vbData;
         mVertexBuffer = gRendererDevice->CreateBuffer(vbDesc);
@@ -82,8 +81,7 @@ protected:
         };
 
         BufferDesc ibDesc;
-        ibDesc.type = BufferType::Index;
-        ibDesc.mode = BufferMode::Static;
+        ibDesc.mode = ResourceAccessMode::Static;
         ibDesc.size = sizeof(ibData);
         ibDesc.initialData = ibData;
         mIndexBuffer = gRendererDevice->CreateBuffer(ibDesc);
@@ -463,8 +461,7 @@ TEST_F(SimpleDrawTest, StaticCBuffer)
     CreateShaderProgram("SimpleDrawVS", "SimpleDrawPS", &macro, 1);
 
     BufferDesc cbufferDesc;
-    cbufferDesc.type = BufferType::Constant;
-    cbufferDesc.mode = BufferMode::Static;
+    cbufferDesc.mode = ResourceAccessMode::Static;
     cbufferDesc.size = sizeof(Vec4fU);
     cbufferDesc.initialData = &customColor;
     constatnBuffer = gRendererDevice->CreateBuffer(cbufferDesc);

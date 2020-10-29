@@ -50,16 +50,16 @@ class BasicScene: public Scene
     bool mUseBindingInstance;
 
     // cbuffer mode
-    NFE::Renderer::BufferMode mCBufferMode;
+    NFE::Renderer::ResourceAccessMode mCBufferMode;
 
     // Releases only subscene-related resources. Backbuffer, RT and BlendState stay intact.
     void ReleaseSubsceneResources() override;
 
     // Resource creators for subscenes
-    bool CreateShaders(bool useCBuffer, bool useTexture, NFE::Renderer::BufferMode cbufferMode);
+    bool CreateShaders(bool useCBuffer, bool useTexture, NFE::Renderer::ResourceAccessMode cbufferMode);
     bool CreateVertexBuffer(bool withExtraVert);
     bool CreateIndexBuffer();
-    bool CreateConstantBuffer(NFE::Renderer::BufferMode cbufferMode);
+    bool CreateConstantBuffer(NFE::Renderer::ResourceAccessMode cbufferMode);
     bool CreateTexture();
     bool CreateSampler();
 
@@ -67,8 +67,8 @@ class BasicScene: public Scene
     bool CreateSubSceneEmpty();
     bool CreateSubSceneVertexBuffer();
     bool CreateSubSceneIndexBuffer();
-    bool CreateSubSceneConstantBuffer(NFE::Renderer::BufferMode cbufferMode, bool useBindingInstance);
-    bool CreateSubSceneTexture(NFE::Renderer::BufferMode cbufferMode, bool useBindingInstance, int gridSize = 1);
+    bool CreateSubSceneConstantBuffer(NFE::Renderer::ResourceAccessMode cbufferMode, bool useBindingInstance);
+    bool CreateSubSceneTexture(NFE::Renderer::ResourceAccessMode cbufferMode, bool useBindingInstance, int gridSize = 1);
 
 public:
     BasicScene();

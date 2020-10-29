@@ -26,6 +26,9 @@ Texture::~Texture()
 
 bool Texture::UploadData(const TextureDesc& desc)
 {
+    NFE_UNUSED(desc);
+
+    /*
     // Create temporary upload buffer on upload heap
 
     Common::Timer timer;
@@ -117,7 +120,7 @@ bool Texture::UploadData(const TextureDesc& desc)
             D3D12_MEMCPY_DEST memcpyDest;
             memcpyDest.pData = data + layouts[i].Offset;
             memcpyDest.RowPitch = layouts[i].Footprint.RowPitch;
-            memcpyDest.SlicePitch = layouts[i].Footprint.RowPitch * numRows[i];
+            memcpyDest.SlicePitch = (size_t)layouts[i].Footprint.RowPitch * (size_t)numRows[i];
 
             D3D12_SUBRESOURCE_DATA memcpySrc;
             memcpySrc.pData = desc.dataDesc[i].data;
@@ -179,6 +182,7 @@ bool Texture::UploadData(const TextureDesc& desc)
 
         NFE_LOG_INFO("Uploating texture took %.3f ms", 1000.0 * timer.Stop());
     }
+    */
 
     return true;
 }
@@ -187,15 +191,15 @@ bool Texture::Init(const TextureDesc& desc)
 {
     HRESULT hr;
 
-    if (desc.mode == BufferMode::Dynamic || desc.mode == BufferMode::Volatile)
+    if (desc.mode == ResourceAccessMode::Upload || desc.mode == ResourceAccessMode::Volatile || desc.mode == ResourceAccessMode::Readback)
     {
-        NFE_LOG_ERROR("Selected buffer mode is not supported yet");
+        NFE_LOG_ERROR("Invalid access mode for texture");
         return false;
     }
 
     if (desc.width < 1 || desc.width >= std::numeric_limits<uint16>::max())
     {
-        NFE_LOG_ERROR("Invalid texture width");
+        NFE_LOG_ERROR("Invalid texture width (%u), max is %u");
         return false;
     }
 
@@ -265,7 +269,7 @@ bool Texture::Init(const TextureDesc& desc)
     }
 
     // if the texture is CPU-readonly we must create readback buffer resource instead of texture resource
-    if (desc.mode == BufferMode::Readback)
+    if (desc.mode == ResourceAccessMode::Readback)
     {
         if (desc.binding != 0)
         {
@@ -328,7 +332,7 @@ bool Texture::Init(const TextureDesc& desc)
 
         if (desc.binding & NFE_RENDERER_TEXTURE_BIND_RENDERTARGET)
         {
-            if (desc.mode != BufferMode::GPUOnly)
+            if (desc.mode != ResourceAccessMode::GPUOnly)
             {
                 NFE_LOG_ERROR("Invalid resource access specified for rendertarget texture");
                 return false;
@@ -345,7 +349,7 @@ bool Texture::Init(const TextureDesc& desc)
         }
         else if (desc.binding & NFE_RENDERER_TEXTURE_BIND_DEPTH)
         {
-            if (desc.mode != BufferMode::GPUOnly)
+            if (desc.mode != ResourceAccessMode::GPUOnly)
             {
                 NFE_LOG_ERROR("Invalid resource access specified for depth buffer");
                 return false;
@@ -388,7 +392,7 @@ bool Texture::Init(const TextureDesc& desc)
         NFE_LOG_DEBUG("Allocating texture '%s' requires %llu bytes", desc.debugName, requiredSize);
 
         D3D12MA::ALLOCATION_DESC allocationDesc = {};
-        allocationDesc.HeapType = (desc.mode == BufferMode::Readback) ? D3D12_HEAP_TYPE_READBACK : D3D12_HEAP_TYPE_DEFAULT;
+        allocationDesc.HeapType = (desc.mode == ResourceAccessMode::Readback) ? D3D12_HEAP_TYPE_READBACK : D3D12_HEAP_TYPE_DEFAULT;
 
         // create the texture resource
         hr = D3D_CALL_CHECK(gDevice->GetAllocator()->CreateResource(
@@ -405,7 +409,7 @@ bool Texture::Init(const TextureDesc& desc)
             return false;
         }
 
-        if (desc.mode == BufferMode::Static)
+        if (desc.mode == ResourceAccessMode::Static)
         {
             if (desc.dataDesc)
             {

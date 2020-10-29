@@ -333,7 +333,7 @@ bool ResourceBindingInstance::SetWritableTextureView(uint32 slot, const TextureP
         return false;
     }
 
-    NFE_ASSERT(tex->GetMode() == BufferMode::GPUOnly, "Invalid texture mode");
+    NFE_ASSERT(tex->GetMode() == ResourceAccessMode::GPUOnly, "Invalid texture mode");
 
     mResources[slot].texture = texture;
 
@@ -356,7 +356,7 @@ bool ResourceBindingInstance::SetWritableBufferView(uint32 slot, const BufferPtr
         return false;
     }
 
-    NFE_ASSERT(buf->GetMode() == BufferMode::GPUOnly, "Invalid buffer mode");
+    NFE_ASSERT(buf->GetMode() == ResourceAccessMode::GPUOnly, "Invalid buffer mode");
 
     mResources[slot].buffer = buffer;
 

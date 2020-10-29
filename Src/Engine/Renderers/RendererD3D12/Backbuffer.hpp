@@ -9,6 +9,7 @@
 #include "../RendererCommon/Backbuffer.hpp"
 #include "Common.hpp"
 #include "Resource.hpp"
+#include "Fence.hpp"
 #include "Engine/Common/Containers/StaticArray.hpp"
 
 namespace NFE {
@@ -50,12 +51,19 @@ private:
     HWND mWindow;
     bool mVSync;
 
+    CommandQueuePtr mCommandQueue;
+
     D3DPtr<IDXGISwapChain3> mSwapChain;
 
     // textures for each backbuffer slice
     Common::StaticArray<D3DPtr<ID3D12Resource>, DXGI_MAX_SWAP_CHAIN_BUFFERS> mBuffers;
 
     uint32 mCurrentBuffer;
+
+    // for frame synchronization
+    static constexpr uint32 MaxPendingFrames = 2;
+    Common::StaticArray<FencePtr, MaxPendingFrames> mPendingFramesFences;
+    FenceData mFrameFence;
 };
 
 } // namespace Renderer

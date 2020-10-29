@@ -198,24 +198,21 @@ bool DepthStencilScene::CreateBasicResources(bool withDepth, bool withStencil)
     };
 
     BufferDesc bufferDesc;
-    bufferDesc.type = BufferType::Vertex;
-    bufferDesc.mode = BufferMode::Static;
+    bufferDesc.mode = ResourceAccessMode::Static;
     bufferDesc.size = sizeof(vbData);
     bufferDesc.initialData = vbData;
     mVertexBuffer = mRendererDevice->CreateBuffer(bufferDesc);
     if (!mVertexBuffer)
         return false;
 
-    bufferDesc.type = BufferType::Index;
-    bufferDesc.mode = BufferMode::Static;
+    bufferDesc.mode = ResourceAccessMode::Static;
     bufferDesc.size = sizeof(ibData);
     bufferDesc.initialData = ibData;
     mIndexBuffer = mRendererDevice->CreateBuffer(bufferDesc);
     if (!mIndexBuffer)
         return false;
 
-    bufferDesc.type = BufferType::Constant;
-    bufferDesc.mode = BufferMode::Volatile;
+    bufferDesc.mode = ResourceAccessMode::Volatile;
     bufferDesc.size = sizeof(VertexCBuffer);
     bufferDesc.initialData = nullptr;
     mConstantBuffer = mRendererDevice->CreateBuffer(bufferDesc);
@@ -229,7 +226,7 @@ bool DepthStencilScene::CreateDepthBuffer(bool withStencil)
 {
     TextureDesc depthBufferDesc;
     depthBufferDesc.type = TextureType::Texture2D;
-    depthBufferDesc.mode = BufferMode::GPUOnly;
+    depthBufferDesc.mode = ResourceAccessMode::GPUOnly;
     depthBufferDesc.width = static_cast<uint16>(WINDOW_WIDTH);
     depthBufferDesc.height = static_cast<uint16>(WINDOW_HEIGHT);
     depthBufferDesc.binding = NFE_RENDERER_TEXTURE_BIND_DEPTH;
@@ -306,7 +303,7 @@ void DepthStencilScene::Draw(float dt)
     Matrix4 reflectionMatrix = Matrix4::MakeScaling(Vec4f(1.0f, -1.0f, 1.0f)) *
                                Matrix4::MakeTranslation(Vec4f(0.0f, -2.0f, 0.0f));
 
-    mCommandBuffer->Begin();
+    mCommandBuffer->Begin(CommandQueueType::Graphics);
     mCommandBuffer->SetViewport(0.0f, static_cast<float>(WINDOW_WIDTH), 0.0f,
                                 static_cast<float>(WINDOW_HEIGHT), 0.0f, 1.0f);
     mCommandBuffer->SetScissors(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
@@ -368,7 +365,7 @@ void DepthStencilScene::Draw(float dt)
     mCommandBuffer->CopyTexture(mWindowRenderTargetTexture, mWindowBackbuffer);
 
     CommandListPtr commandList = mCommandBuffer->Finish();
-    mRendererDevice->Execute(commandList);
+    mGraphicsQueue->Execute(commandList);
     mWindowBackbuffer->Present();
     mRendererDevice->FinishFrame();
 }

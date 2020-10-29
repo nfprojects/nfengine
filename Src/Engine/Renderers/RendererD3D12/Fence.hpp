@@ -23,10 +23,11 @@ class FenceManager;
 class Fence : public IFence
 {
 public:
-    Fence(uint64 fenceValue);
+    Fence(uint64 fenceValue, ID3D12Fence* fenceObject);
     ~Fence();
 
     NFE_FORCE_INLINE uint64 GetValue() const { return mFenceValue; }
+    NFE_FORCE_INLINE ID3D12Fence* GetD3DFence() const { return mFenceObject; }
 
     virtual bool IsFinished() const override;
     virtual void Sync(Common::TaskBuilder& taskBuilder) override;
@@ -34,6 +35,7 @@ public:
     void OnFenceFinished();
 
 private:
+    ID3D12Fence* mFenceObject; // TODO command queue - SharedPtr/WeakPtr
     uint64 mFenceValue;
     Common::TaskID mDependencyTask;
     std::atomic<bool> mIsFinished;
@@ -57,11 +59,10 @@ public:
 
     void SetCallback(const Callback& callback) { mCallback = callback; }
 
-    bool Init(FenceManager* fenceManager, Device* device);
+    bool Init();
     void Release();
 
-    uint64 SignalValue(ID3D12CommandQueue* queue);
-    FencePtr Signal(ID3D12CommandQueue* queue);
+    uint64 Signal(ID3D12CommandQueue* queue, FencePtr* outFencePtr = nullptr);
 
     uint64 GetCompletedValue() const;
 
@@ -72,13 +73,10 @@ private:
     Callback mCallback;
 
     D3DPtr<ID3D12Fence> mFenceObject;
-    HANDLE mWaitEvent;
 
     Common::RWLock mLock;
     std::atomic<uint64> mLastSignaledValue;
     uint64 mLastCompletedValue;
-
-    FenceManager* mFenceManager;
 };
 
 
@@ -88,10 +86,11 @@ public:
     FenceManager();
     ~FenceManager();
 
-    void Initialize();
+    bool Initialize();
     void Uninitialize();
 
     void RegisterFenceData(const FenceData* fenceData);
+    void UnregisterFenceData(const FenceData* fenceData);
     void OnFenceRequested(FenceData* fenceData, uint64 value, const FencePtr& fence);
 
 private:
@@ -104,6 +103,7 @@ private:
     };
 
     alignas(NFE_CACHE_LINE_SIZE)
+    Common::RWLock mFenceDataLock;
     Common::DynArray<const FenceData*> mFenceData;
 
     alignas(NFE_CACHE_LINE_SIZE)
@@ -114,6 +114,7 @@ private:
     Common::Thread mThread;
     std::atomic<bool> mFinish;
     HANDLE mLoopEvent;
+    HANDLE mFenceWaitEvent;
 
     void Loop();
 

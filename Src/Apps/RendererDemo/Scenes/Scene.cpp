@@ -61,9 +61,15 @@ void Scene::ReleaseSubsceneResources()
 {
 }
 
-bool Scene::Init(IDevice* rendererDevice, void* winHandle)
+bool Scene::Init(IDevice* rendererDevice, const CommandQueuePtr& graphicsQueue, const CommandQueuePtr& copyQueue, void* winHandle)
 {
+    NFE_ASSERT(rendererDevice, "Invalid renderer device");
+    NFE_ASSERT(graphicsQueue, "Invalid graphics queue");
+    NFE_ASSERT(copyQueue, "Invalid copy queue");
+
     mRendererDevice = rendererDevice;
+    mGraphicsQueue = graphicsQueue;
+    mCopyQueue = copyQueue;
     mCommandBuffer = mRendererDevice->CreateCommandRecorder();
 
     // find suitable back buffer format
@@ -138,7 +144,7 @@ bool Scene::OnInit(void* winHandle)
     texDesc.width = WINDOW_WIDTH;
     texDesc.height = WINDOW_HEIGHT;
     texDesc.type = TextureType::Texture2D;
-    texDesc.mode = BufferMode::GPUOnly;
+    texDesc.mode = ResourceAccessMode::GPUOnly;
     texDesc.format = Format::R8G8B8A8_U_Norm;
     texDesc.binding = NFE_RENDERER_TEXTURE_BIND_RENDERTARGET;
     texDesc.debugName = "Scene::mWindowRenderTargetTexture";
@@ -153,6 +159,7 @@ bool Scene::OnInit(void* winHandle)
     bbDesc.format = mBackbufferFormat;
     bbDesc.windowHandle = winHandle;
     bbDesc.vSync = false;
+    bbDesc.commandQueue = mGraphicsQueue;
     mWindowBackbuffer = mRendererDevice->CreateBackbuffer(bbDesc);
     if (!mWindowBackbuffer)
         return false;

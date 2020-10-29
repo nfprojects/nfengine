@@ -93,6 +93,8 @@ size_t RingBuffer::Allocate(size_t size, size_t alignment)
     // buffer is full
     if (mUsed == mSize)
     {
+        // TODO allocate new buffer?
+        NFE_FATAL("Ring buffer overflow");
         return INVALID_OFFSET;
     }
 
@@ -121,25 +123,32 @@ size_t RingBuffer::Allocate(size_t size, size_t alignment)
         return alignedTail;
     }
 
+    // TODO allocate new buffer?
+    NFE_FATAL("Ring buffer overflow");
     return INVALID_OFFSET;
 }
 
-void RingBuffer::FinishFrame(uint64 fenceValue)
+void RingBuffer::FinishFrame(const FenceData* fenceData, uint64 fenceValue)
 {
     // TODO make lockless
     NFE_SCOPED_LOCK(mLock);
 
-    mCompletedFrames.EmplaceBack(fenceValue, mTail);
+    const PendingFence pendingFence{ fenceData, fenceValue, mTail };
+
+    mCompletedFrames.PushBack(pendingFence);
 }
 
-void RingBuffer::OnFrameCompleted(uint64 fenceValue)
+void RingBuffer::OnFenceValueCompleted(const FenceData* fenceData, uint64 fenceValue)
 {
+    // TODO command queue - handle multiple queues
+    NFE_UNUSED(fenceData);
+
     // TODO make lockless
     NFE_SCOPED_LOCK(mLock);
 
-    while (!mCompletedFrames.Empty() && fenceValue >= mCompletedFrames.Front().first)
+    while (!mCompletedFrames.Empty() && fenceValue >= mCompletedFrames.Front().fenceValue)
     {
-        size_t oldestFrameTail = mCompletedFrames.Front().second;
+        size_t oldestFrameTail = mCompletedFrames.Front().bufferOffset;
         size_t newUsed = 0;
 
         if (mUsed > 0)

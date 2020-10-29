@@ -8,6 +8,7 @@
 #include "Backbuffer.hpp"
 #include "RendererD3D12.hpp"
 #include "Translations.hpp"
+#include "CommandQueue.hpp"
 
 
 namespace NFE {
@@ -25,6 +26,12 @@ Backbuffer::Backbuffer()
 
 Backbuffer::~Backbuffer()
 {
+    for (const FencePtr& fence : mPendingFramesFences)
+    {
+        fence->Wait();
+    }
+
+    mFrameFence.Release();
 }
 
 bool Backbuffer::Resize(int newWidth, int newHeight)
@@ -46,12 +53,21 @@ bool Backbuffer::Init(const BackbufferDesc& desc)
         return false;
     }
 
-    mWidth = static_cast<uint32>(desc.width);
-    mHeight = static_cast<uint32>(desc.height);
+    if (!desc.commandQueue)
+    {
+        NFE_LOG_ERROR("Invalid command queue");
+        return false;
+    }
+
+    mWidth = desc.width;
+    mHeight = desc.height;
     mWindow = static_cast<HWND>(desc.windowHandle);
     mVSync = desc.vSync;
     mFormat = TranslateElementFormat(desc.format);
-    mMode = BufferMode::GPUOnly;
+    mMode = ResourceAccessMode::GPUOnly;
+    mCommandQueue = desc.commandQueue;
+
+    mFrameFence.Init();
 
     mBuffers.Resize(2); // make it configurable
 
@@ -68,9 +84,12 @@ bool Backbuffer::Init(const BackbufferDesc& desc)
     {
         scd.Flags |= DXGI_SWAP_CHAIN_FLAG_ALLOW_TEARING;
     }
+    
+    CommandQueue* commandQueue = static_cast<CommandQueue*>(desc.commandQueue.Get());
+    NFE_ASSERT(commandQueue, "Invalid command queue");
 
     hr = D3D_CALL_CHECK(gDevice->mDXGIFactory->CreateSwapChainForHwnd(
-        gDevice->GetGraphicsQueue(), static_cast<HWND>(desc.windowHandle), &scd, nullptr, nullptr,
+        commandQueue->GetQueue(), static_cast<HWND>(desc.windowHandle), &scd, nullptr, nullptr,
         reinterpret_cast<IDXGISwapChain1**>(&mSwapChain)));
 
     if (FAILED(hr))
@@ -105,6 +124,27 @@ bool Backbuffer::Init(const BackbufferDesc& desc)
 
 bool Backbuffer::Present()
 {
+    // wait for old frames
+    {
+        FencePtr oldFence;
+        if (mPendingFramesFences.Size() >= MaxPendingFrames)
+        {
+            oldFence = std::move(mPendingFramesFences.Front());
+            mPendingFramesFences.Erase(mPendingFramesFences.Begin(), mPendingFramesFences.Begin() + 1);
+        }
+
+        FencePtr newFence = mCommandQueue->Signal();
+        if (newFence)
+        {
+            mPendingFramesFences.PushBack(std::move(newFence));
+        }
+
+        if (oldFence)
+        {
+            oldFence->Wait();
+        }
+    }
+
     uint32 vsyncInterval = 0;
     uint32 presentFlags = 0;
 
@@ -120,7 +160,9 @@ bool Backbuffer::Present()
 
     HRESULT hr = D3D_CALL_CHECK(mSwapChain->Present(vsyncInterval, presentFlags));
     if (FAILED(hr))
+    {
         return false;
+    }
 
     mCurrentBuffer = mSwapChain->GetCurrentBackBufferIndex();
     NFE_ASSERT(mCurrentBuffer < mBuffers.Size(), "Invalid buffer counter");

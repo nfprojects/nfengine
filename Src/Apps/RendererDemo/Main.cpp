@@ -42,6 +42,8 @@ class DemoWindow : public Window
     size_t mCurrentScene;
     Library mRendererLib;
     IDevice* mRendererDevice;
+    CommandQueuePtr mGraphicsQueue;
+    CommandQueuePtr mCopyQueue;
     SceneArrayType mScenes;
     float mDeltaTime;
 
@@ -64,9 +66,9 @@ class DemoWindow : public Window
         mScenes[mCurrentScene]->Release();
 
         // make backbuffer is destroyed before creating new scene (it may be still in be some commandlist)
-        mRendererDevice->WaitForGPU()->Wait();
+        mGraphicsQueue->Signal()->Wait();
 
-        if (mScenes[scene]->Init(mRendererDevice, GetHandle()))
+        if (mScenes[scene]->Init(mRendererDevice, mGraphicsQueue, mCopyQueue, GetHandle()))
         {
             /// success - update the scene counter
             mCurrentScene = scene;
@@ -80,7 +82,7 @@ class DemoWindow : public Window
 
             // assume current scene was already working correctly and reload it
             // otherwise we probably wouldn't be here in the first place
-            mScenes[mCurrentScene]->Init(mRendererDevice, GetHandle());
+            mScenes[mCurrentScene]->Init(mRendererDevice, mGraphicsQueue, mCopyQueue, GetHandle());
         }
 
         SetWindowTitle();
@@ -168,7 +170,24 @@ public:
         params.preferredCardId = preferredCardId;
         params.debugLevel = debugLevel;
         mRendererDevice = proc(&params);
-        return (mRendererDevice != nullptr);
+        if (!mRendererDevice)
+        {
+            return false;
+        }
+
+        mGraphicsQueue = mRendererDevice->CreateCommandQueue(CommandQueueType::Graphics);
+        if (!mGraphicsQueue)
+        {
+            return false;
+        }
+
+        mCopyQueue = mRendererDevice->CreateCommandQueue(CommandQueueType::Copy);
+        if (!mCopyQueue)
+        {
+            return false;
+        }
+
+        return true;
     }
 
     /**
@@ -187,7 +206,7 @@ public:
         if (scene >= mScenes.size())
             return false;
 
-        if (!mScenes[scene]->Init(mRendererDevice, GetHandle()))
+        if (!mScenes[scene]->Init(mRendererDevice, mGraphicsQueue, mCopyQueue, GetHandle()))
             return false;
 
         mCurrentScene = scene;
@@ -236,6 +255,9 @@ public:
         // free scenes
         for (auto& scene : mScenes)
             scene.Reset();
+
+        mCopyQueue.Reset();
+        mGraphicsQueue.Reset();
 
         // free Renderer
         if (mRendererDevice != nullptr)
