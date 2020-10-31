@@ -44,22 +44,23 @@ template<typename T, typename Deleter>
 class UniquePtrBase
 {
 public:
-    UniquePtrBase();
-    UniquePtrBase(T* ptr);
-    UniquePtrBase(UniquePtrBase&& rhs);
-    ~UniquePtrBase();
+    NFE_FORCE_INLINE UniquePtrBase();
+    NFE_FORCE_INLINE UniquePtrBase(T* ptr);
+    NFE_FORCE_INLINE UniquePtrBase(UniquePtrBase&& rhs);
+    NFE_FORCE_INLINE ~UniquePtrBase();
+
     UniquePtrBase& operator = (T* ptr);
     UniquePtrBase& operator = (UniquePtrBase&& ptr);
 
     /**
      * Access pointed object.
      */
-    T* Get() const;
+    NFE_FORCE_INLINE T* Get() const;
 
     /**
      * Get pointer to internal pointer.
      */
-    T** GetPtr();
+    NFE_FORCE_INLINE T** GetPtr();
 
     /**
      * Set a new object.
@@ -70,18 +71,18 @@ public:
      * Pass ownership to the callee.
      * @remarks Use with caution.
      */
-    [[nodiscard]] T* ReleaseOwnership();
+    NFE_FORCE_INLINE [[nodiscard]] T* ReleaseOwnership();
 
     /**
      * Check if pointer is not null.
      */
-    operator bool() const;
+    NFE_FORCE_INLINE operator bool() const;
 
     /**
      * Compare with raw pointer.
      */
-    bool operator == (const T* other) const;
-    bool operator != (const T* other) const;
+    NFE_FORCE_INLINE bool operator == (const T* other) const;
+    NFE_FORCE_INLINE bool operator != (const T* other) const;
 
     /**
      * Compare with other unique pointer.
@@ -105,24 +106,24 @@ template<typename T, typename Deleter>
 class UniquePtr : public UniquePtrBase<T, Deleter>
 {
 public:
-    UniquePtr() {}
-    UniquePtr(std::nullptr_t) : UniquePtr() {}
-    explicit UniquePtr(T* ptr) : UniquePtrBase<T, Deleter>(ptr) {}
-    UniquePtr(UniquePtr&& rhs) : UniquePtrBase<T, Deleter>(std::move(rhs)) {}
-    UniquePtr& operator = (T* ptr) { UniquePtrBase<T, Deleter>::operator=(ptr); return *this; }
-    UniquePtr& operator = (UniquePtr&& ptr) { UniquePtrBase<T, Deleter>::operator=(std::move(ptr)); return *this; }
+    NFE_FORCE_INLINE UniquePtr() = default;
+    NFE_FORCE_INLINE UniquePtr(std::nullptr_t) : UniquePtr() {}
+    NFE_FORCE_INLINE explicit UniquePtr(T* ptr) : UniquePtrBase<T, Deleter>(ptr) {}
+    NFE_FORCE_INLINE UniquePtr(UniquePtr&& rhs) : UniquePtrBase<T, Deleter>(std::move(rhs)) {}
+    NFE_FORCE_INLINE UniquePtr& operator = (T* ptr) { UniquePtrBase<T, Deleter>::operator=(ptr); return *this; }
+    NFE_FORCE_INLINE UniquePtr& operator = (UniquePtr&& ptr) { UniquePtrBase<T, Deleter>::operator=(std::move(ptr)); return *this; }
 
     /**
      * Convert to another type (e.g. base class).
      */
     template<typename U>
-    operator UniquePtr<U>();
+    NFE_FORCE_INLINE operator UniquePtr<U>();
 
     /**
      * Access pointed object.
      */
-    T* operator->() const;
-    T& operator*() const;
+    NFE_FORCE_INLINE T* operator->() const;
+    NFE_FORCE_INLINE T& operator*() const;
 };
 
 /**
@@ -133,23 +134,23 @@ class UniquePtr<T[], Deleter>
     : public UniquePtrBase<T, Deleter>
 {
 public:
-    UniquePtr() {}
-    UniquePtr(std::nullptr_t) : UniquePtr() {}
-    explicit UniquePtr(T* ptr) : UniquePtrBase<T, Deleter>(ptr) {}
-    UniquePtr(UniquePtr&& rhs) : UniquePtrBase<T, Deleter>(std::move(rhs)) {}
-    UniquePtr& operator = (T* ptr) { UniquePtrBase<T, Deleter>::operator=(ptr); return *this; }
-    UniquePtr& operator = (UniquePtr&& ptr) { UniquePtrBase<T, Deleter>::operator=(std::move(ptr)); return *this; }
+    NFE_FORCE_INLINE UniquePtr() {}
+    NFE_FORCE_INLINE UniquePtr(std::nullptr_t) : UniquePtr() {}
+    NFE_FORCE_INLINE explicit UniquePtr(T* ptr) : UniquePtrBase<T, Deleter>(ptr) {}
+    NFE_FORCE_INLINE UniquePtr(UniquePtr&& rhs) : UniquePtrBase<T, Deleter>(std::move(rhs)) {}
+    NFE_FORCE_INLINE UniquePtr& operator = (T* ptr) { UniquePtrBase<T, Deleter>::operator=(ptr); return *this; }
+    NFE_FORCE_INLINE UniquePtr& operator = (UniquePtr&& ptr) { UniquePtrBase<T, Deleter>::operator=(std::move(ptr)); return *this; }
 
     /**
      * Convert to another type (e.g. base class).
      */
     template<typename U>
-    operator UniquePtr<U[]>();
+    NFE_FORCE_INLINE operator UniquePtr<U[]>();
 
     /**
      * Access array element.
      */
-    T& operator[] (size_t i) const;
+    NFE_FORCE_INLINE T& operator[] (size_t i) const;
 };
 
 
@@ -165,17 +166,22 @@ namespace detail {
     constexpr bool is_bounded_array_v<T[N]> = true;
 } // namespace detail
 
+
 /**
  * Create unique pointer.
  */
+
+template<typename T, typename Deleter, typename... Args>
+NFE_INLINE std::enable_if_t<!std::is_array<T>::value, UniquePtr<T,Deleter>> MakeUniquePtr(Args&& ... args);
+
 template<typename T, typename... Args>
 NFE_INLINE std::enable_if_t<!std::is_array<T>::value, UniquePtr<T>> MakeUniquePtr(Args&& ... args);
 
-template<typename T>
-NFE_INLINE std::enable_if_t<detail::is_unbounded_array_v<T>, UniquePtr<T>> MakeUniquePtr(size_t n);
+template<typename T, typename Deleter = DefaultDeleter<T>>
+NFE_INLINE std::enable_if_t<detail::is_unbounded_array_v<T>, UniquePtr<T,Deleter>> MakeUniquePtr(size_t n);
 
-template<typename T, typename... Args>
-NFE_INLINE std::enable_if_t<detail::is_bounded_array_v<T>, UniquePtr<T>> MakeUniquePtr(Args&& ...) = delete;
+template<typename T, typename Deleter = DefaultDeleter<T>, typename... Args>
+NFE_INLINE std::enable_if_t<detail::is_bounded_array_v<T>, UniquePtr<T,Deleter>> MakeUniquePtr(Args&& ...) = delete;
 
 /**
  * Static cast a unique pointer.
@@ -183,6 +189,23 @@ NFE_INLINE std::enable_if_t<detail::is_bounded_array_v<T>, UniquePtr<T>> MakeUni
 template<typename T, typename U>
 NFE_INLINE UniquePtr<T> StaticCast(UniquePtr<U>&& source);
 
+/**
+ * Additional compare
+ */
+template<typename T, typename Deleter>
+bool operator == (const T* lhs, const UniquePtr<T, Deleter>& rhs)
+{
+    return rhs == lhs;
+}
+
+/**
+ * Additional compare
+ */
+template<typename T, typename Deleter>
+bool operator != (const T* lhs, const UniquePtr<T, Deleter>& rhs)
+{
+    return rhs != lhs;
+}
 
 /**
  * Calculate hash of shared pointer.

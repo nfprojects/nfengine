@@ -1,6 +1,7 @@
 #include "PCH.hpp"
 #include "Engine/Common/Containers/UniquePtr.hpp"
 
+using namespace NFE;
 using namespace NFE::Common;
 
 namespace {
@@ -276,4 +277,36 @@ TEST(UniquePtr, CastToBaseClass_Array)
 
     EXPECT_EQ(1, counterA);
     EXPECT_EQ(1, counterB);
+}
+
+TEST(UniquePtr, CustomDeleter)
+{
+    bool deleted = false;
+
+    struct TestType
+    {
+        int32 a;
+        bool* deleted;
+    };
+
+    struct TestDeleter
+    {
+        static void Delete(TestType* pointer)
+        {
+            if (pointer)
+            {
+                *(pointer->deleted) = true;
+                pointer->~TestType();
+                NFE_FREE(pointer);
+            }
+        }
+    };
+
+    auto ptr = MakeUniquePtr<TestType, TestDeleter>();
+    ASSERT_NE(nullptr, ptr.Get());
+    ptr->deleted = &deleted;
+    
+    ASSERT_FALSE(deleted);
+    ptr.Reset();
+    ASSERT_TRUE(deleted);
 }

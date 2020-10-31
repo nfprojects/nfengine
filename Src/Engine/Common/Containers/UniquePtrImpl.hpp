@@ -188,10 +188,18 @@ std::enable_if_t<!std::is_array<T>::value, UniquePtr<T>> MakeUniquePtr(Args&& ..
     return UniquePtr<T>(ptr);
 }
 
-template<typename T>
-std::enable_if_t<detail::is_unbounded_array_v<T>, UniquePtr<T>> MakeUniquePtr(size_t n)
+template<typename T, typename Deleter, typename... Args>
+std::enable_if_t<!std::is_array<T>::value, UniquePtr<T,Deleter>> MakeUniquePtr(Args&& ... args)
 {
-    return UniquePtr<T>(new std::remove_extent_t<T>[n]());
+    void* memory = NFE_MALLOC(sizeof(T), alignof(T));
+    T* ptr = new (memory) T(std::forward<Args>(args) ...);
+    return UniquePtr<T,Deleter>(ptr);
+}
+
+template<typename T, typename Deleter>
+std::enable_if_t<detail::is_unbounded_array_v<T>, UniquePtr<T,Deleter>> MakeUniquePtr(size_t n)
+{
+    return UniquePtr<T,Deleter>(new std::remove_extent_t<T>[n]());
 }
 
 //////////////////////////////////////////////////////////////////////////

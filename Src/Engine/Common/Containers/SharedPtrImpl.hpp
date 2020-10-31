@@ -46,9 +46,12 @@ SharedPtr<T>::SharedPtr(SharedPtr&& rhs)
 }
 
 template<typename T>
-template<typename SourceType>
-SharedPtr<T>::SharedPtr(UniquePtr<SourceType>&& rhs)
-    : SharedPtr(rhs.ReleaseOwnership()) // TODO copy deleter from UniquePtr
+template<typename SourceType, typename SourceTypeDeleter>
+SharedPtr<T>::SharedPtr(UniquePtr<SourceType, SourceTypeDeleter>&& rhs)
+    : SharedPtr(
+        rhs.ReleaseOwnership(),
+        [] (T* ptr) { SourceTypeDeleter::Delete(static_cast<SourceType*>(ptr)); }
+    )
 { }
 
 template<typename T>
@@ -104,11 +107,11 @@ SharedPtr<T>& SharedPtr<T>::operator = (SharedPtr&& rhs)
 }
 
 template<typename T>
-template<typename SourceType>
-SharedPtr<T>& SharedPtr<T>::operator = (UniquePtr<SourceType>&& rhs)
+template<typename SourceType, typename SourceTypeDeleter>
+SharedPtr<T>& SharedPtr<T>::operator = (UniquePtr<SourceType, SourceTypeDeleter>&& rhs)
 {
-    // TODO copy deleter from UniquePtr
-    Reset(rhs.ReleaseOwnership());
+    const auto deleterFunc = [] (T* ptr) { SourceTypeDeleter::Delete(static_cast<SourceType*>(ptr)); };
+    Reset(rhs.ReleaseOwnership(), deleterFunc);
     return *this;
 }
 

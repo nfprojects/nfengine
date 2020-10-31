@@ -42,12 +42,12 @@ public:
     ~SharedPtr();
 
     // implicit conversion constructor from UniquePtr
-    template<typename SourceType>
-    SharedPtr(UniquePtr<SourceType>&& rhs);
+    template<typename SourceType, typename SourceTypeDeleter>
+    SharedPtr(UniquePtr<SourceType, SourceTypeDeleter>&& rhs);
 
     // implicit conversion assignment from UniquePtr
-    template<typename SourceType>
-    SharedPtr& operator = (UniquePtr<SourceType>&& rhs);
+    template<typename SourceType, typename SourceTypeDeleter>
+    SharedPtr& operator = (UniquePtr<SourceType, SourceTypeDeleter>&& rhs);
 
     // implicit conversion constructor
     template<typename SourceType>

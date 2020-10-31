@@ -11,9 +11,10 @@ namespace {
 class TestClass
 {
 public:
-    TestClass(int& counter) : payload(0), mCounter(counter)  { }
+    TestClass(int& counter) : mCounter(counter)  { }
     virtual ~TestClass() { mCounter++; }
-    std::atomic_int payload;
+    std::atomic_int payload = 0;
+    bool* deleted = nullptr;
 private:
     int& mCounter;
 };
@@ -119,6 +120,72 @@ TEST(SharedPtr, Reset_SingleRef)
     ASSERT_FALSE(pointer);
     ASSERT_EQ(1, counter);
     ASSERT_EQ(0u, pointer.RefCount());
+}
+
+TEST(SharedPtr, MoveConstructor_UniquePtr)
+{
+    int counter = 0;
+    UniquePtr<TestClass> pointer = MakeUniquePtr<TestClass>(counter);
+
+    ASSERT_EQ(0, counter);
+    ASSERT_NE(pointer, nullptr);
+    ASSERT_TRUE(pointer);
+
+    SharedPtr<TestClass> pointer2(std::move(pointer));
+
+    // first pointer should be cleared
+    ASSERT_EQ(pointer, nullptr);
+    ASSERT_FALSE(pointer);
+
+    ASSERT_NE(pointer2, nullptr);
+    ASSERT_TRUE(pointer2);
+
+    ASSERT_EQ(0, counter);
+}
+
+TEST(SharedPtr, MoveConstructor_UniquePtr_CustomDestructor)
+{
+    bool deleted = false;
+
+    struct TestDeleter
+    {
+        static void Delete(TestClass* pointer)
+        {
+            if (pointer)
+            {
+                *(pointer->deleted) = true;
+                pointer->~TestClass();
+                NFE_FREE(pointer);
+            }
+        }
+    };
+
+    int counter = 0;
+    UniquePtr<TestClass,TestDeleter> pointer = MakeUniquePtr<TestClass,TestDeleter>(counter);
+    pointer->deleted = &deleted;
+
+    ASSERT_EQ(0, counter);
+    ASSERT_NE(pointer, nullptr);
+    ASSERT_TRUE(pointer);
+
+    SharedPtr<TestClass> pointer2(std::move(pointer));
+
+    // first pointer should be cleared
+    ASSERT_EQ(pointer, nullptr);
+    ASSERT_FALSE(pointer);
+
+    // the object should not be yet deleted
+    ASSERT_FALSE(deleted);
+
+    ASSERT_NE(pointer2, nullptr);
+    ASSERT_TRUE(pointer2);
+
+    ASSERT_EQ(0, counter);
+
+    pointer2.Reset();
+
+    // now the object should be deleted
+    ASSERT_TRUE(deleted);
 }
 
 TEST(SharedPtr, MoveConstructor_SingleRef)
