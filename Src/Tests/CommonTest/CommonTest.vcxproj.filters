@@ -238,6 +238,9 @@
     <ClCompile Include="TestCases\Reflection\ReflectionTypeMismatchTest.cpp">
       <Filter>TestCases\Reflection</Filter>
     </ClCompile>
+    <ClCompile Include="TestCases\Containers\FixedArrayTest.cpp">
+      <Filter>TestCases\Containers</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="PCH.hpp" />

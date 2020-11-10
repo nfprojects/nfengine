@@ -42,8 +42,7 @@ FileBuffered::FileBuffered(FileBuffered&& other)
     , mBufferEOFOffset(other.mBufferEOFOffset)
 {
     // Used instead of memmove, because it's faster
-    memcpy(mBuffer, other.mBuffer, FILE_BUFFERED_BUFFER_SIZE);
-    memset(other.mBuffer, 0, FILE_BUFFERED_BUFFER_SIZE);
+    memcpy(mBuffer.Data(), other.mBuffer.Data(), FILE_BUFFERED_BUFFER_SIZE);
 }
 
 FileBuffered::~FileBuffered()
@@ -92,7 +91,7 @@ size_t FileBuffered::Read(void* data, size_t size)
     mLastOperation = AccessMode::Read;
 
     // Calculate left space in the buffer
-    size_t leftSpace = FILE_BUFFERED_BUFFER_SIZE - mBufferOccupied;
+    uint32 leftSpace = FILE_BUFFERED_BUFFER_SIZE - mBufferOccupied;
 
     // If user want to read more then the buffer is capable of
     if (size > FILE_BUFFERED_BUFFER_SIZE)
@@ -117,26 +116,28 @@ size_t FileBuffered::Read(void* data, size_t size)
         }
 
         return readBytes;
-
-    // If user want to read data, that can fit in buffer
-    } else
+    }
+    else // If user want to read data, that can fit in buffer
     {
         // If whole buffer is ran through, fill it from file
         if (leftSpace <= 0)
         {
             // We set the start of the buffer and then fill it with data
             mBufferPosition = mFile.GetPos();
-            leftSpace = mFile.Read(mBuffer, FILE_BUFFERED_BUFFER_SIZE);
+            const size_t bytesRead = mFile.Read(mBuffer.Data(), FILE_BUFFERED_BUFFER_SIZE);
+            NFE_ASSERT(bytesRead <= FILE_BUFFERED_BUFFER_SIZE, "Invalid num bytes read returned: %zu, %u requested", bytesRead, FILE_BUFFERED_BUFFER_SIZE);
+            
+            leftSpace = (uint32)bytesRead;
             mBufferOccupied = 0;
 
             // Check if EOF is within range
             if (leftSpace < FILE_BUFFERED_BUFFER_SIZE)
             {
                 // Check what space is left after filling the buffer
-                mBufferEOFOffset = FILE_BUFFERED_BUFFER_SIZE - leftSpace;
+                mBufferEOFOffset = FILE_BUFFERED_BUFFER_SIZE - (uint32)leftSpace;
 
                 // Move data accordingly and move buffer position counter
-                memmove(mBuffer + mBufferEOFOffset, mBuffer, leftSpace);
+                memmove(mBuffer.Data() + mBufferEOFOffset, mBuffer.Data(), leftSpace);
                 mBufferOccupied = mBufferEOFOffset;
 
                 // Set EOF flag
@@ -148,11 +149,10 @@ size_t FileBuffered::Read(void* data, size_t size)
         if (size <= leftSpace)
         {
             memcpy(data, &mBuffer[mBufferOccupied], size);
-            mBufferOccupied += size;
+            mBufferOccupied += (uint32)size;
             return size;
-
-        // Else copy what's available, then read the rest
-        } else
+        }
+        else // Else copy what's available, then read the rest
         {
             memcpy(data, &mBuffer[mBufferOccupied], leftSpace);
             mBufferOccupied += leftSpace;
@@ -191,9 +191,8 @@ size_t FileBuffered::Write(const void* data, size_t size)
         auto bytesWritten = mFile.Write(data, size);
         mBufferPosition = mFile.GetPos();
         return bytesWritten;
-
-    // If user want to write data, that can fit in buffer
-    } else
+    }
+    else // If user want to write data, that can fit in buffer
     {
         // If buffer is full, flush it and write the data
         if (leftSpace <= 0)
@@ -202,22 +201,19 @@ size_t FileBuffered::Write(const void* data, size_t size)
             leftSpace = FILE_BUFFERED_BUFFER_SIZE;
         }
 
-
         // If user want to write data, that can fit into remaining buffer space, copy it
         if (size <= leftSpace)
         {
             memcpy(&mBuffer[mBufferOccupied], data, size);
-            mBufferOccupied += size;
+            mBufferOccupied += (uint32)size;
             return size;
-
-        // Else copy what's available, then write the rest
-        } else
+        }
+        else // Else copy what's available, then write the rest
         {
             memcpy(&mBuffer[mBufferOccupied], data, leftSpace);
-            mBufferOccupied += leftSpace;
+            mBufferOccupied += (uint32)leftSpace;
 
-            return leftSpace + Write(reinterpret_cast<const char*>(data) + leftSpace,
-                                     size - leftSpace);
+            return leftSpace + Write(reinterpret_cast<const char*>(data) + leftSpace, size - leftSpace);
         }
     }
 }
@@ -256,11 +252,10 @@ bool FileBuffered::Seek(int64 pos, SeekMode mode)
          // If seek destination is within buffer - no jump's needed, just set the position in buffer
         if (IsWithinBuffer(relativePos))
         {
-            mBufferOccupied = static_cast<size_t>(relativePos) + mBufferEOFOffset;
+            mBufferOccupied = static_cast<uint32>(relativePos + mBufferEOFOffset);
             return true;
-        // If seek destination is outside of buffer - set buffer as 'used up' in preparation for jump
         }
-        else
+        else // If seek destination is outside of buffer - set buffer as 'used up' in preparation for jump
         {
             mBufferOccupied = FILE_BUFFERED_BUFFER_SIZE;
             // Reset EOF flag and offset
@@ -300,7 +295,7 @@ void FileBuffered::Flush()
     }
     else if (mLastOperation == AccessMode::Write && mBufferOccupied > 0)
     {
-        mFile.Write(mBuffer, mBufferOccupied);
+        mFile.Write(mBuffer.Data(), mBufferOccupied);
         mBufferPosition = mFile.GetPos();
         mBufferOccupied = 0;
     }
@@ -310,7 +305,9 @@ bool FileBuffered::IsWithinBuffer(int64 position) const
 {
     int64 buffEnd = FILE_BUFFERED_BUFFER_SIZE;
     if (mEofReached)
+    {
         buffEnd -= mBufferEOFOffset;
+    }
 
     return (position >= 0 && position < buffEnd);
 }

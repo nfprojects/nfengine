@@ -695,6 +695,12 @@
     <ClInclude Include="Reflection\ReflectionMemberPath.hpp">
       <Filter>Reflection</Filter>
     </ClInclude>
+    <ClInclude Include="Containers\FixedArray.hpp">
+      <Filter>Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="Containers\FixedArrayImpl.hpp">
+      <Filter>Containers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="PCH.cpp" />

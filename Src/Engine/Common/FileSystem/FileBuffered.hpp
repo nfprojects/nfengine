@@ -7,6 +7,7 @@
 #pragma once
 
 #include "File.hpp"
+#include "../Containers/FixedArray.hpp"
 
 namespace NFE {
 namespace Common {
@@ -19,12 +20,12 @@ private:
     File mFile;
 
     uint64 mBufferPosition;    //< Position of start of the buffer in file
-    size_t mBufferOccupied;    //< Position inside of the buffer
+    uint32 mBufferEOFOffset;   //< Offset in buffer resulting from the last read
+    uint32 mBufferOccupied;    //< Position inside of the buffer
     AccessMode mMode;          //< Mode, that file is opened in
     AccessMode mLastOperation; //< Type of last performed operation
     bool mEofReached;          //< Flag indicating if EOF has been reached
-    uint8_t mBuffer[FILE_BUFFERED_BUFFER_SIZE];
-    size_t mBufferEOFOffset;   //< Offset in buffer resulting from the last read
+    FixedArray<uint8, FILE_BUFFERED_BUFFER_SIZE> mBuffer;
 
     bool IsWithinBuffer(int64 position) const;
 

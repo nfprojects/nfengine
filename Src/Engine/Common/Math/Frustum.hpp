@@ -11,6 +11,7 @@
 #include "Matrix4.hpp"
 #include "Box.hpp"
 #include "Plane.hpp"
+#include "../Containers/FixedArray.hpp"
 
 
 namespace NFE {
@@ -33,8 +34,8 @@ public:
         Top
     };
 
-    Plane planes[6];
-    Vec4f verticies[8];
+    Common::FixedArray<Plane, 6> planes;
+    Common::FixedArray<Vec4f, 8> verticies;
     Box boundingBox;
 
     /**

@@ -132,6 +132,7 @@
     <ClCompile Include="TestCases\Containers\DequeTest.cpp" />
     <ClCompile Include="TestCases\Containers\DynArrayTest.cpp" />
     <ClCompile Include="TestCases\Containers\DynArrayTest_Containers.cpp" />
+    <ClCompile Include="TestCases\Containers\FixedArrayTest.cpp" />
     <ClCompile Include="TestCases\Containers\HashMapTest.cpp" />
     <ClCompile Include="TestCases\Containers\HashSetTest_Containers.cpp" />
     <ClCompile Include="TestCases\Containers\MapTest.cpp" />

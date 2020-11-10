@@ -9,6 +9,7 @@
 #include "Types.hpp"
 #include "Shader.hpp"
 #include "VertexLayout.hpp"
+#include "../../Common/Containers/FixedArray.hpp"
 
 namespace NFE {
 namespace Renderer {
@@ -44,13 +45,12 @@ struct RenderTargetBlendStateDesc
  */
 struct BlendStateDesc
 {
-    RenderTargetBlendStateDesc rtDescs[MAX_RENDER_TARGETS];
+    Common::FixedArray<RenderTargetBlendStateDesc, MAX_RENDER_TARGETS> rtDescs;
     bool independent; //< if set to false structure at index 0 is applied to all rendertargets
     bool alphaToCoverage;
 
     BlendStateDesc()
-        : rtDescs()
-        , independent(false)
+        : independent(false)
         , alphaToCoverage(false)
     {}
 };
@@ -137,7 +137,7 @@ struct PipelineStateDesc
     VertexLayoutPtr vertexLayout;
 
     uint32 numRenderTargets;
-    Format rtFormats[MAX_RENDER_TARGETS];
+    Common::FixedArray<Format, MAX_RENDER_TARGETS> rtFormats;
     DepthBufferFormat depthFormat;
     uint32 numSamples; // for multisampling
 
@@ -161,9 +161,8 @@ struct PipelineStateDesc
         , numSamples(1)
         , resBindingLayout(nullptr)
         , debugName(nullptr)
+        , rtFormats(Format::B8G8R8A8_U_Norm)
     {
-        for (int i = 0; i < MAX_RENDER_TARGETS; ++i)
-            rtFormats[i] = Format::B8G8R8A8_U_Norm;
     }
 };
 

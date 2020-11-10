@@ -27,6 +27,8 @@
     <ClInclude Include="Containers\DequeImpl.hpp" />
     <ClInclude Include="Containers\DynArray.hpp" />
     <ClInclude Include="Containers\DynArrayImpl.hpp" />
+    <ClInclude Include="Containers\FixedArray.hpp" />
+    <ClInclude Include="Containers\FixedArrayImpl.hpp" />
     <ClInclude Include="Containers\HashMap.hpp" />
     <ClInclude Include="Containers\HashMapImpl.hpp" />
     <ClInclude Include="Containers\Iterators\ArrayIterator.hpp" />

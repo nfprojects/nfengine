@@ -2,6 +2,7 @@
 
 #include "RayPacketTypes.h"
 #include "../BVH/BVH.h"
+#include "../../Common/Containers/FixedArray.hpp"
 
 
 namespace NFE {
@@ -36,7 +37,7 @@ struct RayPacket
     static constexpr uint32 GroupSize = RayPacketTypes::GroupSize;
     static constexpr uint32 MaxNumGroups = MaxRayPacketSize / GroupSize;
 
-    RayGroup groups[MaxNumGroups];
+    Common::FixedArray<RayGroup,MaxNumGroups> groups;
 
     // rays influence on the image (e.g. 1.0 for primary rays)
     RayPacketTypes::Vec3f rayWeights[MaxNumGroups];

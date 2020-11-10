@@ -63,7 +63,9 @@ float Frustum::SupportVertex(const Vec4f& dir) const
     {
         float tmp_d = Vec4f::Dot3(dir, verticies[i]);
         if (tmp_d > d)
+        {
             d = tmp_d;
+        }
     }
     return d;
 }
