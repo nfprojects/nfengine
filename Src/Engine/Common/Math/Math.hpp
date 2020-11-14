@@ -317,13 +317,15 @@ NFE_FORCE_INLINE constexpr uint32 NextPowerOfTwo(uint32 v)
 }
 
 template<typename T>
+NFE_FORCE_INLINE constexpr const T DivideRoundingUp(const T x, const T y)
+{
+    return (x + y - 1) / y;
+}
+
+template<typename T>
 NFE_FORCE_INLINE constexpr const T RoundUp(const T x, const T multiple)
 {
-    T remainder = x % multiple;
-    if (remainder == 0)
-        return x;
-
-    return x + multiple - remainder;
+    return ((x + multiple - 1) / multiple) * multiple;
 }
 
 // Wang hash

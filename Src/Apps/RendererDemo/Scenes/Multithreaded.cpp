@@ -16,6 +16,7 @@
 #include "Engine/Common/Utils/ThreadPool.hpp"
 #include "Engine/Common/Utils/Waitable.hpp"
 #include "Engine/Common/Utils/TaskBuilder.hpp"
+#include "Engine/Renderers/RendererCommon/Fence.hpp"
 
 #include <functional>
 
@@ -76,7 +77,7 @@ bool MultithreadedScene::CreateShaders(ResourceAccessMode cbufferMode)
     if (mCBufferSlot < 0)
         return false;
 
-    if (cbufferMode == ResourceAccessMode::Static || cbufferMode == ResourceAccessMode::GPUOnly)
+    if (cbufferMode == ResourceAccessMode::GPUOnly)
     {
         ResourceBindingDesc vertexShaderBinding(ShaderResourceType::CBuffer, mCBufferSlot);
         mVSBindingSet = mRendererDevice->CreateResourceBindingSet(ResourceBindingSetDesc(&vertexShaderBinding, 1, ShaderType::Vertex));
@@ -104,7 +105,7 @@ bool MultithreadedScene::CreateShaders(ResourceAccessMode cbufferMode)
 bool MultithreadedScene::CreateVertexBuffer()
 {
     // create vertex buffer
-    float vbDataExtra[] =
+    float vbData[] =
     {
         /// Vertex structure: pos.xyz, texCoord.uv, color.rgba
 
@@ -115,12 +116,19 @@ bool MultithreadedScene::CreateVertexBuffer()
     };
 
     BufferDesc vbDesc;
-    vbDesc.mode = ResourceAccessMode::Static;
-    vbDesc.size = sizeof(vbDataExtra);
-    vbDesc.initialData = vbDataExtra;
+    vbDesc.size = sizeof(vbData);
+    vbDesc.usage = NFE_RENDERER_BUFFER_USAGE_VERTEX_BUFFER;
     mVertexBuffer = mRendererDevice->CreateBuffer(vbDesc);
     if (!mVertexBuffer)
         return false;
+
+    // upload buffer data
+    {
+        mCommandBuffer->Begin(CommandQueueType::Copy);
+        mCommandBuffer->WriteBuffer(mVertexBuffer, 0, sizeof(vbData), vbData);
+        mCopyQueue->Execute(mCommandBuffer->Finish());
+        mCopyQueue->Signal()->Wait();
+    }
 
     VertexLayoutElement vertexLayoutElements[] =
     {
@@ -162,12 +170,19 @@ bool MultithreadedScene::CreateIndexBuffer()
     };
 
     BufferDesc ibDesc;
-    ibDesc.mode = ResourceAccessMode::Static;
     ibDesc.size = sizeof(ibData);
-    ibDesc.initialData = ibData;
+    ibDesc.usage = NFE_RENDERER_BUFFER_USAGE_INDEX_BUFFER;
     mIndexBuffer = mRendererDevice->CreateBuffer(ibDesc);
     if (!mIndexBuffer)
         return false;
+
+    // upload buffer data
+    {
+        mCommandBuffer->Begin(CommandQueueType::Copy);
+        mCommandBuffer->WriteBuffer(mIndexBuffer, 0, sizeof(ibData), ibData);
+        mCopyQueue->Execute(mCommandBuffer->Finish());
+        mCopyQueue->Signal()->Wait();
+    }
 
     return true;
 }
@@ -181,17 +196,20 @@ bool MultithreadedScene::CreateConstantBuffer(ResourceAccessMode cbufferMode)
     BufferDesc cbufferDesc;
     cbufferDesc.mode = cbufferMode;
     cbufferDesc.size = sizeof(VertexCBuffer);
-
-    if (cbufferMode == ResourceAccessMode::Static)
-    {
-        cbufferDesc.initialData = &rotMatrix;
-    }
-
+    cbufferDesc.usage = NFE_RENDERER_BUFFER_USAGE_CONSTANT_BUFFER;
     mConstantBuffer = mRendererDevice->CreateBuffer(cbufferDesc);
     if (!mConstantBuffer)
         return false;
 
-    if (cbufferMode == ResourceAccessMode::Static || cbufferMode == ResourceAccessMode::GPUOnly)
+    // upload buffer data
+    {
+        mCommandBuffer->Begin(CommandQueueType::Copy);
+        mCommandBuffer->WriteBuffer(mConstantBuffer, 0, sizeof(VertexCBuffer), &rotMatrix);
+        mCopyQueue->Execute(mCommandBuffer->Finish());
+        mCopyQueue->Signal()->Wait();
+    }
+
+    if (cbufferMode == ResourceAccessMode::GPUOnly)
     {
         // create and fill binding set instance
         mVSBindingInstance = mRendererDevice->CreateResourceBindingInstance(mVSBindingSet);
@@ -220,7 +238,7 @@ bool MultithreadedScene::CreateSubSceneEmpty()
     if (!CreateCommandRecorders())
         return false;
 
-    return CreateShaders(ResourceAccessMode::Static);
+    return CreateShaders(ResourceAccessMode::GPUOnly);
 }
 
 bool MultithreadedScene::CreateSubSceneNormal(ResourceAccessMode cbufferMode, int gridSize)
@@ -334,7 +352,7 @@ void MultithreadedScene::DrawTask(const Common::TaskContext& ctx, int i, int j)
     recorder->SetResourceBindingLayout(PipelineType::Graphics, mResBindingLayout);
     recorder->SetPipelineState(mPipelineState);
 
-    if (mCBufferMode == ResourceAccessMode::Static || mCBufferMode == ResourceAccessMode::GPUOnly)
+    if (mCBufferMode == ResourceAccessMode::GPUOnly)
         recorder->BindResources(PipelineType::Graphics, mVSBindingSlot, mVSBindingInstance);
     else if (mCBufferMode == ResourceAccessMode::Volatile)
         recorder->BindVolatileCBuffer(PipelineType::Graphics, 0, mConstantBuffer);
@@ -401,7 +419,7 @@ void MultithreadedScene::Draw(float dt)
     }
 
     // copy to back buffer
-    mCommandBuffer->Begin(CommandQueueType::Copy);
+    mCommandBuffer->Begin(CommandQueueType::Graphics); // TODO should be Copy
     mCommandBuffer->CopyTexture(mWindowRenderTargetTexture, mWindowBackbuffer);
     CommandListPtr commandList = mCommandBuffer->Finish();
 

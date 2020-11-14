@@ -55,8 +55,10 @@ CommandQueue::~CommandQueue()
     Signal()->Wait();
 }
 
-bool CommandQueue::Init(CommandQueueType type)
+bool CommandQueue::Init(CommandQueueType type, const char* debugName)
 {
+    NFE_ASSERT(!mQueue, "Command queue is already initialized");
+
     D3D12_COMMAND_QUEUE_DESC queueDesc = {};
     queueDesc.Flags = D3D12_COMMAND_QUEUE_FLAG_NONE;
     queueDesc.Type = TranslateCommandListType(type);
@@ -68,6 +70,11 @@ bool CommandQueue::Init(CommandQueueType type)
         return false;
     }
 
+    if (debugName && !SetDebugName(mQueue.Get(), Common::StringView(debugName)))
+    {
+        NFE_LOG_WARNING("Failed to set debug name of a command queue");
+    }
+
     mFenceData.SetCallback([this](uint64 completedFenceValue)
     {
         // tick command list manager and global ring buffer automatically when fence is completed on GPU
@@ -75,11 +82,15 @@ bool CommandQueue::Init(CommandQueueType type)
         gDevice->GetRingBuffer()->OnFenceValueCompleted(&mFenceData, completedFenceValue);
     });
 
+    mType = type;
+
     return true;
 }
 
 void CommandQueue::Submit(const Common::ArrayView<ICommandList*> commandLists, const Common::ArrayView<IFence*> waitFences)
 {
+    NFE_ASSERT(mQueue, "Command queue is not initialized");
+
     uint64 fenceValue = 0;
     {
         NFE_SCOPED_LOCK(mLock);
@@ -116,6 +127,8 @@ void CommandQueue::Submit(const Common::ArrayView<ICommandList*> commandLists, c
 
 FencePtr CommandQueue::Signal()
 {
+    NFE_ASSERT(mQueue, "Command queue is not initialized");
+
     FencePtr fence;
     mFenceData.Signal(mQueue.Get(), &fence);
     return fence;

@@ -15,12 +15,10 @@ class BufferTest : public RendererTest
 TEST_F(BufferTest, Creation)
 {
     const size_t testBufferSize = 64;
-    const char data[testBufferSize] = { 0 };
     BufferPtr buffer;
 
     // default (valid) buffer descriptor
     BufferDesc defBufferDesc;
-    defBufferDesc.mode = ResourceAccessMode::Upload;
     defBufferDesc.size = testBufferSize;
     defBufferDesc.debugName = "BufferTest::defBufferDesc";
 
@@ -32,42 +30,28 @@ TEST_F(BufferTest, Creation)
     buffer = gRendererDevice->CreateBuffer(bufferDesc);
     EXPECT_EQ(nullptr, buffer.Get());
 
+    // valid upload buffer
+    bufferDesc = defBufferDesc;
+    bufferDesc.mode = ResourceAccessMode::Upload;
+    buffer = gRendererDevice->CreateBuffer(bufferDesc);
+    EXPECT_NE(nullptr, buffer.Get());
+
     // valid readback buffer
     bufferDesc = defBufferDesc;
     bufferDesc.mode = ResourceAccessMode::Readback;
     buffer = gRendererDevice->CreateBuffer(bufferDesc);
     EXPECT_NE(nullptr, buffer.Get());
 
-    // static buffers must have defined content upon creation
+    // valid GPU-only buffer
     bufferDesc = defBufferDesc;
-    bufferDesc.mode = ResourceAccessMode::Static;
-    bufferDesc.initialData = nullptr;
-    buffer = gRendererDevice->CreateBuffer(bufferDesc);
-    EXPECT_EQ(nullptr, buffer.Get());
-
-    // valid dynamic buffer
-    bufferDesc = defBufferDesc;
-    bufferDesc.initialData = data;
-    buffer = gRendererDevice->CreateBuffer(bufferDesc);
-    EXPECT_NE(nullptr, buffer.Get());
-
-    // valid dynamic buffer
-    bufferDesc = defBufferDesc;
-    buffer = gRendererDevice->CreateBuffer(bufferDesc);
-    EXPECT_NE(nullptr, buffer.Get());
-
-    // valid static buffer
-    bufferDesc = defBufferDesc;
-    bufferDesc.mode = ResourceAccessMode::Static;
-    bufferDesc.initialData = data;
+    bufferDesc.mode = ResourceAccessMode::GPUOnly;
     buffer = gRendererDevice->CreateBuffer(bufferDesc);
     EXPECT_NE(nullptr, buffer.Get());
 }
 
-TEST_F(BufferTest, Download)
+TEST_F(BufferTest, WriteAndRead)
 {
     const uint32 bufferSize = 1024;
-    uint8 readData[bufferSize];
     uint8 initData[bufferSize];
 
     Math::Random random;
@@ -77,27 +61,100 @@ TEST_F(BufferTest, Download)
     }
 
     BufferDesc bufferDesc;
-    bufferDesc.mode = ResourceAccessMode::Static;
     bufferDesc.size = bufferSize;
-    bufferDesc.initialData = initData;
-    bufferDesc.debugName = "BufferTest::BufferRead";
+    bufferDesc.debugName = "BufferTest::WriteAndRead::buffer";
     BufferPtr buffer = gRendererDevice->CreateBuffer(bufferDesc);
     ASSERT_NE(nullptr, buffer.Get());
 
-    const auto readCallback = [&](const void* data, size_t, size_t)
-    {
-        memcpy(readData, data, bufferSize);
-    };
+    bufferDesc.mode = ResourceAccessMode::Readback;
+    bufferDesc.debugName = "BufferTest::WriteAndRead::readbackBuffer";
+    BufferPtr readbackBuffer = gRendererDevice->CreateBuffer(bufferDesc);
+    ASSERT_NE(nullptr, buffer.Get());
 
-    Common::Waitable waitable;
+    const CommandRecorderPtr recorder = gRendererDevice->CreateCommandRecorder();
+    recorder->Begin(CommandQueueType::Copy);
+    recorder->WriteBuffer(buffer, 0, bufferSize, initData);
+    recorder->CopyBuffer(buffer, readbackBuffer);
+    CommandListPtr commandList = recorder->Finish();
+
+    gCopyCommandQueue->Execute(commandList);
+    const FencePtr fence = gMainCommandQueue->Signal();
+    ASSERT_NE(nullptr, fence.Get());
+    fence->Wait();
+
+    buffer.Reset();
+
+    uint8 readData[bufferSize];
     {
-        Common::TaskBuilder builder{ waitable };
-        ASSERT_TRUE(gRendererDevice->DownloadBuffer(buffer, readCallback, builder, 0, bufferSize));
+        void* mappedMemory = readbackBuffer->Map();
+        ASSERT_NE(nullptr, mappedMemory);
+        memcpy(readData, mappedMemory, bufferSize);
+        readbackBuffer->Unmap();
     }
-    waitable.Wait();
 
     for (uint32 i = 0; i < bufferSize; ++i)
     {
-        EXPECT_EQ(initData[i], readData[i]);
+        EXPECT_EQ(initData[i], readData[i]) << "i=" << i;
+    }
+}
+
+TEST_F(BufferTest, WriteAndRead_DifferentQueue)
+{
+    const uint32 bufferSize = 1024;
+    uint8 initData[bufferSize];
+
+    Math::Random random;
+    for (uint32 i = 0; i < bufferSize; ++i)
+    {
+        initData[i] = (uint8)random.GetInt();
+    }
+
+    BufferDesc bufferDesc;
+    bufferDesc.size = bufferSize;
+    bufferDesc.debugName = "BufferTest::WriteAndRead_DifferentQueue::buffer";
+    BufferPtr buffer = gRendererDevice->CreateBuffer(bufferDesc);
+    ASSERT_NE(nullptr, buffer.Get());
+
+    bufferDesc.mode = ResourceAccessMode::Readback;
+    bufferDesc.debugName = "BufferTest::WriteAndRead_DifferentQueue::readbackBuffer";
+    BufferPtr readbackBuffer = gRendererDevice->CreateBuffer(bufferDesc);
+    ASSERT_NE(nullptr, buffer.Get());
+
+    CommandRecorderPtr recorder = gRendererDevice->CreateCommandRecorder();
+
+    recorder->Begin(CommandQueueType::Graphics);
+    recorder->CopyBuffer(buffer, readbackBuffer);
+    CommandListPtr commandList_Copy = recorder->Finish();
+
+    recorder->Begin(CommandQueueType::Copy);
+    recorder->WriteBuffer(buffer, 0, bufferSize, initData);
+    CommandListPtr commandList_Upload = recorder->Finish();
+
+    recorder.Reset();
+
+    gCopyCommandQueue->Execute(commandList_Upload);
+    const FencePtr fenceAfterUpload = gCopyCommandQueue->Signal();
+    ASSERT_NE(nullptr, fenceAfterUpload.Get());
+
+    gMainCommandQueue->Execute(commandList_Copy, fenceAfterUpload);
+    const FencePtr fenceAfterCopy = gMainCommandQueue->Signal();
+    ASSERT_NE(nullptr, fenceAfterCopy.Get());
+
+    fenceAfterCopy->Wait();
+    EXPECT_TRUE(fenceAfterUpload->IsFinished());
+
+    buffer.Reset();
+
+    uint8 readData[bufferSize];
+    {
+        void* mappedMemory = readbackBuffer->Map();
+        ASSERT_NE(nullptr, mappedMemory);
+        memcpy(readData, mappedMemory, bufferSize);
+        readbackBuffer->Unmap();
+    }
+
+    for (uint32 i = 0; i < bufferSize; ++i)
+    {
+        EXPECT_EQ(initData[i], readData[i]) << "i=" << i;
     }
 }

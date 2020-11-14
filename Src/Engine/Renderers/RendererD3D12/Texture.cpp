@@ -24,178 +24,9 @@ Texture::~Texture()
 {
 }
 
-bool Texture::UploadData(const TextureDesc& desc)
-{
-    NFE_UNUSED(desc);
-
-    /*
-    // Create temporary upload buffer on upload heap
-
-    Common::Timer timer;
-
-    D3D12_HEAP_PROPERTIES heapProperties;
-    heapProperties.Type = D3D12_HEAP_TYPE_UPLOAD;
-    heapProperties.CPUPageProperty = D3D12_CPU_PAGE_PROPERTY_UNKNOWN;
-    heapProperties.MemoryPoolPreference = D3D12_MEMORY_POOL_UNKNOWN;
-    heapProperties.CreationNodeMask = 1;
-    heapProperties.VisibleNodeMask = 1;
-
-    HRESULT hr;
-    D3DPtr<ID3D12Resource> uploadBuffer;
-    UINT64 requiredSize = 0;
-    D3D12_RESOURCE_DESC d3dResDesc = mResource->GetDesc();
-
-    D3D12_PLACED_SUBRESOURCE_FOOTPRINT layouts[D3D12_REQ_MIP_LEVELS];
-    UINT64 rowSizesInBytes[D3D12_REQ_MIP_LEVELS];
-    UINT numRows[D3D12_REQ_MIP_LEVELS];
-    gDevice->GetDevice()->GetCopyableFootprints(&d3dResDesc, 0, desc.mipmaps, 0,
-                                                layouts, numRows, rowSizesInBytes, &requiredSize);
-
-    D3D12_RESOURCE_DESC resourceDesc;
-    resourceDesc.Dimension = D3D12_RESOURCE_DIMENSION_BUFFER;
-    resourceDesc.Alignment = 0;
-    resourceDesc.Width = requiredSize;
-    resourceDesc.Height = 1;
-    resourceDesc.DepthOrArraySize = 1;
-    resourceDesc.MipLevels = 1;
-    resourceDesc.Format = DXGI_FORMAT_UNKNOWN;
-    resourceDesc.SampleDesc.Count = 1;
-    resourceDesc.SampleDesc.Quality = 0;
-    resourceDesc.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
-    resourceDesc.Flags = D3D12_RESOURCE_FLAG_NONE;
-
-    // TODO get rid of that, use existing ring buffer for resource uploads
-    hr = D3D_CALL_CHECK(gDevice->GetDevice()->CreateCommittedResource(&heapProperties,
-                                                                      D3D12_HEAP_FLAG_NONE,
-                                                                      &resourceDesc,
-                                                                      D3D12_RESOURCE_STATE_GENERIC_READ,
-                                                                      nullptr,
-                                                                      IID_PPV_ARGS(uploadBuffer.GetPtr())));
-    if (FAILED(hr))
-        return false;
-
-
-    if (desc.dataDesc)
-    {
-        // Create temporary command allocator and command list
-        // TODO this is extremly inefficient
-
-        D3DPtr<ID3D12CommandAllocator> commandAllocator;
-        hr = D3D_CALL_CHECK(gDevice->GetDevice()->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_COPY,
-                                                                         IID_PPV_ARGS(commandAllocator.GetPtr())));
-        if (FAILED(hr))
-            return false;
-
-        SetDebugName(commandAllocator.Get(), "Texture upload command allocator");
-
-        if (FAILED(D3D_CALL_CHECK(commandAllocator->Reset())))
-            return false;
-
-        D3DPtr<ID3D12GraphicsCommandList> commandList;
-        hr = D3D_CALL_CHECK(gDevice->GetDevice()->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_COPY,
-                                                                    commandAllocator.Get(), nullptr,
-                                                                    IID_PPV_ARGS(commandList.GetPtr())));
-        if (FAILED(hr))
-            return false;
-
-        SetDebugName(commandList.Get(), "Texture upload commandlist");
-
-        if (FAILED(D3D_CALL_CHECK(commandList->Close())))
-            return false;
-
-        if (FAILED(D3D_CALL_CHECK(commandList->Reset(commandAllocator.Get(), nullptr))))
-            return false;
-
-        // Copy data to upload buffer
-
-        char* data;
-        hr = uploadBuffer->Map(0, NULL, reinterpret_cast<void**>(&data));
-        if (FAILED(hr))
-        {
-            return 0;
-        }
-
-        for (uint32 i = 0; i < desc.mipmaps; ++i)
-        {
-            D3D12_MEMCPY_DEST memcpyDest;
-            memcpyDest.pData = data + layouts[i].Offset;
-            memcpyDest.RowPitch = layouts[i].Footprint.RowPitch;
-            memcpyDest.SlicePitch = (size_t)layouts[i].Footprint.RowPitch * (size_t)numRows[i];
-
-            D3D12_SUBRESOURCE_DATA memcpySrc;
-            memcpySrc.pData = desc.dataDesc[i].data;
-            memcpySrc.RowPitch = desc.dataDesc[i].lineSize;
-            memcpySrc.SlicePitch = desc.dataDesc[i].sliceSize;
-
-            for (UINT z = 0; z < layouts[i].Footprint.Depth; ++z)
-            {
-                char* destSlice = reinterpret_cast<char*>(memcpyDest.pData) + memcpyDest.SlicePitch * z;
-                const char* srcSlice = reinterpret_cast<const char*>(memcpySrc.pData) + memcpySrc.SlicePitch * z;
-
-                for (UINT y = 0; y < numRows[i]; ++y)
-                    memcpy(destSlice + memcpyDest.RowPitch * y, srcSlice + memcpySrc.RowPitch * y,
-                           static_cast<size_t>(rowSizesInBytes[i]));
-            }
-        }
-        uploadBuffer->Unmap(0, NULL);
-
-        D3D12_RESOURCE_BARRIER barrier = {};
-        barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
-        barrier.Transition.pResource = mResource.Get();
-        barrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
-
-        // resource must be in COMMON state before first use on copy queue
-        barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_COMMON;
-        barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_COPY_DEST;
-        commandList->ResourceBarrier(1, &barrier);
-
-        // Copy data from upload buffer to the texture
-        for (uint32 i = 0; i < desc.mipmaps; ++i)
-        {
-            D3D12_TEXTURE_COPY_LOCATION src;
-            src.pResource = uploadBuffer.Get();
-            src.PlacedFootprint = layouts[i];
-            src.Type = D3D12_TEXTURE_COPY_TYPE_PLACED_FOOTPRINT;
-
-            D3D12_TEXTURE_COPY_LOCATION dest;
-            dest.pResource = mResource.Get();
-            dest.SubresourceIndex = i;
-            dest.Type = D3D12_TEXTURE_COPY_TYPE_SUBRESOURCE_INDEX;
-
-            commandList->CopyTextureRegion(&dest, 0, 0, 0, &src, nullptr);
-        }
-
-        // resource must be in COMMON state after use on copy queue
-        barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_COPY_DEST;
-        barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_COMMON;
-        commandList->ResourceBarrier(1, &barrier);
-
-        // close the command list and send it to the command queue
-        if (FAILED(D3D_CALL_CHECK(commandList->Close())))
-            return false;
-        ID3D12CommandList* commandLists[] = { commandList.Get() };
-        gDevice->GetResourceUploadQueue()->ExecuteCommandLists(1, commandLists);
-
-        // TODO get rid of wait, return the fence instead
-        // then the command list and allocator must come from command list manager
-        gDevice->mResourceUploadQueueFence.Signal(gDevice->mResourceUploadQueue.Get())->Wait();
-
-        NFE_LOG_INFO("Uploating texture took %.3f ms", 1000.0 * timer.Stop());
-    }
-    */
-
-    return true;
-}
-
 bool Texture::Init(const TextureDesc& desc)
 {
     HRESULT hr;
-
-    if (desc.mode == ResourceAccessMode::Upload || desc.mode == ResourceAccessMode::Volatile || desc.mode == ResourceAccessMode::Readback)
-    {
-        NFE_LOG_ERROR("Invalid access mode for texture");
-        return false;
-    }
 
     if (desc.width < 1 || desc.width >= std::numeric_limits<uint16>::max())
     {
@@ -268,159 +99,81 @@ bool Texture::Init(const TextureDesc& desc)
         break;
     }
 
-    // if the texture is CPU-readonly we must create readback buffer resource instead of texture resource
-    if (desc.mode == ResourceAccessMode::Readback)
+    // determine formats and clear value
+    mSrvFormat = TranslateElementFormat(desc.format);
+    mDsvFormat = DXGI_FORMAT_UNKNOWN;
+
+    if (desc.binding & NFE_RENDERER_TEXTURE_BIND_SHADER_WRITABLE)
     {
-        if (desc.binding != 0)
+        resourceDesc.Flags |= D3D12_RESOURCE_FLAG_ALLOW_UNORDERED_ACCESS;
+        initialState = D3D12_RESOURCE_STATE_UNORDERED_ACCESS;
+    }
+
+    if (desc.binding & NFE_RENDERER_TEXTURE_BIND_RENDERTARGET)
+    {
+        clearValue.Format = mSrvFormat;
+        clearValue.Color[0] = desc.defaultColorClearValue[0];
+        clearValue.Color[1] = desc.defaultColorClearValue[1];
+        clearValue.Color[2] = desc.defaultColorClearValue[2];
+        clearValue.Color[3] = desc.defaultColorClearValue[3];
+        passClearValue = true;
+
+        resourceDesc.Flags |= D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET;
+    }
+    else if (desc.binding & NFE_RENDERER_TEXTURE_BIND_DEPTH)
+    {
+        if (!TranslateDepthBufferTypes(desc.format, resourceDesc.Format, mSrvFormat, mDsvFormat))
         {
-            NFE_LOG_ERROR("Readback texture can not be bound to any pipeline stage");
+            NFE_LOG_ERROR("Invalid depth buffer format");
             return false;
         }
 
-        if (desc.mipmaps != 1 && desc.layers != 1)
+        // texture won't be bound as shader resource
+        if ((desc.binding & NFE_RENDERER_TEXTURE_BIND_SHADER) == 0)
         {
-            NFE_LOG_ERROR("Readback texture can contain only one layer and one mipmap");
-            return false;
+            resourceDesc.Flags |= D3D12_RESOURCE_FLAG_DENY_SHADER_RESOURCE;
         }
 
-        UINT64 requiredSize = 0;
-        D3D12_PLACED_SUBRESOURCE_FOOTPRINT layout;
-        gDevice->GetDevice()->GetCopyableFootprints(&resourceDesc, 0, 1, 0, &layout, nullptr, nullptr, &requiredSize);
-        mRowPitch = static_cast<uint32>(layout.Footprint.RowPitch);
+        resourceDesc.Flags |= D3D12_RESOURCE_FLAG_ALLOW_DEPTH_STENCIL;
 
-        // now fill with buffer description
-        resourceDesc.Dimension = D3D12_RESOURCE_DIMENSION_BUFFER;
-        resourceDesc.Alignment = 0;
-        resourceDesc.Width = requiredSize;
-        resourceDesc.Height = 1;
-        resourceDesc.DepthOrArraySize = 1;
-        resourceDesc.MipLevels = 1;
-        resourceDesc.Format = DXGI_FORMAT_UNKNOWN;
-        resourceDesc.SampleDesc.Count = desc.samplesNum;
-        resourceDesc.SampleDesc.Quality = 0;
-        resourceDesc.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
-        resourceDesc.Flags = D3D12_RESOURCE_FLAG_NONE;
+        clearValue.Format = mDsvFormat;
+        clearValue.DepthStencil.Depth = desc.defaultDepthClearValue;
+        clearValue.DepthStencil.Stencil = desc.defaultStencilClearValue;
+        passClearValue = true;
 
-        D3D12MA::ALLOCATION_DESC allocationDesc = {};
-        allocationDesc.HeapType = D3D12_HEAP_TYPE_READBACK;
-
-        hr = D3D_CALL_CHECK(gDevice->GetAllocator()->CreateResource(
-            &allocationDesc,
-            &resourceDesc,
-            initialState,
-            nullptr,
-            mAllocation.GetPtr(),
-            IID_PPV_ARGS(mResource.GetPtr())));
-
-        if (FAILED(hr))
-        {
-            NFE_LOG_ERROR("Failed to create readback buffer");
-            return false;
-        }
+        initialState = D3D12_RESOURCE_STATE_DEPTH_WRITE;
     }
     else
     {
-        // determine formats and clear value
-        mSrvFormat = TranslateElementFormat(desc.format);
-        mDsvFormat = DXGI_FORMAT_UNKNOWN;
-
-        if (desc.binding & NFE_RENDERER_TEXTURE_BIND_SHADER_WRITABLE)
+        resourceDesc.Format = TranslateElementFormat(desc.format);
+        mSrvFormat = resourceDesc.Format;
+        if (resourceDesc.Format == DXGI_FORMAT_UNKNOWN)
         {
-            resourceDesc.Flags |= D3D12_RESOURCE_FLAG_ALLOW_UNORDERED_ACCESS;
-            initialState = D3D12_RESOURCE_STATE_UNORDERED_ACCESS;
-        }
-
-        if (desc.binding & NFE_RENDERER_TEXTURE_BIND_RENDERTARGET)
-        {
-            if (desc.mode != ResourceAccessMode::GPUOnly)
-            {
-                NFE_LOG_ERROR("Invalid resource access specified for rendertarget texture");
-                return false;
-            }
-
-            clearValue.Format = mSrvFormat;
-            clearValue.Color[0] = desc.defaultColorClearValue[0];
-            clearValue.Color[1] = desc.defaultColorClearValue[1];
-            clearValue.Color[2] = desc.defaultColorClearValue[2];
-            clearValue.Color[3] = desc.defaultColorClearValue[3];
-            passClearValue = true;
-
-            resourceDesc.Flags |= D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET;
-        }
-        else if (desc.binding & NFE_RENDERER_TEXTURE_BIND_DEPTH)
-        {
-            if (desc.mode != ResourceAccessMode::GPUOnly)
-            {
-                NFE_LOG_ERROR("Invalid resource access specified for depth buffer");
-                return false;
-            }
-
-            if (!TranslateDepthBufferTypes(desc.format, resourceDesc.Format, mSrvFormat, mDsvFormat))
-            {
-                NFE_LOG_ERROR("Invalid depth buffer format");
-                return false;
-            }
-
-            // texture won't be bound as shader resource
-            if ((desc.binding & NFE_RENDERER_TEXTURE_BIND_SHADER) == 0)
-            {
-                resourceDesc.Flags |= D3D12_RESOURCE_FLAG_DENY_SHADER_RESOURCE;
-            }
-
-            resourceDesc.Flags |= D3D12_RESOURCE_FLAG_ALLOW_DEPTH_STENCIL;
-
-            clearValue.Format = mDsvFormat;
-            clearValue.DepthStencil.Depth = desc.defaultDepthClearValue;
-            clearValue.DepthStencil.Stencil = desc.defaultStencilClearValue;
-            passClearValue = true;
-
-            initialState = D3D12_RESOURCE_STATE_DEPTH_WRITE;
-        }
-        else
-        {
-            resourceDesc.Format = TranslateElementFormat(desc.format);
-            mSrvFormat = resourceDesc.Format;
-            if (resourceDesc.Format == DXGI_FORMAT_UNKNOWN)
-            {
-                NFE_LOG_ERROR("Invalid texture format");
-                return false;
-            }
-        }
-
-        UINT64 requiredSize = 0;
-        gDevice->GetDevice()->GetCopyableFootprints(&resourceDesc, 0, 1, 0, nullptr, nullptr, nullptr, &requiredSize);
-        NFE_LOG_DEBUG("Allocating texture '%s' requires %llu bytes", desc.debugName, requiredSize);
-
-        D3D12MA::ALLOCATION_DESC allocationDesc = {};
-        allocationDesc.HeapType = (desc.mode == ResourceAccessMode::Readback) ? D3D12_HEAP_TYPE_READBACK : D3D12_HEAP_TYPE_DEFAULT;
-
-        // create the texture resource
-        hr = D3D_CALL_CHECK(gDevice->GetAllocator()->CreateResource(
-            &allocationDesc,
-            &resourceDesc,
-            initialState,
-            passClearValue ? &clearValue : nullptr,
-            mAllocation.GetPtr(),
-            IID_PPV_ARGS(mResource.GetPtr())));
-
-        if (FAILED(hr))
-        {
-            NFE_LOG_ERROR("Failed to create texture resource");
+            NFE_LOG_ERROR("Invalid texture format");
             return false;
         }
+    }
 
-        if (desc.mode == ResourceAccessMode::Static)
-        {
-            if (desc.dataDesc)
-            {
-                if (!UploadData(desc))
-                    return false;
-            }
-            else
-            {
-                NFE_LOG_WARNING("No initial data for read-only texture provided");
-            }
-        }
+    UINT64 requiredSize = 0;
+    gDevice->GetDevice()->GetCopyableFootprints(&resourceDesc, 0, 1, 0, nullptr, nullptr, nullptr, &requiredSize);
+    NFE_LOG_DEBUG("Allocating texture '%s' requires %llu bytes", desc.debugName, requiredSize);
+
+    D3D12MA::ALLOCATION_DESC allocationDesc = {};
+    allocationDesc.HeapType = D3D12_HEAP_TYPE_DEFAULT;
+
+    // create the texture resource
+    hr = D3D_CALL_CHECK(gDevice->GetAllocator()->CreateResource(
+        &allocationDesc,
+        &resourceDesc,
+        initialState,
+        passClearValue ? &clearValue : nullptr,
+        mAllocation.GetPtr(),
+        IID_PPV_ARGS(mResource.GetPtr())));
+
+    if (FAILED(hr))
+    {
+        NFE_LOG_ERROR("Failed to create texture resource");
+        return false;
     }
 
     mState.Set(initialState);
@@ -437,7 +190,7 @@ bool Texture::Init(const TextureDesc& desc)
     mLayersNumOrDepth = mType == TextureType::Texture3D ? static_cast<uint16>(desc.depth) : static_cast<uint16>(desc.layers);
     mMipmapsNum = static_cast<uint8>(desc.mipmaps);
     mSamplesNum = static_cast<uint8>(desc.samplesNum);
-    mMode = desc.mode;
+    mMode = ResourceAccessMode::GPUOnly;
 
     return true;
 }

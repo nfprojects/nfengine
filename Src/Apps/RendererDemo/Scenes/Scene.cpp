@@ -144,7 +144,6 @@ bool Scene::OnInit(void* winHandle)
     texDesc.width = WINDOW_WIDTH;
     texDesc.height = WINDOW_HEIGHT;
     texDesc.type = TextureType::Texture2D;
-    texDesc.mode = ResourceAccessMode::GPUOnly;
     texDesc.format = Format::R8G8B8A8_U_Norm;
     texDesc.binding = NFE_RENDERER_TEXTURE_BIND_RENDERTARGET;
     texDesc.debugName = "Scene::mWindowRenderTargetTexture";

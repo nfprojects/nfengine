@@ -57,6 +57,16 @@ public:
     }
 
     /**
+     * A helper function to execute a single command list waiting for a single fence.
+     */
+    NFE_FORCE_INLINE void Execute(const CommandListPtr& commandList, const FencePtr& fence)
+    {
+        ICommandList* commandListPtr = commandList.Get();
+        IFence* fencePtr = fence.Get();
+        Submit(Common::ArrayView<ICommandList*>(&commandListPtr, 1u), Common::ArrayView<IFence*>(&fencePtr, 1u));
+    }
+
+    /**
      * Signal an event on the queue and return fence that can be used to sync to it.
      * Allows for waiting until all commands submitted to the queue has been completed on the GPU.
      * @return Fence object.

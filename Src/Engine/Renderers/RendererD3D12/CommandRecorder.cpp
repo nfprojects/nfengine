@@ -569,7 +569,7 @@ bool CommandRecorder::WriteBuffer(const BufferPtr& buffer, size_t offset, size_t
 
     Internal_GetReferencedResources().buffers.Insert(buffer);
 
-    if (bufferPtr->GetMode() == ResourceAccessMode::GPUOnly || bufferPtr->GetMode() == ResourceAccessMode::Static)
+    if (bufferPtr->GetMode() == ResourceAccessMode::GPUOnly)
     {
         if (size > bufferPtr->GetSize())
         {
@@ -606,15 +606,12 @@ void CommandRecorder::CopyBuffer(const BufferPtr& src, const BufferPtr& dest, si
     Internal_GetReferencedResources().buffers.Insert(src);
     Internal_GetReferencedResources().buffers.Insert(dest);
 
-    if (srcBuffer->GetMode() != ResourceAccessMode::Upload &&
-        srcBuffer->GetMode() != ResourceAccessMode::Static &&
-        srcBuffer->GetMode() != ResourceAccessMode::GPUOnly)
+    if (srcBuffer->GetMode() != ResourceAccessMode::Upload && srcBuffer->GetMode() != ResourceAccessMode::GPUOnly)
     {
         NFE_FATAL("Invalid source buffer access mode");
     }
 
-    if (destBuffer->GetMode() != ResourceAccessMode::GPUOnly &&
-        destBuffer->GetMode() != ResourceAccessMode::Readback)
+    if (destBuffer->GetMode() != ResourceAccessMode::GPUOnly && destBuffer->GetMode() != ResourceAccessMode::Readback)
     {
         NFE_FATAL("Invalid destination buffer access mode");
     }
@@ -627,8 +624,14 @@ void CommandRecorder::CopyBuffer(const BufferPtr& src, const BufferPtr& dest, si
     NFE_ASSERT(srcOffset + size <= srcBuffer->GetSize(), "Out of source buffer range: offset=%u, readSize=%u, bufferSize=%u", srcOffset, size, srcBuffer->GetSize());
     NFE_ASSERT(destOffset + size <= destBuffer->GetSize(), "Out of destination buffer range: offset=%u, readSize=%u, bufferSize=%u", destOffset, size, destBuffer->GetSize());
 
-    mResourceStateCache.EnsureResourceState(srcBuffer, D3D12_RESOURCE_STATE_COPY_SOURCE);
-    mResourceStateCache.EnsureResourceState(destBuffer, D3D12_RESOURCE_STATE_COPY_DEST);
+    if (srcBuffer->GetMode() == ResourceAccessMode::GPUOnly)
+    {
+        mResourceStateCache.EnsureResourceState(srcBuffer, D3D12_RESOURCE_STATE_COPY_SOURCE);
+    }
+    if (destBuffer->GetMode() == ResourceAccessMode::GPUOnly)
+    {
+        mResourceStateCache.EnsureResourceState(destBuffer, D3D12_RESOURCE_STATE_COPY_DEST);
+    }
     mResourceStateCache.FlushPendingBarriers(mCommandList);
 
     mCommandList->CopyBufferRegion(
@@ -637,7 +640,7 @@ void CommandRecorder::CopyBuffer(const BufferPtr& src, const BufferPtr& dest, si
         size);
 }
 
-bool CommandRecorder::WriteTexture(const TexturePtr& texture, const void* data, const TextureWriteParams* writeParams)
+bool CommandRecorder::WriteTexture(const TexturePtr& texture, const void* data, const TextureRegion* texRegion, uint32 srcRowStride)
 {
     Texture* texturePtr = static_cast<Texture*>(texture.Get());
     NFE_ASSERT(texturePtr, "Invalid texture");
@@ -649,18 +652,18 @@ bool CommandRecorder::WriteTexture(const TexturePtr& texture, const void* data, 
     uint32 writeHeight = texturePtr->GetHeight();
     uint32 writeDepth = texturePtr->GetDepth();
 
-    if (writeParams)
+    if (texRegion)
     {
-        targetMipmap = writeParams->targetMip;
-        targetLayer = writeParams->targetLayer;
+        targetMipmap = texRegion->mipmap;
+        targetLayer = texRegion->layer;
 
-        writeX = writeParams->destX;
-        writeY = writeParams->destY;
-        writeZ = writeParams->destZ;
+        writeX = texRegion->x;
+        writeY = texRegion->y;
+        writeZ = texRegion->z;
 
-        writeWidth = writeParams->width;
-        writeHeight = writeParams->height;
-        writeDepth = writeParams->depth;
+        writeWidth = texRegion->width;
+        writeHeight = texRegion->height;
+        writeDepth = texRegion->depth;
 
         NFE_ASSERT(
             writeWidth > 0u && writeHeight >= 0u && writeDepth >= 0u,
@@ -687,11 +690,13 @@ bool CommandRecorder::WriteTexture(const TexturePtr& texture, const void* data, 
 
     // compute src row size & stride
     const uint32 srcRowSize = writeWidth * GetElementFormatSize(texturePtr->GetFormat()); 
-    uint32 srcRowStride = srcRowSize;
-    if (writeParams && writeParams->srcRowStride > 0u)
+    if (srcRowStride > 0u)
     {
-        NFE_ASSERT(writeParams->srcRowStride >= srcRowSize, "Row stride is too small");
-        srcRowStride = writeParams->srcRowStride;
+        NFE_ASSERT(srcRowStride >= srcRowSize, "Row stride is too small");
+    }
+    else
+    {
+        srcRowStride = srcRowSize;
     }
 
     // compute data layout of source texture data
@@ -700,7 +705,7 @@ bool CommandRecorder::WriteTexture(const TexturePtr& texture, const void* data, 
     subresourceFootprint.Width = writeWidth;
     subresourceFootprint.Height = writeHeight;
     subresourceFootprint.Depth = writeDepth;
-    subresourceFootprint.RowPitch = (srcRowSize + D3D12_TEXTURE_DATA_PITCH_ALIGNMENT - 1u) & ~(D3D12_TEXTURE_DATA_PITCH_ALIGNMENT - 1u);
+    subresourceFootprint.RowPitch = Math::RoundUp<uint32>(srcRowSize, D3D12_TEXTURE_DATA_PITCH_ALIGNMENT);
 
     RingBuffer* ringBuffer = gDevice->GetRingBuffer();
     NFE_ASSERT(ringBuffer, "No ring buffer");
@@ -748,6 +753,102 @@ bool CommandRecorder::WriteTexture(const TexturePtr& texture, const void* data, 
     return true;
 }
 
+void CommandRecorder::CopyTextureToBuffer(const TexturePtr& src, const BufferPtr& dest, const TextureRegion* texRegion, uint32 bufferOffset)
+{
+    NFE_ASSERT(src, "Invalid source texture");
+    NFE_ASSERT(dest, "Invalid destination buffer");
+
+    Internal_GetReferencedResources().textures.Insert(src);
+    Internal_GetReferencedResources().buffers.Insert(dest);
+
+    const Texture* srcTex = dynamic_cast<const Texture*>(src.Get());
+    NFE_ASSERT(src, "Invalid 'src' pointer");
+
+    const Buffer* destBuf = dynamic_cast<const Buffer*>(dest.Get());
+    NFE_ASSERT(destBuf, "Invalid 'dest' pointer");
+
+    if (destBuf->GetMode() == ResourceAccessMode::Upload || destBuf->GetMode() == ResourceAccessMode::Volatile)
+    {
+        NFE_LOG_ERROR("Can't copy texture to this kind of buffer");
+        return;
+    }
+
+    uint32 mipmap = 0u, layer = 0u;
+
+    D3D12_BOX srcBox;
+    srcBox.left = 0u;
+    srcBox.top = 0u;
+    srcBox.front = 0;
+    srcBox.right = srcTex->GetWidth();
+    srcBox.bottom = srcTex->GetHeight();
+    srcBox.back = srcTex->GetDepth();
+
+    if (texRegion)
+    {
+        mipmap = texRegion->mipmap;
+        layer = texRegion->layer;
+
+        srcBox.left = texRegion->x;
+        srcBox.top = texRegion->y;
+        srcBox.front = texRegion->z;
+
+        srcBox.right = texRegion->x + texRegion->width;
+        srcBox.bottom = texRegion->y + texRegion->height;
+        srcBox.back = texRegion->z + texRegion->depth;
+
+        NFE_ASSERT(
+            srcBox.left < srcTex->GetWidth() &&
+            srcBox.top < srcTex->GetHeight() &&
+            srcBox.front < srcTex->GetDepth(),
+            "Invalid texture region");
+
+        NFE_ASSERT(
+            srcBox.right <= srcTex->GetWidth() &&
+            srcBox.bottom <= srcTex->GetHeight() &&
+            srcBox.back <= srcTex->GetDepth(),
+            "Invalid texture region");
+    }
+
+    // validate subresource index
+    NFE_ASSERT(mipmap < srcTex->GetMipmapsNum(), "Invalid mipmap");
+    NFE_ASSERT(layer < srcTex->GetLayersNum(), "Invalid mipmap");
+
+    const uint32 subresourceIndex = mipmap + layer * srcTex->GetMipmapsNum();
+    const uint32 srcRowSize = (srcBox.right - srcBox.left) * GetElementFormatSize(srcTex->GetFormat());
+
+    mResourceStateCache.EnsureResourceState(srcTex, D3D12_RESOURCE_STATE_COPY_SOURCE, subresourceIndex);
+    mResourceStateCache.EnsureResourceState(destBuf, D3D12_RESOURCE_STATE_COPY_DEST);
+    mResourceStateCache.FlushPendingBarriers(mCommandList);
+
+    // compute data layout of source texture data
+    D3D12_SUBRESOURCE_FOOTPRINT subresourceFootprint;
+    subresourceFootprint.Format = TranslateElementFormat(srcTex->GetFormat());
+    subresourceFootprint.Width = srcBox.right - srcBox.left;
+    subresourceFootprint.Height = srcBox.bottom - srcBox.top;
+    subresourceFootprint.Depth = srcBox.back - srcBox.front;
+    subresourceFootprint.RowPitch = Math::RoundUp<uint32>(srcRowSize, D3D12_TEXTURE_DATA_PITCH_ALIGNMENT);
+
+    // validate buffer
+    const size_t bufferRequiredSize = (size_t)subresourceFootprint.RowPitch * (size_t)subresourceFootprint.Height * (size_t)subresourceFootprint.Depth;
+    NFE_ASSERT(bufferOffset + bufferRequiredSize <= destBuf->GetSize(),
+        "Target buffer is too small to perform the copy: offset=%u, texDataSize=%zu, bufferSize=%u", bufferOffset, bufferRequiredSize, destBuf->GetSize());
+    NFE_ASSERT(bufferOffset % D3D12_TEXTURE_DATA_PLACEMENT_ALIGNMENT == 0,
+        "Invalid buffer offset: %u. Must be aligned to %u", bufferOffset, D3D12_TEXTURE_DATA_PLACEMENT_ALIGNMENT);
+
+    D3D12_TEXTURE_COPY_LOCATION destLocation;
+    destLocation.pResource = destBuf->GetD3DResource();
+    destLocation.PlacedFootprint.Footprint = subresourceFootprint;
+    destLocation.PlacedFootprint.Offset = bufferOffset;
+    destLocation.Type = D3D12_TEXTURE_COPY_TYPE_PLACED_FOOTPRINT;
+
+    D3D12_TEXTURE_COPY_LOCATION srcLocation;
+    srcLocation.pResource = srcTex->GetD3DResource();
+    srcLocation.SubresourceIndex = subresourceIndex;
+    srcLocation.Type = D3D12_TEXTURE_COPY_TYPE_SUBRESOURCE_INDEX;
+
+    mCommandList->CopyTextureRegion(&destLocation, 0, 0, 0, &srcLocation, &srcBox);
+}
+
 void CommandRecorder::CopyTexture(const TexturePtr& src, const TexturePtr& dest)
 {
     NFE_ASSERT(src, "Invalid source texture");
@@ -768,7 +869,7 @@ void CommandRecorder::CopyTexture(const TexturePtr& src, const TexturePtr& dest)
     Texture* destTex = dynamic_cast<Texture*>(dest.Get());
     NFE_ASSERT(destTex, "Invalid 'dest' pointer");
 
-    if (destTex->GetMode() == ResourceAccessMode::Static || destTex->GetMode() == ResourceAccessMode::Volatile)
+    if (destTex->GetMode() == ResourceAccessMode::Volatile)
     {
         NFE_LOG_ERROR("Can't copy to this texture");
         return;

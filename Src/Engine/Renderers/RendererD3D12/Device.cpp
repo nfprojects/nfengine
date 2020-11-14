@@ -36,8 +36,8 @@ using namespace Common;
 
 namespace {
 
-template<typename Type, typename Desc>
-SharedPtr<Type> CreateGenericResource(const Desc& desc)
+template<typename Type, typename... ArgTypes>
+SharedPtr<Type> CreateGenericResource(const ArgTypes& ... args)
 {
     auto resource = MakeSharedPtr<Type>();
     if (!resource)
@@ -45,7 +45,7 @@ SharedPtr<Type> CreateGenericResource(const Desc& desc)
         return nullptr;
     }
 
-    if (!resource->Init(desc))
+    if (!resource->Init(args...))
     {
         return nullptr;
     }
@@ -398,9 +398,9 @@ ResourceBindingInstancePtr Device::CreateResourceBindingInstance(const ResourceB
     return CreateGenericResource<ResourceBindingInstance, ResourceBindingSetPtr>(set);
 }
 
-CommandQueuePtr Device::CreateCommandQueue(CommandQueueType type)
+CommandQueuePtr Device::CreateCommandQueue(CommandQueueType type, const char* debugName)
 {
-    SharedPtr<CommandQueue> queue = CreateGenericResource<CommandQueue, CommandQueueType>(type);
+    SharedPtr<CommandQueue> queue = CreateGenericResource<CommandQueue, CommandQueueType, const char*>(type, debugName);
     {
         NFE_SCOPED_LOCK(mCommandQueuesLock);
         mCommandQueues.PushBack(queue);
@@ -704,6 +704,24 @@ bool Device::IsBackbufferFormatSupported(Format format)
     return (formatData.Support1 & D3D12_FORMAT_SUPPORT1_DISPLAY) == D3D12_FORMAT_SUPPORT1_DISPLAY;
 }
 
+bool Device::CalculateTexturePlacementInfo(Format format, uint32 width, uint32 height, uint32 depth, TexturePlacementInfo& outInfo) const
+{
+    if (width == 0 || height == 0 || depth == 0)
+    {
+        return false;
+    }
+
+    // TODO handle BC texture formats
+
+    const uint32 bytesInRow = width * GetElementFormatSize(format);
+
+    outInfo.alignment = D3D12_TEXTURE_DATA_PLACEMENT_ALIGNMENT;
+    outInfo.rowPitch = Math::RoundUp<uint32>(bytesInRow, D3D12_TEXTURE_DATA_PITCH_ALIGNMENT);
+    outInfo.totalSize = outInfo.rowPitch * height * depth;
+
+    return true;
+}
+
 CommandRecorderPtr Device::CreateCommandRecorder()
 {
     return MakeSharedPtr<CommandRecorder>();
@@ -722,341 +740,6 @@ uint32 Device::ReleaseUnusedCommandQueues()
         }
     }
     return mCommandQueues.Size();
-}
-
-bool Device::DownloadBuffer(const BufferPtr& buf, const ResourceDownloadCallback& callback, Common::TaskBuilder& builder, uint32 offset, uint32 size)
-{
-    NFE_UNUSED(buf);
-    NFE_UNUSED(callback);
-    NFE_UNUSED(builder);
-    NFE_UNUSED(offset);
-    NFE_UNUSED(size);
-    return false;
-
-    /*
-    const Buffer* buffer = dynamic_cast<Buffer*>(buf.Get());
-    if (!buffer)
-    {
-        NFE_FATAL("Invalid buffer pointer");
-        return nullptr;
-    }
-
-    if (size == 0)
-    {
-        size = buffer->GetSize();
-    }
-
-    if ((uint64)offset + (uint64)size > (uint64)buffer->GetSize())
-    {
-        NFE_FATAL("Buffer read is out of range: offset=%u, readSize=%u, bufferSize=%u", offset, size, buffer->GetSize());
-        return nullptr;
-    }
-
-    // Create temporary buffer on readback heap
-
-    D3D12_HEAP_PROPERTIES heapProperties;
-    heapProperties.Type = D3D12_HEAP_TYPE_READBACK;
-    heapProperties.CPUPageProperty = D3D12_CPU_PAGE_PROPERTY_UNKNOWN;
-    heapProperties.MemoryPoolPreference = D3D12_MEMORY_POOL_UNKNOWN;
-    heapProperties.CreationNodeMask = 1;
-    heapProperties.VisibleNodeMask = 1;
-
-    D3D12_RESOURCE_DESC resourceDesc = {};
-    resourceDesc.Dimension = D3D12_RESOURCE_DIMENSION_BUFFER;
-    resourceDesc.Width = size;
-    resourceDesc.Height = 1;
-    resourceDesc.DepthOrArraySize = 1;
-    resourceDesc.MipLevels = 1;
-    resourceDesc.Format = DXGI_FORMAT_UNKNOWN;
-    resourceDesc.SampleDesc.Count = 1;
-    resourceDesc.SampleDesc.Quality = 0;
-    resourceDesc.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
-    resourceDesc.Flags = D3D12_RESOURCE_FLAG_NONE;
-
-    // TODO get rid of that, use some existing buffer for resource downloads
-    D3DPtr<ID3D12Resource> readbackBuffer;
-    HRESULT hr = D3D_CALL_CHECK(mDevice->CreateCommittedResource(
-        &heapProperties,
-        D3D12_HEAP_FLAG_NONE,
-        &resourceDesc,
-        D3D12_RESOURCE_STATE_COPY_DEST,
-        nullptr,
-        IID_PPV_ARGS(readbackBuffer.GetPtr())));
-    if (FAILED(hr))
-    {
-        return false;
-    }
-
-    SetDebugName(readbackBuffer.Get(), "ReadbackBuffer");
-
-    // Create temporary command allocator and command list
-    // TODO this is extremly inefficient
-
-    D3DPtr<ID3D12CommandAllocator> commandAllocator;
-    hr = D3D_CALL_CHECK(mDevice->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_COPY, IID_PPV_ARGS(commandAllocator.GetPtr())));
-    if (FAILED(hr))
-    {
-        return false;
-    }
-
-    SetDebugName(commandAllocator.Get(), "Buffer readback command allocator");
-
-    if (FAILED(D3D_CALL_CHECK(commandAllocator->Reset())))
-    {
-        return false;
-    }
-
-    D3DPtr<ID3D12GraphicsCommandList> commandList;
-    hr = D3D_CALL_CHECK(mDevice->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_COPY, commandAllocator.Get(), nullptr, IID_PPV_ARGS(commandList.GetPtr())));
-    if (FAILED(hr))
-        return false;
-
-    SetDebugName(commandList.Get(), "Buffer upload commandlist");
-
-    if (FAILED(D3D_CALL_CHECK(commandList->Close())))
-    {
-        return false;
-    }
-
-    if (FAILED(D3D_CALL_CHECK(commandList->Reset(commandAllocator.Get(), nullptr))))
-    {
-        return false;
-    }
-
-    // TODO command queue
-
-    D3D12_RESOURCE_BARRIER barrier = {};
-    barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
-    barrier.Transition.pResource = buffer->GetD3DResource();
-    barrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
-    barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_COMMON; // resource must be in COMMON state before first use on copy queue
-    barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_COPY_SOURCE;
-    commandList->ResourceBarrier(1, &barrier);
-
-    commandList->CopyBufferRegion(readbackBuffer.Get(), 0, buffer->GetD3DResource(), offset, size);
-
-    barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_COPY_SOURCE;
-    barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_COMMON; // resource must be in COMMON state after use on copy queue
-    commandList->ResourceBarrier(1, &barrier);
-
-    // close the command list and send it to the command queue
-    if (FAILED(D3D_CALL_CHECK(commandList->Close())))
-    {
-        return false;
-    }
-
-    ID3D12CommandList* commandLists[] = { commandList.Get() };
-    GetResourceUploadQueue()->ExecuteCommandLists(1, commandLists);
-
-    // wait for the copy to complete
-    const FencePtr fence = mResourceUploadQueueFence.Signal(mResourceUploadQueue.Get());
-    fence->Sync(builder);
-
-    builder.Fence();
-
-    // promote to shared ptr, as std::function must be copyable
-    SharedPtr<ID3D12Resource> readbackBufferShared{ std::move(readbackBuffer) };
-
-    TaskFunction func = [callback, size, readbackBuffer = std::move(readbackBufferShared)](const TaskContext&)
-    {
-        void* mappedData = nullptr;
-        HRESULT hr = D3D_CALL_CHECK(readbackBuffer->Map(0, NULL, &mappedData));
-
-        if (SUCCEEDED(hr))
-        {
-            // read data
-            callback(mappedData, size, 0);
-
-            readbackBuffer->Unmap(0, NULL);
-        }
-        else
-        {
-            NFE_LOG_ERROR("Failed to map upload buffer");
-
-            // notify about failure by passing null
-            callback(nullptr, 0, 0);
-        }
-    };
-
-    builder.Task("ReadBuffer", std::move(func));
-
-    return true;
-    */
-}
-
-bool Device::DownloadTexture(const TexturePtr& tex, const ResourceDownloadCallback& callback, Common::TaskBuilder& builder, uint32 mipmap, uint32 layer)
-{
-    NFE_UNUSED(tex);
-    NFE_UNUSED(callback);
-    NFE_UNUSED(builder);
-    NFE_UNUSED(mipmap);
-    NFE_UNUSED(layer);
-    return false;
-
-    /*
-    const Texture* texture = dynamic_cast<Texture*>(tex.Get());
-    if (!texture)
-    {
-        NFE_FATAL("Invalid texture pointer");
-        return false;
-    }
-
-    NFE_ASSERT(mipmap < texture->GetMipmapsNum(), "Invalid mipmap index: %u requested, but the texture has %u", mipmap, texture->GetMipmapsNum());
-    NFE_ASSERT(layer < texture->GetLayersNum(), "Invalid layer index: %u requested, but the texture has %u", layer, texture->GetLayersNum());
-
-    const D3D12_RESOURCE_DESC d3dResDesc = texture->GetD3DResource()->GetDesc();
-
-    const uint32 subresourceIndex = mipmap + layer * d3dResDesc.MipLevels;
-    NFE_ASSERT(subresourceIndex < D3D12_REQ_SUBRESOURCES, "Invalid subresource index");
-
-    UINT64 requiredSize = 0;
-    D3D12_PLACED_SUBRESOURCE_FOOTPRINT layout;
-    mDevice->GetCopyableFootprints(&d3dResDesc, subresourceIndex, 1, 0, &layout, nullptr, nullptr, &requiredSize);
-    const uint32 rowPitch = layout.Footprint.RowPitch;
-
-    // Create temporary buffer on readback heap
-
-    D3D12_HEAP_PROPERTIES heapProperties;
-    heapProperties.Type = D3D12_HEAP_TYPE_READBACK;
-    heapProperties.CPUPageProperty = D3D12_CPU_PAGE_PROPERTY_UNKNOWN;
-    heapProperties.MemoryPoolPreference = D3D12_MEMORY_POOL_UNKNOWN;
-    heapProperties.CreationNodeMask = 1;
-    heapProperties.VisibleNodeMask = 1;
-
-    D3D12_RESOURCE_DESC resourceDesc = {};
-    resourceDesc.Dimension = D3D12_RESOURCE_DIMENSION_BUFFER;
-    resourceDesc.Width = requiredSize;
-    resourceDesc.Height = 1;
-    resourceDesc.DepthOrArraySize = 1;
-    resourceDesc.MipLevels = 1;
-    resourceDesc.Format = DXGI_FORMAT_UNKNOWN;
-    resourceDesc.SampleDesc.Count = 1;
-    resourceDesc.SampleDesc.Quality = 0;
-    resourceDesc.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
-    resourceDesc.Flags = D3D12_RESOURCE_FLAG_NONE;
-
-    // TODO get rid of that, use some existing buffer for resource downloads
-    D3DPtr<ID3D12Resource> readbackBuffer;
-    HRESULT hr = D3D_CALL_CHECK(mDevice->CreateCommittedResource(
-        &heapProperties,
-        D3D12_HEAP_FLAG_NONE,
-        &resourceDesc,
-        D3D12_RESOURCE_STATE_COPY_DEST,
-        nullptr,
-        IID_PPV_ARGS(readbackBuffer.GetPtr())));
-    if (FAILED(hr))
-    {
-        return false;
-    }
-
-    SetDebugName(readbackBuffer.Get(), "ReadbackBuffer");
-
-    // Create temporary command allocator and command list
-    // TODO this is extremly inefficient
-
-    // TODO command queue
-
-    D3DPtr<ID3D12CommandAllocator> commandAllocator;
-    hr = D3D_CALL_CHECK(mDevice->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_COPY, IID_PPV_ARGS(commandAllocator.GetPtr())));
-    if (FAILED(hr))
-    {
-        return false;
-    }
-
-    SetDebugName(commandAllocator.Get(), "Buffer readback command allocator");
-
-    if (FAILED(D3D_CALL_CHECK(commandAllocator->Reset())))
-    {
-        return false;
-    }
-
-    D3DPtr<ID3D12GraphicsCommandList> commandList;
-    hr = D3D_CALL_CHECK(mDevice->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_COPY, commandAllocator.Get(), nullptr, IID_PPV_ARGS(commandList.GetPtr())));
-    if (FAILED(hr))
-        return false;
-
-    SetDebugName(commandList.Get(), "Buffer upload commandlist");
-
-    if (FAILED(D3D_CALL_CHECK(commandList->Close())))
-    {
-        return false;
-    }
-
-    if (FAILED(D3D_CALL_CHECK(commandList->Reset(commandAllocator.Get(), nullptr))))
-    {
-        return false;
-    }
-
-    D3D12_RESOURCE_BARRIER barrier = {};
-    barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
-    barrier.Transition.pResource = texture->GetD3DResource();
-    barrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
-    barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_COMMON; // resource must be in COMMON state before first use on copy queue
-    barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_COPY_SOURCE;
-    commandList->ResourceBarrier(1, &barrier);
-
-    {
-        D3D12_TEXTURE_COPY_LOCATION src;
-        src.pResource = texture->GetD3DResource();
-        src.SubresourceIndex = subresourceIndex;
-        src.Type = D3D12_TEXTURE_COPY_TYPE_SUBRESOURCE_INDEX;
-
-        D3D12_TEXTURE_COPY_LOCATION dest;
-        dest.pResource = readbackBuffer.Get();
-        dest.PlacedFootprint = layout;
-        dest.Type = D3D12_TEXTURE_COPY_TYPE_PLACED_FOOTPRINT;
-
-        // TODO src box
-        commandList->CopyTextureRegion(&dest, 0, 0, 0, &src, nullptr);
-    }
-
-    barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_COPY_SOURCE;
-    barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_COMMON; // resource must be in COMMON state after use on copy queue
-    commandList->ResourceBarrier(1, &barrier);
-
-    // close the command list and send it to the command queue
-    if (FAILED(D3D_CALL_CHECK(commandList->Close())))
-    {
-        return false;
-    }
-
-    ID3D12CommandList* commandLists[] = { commandList.Get() };
-    GetResourceUploadQueue()->ExecuteCommandLists(1, commandLists);
-
-    // wait for the copy to complete
-    const FencePtr fence = mResourceUploadQueueFence.Signal(mResourceUploadQueue.Get());
-    fence->Sync(builder);
-
-    builder.Fence();
-
-    // promote to shared ptr, as std::function must be copyable
-    SharedPtr<ID3D12Resource> readbackBufferShared{ std::move(readbackBuffer) };
-
-    TaskFunction func = [callback, requiredSize, rowPitch, readbackBuffer = std::move(readbackBufferShared)](const TaskContext&)
-    {
-        void* mappedData = nullptr;
-        HRESULT hr = D3D_CALL_CHECK(readbackBuffer->Map(0, NULL, &mappedData));
-
-        if (SUCCEEDED(hr))
-        {
-            // read data
-            callback(mappedData, requiredSize, rowPitch);
-
-            readbackBuffer->Unmap(0, NULL);
-        }
-        else
-        {
-            NFE_LOG_ERROR("Failed to map upload buffer");
-
-            // notify about failure by passing null
-            callback(nullptr, 0, 0);
-        }
-    };
-
-    builder.Task("ReadBuffer", std::move(func));
-
-    return true;
-    */
 }
 
 bool Device::FinishFrame()

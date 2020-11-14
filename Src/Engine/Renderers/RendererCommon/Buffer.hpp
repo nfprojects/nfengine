@@ -24,14 +24,12 @@ struct BufferDesc
 {
     ResourceAccessMode mode;
     uint32 usage;
-    const void* initialData;
     size_t size;
     const char* debugName;   //< optional debug name
 
     BufferDesc()
-        : mode(ResourceAccessMode::Static)
+        : mode(ResourceAccessMode::GPUOnly)
         , usage(0u)
-        , initialData(nullptr)
         , size(0u)
         , debugName(nullptr)
     {}
@@ -47,12 +45,22 @@ struct BufferView
 };
 
 /**
- * GPU data buffer which can act as a vertex, index or a constant buffer.
+ * GPU data buffer.
  */
 class IBuffer
 {
 public:
     virtual ~IBuffer() {}
+
+    /**
+     * Map the buffer into CPU memory virtual space.
+     */
+    virtual void* Map(size_t size = 0u, size_t offset = 0u) = 0;
+
+    /**
+     * Unmap the buffer from CPU memory virtual space.
+     */
+    virtual void Unmap() = 0;
 };
 
 } // namespace Renderer

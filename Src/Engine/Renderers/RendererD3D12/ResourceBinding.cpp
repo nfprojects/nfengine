@@ -86,6 +86,15 @@ bool ResourceBindingLayout::Init(const ResourceBindingLayoutDesc& desc)
     uint32 rangeCounter = 0;
     for (uint32 i = 0; i < desc.numBindingSets; ++i, ++rootParamIndex)
     {
+        for (uint32 j = i + 1; j < desc.numBindingSets; ++j)
+        {
+            if (desc.bindingSets[j] == desc.bindingSets[i])
+            {
+                NFE_LOG_ERROR("Binding sets %u and %u are the same", i, j);
+                return false;
+            }
+        }
+
         InternalResourceBindingSetPtr bindingSet = Common::StaticCast<ResourceBindingSet>(desc.bindingSets[i]);
         if (!bindingSet)
         {

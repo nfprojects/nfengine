@@ -38,23 +38,12 @@ struct TextureView
 };
 
 /**
- * Initial texture data descriptor.
- */
-struct TextureDataDesc
-{
-    const void* data; //< pointer to the texture data
-    size_t lineSize;  //< size of one line in bytes
-    size_t sliceSize; //< size of one slice in bytes
-};
-
-/**
  * Texture descriptor.
  */
 struct TextureDesc
 {
     TextureType type;
     Format format;
-    ResourceAccessMode mode;
     int binding;        //< texture binding mode
     uint32 width;       //< texture width in texels
     uint32 height;      //< texture height in texels, used only for 2D and 3D textures
@@ -68,18 +57,11 @@ struct TextureDesc
     float defaultDepthClearValue;
     uint8 defaultStencilClearValue;
 
-    /**
-     * Array of structures describing initial texture data for each mipmap level.
-     * Can be NULL.
-     */
-    TextureDataDesc* dataDesc;
-
     const char* debugName; //< optional debug name
 
     TextureDesc()
         : type(TextureType::Texture2D)
-        , format(Format::R8G8B8A8_U_Norm)
-        , mode(ResourceAccessMode::Static)
+        , format(Format::Unknown)
         , binding(0)
         , width(1)
         , height(1)
@@ -90,7 +72,6 @@ struct TextureDesc
         , defaultColorClearValue{0.0f, 0.0f, 0.0f, 1.0f}
         , defaultDepthClearValue(1.0f)
         , defaultStencilClearValue(0)
-        , dataDesc(nullptr)
         , debugName(nullptr)
     {}
 };

@@ -19,6 +19,8 @@ protected:
     static Common::Library gRendererLib;
     static IDevice* gRendererDevice;
     static CommandQueuePtr gMainCommandQueue;
+    static CommandQueuePtr gComputeCommandQueue;
+    static CommandQueuePtr gCopyCommandQueue;
 
 public:
     ~RendererTest() { }

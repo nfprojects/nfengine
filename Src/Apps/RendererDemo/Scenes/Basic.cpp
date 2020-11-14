@@ -83,7 +83,7 @@ bool BasicScene::CreateShaders(bool useCBuffer, bool useTexture, ResourceAccessM
             bindingSets[mPSBindingSlot] = mPSBindingSet;
         }
 
-        if (cbufferMode == ResourceAccessMode::Static || cbufferMode == ResourceAccessMode::GPUOnly)
+        if (cbufferMode == ResourceAccessMode::GPUOnly)
         {
             ResourceBindingDesc vertexShaderBinding(ShaderResourceType::CBuffer,
                                                     mCBufferSlot,
@@ -143,9 +143,8 @@ bool BasicScene::CreateVertexBuffer(bool withExtraVert)
     };
 
     BufferDesc vbDesc;
-    vbDesc.mode = ResourceAccessMode::Static;
     vbDesc.size = withExtraVert ? sizeof(vbDataExtra) : sizeof(vbData);
-    vbDesc.initialData = withExtraVert ? vbDataExtra : vbData;
+    vbDesc.usage = NFE_RENDERER_BUFFER_USAGE_VERTEX_BUFFER;
     mVertexBuffer = mRendererDevice->CreateBuffer(vbDesc);
     if (!mVertexBuffer)
         return false;
@@ -199,9 +198,8 @@ bool BasicScene::CreateIndexBuffer()
     };
 
     BufferDesc ibDesc;
-    ibDesc.mode = ResourceAccessMode::Static;
     ibDesc.size = sizeof(ibData);
-    ibDesc.initialData = ibData;
+    ibDesc.usage = NFE_RENDERER_BUFFER_USAGE_INDEX_BUFFER;
     mIndexBuffer = mRendererDevice->CreateBuffer(ibDesc);
     if (!mIndexBuffer)
         return false;
@@ -225,19 +223,15 @@ bool BasicScene::CreateConstantBuffer(ResourceAccessMode cbufferMode)
 
     BufferDesc cbufferDesc;
     cbufferDesc.mode = cbufferMode;
+    cbufferDesc.usage = NFE_RENDERER_BUFFER_USAGE_CONSTANT_BUFFER;
     cbufferDesc.size = sizeof(VertexCBuffer);
     cbufferDesc.debugName = "BasicScene::CreateConstantBuffer";
-
-    if (cbufferMode == ResourceAccessMode::Static)
-    {
-        cbufferDesc.initialData = &rotMatrix;
-    }
 
     mConstantBuffer = mRendererDevice->CreateBuffer(cbufferDesc);
     if (!mConstantBuffer)
         return false;
 
-    if (cbufferMode == ResourceAccessMode::Static || cbufferMode == ResourceAccessMode::GPUOnly)
+    if (cbufferMode == ResourceAccessMode::GPUOnly)
     {
         // create and fill binding set instance
         mVSBindingInstance = mRendererDevice->CreateResourceBindingInstance(mVSBindingSet);
@@ -254,24 +248,27 @@ bool BasicScene::CreateConstantBuffer(ResourceAccessMode cbufferMode)
 
 bool BasicScene::CreateTexture()
 {
-    uint32_t bitmap[] = { 0xFFFFFFFF, 0, 0, 0xFFFFFFFF };
-    TextureDataDesc textureDataDesc;
-    textureDataDesc.data = bitmap;
-    textureDataDesc.lineSize = 2 * sizeof(uint32_t);
-    textureDataDesc.sliceSize = 4 * sizeof(uint32_t);
-
     TextureDesc textureDesc;
     textureDesc.binding = NFE_RENDERER_TEXTURE_BIND_SHADER;
     textureDesc.format = Format::R8G8B8A8_U_Norm;
     textureDesc.width = 2;
     textureDesc.height = 2;
     textureDesc.mipmaps = 1;
-    textureDesc.dataDesc = &textureDataDesc;
     textureDesc.layers = 1;
     textureDesc.debugName = "BasicScene::CreateTexture";
     mTexture = mRendererDevice->CreateTexture(textureDesc);
     if (!mTexture)
         return false;
+
+    // upload texture data
+    {
+        const uint32 bitmap[] = { 0xFFFFFFFF, 0, 0, 0xFFFFFFFF };
+
+        mCommandBuffer->Begin(CommandQueueType::Copy);
+        mCommandBuffer->WriteTexture(mTexture, bitmap);
+        mCopyQueue->Execute(mCommandBuffer->Finish());
+        mCopyQueue->Signal()->Wait();
+    }
 
     if (mUseBindingInstance)
     {
@@ -309,7 +306,7 @@ bool BasicScene::CreateSubSceneEmpty()
     if (!CreateSampler())
         return false;
 
-    return CreateShaders(false, false, ResourceAccessMode::Static);
+    return CreateShaders(false, false, ResourceAccessMode::GPUOnly);
 }
 
 // Adds vertex buffer creation
@@ -321,7 +318,7 @@ bool BasicScene::CreateSubSceneVertexBuffer()
     if (!CreateSampler())
         return false;
 
-    if (!CreateShaders(false, false, ResourceAccessMode::Static))
+    if (!CreateShaders(false, false, ResourceAccessMode::GPUOnly))
         return false;
 
     return CreateVertexBuffer(false);
@@ -336,7 +333,7 @@ bool BasicScene::CreateSubSceneIndexBuffer()
     if (!CreateSampler())
         return false;
 
-    if (!CreateShaders(false, false, ResourceAccessMode::Static))
+    if (!CreateShaders(false, false, ResourceAccessMode::GPUOnly))
         return false;
 
     if (!CreateVertexBuffer(true))
@@ -402,10 +399,9 @@ BasicScene::BasicScene()
     RegisterSubScene(std::bind(&BasicScene::CreateSubSceneEmpty, this), "Empty");
     RegisterSubScene(std::bind(&BasicScene::CreateSubSceneVertexBuffer, this), "VertexBuffer");
     RegisterSubScene(std::bind(&BasicScene::CreateSubSceneIndexBuffer, this), "IndexBuffer");
-    RegisterSubScene(std::bind(&BasicScene::CreateSubSceneConstantBuffer, this, ResourceAccessMode::Static, true), "ConstantBuffer (Static)");
-    //RegisterSubScene(std::bind(&BasicScene::CreateSubSceneConstantBuffer, this, ResourceAccessMode::GPUOnly, true), "ConstantBuffer (Dynamic)");
+    RegisterSubScene(std::bind(&BasicScene::CreateSubSceneConstantBuffer, this, ResourceAccessMode::GPUOnly, true), "ConstantBuffer (Dynamic)");
     RegisterSubScene(std::bind(&BasicScene::CreateSubSceneConstantBuffer, this, ResourceAccessMode::Volatile, true), "ConstantBuffer (Volatile)");
-    //RegisterSubScene(std::bind(&BasicScene::CreateSubSceneTexture, this, ResourceAccessMode::GPUOnly, true, 1), "Texture + Dynamic CBuffer");
+    RegisterSubScene(std::bind(&BasicScene::CreateSubSceneTexture, this, ResourceAccessMode::GPUOnly, true, 1), "Texture + Dynamic CBuffer");
     //RegisterSubScene(std::bind(&BasicScene::CreateSubSceneTexture, this, ResourceAccessMode::GPUOnly, false, 1), "Texture + Dynamic CBuffer + Direct Binding");
     //RegisterSubScene(std::bind(&BasicScene::CreateSubSceneTexture, this, ResourceAccessMode::Volatile, true, 1), "Texture + Volatile CBuffer");
     //RegisterSubScene(std::bind(&BasicScene::CreateSubSceneTexture, this, ResourceAccessMode::Volatile, true, 5), "CBufferStress5");
@@ -496,7 +492,7 @@ void BasicScene::Draw(float dt)
 
     if (mConstantBuffer)
     {
-        if (mCBufferMode == ResourceAccessMode::Static || mCBufferMode == ResourceAccessMode::GPUOnly)
+        if (mCBufferMode == ResourceAccessMode::GPUOnly)
             mCommandBuffer->BindResources(PipelineType::Graphics, mVSBindingSlot, mVSBindingInstance);
         else if (mCBufferMode == ResourceAccessMode::Volatile)
             mCommandBuffer->BindVolatileCBuffer(PipelineType::Graphics, 0, mConstantBuffer);

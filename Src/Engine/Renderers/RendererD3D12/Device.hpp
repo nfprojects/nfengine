@@ -107,6 +107,7 @@ public:
     virtual void* GetHandle() const override;
     virtual bool GetDeviceInfo(DeviceInfo& info) override;
     virtual bool IsBackbufferFormatSupported(Format format) override;
+    virtual bool CalculateTexturePlacementInfo(Format format, uint32 width, uint32 height, uint32 depth, TexturePlacementInfo& outInfo) const override;
     Common::DynArray<MonitorInfo> GetMonitorsInfo() const;
 
     D3D12MA::Allocator* GetAllocator() const { return mAllocator; }
@@ -127,11 +128,8 @@ public:
     virtual ResourceBindingInstancePtr CreateResourceBindingInstance(const ResourceBindingSetPtr& set) override;
 
     virtual CommandRecorderPtr CreateCommandRecorder() override;
-    virtual CommandQueuePtr CreateCommandQueue(CommandQueueType type) override;
+    virtual CommandQueuePtr CreateCommandQueue(CommandQueueType type, const char* debugName) override;
     virtual bool FinishFrame() override;
-
-    virtual bool DownloadBuffer(const BufferPtr& buf, const ResourceDownloadCallback& callback, Common::TaskBuilder& builder, uint32 offset, uint32 size) override;
-    virtual bool DownloadTexture(const TexturePtr& tex, const ResourceDownloadCallback& callback, Common::TaskBuilder& builder, uint32 mipmap, uint32 layer) override;
 
     CommandListManager* GetCommandListManager() const { return mCommandListManager.Get(); }
     FenceManager& GetFenceManager() { return mFenceManager; }

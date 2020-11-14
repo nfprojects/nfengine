@@ -11,7 +11,7 @@
 
 #include "Engine/Common/Math/Math.hpp"
 #include "Engine/Common/Math/Matrix4.hpp"
-
+#include "Engine/Renderers/RendererCommon/Fence.hpp"
 
 #include <vector>
 #include <functional>
@@ -80,12 +80,19 @@ bool TessellationScene::CreateVertexBuffer()
     };
 
     BufferDesc vbDesc;
-    vbDesc.mode = ResourceAccessMode::Static;
     vbDesc.size = sizeof(vbData);
-    vbDesc.initialData = vbData;
+    vbDesc.usage = NFE_RENDERER_BUFFER_USAGE_VERTEX_BUFFER;
     mVertexBuffer = mRendererDevice->CreateBuffer(vbDesc);
     if (!mVertexBuffer)
         return false;
+
+    // upload buffer data
+    {
+        mCommandBuffer->Begin(CommandQueueType::Copy);
+        mCommandBuffer->WriteBuffer(mVertexBuffer, 0, sizeof(vbData), vbData);
+        mCopyQueue->Execute(mCommandBuffer->Finish());
+        mCopyQueue->Signal()->Wait();
+    }
 
     VertexLayoutElement vertexLayoutElements[] =
     {

@@ -44,9 +44,7 @@ void ResourceStateCache::EnsureResourceState(const Resource* resource, D3D12_RES
 {
     NFE_ASSERT(resource, "NULL resource");
 
-    if (resource->GetMode() == ResourceAccessMode::Static ||
-        resource->GetMode() == ResourceAccessMode::Upload ||
-        resource->GetMode() == ResourceAccessMode::Readback)
+    if (resource->GetMode() == ResourceAccessMode::Upload || resource->GetMode() == ResourceAccessMode::Readback)
     {
         // static resources are in COMMON state and are promoted to appropriate read state automatically
         // upload/readback resources are in GENERIC_READ/COPY_DEST all the time

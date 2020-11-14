@@ -204,16 +204,10 @@ enum class ResourceAccessMode : uint8
     Invalid,
 
     /**
-     * GPU read-write resource, for example a texture used as a render target.
+     * GPU read-write resource, for example a texture used as a render target or a static texture sampled in a shader.
      * The content can't be accessed by the CPU.
      */
     GPUOnly,
-
-    /**
-     * GPU read-only resource, for example a static mesh or texture.
-     * The resource content must be specified during creation.
-     */
-    Static,
 
     /**
      * GPU read-only resource, for example a constant buffer.

@@ -12,6 +12,7 @@
 #include "Engine/Common/Logger/Logger.hpp"
 #include "Engine/Common/Math/Math.hpp"
 #include "Engine/Common/Math/Vec4fU.hpp"
+#include "Engine/Renderers/RendererCommon/Fence.hpp"
 
 #include <vector>
 #include <functional>
@@ -97,19 +98,24 @@ bool ComputeScene::CreateSubSceneSimple()
     cubfferData.resolutionInverse = Vec4fU(1.0f / static_cast<float>(WINDOW_WIDTH),
                                            1.0f / static_cast<float>(WINDOW_HEIGHT), 0.0f, 0.0f);
     BufferDesc cbufferDesc;
-    cbufferDesc.mode = ResourceAccessMode::Static;
     cbufferDesc.size = sizeof(CBuffer);
-    cbufferDesc.initialData = &cubfferData;
+    cbufferDesc.usage = NFE_RENDERER_BUFFER_USAGE_CONSTANT_BUFFER;
     mConstantBuffer = mRendererDevice->CreateBuffer(cbufferDesc);
     if (!mConstantBuffer)
         return false;
 
+    // upload cbuffer data
+    {
+        mCommandBuffer->Begin(CommandQueueType::Copy);
+        mCommandBuffer->WriteBuffer(mConstantBuffer, 0, sizeof(CBuffer), &cubfferData);
+        mCopyQueue->Execute(mCommandBuffer->Finish());
+        mCopyQueue->Signal()->Wait();
+    }
 
     // create texture that compute shader will write to
     TextureDesc textureDesc;
     textureDesc.binding = NFE_RENDERER_TEXTURE_BIND_SHADER_WRITABLE;
     textureDesc.format = mBackbufferFormat; // match with backbuffer format, because we copy the data directly
-    textureDesc.mode = ResourceAccessMode::GPUOnly;
     textureDesc.width = WINDOW_WIDTH;
     textureDesc.height = WINDOW_HEIGHT;
     textureDesc.debugName = "ComputeScene::mTexture";
@@ -165,6 +171,7 @@ bool ComputeScene::OnInit(void* winHandle)
     bbDesc.format = mBackbufferFormat;
     bbDesc.windowHandle = winHandle;
     bbDesc.vSync = false;
+    bbDesc.commandQueue = mGraphicsQueue;
     mWindowBackbuffer = mRendererDevice->CreateBackbuffer(bbDesc);
     if (!mWindowBackbuffer)
         return false;

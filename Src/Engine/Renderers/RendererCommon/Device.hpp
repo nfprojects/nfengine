@@ -32,6 +32,13 @@ struct DeviceInfo
     Common::DynArray<Common::String> features; //< list of supported features (depends on low-level API)
 };
 
+struct TexturePlacementInfo
+{
+    uint32 alignment;
+    size_t rowPitch;
+    size_t totalSize;
+};
+
 using ResourceDownloadCallback = std::function<void(const void*, size_t dataSize, size_t rowPitch)>;
 
 /**
@@ -63,6 +70,11 @@ public:
     virtual bool IsBackbufferFormatSupported(Format format) = 0;
 
     /**
+     * Get texture data placement requirements when copying between texture and buffer resources.
+     */
+    virtual bool CalculateTexturePlacementInfo(Format format, uint32 width, uint32 height, uint32 depth, TexturePlacementInfo& outInfo) const = 0;
+
+    /**
      * DeviceResourcesCreation Resources creation functions
      * @{
      */
@@ -90,7 +102,7 @@ public:
     /**
      * Create a command queue.
      */
-    virtual CommandQueuePtr CreateCommandQueue(CommandQueueType type) = 0;
+    virtual CommandQueuePtr CreateCommandQueue(CommandQueueType type, const char* debugName = nullptr) = 0;
 
     /**
      * Inform Renderer about finished frame.
@@ -100,24 +112,6 @@ public:
      * @remarks This function will invalidate all generated Command Lists (even non-executed ones).
      */
     virtual bool FinishFrame() = 0;
-
-    /**
-     * Read data from a GPU buffer to the CPU memory.
-     * @param   buffer      Source buffer.
-     * @param   callback    Callback to process the data, called when buffer data is downloaded.
-     * @param   builder     Task builder to synchronize other tasks dependent on the data read.
-     * @param   offset      Offset in the GPU buffer (in bytes).
-     * @param   size        Number of bytes to read.
-     * @return true on success.
-     */
-    virtual bool DownloadBuffer(const BufferPtr& buffer, const ResourceDownloadCallback& callback, Common::TaskBuilder& builder, uint32 offset = 0, uint32 size = 0) = 0;
-
-    /**
-     * Read texture content to a CPU buffer.
-     * @param      tex  Texture to read.
-     * @param[out] data Target CPU buffer.
-     */
-    virtual bool DownloadTexture(const TexturePtr& tex, const ResourceDownloadCallback& callback, Common::TaskBuilder& builder, uint32 mipmap = 0, uint32 layer = 0) = 0;
 };
 
 

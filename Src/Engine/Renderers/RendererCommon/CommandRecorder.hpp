@@ -45,24 +45,20 @@ enum ClearFlags
     ClearFlagsStencil   = (1 << 2),
 };
 
-struct TextureWriteParams
+struct TextureRegion
 {
-    // target texture mip & layer
-    uint16 targetMip = 0;
-    uint16 targetLayer = 0;
+    uint16 mipmap = 0;
+    uint16 layer = 0;
 
-    // target copy location
-    uint32 destX = 0;
-    uint32 destY = 0;
-    uint32 destZ = 0;
+    // region location (offset)
+    uint32 x = 0;
+    uint32 y = 0;
+    uint32 z = 0;
 
-    // texture write region size
+    // region size
     uint32 width = 1;
     uint32 height = 1;
     uint32 depth = 1;
-
-    // optional row stride of the source CPU data
-    uint32 srcRowStride = 0;
 };
 
 enum class PipelineType
@@ -118,10 +114,11 @@ public:
      * Write data from the CPU memory to a GPU texture.
      * @param texture       Target texture
      * @param data          Pointer to source CPU texture data
-     * @param writeParams   Optional texture write parameters (to allow subregion update). If null, the whole texture is updated.
+     * @param texRegion     Optional texture write region. If null, the whole texture is updated.
+     * @param srcRowStride  Optional row stride of the source CPU data.
      * @return true on success.
      */
-    virtual bool WriteTexture(const TexturePtr& texture, const void* data, const TextureWriteParams* writeParams = nullptr) = 0;
+    virtual bool WriteTexture(const TexturePtr& texture, const void* data, const TextureRegion* texRegion = nullptr, uint32 srcRowStride = 0) = 0;
 
     /**
      * Copy contents of buffer @p src to @p dest.
@@ -141,6 +138,15 @@ public:
      * @param dest Destination texture object.
      */
     virtual void CopyTexture(const TexturePtr& src, const TexturePtr& dest) = 0;
+
+    /**
+     * Copy region of a texture @p src to a buffer @p dest.
+     * @param src           Source texture object.
+     * @param dest          Destination buffer object.
+     * @param texRegion     Optional texture read region. If null, the whole texture is read.
+     * @param bufferOffset  Destination buffer offset.
+     */
+    virtual void CopyTextureToBuffer(const TexturePtr& src, const BufferPtr& dest, const TextureRegion* texRegion = nullptr, uint32 bufferOffset = 0) = 0;
 
     /**
      * Copy contents of texture @p src to backbuffer @p dest.

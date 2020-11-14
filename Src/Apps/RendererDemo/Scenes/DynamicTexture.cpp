@@ -26,7 +26,6 @@ bool DynamicTextureScene::CreateSubSceneSimple()
     TextureDesc textureDesc;
     textureDesc.binding = 0;
     textureDesc.format = mBackbufferFormat; // match with backbuffer format, because we copy the data directly
-    textureDesc.mode = ResourceAccessMode::GPUOnly;
     textureDesc.width = WINDOW_WIDTH;
     textureDesc.height = WINDOW_HEIGHT;
     textureDesc.binding = NFE_RENDERER_TEXTURE_BIND_RENDERTARGET;
@@ -76,6 +75,7 @@ bool DynamicTextureScene::OnInit(void* winHandle)
     bbDesc.format = mBackbufferFormat;
     bbDesc.windowHandle = winHandle;
     bbDesc.vSync = false;
+    bbDesc.commandQueue = mGraphicsQueue;
     mWindowBackbuffer = mRendererDevice->CreateBackbuffer(bbDesc);
     if (!mWindowBackbuffer)
     {
@@ -109,13 +109,13 @@ void DynamicTextureScene::Draw(float dt)
             mTextureData[i] = mRandom.GetInt();
         }
 
-        TextureWriteParams params;
-        params.destX = 100;
-        params.destY = 100;
-        params.width = TexRegionWidth;
-        params.height = TexRegionHeight;
+        TextureRegion texRegion;
+        texRegion.x = 100;
+        texRegion.y = 100;
+        texRegion.width = TexRegionWidth;
+        texRegion.height = TexRegionHeight;
 
-        mCommandBuffer->WriteTexture(mTexture, mTextureData.Data(), &params);
+        mCommandBuffer->WriteTexture(mTexture, mTextureData.Data(), &texRegion);
     }
 
     {
@@ -128,13 +128,13 @@ void DynamicTextureScene::Draw(float dt)
             }
         }
 
-        TextureWriteParams params;
-        params.destX = 300;
-        params.destY = 100;
-        params.width = TexRegionWidth;
-        params.height = TexRegionHeight;
+        TextureRegion texRegion;
+        texRegion.x = 300;
+        texRegion.y = 100;
+        texRegion.width = TexRegionWidth;
+        texRegion.height = TexRegionHeight;
 
-        mCommandBuffer->WriteTexture(mTexture, mTextureData.Data(), &params);
+        mCommandBuffer->WriteTexture(mTexture, mTextureData.Data(), &texRegion);
     }
 
     // copy result to backbuffer

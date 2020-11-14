@@ -10,6 +10,7 @@
 #include "../Common.hpp"
 
 #include "Engine/Common/Math/Random.hpp"
+#include "Engine/Renderers/RendererCommon/Fence.hpp"
 
 #include <vector>
 #include <functional>
@@ -49,8 +50,6 @@ bool VertexBuffersScene::CreateBuffers(bool withInstanceBuffer, ResourceAccessMo
 {
     /// create vertex buffers
     BufferDesc vbDesc;
-    vbDesc.mode = ResourceAccessMode::Static;
-
 
     float vbPositionData[] =
     {
@@ -62,7 +61,7 @@ bool VertexBuffersScene::CreateBuffers(bool withInstanceBuffer, ResourceAccessMo
     };
 
     vbDesc.size = sizeof(vbPositionData);
-    vbDesc.initialData = vbPositionData;
+    vbDesc.usage = NFE_RENDERER_BUFFER_USAGE_VERTEX_BUFFER;
     mPositionsVertexBuffer = mRendererDevice->CreateBuffer(vbDesc);
     if (!mPositionsVertexBuffer)
         return false;
@@ -78,7 +77,7 @@ bool VertexBuffersScene::CreateBuffers(bool withInstanceBuffer, ResourceAccessMo
     };
 
     vbDesc.size = sizeof(vbColorData);
-    vbDesc.initialData = vbColorData;
+    vbDesc.usage = NFE_RENDERER_BUFFER_USAGE_VERTEX_BUFFER;
     mColorVertexBuffer = mRendererDevice->CreateBuffer(vbDesc);
     if (!mColorVertexBuffer)
         return false;
@@ -92,13 +91,21 @@ bool VertexBuffersScene::CreateBuffers(bool withInstanceBuffer, ResourceAccessMo
     };
 
     BufferDesc ibDesc;
-    ibDesc.mode = ResourceAccessMode::Static;
     ibDesc.size = sizeof(ibData);
-    ibDesc.initialData = ibData;
+    ibDesc.usage = NFE_RENDERER_BUFFER_USAGE_INDEX_BUFFER;
     mIndexBuffer = mRendererDevice->CreateBuffer(ibDesc);
     if (!mIndexBuffer)
         return false;
 
+    // upload buffer data
+    {
+        mCommandBuffer->Begin(CommandQueueType::Copy);
+        mCommandBuffer->WriteBuffer(mPositionsVertexBuffer, 0, sizeof(vbPositionData), vbPositionData);
+        mCommandBuffer->WriteBuffer(mColorVertexBuffer, 0, sizeof(vbColorData), vbColorData);
+        mCommandBuffer->WriteBuffer(mIndexBuffer, 0, sizeof(ibData), ibData);
+        mCopyQueue->Execute(mCommandBuffer->Finish());
+        mCopyQueue->Signal()->Wait();
+    }
 
     /// create vertex layout object
     if (withInstanceBuffer)
@@ -122,11 +129,18 @@ bool VertexBuffersScene::CreateBuffers(bool withInstanceBuffer, ResourceAccessMo
         mVertexBufferMode = vertexBufferMode;
         vbDesc.mode = vertexBufferMode;
         vbDesc.size = sizeof(InstanceData) * gInstancesNumber;
-        vbDesc.initialData = mInstancesData.data();
+        vbDesc.usage = NFE_RENDERER_BUFFER_USAGE_VERTEX_BUFFER;
         mInstanceBuffer = mRendererDevice->CreateBuffer(vbDesc);
         if (!mInstanceBuffer)
             return false;
 
+        // upload buffer data
+        {
+            mCommandBuffer->Begin(CommandQueueType::Copy);
+            mCommandBuffer->WriteBuffer(mPositionsVertexBuffer, 0, sizeof(InstanceData) * gInstancesNumber, mInstancesData.data());
+            mCopyQueue->Execute(mCommandBuffer->Finish());
+            mCopyQueue->Signal()->Wait();
+        }
 
         VertexLayoutElement vertexLayoutElements[] =
         {
@@ -189,7 +203,7 @@ bool VertexBuffersScene::CreateSubSceneSimple()
     if (!LoadShaders(false))
         return false;
 
-    if (!CreateBuffers(false, ResourceAccessMode::Static))
+    if (!CreateBuffers(false, ResourceAccessMode::GPUOnly))
         return false;
 
     return true;
@@ -217,8 +231,6 @@ VertexBuffersScene::VertexBuffersScene()
 {
     RegisterSubScene(std::bind(&VertexBuffersScene::CreateSubSceneSimple, this),
                      "Simple: Static vertex buffer (2 vertex buffers)");
-    RegisterSubScene(std::bind(&VertexBuffersScene::CreateSubSceneInstancing, this, ResourceAccessMode::Static),
-                     "Instancing: Static vertex buffer (3 vertex buffers)");
     RegisterSubScene(std::bind(&VertexBuffersScene::CreateSubSceneInstancing, this, ResourceAccessMode::GPUOnly),
                      "Instancing: Dynamic vertex buffer (3 vertex buffers)");
     RegisterSubScene(std::bind(&VertexBuffersScene::CreateSubSceneInstancing, this, ResourceAccessMode::Volatile),

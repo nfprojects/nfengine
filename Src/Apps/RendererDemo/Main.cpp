@@ -63,10 +63,11 @@ class DemoWindow : public Window
         if (scene == mCurrentScene)
             return;
 
-        mScenes[mCurrentScene]->Release();
-
         // make backbuffer is destroyed before creating new scene (it may be still in be some commandlist)
+        mCopyQueue->Signal()->Wait();
         mGraphicsQueue->Signal()->Wait();
+
+        mScenes[mCurrentScene]->Release();
 
         if (mScenes[scene]->Init(mRendererDevice, mGraphicsQueue, mCopyQueue, GetHandle()))
         {
@@ -175,13 +176,13 @@ public:
             return false;
         }
 
-        mGraphicsQueue = mRendererDevice->CreateCommandQueue(CommandQueueType::Graphics);
+        mGraphicsQueue = mRendererDevice->CreateCommandQueue(CommandQueueType::Graphics, "Graphics");
         if (!mGraphicsQueue)
         {
             return false;
         }
 
-        mCopyQueue = mRendererDevice->CreateCommandQueue(CommandQueueType::Copy);
+        mCopyQueue = mRendererDevice->CreateCommandQueue(CommandQueueType::Copy, "Copy");
         if (!mCopyQueue)
         {
             return false;
@@ -252,12 +253,14 @@ public:
      */
     void Release()
     {
-        // free scenes
-        for (auto& scene : mScenes)
-            scene.Reset();
-
         mCopyQueue.Reset();
         mGraphicsQueue.Reset();
+
+        // free scenes
+        for (auto& scene : mScenes)
+        {
+            scene.Reset();
+        }
 
         // free Renderer
         if (mRendererDevice != nullptr)

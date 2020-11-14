@@ -10,6 +10,7 @@
 #include "../Common.hpp"
 
 #include "Engine/Common/Math/Matrix4.hpp"
+#include "Engine/Renderers/RendererCommon/Fence.hpp"
 
 #include <vector>
 #include <functional>
@@ -198,23 +199,29 @@ bool DepthStencilScene::CreateBasicResources(bool withDepth, bool withStencil)
     };
 
     BufferDesc bufferDesc;
-    bufferDesc.mode = ResourceAccessMode::Static;
     bufferDesc.size = sizeof(vbData);
-    bufferDesc.initialData = vbData;
+    bufferDesc.usage = NFE_RENDERER_BUFFER_USAGE_VERTEX_BUFFER;
     mVertexBuffer = mRendererDevice->CreateBuffer(bufferDesc);
     if (!mVertexBuffer)
         return false;
 
-    bufferDesc.mode = ResourceAccessMode::Static;
     bufferDesc.size = sizeof(ibData);
-    bufferDesc.initialData = ibData;
+    bufferDesc.usage = NFE_RENDERER_BUFFER_USAGE_INDEX_BUFFER;
     mIndexBuffer = mRendererDevice->CreateBuffer(bufferDesc);
     if (!mIndexBuffer)
         return false;
 
+    // upload buffer data
+    {
+        mCommandBuffer->Begin(CommandQueueType::Copy);
+        mCommandBuffer->WriteBuffer(mVertexBuffer, 0, sizeof(vbData), vbData);
+        mCommandBuffer->WriteBuffer(mIndexBuffer, 0, sizeof(ibData), ibData);
+        mCopyQueue->Execute(mCommandBuffer->Finish());
+        mCopyQueue->Signal()->Wait();
+    }
+
     bufferDesc.mode = ResourceAccessMode::Volatile;
     bufferDesc.size = sizeof(VertexCBuffer);
-    bufferDesc.initialData = nullptr;
     mConstantBuffer = mRendererDevice->CreateBuffer(bufferDesc);
     if (!mConstantBuffer)
         return false;
@@ -226,7 +233,6 @@ bool DepthStencilScene::CreateDepthBuffer(bool withStencil)
 {
     TextureDesc depthBufferDesc;
     depthBufferDesc.type = TextureType::Texture2D;
-    depthBufferDesc.mode = ResourceAccessMode::GPUOnly;
     depthBufferDesc.width = static_cast<uint16>(WINDOW_WIDTH);
     depthBufferDesc.height = static_cast<uint16>(WINDOW_HEIGHT);
     depthBufferDesc.binding = NFE_RENDERER_TEXTURE_BIND_DEPTH;

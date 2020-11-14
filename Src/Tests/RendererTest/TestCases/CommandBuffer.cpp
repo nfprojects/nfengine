@@ -25,7 +25,7 @@ private:
 
 TEST_F(CommandList, ResetAndFinish)
 {
-    commandRecorder->Begin(CommandQueueType::Compute);
+    commandRecorder->Begin(CommandQueueType::Graphics);
 
     const CommandListPtr commandList = commandRecorder->Finish();
     ASSERT_NE(commandList, nullptr);

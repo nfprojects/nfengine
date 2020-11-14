@@ -30,7 +30,7 @@ public:
     CommandQueue();
     ~CommandQueue();
 
-    bool Init(CommandQueueType type);
+    bool Init(CommandQueueType type, const char* debugName);
 
     NFE_FORCE_INLINE ID3D12CommandQueue* GetQueue() const { return mQueue.Get(); }
 

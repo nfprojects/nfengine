@@ -6,6 +6,8 @@
 Common::Library RendererTest::gRendererLib;
 IDevice* RendererTest::gRendererDevice = nullptr;
 CommandQueuePtr RendererTest::gMainCommandQueue;
+CommandQueuePtr RendererTest::gComputeCommandQueue;
+CommandQueuePtr RendererTest::gCopyCommandQueue;
 
 void RendererTest::SetUpTestCase()
 {
@@ -21,12 +23,16 @@ void RendererTest::SetUpTestCase()
     gRendererDevice = proc(&params);
     ASSERT_TRUE(gRendererDevice != nullptr);
 
-    gMainCommandQueue = gRendererDevice->CreateCommandQueue(CommandQueueType::Graphics);
+    gMainCommandQueue = gRendererDevice->CreateCommandQueue(CommandQueueType::Graphics, "Main");
+    gComputeCommandQueue = gRendererDevice->CreateCommandQueue(CommandQueueType::Compute, "Compute");
+    gCopyCommandQueue = gRendererDevice->CreateCommandQueue(CommandQueueType::Copy, "Copy");
 }
 
 void RendererTest::TearDownTestCase()
 {
     gMainCommandQueue.Reset();
+    gComputeCommandQueue.Reset();
+    gCopyCommandQueue.Reset();
 
     if (gRendererDevice != nullptr)
     {

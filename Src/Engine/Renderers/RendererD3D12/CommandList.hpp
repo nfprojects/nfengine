@@ -56,6 +56,8 @@ public:
     ID3D12GraphicsCommandList* GetD3DCommandList() const { return mCommandList.Get(); }
     ID3D12CommandAllocator* GetD3DCommandAllocator() const { return mCommandAllocator.Get(); }
 
+    CommandQueueType GetQueueType() const { return mQueueType; }
+
     // Get command list's state
     State GetState() const { return mState; }
     ReferencedResourcesList& GetReferencedResources() { return mReferencedResources; }
@@ -76,6 +78,7 @@ private:
     uint64 mFenceValue;
     uint32 mID;
     State mState;
+    CommandQueueType mQueueType;
 
     D3DPtr<ID3D12GraphicsCommandList> mCommandList;
     D3DPtr<ID3D12CommandAllocator> mCommandAllocator;

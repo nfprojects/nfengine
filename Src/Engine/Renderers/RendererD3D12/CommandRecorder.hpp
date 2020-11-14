@@ -39,9 +39,10 @@ public:
     CommandListPtr Finish() override;
 
     bool WriteBuffer(const BufferPtr& buffer, size_t offset, size_t size, const void* data) override;
-    bool WriteTexture(const TexturePtr& texture, const void* data, const TextureWriteParams* writeParams) override;
+    bool WriteTexture(const TexturePtr& texture, const void* data, const TextureRegion* texRegion, uint32 srcRowStride) override;
     void CopyBuffer(const BufferPtr& src, const BufferPtr& dest, size_t size, size_t srcOffset, size_t destOffset) override;
     void CopyTexture(const TexturePtr& src, const TexturePtr& dest) override;
+    void CopyTextureToBuffer(const TexturePtr& src, const BufferPtr& dest, const TextureRegion* texRegion, uint32 bufferOffset);
     void CopyTexture(const TexturePtr& src, const BackbufferPtr& dest) override;
 
     /// Resource binding methods

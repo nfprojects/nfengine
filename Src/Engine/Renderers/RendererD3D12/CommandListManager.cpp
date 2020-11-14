@@ -123,6 +123,10 @@ void CommandListManager::ExecuteCommandList(const CommandQueue& queue, const Com
             InternalCommandListPtr internalCommandList = typedCommandList->internalCommandList.Lock();
             NFE_ASSERT(internalCommandList != nullptr, "Same commandlist cannot be executed twice");
             NFE_ASSERT(internalCommandList->GetState() == InternalCommandList::State::Recorded, "Invalid command list State. This indicates reuse from previous frame or data corruption");
+            
+            NFE_ASSERT(queue.GetType() == internalCommandList->GetQueueType(),
+                "Incompatible command list type: queue is '%s', while command list is of type '%s'",
+                CommandQueueTypeToStr(queue.GetType()), CommandQueueTypeToStr(internalCommandList->GetQueueType()));
 
             if (ID3D12GraphicsCommandList* injectedResourceBarriersCommandList = internalCommandList->GenerateResourceBarriersCommandList())
             {

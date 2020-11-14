@@ -10,6 +10,7 @@
 #include "../Common.hpp"
 
 #include "Engine/Common/Math/Matrix4.hpp"
+#include "Engine/Renderers/RendererCommon/Fence.hpp"
 
 #include <vector>
 #include <functional>
@@ -145,26 +146,33 @@ bool RenderTargetsScene::CreateBasicResources(bool multipleRT, bool withDepthBuf
     };
 
     BufferDesc bufferDesc;
-    bufferDesc.mode = ResourceAccessMode::Static;
     bufferDesc.size = sizeof(vbData);
-    bufferDesc.initialData = vbData;
+    bufferDesc.usage = NFE_RENDERER_BUFFER_USAGE_VERTEX_BUFFER;
     mVertexBuffer = mRendererDevice->CreateBuffer(bufferDesc);
     if (!mVertexBuffer)
         return false;
 
-    bufferDesc.mode = ResourceAccessMode::Static;
     bufferDesc.size = sizeof(ibData);
-    bufferDesc.initialData = ibData;
+    bufferDesc.usage = NFE_RENDERER_BUFFER_USAGE_INDEX_BUFFER;
     mIndexBuffer = mRendererDevice->CreateBuffer(bufferDesc);
     if (!mIndexBuffer)
         return false;
 
     bufferDesc.mode = ResourceAccessMode::Volatile;
     bufferDesc.size = sizeof(VertexCBuffer);
-    bufferDesc.initialData = nullptr;
+    bufferDesc.usage = NFE_RENDERER_BUFFER_USAGE_CONSTANT_BUFFER;
     mConstantBuffer = mRendererDevice->CreateBuffer(bufferDesc);
     if (!mConstantBuffer)
         return false;
+
+    // upload buffer data
+    {
+        mCommandBuffer->Begin(CommandQueueType::Copy);
+        mCommandBuffer->WriteBuffer(mVertexBuffer, 0, sizeof(vbData), vbData);
+        mCommandBuffer->WriteBuffer(mIndexBuffer, 0, sizeof(ibData), ibData);
+        mCopyQueue->Execute(mCommandBuffer->Finish());
+        mCopyQueue->Signal()->Wait();
+    }
 
     return true;
 }
@@ -173,7 +181,6 @@ bool RenderTargetsScene::CreateRenderTarget(bool withDepthBuffer, bool multipleR
 {
     TextureDesc texDesc;
     texDesc.type = TextureType::Texture2D;
-    texDesc.mode = ResourceAccessMode::GPUOnly;
     texDesc.width = static_cast<uint16>(WINDOW_WIDTH / 2);
     texDesc.height = static_cast<uint16>(WINDOW_HEIGHT / 2);
     texDesc.mipmaps = 1;

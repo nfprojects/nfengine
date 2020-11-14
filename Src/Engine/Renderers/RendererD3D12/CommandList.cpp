@@ -24,6 +24,7 @@ InternalCommandList::InternalCommandList(uint32 id)
     : mFenceValue(FenceData::InvalidValue)
     , mFenceData(nullptr)
     , mState(State::Invalid)
+    , mQueueType(CommandQueueType::Invalid)
     , mID(id)
 { }
 
@@ -75,6 +76,7 @@ bool InternalCommandList::Init(CommandQueueType queueType)
 
     // created D3D12 command list is in recording state by default
     mState = State::Recording;
+    mQueueType = queueType;
 
     NFE_LOG_INFO("Command list was created, ID = %u", mID);
     return true;

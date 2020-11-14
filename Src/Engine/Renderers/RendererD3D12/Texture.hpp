@@ -18,23 +18,6 @@ class Texture : public Resource, public ITexture
     friend class RenderTarget;
     friend class ResourceBindingInstance;
 
-protected:
-
-    DXGI_FORMAT mSrvFormat;
-    DXGI_FORMAT mDsvFormat;
-
-    uint32 mRowPitch;
-    uint16 mWidth;
-    uint16 mHeight;
-    uint16 mLayersNumOrDepth;
-    uint8 mMipmapsNum : 4;
-    uint8 mSamplesNum : 4;
-    TextureType mType;
-    Format mFormat;
-
-    // upload initial data
-    bool UploadData(const TextureDesc& desc);
-
 public:
     Texture();
     virtual ~Texture();
@@ -51,6 +34,20 @@ public:
     NFE_FORCE_INLINE uint8 GetSamplesNum() const { return mSamplesNum; }
     NFE_FORCE_INLINE TextureType GetType() const { return mType; }
     NFE_FORCE_INLINE DXGI_FORMAT GetSrvFormat() const { return mSrvFormat; }
+
+protected:
+
+    DXGI_FORMAT mSrvFormat;
+    DXGI_FORMAT mDsvFormat;
+
+    uint32 mRowPitch;
+    uint16 mWidth;
+    uint16 mHeight;
+    uint16 mLayersNumOrDepth;
+    uint8 mMipmapsNum : 4;
+    uint8 mSamplesNum : 4;
+    TextureType mType;
+    Format mFormat;
 };
 
 using InternalTexturePtr = Common::SharedPtr<Texture>;
