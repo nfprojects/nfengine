@@ -4,6 +4,7 @@
 #include "../../Common/Math/Vec4f.hpp"
 #include "../../Common/Containers/SharedPtr.hpp"
 #include "../../Common/Memory/Aligned.hpp"
+#include "../../Common/Reflection/ReflectionClassDeclare.hpp"
 
 namespace NFE {
 namespace RT {
@@ -11,8 +12,10 @@ namespace RT {
 /**
  * Class representing 2D texture.
  */
-class ITexture
+class ITexture : public IObject
 {
+    NFE_DECLARE_POLYMORPHIC_CLASS(ITexture)
+
 public:
     NFE_ALIGNED_CLASS(16)
 

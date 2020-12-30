@@ -151,6 +151,7 @@ union Packed_10_10_10_2;
 class LdrColorRGB;
 class LdrColorRGBA;
 class HdrColorRGB;
+class HdrColorRGBA;
 
 } // namespace Math
 

@@ -8,6 +8,8 @@ namespace RT {
 // 3D texture wrapper for Bitmap class
 class BitmapTexture3D : public ITexture
 {
+    NFE_DECLARE_POLYMORPHIC_CLASS(BitmapTexture3D)
+
 public:
     NFE_RAYTRACER_API BitmapTexture3D();
     NFE_RAYTRACER_API BitmapTexture3D(const BitmapPtr& bitmap);

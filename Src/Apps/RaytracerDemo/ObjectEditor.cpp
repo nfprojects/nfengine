@@ -75,6 +75,27 @@ static bool EditObject_Internal_HdrColorRGB(const char* name, Math::HdrColorRGB*
     return changed;
 }
 
+static bool EditObject_Internal_HdrColorRGBA(const char* name, Math::HdrColorRGBA* color)
+{
+    // property name
+    ImGui::AlignTextToFramePadding();
+    ImGui::TreeNodeEx(name, ImGuiTreeNodeFlags_Leaf | ImGuiTreeNodeFlags_NoTreePushOnOpen, name);
+    ImGui::NextColumn();
+
+    // property value
+    ImGui::SetNextItemWidth(-1);
+
+    bool changed = ImGui::ColorEdit4("", &(color->r), ImGuiColorEditFlags_Float | ImGuiColorEditFlags_HDR);
+    color->r = Math::Max(0.0f, color->r);
+    color->g = Math::Max(0.0f, color->g);
+    color->b = Math::Max(0.0f, color->b);
+    color->a = Math::Max(0.0f, color->a);
+
+    ImGui::NextColumn();
+
+    return changed;
+}
+
 static bool EditObject_Internal_FloatVector(const char* name, float* data, uint32 numComponents)
 {
     // property name
@@ -121,22 +142,45 @@ static bool EditObject_Internal_Quaternion(const char* name, Math::Quaternion* q
 template<typename T, ImGuiDataType_ ImGuiDataType>
 static bool EditObject_Internal_Fundamental_Typed(const EditPropertyContext& ctx)
 {
-    const T min = (ctx.metadata && ctx.metadata->HasMinRange()) ? static_cast<T>(ctx.metadata->min) : std::numeric_limits<T>::min();
-    const T max = (ctx.metadata && ctx.metadata->HasMaxRange()) ? static_cast<T>(ctx.metadata->max) : std::numeric_limits<T>::max();
+    T* typedDataPtr = reinterpret_cast<T*>(ctx.data);
 
+    const bool isNormalizedInt = ctx.metadata && ctx.metadata->IsNormalizedInt();
     const bool hasSlider = ctx.metadata && !ctx.metadata->HasNoSlider() && ctx.metadata->HasMinRange() && ctx.metadata->HasMaxRange();
 
     bool changed = false;
 
-    if (!hasSlider)
+    if (!hasSlider && !isNormalizedInt)
     {
-        changed = ImGui::InputScalar("##value", ImGuiDataType, reinterpret_cast<T*>(ctx.data));
+        changed = ImGui::InputScalar("##value", ImGuiDataType, typedDataPtr);
+    }
+    else if (isNormalizedInt)
+    {
+        // TODO signed types support
+        if constexpr (std::is_same_v<T,uint8> || std::is_same_v<T,uint16>)
+        {
+            const float min = (ctx.metadata && ctx.metadata->HasMinRange()) ? (float)ctx.metadata->min : 0.0f;
+            const float max = (ctx.metadata && ctx.metadata->HasMaxRange()) ? (float)ctx.metadata->max : 1.0f;
+            constexpr float maxFloatValue = static_cast<float>(std::numeric_limits<T>::max());
+
+            float floatValue = static_cast<float>(*typedDataPtr) / maxFloatValue;
+            if (ImGui::SliderFloat("##value", &floatValue, min, max))
+            {
+                changed = true;
+                *typedDataPtr = static_cast<T>(maxFloatValue * Math::Clamp(floatValue, 0.0f, 1.0f) + 0.5f);
+            }
+        }
+        else
+        {
+            NFE_FATAL("Invalid type");
+        }
     }
     else
     {
         const float power = std::is_floating_point_v<T> ? ctx.metadata->logScalePower : 1.0f;
+        const T min = (ctx.metadata && ctx.metadata->HasMinRange()) ? static_cast<T>(ctx.metadata->min) : std::numeric_limits<T>::min();
+        const T max = (ctx.metadata && ctx.metadata->HasMaxRange()) ? static_cast<T>(ctx.metadata->max) : std::numeric_limits<T>::max();
 
-        changed = ImGui::SliderScalar("##value", ImGuiDataType, reinterpret_cast<T*>(ctx.data), &min, &max, nullptr, power);
+        changed = ImGui::SliderScalar("##value", ImGuiDataType, typedDataPtr, &min, &max, nullptr, power);
     }
 
     return changed;
@@ -177,15 +221,15 @@ static bool EditObject_Internal_Fundamental(const EditPropertyContext& ctx)
     }
     else if (GetType<uint8>() == ctx.type)
     {
-        changed = EditObject_Internal_Fundamental_Typed<uint64, ImGuiDataType_U8>(ctx);
+        changed = EditObject_Internal_Fundamental_Typed<uint8, ImGuiDataType_U8>(ctx);
     }
     else if (GetType<uint16>() == ctx.type)
     {
-        changed = EditObject_Internal_Fundamental_Typed<uint64, ImGuiDataType_U16>(ctx);
+        changed = EditObject_Internal_Fundamental_Typed<uint16, ImGuiDataType_U16>(ctx);
     }
     else if (GetType<uint32>() == ctx.type)
     {
-        changed = EditObject_Internal_Fundamental_Typed<uint64, ImGuiDataType_U32>(ctx);
+        changed = EditObject_Internal_Fundamental_Typed<uint32, ImGuiDataType_U32>(ctx);
     }
     else if (GetType<uint64>() == ctx.type)
     {
@@ -525,6 +569,10 @@ static bool EditObject_Internal(const EditPropertyContext& ctx)
     else if (ctx.type == RTTI::GetType<Math::HdrColorRGB>())
     {
         changed = EditObject_Internal_HdrColorRGB(ctx.name, static_cast<Math::HdrColorRGB*>(ctx.data));
+    }
+    else if (ctx.type == RTTI::GetType<Math::HdrColorRGBA>())
+    {
+        changed = EditObject_Internal_HdrColorRGBA(ctx.name, static_cast<Math::HdrColorRGBA*>(ctx.data));
     }
     else if (ctx.type == RTTI::GetType<Math::Vec2f>())
     {

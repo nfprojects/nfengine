@@ -1,5 +1,9 @@
 #include "PCH.h"
 #include "Texture.h"
+#include "../Common/Reflection/ReflectionClassDefine.hpp"
+
+NFE_DEFINE_POLYMORPHIC_CLASS(NFE::RT::ITexture)
+NFE_END_DEFINE_CLASS()
 
 namespace NFE {
 namespace RT {

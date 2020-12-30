@@ -12,6 +12,16 @@ NFE_DEFINE_CLASS(NFE::Math::HdrColorRGB)
 NFE_END_DEFINE_CLASS()
 
 
+NFE_DEFINE_CLASS(NFE::Math::HdrColorRGBA)
+{
+    NFE_CLASS_MEMBER(r);
+    NFE_CLASS_MEMBER(g);
+    NFE_CLASS_MEMBER(b);
+    NFE_CLASS_MEMBER(a);
+}
+NFE_END_DEFINE_CLASS()
+
+
 namespace NFE {
 namespace Math {
 

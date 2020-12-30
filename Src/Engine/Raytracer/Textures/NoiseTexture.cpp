@@ -1,5 +1,15 @@
 #include "PCH.h"
 #include "NoiseTexture.h"
+#include "../Common/Reflection/ReflectionClassDefine.hpp"
+
+NFE_DEFINE_POLYMORPHIC_CLASS(NFE::RT::NoiseTexture)
+{
+    NFE_CLASS_PARENT(NFE::RT::ITexture);
+    NFE_CLASS_MEMBER(mColorA);
+    NFE_CLASS_MEMBER(mColorB);
+    NFE_CLASS_MEMBER(mNumOctaves).Min(1).Max(32);
+}
+NFE_END_DEFINE_CLASS()
 
 namespace NFE {
 namespace RT {
@@ -39,6 +49,13 @@ NFE_FORCE_INLINE static float Gradient(const int32 hash, const float x, const fl
 }
 
 } // namespace
+
+
+NoiseTexture::NoiseTexture()
+    : mColorA(Math::Vec4f(0.0f))
+    , mColorB(Math::Vec4f(1.0f))
+    , mNumOctaves(1)
+{}
 
 NoiseTexture::NoiseTexture(const Math::Vec4f& colorA, const Math::Vec4f& colorB, const uint32 numOctaves)
     : mColorA(colorA)
@@ -134,7 +151,8 @@ float NoiseTexture::EvaluateInternal(const Math::Vec4f& coords) const
 
     // Calculate the contribution from the third corner
     float t2 = 0.5f - x2 * x2 - y2 * y2;
-    if (t2 < 0.0f) {
+    if (t2 < 0.0f)
+    {
         n2 = 0.0f;
     }
     else
@@ -164,7 +182,7 @@ const Vec4f NoiseTexture::Evaluate(const Vec4f& coords) const
         octaveCoordScale *= 2.0f;
     }
 
-    return Vec4f::Lerp(mColorA, mColorB, value);
+    return Vec4f::Lerp(mColorA.ToVec4f(), mColorB.ToVec4f(), value);
 }
 
 const Vec4f NoiseTexture::Sample(const Vec2f u, Vec4f& outCoords, float* outPdf) const

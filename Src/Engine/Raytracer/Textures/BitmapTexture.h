@@ -4,6 +4,7 @@
 #include "../../Common/Containers/UniquePtr.hpp"
 #include "../../Common/Containers/SharedPtr.hpp"
 #include "../../Common/Math/Vec4f.hpp"
+#include "../../Common/Reflection/ReflectionEnumMacros.hpp"
 
 namespace NFE {
 namespace RT {
@@ -15,12 +16,15 @@ enum class BitmapTextureFilter : uint8
 {
     NearestNeighbor = 0,
     Linear = 1,
-    Linear_SmoothStep = 2,
+    LinearSmoothStep = 2,
+    Bicubic = 3,
 };
 
 // texture wrapper for Bitmap class
 class BitmapTexture : public ITexture
 {
+    NFE_DECLARE_POLYMORPHIC_CLASS(BitmapTexture)
+
 public:
     NFE_RAYTRACER_API BitmapTexture();
     NFE_RAYTRACER_API BitmapTexture(const BitmapPtr& bitmap);
@@ -36,8 +40,13 @@ public:
 private:
     BitmapPtr mBitmap;
     Common::UniquePtr<Math::Distribution> mImportanceMap;
+
     BitmapTextureFilter mFilter;
+    uint8 mBicubicB;
+    uint8 mBicubicC;
 };
 
 } // namespace RT
 } // namespace NFE
+
+NFE_DECLARE_ENUM_TYPE(NFE::RT::BitmapTextureFilter)

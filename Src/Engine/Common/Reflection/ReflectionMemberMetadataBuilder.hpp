@@ -16,6 +16,9 @@ public:
     MemberMetadataBuilder& Min(double min);
     MemberMetadataBuilder& Max(double max);
 
+    // make normalized integer (0...1 or -1...1 range)
+    MemberMetadataBuilder& Norm();
+
     MemberMetadataBuilder& LogScale(float power);
 
     // set custom debug name

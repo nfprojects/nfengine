@@ -701,6 +701,9 @@
     <ClInclude Include="Containers\FixedArrayImpl.hpp">
       <Filter>Containers</Filter>
     </ClInclude>
+    <ClInclude Include="Math\WindowFunctions.hpp">
+      <Filter>Math</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="PCH.cpp" />

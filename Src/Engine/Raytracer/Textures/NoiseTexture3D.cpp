@@ -1,5 +1,15 @@
 #include "PCH.h"
 #include "NoiseTexture3D.h"
+#include "../Common/Reflection/ReflectionClassDefine.hpp"
+
+NFE_DEFINE_POLYMORPHIC_CLASS(NFE::RT::NoiseTexture3D)
+{
+    NFE_CLASS_PARENT(NFE::RT::ITexture);
+    NFE_CLASS_MEMBER(mColorA);
+    NFE_CLASS_MEMBER(mColorB);
+    NFE_CLASS_MEMBER(mNumOctaves).Min(1).Max(32);
+}
+NFE_END_DEFINE_CLASS()
 
 namespace NFE {
 namespace RT {
@@ -21,6 +31,19 @@ NoiseTexture3D::NoiseTexture3D(const Math::Vec4f& colorA, const Math::Vec4f& col
 
     // 1/sum(1 / 2^n), n = 0 ... mNumOctaves-1
     mScale = 1.0f / (2.0f - powf(2.0f, 1.0f - mNumOctaves));
+}
+
+bool NoiseTexture3D::OnPropertyChanged(const Common::StringView propertyName)
+{
+    if (propertyName == "mNumOctaves")
+    {
+        // 1/sum(1 / 2^n), n = 0 ... mNumOctaves-1
+        mScale = 1.0f / (2.0f - powf(2.0f, 1.0f - mNumOctaves));
+
+        return true;
+    }
+
+    return ITexture::OnPropertyChanged(propertyName);
 }
 
 const char* NoiseTexture3D::GetName() const
@@ -102,7 +125,7 @@ const Vec4f NoiseTexture3D::Evaluate(const Vec4f& coords) const
     // HACK
     value = Step(0.4f, 0.5f, value);
 
-    return mScale * Vec4f::Lerp(mColorA, mColorB, value);
+    return mScale * Vec4f::Lerp(mColorA.ToVec4f(), mColorB.ToVec4f(), value);
 }
 
 const Vec4f NoiseTexture3D::Sample(const Vec2f u, Vec4f& outCoords, float* outPdf) const

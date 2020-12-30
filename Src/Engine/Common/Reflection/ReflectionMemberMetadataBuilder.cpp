@@ -148,6 +148,20 @@ MemberMetadataBuilder& MemberMetadataBuilder::Max(double max)
     return *this;
 }
 
+MemberMetadataBuilder& MemberMetadataBuilder::Norm()
+{
+    // TODO signed types support
+    if (mMember.mType != GetType<uint8>() && mMember.mType != GetType<uint16>())
+    {
+        NFE_FATAL("Only 8- and 16-bit integers can be marked as normalized");
+    }
+
+    NFE_ASSERT(0 == (mMember.mMetadata.flags & MemberMetadata_NormalizedInt), "Property %s is already marked as normalized", mMember.GetName());
+    mMember.mMetadata.flags = MemberMetadataFlags(mMember.mMetadata.flags | MemberMetadataFlags::MemberMetadata_NormalizedInt);
+
+    return *this;
+}
+
 MemberMetadataBuilder& MemberMetadataBuilder::LogScale(float power)
 {
     NFE_ASSERT(Math::IsValid(power), "Invalid power value");

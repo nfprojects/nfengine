@@ -44,7 +44,7 @@ namespace RT {
 using namespace Math;
 
 DebugRenderer::DebugRenderer()
-    : renderingMode(DebugRenderingMode::TriangleID)
+    : renderingMode(DebugRenderingMode::BaseColor)
 {
 }
 

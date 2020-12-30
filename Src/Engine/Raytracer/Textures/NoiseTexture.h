@@ -2,6 +2,7 @@
 
 #include "Texture.h"
 #include "../Utils/Memory.h"
+#include "../../Common/Math/HdrColor.hpp"
 
 namespace NFE {
 namespace RT {
@@ -10,7 +11,10 @@ namespace RT {
 class NFE_ALIGN(16) NoiseTexture
     : public ITexture
 {
+    NFE_DECLARE_POLYMORPHIC_CLASS(NoiseTexture)
+
 public:
+    NFE_RAYTRACER_API NoiseTexture();
     NFE_RAYTRACER_API NoiseTexture(const Math::Vec4f& colorA, const Math::Vec4f& colorB, const uint32 numOctaves = 1);
 
     virtual const char* GetName() const override;
@@ -20,8 +24,8 @@ public:
     float EvaluateInternal(const Math::Vec4f& coords) const;
 
 private:
-    Math::Vec4f mColorA;
-    Math::Vec4f mColorB;
+    Math::HdrColorRGBA mColorA;
+    Math::HdrColorRGBA mColorB;
     uint32 mNumOctaves;
 };
 

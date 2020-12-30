@@ -156,6 +156,7 @@
     <ClInclude Include="Math\Vec8i.hpp" />
     <ClInclude Include="Math\Vec8iImplAVX2.hpp" />
     <ClInclude Include="Math\Vec8iImplNaive.hpp" />
+    <ClInclude Include="Math\WindowFunctions.hpp" />
     <ClInclude Include="Memory\Aligned.hpp" />
     <ClInclude Include="Memory\Buffer.hpp" />
     <ClInclude Include="Memory\DefaultAllocator.hpp" />

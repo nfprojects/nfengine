@@ -2,6 +2,7 @@
 
 #include "Texture.h"
 #include "../Utils/Memory.h"
+#include "../../Common/Math/HdrColor.hpp"
 
 namespace NFE {
 namespace RT {
@@ -10,15 +11,17 @@ namespace RT {
 class NFE_ALIGN(16) ConstTexture
     : public ITexture
 {
+    NFE_DECLARE_POLYMORPHIC_CLASS(ConstTexture)
+
 public:
-    NFE_RAYTRACER_API ConstTexture(const Math::Vec4f& color);
+    NFE_RAYTRACER_API ConstTexture(const Math::Vec4f& color = Math::Vec4f(1.0f));
 
     virtual const char* GetName() const override;
     virtual const Math::Vec4f Evaluate(const Math::Vec4f& coords) const override;
     virtual const Math::Vec4f Sample(const Math::Vec2f u, Math::Vec4f& outCoords, float* outPdf) const override;
 
 private:
-    Math::Vec4f mColor;
+    Math::HdrColorRGBA mColor;
 };
 
 } // namespace RT

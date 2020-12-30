@@ -7,6 +7,8 @@ namespace RT {
 
 class MixTexture : public ITexture
 {
+    NFE_DECLARE_POLYMORPHIC_CLASS(MixTexture)
+
 public:
     NFE_RAYTRACER_API MixTexture(const TexturePtr& textureA, const TexturePtr& textureB, const TexturePtr& textureMask);
 

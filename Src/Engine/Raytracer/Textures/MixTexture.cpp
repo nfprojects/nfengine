@@ -1,5 +1,16 @@
 #include "PCH.h"
 #include "MixTexture.h"
+#include "../Common/Reflection/ReflectionClassDefine.hpp"
+#include "../Common/Reflection/Types/ReflectionSharedPtrType.hpp"
+
+NFE_DEFINE_POLYMORPHIC_CLASS(NFE::RT::MixTexture)
+{
+    NFE_CLASS_PARENT(NFE::RT::ITexture);
+    NFE_CLASS_MEMBER(mTextureA);
+    NFE_CLASS_MEMBER(mTextureB);
+    NFE_CLASS_MEMBER(mTextureMask);
+}
+NFE_END_DEFINE_CLASS()
 
 namespace NFE {
 namespace RT {

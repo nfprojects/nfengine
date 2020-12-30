@@ -3,6 +3,7 @@
 #include "Texture.h"
 #include "../Utils/Memory.h"
 #include "../../Common/Math/Plane.hpp"
+#include "../../Common/Math/HdrColor.hpp"
 
 namespace NFE {
 namespace RT {
@@ -10,6 +11,8 @@ namespace RT {
 class NFE_ALIGN(16) GradientTexture
     : public ITexture
 {
+    NFE_DECLARE_POLYMORPHIC_CLASS(GradientTexture)
+
 public:
     NFE_RAYTRACER_API GradientTexture(const Math::Vec4f& colorA, const Math::Vec4f& colorB, const Math::Plane& plane, float planeDistance);
 
@@ -17,8 +20,8 @@ public:
     virtual const Math::Vec4f Evaluate(const Math::Vec4f& coords) const override;
 
 private:
-    Math::Vec4f mColorA;
-    Math::Vec4f mColorB;
+    Math::HdrColorRGBA mColorA;
+    Math::HdrColorRGBA mColorB;
 
     Math::Plane mPlane;
     float mDistance;

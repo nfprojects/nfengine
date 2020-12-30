@@ -2,6 +2,7 @@
 
 #include "Texture.h"
 #include "../Utils/Memory.h"
+#include "../../Common/Math/HdrColor.hpp"
 
 namespace NFE {
 namespace RT {
@@ -9,16 +10,24 @@ namespace RT {
 class NFE_ALIGN(16) CheckerboardTexture
     : public ITexture
 {
+    NFE_DECLARE_POLYMORPHIC_CLASS(CheckerboardTexture)
+
 public:
+    NFE_RAYTRACER_API CheckerboardTexture();
     NFE_RAYTRACER_API CheckerboardTexture(const Math::Vec4f& colorA, const Math::Vec4f& colorB);
+
+    virtual bool OnPropertyChanged(const Common::StringView propertyName) override;
 
     virtual const char* GetName() const override;
     virtual const Math::Vec4f Evaluate(const Math::Vec4f& coords) const override;
     virtual const Math::Vec4f Sample(const Math::Vec2f u, Math::Vec4f& outCoords, float* outPdf) const override;
 
 private:
-    Math::Vec4f mColorA;
-    Math::Vec4f mColorB;
+
+    void UpdatePdf();
+
+    Math::HdrColorRGBA mColorA;
+    Math::HdrColorRGBA mColorB;
 
     // probability of sampling color A
     float mPdf;

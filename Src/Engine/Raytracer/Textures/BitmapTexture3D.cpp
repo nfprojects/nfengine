@@ -1,6 +1,13 @@
 #include "PCH.h"
 #include "BitmapTexture3D.h"
 #include "../Utils/Bitmap.h"
+#include "../Common/Reflection/ReflectionClassDefine.hpp"
+
+NFE_DEFINE_POLYMORPHIC_CLASS(NFE::RT::BitmapTexture3D)
+{
+    NFE_CLASS_PARENT(NFE::RT::ITexture);
+}
+NFE_END_DEFINE_CLASS()
 
 namespace NFE {
 namespace RT {

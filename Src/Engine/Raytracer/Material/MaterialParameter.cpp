@@ -16,7 +16,7 @@ NFE_END_DEFINE_CLASS()
 NFE_DEFINE_CLASS(NFE::RT::ColorMaterialParameter)
 {
     NFE_CLASS_MEMBER(mBaseValue).NonNull();
-    // TODO texture
+    NFE_CLASS_MEMBER(mTexture);
 }
 NFE_END_DEFINE_CLASS()
 
@@ -61,7 +61,7 @@ const RayColor ColorMaterialParameter::Evaluate(const Vec4f& uv, const Wavelengt
 
     if (mTexture)
     {
-        const Vec4f textureColor = mTexture->Evaluate(uv);
+        const Vec4f textureColor = Vec4f::Max(Vec4f::Zero(), mTexture->Evaluate(uv));
         color *= RayColor::ResolveRGB(wavelength, textureColor);
     }
 

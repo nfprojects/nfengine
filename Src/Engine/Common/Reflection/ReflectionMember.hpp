@@ -16,10 +16,11 @@ namespace RTTI {
 
 enum MemberMetadataFlags
 {
-    MemberMetadata_HasMinRange  = 1 << 0,
-    MemberMetadata_HasMaxRange  = 1 << 1,
-    MemberMetadata_NoSlider     = 1 << 2,
-    MemberMetadata_NonSerialized   = 1 << 3,
+    MemberMetadata_HasMinRange      = 1 << 0,
+    MemberMetadata_HasMaxRange      = 1 << 1,
+    MemberMetadata_NoSlider         = 1 << 2,
+    MemberMetadata_NonSerialized    = 1 << 3,
+    MemberMetadata_NormalizedInt    = 1 << 4,
     //MemberMetadata_ReadOnly     = 1 << 3,
 };
 
@@ -41,6 +42,7 @@ struct MemberMetadata
     bool HasMaxRange() const { return (flags & MemberMetadata_HasMaxRange) != 0; }
     bool HasNoSlider() const { return (flags & MemberMetadata_NoSlider) != 0; }
     bool NonSerialized() const { return (flags & MemberMetadata_NonSerialized) != 0; }
+    bool IsNormalizedInt() const { return (flags & MemberMetadata_NormalizedInt) != 0; }
 };
 
 /**
