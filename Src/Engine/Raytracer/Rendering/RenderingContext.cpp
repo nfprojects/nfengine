@@ -4,7 +4,9 @@
 namespace NFE {
 namespace RT {
 
-RenderingContext::RenderingContext() = default;
+RenderingContext::RenderingContext()
+    : randomSampler(randomGenerator)
+{ }
 
 RenderingContext::~RenderingContext() = default;
 

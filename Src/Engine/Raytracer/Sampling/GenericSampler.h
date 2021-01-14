@@ -7,25 +7,17 @@
 namespace NFE {
 namespace RT {
 
-class GenericSampler
+class ISampler
 {
 public:
-    GenericSampler();
-    ~GenericSampler() = default;
-
-    // move to next frame
-    void ResetFrame(const Common::DynArray<uint32>& sample, bool useBlueNoise);
-
-    // move to next pixel
-    void ResetPixel(const uint32 x, const uint32 y);
+    virtual ~ISampler() = default;
 
     // get next sample
-    // NOTE: effectively goes to next sample dimension
-    NFE_RAYTRACER_API uint32 GetInt();
+    virtual uint32 GetUint() = 0;
 
     NFE_FORCE_INLINE float GetFloat()
     {
-        return Math::Min(0.999999940395f, static_cast<float>(GetInt()) / 4294967296.0f);
+        return Math::Min(0.999999940395f, static_cast<float>(GetUint()) / 4294967296.0f);
     }
 
     NFE_FORCE_INLINE const Math::Vec2f GetVec2f()
@@ -37,6 +29,34 @@ public:
     {
         return Math::Vec3f{ GetFloat(), GetFloat(), GetFloat() };
     }
+};
+
+class RandomSampler : public ISampler
+{
+public:
+    RandomSampler(Math::Random& randomGenerator);
+
+    // get next sample
+    virtual uint32 GetUint() override;
+
+private:
+    Math::Random& mRandomGenerator;
+};
+
+class GenericSampler : public ISampler
+{
+public:
+    GenericSampler();
+
+    // move to next frame
+    void ResetFrame(const Common::DynArray<uint32>& sample, bool useBlueNoise);
+
+    // move to next pixel
+    void ResetPixel(const uint32 x, const uint32 y);
+
+    // get next sample
+    // NOTE: effectively goes to next sample dimension
+    virtual uint32 GetUint() override;
 
     Math::Random* fallbackGenerator = nullptr;
 

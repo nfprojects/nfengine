@@ -63,6 +63,19 @@ NFE_FORCE_INLINE static uint32 XorShift(uint32 x)
     return x;
 }
 
+///////////////////////////////////////////////////////////////////////////////////////////////////
+
+RandomSampler::RandomSampler(Math::Random& randomGenerator)
+    : mRandomGenerator(randomGenerator)
+{ }
+
+uint32 RandomSampler::GetUint()
+{
+    return mRandomGenerator.GetInt();
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+
 GenericSampler::GenericSampler()
     : mBlueNoiseTexture(BlueNoise::GetTexture())
 {
@@ -82,7 +95,7 @@ void GenericSampler::ResetPixel(const uint32 x, const uint32 y)
     mSamplesGenerated = 0;
 }
 
-uint32 GenericSampler::GetInt()
+uint32 GenericSampler::GetUint()
 {
     uint32 sample;
 

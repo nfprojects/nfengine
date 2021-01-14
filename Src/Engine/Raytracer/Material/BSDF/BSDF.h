@@ -64,8 +64,8 @@ public:
         // inputs
         const Material& material;
         SampledMaterialParameters materialParam;    // evaluated material parameters
-        const Math::Vec3f sample;                  // random sample
-        const Math::Vec4f outgoingDir;            // fixed ray direction
+        ISampler& sampler;
+        const Math::Vec4f outgoingDir;              // fixed ray direction
         Wavelength& wavelength;                     // non-const, because can trigger dispersion
 
         // outputs
@@ -79,6 +79,7 @@ public:
     {
         const Material& material;
         SampledMaterialParameters materialParam;
+        ISampler& sampler;
         const Wavelength& wavelength;
         const Math::Vec4f outgoingDir;
         const Math::Vec4f incomingDir;

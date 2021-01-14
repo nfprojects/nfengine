@@ -61,12 +61,13 @@ const Vec4f DebugTonemapper::Apply(const Vec4f hdrColor) const
 
 const Vec4f ClampedTonemapper::Apply(const Vec4f hdrColor) const
 {
-    return Convert_Linear_To_sRGB(hdrColor);
+    return Convert_Linear_To_sRGB_Exact(hdrColor);
 }
 
 const Vec4f ReinhardTonemapper::Apply(const Vec4f hdrColor) const
 {
-    return Convert_Linear_To_sRGB(hdrColor / (hdrColor + Vec4f(1.0f)));
+    const Vec4f tonemapped = hdrColor / (hdrColor + Vec4f(1.0f));
+    return Convert_Linear_To_sRGB_Exact(tonemapped);
 }
 
 const Vec4f FilmicTonemapper::Apply(const Vec4f hdrColor) const
@@ -108,7 +109,7 @@ const Vec4f ApproxACESTonemapper::Apply(const Vec4f hdrColor) const
 
     color = Vec4f::Saturate(ACESOutputMat[0] * color.x + ACESOutputMat[1] * color.y + ACESOutputMat[2] * color.z);
 
-    return Convert_Linear_To_sRGB(color);
+    return Convert_Linear_To_sRGB_Exact(color);
 
 }
 

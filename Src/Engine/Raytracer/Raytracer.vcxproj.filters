@@ -99,6 +99,7 @@
     <ClInclude Include="Renderers\DebugRenderer.h" />
     <ClInclude Include="Renderers\LightTracer.h" />
     <ClInclude Include="Renderers\RendererContext.h" />
+    <ClInclude Include="Utils\LookupTable.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BVH\BVH.cpp" />
@@ -183,6 +184,7 @@
     <ClCompile Include="Renderers\LightTracer.cpp" />
     <ClCompile Include="Renderers\PathTracer.cpp" />
     <ClCompile Include="Renderers\RendererContext.cpp" />
+    <ClCompile Include="Material\BSDF\Microfacet.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Math">

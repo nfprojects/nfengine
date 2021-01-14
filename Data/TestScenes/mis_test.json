@@ -75,7 +75,7 @@
     [
         {
             "type": "area",
-            "color": [625.0, 6.25, 6.25],
+            "color": [625.0, 0.0, 0.0],
             "transform": { "translation": [2.0, 2.5, -1.0] },
             "shape":
             {
@@ -85,7 +85,7 @@
         },
         {
             "type": "area",
-            "color": [0.25, 25.0, 0.25],
+            "color": [0.0, 25.0, 0.0],
             "transform": { "translation": [0.0, 2.5, -1.0] },
             "shape":
             {
@@ -95,7 +95,7 @@
         },
         {
             "type": "area",
-            "color": [0.01, 0.01, 1.0],
+            "color": [0.0, 0.0, 1.0],
             "transform": { "translation": [-2.0, 2.5, -1.0] },
             "shape":
             {

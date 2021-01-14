@@ -30,7 +30,8 @@ public:
     NFE_INLINE ~DynArray();
     NFE_INLINE DynArray(const DynArray& other);
     NFE_INLINE DynArray(DynArray&& other);
-    NFE_INLINE DynArray& operator = (const DynArray& other);
+    NFE_INLINE DynArray& operator = (const DynArray<ElementType>& other);
+    NFE_INLINE DynArray& operator = (const ArrayView<const ElementType>& other);
     NFE_INLINE DynArray& operator = (DynArray&& other);
 
     // initialize using initializer list

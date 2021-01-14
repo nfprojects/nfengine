@@ -1,5 +1,6 @@
 #include "PCH.h"
 #include "RoughDiffuseBSDF.h"
+#include "Sampling/GenericSampler.h"
 #include "../Common/Math/SamplingHelpers.hpp"
 #include "../Common/Reflection/ReflectionClassDefine.hpp"
 
@@ -32,7 +33,9 @@ bool RoughDiffuseBSDF::Sample(SamplingContext& ctx) const
         return false;
     }
 
-    ctx.outIncomingDir = SamplingHelpers::GetHemishpereCos(ctx.sample);
+    const Vec2f u = ctx.sampler.GetVec2f();
+
+    ctx.outIncomingDir = SamplingHelpers::GetHemishpereCos(u);
 
     const float NdotL = ctx.outIncomingDir.z;
     const float LdotV = Max(0.0f, Vec4f::Dot3(ctx.outgoingDir, -ctx.outIncomingDir));

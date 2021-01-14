@@ -40,6 +40,7 @@ class Material;
 
 class ITexture;
 
+class ISampler;
 struct Wavelength;
 struct RayColor;
 class IColor;

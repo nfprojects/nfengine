@@ -2,6 +2,7 @@
 #include "Microfacet.h"
 #include "RoughPlasticBSDF.h"
 #include "PlasticBSDF.h"
+#include "Sampling/GenericSampler.h"
 #include "../Material.h"
 #include "../Common/Math/Utils.hpp"
 #include "../Common/Math/SamplingHelpers.hpp"
@@ -32,6 +33,8 @@ bool RoughPlasticBSDF::Sample(SamplingContext& ctx) const
         return PlasticBSDF().Sample(ctx);
     }
 
+    const Vec3f u = ctx.sampler.GetVec3f();
+
     const float ior = ctx.materialParam.IoR;
 
     const float Fi = FresnelDielectric(NdotV, ior);
@@ -43,13 +46,13 @@ bool RoughPlasticBSDF::Sample(SamplingContext& ctx) const
     // importance sample specular reflectivity
     const float specularProbability = specularWeight / (specularWeight + diffuseWeight);
     const float diffuseProbability = 1.0f - specularProbability;
-    const bool specular = ctx.sample.z < specularProbability;
+    const bool specular = u.z < specularProbability;
 
     if (specular)
     {
         // microfacet normal (aka. half vector)
         const Microfacet microfacet(roughness * roughness);
-        const Vec4f m = microfacet.Sample(ctx.sample);
+        const Vec4f m = microfacet.Sample(u);
 
         // compute reflected direction
         ctx.outIncomingDir = -Vec4f::Reflect3(ctx.outgoingDir, m);
@@ -76,7 +79,7 @@ bool RoughPlasticBSDF::Sample(SamplingContext& ctx) const
     }
     else // diffuse reflection
     {
-        ctx.outIncomingDir = SamplingHelpers::GetHemishpereCos(ctx.sample);
+        ctx.outIncomingDir = SamplingHelpers::GetHemishpereCos(u);
         const float NdotL = ctx.outIncomingDir.z;
 
         ctx.outPdf = ctx.outIncomingDir.z * NFE_MATH_INV_PI * diffuseProbability;

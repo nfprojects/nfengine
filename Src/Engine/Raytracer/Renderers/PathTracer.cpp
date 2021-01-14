@@ -238,7 +238,7 @@ const RayColor PathTracer::RenderPixel(const Math::Ray& primaryRay, const Render
         // sample BSDF
         Vec4f incomingDirWorldSpace;
         BSDF::EventType lastSampledBsdfEvent = BSDF::NullEvent;
-        const RayColor bsdfValue = shadingData.intersection.material->Sample(context.wavelength, incomingDirWorldSpace, shadingData, context.sampler.GetVec3f(), nullptr, &lastSampledBsdfEvent);
+        const RayColor bsdfValue = shadingData.intersection.material->Sample(context.wavelength, incomingDirWorldSpace, shadingData, context.sampler, nullptr, &lastSampledBsdfEvent);
 
         if (lastSampledBsdfEvent == BSDF::NullEvent)
         {

@@ -2,6 +2,8 @@
 #include "Microfacet.h"
 #include "RoughDielectricBSDF.h"
 #include "DielectricBSDF.h"
+#include "Material/Material.h"
+#include "Sampling/GenericSampler.h"
 #include "../Common/Math/Utils.hpp"
 #include "../Common/Reflection/ReflectionClassDefine.hpp"
 
@@ -51,15 +53,17 @@ bool RoughDielectricBSDF::Sample(SamplingContext& ctx) const
         return DielectricBSDF().Sample(ctx);
     }
 
+    const Vec3f u = ctx.sampler.GetVec3f();
+
     // microfacet normal (aka. half vector)
     const Microfacet microfacet(roughness * roughness);
-    const Vec4f m = microfacet.Sample(ctx.sample);
+    const Vec4f m = microfacet.Sample(u);
     const float microfacetPdf = microfacet.Pdf(m);
     const float VdotH = Vec4f::Dot3(m, ctx.outgoingDir);
 
     // compute Fresnel term
     const float F = FresnelDielectric(VdotH, ior);
-    const bool reflection = ctx.sample.z < F;
+    const bool reflection = u.z < F;
 
     if (reflection)
     {

@@ -1,5 +1,6 @@
 #include "PCH.h"
 #include "PlasticBSDF.h"
+#include "Sampling/GenericSampler.h"
 #include "../Common/Math/SamplingHelpers.hpp"
 #include "../Common/Math/Utils.hpp"
 #include "../Common/Reflection/ReflectionClassDefine.hpp"
@@ -36,12 +37,14 @@ bool PlasticBSDF::Sample(SamplingContext& ctx) const
     const float specularProbability = specularWeight / (specularWeight + diffuseWeight);
     const float diffuseProbability = 1.0f - specularProbability;
 
-    const bool specular = (specularProbability >= 1.0f) || (ctx.sample.z < specularProbability);
+    const Vec3f u = ctx.sampler.GetVec3f();
+
+    const bool specular = (specularProbability >= 1.0f) || (u.z < specularProbability);
 
     if (specular)
     {
         ctx.outColor = RayColor(Fi / specularProbability);
-        ctx.outIncomingDir = -Vec4f::Reflect3(ctx.outgoingDir, VECTOR_Z);
+        ctx.outIncomingDir = -Vec4f::Reflect3Z(ctx.outgoingDir);
         ctx.outPdf = specularProbability;
         ctx.outEventType = SpecularReflectionEvent;
     }
@@ -49,7 +52,7 @@ bool PlasticBSDF::Sample(SamplingContext& ctx) const
     {
         NFE_ASSERT(diffuseProbability > 0.0f, "");
 
-        ctx.outIncomingDir = SamplingHelpers::GetHemishpereCos(ctx.sample);
+        ctx.outIncomingDir = SamplingHelpers::GetHemishpereCos(u);
         const float NdotL = ctx.outIncomingDir.z;
 
         ctx.outPdf = ctx.outIncomingDir.z * NFE_MATH_INV_PI * diffuseProbability;

@@ -32,27 +32,22 @@ using namespace Common;
 
 bool LoadCustomScene(Scene& scene, Camera& camera)
 {
-    auto bitmapTextureA = helpers::LoadTexture(gOptions.dataPath, "TEXTURES/default.bmp");
-    auto backgroundTexture = helpers::LoadTexture(gOptions.dataPath, "TEXTURES/ENV/OutdoorCityParkingLotEveningClear_4K.exr");
+    //auto bitmapTextureA = helpers::LoadTexture(gOptions.dataPath, "TEXTURES/default.bmp");
+    auto backgroundTexture = helpers::LoadTexture(gOptions.dataPath, "TEXTURES/ENV/Topanga_R32G32B32_FLOAT.dds");
     //auto bitmapTextureB = helpers::LoadTexture(gOptions.dataPath, "TEXTURES/Portal/dirty4x4.bmp");
     //auto noiseTexture = std::shared_ptr<ITexture>(new NoiseTexture(Vec4f(1.0f), Vec4f(0.0f)));
     //auto texture = std::shared_ptr<ITexture>(new MixTexture(bitmapTextureA, bitmapTextureB, noiseTexture));
 
     // floor
-    /*
     {
         auto material = Material::Create();
         material->debugName = "floor";
         material->SetBsdf(String("diffuse"));
         material->baseColor = Math::HdrColorRGB(0.9f, 0.9f, 0.9f);
-        material->baseColor.texture = bitmapTextureA;
-        //material->emission = Math::Vec4f(4.0f, 4.0f, 4.0f);
-        //material->emission.texture = emissionTexture;
-        //material->baseColor.texture = helpers::LoadTexture(gOptions.dataPath, "TEXTURES/default.bmp");
         material->roughness = 0.2f;
         material->Compile();
 
-        const Vec2f size(1000.0f, 1000.0f);
+        const Vec2f size(100.0f, 100.0f);
         const Vec2f texScale(0.2f, 0.2f);
         auto rect = MakeSharedPtr<RectShape>(size, texScale);
         UniquePtr<ShapeSceneObject> instance = MakeUniquePtr<ShapeSceneObject>(std::move(rect));
@@ -60,7 +55,24 @@ bool LoadCustomScene(Scene& scene, Camera& camera)
         instance->SetTransform(Quaternion::FromEulerAngles(Vec3f(-NFE_MATH_PI / 2.0f, -0.01f, 0.0f)).ToMatrix());
         scene.AddObject(std::move(instance));
     }
-    */
+
+    for (int32 i = 0; i <= 20; ++i)
+    {
+        auto material = Material::Create();
+        material->debugName = "default";
+        material->SetBsdf("roughMetal");
+        material->baseColor = Math::HdrColorRGB(0.99f, 0.85f, 0.4f);
+        material->roughness = i / 20.0f;
+        material->Compile();
+
+        const Matrix4 translationMatrix = Matrix4::MakeTranslation(Vec4f(2.5f * i, 1.0f, 0.0f));
+
+        auto sphere = MakeUniquePtr<SphereShape>(1.0f);
+        UniquePtr<ShapeSceneObject> instance = MakeUniquePtr<ShapeSceneObject>(std::move(sphere));
+        instance->BindMaterial(material);
+        instance->SetTransform(translationMatrix);
+        scene.AddObject(std::move(instance));
+    }
 
     /*
     Random random;
@@ -194,6 +206,7 @@ bool LoadCustomScene(Scene& scene, Camera& camera)
     }
     */
 
+    /*
     // heterogenous absorption medium
     {
         auto densityBitmap = helpers::LoadBitmapObject(gOptions.dataPath, "TEXTURES/Volume/Clouds/wdas_cloud_half.vdb");
@@ -222,6 +235,7 @@ bool LoadCustomScene(Scene& scene, Camera& camera)
         object->SetTransform(Matrix4::MakeTranslation(Vec4f(0.0f, 0.0f, 0.0f)));
         scene.AddObject(std::move(object));
     }
+    */
 
     /*
     // emissive sphere
@@ -328,6 +342,7 @@ bool LoadCustomScene(Scene& scene, Camera& camera)
     }
     */
 
+    /*
     {
         const HdrColorRGB lightColor(1.0f, 0.7f, 0.5f);
         auto background = MakeUniquePtr<BackgroundLight>(lightColor);
@@ -335,13 +350,15 @@ bool LoadCustomScene(Scene& scene, Camera& camera)
         auto lightObject = MakeUniquePtr<LightSceneObject>(std::move(background));
         scene.AddObject(std::move(lightObject));
     }
-    //{
-    //    const HdrColorRGB lightColor(2.0f, 2.0f, 2.0f);
-    //    auto background = MakeUniquePtr<BackgroundLight>(lightColor);
-    //    background->mTexture = backgroundTexture;
-    //    auto lightObject = MakeUniquePtr<LightSceneObject>(std::move(background));
-    //    scene.AddObject(std::move(lightObject));
-    //}
+    */
+
+    {
+        const HdrColorRGB lightColor(2.0f, 2.0f, 2.0f);
+        auto background = MakeUniquePtr<BackgroundLight>(lightColor);
+        background->mTexture = backgroundTexture;
+        auto lightObject = MakeUniquePtr<LightSceneObject>(std::move(background));
+        scene.AddObject(std::move(lightObject));
+    }
 
     {
         Transform transform(Vec4f(-14.4f, -4.9f, 3.1f), Quaternion::FromEulerAngles(Vec3f(DegToRad(-17.9f), DegToRad(101.0f), 0.0f)));

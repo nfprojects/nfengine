@@ -62,9 +62,12 @@ DynArray<ElementType>::DynArray(DynArray&& other)
 }
 
 template<typename ElementType>
-DynArray<ElementType>& DynArray<ElementType>::operator = (const DynArray& other)
+DynArray<ElementType>& DynArray<ElementType>::operator = (const ArrayView<const ElementType>& other)
 {
-    if (&other != this)
+    const ArrayView<const ElementType>& thisAsConstArrayView = *this;
+
+    // TODO check if 'other' does not overlap with 'this'
+    if (&other != &thisAsConstArrayView)
     {
         Clear();
 
@@ -82,6 +85,13 @@ DynArray<ElementType>& DynArray<ElementType>::operator = (const DynArray& other)
     }
 
     return *this;
+}
+
+template<typename ElementType>
+DynArray<ElementType>& DynArray<ElementType>::operator = (const DynArray<ElementType>& other)
+{
+    const ArrayView<const ElementType>& constOther = other;
+    return operator=(constOther);
 }
 
 template<typename ElementType>

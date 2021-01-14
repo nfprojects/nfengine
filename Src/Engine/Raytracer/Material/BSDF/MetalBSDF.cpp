@@ -21,14 +21,10 @@ bool MetalBSDF::Sample(SamplingContext& ctx) const
         return false;
     }
 
-    // TODO
-    // This is wrong!
-    // IoR depends on the wavelength and this is the source of metal color.
-    // Metal always reflect 100% pure white at grazing angle.
-    const float F = FresnelMetal(NdotV, ctx.material.IoR, ctx.material.K);
+    const RayColor F = ctx.material.EvaluateMetalFresnel(NdotV, ctx.wavelength);
 
-    ctx.outColor = ctx.materialParam.baseColor * RayColor(F);
-    ctx.outIncomingDir = -Vec4f::Reflect3(ctx.outgoingDir, VECTOR_Z);
+    ctx.outColor = ctx.materialParam.baseColor * F;
+    ctx.outIncomingDir = -Vec4f::Reflect3Z(ctx.outgoingDir);
     ctx.outPdf = 1.0f;
     ctx.outEventType = SpecularReflectionEvent;
 

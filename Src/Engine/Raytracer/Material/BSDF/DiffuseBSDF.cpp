@@ -1,5 +1,6 @@
 #include "PCH.h"
 #include "DiffuseBSDF.h"
+#include "Sampling/GenericSampler.h"
 #include "../Common/Math/SamplingHelpers.hpp"
 #include "../Common/Reflection/ReflectionClassDefine.hpp"
 
@@ -21,7 +22,9 @@ bool DiffuseBSDF::Sample(SamplingContext& ctx) const
         return false;
     }
 
-    ctx.outIncomingDir = SamplingHelpers::GetHemishpereCos(ctx.sample);
+    const Vec2f u = ctx.sampler.GetVec2f();
+
+    ctx.outIncomingDir = SamplingHelpers::GetHemishpereCos(u);
     ctx.outPdf = ctx.outIncomingDir.z * NFE_MATH_INV_PI;
     ctx.outColor = ctx.materialParam.baseColor;
     ctx.outEventType = DiffuseReflectionEvent;

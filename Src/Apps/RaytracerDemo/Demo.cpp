@@ -352,7 +352,7 @@ void DemoWindow::OnMouseMove(int x, int y, int deltaX, int deltaY)
     }
     else if (mSpectrumPicking)
     {
-        const uint32 numSamples = 2048;
+        const uint32 numSamples = 4096;
 
         mSpectrumDebugData.Clear();
 

@@ -12,7 +12,72 @@ NFE_GLOBAL_CONST Vec4f XYZtoRGB_r = {  3.240479f, -1.537150f, -0.498535f, 0.0f }
 NFE_GLOBAL_CONST Vec4f XYZtoRGB_g = { -0.969256f,  1.875991f,  0.041556f, 0.0f };
 NFE_GLOBAL_CONST Vec4f XYZtoRGB_b = {  0.055648f, -0.204043f,  1.057311f, 0.0f };
 
-// Convert linear to sRGB
+
+// Convert linear to sRGB (exact)
+NFE_INLINE float Convert_Linear_To_sRGB_Exact(float x)
+{
+    if (x <= 0.0f)
+    {
+        return 0.0f;
+    }
+    else if (x >= 1.0f)
+    {
+        return 1.0f;
+    }
+    else if (x < 0.0031308f)
+    {
+        return x * 12.92f;
+    }
+    else
+    {
+        return powf(x, 1.0f / 2.4f) * 1.055f - 0.055f;
+    }
+}
+
+NFE_INLINE Vec4f Convert_Linear_To_sRGB_Exact(const Vec4f& gammaColor)
+{
+    return
+    {
+        Convert_Linear_To_sRGB_Exact(gammaColor.x),
+        Convert_Linear_To_sRGB_Exact(gammaColor.y),
+        Convert_Linear_To_sRGB_Exact(gammaColor.z),
+        gammaColor.w
+    };
+}
+
+// Convert linear to sRGB (exact)
+NFE_INLINE float Convert_sRGB_To_Linear_Exact(float x)
+{
+    if (x <= 0.0f)
+    {
+        return 0.0f;
+    }
+    else if (x >= 1.0f)
+    {
+        return 1.0f;
+    }
+    else if (x < 0.04045f)
+    {
+        return x / 12.92f;
+    }
+    else
+    {
+        return powf((x + 0.055f) / 1.055f, 2.4f);
+    }
+}
+
+NFE_INLINE Vec4f Convert_sRGB_To_Linear_Exact(const Vec4f& gammaColor)
+{
+    return
+    {
+        Convert_sRGB_To_Linear_Exact(gammaColor.x),
+        Convert_sRGB_To_Linear_Exact(gammaColor.y),
+        Convert_sRGB_To_Linear_Exact(gammaColor.z),
+        gammaColor.w
+    };
+}
+
+// Convert linear to sRGB (approximation)
 template<typename T>
 NFE_FORCE_INLINE const T Convert_sRGB_To_Linear(const T& gammaColor)
 {
@@ -26,7 +91,7 @@ NFE_FORCE_INLINE const T Convert_sRGB_To_Linear(const T& gammaColor)
     return result;
 }
 
-// Convert sRGB to linear
+// Convert sRGB to linear (approximation)
 template<typename T>
 NFE_FORCE_INLINE const T Convert_Linear_To_sRGB(const T& linearColor)
 {

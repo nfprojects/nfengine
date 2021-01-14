@@ -33,7 +33,7 @@ NFE_DEFINE_POLYMORPHIC_CLASS(NFE::RT::VertexConnectionAndMerging)
     NFE_CLASS_MEMBER(mMaxPathLength);
     NFE_CLASS_MEMBER(mInitialMergingRadius);
     NFE_CLASS_MEMBER(mMinMergingRadius);
-    NFE_CLASS_MEMBER(mMergingRadiusMultiplier).Min(0.0f).Max(0.0f);
+    NFE_CLASS_MEMBER(mMergingRadiusMultiplier).Min(0.0f).Max(1.0f);
     NFE_CLASS_MEMBER(mUseVertexConnection);
     NFE_CLASS_MEMBER(mUseVertexMerging);
     NFE_CLASS_MEMBER(mVertexMergingKernel);
@@ -526,25 +526,13 @@ bool VertexConnectionAndMerging::GenerateLightSample(const Scene& scene, PathSta
 
 bool VertexConnectionAndMerging::AdvancePath(PathState& path, const ShadingData& shadingData, RenderingContext& ctx, PathType pathType) const
 {
-    Vec3f sample;
-    if (pathType == PathType::Camera)
-    {
-        sample = ctx.sampler.GetVec3f();
-    }
-    else
-    {
-        sample = ctx.randomGenerator.GetVec3f();
-    }
-
-    NFE_ASSERT(sample.x >= 0.0f && sample.x < 1.0f, "");
-    NFE_ASSERT(sample.y >= 0.0f && sample.y < 1.0f, "");
-    NFE_ASSERT(sample.z >= 0.0f && sample.z < 1.0f, "");
+    ISampler& sampler = pathType == PathType::Camera ? (ISampler&)ctx.sampler : (ISampler&)ctx.randomSampler;
 
     // sample BSDF
     Vec4f incomingDirWorldSpace;
     float bsdfDirPdf;
     BSDF::EventType sampledEvent = BSDF::NullEvent;
-    const RayColor bsdfValue = shadingData.intersection.material->Sample(ctx.wavelength, incomingDirWorldSpace, shadingData, sample, &bsdfDirPdf, &sampledEvent);
+    const RayColor bsdfValue = shadingData.intersection.material->Sample(ctx.wavelength, incomingDirWorldSpace, shadingData, sampler, &bsdfDirPdf, &sampledEvent);
 
     const float cosThetaOut = Abs(Vec4f::Dot3(incomingDirWorldSpace, shadingData.intersection.frame[2]));
 
@@ -589,6 +577,7 @@ bool VertexConnectionAndMerging::AdvancePath(PathState& path, const ShadingData&
         {
             *shadingData.intersection.material,
             shadingData.materialParams,
+            sampler,
             ctx.wavelength,
             shadingData.intersection.WorldToLocal(shadingData.outgoingDirWorldSpace),
             -shadingData.intersection.WorldToLocal(incomingDirWorldSpace),
@@ -699,7 +688,7 @@ const RayColor VertexConnectionAndMerging::SampleLight(const Scene& scene, const
 
     // calculate BSDF contribution
     float bsdfPdfW, bsdfRevPdfW;
-    const RayColor bsdfFactor = shadingData.intersection.material->Evaluate(ctx.wavelength, shadingData, -illuminateResult.directionToLight, &bsdfPdfW, &bsdfRevPdfW);
+    const RayColor bsdfFactor = shadingData.intersection.material->Evaluate(ctx.sampler, ctx.wavelength, shadingData, -illuminateResult.directionToLight, &bsdfPdfW, &bsdfRevPdfW);
     NFE_ASSERT(bsdfFactor.IsValid(), "");
 
     if (bsdfFactor.AlmostZero())
@@ -799,7 +788,7 @@ const RayColor VertexConnectionAndMerging::ConnectVertices(const Scene& scene, P
 
     // evaluate BSDF at camera vertex
     float cameraBsdfPdfW, cameraBsdfRevPdfW;
-    const RayColor cameraFactor = shadingData.intersection.material->Evaluate(ctx.wavelength, shadingData, -lightDir, &cameraBsdfPdfW, &cameraBsdfRevPdfW);
+    const RayColor cameraFactor = shadingData.intersection.material->Evaluate(ctx.sampler, ctx.wavelength, shadingData, -lightDir, &cameraBsdfPdfW, &cameraBsdfRevPdfW);
     NFE_ASSERT(cameraFactor.IsValid(), "");
     if (cameraFactor.AlmostZero())
     {
@@ -808,7 +797,7 @@ const RayColor VertexConnectionAndMerging::ConnectVertices(const Scene& scene, P
 
     // evaluate BSDF at light vertex
     float lightBsdfPdfW, lightBsdfRevPdfW;
-    const RayColor lightFactor = lightVertex.shadingData.intersection.material->Evaluate(ctx.wavelength, lightVertex.shadingData, lightDir, &lightBsdfPdfW, &lightBsdfRevPdfW);
+    const RayColor lightFactor = lightVertex.shadingData.intersection.material->Evaluate(ctx.sampler, ctx.wavelength, lightVertex.shadingData, lightDir, &lightBsdfPdfW, &lightBsdfRevPdfW);
     NFE_ASSERT(lightFactor.IsValid(), "");
     if (lightFactor.AlmostZero())
     {
@@ -901,7 +890,7 @@ const RayColor VertexConnectionAndMerging::MergeVertices(PathState& cameraPathSt
         }
 
         float cameraBsdfDirPdfW, cameraBsdfRevPdfW;
-        const RayColor cameraBsdfFactor = shadingData.intersection.material->Evaluate(ctx.wavelength, shadingData, -lightDirection, &cameraBsdfDirPdfW, &cameraBsdfRevPdfW);
+        const RayColor cameraBsdfFactor = shadingData.intersection.material->Evaluate(ctx.randomSampler, ctx.wavelength, shadingData, -lightDirection, &cameraBsdfDirPdfW, &cameraBsdfRevPdfW);
         NFE_ASSERT(cameraBsdfFactor.IsValid(), "");
 
         if (cameraBsdfFactor.AlmostZero())
@@ -953,7 +942,7 @@ void VertexConnectionAndMerging::ConnectToCamera(const RenderParam& renderParams
 
     // calculate BSDF contribution
     float bsdfPdfW, bsdfRevPdfW;
-    const RayColor cameraFactor = lightVertex.shadingData.intersection.material->Evaluate(ctx.wavelength, lightVertex.shadingData, -dirToCamera, &bsdfPdfW, &bsdfRevPdfW);
+    const RayColor cameraFactor = lightVertex.shadingData.intersection.material->Evaluate(ctx.randomSampler, ctx.wavelength, lightVertex.shadingData, -dirToCamera, &bsdfPdfW, &bsdfRevPdfW);
     NFE_ASSERT(cameraFactor.IsValid(), "");
 
     if (cameraFactor.AlmostZero())

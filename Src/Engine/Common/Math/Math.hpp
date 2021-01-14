@@ -15,13 +15,16 @@
 #include <emmintrin.h>
 #endif // NFE_USE_SSE
 
-#define NFE_MATH_EPSILON (0.000001f)
-#define NFE_MATH_PI (3.14159265359f)
-#define NFE_MATH_SQRT_PI (1.77245385091f)
-#define NFE_MATH_INV_PI (0.31830988618f)
-#define NFE_MATH_2PI (6.28318530718f)
-#define NFE_MATH_E (2.7182818f)
-
+#define NFE_MATH_EPSILON            0.000001f
+#define NFE_MATH_PI                 3.14159265359f
+#define NFE_MATH_SQRT_PI            1.77245385091f  // sqrt(pi)
+#define NFE_MATH_INV_SQRT_PI        0.56418958355f  // 1/sqrt(pi)
+#define NFE_MATH_INV_SQRT_2PI       0.39894228040f  // 1/sqrt(2*pi)
+#define NFE_MATH_INV_PI             0.31830988618f  // 1/pi
+#define NFE_MATH_2PI                6.28318530718f  // 2*pi
+#define NFE_MATH_SQRT_2             1.41421356237f  // sqrt(2)
+#define NFE_MATH_INV_SQRT_2         0.70710678119f  // 1/sqrt(2)
+#define NFE_MATH_E                  2.71828182846f
 
 namespace NFE {
 namespace Math {

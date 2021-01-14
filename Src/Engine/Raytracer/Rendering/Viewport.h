@@ -119,7 +119,7 @@ private:
     HaltonSequence mHaltonSequence;
 
     Common::DynArray<GenericSampler> mSamplers;
-    Common::DynArray<RenderingContext> mThreadData;
+    Common::UniquePtr<RenderingContext[]> mThreadData;
 
     Bitmap mSum;                        // image with accumulated samples (floating point, high dynamic range)
     Bitmap mSecondarySum;               // contains image with every second sample - required for adaptive rendering

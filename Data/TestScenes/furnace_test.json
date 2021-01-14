@@ -3,8 +3,10 @@
     [
         {
             "name": "top",
-            "bsdf": "roughPlastic",
+            "bsdf": "roughMetal",
             "baseColor": [1.0, 1.0, 1.0],
+            "IoR": 1.0972,
+            "K": 6.7942,
             "roughness": 0.5
         },
         {

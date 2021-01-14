@@ -86,6 +86,12 @@ NFCOMMON_API const Vec4f FastLog(const Vec4f& x);
 NFCOMMON_API float FastLog2(float x);
 NFCOMMON_API const Vec4f FastLog2(const Vec4f& x);
 
+/**
+ * Error Function and its inverse
+ */
+NFCOMMON_API float Erf(float x);
+NFCOMMON_API float ErfInv(float x);
+
 } // namespace Math
 } // namespace NFE
 

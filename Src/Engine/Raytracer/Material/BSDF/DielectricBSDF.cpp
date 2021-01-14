@@ -1,5 +1,7 @@
 #include "PCH.h"
 #include "DielectricBSDF.h"
+#include "Material/Material.h"
+#include "Sampling/GenericSampler.h"
 #include "../Common/Math/Utils.hpp"
 #include "../Common/Reflection/ReflectionClassDefine.hpp"
 
@@ -52,10 +54,11 @@ bool DielectricBSDF::Sample(SamplingContext& ctx) const
     const float refractionProbability = 1.0f - reflectionProbability;
 
     // sample event
-    const bool reflection = (reflectionProbability >= 1.0f) || ctx.sample.x < reflectionProbability;
+    const float u = ctx.sampler.GetFloat();
+    const bool reflection = (reflectionProbability >= 1.0f) || u < reflectionProbability;
     if (reflection) 
     {
-        ctx.outIncomingDir = -Vec4f::Reflect3(ctx.outgoingDir, VECTOR_Z);
+        ctx.outIncomingDir = -Vec4f::Reflect3Z(ctx.outgoingDir);
         ctx.outEventType = SpecularReflectionEvent;
     }
     else // transmission

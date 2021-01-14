@@ -299,8 +299,11 @@ public:
     // Return normalized 4D vector
     NFE_FORCE_INLINE const Vec4f Normalized4() const;
 
-    // Reflect a 3D vector
+    // Reflect a 3D vector along arbitrary axis
     NFE_FORCE_INLINE static const Vec4f Reflect3(const Vec4f& i, const Vec4f& n);
+
+    // Reflect a 3D vector along Z axis
+    NFE_FORCE_INLINE static const Vec4f Reflect3Z(const Vec4f& i);
 
     // Refract a 3D vector
     NFCOMMON_API static const Vec4f Refract3(const Vec4f& i, const Vec4f& n, float eta);

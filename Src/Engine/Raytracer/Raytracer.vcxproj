@@ -261,6 +261,7 @@
     <ClInclude Include="Traversal\Traversal_Simd.h" />
     <ClInclude Include="Traversal\Traversal_Single.h" />
     <ClInclude Include="Utils\BitmapUtils.h" />
+    <ClInclude Include="Utils\LookupTable.h" />
     <ClInclude Include="Utils\Memory.h" />
     <ClInclude Include="Utils\Bitmap.h" />
     <ClInclude Include="Utils\BlockCompression.h" />
@@ -292,6 +293,7 @@
     <ClCompile Include="Material\BSDF\DielectricBSDF.cpp" />
     <ClCompile Include="Material\BSDF\DiffuseBSDF.cpp" />
     <ClCompile Include="Material\BSDF\MetalBSDF.cpp" />
+    <ClCompile Include="Material\BSDF\Microfacet.cpp" />
     <ClCompile Include="Material\BSDF\NullBSDF.cpp" />
     <ClCompile Include="Material\BSDF\PlasticBSDF.cpp" />
     <ClCompile Include="Material\BSDF\RoughDielectricBSDF.cpp" />

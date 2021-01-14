@@ -50,6 +50,11 @@ struct Wavelength
     {
         return value[0];
     }
+
+    NFE_FORCE_NOINLINE const ValueType GetInMeters() const
+    {
+        return ValueType(Lower) + value * (Higher - Lower);
+    }
 };
 
 

@@ -55,9 +55,7 @@ const RayColor BlackBodyColor::Resolve(const Wavelength& wavelength) const
 
     {
         // wavelenght in meters
-        const Wavelength::ValueType lambda =
-            Wavelength::ValueType(Wavelength::Lower) +
-            wavelength.value * (Wavelength::Higher - Wavelength::Lower);
+        const Wavelength::ValueType lambda = wavelength.GetInMeters();
 
         // Planck's law equation
         const Wavelength::ValueType term1 = Wavelength::ValueType(c1) / Pow<5>(lambda);

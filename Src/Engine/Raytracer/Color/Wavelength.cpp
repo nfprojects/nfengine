@@ -1,5 +1,6 @@
 #include "PCH.h"
 #include "Wavelength.h"
+#include "../Common/Math/Vec8i.hpp"
 
 namespace NFE {
 namespace RT {
@@ -38,7 +39,7 @@ const Wavelength::ValueType Wavelength::SampleSpectrum(const float* data, const 
 {
     const Vec8f scaledWavelengths = value * static_cast<float>(numValues - 1);
     const Vec8i indices = Vec8i::Convert(scaledWavelengths);
-    const Vec8f weights = scaledWavelengths - indices.ConvertToFloat();
+    const Vec8f weights = scaledWavelengths - indices.ConvertToVec8f();
 
     const Vec8f a = Gather8(data, indices);
     const Vec8f b = Gather8(data + 1, indices);

@@ -44,7 +44,7 @@ void Viewport::InitThreadData()
 {
     const uint32 numThreads = ThreadPool::GetInstance().GetNumThreads();
 
-    mThreadData.Resize(numThreads);
+    mThreadData = MakeUniquePtr<RenderingContext[]>(numThreads);
 
     mSamplers.Clear();
     mSamplers.Reserve(numThreads);
@@ -265,6 +265,9 @@ bool Viewport::Render(const Scene& scene, const Camera& camera)
         mHaltonSequence.NextSampleLeap();
     }
 
+    const uint32 numThreads = ThreadPool::GetInstance().GetNumThreads();
+    const ArrayView<RenderingContext> renderingContexts(mThreadData.Get(), numThreads);
+
     Film film(mSum, mProgress.passesFinished % 2 == 0 ? &mSecondarySum : nullptr);
     const IRenderer::RenderParam renderParam = { scene, camera, mProgress.passesFinished, film };
 
@@ -272,7 +275,7 @@ bool Viewport::Render(const Scene& scene, const Camera& camera)
     {
         TaskBuilder taskBuilder(waitable);
 
-        for (uint32 i = 0; i < mThreadData.Size(); ++i)
+        for (uint32 i = 0; i < numThreads; ++i)
         {
             RenderingContext& ctx = mThreadData[i];
             ctx.counters.Reset();
@@ -299,7 +302,7 @@ bool Viewport::Render(const Scene& scene, const Camera& camera)
         const Vec4f pixelOffset = SamplingHelpers::GetFloatNormal2(mRandomGenerator.GetVec2f());
 
         // pre-rendering pass
-        mRenderer->PreRender(taskBuilder, renderParam, mThreadData);
+        mRenderer->PreRender(taskBuilder, renderParam, renderingContexts);
 
         taskBuilder.Fence();
 
@@ -338,7 +341,7 @@ bool Viewport::Render(const Scene& scene, const Camera& camera)
 
     // accumulate counters
     mCounters.Reset();
-    for (const RenderingContext& ctx : mThreadData)
+    for (const RenderingContext& ctx : renderingContexts)
     {
         mCounters.Append(ctx.counters);
     }
@@ -744,7 +747,7 @@ float Viewport::ComputeBlockError(const Block& block) const
             const Vec4f diff = Vec4f::Abs(a - b);
             const float aLuminance = Vec4f::Dot3(c_rgbIntensityWeights, a);
             const float diffLuminance = Vec4f::Dot3(c_rgbIntensityWeights, diff);
-            const float error = diffLuminance / Sqrt(NFE_MATH_EPSILON + aLuminance);
+            const float error = diffLuminance / Sqrt(Max(NFE_MATH_EPSILON, aLuminance));
             rowError += error;
         }
         totalError += rowError;

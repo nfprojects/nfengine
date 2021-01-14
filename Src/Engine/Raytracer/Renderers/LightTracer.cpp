@@ -133,7 +133,7 @@ const RayColor LightTracer::RenderPixel(const Ray&, const RenderParam& param, Re
 
             // calculate BSDF contribution
             float bsdfPdfW;
-            const RayColor cameraFactor = shadingData.intersection.material->Evaluate(ctx.wavelength, shadingData, -dirToCamera, &bsdfPdfW);
+            const RayColor cameraFactor = shadingData.intersection.material->Evaluate(ctx.randomSampler, ctx.wavelength, shadingData, -dirToCamera, &bsdfPdfW);
             NFE_ASSERT(cameraFactor.IsValid(), "");
 
             if (!cameraFactor.AlmostZero())
@@ -160,7 +160,7 @@ const RayColor LightTracer::RenderPixel(const Ray&, const RenderParam& param, Re
 
         // sample BSDF
         Vec4f incomingDirWorldSpace;
-        const RayColor bsdfValue = shadingData.intersection.material->Sample(ctx.wavelength, incomingDirWorldSpace, shadingData, ctx.randomGenerator.GetVec3f());
+        const RayColor bsdfValue = shadingData.intersection.material->Sample(ctx.wavelength, incomingDirWorldSpace, shadingData, ctx.randomSampler);
 
         NFE_ASSERT(bsdfValue.IsValid(), "");
         throughput *= bsdfValue;

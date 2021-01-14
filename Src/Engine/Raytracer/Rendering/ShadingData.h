@@ -13,6 +13,7 @@ struct SampledMaterialParameters
     RayColor baseColor;
     RayColor emissionColor;
     float roughness;
+    float roughnessAnisotropy;
     float metalness;
     float IoR;
 };

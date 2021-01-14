@@ -40,23 +40,24 @@ struct NFE_RAYTRACER_API SpectrumDebugData
 struct NFE_ALIGN(64) RenderingContext
 {
     NFE_MAKE_NONCOPYABLE(RenderingContext)
+    NFE_MAKE_NONMOVEABLE(RenderingContext)
 
 public:
 
     NFE_ALIGNED_CLASS(64)
 
     NFE_RAYTRACER_API RenderingContext();
-    NFE_RAYTRACER_API RenderingContext(RenderingContext&& other) = default;
     NFE_RAYTRACER_API ~RenderingContext();
 
     const Camera* camera = nullptr;
 
     Wavelength wavelength;
 
-    GenericSampler sampler;
-
     // per-thread pseudo-random number generator
     Math::Random randomGenerator;
+
+    GenericSampler sampler;
+    RandomSampler randomSampler;
 
     // renderer-specific context, can be null
     RendererContextPtr rendererContext;

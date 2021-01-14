@@ -16,6 +16,10 @@ public:
     virtual bool Sample(SamplingContext& ctx) const override;
     virtual const RayColor Evaluate(const EvaluationContext& ctx, float* outDirectPdfW = nullptr, float* outReversePdfW = nullptr) const override;
     virtual float Pdf(const EvaluationContext& ctx, PdfDirection dir) const override;
+
+private:
+    bool mUseMultiscatter = false;
+    uint8 mMaxScatteringOrder = 8;
 };
 
 } // namespace RT

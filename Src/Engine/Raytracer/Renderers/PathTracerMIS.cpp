@@ -77,7 +77,7 @@ const RayColor PathTracerMIS::SampleLight(const Scene& scene, const LightSceneOb
 
     // calculate BSDF contribution
     float bsdfPdfW;
-    const RayColor factor = shadingData.intersection.material->Evaluate(context.wavelength, shadingData, -illuminateResult.directionToLight, &bsdfPdfW);
+    const RayColor factor = shadingData.intersection.material->Evaluate(context.sampler, context.wavelength, shadingData, -illuminateResult.directionToLight, &bsdfPdfW);
     NFE_ASSERT(factor.IsValid(), "");
 
     if (factor.AlmostZero())
@@ -356,7 +356,7 @@ const RayColor PathTracerMIS::RenderPixel(const Math::Ray& primaryRay, const Ren
         float pdf;
         Vec4f incomingDirWorldSpace;
         BSDF::EventType lastSampledBsdfEvent = BSDF::NullEvent;
-        const RayColor bsdfValue = shadingData.intersection.material->Sample(context.wavelength, incomingDirWorldSpace, shadingData, context.sampler.GetVec3f(), &pdf, &lastSampledBsdfEvent);
+        const RayColor bsdfValue = shadingData.intersection.material->Sample(context.wavelength, incomingDirWorldSpace, shadingData, context.sampler, &pdf, &lastSampledBsdfEvent);
 
         if (lastSampledBsdfEvent == BSDF::NullEvent)
         {

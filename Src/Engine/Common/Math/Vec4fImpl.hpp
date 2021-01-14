@@ -123,9 +123,15 @@ const Vec4f Vec4f::Normalized4() const
 
 const Vec4f Vec4f::Reflect3(const Vec4f& i, const Vec4f& n)
 {
-    // return (i - 2.0f * Dot(i, n) * n);
+    // i - 2 * Dot(i, n) * n
     const Vec4f vDot = Dot3V(i, n);
     return NegMulAndAdd(vDot + vDot, n, i);
+}
+
+const Vec4f Vec4f::Reflect3Z(const Vec4f& i)
+{
+    // i - 2 * Dot(i, Z) * Z
+    return i - Vec4f(0.0f, 0.0f, i.z + i.z);
 }
 
 const Vec4f Vec4f::Orthogonalize(const Vec4f& v, const Vec4f& reference)
