@@ -61,7 +61,6 @@ bool Bitmap::LoadEXR(FILE* file, const char* path)
     }
 
     InitData initData;
-    initData.linearSpace = true;
     initData.width = exrImage.width;
     initData.height = exrImage.height;
 

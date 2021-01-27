@@ -6,6 +6,8 @@
 namespace NFE {
 namespace Math {
 
+NFCOMMON_API extern const float* sRGB_To_Linear_LUT;
+
 NFE_GLOBAL_CONST Vec4f c_rgbIntensityWeights = { 0.2126f, 0.7152f, 0.0722f, 0.0f };
 
 NFE_GLOBAL_CONST Vec4f XYZtoRGB_r = {  3.240479f, -1.537150f, -0.498535f, 0.0f };
@@ -34,6 +36,7 @@ NFE_INLINE float Convert_Linear_To_sRGB_Exact(float x)
     }
 }
 
+// Convert linear to sRGB (exact)
 NFE_INLINE Vec4f Convert_Linear_To_sRGB_Exact(const Vec4f& gammaColor)
 {
     return
@@ -45,7 +48,7 @@ NFE_INLINE Vec4f Convert_Linear_To_sRGB_Exact(const Vec4f& gammaColor)
     };
 }
 
-// Convert linear to sRGB (exact)
+// Convert sRGB to linear (exact)
 NFE_INLINE float Convert_sRGB_To_Linear_Exact(float x)
 {
     if (x <= 0.0f)
@@ -66,6 +69,7 @@ NFE_INLINE float Convert_sRGB_To_Linear_Exact(float x)
     }
 }
 
+// Convert sRGB to linear (exact)
 NFE_INLINE Vec4f Convert_sRGB_To_Linear_Exact(const Vec4f& gammaColor)
 {
     return
@@ -75,6 +79,12 @@ NFE_INLINE Vec4f Convert_sRGB_To_Linear_Exact(const Vec4f& gammaColor)
         Convert_sRGB_To_Linear_Exact(gammaColor.z),
         gammaColor.w
     };
+}
+
+// Convert sRGB to linear (exact)
+NFE_FORCE_INLINE float Convert_sRGB_To_Linear_8bit(const uint8 gammaColor)
+{
+    return sRGB_To_Linear_LUT[gammaColor];
 }
 
 // Convert linear to sRGB (approximation)

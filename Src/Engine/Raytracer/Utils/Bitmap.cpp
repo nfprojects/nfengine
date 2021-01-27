@@ -16,13 +16,24 @@ uint8 Bitmap::BitsPerPixel(Format format)
 {
     switch (format)
     {
-    case Format::Unknown:                   return 0;
-    case Format::R8_UNorm:                  return 8 * sizeof(uint8);
-    case Format::R8G8_UNorm:                return 8 * sizeof(uint8) * 2;
-    case Format::B8G8R8_UNorm:              return 8 * sizeof(uint8) * 3;
-    case Format::B8G8R8A8_UNorm:            return 8 * sizeof(uint8) * 4;
-    case Format::R8G8B8A8_UNorm:            return 8 * sizeof(uint8) * 4;
-    case Format::B8G8R8A8_UNorm_Palette:    return 8 * sizeof(uint8);
+    case Format::Unknown:
+        return 0;
+    case Format::R8_UNorm:
+    case Format::R8_UNorm_sRGB:
+    case Format::B8G8R8A8_UNorm_Palette:
+    case Format::B8G8R8A8_UNorm_Palette_sRGB:
+        return 8 * sizeof(uint8);
+    case Format::R8G8_UNorm:
+    case Format::R8G8_UNorm_sRGB:
+        return 8 * sizeof(uint8) * 2;
+    case Format::B8G8R8_UNorm:
+    case Format::B8G8R8_UNorm_sRGB:
+        return 8 * sizeof(uint8) * 3;
+    case Format::B8G8R8A8_UNorm:
+    case Format::B8G8R8A8_UNorm_sRGB:
+    case Format::R8G8B8A8_UNorm:
+    case Format::R8G8B8A8_UNorm_sRGB:
+        return 8 * sizeof(uint8) * 4;
     case Format::R10G10B10A2_UNorm:         return 32;
     case Format::B5G6R5_UNorm:              return 16;
     case Format::B4G4R4A4_UNorm:            return 16;
@@ -40,6 +51,7 @@ uint8 Bitmap::BitsPerPixel(Format format)
     case Format::R16G16B16A16_Half:         return 8 * sizeof(Half) * 4;
     case Format::R9G9B9E5_SharedExp:        return 9 + 9 + 9 + 5;
     case Format::BC1:                       return 4;
+    case Format::BC1_sRGB:                  return 4;
     case Format::BC4:                       return 4;
     case Format::BC5:                       return 8;
     }
@@ -53,11 +65,17 @@ const char* Bitmap::FormatToString(Format format)
     switch (format)
     {
     case Format::R8_UNorm:                  return "R8_UNorm";
+    case Format::R8_UNorm_sRGB:             return "R8_UNorm_sRGB";
     case Format::R8G8_UNorm:                return "R8G8_UNorm";
+    case Format::R8G8_UNorm_sRGB:           return "R8G8_UNorm_sRGB";
     case Format::B8G8R8_UNorm:              return "B8G8R8_UNorm";
+    case Format::B8G8R8_UNorm_sRGB:         return "B8G8R8_UNorm_sRGB";
     case Format::B8G8R8A8_UNorm:            return "B8G8R8A8_UNorm";
+    case Format::B8G8R8A8_UNorm_sRGB:       return "B8G8R8A8_UNorm_sRGB";
     case Format::R8G8B8A8_UNorm:            return "R8G8B8A8_UNorm";
+    case Format::R8G8B8A8_UNorm_sRGB:       return "R8G8B8A8_UNorm_sRGB";
     case Format::B8G8R8A8_UNorm_Palette:    return "B8G8R8A8_UNorm_Palette";
+    case Format::B8G8R8A8_UNorm_Palette_sRGB:   return "B8G8R8A8_UNorm_Palette_sRGB";
     case Format::R10G10B10A2_UNorm:         return "R10G10B10A2_UNorm";
     case Format::B5G6R5_UNorm:              return "B5G6R5_UNorm";
     case Format::B4G4R4A4_UNorm:            return "B4G4R4A4_UNorm";
@@ -106,7 +124,6 @@ Bitmap::Bitmap(const char* debugName)
     , mPalette(nullptr)
     , mPaletteSize(0)
     , mFormat(Format::Unknown)
-    , mLinearSpace(false)
 {
     NFE_ASSERT(debugName, "Invalid debug name");
     mDebugName = strdup(debugName);
@@ -229,7 +246,6 @@ bool Bitmap::Init(const InitData& initData)
     mSize.w = Max(initData.stride, ComputeDataStride(initData.width, initData.format)); // stride
     mFloatSize = Vec4f::FromIntegers(initData.width, initData.height, initData.depth, 0);
     mFormat = initData.format;
-    mLinearSpace = initData.linearSpace;
     mPaletteSize = initData.paletteSize;
 
     return true;
@@ -313,9 +329,8 @@ bool Bitmap::Load(const char* path)
     fclose(file);
 
     const float elapsedTime = static_cast<float>(1000.0 * timer.Stop());
-    NFE_LOG_INFO("Bitmap '%hs' loaded in %.3fms: width=%u, height=%u, depth=%u, format=%s, %s",
-        path, elapsedTime, GetWidth(), GetHeight(), GetDepth(), FormatToString(mFormat),
-        mLinearSpace ? "linear-space" : "gamma-space");
+    NFE_LOG_INFO("Bitmap '%hs' loaded in %.3fms: width=%u, height=%u, depth=%u, format=%s",
+        path, elapsedTime, GetWidth(), GetHeight(), GetDepth(), FormatToString(mFormat));
     return true;
 }
 
@@ -336,9 +351,23 @@ const Vec4f Bitmap::GetPixel(uint32 x, uint32 y) const
         break;
     }
 
+    case Format::R8_UNorm_sRGB:
+    {
+        color = Vec4f(Convert_sRGB_To_Linear_8bit(rowData[x]));
+        break;
+    }
+
     case Format::R8G8_UNorm:
     {
         color = Vec4f_Load_2xUint8_Norm(rowData + 2u * (size_t)x);
+        break;
+    }
+
+    case Format::R8G8_UNorm_sRGB:
+    {
+        const float r = Convert_sRGB_To_Linear_8bit(rowData[2u * x     ]);
+        const float g = Convert_sRGB_To_Linear_8bit(rowData[2u * x + 1u]);
+        color = Vec4f(r, g);
         break;
     }
 
@@ -349,6 +378,15 @@ const Vec4f Bitmap::GetPixel(uint32 x, uint32 y) const
         break;
     }
 
+    case Format::B8G8R8_UNorm_sRGB:
+    {
+        const float b = Convert_sRGB_To_Linear_8bit(rowData[3u * x     ]);
+        const float g = Convert_sRGB_To_Linear_8bit(rowData[3u * x + 1u]);
+        const float r = Convert_sRGB_To_Linear_8bit(rowData[3u * x + 2u]);
+        color = Vec4f(r, g, b);
+        break;
+    }
+
     case Format::B8G8R8A8_UNorm:
     {
         const uint8* source = rowData + 4u * (size_t)x;
@@ -356,10 +394,30 @@ const Vec4f Bitmap::GetPixel(uint32 x, uint32 y) const
         break;
     }
 
+    case Format::B8G8R8A8_UNorm_sRGB:
+    {
+        const float b = Convert_sRGB_To_Linear_8bit(rowData[4u * x     ]);
+        const float g = Convert_sRGB_To_Linear_8bit(rowData[4u * x + 1u]);
+        const float r = Convert_sRGB_To_Linear_8bit(rowData[4u * x + 2u]);
+        const float a = static_cast<float>(rowData[4u * x + 3u]) * (1.0f / 255.0f);
+        color = Vec4f(r, g, b, a);
+        break;
+    }
+
     case Format::R8G8B8A8_UNorm:
     {
         const uint8* source = rowData + 4u * (size_t)x;
         color = Vec4f_Load_4xUint8(source) * (1.0f / 255.0f);
+        break;
+    }
+
+    case Format::R8G8B8A8_UNorm_sRGB:
+    {
+        const float b = Convert_sRGB_To_Linear_8bit(rowData[4u * x     ]);
+        const float g = Convert_sRGB_To_Linear_8bit(rowData[4u * x + 1u]);
+        const float r = Convert_sRGB_To_Linear_8bit(rowData[4u * x + 2u]);
+        const float a = static_cast<float>(rowData[4u * x + 3u]) * (1.0f / 255.0f);
+        color = Vec4f(r, g, b, a);
         break;
     }
 
@@ -489,6 +547,13 @@ const Vec4f Bitmap::GetPixel(uint32 x, uint32 y) const
         break;
     }
 
+    case Format::BC1_sRGB:
+    {
+        color = DecodeBC1(reinterpret_cast<const uint8*>(mData), x, y, GetWidth());
+        color = Convert_sRGB_To_Linear(color);
+        break;
+    }
+
     case Format::BC4:
     {
         color = DecodeBC4(reinterpret_cast<const uint8*>(mData), x, y, GetWidth());
@@ -506,18 +571,13 @@ const Vec4f Bitmap::GetPixel(uint32 x, uint32 y) const
         color = Vec4f::Zero();
     }
 
-    if (!mLinearSpace)
-    {
-        color = Convert_sRGB_To_Linear(color);
-    }
-
     return color;
 }
 
 void Bitmap::GetPixelBlock(const Vec4ui coords, Vec4f* outColors) const
 {
     const Vec4ui size2D = mSize.Swizzle<0,1,0,1>();
-    NFE_ASSERT((coords < size2D).All(), "");
+    NFE_ASSERT((coords < size2D).All(), "Bitmap coords out of bounds");
 
     const uint8* rowData0 = mData + GetStride() * static_cast<size_t>(coords.y);
     const uint8* rowData1 = mData + GetStride() * static_cast<size_t>(coords.w);
@@ -541,6 +601,15 @@ void Bitmap::GetPixelBlock(const Vec4ui coords, Vec4f* outColors) const
         break;
     }
 
+    case Format::R8_UNorm_sRGB:
+    {
+        color[0] = Vec4f(Convert_sRGB_To_Linear_8bit(rowData0[(uint32)coords.x]));
+        color[1] = Vec4f(Convert_sRGB_To_Linear_8bit(rowData0[(uint32)coords.z]));
+        color[2] = Vec4f(Convert_sRGB_To_Linear_8bit(rowData1[(uint32)coords.x]));
+        color[3] = Vec4f(Convert_sRGB_To_Linear_8bit(rowData1[(uint32)coords.z]));
+        break;
+    }
+
     case Format::R8G8_UNorm:
     {
         const Vec4ui offsets = coords << 1; // offset = 2 * coords
@@ -561,6 +630,31 @@ void Bitmap::GetPixelBlock(const Vec4ui coords, Vec4f* outColors) const
         break;
     }
 
+    case Format::B8G8R8_UNorm_sRGB:
+    {
+        const float b0 = Convert_sRGB_To_Linear_8bit(rowData0[3u * coords.x     ]);
+        const float g0 = Convert_sRGB_To_Linear_8bit(rowData0[3u * coords.x + 1u]);
+        const float r0 = Convert_sRGB_To_Linear_8bit(rowData0[3u * coords.x + 2u]);
+        color[0] = Vec4f(r0, g0, b0);
+
+        const float b1 = Convert_sRGB_To_Linear_8bit(rowData0[3u * coords.z     ]);
+        const float g1 = Convert_sRGB_To_Linear_8bit(rowData0[3u * coords.z + 1u]);
+        const float r1 = Convert_sRGB_To_Linear_8bit(rowData0[3u * coords.z + 2u]);
+        color[1] = Vec4f(r1, g1, b1);
+
+        const float b2 = Convert_sRGB_To_Linear_8bit(rowData1[3u * coords.x     ]);
+        const float g2 = Convert_sRGB_To_Linear_8bit(rowData1[3u * coords.x + 1u]);
+        const float r2 = Convert_sRGB_To_Linear_8bit(rowData1[3u * coords.x + 2u]);
+        color[2] = Vec4f(r2, g2, b2);
+
+        const float b3 = Convert_sRGB_To_Linear_8bit(rowData1[3u * coords.z     ]);
+        const float g3 = Convert_sRGB_To_Linear_8bit(rowData1[3u * coords.z + 1u]);
+        const float r3 = Convert_sRGB_To_Linear_8bit(rowData1[3u * coords.z + 2u]);
+        color[3] = Vec4f(r3, g3, b3);
+
+        break;
+    }
+
     case Format::B8G8R8A8_UNorm:
     {
         constexpr float scale = 1.0f / 255.0f;
@@ -569,6 +663,35 @@ void Bitmap::GetPixelBlock(const Vec4ui coords, Vec4f* outColors) const
         color[1] = Vec4f_Load_4xUint8(rowData0 + offsets.z).Swizzle<2, 1, 0, 3>() * scale;
         color[2] = Vec4f_Load_4xUint8(rowData1 + offsets.x).Swizzle<2, 1, 0, 3>() * scale;
         color[3] = Vec4f_Load_4xUint8(rowData1 + offsets.z).Swizzle<2, 1, 0, 3>() * scale;
+        break;
+    }
+
+    case Format::B8G8R8A8_UNorm_sRGB:
+    {
+        const float b0 = Convert_sRGB_To_Linear_8bit(rowData0[4u * coords.x     ]);
+        const float g0 = Convert_sRGB_To_Linear_8bit(rowData0[4u * coords.x + 1u]);
+        const float r0 = Convert_sRGB_To_Linear_8bit(rowData0[4u * coords.x + 2u]);
+        const float a0 =   (1.0f / 255.0f) * (float)(rowData0[4u * coords.x + 3u]);
+        color[0] = Vec4f(r0, g0, b0, a0);
+
+        const float b1 = Convert_sRGB_To_Linear_8bit(rowData0[4u * coords.z     ]);
+        const float g1 = Convert_sRGB_To_Linear_8bit(rowData0[4u * coords.z + 1u]);
+        const float r1 = Convert_sRGB_To_Linear_8bit(rowData0[4u * coords.z + 2u]);
+        const float a1 =   (1.0f / 255.0f) * (float)(rowData0[4u * coords.z + 3u]);
+        color[1] = Vec4f(r1, g1, b1, a1);
+
+        const float b2 = Convert_sRGB_To_Linear_8bit(rowData1[4u * coords.x     ]);
+        const float g2 = Convert_sRGB_To_Linear_8bit(rowData1[4u * coords.x + 1u]);
+        const float r2 = Convert_sRGB_To_Linear_8bit(rowData1[4u * coords.x + 2u]);
+        const float a2 =   (1.0f / 255.0f) * (float)(rowData1[4u * coords.x + 3u]);
+        color[2] = Vec4f(r2, g2, b2, a1);
+
+        const float b3 = Convert_sRGB_To_Linear_8bit(rowData1[4u * coords.z     ]);
+        const float g3 = Convert_sRGB_To_Linear_8bit(rowData1[4u * coords.z + 1u]);
+        const float r3 = Convert_sRGB_To_Linear_8bit(rowData1[4u * coords.z + 2u]);
+        const float a3 =   (1.0f / 255.0f) * (float)(rowData1[4u * coords.z + 3u]);
+        color[3] = Vec4f(r3, g3, b3, a2);
+
         break;
     }
 
@@ -583,6 +706,35 @@ void Bitmap::GetPixelBlock(const Vec4ui coords, Vec4f* outColors) const
         break;
     }
 
+    case Format::R8G8B8A8_UNorm_sRGB:
+    {
+        const float r0 = Convert_sRGB_To_Linear_8bit(rowData0[4u * coords.x     ]);
+        const float g0 = Convert_sRGB_To_Linear_8bit(rowData0[4u * coords.x + 1u]);
+        const float b0 = Convert_sRGB_To_Linear_8bit(rowData0[4u * coords.x + 2u]);
+        const float a0 =   (1.0f / 255.0f) * (float)(rowData0[4u * coords.x + 3u]);
+        color[0] = Vec4f(r0, g0, b0, a0);
+
+        const float r1 = Convert_sRGB_To_Linear_8bit(rowData0[4u * coords.z     ]);
+        const float g1 = Convert_sRGB_To_Linear_8bit(rowData0[4u * coords.z + 1u]);
+        const float b1 = Convert_sRGB_To_Linear_8bit(rowData0[4u * coords.z + 2u]);
+        const float a1 =   (1.0f / 255.0f) * (float)(rowData0[4u * coords.z + 3u]);
+        color[1] = Vec4f(r1, g1, b1, a1);
+
+        const float r2 = Convert_sRGB_To_Linear_8bit(rowData1[4u * coords.x     ]);
+        const float g2 = Convert_sRGB_To_Linear_8bit(rowData1[4u * coords.x + 1u]);
+        const float b2 = Convert_sRGB_To_Linear_8bit(rowData1[4u * coords.x + 2u]);
+        const float a2 =   (1.0f / 255.0f) * (float)(rowData1[4u * coords.x + 3u]);
+        color[2] = Vec4f(r2, g2, b2, a2);
+
+        const float r3 = Convert_sRGB_To_Linear_8bit(rowData1[4u * coords.z     ]);
+        const float g3 = Convert_sRGB_To_Linear_8bit(rowData1[4u * coords.z + 1u]);
+        const float b3 = Convert_sRGB_To_Linear_8bit(rowData1[4u * coords.z + 2u]);
+        const float a3 =   (1.0f / 255.0f) * (float)(rowData1[4u * coords.z + 3u]);
+        color[3] = Vec4f(r3, g3, b3, a3);
+
+        break;
+    }
+
     case Format::B8G8R8A8_UNorm_Palette:
     {
         constexpr float scale = 1.0f / 255.0f;
@@ -594,6 +746,40 @@ void Bitmap::GetPixelBlock(const Vec4ui coords, Vec4f* outColors) const
         color[1] = Vec4f_Load_4xUint8(source1).Swizzle<2, 1, 0, 3>() * scale;
         color[2] = Vec4f_Load_4xUint8(source2).Swizzle<2, 1, 0, 3>() * scale;
         color[3] = Vec4f_Load_4xUint8(source3).Swizzle<2, 1, 0, 3>() * scale;
+        break;
+    }
+
+    case Format::B8G8R8A8_UNorm_Palette_sRGB:
+    {
+        const uint8* source0 = mPalette + 4u * rowData0[coords.x];
+        const uint8* source1 = mPalette + 4u * rowData0[coords.z];
+        const uint8* source2 = mPalette + 4u * rowData1[coords.x];
+        const uint8* source3 = mPalette + 4u * rowData1[coords.z];
+
+        const float b0 = Convert_sRGB_To_Linear_8bit(source0[0]);
+        const float g0 = Convert_sRGB_To_Linear_8bit(source0[1]);
+        const float r0 = Convert_sRGB_To_Linear_8bit(source0[2]);
+        const float a0 = (1.0f / 255.0f) * (float)(source0[3]);
+        color[0] = Vec4f(r0, g0, b0, a0);
+
+        const float b1 = Convert_sRGB_To_Linear_8bit(source1[0]);
+        const float g1 = Convert_sRGB_To_Linear_8bit(source1[1]);
+        const float r1 = Convert_sRGB_To_Linear_8bit(source1[2]);
+        const float a1 = (1.0f / 255.0f) * (float)(source1[3]);
+        color[1] = Vec4f(r1, g1, b1, a1);
+
+        const float b2 = Convert_sRGB_To_Linear_8bit(source2[0]);
+        const float g2 = Convert_sRGB_To_Linear_8bit(source2[1]);
+        const float r2 = Convert_sRGB_To_Linear_8bit(source2[2]);
+        const float a2 = (1.0f / 255.0f) * (float)(source2[3]);
+        color[2] = Vec4f(r2, g2, b2, a1);
+
+        const float b3 = Convert_sRGB_To_Linear_8bit(source3[0]);
+        const float g3 = Convert_sRGB_To_Linear_8bit(source3[1]);
+        const float r3 = Convert_sRGB_To_Linear_8bit(source3[2]);
+        const float a3 = (1.0f / 255.0f) * (float)(source3[3]);
+        color[3] = Vec4f(r3, g3, b3, a2);
+
         break;
     }
 
@@ -806,6 +992,15 @@ void Bitmap::GetPixelBlock(const Vec4ui coords, Vec4f* outColors) const
         break;
     }
 
+    case Format::BC1_sRGB:
+    {
+        color[0] = Convert_sRGB_To_Linear(DecodeBC1(mData, coords.x, coords.y, GetWidth()));
+        color[1] = Convert_sRGB_To_Linear(DecodeBC1(mData, coords.z, coords.y, GetWidth()));
+        color[2] = Convert_sRGB_To_Linear(DecodeBC1(mData, coords.x, coords.w, GetWidth()));
+        color[3] = Convert_sRGB_To_Linear(DecodeBC1(mData, coords.z, coords.w, GetWidth()));
+        break;
+    }
+
     case Format::BC4:
     {
         color[0] = DecodeBC4(mData, coords.x, coords.y, GetWidth());
@@ -826,14 +1021,6 @@ void Bitmap::GetPixelBlock(const Vec4ui coords, Vec4f* outColors) const
 
     default:
         NFE_FATAL("Unsupported bitmap format");
-    }
-
-    if (!mLinearSpace)
-    {
-        color[0] = Convert_sRGB_To_Linear(color[0]);
-        color[1] = Convert_sRGB_To_Linear(color[1]);
-        color[2] = Convert_sRGB_To_Linear(color[2]);
-        color[3] = Convert_sRGB_To_Linear(color[3]);
     }
 
     outColors[0] = color[0];
@@ -872,11 +1059,6 @@ const Vec4f Bitmap::GetPixel3D(uint32 x, uint32 y, uint32 z) const
     default:
         NFE_FATAL("Unsupported bitmap format");
         color = Vec4f::Zero();
-    }
-
-    if (!mLinearSpace)
-    {
-        color = Convert_sRGB_To_Linear(color);
     }
 
     return color;
@@ -942,14 +1124,6 @@ void Bitmap::GetPixelBlock3D(const Vec4ui coordsA, const Vec4ui coordsB, Vec4f* 
 
     default:
         NFE_FATAL("Unsupported bitmap format");
-    }
-
-    if (!mLinearSpace)
-    {
-        for (size_t i = 0; i < 8u; ++i)
-        {
-            color[i] = Convert_sRGB_To_Linear(color[i]);
-        }
     }
 
     for (size_t i = 0; i < 8u; ++i)

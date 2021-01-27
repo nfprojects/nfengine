@@ -23,11 +23,17 @@ public:
     {
         Unknown = 0,
         R8_UNorm,
+        R8_UNorm_sRGB,
         R8G8_UNorm,
+        R8G8_UNorm_sRGB,
         B8G8R8_UNorm,
+        B8G8R8_UNorm_sRGB,
         B8G8R8A8_UNorm,
+        B8G8R8A8_UNorm_sRGB,
         R8G8B8A8_UNorm,
+        R8G8B8A8_UNorm_sRGB,
         B8G8R8A8_UNorm_Palette,
+        B8G8R8A8_UNorm_Palette_sRGB,
         R10G10B10A2_UNorm,
         B5G6R5_UNorm,
         B4G4R4A4_UNorm,
@@ -45,6 +51,7 @@ public:
         R16G16B16A16_Half,
         R9G9B9E5_SharedExp,
         BC1,
+        BC1_sRGB,
         BC4,
         BC5,
     };
@@ -57,7 +64,6 @@ public:
         Format format = Format::Unknown;
         const void* data = nullptr;
         uint32 stride = 0;
-        bool linearSpace = true;
         uint32 paletteSize = 0;
         bool useDefaultAllocator = false;
     };
@@ -182,7 +188,6 @@ private:
     uint8* mPalette;
     uint32 mPaletteSize;    // number of colors in the palette
     Format mFormat;
-    bool mLinearSpace : 1;
 };
 
 using BitmapPtr = Common::SharedPtr<Bitmap>;

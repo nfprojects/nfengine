@@ -65,7 +65,6 @@ void Viewport::InitThreadData()
 bool Viewport::InitBluredImages()
 {
     Bitmap::InitData initData;
-    initData.linearSpace = true;
     initData.width = GetWidth();
     initData.height = GetHeight();
     initData.format = Bitmap::Format::R32G32B32_Float;
@@ -95,7 +94,6 @@ bool Viewport::Resize(uint32 width, uint32 height)
     }
 
     Bitmap::InitData initData;
-    initData.linearSpace = true;
     initData.width = width;
     initData.height = height;
     initData.format = Bitmap::Format::R32G32B32_Float;
@@ -112,8 +110,7 @@ bool Viewport::Resize(uint32 width, uint32 height)
 
     InitBluredImages();
 
-    initData.linearSpace = false;
-    initData.format = Bitmap::Format::R8G8B8A8_UNorm;
+    initData.format = Bitmap::Format::B8G8R8A8_UNorm_sRGB;
     if (!mFrontBuffer.Init(initData))
     {
         return false;

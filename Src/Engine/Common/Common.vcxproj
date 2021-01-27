@@ -272,6 +272,7 @@
     <ClCompile Include="Logger\LoggerImpl.cpp" />
     <ClCompile Include="Logger\LogGrouper.cpp" />
     <ClCompile Include="Logger\LogScope.cpp" />
+    <ClCompile Include="Math\ColorHelpers.cpp" />
     <ClCompile Include="Math\Conversions.cpp" />
     <ClCompile Include="Math\Distribution.cpp" />
     <ClCompile Include="Math\EquationSolver.cpp" />

@@ -74,11 +74,11 @@ bool Bitmap::LoadBMP(FILE* file, const char* path)
 
     if (infoHeader.biBitCount == 24)
     {
-        initData.format = Format::B8G8R8_UNorm;
+        initData.format = Format::B8G8R8_UNorm_sRGB;
     }
     else if (infoHeader.biBitCount == 8 && infoHeader.biClrUsed > 0)
     {
-        initData.format = Format::B8G8R8A8_UNorm_Palette;
+        initData.format = Format::B8G8R8A8_UNorm_Palette_sRGB;
     }
     else if (infoHeader.biBitCount == 8 && infoHeader.biClrUsed == 0)
     {
@@ -96,7 +96,6 @@ bool Bitmap::LoadBMP(FILE* file, const char* path)
         return false;
     }
 
-    initData.linearSpace = false;
     initData.width = infoHeader.biWidth;
     initData.height = infoHeader.biHeight;
     // Note: one line size in BMP file must be multiple of 4 bytes

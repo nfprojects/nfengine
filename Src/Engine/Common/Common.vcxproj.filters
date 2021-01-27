@@ -501,7 +501,6 @@
     <ClInclude Include="Utils\TaskBuilder.hpp" />
     <ClInclude Include="Utils\Waitable.hpp" />
     <ClInclude Include="Utils\FundamentalTypesUnion.hpp" />
-    <ClInclude Include="Math\ColorHelpers.hpp" />
     <ClInclude Include="Utils\ParallelAlgorithms.hpp" />
     <ClInclude Include="Math\Vec4f.hpp">
       <Filter>Math</Filter>
@@ -702,6 +701,9 @@
       <Filter>Containers</Filter>
     </ClInclude>
     <ClInclude Include="Math\WindowFunctions.hpp">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\ColorHelpers.hpp">
       <Filter>Math</Filter>
     </ClInclude>
   </ItemGroup>
@@ -1003,6 +1005,9 @@
     </ClCompile>
     <ClCompile Include="Reflection\ReflectionVariant.cpp">
       <Filter>Reflection</Filter>
+    </ClCompile>
+    <ClCompile Include="Math\ColorHelpers.cpp">
+      <Filter>Math</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

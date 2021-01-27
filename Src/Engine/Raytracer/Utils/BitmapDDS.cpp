@@ -292,7 +292,6 @@ bool Bitmap::LoadDDS(FILE* file, const char* path)
 
     InitData initData;
 
-    initData.linearSpace = true;
     initData.width = header.width;
     initData.height = header.height;
     initData.depth = header.depth;
@@ -312,13 +311,11 @@ bool Bitmap::LoadDDS(FILE* file, const char* path)
         {
             if (pf.rBitMask == 0x00FF0000 && pf.gBitMask == 0x0000FF00 && pf.bBitMask == 0x000000FF && pf.aBitMask == 0xFF000000)
             {
-                initData.format = Format::B8G8R8A8_UNorm;
-                initData.linearSpace = false;
+                initData.format = Format::B8G8R8A8_UNorm_sRGB;
             }
             else if (pf.rBitMask == 0x000000FF && pf.gBitMask == 0x0000FF00 && pf.bBitMask == 0x00FF0000 && pf.aBitMask == 0xFF000000)
             {
-                initData.format = Format::R8G8B8A8_UNorm;
-                initData.linearSpace = false;
+                initData.format = Format::R8G8B8A8_UNorm_sRGB;
             }
             else if (pf.rBitMask == 0xFFFFFFFF && pf.gBitMask == 0 && pf.bBitMask == 0 && pf.aBitMask == 0)
             {
@@ -334,12 +331,10 @@ bool Bitmap::LoadDDS(FILE* file, const char* path)
             if (pf.rBitMask == 0xf800 && pf.gBitMask == 0x07e0 && pf.bBitMask == 0x001f && pf.aBitMask == 0x0000)
             {
                 initData.format = Format::B5G6R5_UNorm;
-                initData.linearSpace = false;
             }
             else if (pf.rBitMask == 0x0f00 && pf.gBitMask == 0x00f0 && pf.bBitMask == 0x000f && pf.aBitMask == 0xf000)
             {
                 initData.format = Format::B4G4R4A4_UNorm;
-                initData.linearSpace = false;
             }
         }
     }
@@ -438,12 +433,10 @@ bool Bitmap::LoadDDS(FILE* file, const char* path)
             else if (headerDX10.dxgiFormat == DXGI_FORMAT_R9G9B9E5_SHAREDEXP)
             {
                 initData.format = Format::R9G9B9E5_SharedExp;
-                initData.linearSpace = true;
             }
             else if (headerDX10.dxgiFormat == DXGI_FORMAT_R11G11B10_FLOAT)
             {
                 initData.format = Format::R11G11B10_Float;
-                initData.linearSpace = true;
             }
             else if (headerDX10.dxgiFormat == DXGI_FORMAT_B8G8R8A8_UNORM)
             {
@@ -451,8 +444,7 @@ bool Bitmap::LoadDDS(FILE* file, const char* path)
             }
             else if (headerDX10.dxgiFormat == DXGI_FORMAT_B8G8R8A8_UNORM_SRGB)
             {
-                initData.format = Format::B8G8R8A8_UNorm;
-                initData.linearSpace = false;
+                initData.format = Format::B8G8R8A8_UNorm_sRGB;
             }
             else if (headerDX10.dxgiFormat == DXGI_FORMAT_R8G8_UNORM)
             {
@@ -465,17 +457,14 @@ bool Bitmap::LoadDDS(FILE* file, const char* path)
             else if (headerDX10.dxgiFormat == DXGI_FORMAT_R10G10B10A2_UNORM)
             {
                 initData.format = Format::R10G10B10A2_UNorm;
-                initData.linearSpace = false;
             }
             else if (headerDX10.dxgiFormat == DXGI_FORMAT_B5G6R5_UNORM)
             {
                 initData.format = Format::B5G6R5_UNorm;
-                initData.linearSpace = false;
             }
             else if (headerDX10.dxgiFormat == DXGI_FORMAT_B4G4R4A4_UNORM)
             {
                 initData.format = Format::B4G4R4A4_UNorm;
-                initData.linearSpace = false;
             }
             else if (headerDX10.dxgiFormat == DXGI_FORMAT_R16G16B16A16_UNORM)
             {
@@ -495,8 +484,7 @@ bool Bitmap::LoadDDS(FILE* file, const char* path)
             }
             else if (headerDX10.dxgiFormat == DXGI_FORMAT_BC1_UNORM_SRGB)
             {
-                initData.format = Format::BC1;
-                initData.linearSpace = false;
+                initData.format = Format::BC1_sRGB;
             }
             else if (headerDX10.dxgiFormat == DXGI_FORMAT_BC4_UNORM)
             {
