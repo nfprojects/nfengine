@@ -9,6 +9,7 @@
 #include "Engine/Common/Reflection/Object.hpp"
 #include "Engine/Common/Reflection/Types/ReflectionFundamentalType.hpp"
 #include "Engine/Common/Reflection/Types/ReflectionDynArrayType.hpp"
+#include "Engine/Common/Reflection/Types/ReflectionStaticArrayType.hpp"
 #include "Engine/Common/Reflection/Types/ReflectionUniquePtrType.hpp"
 #include "Engine/Common/Reflection/Types/ReflectionSharedPtrType.hpp"
 #include "Engine/Common/Reflection/Types/ReflectionNativeArrayType.hpp"

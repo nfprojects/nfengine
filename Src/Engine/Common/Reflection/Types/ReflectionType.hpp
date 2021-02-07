@@ -24,10 +24,9 @@ enum class TypeKind : uint8
     Undefined = 0,      // invalid
     Fundamental,        // fundamental type (int, float, bool, etc.)
     Enumeration,        // enum / enum class
-    NativeArray,        // T[N] types
     String,             // NFE::String type
-    DynArray,           // NFE::DynArray<T> types
-    StaticArray,        // NFE::StaticArray<T,N> types
+    NativeArray,        // T[N] types
+    Array,              // NFE::DynArray<T>, NFE::StaticArray<T,N> types
     UniquePtr,          // NFE::UniquePtr<T> types
     SharedPtr,          // NFE::SharedPtr<T> types
     Class,              // class type
@@ -53,8 +52,7 @@ enum class TypeNameID : uint8
     Class               = 0x10,
     Enumeration         = 0x11,
     NativeArray         = 0x12,
-    DynArray            = 0x13,
-    StaticArray         = 0x14,
+    Array               = 0x13,
     UniquePtr           = 0x15,
     SharedPtr           = 0x16,
     String              = 0x17,
@@ -72,6 +70,7 @@ public:
     const char* name = nullptr;
     size_t size = 0u;
     size_t alignment = 0u;
+    bool dynamicType = false;
     TypeKind kind = TypeKind::Undefined;
     TypeNameID typeNameID = TypeNameID::Invalid;
     ConstructorFunc constructor;
@@ -111,11 +110,17 @@ public:
     // Check if the type is dynamic
     NFE_FORCE_INLINE bool IsDynamicType() const { return mIsDynamicType; }
 
+    // Check if the type is enabled (active)
+    NFE_FORCE_INLINE bool IsEnabled() const { return mIsEnabled; }
+
     // Get type name ID
     NFE_FORCE_INLINE TypeNameID GetTypeNameID() const { return mTypeNameID; }
 
     // Can be constructed (without arguments)?
     NFE_FORCE_INLINE bool IsConstructible() const { return mConstructor != nullptr; }
+
+    // Enable/disable
+    NFE_FORCE_INLINE void UNIT_TEST_ONLY_Enable(bool enableState) { mIsEnabled = enableState; }
 
     // Check if this type is compatible with another type (given type pointer)
     virtual bool IsA(const Type* baseType) const;
@@ -226,6 +231,9 @@ protected:
     // but the serialized data remained the same and is now being deserialized (using the new code).
     // In this case, the type object for type "UniquePtr<int8>" will be created at the runtime, thus it's "dynamic".
     bool mIsDynamicType : 1;
+
+    // For unit test purposes only
+    bool mIsEnabled : 1;
 
     ConstructorFunc mConstructor;
     DestructorFunc mDestructor;

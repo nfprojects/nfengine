@@ -17,7 +17,7 @@ namespace RTTI {
 /**
  * Type information for StaticArray<T,N> types.
  */
-class NFCOMMON_API StaticArrayType final : public IResizableArrayType
+class NFCOMMON_API StaticArrayType final : public ResizableArrayType
 {
     NFE_MAKE_NONCOPYABLE(StaticArrayType)
 
@@ -35,16 +35,6 @@ public:
 
     // Type interface implementation
     virtual void PrintInfo() const override final;
-
-    /*
-    virtual bool Serialize(const void* object, Common::IConfig& config, Common::ConfigValue& outValue, SerializationContext& context) const override final;
-    virtual bool Deserialize(void* outObject, const Common::IConfig& config, const Common::ConfigValue& value, SerializationContext& context) const override final;
-    virtual bool SerializeBinary(const void* object, Common::OutputStream* stream, SerializationContext& context) const override final;
-    virtual bool DeserializeBinary(void* outObject, Common::InputStream& stream, SerializationContext& context) const override final;
-    virtual bool TryLoadFromDifferentType(void* outObject, const Variant& otherObject) const override final;
-    virtual bool Compare(const void* objectA, const void* objectB) const override final;
-    virtual bool Clone(void* destObject, const void* sourceObject) const override final;
-    */
 
 private:
     uint32 mCapacity;
@@ -75,8 +65,8 @@ public:
         const Common::String typeName = StaticArrayType::BuildTypeName(arrayElementType, Capacity);
 
         TypeInfo typeInfo;
-        typeInfo.kind = TypeKind::StaticArray;
-        typeInfo.typeNameID = TypeNameID::StaticArray;
+        typeInfo.kind = TypeKind::Array;
+        typeInfo.typeNameID = TypeNameID::Array;
         typeInfo.size = sizeof(ObjectType);
         typeInfo.alignment = alignof(ObjectType);
         typeInfo.name = typeName.Str();

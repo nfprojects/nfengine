@@ -76,23 +76,34 @@ const Type* TypeRegistry::GetExistingType_NoLock(const StringView name) const
     // TODO cache more than one?
     static thread_local LastAccessedType s_lastAccessedCache;
 
+    const Type* foundType = nullptr;
+
     // check if in cache (to avoid accessing this huge hash map below)
     if (s_lastAccessedCache.name == name)
     {
-        return s_lastAccessedCache.type;
+        foundType = s_lastAccessedCache.type;
     }
-
-    const auto iter = mTypesByName.Find(name);
-
-    if (iter == mTypesByName.End())
+    else
     {
-        return nullptr;
+        const auto iter = mTypesByName.Find(name);
+
+        if (iter == mTypesByName.End())
+        {
+            return nullptr;
+        }
+
+        foundType = iter->second;
+
+        s_lastAccessedCache.name = name;
+        s_lastAccessedCache.type = foundType;
     }
 
-    s_lastAccessedCache.name = name;
-    s_lastAccessedCache.type = iter->second;
+    if (!foundType->IsEnabled())
+    {
+        foundType = nullptr;
+    }
 
-    return iter->second;
+    return foundType;
 }
 
 void TypeRegistry::RegisterType(size_t hash, Type* type)
@@ -217,7 +228,7 @@ TypeDeserializationResult TypeRegistry::DeserializeEnumType(const Type*& outType
     return TypeDeserializationResult::UnknownType;
 }
 
-TypeDeserializationResult TypeRegistry::DeserializeDynArrayType(const Type*& outType, InputStream& stream, SerializationContext& context)
+TypeDeserializationResult TypeRegistry::DeserializeArrayType(const Type*& outType, InputStream& stream, SerializationContext& context)
 {
     const Type* underlyingType = nullptr;
 
@@ -244,57 +255,9 @@ TypeDeserializationResult TypeRegistry::DeserializeDynArrayType(const Type*& out
             Type* newType = new DynArrayType(underlyingType);
 
             TypeInfo typeInfo;
-            typeInfo.kind = TypeKind::DynArray;
-            typeInfo.typeNameID = TypeNameID::DynArray;
-            typeInfo.size = sizeof(DynArray<int32>);
-            typeInfo.alignment = alignof(DynArray<int32>);
-            typeInfo.name = expectedTypeName.Str();
-
-            newType->Initialize(typeInfo);
-
-            RegisterTypeName_NoLock(newType->GetName(), newType);
-
-            outType = newType;
-        }
-    }
-
-    return TypeDeserializationResult::Success;
-}
-
-
-// TODO this is wrong !!!
-// this has to be unified with DynArrayType
-// at runtime there is DynArrayType and StaticArrayType
-// but in the data there should be only "ArrayType"
-TypeDeserializationResult TypeRegistry::DeserializeStaticArrayType(const Type*& outType, InputStream& stream, SerializationContext& context)
-{
-    const Type* underlyingType = nullptr;
-
-    TypeDeserializationResult result = DeserializeTypeName(underlyingType, stream, context);
-    if (result != TypeDeserializationResult::Success)
-    {
-        return result;
-    }
-
-    const String expectedTypeName = StaticArrayType::BuildTypeName(underlyingType,UINT32_MAX);
-
-    {
-        NFE_SCOPED_SHARED_LOCK(mTypesListLock);
-        outType = GetExistingType_NoLock(expectedTypeName);
-    }
-
-    if (!outType)
-    {
-        NFE_SCOPED_LOCK(mTypesListLock);
-        outType = GetExistingType_NoLock(expectedTypeName);
-
-        if (!outType)
-        {
-            Type* newType = new StaticArrayType(underlyingType,UINT32_MAX);
-
-            TypeInfo typeInfo;
-            typeInfo.kind = TypeKind::StaticArray;
-            typeInfo.typeNameID = TypeNameID::StaticArray;
+            typeInfo.kind = TypeKind::Array;
+            typeInfo.typeNameID = TypeNameID::Array;
+            typeInfo.dynamicType = true;
             typeInfo.size = sizeof(DynArray<int32>);
             typeInfo.alignment = alignof(DynArray<int32>);
             typeInfo.name = expectedTypeName.Str();
@@ -344,7 +307,7 @@ TypeDeserializationResult TypeRegistry::DeserializeNativeArrayType(const Type*& 
             Type* newType = new NativeArrayType(arraySize, underlyingType);
 
             TypeInfo typeInfo;
-            typeInfo.kind = TypeKind::NativeArray;
+            typeInfo.kind = TypeKind::Array;
             typeInfo.typeNameID = TypeNameID::NativeArray;
             typeInfo.size = arraySize * underlyingType->GetSize();
             typeInfo.alignment = underlyingType->GetAlignment();
@@ -511,11 +474,8 @@ TypeDeserializationResult TypeRegistry::DeserializeTypeName(const Type*& outType
     case TypeNameID::NativeArray:
         result = DeserializeNativeArrayType(outType, stream, context);
         break;
-    case TypeNameID::DynArray:
-        result = DeserializeDynArrayType(outType, stream, context);
-        break;
-    case TypeNameID::StaticArray:
-        result = DeserializeStaticArrayType(outType, stream, context);
+    case TypeNameID::Array:
+        result = DeserializeArrayType(outType, stream, context);
         break;
     case TypeNameID::UniquePtr:
         result = DeserializeUniquePtrType(outType, stream, context);

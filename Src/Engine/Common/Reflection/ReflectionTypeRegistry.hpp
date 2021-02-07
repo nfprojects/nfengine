@@ -73,8 +73,7 @@ private:
 
     TypeDeserializationResult DeserializeClassType(const Type*& outType, Common::InputStream& stream, SerializationContext& context);
     TypeDeserializationResult DeserializeEnumType(const Type*& outType, Common::InputStream& stream, SerializationContext& context);
-    TypeDeserializationResult DeserializeDynArrayType(const Type*& outType, Common::InputStream& stream, SerializationContext& context);
-    TypeDeserializationResult DeserializeStaticArrayType(const Type*& outType, Common::InputStream& stream, SerializationContext& context);
+    TypeDeserializationResult DeserializeArrayType(const Type*& outType, Common::InputStream& stream, SerializationContext& context);
     TypeDeserializationResult DeserializeNativeArrayType(const Type*& outType, Common::InputStream& stream, SerializationContext& context);
     TypeDeserializationResult DeserializeUniquePtrType(const Type*& outType, Common::InputStream& stream, SerializationContext& context);
     TypeDeserializationResult DeserializeSharedPtrType(const Type*& outType, Common::InputStream& stream, SerializationContext& context);

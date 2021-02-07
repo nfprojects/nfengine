@@ -471,11 +471,11 @@ static bool EditObject_Internal_NativeArray(const EditPropertyContext& ctx)
     return changed;
 }
 
-static bool EditObject_Internal_ResizableArray(const EditPropertyContext& ctx)
+static bool EditObject_Internal_Array(const EditPropertyContext& ctx)
 {
     bool changed = false;
 
-    const IResizableArrayType* type = static_cast<const IResizableArrayType*>(ctx.type);
+    const ResizableArrayType* type = static_cast<const ResizableArrayType*>(ctx.type);
 
     ImGui::AlignTextToFramePadding();
     bool isOpen = ImGui::TreeNode(ctx.name, ctx.name);
@@ -566,9 +566,8 @@ static bool EditObject_Internal(const EditPropertyContext& ctx)
         case TypeKind::NativeArray:
             changed = EditObject_Internal_NativeArray(ctx);
             break;
-        case TypeKind::DynArray:
-        case TypeKind::StaticArray:
-            changed = EditObject_Internal_ResizableArray(ctx);
+        case TypeKind::Array:
+            changed = EditObject_Internal_Array(ctx);
             break;
         default:
             NFE_FATAL("Invalid type");

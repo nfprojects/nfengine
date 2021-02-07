@@ -16,44 +16,74 @@ namespace RTTI {
 
 using namespace Common;
 
-bool IResizableArrayType::TryLoadFromDifferentType(void* outObject, const Variant& otherObject) const
+uint32 ResizableArrayType::GetMaxCapacity() const
+{
+    return UINT32_MAX;
+}
+
+uint32 ResizableArrayType::GetArraySize(const void* arrayObject) const
+{
+    NFE_UNUSED(arrayObject);
+
+    NFE_FATAL("Cannot get size of unspecialized array type");
+
+    return false;
+}
+
+bool ResizableArrayType::ResizeArray(void* arrayObject, uint32 targetSize) const
+{
+    NFE_UNUSED(arrayObject);
+    NFE_UNUSED(targetSize);
+
+    NFE_FATAL("Cannot resize unspecialized array type");
+
+    return false;
+}
+
+bool ResizableArrayType::TryLoadFromDifferentType(void* outObject, const Variant& otherObject) const
 {
     NFE_ASSERT(otherObject.GetType(), "Empty variant");
 
-    // only native array can be converted to DynArray
-    if (otherObject.GetType()->GetKind() != TypeKind::NativeArray)
+    // any array type can be converted to resizable array
+    const TypeKind otherTypeKind = otherObject.GetType()->GetKind();
+    if (otherTypeKind == TypeKind::NativeArray || otherTypeKind == TypeKind::Array)
     {
-        return false;
-    }
+        const IArrayType* otherType = static_cast<const IArrayType*>(otherObject.GetType());
+        const Type* underlyingType = GetUnderlyingType();
 
-    const NativeArrayType* otherType = static_cast<const NativeArrayType*>(otherObject.GetType());
-    const Type* underlyingType = GetUnderlyingType();
-
-    // TODO should be able to upgrade if underlying types are compatible as well
-    if (otherType->GetUnderlyingType() != underlyingType)
-    {
-        return false;
-    }
-
-    const uint32 targetSize = otherType->GetArraySize();
-    if (!ResizeArray(outObject, targetSize))
-    {
-        return false;
-    }
-
-    // copy array elements
-    for (uint32 i = 0; i < targetSize; ++i)
-    {
-        if (!underlyingType->Clone(GetElementPointer(outObject, i), otherType->GetElementPointer(otherObject.GetData(), i)))
+        // TODO should be able to upgrade if underlying types are compatible as well
+        if (otherType->GetUnderlyingType() != underlyingType)
         {
             return false;
         }
+
+        // try resize to target size
+        const uint32 targetSize = otherType->GetArraySize(otherObject.GetData());
+        if (targetSize > GetMaxCapacity())
+        {
+            return false;
+        }
+        if (!ResizeArray(outObject, targetSize))
+        {
+            return false;
+        }
+
+        // copy array elements
+        for (uint32 i = 0; i < targetSize; ++i)
+        {
+            if (!underlyingType->Clone(GetElementPointer(outObject, i), otherType->GetElementPointer(otherObject.GetData(), i)))
+            {
+                return false;
+            }
+        }
+
+        return true;
     }
 
-    return true;
+    return false;
 }
 
-bool IResizableArrayType::Serialize(const void* object, IConfig& config, ConfigValue& outValue, SerializationContext& context) const
+bool ResizableArrayType::Serialize(const void* object, IConfig& config, ConfigValue& outValue, SerializationContext& context) const
 {
     using namespace Common;
 
@@ -82,7 +112,7 @@ bool IResizableArrayType::Serialize(const void* object, IConfig& config, ConfigV
     return true;
 }
 
-bool IResizableArrayType::Deserialize(void* outObject, const IConfig& config, const ConfigValue& value, SerializationContext& context) const
+bool ResizableArrayType::Deserialize(void* outObject, const IConfig& config, const ConfigValue& value, SerializationContext& context) const
 {
     using namespace Common;
 
@@ -122,7 +152,7 @@ bool IResizableArrayType::Deserialize(void* outObject, const IConfig& config, co
     return true;
 }
 
-bool IResizableArrayType::SerializeBinary(const void* object, OutputStream* stream, SerializationContext& context) const
+bool ResizableArrayType::SerializeBinary(const void* object, OutputStream* stream, SerializationContext& context) const
 {
     const uint32 arraySize = GetArraySize(object);
 
@@ -167,7 +197,7 @@ bool IResizableArrayType::SerializeBinary(const void* object, OutputStream* stre
     return true;
 }
 
-bool IResizableArrayType::DeserializeBinary(void* outObject, InputStream& stream, SerializationContext& context) const
+bool ResizableArrayType::DeserializeBinary(void* outObject, InputStream& stream, SerializationContext& context) const
 {
     uint32 arraySize;
     if (!stream.ReadCompressedUint(arraySize))
@@ -211,7 +241,7 @@ bool IResizableArrayType::DeserializeBinary(void* outObject, InputStream& stream
     return true;
 }
 
-bool IResizableArrayType::SerializeTypeName(Common::OutputStream* stream, SerializationContext& context) const
+bool ResizableArrayType::SerializeTypeName(Common::OutputStream* stream, SerializationContext& context) const
 {
     // write header
     if (!Type::SerializeTypeName(stream, context))
@@ -223,7 +253,7 @@ bool IResizableArrayType::SerializeTypeName(Common::OutputStream* stream, Serial
     return mUnderlyingType->SerializeTypeName(stream, context);
 }
 
-bool IResizableArrayType::Compare(const void* objectA, const void* objectB) const
+bool ResizableArrayType::Compare(const void* objectA, const void* objectB) const
 {
     const uint32 arraySizeA = GetArraySize(objectA);
     const uint32 arraySizeB = GetArraySize(objectB);
@@ -232,19 +262,31 @@ bool IResizableArrayType::Compare(const void* objectA, const void* objectB) cons
         return false;
     }
 
-    const Type* underlyingType = GetUnderlyingType();
-    for (uint32 i = 0; i < arraySizeA; ++i)
+    if (arraySizeA > 0u)
     {
-        if (!underlyingType->Compare(GetElementPointer(objectA, i), GetElementPointer(objectB, i)))
+        const Type* underlyingType = GetUnderlyingType();
+
+        if (underlyingType->CanBeMemcopied())
         {
-            return false;
+            const size_t bytesToCompare = arraySizeA * underlyingType->GetSize();
+            return 0 == memcmp(GetElementPointer(objectA, 0u), GetElementPointer(objectB, 0u), bytesToCompare);
+        }
+        else
+        {
+            for (uint32 i = 0; i < arraySizeA; ++i)
+            {
+                if (!underlyingType->Compare(GetElementPointer(objectA, i), GetElementPointer(objectB, i)))
+                {
+                    return false;
+                }
+            }
         }
     }
 
     return true;
 }
 
-bool IResizableArrayType::Clone(void* destObject, const void* sourceObject) const
+bool ResizableArrayType::Clone(void* destObject, const void* sourceObject) const
 {
     const Type* underlyingType = GetUnderlyingType();
     const uint32 targetSize = GetArraySize(sourceObject);

@@ -1,6 +1,5 @@
 #include "PCH.hpp"
 #include "ReflectionTestCommon.hpp"
-#include "Engine/Common/Reflection/Types/ReflectionStaticArrayType.hpp"
 #include "Engine/Common/Reflection/ReflectionUtils.hpp"
 #include "Engine/Common/Reflection/ReflectionClassDefine.hpp"
 #include "Engine/Common/Reflection/SerializationContext.hpp"
@@ -23,7 +22,7 @@ TEST(ReflectionStaticArrayTest, Verify)
     ASSERT_NE(nullptr, type);
 
     EXPECT_TRUE("StaticArray<NFE::int32,3>" == type->GetName());
-    EXPECT_EQ(TypeKind::StaticArray, type->GetKind());
+    EXPECT_EQ(TypeKind::Array, type->GetKind());
     EXPECT_EQ(sizeof(TestStaticArray), type->GetSize());
     EXPECT_EQ(alignof(TestStaticArray), type->GetAlignment());
 }

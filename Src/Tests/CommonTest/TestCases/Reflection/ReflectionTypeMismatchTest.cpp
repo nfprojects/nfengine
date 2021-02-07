@@ -181,8 +181,8 @@ class TestClass_IncompatibleNativeArrayType_After
 {
     NFE_DECLARE_CLASS(TestClass_IncompatibleNativeArrayType_After)
 public:
-    int32 b[2] = { 0, 0 }; // was int32[2]
-    DynArray<int32> c[2]; // was DynArray<int32>[3]
+    int32 b[2] = { 0, 0 };      // was int32[2]
+    DynArray<int32> c[2];       // was DynArray<int32>[3]
 };
 
 NFE_DEFINE_CLASS(TestClass_IncompatibleNativeArrayType_After)
@@ -432,5 +432,239 @@ TEST(ReflectionTypeMismatchTest, NativeArrayToDynArray)
         EXPECT_EQ(456, readObj.c[1][0]);
 
         EXPECT_EQ(0u, context.GetMemberTypeMismatchInfos().Size());
+    }
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+
+class TestClass_StaticArrayToDynArray_Before
+{
+    NFE_DECLARE_CLASS(TestClass_StaticArrayToDynArray_Before)
+public:
+    StaticArray<int32,3> a;
+};
+
+NFE_DEFINE_CLASS(TestClass_StaticArrayToDynArray_Before)
+{
+    NFE_CLASS_MEMBER(a);
+}
+NFE_END_DEFINE_CLASS()
+
+class TestClass_StaticArrayToDynArray_After
+{
+    NFE_DECLARE_CLASS(TestClass_StaticArrayToDynArray_After)
+public:
+    DynArray<int32> a; // was StaticArray<int32,3>
+};
+
+NFE_DEFINE_CLASS(TestClass_StaticArrayToDynArray_After)
+{
+    NFE_CLASS_MEMBER(a);
+}
+NFE_END_DEFINE_CLASS()
+
+TEST(ReflectionTypeMismatchTest, StaticArrayToDynArray)
+{
+    Buffer buffer;
+    SerializationContext context;
+
+    {
+        TestClass_StaticArrayToDynArray_Before obj;
+        obj.a.PushBack(123);
+        obj.a.PushBack(456);
+        obj.a.PushBack(789);
+
+        const auto* typeBefore = GetType<TestClass_StaticArrayToDynArray_Before>();
+        ASSERT_NE(nullptr, typeBefore);
+
+        BufferOutputStream stream(buffer);
+        ASSERT_TRUE(helper::SerializeObject(typeBefore, &obj, stream, context));
+    }
+
+    {
+        const auto* typeAfter = GetType<TestClass_StaticArrayToDynArray_After>();
+        ASSERT_NE(nullptr, typeAfter);
+
+        TestClass_StaticArrayToDynArray_After readObj;
+
+        BufferInputStream stream(buffer);
+        ASSERT_TRUE(typeAfter->DeserializeBinary(&readObj, stream, context));
+
+        ASSERT_EQ(3u, readObj.a.Size());
+        EXPECT_EQ(123, readObj.a[0]);
+        EXPECT_EQ(456, readObj.a[1]);
+        EXPECT_EQ(789, readObj.a[2]);
+
+        EXPECT_EQ(0u, context.GetMemberTypeMismatchInfos().Size());
+    }
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+
+class TestClass_CompatibleStaticArrayType_Before
+{
+    NFE_DECLARE_CLASS(TestClass_CompatibleStaticArrayType_Before)
+public:
+    StaticArray<int32, 3> a;
+    StaticArray<int32, 3> b;
+};
+
+NFE_DEFINE_CLASS(TestClass_CompatibleStaticArrayType_Before)
+{
+    NFE_CLASS_MEMBER(a);
+    NFE_CLASS_MEMBER(b);
+}
+NFE_END_DEFINE_CLASS()
+
+class TestClass_CompatibleStaticArrayType_After
+{
+    NFE_DECLARE_CLASS(TestClass_CompatibleStaticArrayType_After)
+public:
+    StaticArray<int32, 5> a; // was StaticArray<int32, 3>
+    StaticArray<int32, 2> b; // was StaticArray<int32, 3>
+};
+
+NFE_DEFINE_CLASS(TestClass_CompatibleStaticArrayType_After)
+{
+    NFE_CLASS_MEMBER(a);
+    NFE_CLASS_MEMBER(b);
+}
+NFE_END_DEFINE_CLASS()
+
+TEST(ReflectionTypeMismatchTest, CompatibleStaticArrayType)
+{
+    Buffer buffer;
+    SerializationContext context;
+
+    {
+        TestClass_CompatibleStaticArrayType_Before obj;
+        obj.a.PushBack(123);
+        obj.a.PushBack(456);
+        obj.a.PushBack(789);
+        obj.b.PushBack(111);
+        obj.b.PushBack(222);
+
+        const auto* typeBefore = GetType<TestClass_CompatibleStaticArrayType_Before>();
+        ASSERT_NE(nullptr, typeBefore);
+
+        BufferOutputStream stream(buffer);
+        ASSERT_TRUE(helper::SerializeObject(typeBefore, &obj, stream, context));
+    }
+
+    {
+        const auto* typeAfter = GetType<TestClass_CompatibleStaticArrayType_After>();
+        ASSERT_NE(nullptr, typeAfter);
+
+        TestClass_CompatibleStaticArrayType_After readObj;
+        readObj.a.PushBack(555);
+        readObj.b.PushBack(555);
+
+        BufferInputStream stream(buffer);
+        ASSERT_TRUE(typeAfter->DeserializeBinary(&readObj, stream, context));
+
+        ASSERT_EQ(3u, readObj.a.Size());
+        EXPECT_EQ(123, readObj.a[0]);
+        EXPECT_EQ(456, readObj.a[1]);
+        EXPECT_EQ(789, readObj.a[2]);
+
+        ASSERT_EQ(2u, readObj.b.Size());
+        EXPECT_EQ(111, readObj.b[0]);
+        EXPECT_EQ(222, readObj.b[1]);
+
+        EXPECT_EQ(0u, context.GetMemberTypeMismatchInfos().Size());
+    }
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+
+class TestClass_IncompatibleStaticArrayType_Before
+{
+    NFE_DECLARE_CLASS(TestClass_IncompatibleStaticArrayType_Before)
+public:
+    DynArray<int32> a;
+    StaticArray<int32, 3> b;
+};
+
+NFE_DEFINE_CLASS(TestClass_IncompatibleStaticArrayType_Before)
+{
+    NFE_CLASS_MEMBER(a);
+    NFE_CLASS_MEMBER(b);
+}
+NFE_END_DEFINE_CLASS()
+
+class TestClass_IncompatibleStaticArrayType_After
+{
+    NFE_DECLARE_CLASS(TestClass_IncompatibleStaticArrayType_After)
+public:
+    StaticArray<int32, 2> a; // was DynArray<int32>
+    StaticArray<int32, 2> b; // was StaticArray<int32, 3>
+};
+
+NFE_DEFINE_CLASS(TestClass_IncompatibleStaticArrayType_After)
+{
+    NFE_CLASS_MEMBER(a);
+    NFE_CLASS_MEMBER(b);
+}
+NFE_END_DEFINE_CLASS()
+
+TEST(ReflectionTypeMismatchTest, IncompatibleStaticArrayType)
+{
+    Buffer buffer;
+    SerializationContext context;
+
+    {
+        TestClass_IncompatibleStaticArrayType_Before obj;
+        obj.a.PushBack(111);
+        obj.a.PushBack(222);
+        obj.a.PushBack(333);
+        obj.b.PushBack(444);
+        obj.b.PushBack(555);
+        obj.b.PushBack(666);
+
+        const auto* typeBefore = GetType<TestClass_IncompatibleStaticArrayType_Before>();
+        ASSERT_NE(nullptr, typeBefore);
+
+        BufferOutputStream stream(buffer);
+        ASSERT_TRUE(helper::SerializeObject(typeBefore, &obj, stream, context));
+    }
+
+    {
+        const auto* typeAfter = GetType<TestClass_IncompatibleStaticArrayType_After>();
+        ASSERT_NE(nullptr, typeAfter);
+
+        TestClass_IncompatibleStaticArrayType_After readObj;
+        readObj.a.PushBack(1);
+        readObj.b.PushBack(2);
+
+        BufferInputStream stream(buffer);
+        ASSERT_TRUE(typeAfter->DeserializeBinary(&readObj, stream, context));
+
+        ASSERT_EQ(1u, readObj.a.Size());
+        EXPECT_EQ(1, readObj.a[0]);
+
+        ASSERT_EQ(1u, readObj.b.Size());
+        EXPECT_EQ(2, readObj.b[0]);
+
+        const auto& mismatchedTypes = context.GetMemberTypeMismatchInfos();
+        ASSERT_EQ(2u, mismatchedTypes.Size());
+        {
+            EXPECT_EQ(MemberPath("a"), mismatchedTypes[0].path);
+            ASSERT_EQ(GetType<DynArray<int32>>(), mismatchedTypes[0].readObject.GetType());
+            const DynArray<int32>& readArray = mismatchedTypes[0].readObject.Get<DynArray<int32>>();
+            ASSERT_EQ(3u, readArray.Size());
+            EXPECT_EQ(111, readArray[0]);
+            EXPECT_EQ(222, readArray[1]);
+            EXPECT_EQ(333, readArray[2]);
+        }
+        {
+            EXPECT_EQ(MemberPath("b"), mismatchedTypes[1].path);
+            ASSERT_EQ(GetType<DynArray<int32>>(), mismatchedTypes[1].readObject.GetType());
+            const DynArray<int32>& readArray = mismatchedTypes[1].readObject.Get<DynArray<int32>>();
+            ASSERT_EQ(3u, readArray.Size());
+            EXPECT_EQ(444, readArray[0]);
+            EXPECT_EQ(555, readArray[1]);
+            EXPECT_EQ(666, readArray[2]);
+        }
     }
 }

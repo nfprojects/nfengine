@@ -146,9 +146,9 @@ bool NativeArrayType::TryLoadFromDifferentType(void* outObject, const Variant& o
             }
         }
     }
-    else if (otherObject.GetType()->GetKind() == TypeKind::DynArray)
+    else if (otherObject.GetType()->GetKind() == TypeKind::Array)
     {
-        // TODO
+        // TODO read when array size matches
     }
 
     return false;

@@ -24,13 +24,12 @@ const char* Type::TypeKindToString(const TypeKind kind)
     {
     case TypeKind::Fundamental:         return "fundamental";
     case TypeKind::Enumeration:         return "enum";
-    case TypeKind::NativeArray:         return "native array";
     case TypeKind::String:              return "string";
-    case TypeKind::DynArray:            return "dynamic array";
-    case TypeKind::StaticArray:         return "static array";
+    case TypeKind::NativeArray:         return "native array";
+    case TypeKind::Array:               return "array";
     case TypeKind::UniquePtr:           return "unique pointer";
     case TypeKind::SharedPtr:           return "shared pointer";
-    case TypeKind::Class:               return "simple class";
+    case TypeKind::Class:               return "class";
     }
 
     NFE_FATAL("Invalid RTTI type kind: %u", (uint32)kind);
@@ -45,6 +44,7 @@ Type::Type()
     , mKind(TypeKind::Undefined)
     , mDefaultObject(nullptr)
     , mIsDynamicType(false)
+    , mIsEnabled(true)
 {
 }
 
@@ -69,6 +69,7 @@ void Type::Initialize(const TypeInfo& info)
 
     mSize = static_cast<uint32>(info.size);
     mAlignment = static_cast<uint32>(info.alignment);
+    mIsDynamicType = info.dynamicType;
 
     mConstructor = info.constructor;
     mDestructor = info.destructor;

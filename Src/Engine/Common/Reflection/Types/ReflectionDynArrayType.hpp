@@ -17,13 +17,13 @@ namespace RTTI {
 /**
  * Type information for DynArray<T> types.
  */
-class NFCOMMON_API DynArrayType final : public IResizableArrayType
+class NFCOMMON_API DynArrayType final : public ResizableArrayType
 {
     NFE_MAKE_NONCOPYABLE(DynArrayType)
 
 public:
     NFE_FORCE_INLINE DynArrayType(const Type* underlyingType)
-        : IResizableArrayType(underlyingType)
+        : ResizableArrayType(underlyingType)
     { }
 
     static const Common::String BuildTypeName(const Type* underlyingType);
@@ -32,7 +32,6 @@ public:
 
     // ResizableArrayType interface
     virtual uint32 GetArraySize(const void* arrayObject) const override final;
-    virtual uint32 GetMaxCapacity() const override final;
     virtual bool ResizeArray(void* arrayObject, uint32 targetSize) const override final;
     virtual void* GetElementPointer(void* arrayObject, uint32 index) const override final;
     virtual const void* GetElementPointer(const void* arrayObject, uint32 index) const override final;
@@ -66,8 +65,8 @@ public:
         const Common::String typeName = DynArrayType::BuildTypeName(underlyingType);
 
         TypeInfo typeInfo;
-        typeInfo.kind = TypeKind::DynArray;
-        typeInfo.typeNameID = TypeNameID::DynArray;
+        typeInfo.kind = TypeKind::Array;
+        typeInfo.typeNameID = TypeNameID::Array;
         typeInfo.size = sizeof(ObjectType);
         typeInfo.alignment = alignof(ObjectType);
         typeInfo.name = typeName.Str();

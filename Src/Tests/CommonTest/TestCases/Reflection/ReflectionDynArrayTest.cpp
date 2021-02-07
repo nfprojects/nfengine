@@ -22,7 +22,7 @@ TEST(ReflectionDynArrayTest, Verify)
     ASSERT_NE(nullptr, type);
 
     EXPECT_TRUE("DynArray<NFE::int32>" == type->GetName());
-    EXPECT_EQ(TypeKind::DynArray, type->GetKind());
+    EXPECT_EQ(TypeKind::Array, type->GetKind());
     EXPECT_EQ(sizeof(TestDynArray), type->GetSize());
     EXPECT_EQ(alignof(TestDynArray), type->GetAlignment());
 }

@@ -17,23 +17,23 @@ namespace RTTI {
 /**
  * Type information for array types that can be resized (DynArray, StaticArray).
  */
-class NFCOMMON_API IResizableArrayType : public IArrayType
+class NFCOMMON_API ResizableArrayType : public IArrayType
 {
-    NFE_MAKE_NONCOPYABLE(IResizableArrayType)
+    NFE_MAKE_NONCOPYABLE(ResizableArrayType)
 
 public:
-    NFE_FORCE_INLINE IResizableArrayType(const Type* underlyingType)
+    NFE_FORCE_INLINE ResizableArrayType(const Type* underlyingType)
         : IArrayType(underlyingType)
     { }
 
     // get number of array elements
-    virtual uint32 GetArraySize(const void* arrayObject) const = 0;
+    virtual uint32 GetArraySize(const void* arrayObject) const;
 
     // get maximum capacity (theoretical, may exceede memory limits)
-    virtual uint32 GetMaxCapacity() const = 0;
+    virtual uint32 GetMaxCapacity() const;
 
     // resize the array
-    virtual bool ResizeArray(void* arrayObject, uint32 targetSize) const = 0;
+    virtual bool ResizeArray(void* arrayObject, uint32 targetSize) const;
 
     // Type interface implementation
     virtual bool Serialize(const void* object, Common::IConfig& config, Common::ConfigValue& outValue, SerializationContext& context) const override final;
