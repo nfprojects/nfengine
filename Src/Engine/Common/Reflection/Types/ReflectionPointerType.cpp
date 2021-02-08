@@ -4,9 +4,13 @@
 
 #include "PCH.hpp"
 #include "ReflectionPointerType.hpp"
+#include "../../Config/ConfigInterface.hpp"
+#include "../../Config/ConfigValue.hpp"
 
 namespace NFE {
 namespace RTTI {
+
+using namespace Common;
 
 PointerType::PointerType(const Type* underlyingType)
     : mUnderlyingType(underlyingType)
@@ -65,7 +69,7 @@ bool PointerType::Clone(void* destObject, const void* sourceObject) const
     return true;
 }
 
-bool PointerType::SerializeTypeName(Common::OutputStream* stream, SerializationContext& context) const
+bool PointerType::SerializeTypeName(OutputStream* stream, SerializationContext& context) const
 {
     // write header
     if (!Type::SerializeTypeName(stream, context))

@@ -88,10 +88,22 @@ TEST(ReflectionUniquePtrTest, Serialize_Nullptr)
     TestUniquePtr obj;
     String str;
     ASSERT_TRUE(helper::SerializeObject(type, &obj, str));
-    EXPECT_STREQ("obj=0", str.Str());
+    EXPECT_STREQ("obj={}", str.Str());
 }
 
-TEST(ReflectionUniquePtrTest, Serialize_Base)
+TEST(ReflectionUniquePtrTest, Serialize_Fundamental)
+{
+    const auto* type = GetType<UniquePtr<int32>>();
+
+    const UniquePtr<int32> obj = MakeUniquePtr<int32>();
+    *obj = 123;
+
+    String str;
+    ASSERT_TRUE(helper::SerializeObject(type, &obj, str));
+    EXPECT_STREQ("obj={__type=\"NFE::int32\" __value=123}", str.Str());
+}
+
+TEST(ReflectionUniquePtrTest, Serialize_Class)
 {
     const auto* type = GetType<TestUniquePtr>();
 
@@ -101,16 +113,24 @@ TEST(ReflectionUniquePtrTest, Serialize_Base)
 
     String str;
     ASSERT_TRUE(helper::SerializeObject(type, &obj, str));
-    EXPECT_STREQ("obj={__type=\"TestBaseClass\" intVal=321 floatVal=123 mPrivateBool=false}", str.Str());
+    EXPECT_STREQ("obj={__type=\"TestBaseClass\" __value={intVal=321 floatVal=123}}", str.Str());
 }
 
 TEST(ReflectionUniquePtrTest, Deserialize_Nullptr)
 {
     const auto* type = GetType<TestUniquePtr>();
 
-    TestUniquePtr obj;
-    ASSERT_TRUE(helper::DeserializeObject(type, &obj, "obj=0"));
+    TestUniquePtr obj = MakeUniquePtr<TestBaseClass>();
+    ASSERT_TRUE(helper::DeserializeObject(type, &obj, "obj={}"));
     EXPECT_TRUE(obj == nullptr);
+}
+
+TEST(ReflectionUniquePtrTest, Deserialize_Corrupted)
+{
+    const auto* type = GetType<TestUniquePtr>();
+
+    TestUniquePtr obj;
+    ASSERT_FALSE(helper::DeserializeObject(type, &obj, "obj=123"));
 }
 
 TEST(ReflectionUniquePtrTest, Deserialize_InvalidType)
@@ -118,7 +138,7 @@ TEST(ReflectionUniquePtrTest, Deserialize_InvalidType)
     const auto* type = GetType<TestUniquePtr>();
 
     TestUniquePtr obj;
-    ASSERT_FALSE(helper::DeserializeObject(type, &obj, "obj={__type=\"InvalidTypeName\"}"));
+    ASSERT_FALSE(helper::DeserializeObject(type, &obj, "obj={__type=\"InvalidTypeName\" __value=123}"));
 }
 
 TEST(ReflectionUniquePtrTest, Deserialize_NonRelatedType)
@@ -126,7 +146,7 @@ TEST(ReflectionUniquePtrTest, Deserialize_NonRelatedType)
     const auto* type = GetType<TestUniquePtr>();
 
     TestUniquePtr obj;
-    ASSERT_FALSE(helper::DeserializeObject(type, &obj, "obj={__type=\"TestClassWithFundamentalMembers\"}"));
+    ASSERT_FALSE(helper::DeserializeObject(type, &obj, "obj={__type=\"TestClassWithFundamentalMembers\" __value=123}"));
 }
 
 TEST(ReflectionUniquePtrTest, Deserialize_Base)
@@ -135,7 +155,7 @@ TEST(ReflectionUniquePtrTest, Deserialize_Base)
     const auto* type = GetType<TestUniquePtr>();
 
     TestUniquePtr obj;
-    ASSERT_TRUE(helper::DeserializeObject(type, &obj, "obj={__type=\"TestBaseClass\" intVal=111 floatVal=222.0 mPrivateBool=true}"));
+    ASSERT_TRUE(helper::DeserializeObject(type, &obj, "obj={__type=\"TestBaseClass\" __value={intVal=111 floatVal=222.0 mPrivateBool=true}}"));
 
     ASSERT_TRUE(obj != nullptr);
     ASSERT_EQ(GetType<TestBaseClass>(), obj->GetDynamicType());
@@ -150,7 +170,7 @@ TEST(ReflectionUniquePtrTest, Deserialize_Child)
     const auto* type = GetType<TestUniquePtr>();
 
     TestUniquePtr obj;
-    ASSERT_TRUE(helper::DeserializeObject(type, &obj, "obj={__type=\"TestChildClassA\" intVal=444 floatVal=777.0 mPrivateBool=true foo=567}"));
+    ASSERT_TRUE(helper::DeserializeObject(type, &obj, "obj={__type=\"TestChildClassA\" __value={intVal=444 floatVal=777.0 mPrivateBool=true foo=567}}"));
 
     ASSERT_TRUE(obj != nullptr);
 

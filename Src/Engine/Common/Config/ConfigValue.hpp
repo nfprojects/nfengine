@@ -23,7 +23,7 @@ class NFCOMMON_API ConfigValue
     friend class Config;
 
 protected:
-    enum class Type
+    enum class Type : uint8
     {
         None,
         Bool,
@@ -93,31 +93,31 @@ public:
 };
 
 // ConfigValue::Is<T>() template specializations
-template<> NFE_INLINE bool ConfigValue::Is<int8>() const { return type == Type::Int8; }
-template<> NFE_INLINE bool ConfigValue::Is<uint8>() const { return type == Type::Uint8; }
-template<> NFE_INLINE bool ConfigValue::Is<int16>() const { return type == Type::Int16; }
-template<> NFE_INLINE bool ConfigValue::Is<uint16>() const { return type == Type::Uint16; }
-template<> NFE_INLINE bool ConfigValue::Is<int32>() const { return type == Type::Int32; }
-template<> NFE_INLINE bool ConfigValue::Is<uint32>() const { return type == Type::Uint32; }
-template<> NFE_INLINE bool ConfigValue::Is<int64>() const { return type == Type::Int64; }
-template<> NFE_INLINE bool ConfigValue::Is<uint64>() const { return type == Type::Uint64; }
-template<> NFE_INLINE bool ConfigValue::Is<bool>() const { return type == Type::Bool; }
-template<> NFE_INLINE bool ConfigValue::Is<float>() const { return type == Type::Float; }
-template<> NFE_INLINE bool ConfigValue::Is<double>() const { return type == Type::Double; }
-template<> NFE_INLINE bool ConfigValue::Is<const char*>() const { return type == Type::String; }
+template<> NFE_FORCE_INLINE bool ConfigValue::Is<int8>() const          { return type == Type::Int8; }
+template<> NFE_FORCE_INLINE bool ConfigValue::Is<uint8>() const         { return type == Type::Uint8; }
+template<> NFE_FORCE_INLINE bool ConfigValue::Is<int16>() const         { return type == Type::Int16; }
+template<> NFE_FORCE_INLINE bool ConfigValue::Is<uint16>() const        { return type == Type::Uint16; }
+template<> NFE_FORCE_INLINE bool ConfigValue::Is<int32>() const         { return type == Type::Int32; }
+template<> NFE_FORCE_INLINE bool ConfigValue::Is<uint32>() const        { return type == Type::Uint32; }
+template<> NFE_FORCE_INLINE bool ConfigValue::Is<int64>() const         { return type == Type::Int64; }
+template<> NFE_FORCE_INLINE bool ConfigValue::Is<uint64>() const        { return type == Type::Uint64; }
+template<> NFE_FORCE_INLINE bool ConfigValue::Is<bool>() const          { return type == Type::Bool; }
+template<> NFE_FORCE_INLINE bool ConfigValue::Is<float>() const         { return type == Type::Float; }
+template<> NFE_FORCE_INLINE bool ConfigValue::Is<double>() const        { return type == Type::Double; }
+template<> NFE_FORCE_INLINE bool ConfigValue::Is<const char*>() const   { return type == Type::String; }
 
 // Get<T>() template specializations
-template<> NFE_INLINE int8 ConfigValue::Get<int8>() const { return intData8; }
-template<> NFE_INLINE uint8 ConfigValue::Get<uint8>() const { return uintData8; }
-template<> NFE_INLINE int16 ConfigValue::Get<int16>() const { return intData16; }
-template<> NFE_INLINE uint16 ConfigValue::Get<uint16>() const { return uintData16; }
-template<> NFE_INLINE int32 ConfigValue::Get<int32>() const { return intData32; }
-template<> NFE_INLINE uint32 ConfigValue::Get<uint32>() const { return uintData32; }
-template<> NFE_INLINE int64 ConfigValue::Get<int64>() const { return intData64; }
-template<> NFE_INLINE uint64 ConfigValue::Get<uint64>() const { return uintData64; }
-template<> NFE_INLINE bool ConfigValue::Get<bool>() const { return boolData; }
-template<> NFE_INLINE float ConfigValue::Get<float>() const { return floatData; }
-template<> NFE_INLINE double ConfigValue::Get<double>() const { return doubleData; }
+template<> NFE_INLINE int8 ConfigValue::Get<int8>() const       { NFE_ASSERT(type == Type::Int8, "Invalid type"); return intData8; }
+template<> NFE_INLINE uint8 ConfigValue::Get<uint8>() const     { NFE_ASSERT(type == Type::Uint8, "Invalid type"); return uintData8; }
+template<> NFE_INLINE int16 ConfigValue::Get<int16>() const     { NFE_ASSERT(type == Type::Int16, "Invalid type"); return intData16; }
+template<> NFE_INLINE uint16 ConfigValue::Get<uint16>() const   { NFE_ASSERT(type == Type::Uint16, "Invalid type"); return uintData16; }
+template<> NFE_INLINE int32 ConfigValue::Get<int32>() const     { NFE_ASSERT(type == Type::Int32, "Invalid type"); return intData32; }
+template<> NFE_INLINE uint32 ConfigValue::Get<uint32>() const   { NFE_ASSERT(type == Type::Uint32, "Invalid type"); return uintData32; }
+template<> NFE_INLINE int64 ConfigValue::Get<int64>() const     { NFE_ASSERT(type == Type::Int64, "Invalid type"); return intData64; }
+template<> NFE_INLINE uint64 ConfigValue::Get<uint64>() const   { NFE_ASSERT(type == Type::Uint64, "Invalid type"); return uintData64; }
+template<> NFE_INLINE bool ConfigValue::Get<bool>() const       { NFE_ASSERT(type == Type::Bool, "Invalid type"); return boolData; }
+template<> NFE_INLINE float ConfigValue::Get<float>() const     { NFE_ASSERT(type == Type::Float, "Invalid type"); return floatData; }
+template<> NFE_INLINE double ConfigValue::Get<double>() const   { NFE_ASSERT(type == Type::Double, "Invalid type"); return doubleData; }
 template<> NFE_INLINE const char* ConfigValue::Get<const char*>() const { return stringData; }
 
 //////////////////////////////////////////////////////////////////////////

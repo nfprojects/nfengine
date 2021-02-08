@@ -56,7 +56,7 @@ class TestClassWithNestedType
 
 public:
     TestClassWithFundamentalMembers foo;
-    NFE::int32 bar;
+    NFE::int32 bar = 0;
 };
 
 
@@ -66,7 +66,7 @@ class TestClassWithArrayType
 
 public:
     NFE::int32 arrayOfInts[5];
-    float foo;
+    float foo = 0.0f;
 };
 
 
@@ -100,8 +100,8 @@ class TestAbstractClass : public NFE::IObject
     NFE_DECLARE_POLYMORPHIC_CLASS(TestAbstractClass)
 
 public:
-    NFE::int32 intVal;
-    float floatVal;
+    NFE::int32 intVal = 0;
+    float floatVal = 0.0f;
     virtual ~TestAbstractClass() { }
     virtual void PureVirtualMethod() = 0;
 };
@@ -112,8 +112,8 @@ class TestBaseClass : public NFE::IObject
     NFE_DECLARE_POLYMORPHIC_CLASS(TestBaseClass)
 
 public:
-    NFE::int32 intVal;
-    float floatVal;
+    NFE::int32 intVal = 0;
+    float floatVal = 0.0f;
     TestBaseClass()
         : intVal(0)
         , floatVal(0.0f)
@@ -131,7 +131,7 @@ class TestChildClassA : public TestBaseClass
     NFE_DECLARE_POLYMORPHIC_CLASS(TestChildClassA)
 
 public:
-    NFE::int32 foo;
+    NFE::int32 foo = 0;
 };
 
 class TestChildClassB : public TestBaseClass
@@ -175,6 +175,7 @@ bool SerializeObject(const NFE::RTTI::Type* type, const void* object, NFE::Commo
 bool SerializeObject(const NFE::RTTI::Type* type, const void* object, NFE::Common::OutputStream& outStream, NFE::RTTI::SerializationContext& context);
 
 // deserialize object from string
+bool DeserializeObject(const NFE::RTTI::Type* type, void* outObject, const NFE::Common::StringView& string, NFE::RTTI::SerializationContext& context);
 bool DeserializeObject(const NFE::RTTI::Type* type, void* outObject, const NFE::Common::StringView& string);
 
 } // namespace helper

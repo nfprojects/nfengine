@@ -70,7 +70,7 @@ TEST(ReflectionClassTest, BaseClass_Serialization)
 
     String str;
     ASSERT_TRUE(helper::SerializeObject(type, &obj, str));
-    EXPECT_STREQ("obj={__type=\"TestBaseClass\" intVal=123 floatVal=1.1 mPrivateBool=false}", str.Str());
+    EXPECT_STREQ("obj={intVal=123 floatVal=1.1}", str.Str());
 }
 
 TEST(ReflectionClassTest, BaseClass_Deserialization)
@@ -160,7 +160,7 @@ TEST(ReflectionClassTest, ChildClass_Serialization)
 
     String str;
     ASSERT_TRUE(helper::SerializeObject(type, &obj, str));
-    EXPECT_STREQ("obj={__type=\"TestChildClassA\" intVal=456 floatVal=3.14 mPrivateBool=false foo=12345}", str.Str());
+    EXPECT_STREQ("obj={intVal=456 floatVal=3.14 foo=12345}", str.Str());
 }
 
 TEST(ReflectionClassTest, ChildClass_Deserialization)

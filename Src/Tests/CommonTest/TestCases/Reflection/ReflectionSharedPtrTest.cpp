@@ -95,5 +95,142 @@ TEST(ReflectionTest, SharedPtr_Serialize_Nullptr)
     TestSharedPtr obj;
     String str;
     ASSERT_TRUE(helper::SerializeObject(type, &obj, str));
-    EXPECT_STREQ("obj=0", str.Str());
+    EXPECT_STREQ("obj={}", str.Str());
+}
+
+TEST(ReflectionTest, SharedPtr_Serialize_Base)
+{
+    const auto* type = GetType<TestSharedPtr>();
+
+    TestSharedPtr obj = MakeSharedPtr<TestBaseClass>();
+    obj->floatVal = 123.0f;
+    obj->intVal = 321;
+
+    String str;
+    ASSERT_TRUE(helper::SerializeObject(type, &obj, str));
+    EXPECT_STREQ("obj={__type=\"TestBaseClass\" __objID=0 __value={intVal=321 floatVal=123}}", str.Str());
+}
+
+TEST(ReflectionTest, SharedPtr_Serialize_DifferentObjects)
+{
+    const auto* type = GetType<SerializationTestClass>();
+
+    TestSharedPtr subObjA = MakeSharedPtr<TestBaseClass>();
+    subObjA->intVal = 123;
+
+    TestSharedPtr subObjB = MakeSharedPtr<TestBaseClass>();
+    subObjB->intVal = 456;
+
+    SerializationTestClass obj;
+    obj.sharedPtrA = subObjA;
+    obj.sharedPtrB = subObjB;
+
+    String str;
+    ASSERT_TRUE(helper::SerializeObject(type, &obj, str));
+    EXPECT_STREQ("obj={sharedPtrA={__type=\"TestBaseClass\" __objID=0 __value={intVal=123}} sharedPtrB={__type=\"TestBaseClass\" __objID=1 __value={intVal=456}}}", str.Str());
+}
+
+
+TEST(ReflectionTest, SharedPtr_Serialize_SharedObjects)
+{
+    const auto* type = GetType<SerializationTestClass>();
+
+    TestSharedPtr sharedObj = MakeSharedPtr<TestBaseClass>();
+    sharedObj->intVal = 123;
+
+    SerializationTestClass obj;
+    obj.sharedPtrA = sharedObj;
+    obj.sharedPtrB = sharedObj;
+
+    String str;
+    ASSERT_TRUE(helper::SerializeObject(type, &obj, str));
+    EXPECT_STREQ("obj={sharedPtrA={__type=\"TestBaseClass\" __objID=0 __value={intVal=123}} sharedPtrB={__objID=0}}", str.Str());
+}
+
+TEST(ReflectionTest, SharedPtr_Deserialize_Nullptr)
+{
+    const auto* type = GetType<TestSharedPtr>();
+
+    TestSharedPtr obj;
+    ASSERT_TRUE(helper::DeserializeObject(type, &obj, "obj={}"));
+    EXPECT_TRUE(obj == nullptr);
+}
+
+TEST(ReflectionTest, SharedPtr_Deserialize_MissingValueMarker)
+{
+    const auto* type = GetType<TestSharedPtr>();
+
+    TestSharedPtr obj;
+    ASSERT_FALSE(helper::DeserializeObject(type, &obj, "obj={__type=\"TestBaseClass\"}"));
+}
+
+TEST(ReflectionTest, SharedPtr_Deserialize_MissingTypeMarker)
+{
+    const auto* type = GetType<TestSharedPtr>();
+
+    TestSharedPtr obj;
+    ASSERT_FALSE(helper::DeserializeObject(type, &obj, "obj={__objID=0 __value={intVal=321 floatVal=123}}"));
+}
+
+TEST(ReflectionTest, SharedPtr_Deserialize_InvalidObjectID)
+{
+    const auto* type = GetType<TestSharedPtr>();
+
+    TestSharedPtr obj;
+    ASSERT_FALSE(helper::DeserializeObject(type, &obj, "obj={__objID=1}"));
+}
+
+TEST(ReflectionTest, SharedPtr_Deserialize_InvalidType)
+{
+    const auto* type = GetType<TestSharedPtr>();
+
+    TestSharedPtr obj;
+    ASSERT_FALSE(helper::DeserializeObject(type, &obj, "obj={__type=\"InvalidTypeName\"}"));
+}
+
+TEST(ReflectionTest, SharedPtr_Deserialize_Base)
+{
+    static_assert(std::is_constructible<TestBaseClass>::value, "TestBaseClass must be constructible");
+    const auto* type = GetType<TestSharedPtr>();
+
+    TestSharedPtr obj;
+    ASSERT_TRUE(helper::DeserializeObject(type, &obj, "obj={__type=\"TestBaseClass\" __value={intVal=111 floatVal=222.0 mPrivateBool=true}}"));
+
+    ASSERT_TRUE(obj != nullptr);
+    ASSERT_EQ(GetType<TestBaseClass>(), obj->GetDynamicType());
+    EXPECT_EQ(111, obj->intVal);
+    EXPECT_EQ(222.0f, obj->floatVal);
+    EXPECT_EQ(true, obj->GetBool());
+}
+
+TEST(ReflectionTest, SharedPtr_Deserialize_DifferentObjects)
+{
+    const auto* type = GetType<SerializationTestClass>();
+
+    SerializationTestClass obj;
+    ASSERT_TRUE(helper::DeserializeObject(type, &obj, "obj={sharedPtrA={__type=\"TestBaseClass\" __objID=0 __value={intVal=123}} sharedPtrB={__type=\"TestBaseClass\" __objID=1 __value={intVal=456}}}"));
+
+    TestSharedPtr subObjA = Cast<TestBaseClass>(obj.sharedPtrA);
+    TestSharedPtr subObjB = Cast<TestBaseClass>(obj.sharedPtrB);
+
+    ASSERT_TRUE(obj.sharedPtrA != obj.sharedPtrB);
+    ASSERT_TRUE(subObjA != nullptr);
+    ASSERT_TRUE(subObjB != nullptr);
+    EXPECT_EQ(123, subObjA->intVal);
+    EXPECT_EQ(456, subObjB->intVal);
+}
+
+
+TEST(ReflectionTest, SharedPtr_Deserialize_SharedObjects)
+{
+    const auto* type = GetType<SerializationTestClass>();
+
+    SerializationTestClass obj;
+    ASSERT_TRUE(helper::DeserializeObject(type, &obj, "obj={sharedPtrA={__type=\"TestBaseClass\" __objID=0 __value={intVal=123}} sharedPtrB={__objID=0}}"));
+
+    TestSharedPtr subObj = Cast<TestBaseClass>(obj.sharedPtrA);
+
+    ASSERT_TRUE(obj.sharedPtrA == obj.sharedPtrB);
+    ASSERT_TRUE(subObj != nullptr);
+    EXPECT_EQ(123, subObj->intVal);
 }

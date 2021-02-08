@@ -29,9 +29,6 @@ public:
     template <typename T>
     friend class TypeCreator;
 
-    // type marker used in config, when serializing polymorphic types
-    static const Common::StringView TYPE_MARKER;
-
     using Members = Common::DynArray<Member>;
     using Children = Common::DynArray<const ClassType*>;
 
@@ -93,12 +90,6 @@ private:
     Members mMembers;
 
     bool mIsAbstract;
-
-    // serialize directly to an existing ConfigObject structure
-    bool SerializeDirectly(const void* object, Common::IConfig& config, Common::ConfigObject& outObject, SerializationContext& context) const;
-
-    // deserialize member of this class (or derived one) by name
-    bool DeserializeMember(void* outObject, const Common::StringView memberName, const Common::IConfig& config, const Common::ConfigValue& value, SerializationContext& context) const;
 };
 
 

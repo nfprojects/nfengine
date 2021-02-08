@@ -19,6 +19,10 @@ using namespace Common;
 
 using ObjectType = SharedPtr<IObject>;
 
+static const StringView OBJECT_ID_MARKER("__objID");
+static const StringView TYPE_MARKER("__type");
+static const StringView VALUE_MARKER("__value");
+
 SharedPtrType::SharedPtrType(const Type* underlyingType)
     : PointerType(underlyingType)
 { }
@@ -90,17 +94,44 @@ void* SharedPtrType::Reset(void* ptrObject, const Type* newDataType) const
 bool SharedPtrType::Serialize(const void* object, IConfig& config, ConfigValue& outValue, SerializationContext& context) const
 {
     NFE_ASSERT(object, "Trying to serialize nullptr");
-    const void* pointedObject = GetPointedData(object);
+    const void* pointedData = GetPointedData(object);
+    const Type* pointedDataType = GetPointedDataType(object);
 
-    if (pointedObject)
+    ConfigObject root;
+
+    // attach type marker
+    if (pointedDataType && pointedData)
     {
-        mUnderlyingType->Serialize(pointedObject, config, outValue, context);
-    }
-    else // null pointer
-    {
-        outValue = ConfigValue(0);
+        const ObjectPtr& typedObject = *BitCast<const ObjectPtr*>(object);
+        const bool wasMapped = context.IsObjectMapped(typedObject.Get());
+
+        // type marker
+        if (!wasMapped)
+        {
+            ConfigValue marker(pointedDataType->GetName().Str());
+            config.AddValue(root, TYPE_MARKER, marker);
+        }
+
+        // object ID 
+        {
+            const uint32 objectIndex = context.MapObject(typedObject);
+            const ConfigValue objectIdMarker(objectIndex);
+            config.AddValue(root, OBJECT_ID_MARKER, objectIdMarker);
+        }
+
+        // object itself
+        if (!wasMapped)
+        {
+            ConfigValue pointedObjectValue;
+            if (!pointedDataType->Serialize(pointedData, config, pointedObjectValue, context))
+            {
+                return false;
+            }
+            config.AddValue(root, VALUE_MARKER, pointedObjectValue);
+        }
     }
 
+    outValue = ConfigValue(root);
     return true;
 }
 
@@ -108,14 +139,150 @@ bool SharedPtrType::Deserialize(void* outObject, const IConfig& config, const Co
 {
     NFE_ASSERT(outObject, "Trying to deserialize to nullptr");
 
-    NFE_UNUSED(outObject);
-    NFE_UNUSED(config);
-    NFE_UNUSED(value);
-    NFE_UNUSED(context);
+    if (!value.IsObject())
+    {
+        NFE_LOG_ERROR("Expected object");
+        return false;
+    }
 
-    NFE_ASSERT(false, "Not implemented!");
+    bool errorFound = false;
+    uint32 objectID = UINT32_MAX;
+    const char* typeName = nullptr;
+    const ConfigValue* pointedObjectValue = nullptr;
+    const auto configIteratorCallback = [&](const StringView key, const ConfigValue& value)
+    {
+        if (key == TYPE_MARKER)
+        {
+            if (!value.IsString())
+            {
+                NFE_LOG_ERROR("Type marker found - string expected");
+                errorFound = true;
+                return false;
+            }
 
-    return false;
+            typeName = value.Get<const char*>();
+        }
+        else if (key == OBJECT_ID_MARKER)
+        {
+            if (!value.Is<int32>())
+            {
+                NFE_LOG_ERROR("Object ID marker found - uint32 expected");
+                errorFound = true;
+                return false;
+            }
+
+            objectID = static_cast<uint32>(value.Get<int32>());
+        }
+        else if (key == VALUE_MARKER)
+        {
+            pointedObjectValue = &value;
+        }
+
+        return true;
+    };
+
+    // extract target object type from marker
+    config.Iterate(configIteratorCallback, value.GetObj());
+
+    if (errorFound)
+    {
+        return false;
+    }
+
+    const Type* targetType = nullptr;
+
+    if (!typeName && !pointedObjectValue && objectID == UINT32_MAX)
+    {
+        // handle nullptr
+
+        Reset(outObject);
+
+        return true;
+    }
+    else if (!typeName && !pointedObjectValue && objectID != UINT32_MAX)
+    {
+        // assign already mapped object
+
+        SharedPtr<IObject> unmappedObject;
+        if (!context.UnmapObject(objectID, unmappedObject))
+        {
+            NFE_LOG_ERROR("Failed to unmap object with index %u. Corrupted data?", objectID);
+            return false;
+        }
+
+        Assign(outObject, unmappedObject);
+
+        NFE_ASSERT(GetPointedData(outObject) == unmappedObject.Get(), "Assignment failed");
+
+        return true;
+    }
+    else if (typeName)
+    {
+        if (!pointedObjectValue)
+        {
+            NFE_LOG_ERROR("Type marker found but value marker missing");
+            return false;
+        }
+
+        // get type from name
+        targetType = ITypeRegistry::GetInstance().GetExistingType(typeName);
+        if (!targetType)
+        {
+            NFE_LOG_ERROR("Type not found: '%s'", typeName);
+            return false;
+        }
+
+        if (!targetType->IsA(mUnderlyingType))
+        {
+            const StringView name = mUnderlyingType->GetName();
+            NFE_LOG_ERROR("Target type '%s' is not related with pointed type '%.*s'", typeName, name.Length(), name.Data());
+            return false;
+        }
+    }
+    else
+    {
+        if (mUnderlyingType->GetKind() != TypeKind::Class || !static_cast<const ClassType*>(mUnderlyingType)->IsAbstract())
+        {
+            NFE_LOG_WARNING("Type marker not found - using pointed type as a reference");
+            targetType = mUnderlyingType;
+        }
+        else // pointed type is abstract class
+        {
+            NFE_LOG_ERROR("Type marker not found - cannot resolve target type");
+            return false;
+        }
+    }
+
+    if (!targetType->IsConstructible())
+    {
+        NFE_LOG_ERROR("Target type '%s' is not constructible", typeName);
+        return false;
+    }
+
+    // construct the object & assign to the smart pointer
+    void* pointedData = Reset(outObject, targetType);
+    if (!pointedData)
+    {
+        // failed to allocate memory?
+        return false;
+    }
+
+    // map the object so it can be reused
+    {
+        const ObjectPtr& typedObject = *BitCast<const ObjectPtr*>(outObject);
+
+        NFE_ASSERT(!context.IsObjectMapped(typedObject.Get()), "The object should not be mapped yet");
+        const uint32 mappedObjectID = context.MapObject(typedObject);
+
+        if (objectID != UINT32_MAX && mappedObjectID != objectID)
+        {
+            NFE_LOG_ERROR("Object ID in the data does not match the one generated at runtime");
+            return false;
+        }
+    }
+
+    // deserialize the object
+    return targetType->Deserialize(pointedData, config, *pointedObjectValue, context);
 }
 
 bool SharedPtrType::SerializeBinary(const void* object, OutputStream* stream, SerializationContext& context) const

@@ -18,6 +18,9 @@ namespace RTTI {
 
 using namespace Common;
 
+static const StringView TYPE_MARKER("__type");
+static const StringView VALUE_MARKER("__value");
+
 UniquePtrType::UniquePtrType(const Type* underlyingType)
     : PointerType(underlyingType)
 { }
@@ -85,16 +88,29 @@ bool UniquePtrType::Serialize(const void* object, IConfig& config, ConfigValue& 
 {
     NFE_ASSERT(object, "Trying to serialize nullptr");
     const void* pointedData = GetPointedData(object);
+    const Type* pointedDataType = GetPointedDataType(object);
+
+    ConfigObject root;
+
+    // attach type marker
+    if (pointedDataType)
+    {
+        ConfigValue marker(pointedDataType->GetName().Str());
+        config.AddValue(root, TYPE_MARKER, marker);
+    }
 
     if (pointedData)
     {
-        mUnderlyingType->Serialize(pointedData, config, outValue, context);
-    }
-    else // null pointer
-    {
-        outValue = ConfigValue(0);
+        ConfigValue pointedObjectValue;
+        if (!mUnderlyingType->Serialize(pointedData, config, pointedObjectValue, context))
+        {
+            return false;
+        }
+
+        config.AddValue(root, VALUE_MARKER, pointedObjectValue);
     }
 
+    outValue = ConfigValue(root);
     return true;
 }
 
@@ -102,92 +118,93 @@ bool UniquePtrType::Deserialize(void* outObject, const IConfig& config, const Co
 {
     NFE_ASSERT(outObject, "Trying to deserialize to nullptr");
 
-    if (value.Is<int32>()) // nullptr
+    if (!value.IsObject())
     {
-        if (value.Get<int32>() != 0)
+        NFE_LOG_ERROR("Expected object");
+        return false;
+    }
+
+    const ConfigValue* pointedObjectValue = nullptr;
+    const char* typeName = nullptr;
+    const auto configIteratorCallback = [&] (StringView key, const ConfigValue& value)
+    {
+        // marker found
+        if (key == TYPE_MARKER)
         {
-            NFE_LOG_WARNING("Expected zero");
+            if (!value.IsString())
+            {
+                NFE_LOG_ERROR("Marker type found - string expected");
+                return false;
+            }
+
+            typeName = value.Get<const char*>();
+        }
+        else if (key == VALUE_MARKER)
+        {
+            pointedObjectValue = &value;
         }
 
+        return true;
+    };
+
+    // extract target object type from marker
+    config.Iterate(configIteratorCallback, value.GetObj());
+
+    // handle nullptr
+    if (!pointedObjectValue)
+    {
         Reset(outObject);
         return true;
     }
-    else if (value.IsObject()) // valid object
+
+    const Type* targetType = nullptr;
+    if (typeName)
     {
-        const char* typeName = nullptr;
-        const auto configIteratorCallback = [&typeName] (StringView key, const ConfigValue& value)
+        // get type from name
+        targetType = ITypeRegistry::GetInstance().GetExistingType(typeName);
+        if (!targetType)
         {
-            // marker found
-            if (key == ClassType::TYPE_MARKER)
-            {
-                if (!value.IsString())
-                {
-                    NFE_LOG_ERROR("Marker type found - string expected");
-                    return false;
-                }
-
-                typeName = value.Get<const char*>();
-                return false;
-            }
-
-            return true;
-        };
-
-        // extract target object type from marker
-        config.Iterate(configIteratorCallback, value.GetObj());
-
-        const Type* targetType = nullptr;
-        if (typeName)
-        {
-            // get type from name
-            targetType = ITypeRegistry::GetInstance().GetExistingType(typeName);
-            if (!targetType)
-            {
-                NFE_LOG_ERROR("Type not found: '%s'", typeName);
-                return false;
-            }
-
-            if (!targetType->IsA(mUnderlyingType))
-            {
-                const StringView name = mUnderlyingType->GetName();
-                NFE_LOG_ERROR("Target type '%s' is not related with pointed type '%.*s'", typeName, name.Length(), name.Data());
-                return false;
-            }
-        }
-        else
-        {
-            if (mUnderlyingType->GetKind() != TypeKind::Class || !static_cast<const ClassType*>(mUnderlyingType)->IsAbstract())
-            {
-                NFE_LOG_WARNING("Type marker not found - using pointed type as a reference");
-                targetType = mUnderlyingType;
-            }
-            else // pointed type is abstract class
-            {
-                NFE_LOG_ERROR("Type marker not found - cannot resolve target type");
-                return false;
-            }
-        }
-
-        if (!targetType->IsConstructible())
-        {
-            NFE_LOG_ERROR("Target type '%s' is not constructible", typeName);
+            NFE_LOG_ERROR("Type not found: '%s'", typeName);
             return false;
         }
 
-        // construct the object & assign to the smart pointer
-        void* pointedData = Reset(outObject, targetType);
-        if (!pointedData) 
+        if (!targetType->IsA(mUnderlyingType))
         {
-            // failed to allocate memory?
+            const StringView name = mUnderlyingType->GetName();
+            NFE_LOG_ERROR("Target type '%s' is not related with pointed type '%.*s'", typeName, name.Length(), name.Data());
             return false;
         }
-
-        // deserialize the object
-        return targetType->Deserialize(pointedData, config, value, context);
+    }
+    else
+    {
+        if (mUnderlyingType->GetKind() != TypeKind::Class || !static_cast<const ClassType*>(mUnderlyingType)->IsAbstract())
+        {
+            NFE_LOG_WARNING("Type marker not found - using pointed type as a reference");
+            targetType = mUnderlyingType;
+        }
+        else // pointed type is abstract class
+        {
+            NFE_LOG_ERROR("Type marker not found - cannot resolve target type");
+            return false;
+        }
     }
 
-    NFE_LOG_ERROR("Expected zero (nullptr) or an object");
-    return false;
+    if (!targetType->IsConstructible())
+    {
+        NFE_LOG_ERROR("Target type '%s' is not constructible", typeName);
+        return false;
+    }
+
+    // construct the object & assign to the smart pointer
+    void* pointedData = Reset(outObject, targetType);
+    if (!pointedData) 
+    {
+        // failed to allocate memory?
+        return false;
+    }
+
+    // deserialize the object
+    return targetType->Deserialize(pointedData, config, *pointedObjectValue, context);
 }
 
 bool UniquePtrType::SerializeBinary(const void* object, OutputStream* stream, SerializationContext& context) const

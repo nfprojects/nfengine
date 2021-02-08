@@ -99,6 +99,22 @@ bool SerializationContext::IsObjectMapped(const IObject* object) const
     return mObjectsMap.Exists(object);
 }
 
+uint32 SerializationContext::GetObjectMappedIndex(const IObject* object) const
+{
+    NFE_ASSERT(object, "Tring to map nullptr");
+    NFE_ASSERT(mStage == Stage::Mapping || mStage == Stage::Serialization, "Invalid stage");
+
+    const auto iter = mObjectsMap.Find(object);
+    if (iter != mObjectsMap.End())
+    {
+        const uint32 index = iter->second.index;
+        NFE_ASSERT(object == mObjectsTable[index], "Object table is corrupted");
+        return index;
+    }
+
+    return UINT32_MAX;
+}
+
 
 void SerializationContext::OptimizeStringTable()
 {

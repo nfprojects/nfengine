@@ -150,16 +150,21 @@ bool SerializeObject(const Type* type, const void* object, OutputStream& stream,
     return true;
 }
 
-bool DeserializeObject(const Type* type, void* outObject, const StringView& string)
+bool DeserializeObject(const Type* type, void* outObject, const StringView& string, SerializationContext& context)
 {
-    SerializationContext context;
-
     Common::Config config;
     config.Parse(string);
     Common::ConfigGenericValue genericValue(&config);
     Common::ConfigValue value = genericValue["obj"];
 
     return type->Deserialize(outObject, config, value, context);
+}
+
+bool DeserializeObject(const Type* type, void* outObject, const StringView& string)
+{
+    SerializationContext context;
+
+    return DeserializeObject(type, outObject, string, context);
 }
 
 } // namespace helper

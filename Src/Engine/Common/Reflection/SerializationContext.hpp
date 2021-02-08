@@ -57,6 +57,7 @@ public:
     uint32 MapString(const Common::StringView str);
     uint32 MapObject(const ObjectPtr& object);
     bool IsObjectMapped(const IObject* object) const;
+    uint32 GetObjectMappedIndex(const IObject* object) const;
 
     void OptimizeStringTable();
     void OptimizeObjectTable();

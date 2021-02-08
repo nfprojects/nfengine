@@ -286,7 +286,7 @@ TEST(ReflectionClassTest, TestClassWithNestedType_Serialization)
 
     String str;
     ASSERT_TRUE(helper::SerializeObject(type, &obj, str));
-    EXPECT_STREQ("obj={foo={intValue=789 floatValue=16 boolValue=false strValue=\"\"} bar=123}", str.Str());
+    EXPECT_STREQ("obj={foo={intValue=789 floatValue=16} bar=123}", str.Str());
 }
 
 TEST(ReflectionClassTest, TestClassWithNestedType_Deserialization)
@@ -496,18 +496,6 @@ TEST(ReflectionClassTest, TestClassWithDynArrayType_Verify)
     }
 }
 
-TEST(ReflectionClassTest, TestClassWithDynArrayType_Serialization_Empty)
-{
-    const auto* type = GetType<TestClassWithDynArrayType>();
-    ASSERT_NE(nullptr, type);
-
-    TestClassWithDynArrayType obj;
-
-    String str;
-    ASSERT_TRUE(helper::SerializeObject(type, &obj, str));
-    EXPECT_STREQ("obj={arrayOfInts=[] arrayOfObjects=[]}", str.Str());
-}
-
 TEST(ReflectionClassTest, TestClassWithDynArrayType_Serialization)
 {
     const auto* type = GetType<TestClassWithDynArrayType>();
@@ -526,8 +514,8 @@ TEST(ReflectionClassTest, TestClassWithDynArrayType_Serialization)
     String str;
     ASSERT_TRUE(helper::SerializeObject(type, &obj, str));
     EXPECT_STREQ("obj={arrayOfInts=[10 20 30] "
-                 "arrayOfObjects=[{intValue=1 floatValue=1 boolValue=false strValue=\"aaa\"} "
-                 "{intValue=15 floatValue=15 boolValue=false strValue=\"bbb\"}]}", str.Str());
+                 "arrayOfObjects=[{intValue=1 floatValue=1 strValue=\"aaa\"} "
+                 "{intValue=15 floatValue=15 strValue=\"bbb\"}]}", str.Str());
 }
 
 TEST(ReflectionClassTest, TestClassWithArrayType_Deserialization_Empty)
@@ -680,5 +668,5 @@ TEST(ReflectionClassTest, TestClassWithUniquePtrType_Serialization_Empty)
 
     String str;
     ASSERT_TRUE(helper::SerializeObject(type, &obj, str));
-    EXPECT_STREQ("obj={pointerToInt=0 pointerToObject=0 pointerToArrayOfInts=0 arrayOfPointersToInts=[0]}", str.Str());
+    EXPECT_STREQ("obj={arrayOfPointersToInts=[{}]}", str.Str());
 }

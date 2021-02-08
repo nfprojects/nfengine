@@ -21,8 +21,6 @@ namespace RTTI {
 
 using namespace Common;
 
-const StringView ClassType::TYPE_MARKER("__type");
-
 using MemberPayloadSizeType = uint16;
 
 ClassType::ClassType()
@@ -47,7 +45,6 @@ void ClassType::OnInitialize(const TypeInfo& info)
 
         NFE_ASSERT(member.GetName(), "Member has no name");
         NFE_ASSERT(member.GetType(), "Member '%s' has invalid type", member.GetName());
-        NFE_ASSERT(member.GetName() != TYPE_MARKER, "Name reserved");
     }
 
     std::sort(mMembers.Begin(), mMembers.End(), [] (const Member& a, const Member& b)
@@ -205,27 +202,6 @@ void ClassType::CollectDifferingMemberList(const void* objectA, const void* obje
     }
 }
 
-bool ClassType::SerializeDirectly(const void* object, IConfig& config, ConfigObject& outObject, SerializationContext& context) const
-{
-    // serialize members
-    for (const Member& member : mMembers)
-    {
-        const Type* memberType = member.GetType();
-
-        ConfigValue memberValue;
-        if (!memberType->Serialize(member.GetMemberPtr(object), config, memberValue, context))
-        {
-            NFE_LOG_ERROR("Failed to serialize member '%s' in object of type '%s'", member.GetName(), GetName().Str());
-            return false;
-        }
-
-        // TODO Member::GetName should contain StringValue instead of const char* ?
-        config.AddValue(outObject, StringView(member.GetName()), memberValue);
-    }
-
-    return true;
-}
-
 bool ClassType::Serialize(const void* object, IConfig& config, ConfigValue& outValue, SerializationContext& context) const
 {
     if (IsAbstract())
@@ -234,55 +210,29 @@ bool ClassType::Serialize(const void* object, IConfig& config, ConfigValue& outV
         return false;
     }
 
+    // collect list of members to serialize
+    // TODO get rid of dynamic allocation
+    Common::DynArray<const Member*> membersToSerialize;
+    CollectDifferingMemberList(object, mDefaultObject, membersToSerialize);
+
     ConfigObject root;
 
-    // attach type marker
-    if (IsA(GetType<IObject>()))
+    // serialize differing members
+    for (const Member* member : membersToSerialize)
     {
-        ConfigValue marker(GetName().Str());
-        config.AddValue(root, TYPE_MARKER, marker);
-    }
+        const Type* memberType = member->GetType();
 
-    // serialize derived members first
-    if (mParent)
-    {
-        if (!mParent->SerializeDirectly(object, config, root, context))
+        ConfigValue memberValue;
+        if (!memberType->Serialize(member->GetMemberPtr(object), config, memberValue, context))
         {
-            NFE_LOG_ERROR("Failed to serialize parent class '%s' of object of type '%s'", mParent->GetName().Str(), GetName().Str());
+            NFE_LOG_ERROR("Failed to serialize member '%s' in object of type '%s'", member->GetName(), GetName().Str());
             return false;
         }
-    }
 
-    if (!SerializeDirectly(object, config, root, context))
-    {
-        return false;
+        config.AddValue(root, member->GetName(), memberValue);
     }
 
     outValue = ConfigValue(root);
-    return true;
-}
-
-bool ClassType::DeserializeMember(void* outObject, const StringView memberName, const IConfig& config, const ConfigValue& value, SerializationContext& context) const
-{
-    // find member with given name
-    const Member* targetMember = FindMember(memberName);
-
-    // target member not found
-    if (!targetMember)
-    {
-        // TODO report missing member
-        NFE_LOG_WARNING("Member '%.*s' not found in runtime type, but present in deserialized object", memberName.Length(), memberName.Data());
-        return true;
-    }
-
-    const Type* memberType = targetMember->GetType();
-
-    if (!memberType->Deserialize(targetMember->GetMemberPtr(outObject), config, value, context))
-    {
-        NFE_LOG_ERROR("Failed to deserialize member '%.*s'", memberName.Length(), memberName.Data());
-        return false;
-    }
-
     return true;
 }
 
@@ -303,35 +253,29 @@ bool ClassType::Deserialize(void* outObject, const IConfig& config, const Config
     }
 
     bool success = true;
-    const auto configIteratorCallback = [&](StringView key, const ConfigValue& value)
+    const auto configIteratorCallback = [&](const StringView key, const ConfigValue& value)
     {
-        // polymorphic type marker found
-        if (key == TYPE_MARKER)
+        const StringView memberName = key;
+
+        // find member with given name
+        const Member* targetMember = FindMember(memberName);
+
+        // target member not found
+        if (!targetMember)
         {
-            if (!value.IsString())
-            {
-                // TODO report type mismatch
-                NFE_LOG_ERROR("Marker type found - string expected");
-                success = false;
-                return false;
-            }
-
-            const char* typeName = value.Get<const char*>();
-            if (typeName != GetName())
-            {
-                // TODO report type mismatch
-                NFE_LOG_ERROR("Invalid polymorphic type in marker: found '%s', expected '%s'", typeName, GetName().Str());
-                success = false;
-                return false;
-            }
-
+            // TODO report missing member
+            NFE_LOG_WARNING("Member '%.*s' not found in runtime type, but present in deserialized object", memberName.Length(), memberName.Data());
+            success = false;
             return true;
         }
 
-        if (!DeserializeMember(outObject, key, config, value, context))
+        const Type* memberType = targetMember->GetType();
+
+        if (!memberType->Deserialize(targetMember->GetMemberPtr(outObject), config, value, context))
         {
+            NFE_LOG_ERROR("Failed to deserialize member '%.*s'", memberName.Length(), memberName.Data());
             success = false;
-            return false;
+            return true;
         }
 
         return true;
@@ -364,8 +308,6 @@ bool ClassType::SerializeBinary(const void* object, OutputStream* stream, Serial
     for (const Member* member : membersToSerialize)
     {
         const Type* memberType = member->GetType();
-
-        // TODO instead of storing type names as strings use some compressed (symbolic) form?
 
         const uint32 memberNameStrIndex = context.MapString(member->GetName());
 
@@ -409,26 +351,26 @@ bool ClassType::SerializeBinary(const void* object, OutputStream* stream, Serial
             const uint64 payloadSize = streamPosAfterObject - streamPosBeforeObject - sizeof(MemberPayloadSizeType);
             if (payloadSize > std::numeric_limits<MemberPayloadSizeType>::max())
             {
-                NFE_LOG_ERROR("Sserialization failed. Member payload is too large");
+                NFE_LOG_ERROR("Serialization failed. Member payload is too large");
                 return false;
             }
 
             if (!stream->Seek(streamPosBeforeObject, SeekMode::Begin))
             {
-                NFE_LOG_ERROR("Sserialization failed. Failed to seek to write member payload size");
+                NFE_LOG_ERROR("Serialization failed. Failed to seek to write member payload size");
                 return false;
             }
 
             const MemberPayloadSizeType payloadSizeToWrite = static_cast<MemberPayloadSizeType>(payloadSize);
             if (!stream->Write(payloadSizeToWrite))
             {
-                NFE_LOG_ERROR("Sserialization failed. Failed to write member payload size");
+                NFE_LOG_ERROR("Serialization failed. Failed to write member payload size");
                 return false;
             }
 
             if (!stream->Seek(streamPosAfterObject, SeekMode::Begin))
             {
-                NFE_LOG_ERROR("Sserialization failed. Failed to seek back after writing member payload size");
+                NFE_LOG_ERROR("Serialization failed. Failed to seek back after writing member payload size");
                 return false;
             }
         }

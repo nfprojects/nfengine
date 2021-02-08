@@ -48,7 +48,7 @@ NFE_DEFINE_CLASS(TestClass_IncompatibleType_After)
 }
 NFE_END_DEFINE_CLASS()
 
-TEST(ReflectionTypeMismatchTest, IncompatibleType)
+TEST(ReflectionTypeMismatchTest, IncompatibleType_Binary)
 {
     Buffer buffer;
     SerializationContext context;
@@ -85,6 +85,29 @@ TEST(ReflectionTypeMismatchTest, IncompatibleType)
         EXPECT_EQ(2, mismatchedTypes[0].readObject.Get<int32>());
     }
 }
+
+/*
+TEST(ReflectionTypeMismatchTest, IncompatibleType)
+{
+    SerializationContext context;
+
+    const auto* typeAfter = GetType<TestClass_IncompatibleType_After>();
+    ASSERT_NE(nullptr, typeAfter);
+
+    TestClass_IncompatibleType_After readObj;
+    ASSERT_TRUE(helper::DeserializeObject(typeAfter, &readObj, "obj={a=1 b=2 c=3}", context));
+
+    EXPECT_EQ(1, readObj.a);
+    EXPECT_EQ(1.0f, readObj.b);
+    EXPECT_EQ(3, readObj.c);
+
+    const auto& mismatchedTypes = context.GetMemberTypeMismatchInfos();
+    ASSERT_EQ(1u, mismatchedTypes.Size());
+    EXPECT_EQ(MemberPath("b"), mismatchedTypes[0].path);
+    ASSERT_EQ(GetType<int32>(), mismatchedTypes[0].readObject.GetType());
+    EXPECT_EQ(2, mismatchedTypes[0].readObject.Get<int32>());
+}
+*/
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
