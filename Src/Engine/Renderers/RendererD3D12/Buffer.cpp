@@ -15,6 +15,7 @@ namespace Renderer {
 Buffer::Buffer()
     : Resource(D3D12_RESOURCE_STATE_COMMON)
     , mSize(0)
+    , mStructureSize(0)
 {
 }
 
@@ -30,8 +31,14 @@ bool Buffer::Init(const BufferDesc& desc)
         return false;
     }
 
+    if (desc.structSize > 0u)
+    {
+        NFE_ASSERT(desc.size % desc.structSize == 0, "Invalid struct size");
+    }
+
     // buffer size is required to be 256-byte aligned
     mSize = static_cast<uint32>(desc.size);
+    mStructureSize = desc.structSize;
     mMode = desc.mode;
 
     if (desc.mode == ResourceAccessMode::Volatile)
@@ -75,6 +82,11 @@ bool Buffer::Init(const BufferDesc& desc)
     {
         NFE_FATAL("Invalid resource access mode");
         return false;
+    }
+
+    if (desc.usage & NFE_RENDERER_BUFFER_USAGE_WRITABLE_STRUCT_BUFFER)
+    {
+        resourceDesc.Flags |= D3D12_RESOURCE_FLAG_ALLOW_UNORDERED_ACCESS;
     }
 
     mState = initialState;

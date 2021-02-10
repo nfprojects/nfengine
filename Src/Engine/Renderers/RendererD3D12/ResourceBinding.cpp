@@ -541,24 +541,43 @@ void CreateTextureUAV(const Texture* tex, const TextureView& view, D3D12_CPU_DES
 
 void CreateBufferSRV(const Buffer* buf, const BufferView& view, D3D12_CPU_DESCRIPTOR_HANDLE descriptorHandle)
 {
+    const uint32 structSize = buf->GetStructSize();
+    const uint32 maxElements = buf->GetSize() / structSize;
+
+    const uint32 numElements = (view.numElements == UINT32_MAX) ? maxElements : view.numElements;
+
+    NFE_ASSERT(view.firstElement < maxElements, "Buffer first element out of bounds");
+    NFE_ASSERT(view.firstElement + numElements <= maxElements, "Buffer range out of bounds");
+
     D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
-    srvDesc.ViewDimension = D3D12_SRV_DIMENSION_BUFFER;
     srvDesc.Format = DXGI_FORMAT_UNKNOWN;
+    srvDesc.ViewDimension = D3D12_SRV_DIMENSION_BUFFER;
+    srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
     srvDesc.Buffer.FirstElement = view.firstElement;
-    srvDesc.Buffer.NumElements = view.numElements;
-    srvDesc.Buffer.StructureByteStride = 0; // TODO
+    srvDesc.Buffer.NumElements = numElements;
+    srvDesc.Buffer.StructureByteStride = structSize; // TODO custom stride
+    srvDesc.Buffer.Flags = D3D12_BUFFER_SRV_FLAG_NONE;
 
     gDevice->GetDevice()->CreateShaderResourceView(buf->GetD3DResource(), &srvDesc, descriptorHandle);
 }
 
 void CreateBufferUAV(const Buffer* buf, const BufferView& view, D3D12_CPU_DESCRIPTOR_HANDLE descriptorHandle)
 {
+    const uint32 structSize = buf->GetStructSize();
+    const uint32 maxElements = buf->GetSize() / structSize;
+
+    const uint32 numElements = (view.numElements == UINT32_MAX) ? maxElements : view.numElements;
+
+    NFE_ASSERT(view.firstElement < maxElements, "Buffer first element out of bounds");
+    NFE_ASSERT(view.firstElement + numElements <= maxElements, "Buffer range out of bounds");
+
     D3D12_UNORDERED_ACCESS_VIEW_DESC uavDesc = {};
     uavDesc.ViewDimension = D3D12_UAV_DIMENSION_BUFFER;
     uavDesc.Format = DXGI_FORMAT_UNKNOWN;
     uavDesc.Buffer.FirstElement = view.firstElement;
-    uavDesc.Buffer.NumElements = view.numElements;
-    uavDesc.Buffer.StructureByteStride = 0; // TODO
+    uavDesc.Buffer.NumElements = numElements;
+    uavDesc.Buffer.StructureByteStride = structSize; // TODO custom stride
+    uavDesc.Buffer.Flags = D3D12_BUFFER_UAV_FLAG_NONE;
 
     gDevice->GetDevice()->CreateUnorderedAccessView(buf->GetD3DResource(), nullptr, &uavDesc, descriptorHandle);
 }

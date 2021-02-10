@@ -66,6 +66,8 @@ Device::Device()
 
 bool Device::Init(const DeviceInitParams* params)
 {
+    NFE_LOG_DEBUG("Started initializing renderer device");
+
     DeviceInitParams defaultParams;
     if (!params)
         params = &defaultParams;
@@ -141,6 +143,8 @@ bool Device::Init(const DeviceInitParams* params)
         NFE_LOG_ERROR("Failed to create low-level renderer resources");
         return false;
     }
+
+    NFE_LOG_DEBUG("Finished initializing renderer device");
 
     return true;
 }
@@ -330,7 +334,30 @@ bool Device::CreateResources()
         return false;
     }
 
+    if (!CreateIndirectDispatchCommandSignature())
+    {
+        NFE_LOG_ERROR("Failed to initialize command signature for indirect dispatch");
+        return false;
+    }
+
     return true;
+}
+
+bool Device::CreateIndirectDispatchCommandSignature()
+{
+    D3D12_INDIRECT_ARGUMENT_DESC indirectArgDesc = {};
+    indirectArgDesc.Type = D3D12_INDIRECT_ARGUMENT_TYPE_DISPATCH;
+
+    D3D12_COMMAND_SIGNATURE_DESC commandSignatureDesc = {};
+    commandSignatureDesc.NodeMask = 1;
+    commandSignatureDesc.pArgumentDescs = &indirectArgDesc;
+    commandSignatureDesc.ByteStride = sizeof(D3D12_DISPATCH_ARGUMENTS);
+    commandSignatureDesc.NumArgumentDescs = 1;
+
+    HRESULT hr = mDevice->CreateCommandSignature(
+        &commandSignatureDesc, nullptr, IID_PPV_ARGS(mIndirectDispatchCommandSignature.GetPtr()));
+
+    return SUCCEEDED(hr);
 }
 
 void* Device::GetHandle() const

@@ -12,9 +12,9 @@
 #include "Engine/Common/Logger/Logger.hpp"
 #include "Engine/Common/Math/Math.hpp"
 #include "Engine/Common/Math/Vec4fU.hpp"
+#include "Engine/Common/Utils/StringUtils.hpp"
 #include "Engine/Renderers/RendererCommon/Fence.hpp"
 
-#include <vector>
 #include <functional>
 
 
@@ -40,27 +40,28 @@ bool ComputeScene::CreateSubSceneSimple()
     mDispatchX = (WINDOW_WIDTH / THREAD_GROUP_SIZE) + ((WINDOW_WIDTH % THREAD_GROUP_SIZE > 0) ? 1 : 0);
     mDispatchY = (WINDOW_HEIGHT / THREAD_GROUP_SIZE) + ((WINDOW_HEIGHT % THREAD_GROUP_SIZE > 0) ? 1 : 0);
 
-    std::string threadGroupSizeStr = std::to_string(THREAD_GROUP_SIZE);
+    const Common::String threadGroupSizeStr = Common::ToString(THREAD_GROUP_SIZE);
+    const Common::String csPath = gShaderPathPrefix + "TestCS" + gShaderPathExt;
 
     ShaderMacro macros[] =
     {
-        { "THREADS_X", threadGroupSizeStr.c_str() },
-        { "THREADS_Y", threadGroupSizeStr.c_str() },
+        { "THREAD_GROUP_SIZE", threadGroupSizeStr.Str() },
+        { "FILL_INDIRECT_ARG_BUFFER", "0" },
     };
-    const Common::String vsPath = gShaderPathPrefix + "TestCS" + gShaderPathExt;
-    mShader = CompileShader(vsPath.Str(), ShaderType::Compute, macros, 2);
-    if (!mShader)
+    mShader_Main = CompileShader(csPath.Str(), ShaderType::Compute, macros, 2);
+    if (!mShader_Main)
+    {
         return false;
+    }
 
-
-    int mCBufferSlot = mShader->GetResourceSlotByName("gParams");
+    int mCBufferSlot = mShader_Main->GetResourceSlotByName("gParams");
     if (mCBufferSlot < 0)
     {
         NFE_LOG_ERROR("Slot not found");
         return false;
     }
 
-    int mTextureSlot = mShader->GetResourceSlotByName("gOutputTexture");
+    int mTextureSlot = mShader_Main->GetResourceSlotByName("gOutputTexture");
     if (mTextureSlot < 0)
     {
         NFE_LOG_ERROR("Slot not found");
@@ -84,11 +85,10 @@ bool ComputeScene::CreateSubSceneSimple()
         return false;
 
     // create pipeline state
-    ComputePipelineStateDesc pipelineStateDesc(mShader, mResBindingLayout);
-    mPipelineState = mRendererDevice->CreateComputePipelineState(pipelineStateDesc);
-    if (!mPipelineState)
+    ComputePipelineStateDesc pipelineStateDesc(mShader_Main, mResBindingLayout);
+    mPipelineState_Main = mRendererDevice->CreateComputePipelineState(pipelineStateDesc);
+    if (!mPipelineState_Main)
         return false;
-
 
     // create cbuffer
     CBuffer cubfferData;
@@ -134,6 +134,48 @@ bool ComputeScene::CreateSubSceneSimple()
     if (!mBindingInstance->Finalize())
         return false;
 
+    mUseIndirectDispatch = false;
+    return true;
+}
+
+bool ComputeScene::CreateSubSceneIndirect()
+{
+    if (!CreateSubSceneSimple())
+    {
+        return false;
+    }
+
+    const Common::String threadGroupSizeStr = Common::ToString(THREAD_GROUP_SIZE);
+    const Common::String csPath = gShaderPathPrefix + "TestCS" + gShaderPathExt;
+
+    ShaderMacro macros[] =
+    {
+        { "THREAD_GROUP_SIZE", threadGroupSizeStr.Str() },
+        { "FILL_INDIRECT_ARG_BUFFER", "1" },
+    };
+    mShader_PrepareArg = CompileShader(csPath.Str(), ShaderType::Compute, macros, 2);
+    if (!mShader_PrepareArg)
+    {
+        return false;
+    }
+
+    // create pipeline state
+    ComputePipelineStateDesc pipelineStateDesc(mShader_PrepareArg, mResBindingLayout);
+    mPipelineState_PrepareArg = mRendererDevice->CreateComputePipelineState(pipelineStateDesc);
+    if (!mPipelineState_PrepareArg)
+        return false;
+
+    BufferDesc cbufferDesc;
+    cbufferDesc.size = 3 * sizeof(uint32);
+    cbufferDesc.structSize = sizeof(uint32);
+    cbufferDesc.usage = NFE_RENDERER_BUFFER_USAGE_WRITABLE_STRUCT_BUFFER;
+    mIndirectArgBuffer = mRendererDevice->CreateBuffer(cbufferDesc);
+    if (!mIndirectArgBuffer)
+    {
+        return false;
+    }
+
+    mUseIndirectDispatch = true;
     return true;
 }
 
@@ -141,6 +183,7 @@ ComputeScene::ComputeScene()
     : Scene("Compute")
 {
     RegisterSubScene(std::bind(&ComputeScene::CreateSubSceneSimple, this), "Simple");
+    RegisterSubScene(std::bind(&ComputeScene::CreateSubSceneIndirect, this), "Indirect");
 }
 
 ComputeScene::~ComputeScene()
@@ -158,8 +201,10 @@ void ComputeScene::ReleaseSubsceneResources()
 
     mTexture.Reset();
     mConstantBuffer.Reset();
-    mShader.Reset();
-    mPipelineState.Reset();
+    mShader_Main.Reset();
+    mShader_PrepareArg.Reset();
+    mPipelineState_Main.Reset();
+    mPipelineState_PrepareArg.Reset();
 }
 
 bool ComputeScene::OnInit(void* winHandle)
@@ -189,10 +234,23 @@ void ComputeScene::Draw(float dt)
     // bind resources
     mCommandBuffer->SetResourceBindingLayout(PipelineType::Compute, mResBindingLayout);
     mCommandBuffer->BindResources(PipelineType::Compute, 0, mBindingInstance);
-    mCommandBuffer->SetComputePipelineState(mPipelineState);
-
+    
     // execute compute shader
-    mCommandBuffer->Dispatch(mDispatchX, mDispatchY);
+    if (mUseIndirectDispatch)
+    {
+        mCommandBuffer->SetComputePipelineState(mPipelineState_PrepareArg);
+        mCommandBuffer->BindWritableBuffer(PipelineType::Compute, 0, 1, mIndirectArgBuffer);
+        mCommandBuffer->Dispatch();
+
+        mCommandBuffer->SetComputePipelineState(mPipelineState_Main);
+        mCommandBuffer->BindWritableTexture(PipelineType::Compute, 0, 1, mTexture);
+        mCommandBuffer->DispatchIndirect(mIndirectArgBuffer);
+    }
+    else
+    {   
+        mCommandBuffer->SetComputePipelineState(mPipelineState_Main);
+        mCommandBuffer->Dispatch(mDispatchX, mDispatchY);
+    }
 
     // copy result to backbuffer
     mCommandBuffer->CopyTexture(mTexture, mWindowBackbuffer);

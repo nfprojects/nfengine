@@ -1191,7 +1191,15 @@ void CommandRecorder::Internal_UpdateResourceBindings(PipelineType pipelineType)
             HeapAllocator& allocator = gDevice->GetCbvSrvUavHeapAllocator();
             D3D12_GPU_DESCRIPTOR_HANDLE ptr = allocator.GetGpuHandle();
             ptr.ptr += (uint64)descriptorRange.offset * allocator.GetDescriptorSize();
-            mCommandList->SetGraphicsRootDescriptorTable(setIndex, ptr);
+
+            if (pipelineType == PipelineType::Compute)
+            {
+                mCommandList->SetComputeRootDescriptorTable(setIndex, ptr);
+            }
+            else
+            {
+                mCommandList->SetGraphicsRootDescriptorTable(setIndex, ptr);
+            }
 
             continue;
         }
@@ -1323,6 +1331,31 @@ void CommandRecorder::Dispatch(uint32 x, uint32 y, uint32 z)
     Internal_PrepareForDispatch();
 
     mCommandList->Dispatch(x, y, z);
+}
+
+void CommandRecorder::DispatchIndirect(const BufferPtr& indirectArgBuffer, uint32 bufferOffset)
+{
+    NFE_ASSERT(mQueueType == CommandQueueType::Graphics || mQueueType == CommandQueueType::Compute, "Invalid queue type");
+
+    const Buffer* buffer = static_cast<Buffer*>(indirectArgBuffer.Get());
+    NFE_ASSERT(buffer, "Invalid buffer");
+
+    Internal_GetReferencedResources().buffers.Insert(indirectArgBuffer);
+
+    if (buffer->GetMode() != ResourceAccessMode::Upload && buffer->GetMode() != ResourceAccessMode::GPUOnly)
+    {
+        NFE_FATAL("Invalid access mode of indirect argument buffer");
+    }
+
+    const uint32 argumentsSize = sizeof(D3D12_DISPATCH_ARGUMENTS);
+    NFE_ASSERT(bufferOffset + argumentsSize <= buffer->GetSize(), "Indirect argument buffer is too small");
+
+    mResourceStateCache.EnsureResourceState(buffer, D3D12_RESOURCE_STATE_INDIRECT_ARGUMENT);
+    mResourceStateCache.FlushPendingBarriers(mCommandList);
+
+    Internal_PrepareForDispatch();
+
+    mCommandList->ExecuteIndirect(gDevice->GetIndirectDispatchCommandSignature(), 1, buffer->GetD3DResource(), bufferOffset, nullptr, 0);
 }
 
 void CommandRecorder::Internal_ReferenceBindingSetInstance(const ResourceBindingInstancePtr& bindingSetInstance)

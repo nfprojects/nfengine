@@ -25,12 +25,14 @@ struct BufferDesc
     ResourceAccessMode mode;
     uint32 usage;
     size_t size;
+    uint32 structSize;
     const char* debugName;   //< optional debug name
 
     BufferDesc()
         : mode(ResourceAccessMode::GPUOnly)
         , usage(0u)
         , size(0u)
+        , structSize(0u)
         , debugName(nullptr)
     {}
 };

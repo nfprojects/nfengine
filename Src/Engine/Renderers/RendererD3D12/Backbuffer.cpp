@@ -28,7 +28,7 @@ Backbuffer::~Backbuffer()
 {
     for (const FencePtr& fence : mPendingFramesFences)
     {
-        fence->Wait();
+        NFE_ASSERT(fence->IsFinished(), "All fences should be finished when destroying backbuffer");
     }
 
     mFrameFence.Release();
@@ -79,6 +79,7 @@ bool Backbuffer::Init(const BackbufferDesc& desc)
     scd.Scaling = DXGI_SCALING_NONE;
     scd.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;
     scd.SampleDesc.Count = 1;
+    scd.Flags = DXGI_SWAP_CHAIN_FLAG_FRAME_LATENCY_WAITABLE_OBJECT;
 
     if (gDevice->GetCaps().tearingSupport)
     {

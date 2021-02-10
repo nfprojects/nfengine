@@ -66,6 +66,7 @@ class Device : public IDevice
     D3DPtr<ID3D12DebugDevice> mDebugDevice;
     D3DPtr<ID3D12InfoQueue> mInfoQueueD3D;
     D3DPtr<IDXGIInfoQueue> mInfoQueueDXGI;
+    D3DPtr<ID3D12CommandSignature> mIndirectDispatchCommandSignature;
 
     D3D12MA::Allocator* mAllocator = nullptr;
 
@@ -94,6 +95,7 @@ class Device : public IDevice
     bool DetectVideoCards(int preferredId);
     bool DetectMonitors();
     bool CreateResources();
+    bool CreateIndirectDispatchCommandSignature();
 
     uint32 ReleaseUnusedCommandQueues();
 
@@ -104,6 +106,8 @@ public:
 
     const DeviceCaps& GetCaps() const { return mCaps; }
     ID3D12Device1* GetDevice() const { return mDevice.Get(); }
+    ID3D12CommandSignature* GetIndirectDispatchCommandSignature() const { return mIndirectDispatchCommandSignature.Get(); }
+
     virtual void* GetHandle() const override;
     virtual bool GetDeviceInfo(DeviceInfo& info) override;
     virtual bool IsBackbufferFormatSupported(Format format) override;

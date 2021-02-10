@@ -36,6 +36,11 @@ public:
         return mSize;
     }
 
+    NFE_FORCE_INLINE uint32 GetStructSize() const
+    {
+        return mStructureSize;
+    }
+
     // get allocated memory size
     NFE_FORCE_INLINE uint32 GetRealSize() const
     {
@@ -44,6 +49,7 @@ public:
 
 private:
     uint32 mSize;
+    uint32 mStructureSize;
 };
 
 } // namespace Renderer

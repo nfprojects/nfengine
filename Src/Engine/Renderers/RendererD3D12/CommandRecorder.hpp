@@ -69,6 +69,7 @@ public:
     /// Compute pipeline methods
     void SetComputePipelineState(const ComputePipelineStatePtr& state) override;
     void Dispatch(uint32 x, uint32 y, uint32 z) override;
+    void DispatchIndirect(const BufferPtr& indirectArgBuffer, uint32 bufferOffset) override;
 
     /// Debugging
     void BeginDebugGroup(const char* text) override;

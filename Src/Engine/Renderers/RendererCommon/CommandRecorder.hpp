@@ -189,8 +189,8 @@ public:
      * @param slotInSet             Resource slot in given binding set.
      * @param buffer,view           Buffer and its view to be bound
      */
-    virtual void BindBuffer(PipelineType pipelineType, uint32 setIndex, uint32 slotInSet, const BufferPtr& buffer, const BufferView& view) = 0;
-    virtual void BindWritableBuffer(PipelineType pipelineType, uint32 setIndex, uint32 slotInSet, const BufferPtr& buffer, const BufferView& view) = 0;
+    virtual void BindBuffer(PipelineType pipelineType, uint32 setIndex, uint32 slotInSet, const BufferPtr& buffer, const BufferView& view = BufferView()) = 0;
+    virtual void BindWritableBuffer(PipelineType pipelineType, uint32 setIndex, uint32 slotInSet, const BufferPtr& buffer, const BufferView& view = BufferView()) = 0;
 
     /**
      * Bind dynamic buffer to the graphics pipeline.
@@ -294,6 +294,14 @@ public:
      * @param x,y,z     Size of workgroups matrix.
      */
     virtual void Dispatch(uint32 x = 1, uint32 y = 1, uint32 z = 1) = 0;
+
+    /**
+     * Execute compute shader.
+     * 
+     * @param indirectArgBuffer Buffer containing dispatch params.
+     * @param bufferOffset      Offset to the params within the buffer.
+     */
+    virtual void DispatchIndirect(const BufferPtr& indirectArgBuffer, uint32 bufferOffset = 0) = 0;
 
     /**@}*/
 
