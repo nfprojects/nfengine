@@ -465,7 +465,8 @@ bool Device::DetectVideoCards(int preferredId)
         {
             descString += " [software adapter]";
         }
-        else if (!mAdapter || static_cast<uint32>(preferredId) == i)
+
+        if (!mAdapter || static_cast<uint32>(preferredId) == i)
         {
             mAdapter = D3DPtr<IDXGIAdapter>(adapter);
         }

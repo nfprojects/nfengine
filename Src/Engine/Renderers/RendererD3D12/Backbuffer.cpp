@@ -9,6 +9,7 @@
 #include "RendererD3D12.hpp"
 #include "Translations.hpp"
 #include "CommandQueue.hpp"
+#include "Engine/Common/Utils/StringUtils.hpp"
 
 
 namespace NFE {
@@ -28,7 +29,7 @@ Backbuffer::~Backbuffer()
 {
     for (const FencePtr& fence : mPendingFramesFences)
     {
-        NFE_ASSERT(fence->IsFinished(), "All fences should be finished when destroying backbuffer");
+        fence->Wait();
     }
 
     mFrameFence.Release();
@@ -104,7 +105,7 @@ bool Backbuffer::Init(const BackbufferDesc& desc)
 
     mCurrentBuffer = mSwapChain->GetCurrentBackBufferIndex();
 
-    for (UINT n = 0; n < mBuffers.Size(); n++)
+    for (uint32 n = 0; n < mBuffers.Size(); n++)
     {
         hr = mSwapChain->GetBuffer(n, IID_PPV_ARGS(mBuffers[n].GetPtr()));
         if (FAILED(hr))
@@ -113,7 +114,8 @@ bool Backbuffer::Init(const BackbufferDesc& desc)
             return false;
         }
 
-        if (!SetDebugName(mBuffers[n].Get(), "Backbuffer"))
+        const Common::String debugName = "Backbuffer" + Common::ToString(n);
+        if (!SetDebugName(mBuffers[n].Get(), debugName))
         {
             NFE_LOG_WARNING("Failed to set debug name");
         }

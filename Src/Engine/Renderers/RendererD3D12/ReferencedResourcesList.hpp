@@ -19,7 +19,6 @@ struct ReferencedResourcesList
     template<typename T>
     using Container = Common::HashSet<T>;
 
-    Container<BackbufferPtr> backbuffers;
     Container<TexturePtr> textures;
     Container<BufferPtr> buffers;
     Container<RenderTargetPtr> renderTargets;

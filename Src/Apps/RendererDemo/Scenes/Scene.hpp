@@ -25,10 +25,10 @@ struct SubSceneDefinition
  */
 class Scene
 {
-    size_t mCurrentSubScene;
-    size_t mHighestAvailableSubScene;
+    NFE::uint32 mCurrentSubScene;
+    NFE::uint32 mHighestAvailableSubScene;
     std::string mName;  //< scene name
-    std::vector<SubSceneDefinition> mSubScenes;
+    NFE::Common::DynArray<SubSceneDefinition> mSubScenes;
 
 protected:
     // Renderer interfaces
@@ -56,7 +56,7 @@ public:
      *
      * Each derived scene should define the destructor to clean up.
      */
-    virtual ~Scene() {};
+    virtual ~Scene();
 
     /**
      * Retrieves scene name
@@ -81,7 +81,7 @@ public:
      * @param subScene Subscene ID to switch to
      * @return True on successful switch, false if subscene was unable to initialize
      */
-    virtual bool SwitchSubscene(size_t subScene);
+    virtual bool SwitchSubscene(NFE::uint32 subScene);
 
     /**
      * Retrieves subscene count
@@ -94,14 +94,14 @@ public:
      * backend features are not yet implemented), it is recommended to detect such situation and
      * set this value to lower than all subscene count.
      */
-    size_t GetAvailableSubSceneCount() const;
+    NFE::uint32 GetAvailableSubSceneCount() const;
 
     /**
      * Retrieves current subscene number
      *
      * @return Current subscene number or a negative value when no exists.
      */
-    size_t GetCurrentSubSceneNumber() const;
+    NFE::uint32 GetCurrentSubSceneNumber() const;
 
     /**
      * Retrieves current subscene name
@@ -129,4 +129,4 @@ public:
     virtual void Release() = 0;
 };
 
-typedef std::vector<NFE::Common::UniquePtr<Scene>> SceneArrayType;
+using SceneArrayType = NFE::Common::DynArray<NFE::Common::UniquePtr<Scene>>;

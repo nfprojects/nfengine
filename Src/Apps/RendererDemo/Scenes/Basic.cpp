@@ -402,10 +402,10 @@ BasicScene::BasicScene()
     RegisterSubScene(std::bind(&BasicScene::CreateSubSceneConstantBuffer, this, ResourceAccessMode::GPUOnly, true), "ConstantBuffer (Dynamic)");
     RegisterSubScene(std::bind(&BasicScene::CreateSubSceneConstantBuffer, this, ResourceAccessMode::Volatile, true), "ConstantBuffer (Volatile)");
     RegisterSubScene(std::bind(&BasicScene::CreateSubSceneTexture, this, ResourceAccessMode::GPUOnly, true, 1), "Texture + Dynamic CBuffer");
-    //RegisterSubScene(std::bind(&BasicScene::CreateSubSceneTexture, this, ResourceAccessMode::GPUOnly, false, 1), "Texture + Dynamic CBuffer + Direct Binding");
-    //RegisterSubScene(std::bind(&BasicScene::CreateSubSceneTexture, this, ResourceAccessMode::Volatile, true, 1), "Texture + Volatile CBuffer");
-    //RegisterSubScene(std::bind(&BasicScene::CreateSubSceneTexture, this, ResourceAccessMode::Volatile, true, 5), "CBufferStress5");
-    //RegisterSubScene(std::bind(&BasicScene::CreateSubSceneTexture, this, ResourceAccessMode::Volatile, false, 30), "CBufferStress30 + Direct Binding");
+    RegisterSubScene(std::bind(&BasicScene::CreateSubSceneTexture, this, ResourceAccessMode::GPUOnly, false, 1), "Texture + Dynamic CBuffer + Direct Binding");
+    RegisterSubScene(std::bind(&BasicScene::CreateSubSceneTexture, this, ResourceAccessMode::Volatile, true, 1), "Texture + Volatile CBuffer");
+    RegisterSubScene(std::bind(&BasicScene::CreateSubSceneTexture, this, ResourceAccessMode::Volatile, true, 5), "CBufferStress5");
+    RegisterSubScene(std::bind(&BasicScene::CreateSubSceneTexture, this, ResourceAccessMode::Volatile, false, 30), "CBufferStress30 + Direct Binding");
 }
 
 BasicScene::~BasicScene()

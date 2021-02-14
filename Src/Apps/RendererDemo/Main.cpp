@@ -39,7 +39,7 @@ using namespace NFE::Renderer;
 
 class DemoWindow : public Window
 {
-    size_t mCurrentScene;
+    uint32 mCurrentScene;
     Library mRendererLib;
     IDevice* mRendererDevice;
     CommandQueuePtr mGraphicsQueue;
@@ -58,7 +58,7 @@ class DemoWindow : public Window
         SetTitle(title.c_str());
     }
 
-    void SwitchScene(size_t scene)
+    void SwitchScene(uint32 scene)
     {
         if (scene == mCurrentScene)
             return;
@@ -89,7 +89,7 @@ class DemoWindow : public Window
         SetWindowTitle();
     }
 
-    void SwitchSubScene(size_t subScene)
+    void SwitchSubScene(uint32 subScene)
     {
         if (mScenes[mCurrentScene]->SwitchSubscene(subScene))
         {
@@ -126,15 +126,15 @@ public:
         // TODO: move scene registration to their source files
         // TODO: switching to arbitrary scene (e.g. omitting a single scene should be
         //       possible, when a feature is not implemented in renderer
-        mScenes.push_back(MakeUniquePtr<BasicScene>());
-        // mScenes.push_back(MakeUniquePtr<MultisampleScene>()); // WIP
-        mScenes.push_back(MakeUniquePtr<DepthStencilScene>());
-        mScenes.push_back(MakeUniquePtr<RenderTargetsScene>());
-        mScenes.push_back(MakeUniquePtr<VertexBuffersScene>());
-        mScenes.push_back(MakeUniquePtr<TessellationScene>());
-        mScenes.push_back(MakeUniquePtr<ComputeScene>());
-        mScenes.push_back(MakeUniquePtr<MultithreadedScene>());
-        mScenes.push_back(MakeUniquePtr<DynamicTextureScene>());
+        mScenes.PushBack(MakeUniquePtr<BasicScene>());
+        mScenes.PushBack(MakeUniquePtr<MultisampleScene>());
+        mScenes.PushBack(MakeUniquePtr<DepthStencilScene>());
+        mScenes.PushBack(MakeUniquePtr<RenderTargetsScene>());
+        mScenes.PushBack(MakeUniquePtr<VertexBuffersScene>());
+        mScenes.PushBack(MakeUniquePtr<TessellationScene>());
+        mScenes.PushBack(MakeUniquePtr<ComputeScene>());
+        mScenes.PushBack(MakeUniquePtr<MultithreadedScene>());
+        mScenes.PushBack(MakeUniquePtr<DynamicTextureScene>());
     }
 
     /**
@@ -202,9 +202,9 @@ public:
      *
      * @see DemoWindow::OnKeyPress
      */
-    bool InitScene(size_t scene)
+    bool InitScene(uint32 scene)
     {
-        if (scene >= mScenes.size())
+        if (scene >= mScenes.Size())
             return false;
 
         if (!mScenes[scene]->Init(mRendererDevice, mGraphicsQueue, mCopyQueue, GetHandle()))
@@ -253,6 +253,8 @@ public:
      */
     void Release()
     {
+        mScenes.Clear();
+
         mCopyQueue.Reset();
         mGraphicsQueue.Reset();
 
@@ -278,15 +280,15 @@ public:
     void OnKeyPress(KeyCode key)
     {
         // keep temporarily the IDs
-        size_t newSceneId = mCurrentScene;
-        size_t newSubSceneId = mScenes[mCurrentScene]->GetCurrentSubSceneNumber();
+        uint32 newSceneId = mCurrentScene;
+        uint32 newSubSceneId = mScenes[mCurrentScene]->GetCurrentSubSceneNumber();
 
-        size_t numScenes = mScenes[mCurrentScene]->GetAvailableSubSceneCount();
+        uint32 numScenes = mScenes[mCurrentScene]->GetAvailableSubSceneCount();
 
         switch (key)
         {
         case KeyCode::Right:
-            if (newSceneId >= mScenes.size() - 1)
+            if (newSceneId + 1 >= mScenes.Size())
                 newSceneId = 0;
             else
                 newSceneId++;
@@ -295,7 +297,7 @@ public:
 
         case KeyCode::Left:
             if (newSceneId == 0)
-                newSceneId = mScenes.size() - 1;
+                newSceneId = mScenes.Size() - 1;
             else
                 newSceneId--;
             SwitchScene(newSceneId);
@@ -444,7 +446,6 @@ int InnerMain(int argc, char* argv[])
     }
 
     window.DrawLoop();
-    window.Release();
 
     return 0;
 }

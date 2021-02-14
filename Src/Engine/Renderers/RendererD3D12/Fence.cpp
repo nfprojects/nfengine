@@ -34,7 +34,12 @@ FenceData::~FenceData()
 
 void FenceData::Release()
 {
-    mFenceObject.Reset();
+    if (mFenceObject)
+    {
+        gDevice->GetFenceManager().UnregisterFenceData(this);
+
+        mFenceObject.Reset();
+    }
 }
 
 bool FenceData::Init()
@@ -194,6 +199,7 @@ bool FenceManager::Initialize()
         Loop();
     });
     mThread.SetName("NFE::Renderer::FenceManager");
+    mThread.SetPriority(ThreadPriority::AboveNormal);
 
     return true;
 }
@@ -248,6 +254,9 @@ void FenceManager::RegisterFenceData(const FenceData* fenceData)
 {
     NFE_SCOPED_LOCK(mFenceDataLock);
 
+    const auto iter = mFenceData.Find(fenceData);
+    NFE_ASSERT(iter == mFenceData.End(), "Fence data already registered");
+
     mFenceData.PushBack(fenceData);
 }
 
@@ -255,8 +264,10 @@ void FenceManager::UnregisterFenceData(const FenceData* fenceData)
 {
     NFE_SCOPED_LOCK(mFenceDataLock);
 
-    // TODO command queue
-    NFE_UNUSED(fenceData);
+    const auto iter = mFenceData.Find(fenceData);
+    NFE_ASSERT(iter != mFenceData.End(), "Fence data not registered");
+
+    mFenceData.Erase(iter);
 }
 
 void FenceManager::Loop()
@@ -323,6 +334,8 @@ void FenceManager::Loop()
             FlushFinishedFences();
         }
     }
+
+    NFE_LOG_DEBUG("Finishing D3D12 fence manager thread");
 }
 
 void FenceManager::FlushFinishedFences()
@@ -342,8 +355,6 @@ void FenceManager::FlushFinishedFences()
             continue;
         }
 
-        pendingFencesList.fenceData->OnValueCompleted(completedValue);
-
         // finished, notify fences
         for (const FenceWeakPtr& fencePtr : pendingFencesList.fences)
         {
@@ -353,6 +364,8 @@ void FenceManager::FlushFinishedFences()
                 internalFence->OnFenceFinished();
             }
         }
+
+        pendingFencesList.fenceData->OnValueCompleted(completedValue);
 
         // get rid of list
         mPendingFences.Erase(mPendingFences.Begin() + i);

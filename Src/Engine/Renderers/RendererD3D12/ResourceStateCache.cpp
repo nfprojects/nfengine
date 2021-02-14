@@ -7,6 +7,7 @@
 #include "PCH.hpp"
 #include "ResourceStateCache.hpp"
 #include "RendererD3D12.hpp"
+#include "Backbuffer.hpp"
 
 #include "Engine/Common/Logger/Logger.hpp"
 
@@ -96,9 +97,24 @@ void ResourceStateCache::EnsureResourceState(const Resource* resource, D3D12_RES
 
 void ResourceStateCache::PushPendingBarrier(const Resource* resource, uint32 subresource, D3D12_RESOURCE_STATES stateBefore, D3D12_RESOURCE_STATES stateAfter)
 {
+    NFE_ASSERT(resource, "Invalid resource");
+
     if (stateBefore != stateAfter)
     {
         // TODO check for duplicate barriers
+
+        if (!mPendingResourceBarriers.Empty())
+        {
+            // update existing barrier
+            D3D12_RESOURCE_BARRIER& lastBarrier = mPendingResourceBarriers.Back();
+            if (lastBarrier.Type == D3D12_RESOURCE_BARRIER_TYPE_TRANSITION &&
+                lastBarrier.Transition.pResource == resource->GetD3DResource() &&
+                lastBarrier.Transition.Subresource == subresource)
+            {
+                lastBarrier.Transition.StateAfter = stateAfter;
+                return;
+            }
+        }
 
         D3D12_RESOURCE_BARRIER barrierDesc = {};
         barrierDesc.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;

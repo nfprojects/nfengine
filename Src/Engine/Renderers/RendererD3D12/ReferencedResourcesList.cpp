@@ -26,7 +26,6 @@ ReferencedResourcesList::~ReferencedResourcesList() = default;
 
 void ReferencedResourcesList::Clear()
 {
-    backbuffers.Clear();
     textures.Clear();
     buffers.Clear();
     renderTargets.Clear();
@@ -38,11 +37,6 @@ void ReferencedResourcesList::Clear()
 
 void ReferencedResourcesList::MergeWith(const ReferencedResourcesList& other)
 {
-    for (const BackbufferPtr& backbuffer : other.backbuffers)
-    {
-        backbuffers.Insert(backbuffer);
-    }
-
     for (const TexturePtr& texture : other.textures)
     {
         textures.Insert(texture);

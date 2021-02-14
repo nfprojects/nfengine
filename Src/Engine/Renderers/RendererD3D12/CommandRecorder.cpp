@@ -911,7 +911,6 @@ void CommandRecorder::CopyTexture(const TexturePtr& src, const BackbufferPtr& de
     NFE_ASSERT(dest, "Invalid destination backbuffer");
 
     Internal_GetReferencedResources().textures.Insert(src);
-    Internal_GetReferencedResources().backbuffers.Insert(dest);
 
     Texture* srcTex = dynamic_cast<Texture*>(src.Get());
     NFE_ASSERT(src, "Invalid 'src' pointer");

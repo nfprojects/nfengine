@@ -14,11 +14,18 @@ using namespace NFE;
 using namespace Renderer;
 
 Scene::Scene(const std::string& name)
-    : mCurrentSubScene(SIZE_MAX)
-    , mHighestAvailableSubScene(SIZE_MAX)
+    : mCurrentSubScene(UINT32_MAX)
+    , mHighestAvailableSubScene(UINT32_MAX)
     , mName(name)
     , mRendererDevice(nullptr)
 {
+}
+
+Scene::~Scene()
+{
+    // destroy queues first so all the commands will flush
+    mGraphicsQueue.Reset();
+    mCopyQueue.Reset();
 }
 
 std::string Scene::GetSceneName() const
@@ -26,12 +33,12 @@ std::string Scene::GetSceneName() const
     return mName;
 }
 
-size_t Scene::GetCurrentSubSceneNumber() const
+uint32 Scene::GetCurrentSubSceneNumber() const
 {
     return mCurrentSubScene;
 }
 
-size_t Scene::GetAvailableSubSceneCount() const
+uint32 Scene::GetAvailableSubSceneCount() const
 {
     return mHighestAvailableSubScene;
 }
@@ -54,7 +61,7 @@ void Scene::RegisterSubScene(SubSceneInitializer initializer, const std::string&
     SubSceneDefinition def;
     def.initializer = initializer;
     def.name = name;
-    mSubScenes.push_back(def);
+    mSubScenes.PushBack(def);
 }
 
 void Scene::ReleaseSubsceneResources()
@@ -98,10 +105,10 @@ bool Scene::Init(IDevice* rendererDevice, const CommandQueuePtr& graphicsQueue, 
         return false;
 
     // ensure the subscene reload
-    mCurrentSubScene = SIZE_MAX;
+    mCurrentSubScene = UINT32_MAX;
 
     // Basic stuff initialized, try to find the highest subscene possible
-    for (mHighestAvailableSubScene = mSubScenes.size() - 1; ; mHighestAvailableSubScene--)
+    for (mHighestAvailableSubScene = mSubScenes.Size() - 1u; ; mHighestAvailableSubScene--)
     {
         if (SwitchSubscene(mHighestAvailableSubScene))
             break; // the scene initialized successfully
@@ -109,7 +116,7 @@ bool Scene::Init(IDevice* rendererDevice, const CommandQueuePtr& graphicsQueue, 
         if (mHighestAvailableSubScene == 0)
         {
             ReleaseSubsceneResources();
-            mHighestAvailableSubScene = SIZE_MAX;
+            mHighestAvailableSubScene = UINT32_MAX;
             return false; // we hit the end of our scenes vector, no scene successfully initialized
         }
     }
@@ -118,12 +125,12 @@ bool Scene::Init(IDevice* rendererDevice, const CommandQueuePtr& graphicsQueue, 
     return true;
 }
 
-bool Scene::SwitchSubscene(size_t subScene)
+bool Scene::SwitchSubscene(uint32 subScene)
 {
     if (subScene == mCurrentSubScene)
         return true;
 
-    mCurrentSubScene = SIZE_MAX;
+    mCurrentSubScene = UINT32_MAX;
     ReleaseSubsceneResources();
 
     if (subScene > mHighestAvailableSubScene)
