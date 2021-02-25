@@ -123,7 +123,7 @@ const Vec4f NoiseTexture3D::Evaluate(const Vec4f& coords) const
     value = Clamp(0.5f + 0.5f * value, 0.0f, 1.0f);
 
     // HACK
-    value = Step(0.4f, 0.5f, value);
+    value = Step(0.48f, 0.52f, value);
 
     return mScale * Vec4f::Lerp(mColorA.ToVec4f(), mColorB.ToVec4f(), value);
 }

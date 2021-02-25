@@ -686,8 +686,11 @@ static bool ParseLight(const rapidjson::Value& value, Scene& scene, const Textur
     {
         auto backgroundLight = MakeUniquePtr<BackgroundLight>(lightColor);
 
-        if (!TryParseTextureName(value, "texture", textures, backgroundLight->mTexture))
+        TexturePtr texture;
+        if (!TryParseTextureName(value, "texture", textures, texture))
             return false;
+
+        backgroundLight->SetTexture(texture);
 
         light = std::move(backgroundLight);
     }

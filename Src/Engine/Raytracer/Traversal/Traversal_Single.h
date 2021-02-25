@@ -97,7 +97,7 @@ void GenericTraverse(const SingleTraversalContext& context, const uint32 objectI
 }
 
 template <typename ObjectType>
-bool GenericTraverse_Shadow(const SingleTraversalContext& context, const ObjectType* object)
+bool GenericTraverse_Shadow(const SingleTraversalContext& context, const uint32 objectID, const ObjectType* object)
 {
     float distanceA, distanceB;
 
@@ -119,7 +119,7 @@ bool GenericTraverse_Shadow(const SingleTraversalContext& context, const ObjectT
     {
         if (currentNode->IsLeaf())
         {
-            if (object->Traverse_Leaf_Shadow(context, *currentNode))
+            if (object->Traverse_Leaf_Shadow(context, objectID, *currentNode))
             {
                 return true;
             }

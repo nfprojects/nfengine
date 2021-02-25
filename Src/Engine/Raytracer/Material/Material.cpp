@@ -21,8 +21,8 @@ NFE_DEFINE_CLASS(NFE::RT::Material)
     NFE_CLASS_MEMBER(roughness);
     NFE_CLASS_MEMBER(roughnessAnisotropy);
     NFE_CLASS_MEMBER(metalness);
-    NFE_CLASS_MEMBER(IoR).Name("Index of Refraction").Min(0.0f).Max(4.0f);
-    NFE_CLASS_MEMBER(K).Name("Extinction coefficient").Min(0.0f).Max(10.0f);
+    NFE_CLASS_MEMBER(IoR).Name("Index of Refraction").Min(0.01f).Max(4.0f);
+    NFE_CLASS_MEMBER(K).Name("Extinction coefficient").Min(0.01f).Max(10.0f);
     NFE_CLASS_MEMBER(normalMapStrength).Min(0.0f).Max(5.0f);
     NFE_CLASS_MEMBER(dispersion);
 }

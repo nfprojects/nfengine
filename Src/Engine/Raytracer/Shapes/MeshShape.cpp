@@ -152,7 +152,7 @@ bool MeshShape::MakeSamplable()
     return mImportanceMap->Initialize(importancePdf.Data(), importancePdf.Size());
 }
 
-const Vec4f MeshShape::Sample(const Vec3f& u, Vec4f* outNormal, float* outPdf) const
+const Vec4f MeshShape::SampleSurface(const Vec3f& u, Vec4f* outNormal, float* outPdf) const
 {
     NFE_ASSERT(mImportanceMap, "Mesh is not samplable");
 
@@ -233,11 +233,16 @@ void MeshShape::Traverse_Leaf(const SingleTraversalContext& context, const uint3
     {
         const uint32 triangleIndex = childIndex + i;
         const ProcessedTriangle& tri = mVertexBuffer.GetTriangle(triangleIndex);
+        HitPoint& hitPoint = context.hitPoint;
+
+        // filter triangle (to avoid self-intersections)
+        if (triangleIndex == hitPoint.subObjectId && objectID == hitPoint.objectId)
+        {
+            continue;
+        }
 
         if (Intersect_TriangleRay(context.ray, Vec4f(&tri.v0.x), Vec4f(&tri.edge1.x), Vec4f(&tri.edge2.x), u, v, distance))
         {
-            HitPoint& hitPoint = context.hitPoint;
-
             if (distance < hitPoint.distance)
             {
                 hitPoint.distance = distance;
@@ -254,12 +259,12 @@ void MeshShape::Traverse_Leaf(const SingleTraversalContext& context, const uint3
     }
 }
 
-bool MeshShape::Traverse_Shadow(const SingleTraversalContext& context) const
+bool MeshShape::Traverse_Shadow(const SingleTraversalContext& context, const uint32 objectID) const
 {
-    return GenericTraverse_Shadow<MeshShape>(context, this);
+    return GenericTraverse_Shadow<MeshShape>(context, objectID, this);
 }
 
-bool MeshShape::Traverse_Leaf_Shadow(const SingleTraversalContext& context, const BVH::Node& node) const
+bool MeshShape::Traverse_Leaf_Shadow(const SingleTraversalContext& context, const uint32 objectID, const BVH::Node& node) const
 {
     float distance, u, v;
 
@@ -274,9 +279,16 @@ bool MeshShape::Traverse_Leaf_Shadow(const SingleTraversalContext& context, cons
     {
         const uint32 triangleIndex = childIndex + i;
         const ProcessedTriangle& tri = mVertexBuffer.GetTriangle(triangleIndex);
+        HitPoint& hitPoint = context.hitPoint;
+
+        // filter triangle (to avoid self-intersections)
+        if (triangleIndex == hitPoint.subObjectId && objectID == hitPoint.objectId)
+        {
+            continue;
+        }
+
         if (Intersect_TriangleRay(context.ray, Vec4f(&tri.v0.x), Vec4f(&tri.edge1.x), Vec4f(&tri.edge2.x), u, v, distance))
         {
-            HitPoint& hitPoint = context.hitPoint;
             if (distance < hitPoint.distance)
             {
                 hitPoint.distance = distance;

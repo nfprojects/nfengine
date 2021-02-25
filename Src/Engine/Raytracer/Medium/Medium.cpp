@@ -3,8 +3,11 @@
 #include "PhaseFunction.h"
 #include "../Rendering/RenderingContext.h"
 #include "../Textures/Texture.h"
+#include "../Textures/ConstTexture.h"
 #include "../Common/Math/Transcendental.hpp"
 #include "../Common/Reflection/ReflectionClassDefine.hpp"
+#include "../Common/Reflection/Types/ReflectionUniquePtrType.hpp"
+#include "../Common/Reflection/Types/ReflectionSharedPtrType.hpp"
 
 
 
@@ -20,6 +23,13 @@ NFE_DEFINE_POLYMORPHIC_CLASS(NFE::RT::HomogenousEmissiveMedium)
 }
 NFE_END_DEFINE_CLASS()
 
+NFE_DEFINE_POLYMORPHIC_CLASS(NFE::RT::HeterogeneousEmissiveMedium)
+{
+    NFE_CLASS_PARENT(NFE::RT::HomogenousEmissiveMedium);
+    NFE_CLASS_MEMBER(mDensityTexture);
+}
+NFE_END_DEFINE_CLASS()
+
 NFE_DEFINE_POLYMORPHIC_CLASS(NFE::RT::HomogenousAbsorptiveMedium)
 {
     NFE_CLASS_PARENT(NFE::RT::IMedium);
@@ -30,6 +40,7 @@ NFE_END_DEFINE_CLASS()
 NFE_DEFINE_POLYMORPHIC_CLASS(NFE::RT::HeterogeneousAbsorptiveMedium)
 {
     NFE_CLASS_PARENT(NFE::RT::IMedium);
+    NFE_CLASS_MEMBER(mDensityTexture);
     NFE_CLASS_MEMBER(mExctinctionCoeff);
 }
 NFE_END_DEFINE_CLASS()
@@ -38,6 +49,7 @@ NFE_DEFINE_POLYMORPHIC_CLASS(NFE::RT::HomogenousScatteringMedium)
 {
     NFE_CLASS_PARENT(NFE::RT::HomogenousAbsorptiveMedium);
     NFE_CLASS_MEMBER(mScatteringAlbedo);
+    NFE_CLASS_MEMBER(mPhaseFunction);
 }
 NFE_END_DEFINE_CLASS()
 
@@ -45,6 +57,7 @@ NFE_DEFINE_POLYMORPHIC_CLASS(NFE::RT::HeterogeneousScatteringMedium)
 {
     NFE_CLASS_PARENT(NFE::RT::HeterogeneousAbsorptiveMedium);
     NFE_CLASS_MEMBER(mScatteringAlbedo);
+    NFE_CLASS_MEMBER(mPhaseFunction);
 }
 NFE_END_DEFINE_CLASS()
 
@@ -76,7 +89,7 @@ const RayColor HomogenousEmissiveMedium::Sample(const Ray& ray, float minDistanc
     outScatteringEvent.distance = FLT_MAX;
     outScatteringEvent.transmittance = RayColor::One();
 
-    if (mEmissionCoeff.IsBlack())
+    if (mEmissionCoeff.IsBlack() || totalDistance >= FLT_MAX)
     {
         // avoid 0.0*(-inf) that leads to NAN
         outScatteringEvent.radiance = RayColor::Zero();
@@ -91,6 +104,41 @@ const RayColor HomogenousEmissiveMedium::Sample(const Ray& ray, float minDistanc
 
 const RayColor HomogenousEmissiveMedium::Transmittance(const Vec4f&, const Vec4f&, RenderingContext&) const
 {
+    return RayColor::One();
+}
+
+////////////////////////////////////////////////////////////////////////////////////////
+
+HeterogeneousEmissiveMedium::HeterogeneousEmissiveMedium(const TexturePtr& densityTexture, const HdrColorRGB emissionCoeff)
+    : HomogenousEmissiveMedium(emissionCoeff)
+    , mDensityTexture(densityTexture)
+{
+}
+
+const RayColor HeterogeneousEmissiveMedium::Sample(const Ray& ray, float minDistance, float maxDistance, MediumScatteringEvent& outScatteringEvent, RenderingContext& ctx) const
+{
+    const float totalDistance = maxDistance - minDistance;
+
+    outScatteringEvent.direction = ray.dir;
+    outScatteringEvent.distance = FLT_MAX;
+    outScatteringEvent.transmittance = RayColor::One();
+
+    if (mEmissionCoeff.IsBlack() || totalDistance >= FLT_MAX)
+    {
+        // avoid 0.0*(-inf) that leads to NAN
+        outScatteringEvent.radiance = RayColor::Zero();
+    }
+    else
+    {
+        // sample random density
+        const float u = ctx.randomGenerator.GetFloat();
+        const float t = Lerp(minDistance, maxDistance, u);
+        const Vec4f p = ray.GetAtDistance(t);
+        const Vec4f density = mDensityTexture->Evaluate(p);
+
+        outScatteringEvent.radiance = totalDistance * RayColor::ResolveRGB(ctx.wavelength, mEmissionCoeff.ToVec4f() * density);
+    }
+
     return RayColor::One();
 }
 
@@ -138,10 +186,14 @@ HeterogeneousAbsorptiveMedium::HeterogeneousAbsorptiveMedium(const TexturePtr& d
     , mExctinctionCoeff(exctinctionCoeff)
 {
     NFE_ASSERT(exctinctionCoeff.IsValid(), "");
-    NFE_ASSERT(densityTexture, "");
 
-    // TODO include texture
-    mInvMaxDensity = 1.0f;
+    if (!densityTexture)
+    {
+        mDensityTexture = MakeUniquePtr<ConstTexture>();
+    }
+
+    // TODO include max value in texture
+    mInvMaxExctinction = 1.0f / Max(mExctinctionCoeff.r, mExctinctionCoeff.g, mExctinctionCoeff.b);
 }
 
 const RayColor HeterogeneousAbsorptiveMedium::Sample(const Ray& ray, float minDistance, float maxDistance, MediumScatteringEvent& outScatteringEvent, RenderingContext& ctx) const
@@ -155,6 +207,9 @@ const RayColor HeterogeneousAbsorptiveMedium::Sample(const Ray& ray, float minDi
     outScatteringEvent.distance = FLT_MAX;
     outScatteringEvent.radiance = RayColor::Zero();
     outScatteringEvent.transmittance = Transmittance(ray.GetAtDistance(minDistance), ray.GetAtDistance(maxDistance), ctx);
+
+    NFE_ASSERT(outScatteringEvent.transmittance.IsValid(), "");
+
     return outScatteringEvent.transmittance;
 }
 
@@ -170,11 +225,13 @@ const RayColor HeterogeneousAbsorptiveMedium::Transmittance(const Vec4f& startPo
         dir /= distance;
         float t = 0.0f;
 
+        const Vec4f scaledExctinctionCoeff = mExctinctionCoeff.ToVec4f() * mInvMaxExctinction;
+
         // ratio tracking
         for (;;)
         {
             const float u = ctx.randomGenerator.GetFloat();
-            t -= Log(1.0f - u) * mInvMaxDensity / mExctinctionCoeff.Luminance();
+            t -= Log(1.0f - u) * mInvMaxExctinction;
             if (t >= distance)
             {
                 break;
@@ -182,22 +239,22 @@ const RayColor HeterogeneousAbsorptiveMedium::Transmittance(const Vec4f& startPo
 
             const Vec4f p = startPoint + dir * t;
             const Vec4f density = mDensityTexture->Evaluate(p);
-            transmittance *= VECTOR_ONE - density * mInvMaxDensity;
+            transmittance *= Vec4f(1.0f) - scaledExctinctionCoeff * density;
         }
     }
 
     NFE_ASSERT(transmittance.IsValid(), "");
     NFE_ASSERT((transmittance >= Vec4f::Zero()).All(), "");
+    NFE_ASSERT((transmittance <= Vec4f(1.0f)).All(), "");
 
-    const HdrColorRGB density = transmittance;
-
-    return RayColor::ResolveRGB(ctx.wavelength, density);
+    return RayColor::ResolveRGB(ctx.wavelength, transmittance);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////
 
 HomogenousScatteringMedium::HomogenousScatteringMedium(const HdrColorRGB exctinctionCoeff, const HdrColorRGB scatteringAlbedo)
     : HomogenousAbsorptiveMedium(exctinctionCoeff)
+    , mPhaseFunction(MakeUniquePtr<HenyeyGreensteinPhaseFunction>())
     , mScatteringAlbedo(scatteringAlbedo)
 {
     NFE_ASSERT(mScatteringAlbedo.IsValid(), "");
@@ -208,15 +265,20 @@ HomogenousScatteringMedium::HomogenousScatteringMedium(const HdrColorRGB exctinc
 const RayColor HomogenousScatteringMedium::Sample(const Ray& ray, float minDistance, float maxDistance, MediumScatteringEvent& outScatteringEvent, RenderingContext& ctx) const
 {
     NFE_ASSERT(mScatteringAlbedo.IsValid(), "");
+    NFE_ASSERT(mPhaseFunction, "No phase function");
 
     const float totalDistance = maxDistance - minDistance;
     NFE_ASSERT(totalDistance >= 0.0f, "");
 
-    // TODO spectral renderinghttps://cs.dartmouth.edu/~wjarosz/publications/novak14residual.pdf#cite.Carter72
+    // TODO spectral rendering
+    // https://cs.dartmouth.edu/~wjarosz/publications/novak14residual.pdf#cite.Carter72
     // find unbounded scatter location
     const uint32 channel = ctx.randomGenerator.GetInt() % Wavelength::NumComponents;
     const float xi = ctx.randomGenerator.GetFloat();
-    const float scatterDistance = -Log(1.0f - xi) / mExctinctionCoeff.ToVec4f()[channel];
+    const float selectedExctinctionCoeff = mExctinctionCoeff.ToVec4f()[channel];
+    const float scatterDistance = (selectedExctinctionCoeff > 0.0f)
+        ? (-Log(1.0f - xi) / selectedExctinctionCoeff)
+        : std::numeric_limits<float>::infinity();
 
     // TODO emissive medium
     outScatteringEvent.radiance = RayColor::Zero();
@@ -227,32 +289,38 @@ const RayColor HomogenousScatteringMedium::Sample(const Ray& ray, float minDista
 
     outScatteringEvent.transmittance = Transmittance(t, ctx);
 
+    RayColor mediumWeight = outScatteringEvent.transmittance;
     RayColor density = outScatteringEvent.transmittance;
+
     if (sampledMedium)
     {
-        const float g = 0.0f;
-        PhaseFunction::Sample(-ray.dir, outScatteringEvent.direction, g, ctx.randomGenerator.GetVec2f());
+        mPhaseFunction->Sample(-ray.dir, outScatteringEvent.direction, ctx.randomGenerator.GetVec2f());
         outScatteringEvent.distance = minDistance + scatterDistance;
 
         density *= RayColor::ResolveRGB(ctx.wavelength, mExctinctionCoeff);
         const float pdf = density.Average();
         const RayColor scatteringCoeff = RayColor::ResolveRGB(ctx.wavelength, mExctinctionCoeff) * RayColor::ResolveRGB(ctx.wavelength, mScatteringAlbedo);
-        return outScatteringEvent.transmittance * scatteringCoeff / pdf;
+        mediumWeight *= scatteringCoeff / pdf;
     }
     else
     {
         outScatteringEvent.direction = ray.dir;
         outScatteringEvent.distance = FLT_MAX;
 
-        const float pdf = density.Average();
-        return outScatteringEvent.transmittance / pdf;
+        const float pdf = Max(FLT_EPSILON, density.Average());
+        mediumWeight *= 1.0f / pdf;
     }
+
+    NFE_ASSERT(mediumWeight.IsValid(), "");
+
+    return mediumWeight;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////
 
 HeterogeneousScatteringMedium::HeterogeneousScatteringMedium(const TexturePtr& densityTexture, const HdrColorRGB exctinctionCoeff, const HdrColorRGB scatteringAlbedo)
     : HeterogeneousAbsorptiveMedium(densityTexture, exctinctionCoeff)
+    , mPhaseFunction(MakeUniquePtr<HenyeyGreensteinPhaseFunction>())
     , mScatteringAlbedo(scatteringAlbedo)
 {
     //NFE_ASSERT(mScatteringAlbedo.IsValid(), "");
@@ -263,6 +331,7 @@ HeterogeneousScatteringMedium::HeterogeneousScatteringMedium(const TexturePtr& d
 const RayColor HeterogeneousScatteringMedium::Sample(const Ray& ray, float minDistance, float maxDistance, MediumScatteringEvent& outScatteringEvent, RenderingContext& ctx) const
 {
     NFE_ASSERT(mScatteringAlbedo.IsValid(), "");
+    NFE_ASSERT(mPhaseFunction, "No phase function");
 
     // TODO emissive medium
     outScatteringEvent.radiance = RayColor::Zero();
@@ -286,8 +355,7 @@ const RayColor HeterogeneousScatteringMedium::Sample(const Ray& ray, float minDi
             const Vec4f density = mDensityTexture->Evaluate(p);
             if (density.x * invMaxDensity > u.y) // TODO non-monochromatic density
             {
-                const float g = 0.0f;
-                PhaseFunction::Sample(-ray.dir, outScatteringEvent.direction, g, Vec2f(u.z, u.w));
+                mPhaseFunction->Sample(-ray.dir, outScatteringEvent.direction, Vec2f(u.z, u.w));
                 outScatteringEvent.distance = t;
 
                 return RayColor::ResolveRGB(ctx.wavelength, mScatteringAlbedo);

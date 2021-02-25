@@ -51,12 +51,6 @@ NFE_FORCE_INLINE static float Gradient(const int32 hash, const float x, const fl
 } // namespace
 
 
-NoiseTexture::NoiseTexture()
-    : mColorA(Math::Vec4f(0.0f))
-    , mColorB(Math::Vec4f(1.0f))
-    , mNumOctaves(1)
-{}
-
 NoiseTexture::NoiseTexture(const Math::Vec4f& colorA, const Math::Vec4f& colorB, const uint32 numOctaves)
     : mColorA(colorA)
     , mColorB(colorB)

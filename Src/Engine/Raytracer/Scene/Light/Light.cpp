@@ -40,7 +40,7 @@ void ILight::Traverse(const SingleTraversalContext&, const uint32) const
     NFE_FATAL("Cannot hit this type of light");
 }
 
-bool ILight::Traverse_Shadow(const SingleTraversalContext&) const
+bool ILight::Traverse_Shadow(const SingleTraversalContext&, const uint32) const
 {
     NFE_FATAL("Cannot hit this type of light");
     return false;

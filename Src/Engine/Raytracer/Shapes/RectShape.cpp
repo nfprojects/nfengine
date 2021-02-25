@@ -60,7 +60,7 @@ bool RectShape::Intersect(const Math::Ray& ray, RenderingContext& renderingCtx, 
     return false;
 }
 
-const Vec4f RectShape::Sample(const Vec3f& u, Math::Vec4f* outNormal, float* outPdf) const
+const Vec4f RectShape::SampleSurface(const Vec3f& u, Math::Vec4f* outNormal, float* outPdf) const
 {
     if (outPdf)
     {
@@ -75,7 +75,7 @@ const Vec4f RectShape::Sample(const Vec3f& u, Math::Vec4f* outNormal, float* out
     return Vec4f(mSize) * (2.0f * Vec4f(Vec2f(u)) - VECTOR_ONE);
 }
 
-bool RectShape::Sample(const Math::Vec4f& ref, const Math::Vec3f& u, ShapeSampleResult& result) const
+bool RectShape::SampleSurface(const Math::Vec4f& ref, const Math::Vec3f& u, ShapeSampleResult& result) const
 {
     if (mEnableSolidAngleSampling)
     {
@@ -103,7 +103,7 @@ bool RectShape::Sample(const Math::Vec4f& ref, const Math::Vec3f& u, ShapeSample
         return false;
     }
 
-    return IShape::Sample(ref, u, result);
+    return IShape::SampleSurface(ref, u, result);
 }
 
 /*

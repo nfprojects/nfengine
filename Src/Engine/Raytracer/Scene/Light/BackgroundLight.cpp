@@ -29,6 +29,16 @@ BackgroundLight::BackgroundLight(const Math::HdrColorRGB& color)
     : ILight(color)
 {}
 
+void BackgroundLight::SetTexture(const TexturePtr& texture)
+{
+    mTexture = texture;
+    
+    if (mTexture)
+    {
+        mTexture->MakeSamplable();
+    }
+}
+
 const Box BackgroundLight::GetBoundingBox() const
 {
     return Box::Full();

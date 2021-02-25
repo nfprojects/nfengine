@@ -104,7 +104,7 @@ bool CsgShape::Intersect(const Math::Ray& ray, RenderingContext& renderingCtx, S
     return outResult.nearDist < outResult.farDist;
 }
 
-const Vec4f CsgShape::Sample(const Vec3f& u, Math::Vec4f* outNormal, float* outPdf) const
+const Vec4f CsgShape::SampleSurface(const Vec3f& u, Math::Vec4f* outNormal, float* outPdf) const
 {
     NFE_FATAL("Not implemented");
 

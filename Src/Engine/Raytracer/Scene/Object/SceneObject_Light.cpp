@@ -34,9 +34,11 @@ void LightSceneObject::Traverse(const SingleTraversalContext& context, const uin
     mLight->Traverse(context, objectID);
 }
 
-bool LightSceneObject::Traverse_Shadow(const SingleTraversalContext& context) const
+bool LightSceneObject::Traverse_Shadow(const SingleTraversalContext& context, const uint32 objectID) const
 {
-    return mLight->Traverse_Shadow(context);
+    NFE_UNUSED(objectID);
+
+    return mLight->Traverse_Shadow(context, objectID);
 }
 
 void LightSceneObject::Traverse(const PacketTraversalContext& context, const uint32 objectID, const uint32 numActiveGroups) const

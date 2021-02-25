@@ -34,7 +34,7 @@ void IShape::Traverse(const SingleTraversalContext& context, const uint32 object
 
         if (intersection.nearDist > 0.0f && intersection.nearDist < hitPoint.distance)
         {
-            //if (hitPoint.filterObjectId != objectID || hitPoint.filterSubObjectId != side)
+            if (hitPoint.objectId != objectID || hitPoint.subObjectId != intersection.subObjectId)
             {
                 hitPoint.Set(intersection.nearDist, objectID, intersection.subObjectId);
                 return;
@@ -43,7 +43,7 @@ void IShape::Traverse(const SingleTraversalContext& context, const uint32 object
 
         if (intersection.farDist > 0.0f && intersection.farDist < hitPoint.distance)
         {
-            //if (hitPoint.filterObjectId != objectID || hitPoint.filterSubObjectId != side)
+            if (hitPoint.objectId != objectID || hitPoint.subObjectId != intersection.subObjectId)
             {
                 hitPoint.Set(intersection.farDist, objectID, intersection.subObjectId);
                 return;
@@ -57,7 +57,7 @@ void IShape::Traverse(const PacketTraversalContext&, const uint32, const uint32)
     NFE_FATAL("Not implemented");
 }
 
-bool IShape::Traverse_Shadow(const SingleTraversalContext& context) const
+bool IShape::Traverse_Shadow(const SingleTraversalContext& context, const uint32 objectID) const
 {
     ShapeIntersection intersection;
 
@@ -66,7 +66,9 @@ bool IShape::Traverse_Shadow(const SingleTraversalContext& context) const
         return false;
     }
 
-    return intersection.farDist > 0.0f && intersection.nearDist < context.hitPoint.distance;
+    return
+        intersection.farDist > 0.0f && intersection.nearDist < context.hitPoint.distance
+        && (context.hitPoint.objectId != objectID || context.hitPoint.subObjectId != intersection.subObjectId);
 }
 
 bool IShape::Intersect(const Ray&, RenderingContext&, ShapeIntersection&) const
@@ -75,15 +77,21 @@ bool IShape::Intersect(const Ray&, RenderingContext&, ShapeIntersection&) const
     return false;
 }
 
-bool IShape::Intersect(const Math::Vec4f&) const
+bool IShape::Intersect(const Vec4f&) const
 {
     NFE_FATAL("This shape has no volume");
     return false;
 }
 
-bool IShape::Sample(const Vec4f& ref, const Vec3f& u, ShapeSampleResult& result) const
+const Vec4f IShape::SampleVolume(const Vec3f&) const
 {
-    result.position = Sample(u, &result.normal);
+    NFE_FATAL("This shape has no volume");
+    return Vec4f::Zero();
+}
+
+bool IShape::SampleSurface(const Vec4f& ref, const Vec3f& u, ShapeSampleResult& result) const
+{
+    result.position = SampleSurface(u, &result.normal);
 
     NFE_ASSERT(Abs(1.0f - result.normal.SqrLength3()) < 0.001f, "Normal vector must be normalized");
 
@@ -111,7 +119,7 @@ bool IShape::Sample(const Vec4f& ref, const Vec3f& u, ShapeSampleResult& result)
     return false;
 }
 
-float IShape::Pdf(const Math::Vec4f& ref, const Math::Vec4f& point) const
+float IShape::Pdf(const Vec4f& ref, const Vec4f& point) const
 {
     NFE_UNUSED(ref);
     NFE_UNUSED(point);

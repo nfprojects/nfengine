@@ -17,7 +17,8 @@ private:
     virtual float GetSurfaceArea() const override;
     virtual bool Intersect(const Math::Ray& ray, RenderingContext& renderingCtx, ShapeIntersection& outResult) const override;
     virtual bool Intersect(const Math::Vec4f& point) const override;
-    virtual const Math::Vec4f Sample(const Math::Vec3f& u, Math::Vec4f* outNormal, float* outPdf = nullptr) const override;
+    virtual const Math::Vec4f SampleVolume(const Math::Vec3f& u) const override;
+    virtual const Math::Vec4f SampleSurface(const Math::Vec3f& u, Math::Vec4f* outNormal, float* outPdf = nullptr) const override;
     virtual void EvaluateIntersection(const HitPoint& hitPoint, IntersectionData& outIntersectionData) const override;
 
     virtual bool OnPropertyChanged(const Common::StringView propertyName) override;

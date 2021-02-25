@@ -57,7 +57,7 @@ public:
     void Traverse_Leaf(const SingleTraversalContext& context, const uint32 objectID, const BVH::Node& node) const;
     void Traverse_Leaf(const PacketTraversalContext& context, const uint32 objectID, const BVH::Node& node, uint32 numActiveGroups) const;
 
-    bool Traverse_Leaf_Shadow(const SingleTraversalContext& context, const BVH::Node& node) const;
+    bool Traverse_Leaf_Shadow(const SingleTraversalContext& context, const uint32 objectID, const BVH::Node& node) const;
 
     void EvaluateShadingData(ShadingData& shadingData, RenderingContext& context) const;
 

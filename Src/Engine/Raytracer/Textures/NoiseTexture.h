@@ -14,8 +14,10 @@ class NFE_ALIGN(16) NoiseTexture
     NFE_DECLARE_POLYMORPHIC_CLASS(NoiseTexture)
 
 public:
-    NFE_RAYTRACER_API NoiseTexture();
-    NFE_RAYTRACER_API NoiseTexture(const Math::Vec4f& colorA, const Math::Vec4f& colorB, const uint32 numOctaves = 1);
+    NFE_RAYTRACER_API NoiseTexture(
+        const Math::Vec4f& colorA = Math::Vec4f(0.0f),
+        const Math::Vec4f& colorB = Math::Vec4f(1.0f),
+        const uint32 numOctaves = 1u);
 
     virtual const char* GetName() const override;
     virtual const Math::Vec4f Evaluate(const Math::Vec4f& coords) const override;

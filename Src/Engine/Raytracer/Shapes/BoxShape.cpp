@@ -31,7 +31,32 @@ const Matrix4 g_faceFrames[] =
     { {+1.0f, 0.0f,  0.0f, 0.0f}, { 0.0f, 1.0f,  0.0f, 0.0f}, { 0.0f,  0.0f, +1.0f, 0.0f}, {-1.0f,  0.0f,  0.0f, 0.0f} },
 };
 
-NFE_FORCE_INLINE int32 ConvertXYZtoCubeUV(const Vec4f& p, Vec4f& outUV)
+NFE_FORCE_INLINE static int32 GetCubeFace(const Vec4f& p)
+{
+    const Vec4f abs = Vec4f::Abs(p);
+    const int32 isXPositive = p.x > 0 ? 1 : 0;
+    const int32 isYPositive = p.y > 0 ? 1 : 0;
+    const int32 isZPositive = p.z > 0 ? 1 : 0;
+
+    int32 side;
+
+    if (abs.x >= abs.y && abs.x >= abs.z)
+    {
+        side = isXPositive;
+    }
+    else if (abs.y >= abs.x && abs.y >= abs.z)
+    {
+        side = isYPositive + 2;
+    }
+    else
+    {
+        side = isZPositive + 4;
+    }
+
+    return side;
+}
+
+NFE_FORCE_INLINE static int32 ConvertXYZtoCubeUV(const Vec4f& p, Vec4f& outUV)
 {
     const Vec4f abs = Vec4f::Abs(p);
     const int32 isXPositive = p.x > 0 ? 1 : 0;
@@ -138,24 +163,34 @@ float BoxShape::GetSurfaceArea() const
     return 8.0f * (mSize.x * (mSize.y + mSize.z) + mSize.y * mSize.z);
 }
 
-bool BoxShape::Intersect(const Math::Ray& ray, RenderingContext& renderingCtx, ShapeIntersection& outResult) const
+bool BoxShape::Intersect(const Ray& ray, RenderingContext& renderingCtx, ShapeIntersection& outResult) const
 {
     NFE_UNUSED(renderingCtx);
 
     const Box box(-mSize, mSize);
 
-    outResult.subObjectId = 0;
+    if (Intersect_BoxRay_TwoSided(ray, box, outResult.nearDist, outResult.farDist))
+    {
+        const float t = outResult.nearDist > 0.0f ? outResult.nearDist : outResult.farDist;
+        outResult.subObjectId = helper::GetCubeFace(ray.GetAtDistance(t) * mInvSize);
+        return true;
+    }
 
-    return Intersect_BoxRay_TwoSided(ray, box, outResult.nearDist, outResult.farDist);
+    return false;
 }
 
-bool BoxShape::Intersect(const Math::Vec4f& point) const
+bool BoxShape::Intersect(const Vec4f& point) const
 {
     const Box box(-mSize, mSize);
     return box.Intersects(point);
 }
 
-const Vec4f BoxShape::Sample(const Vec3f& u, Math::Vec4f* outNormal, float* outPdf) const
+const Vec4f BoxShape::SampleVolume(const Vec3f& u) const
+{
+    return UnipolarToBipolar(Vec4f(u)) * mSize;
+}
+
+const Vec4f BoxShape::SampleSurface(const Vec3f& u, Vec4f* outNormal, float* outPdf) const
 {
     float v = u.z;
 

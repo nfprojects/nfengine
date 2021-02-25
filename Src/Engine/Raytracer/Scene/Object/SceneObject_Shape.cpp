@@ -47,9 +47,9 @@ void ShapeSceneObject::Traverse(const SingleTraversalContext& context, const uin
     return mShape->Traverse(context, objectID);
 }
 
-bool ShapeSceneObject::Traverse_Shadow(const SingleTraversalContext& context) const
+bool ShapeSceneObject::Traverse_Shadow(const SingleTraversalContext& context, const uint32 objectID) const
 {
-    return mShape->Traverse_Shadow(context);
+    return mShape->Traverse_Shadow(context, objectID);
 }
 
 void ShapeSceneObject::Traverse(const PacketTraversalContext& context, const uint32 objectID, const uint32 numActiveGroups) const

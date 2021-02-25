@@ -102,7 +102,14 @@ bool CylinderShape::Intersect(const Vec4f& point) const
     return point.SqrLength3() <= mRadius * mRadius;
 }
 
-const Vec4f CylinderShape::Sample(const Vec3f& u, Vec4f* outNormal, float* outPdf) const
+const Vec4f CylinderShape::SampleVolume(const Vec3f& u) const
+{
+    Vec4f point = SamplingHelpers::GetDisk(u) * mRadius;
+    point.z = u.z * mHeight;
+    return point;
+}
+
+const Vec4f CylinderShape::SampleSurface(const Vec3f& u, Vec4f* outNormal, float* outPdf) const
 {
     const float totalSurfaceArea = GetSurfaceArea();
 

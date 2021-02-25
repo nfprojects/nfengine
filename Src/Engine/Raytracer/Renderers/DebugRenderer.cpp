@@ -131,7 +131,7 @@ const RayColor DebugRenderer::RenderPixel(const Math::Ray& ray, const RenderPara
         case DebugRenderingMode::TriangleID:
         {
             const uint64 hash = Hash((uint64)hitPoint.objectId | ((uint64)hitPoint.subObjectId << 32));
-            const float hue = (float)(uint32)hash / (float)UINT32_MAX;
+            const float hue = (float)Hash((uint32)hash) / (float)UINT32_MAX;
             const float saturation = 0.5f + 0.5f * (float)(uint32)(hash >> 32) / (float)UINT32_MAX;
             const Vec4f rgbColor = HSVtoRGB(hue, saturation, 1.0f);
             resultColor = RayColor::ResolveRGB(ctx.wavelength, rgbColor);

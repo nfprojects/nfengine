@@ -61,7 +61,7 @@ public:
     virtual void Traverse(const PacketTraversalContext& context, const uint32 objectID, const uint32 numActiveGroups) const = 0;
 
     // check shadow ray occlusion
-    virtual bool Traverse_Shadow(const SingleTraversalContext& context) const = 0;
+    virtual bool Traverse_Shadow(const SingleTraversalContext& context, const uint32 objectID) const = 0;
 
     // Calculate input data for shading routine
     // NOTE: all calculations are performed in local space

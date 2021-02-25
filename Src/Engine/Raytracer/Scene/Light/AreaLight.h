@@ -24,7 +24,7 @@ public:
 
     virtual const Math::Box GetBoundingBox() const override;
     virtual void Traverse(const SingleTraversalContext& context, const uint32 objectID) const override;
-    virtual bool Traverse_Shadow(const SingleTraversalContext& context) const override;
+    virtual bool Traverse_Shadow(const SingleTraversalContext& context, const uint32 objectID) const override;
     virtual const RayColor Illuminate(const IlluminateParam& param, IlluminateResult& outResult) const override;
     virtual const RayColor GetRadiance(const RadianceParam& param, float* outDirectPdfA, float* outEmissionPdfW) const override;
     virtual const RayColor Emit(const EmitParam& param, EmitResult& outResult) const override;

@@ -37,7 +37,7 @@ NFE_END_DEFINE_CLASS()
 
 NFE_DEFINE_CLASS(NFE::RT::RenderingParams)
 {
-    NFE_CLASS_MEMBER(maxRayDepth).Min(0);// .Max(256);
+    NFE_CLASS_MEMBER(maxRayDepth).Min(0).Max(64);
     NFE_CLASS_MEMBER(tileSize).Min(4).Max(256);
     NFE_CLASS_MEMBER(antiAliasingSpread).Min(0.0f).Max(3.0f);
     NFE_CLASS_MEMBER(motionBlurStrength).Min(0.0f).Max(1.0f);

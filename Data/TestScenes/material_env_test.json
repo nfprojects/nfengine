@@ -22,7 +22,7 @@
         {
             "type": "background",
             "color": [2.0, 2.0, 2.0],
-            "texture" : "TEXTURES/ENV/Topanga_R9G9B9E5.dds"
+            "texture" : "TEXTURES/ENV/spruit_sunrise_16k.dds"
         }
     ],
     "camera":

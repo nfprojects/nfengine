@@ -17,7 +17,7 @@ public:
     NFE_RAYTRACER_API BackgroundLight();
     NFE_RAYTRACER_API BackgroundLight(const Math::HdrColorRGB& color);
 
-    TexturePtr mTexture = nullptr;
+    NFE_RAYTRACER_API void SetTexture(const TexturePtr& texture);
 
     virtual const Math::Box GetBoundingBox() const override;
     virtual const RayColor Illuminate(const IlluminateParam& param, IlluminateResult& outResult) const override;
@@ -26,6 +26,9 @@ public:
     virtual Flags GetFlags() const override final;
 
     const RayColor GetBackgroundColor(const Math::Vec4f& dir, const Wavelength& wavelength) const;
+
+private:
+    TexturePtr mTexture = nullptr;
 };
 
 } // namespace RT

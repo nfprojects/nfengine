@@ -44,6 +44,8 @@ bool Scene::BuildBVH()
     mDecals.Clear();
     mLights.Clear();
     mGlobalLights.Clear();
+    mMediumObjects.Clear();
+
     for (const auto& object : mAllObjects)
     {
         if (const LightSceneObject* lightObject = RTTI::Cast<LightSceneObject>(object.Get()))
@@ -171,7 +173,7 @@ bool Scene::Traverse_Object_Shadow(const SingleTraversalContext& context, const 
         context.context
     };
 
-    return object->Traverse_Shadow(objectContext);
+    return object->Traverse_Shadow(objectContext, objectID);
 }
 
 void Scene::Traverse_Leaf(const SingleTraversalContext& context, const uint32 objectID, const BVH::Node& node) const
@@ -187,8 +189,10 @@ void Scene::Traverse_Leaf(const SingleTraversalContext& context, const uint32 ob
     }
 }
 
-bool Scene::Traverse_Leaf_Shadow(const SingleTraversalContext& context, const BVH::Node& node) const
+bool Scene::Traverse_Leaf_Shadow(const SingleTraversalContext& context, const uint32 objectID, const BVH::Node& node) const
 {
+    NFE_UNUSED(objectID); 
+
     const uint32 numLeaves = node.numLeaves;
     const uint32 firstChild = node.childIndex;
 
@@ -264,7 +268,7 @@ bool Scene::Traverse_Shadow(const SingleTraversalContext& context) const
     }
     else // full BVH traversal
     {
-        return GenericTraverse_Shadow(context, this);
+        return GenericTraverse_Shadow(context, 0, this);
     }
 }
 

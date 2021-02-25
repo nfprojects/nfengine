@@ -48,9 +48,9 @@ void AreaLight::Traverse(const SingleTraversalContext& context, const uint32 obj
     mShape->Traverse(context, objectID);
 }
 
-bool AreaLight::Traverse_Shadow(const SingleTraversalContext& context) const
+bool AreaLight::Traverse_Shadow(const SingleTraversalContext& context, const uint32 objectID) const
 {
-    return mShape->Traverse_Shadow(context);
+    return mShape->Traverse_Shadow(context, objectID);
 }
 
 const RayColor AreaLight::Illuminate(const IlluminateParam& param, IlluminateResult& outResult) const
@@ -73,7 +73,7 @@ const RayColor AreaLight::Illuminate(const IlluminateParam& param, IlluminateRes
         const Vec4f ref = param.worldToLight.TransformPoint(param.intersection.frame.GetTranslation());
 
         ShapeSampleResult sampleResult;
-        if (!mShape->Sample(ref, param.sample, sampleResult))
+        if (!mShape->SampleSurface(ref, param.sample, sampleResult))
         {
             return RayColor::Zero();
         }
@@ -90,7 +90,7 @@ const RayColor AreaLight::Illuminate(const IlluminateParam& param, IlluminateRes
     {
         // generate random point on the light surface
         Vec4f normalLocalSpace;
-        const Vec4f samplePositionLocalSpace = mShape->Sample(param.sample, &normalLocalSpace);
+        const Vec4f samplePositionLocalSpace = mShape->SampleSurface(param.sample, &normalLocalSpace);
         const Vec4f lightPointWorldSpace = param.lightToWorld.TransformPoint(samplePositionLocalSpace);
         const Vec4f normalWorldSpace = param.lightToWorld.TransformPoint(normalLocalSpace);
 
@@ -161,7 +161,7 @@ const RayColor AreaLight::Emit(const EmitParam& param, EmitResult& outResult) co
 
     // generate random point on the light surface
     Vec4f normalLocalSpace;
-    const Vec4f samplePositionLocalSpace = mShape->Sample(param.positionSample, &normalLocalSpace);
+    const Vec4f samplePositionLocalSpace = mShape->SampleSurface(param.positionSample, &normalLocalSpace);
     outResult.position = param.lightToWorld.TransformPoint(samplePositionLocalSpace);
 
     Vec4f tangentLocalSpace, bitangentLocalSpace;

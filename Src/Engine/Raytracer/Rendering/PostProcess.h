@@ -82,6 +82,8 @@ public:
 
     BloomParams bloom;
 
+    float fireflyFilterTreshold;
+
     bool useDithering;
     ColorSpace colorSpace;
 

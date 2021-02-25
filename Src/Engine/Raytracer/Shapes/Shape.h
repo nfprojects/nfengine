@@ -52,7 +52,7 @@ public:
     virtual void Traverse(const PacketTraversalContext& context, const uint32 objectID, const uint32 numActiveGroups) const;
 
     // traverse the object and check if the ray is occluded
-    virtual bool Traverse_Shadow(const SingleTraversalContext& context) const;
+    virtual bool Traverse_Shadow(const SingleTraversalContext& context, const uint32 objectID) const;
 
     // intersect with a ray and return hit points
     // TODO return array of all hit points along the ray
@@ -64,13 +64,16 @@ public:
     // must be called before using Sample() method
     virtual bool MakeSamplable();
 
+    // generate random point inside the shape's volume
+    virtual const Math::Vec4f SampleVolume(const Math::Vec3f& u) const;
+
     // generate random point on the shape's surface
     // optionaly returns normal vector and sampling probability (with respect to area on the surface)
-    virtual const Math::Vec4f Sample(const Math::Vec3f& u, Math::Vec4f* outNormal = nullptr, float* outPdf = nullptr) const = 0;
+    virtual const Math::Vec4f SampleSurface(const Math::Vec3f& u, Math::Vec4f* outNormal = nullptr, float* outPdf = nullptr) const = 0;
 
     // generate random point on the shape's surface for given reference point
     // optionaly returns normal vector and sampling probability (with respect to solid angle visible from ref point)
-    virtual bool Sample(const Math::Vec4f& ref, const Math::Vec3f& u, ShapeSampleResult& result) const;
+    virtual bool SampleSurface(const Math::Vec4f& ref, const Math::Vec3f& u, ShapeSampleResult& result) const;
     virtual float Pdf(const Math::Vec4f& ref, const Math::Vec4f& point) const;
 
     // Calculate intersection data (tangent frame, tex coords, etc.) at given intersection point

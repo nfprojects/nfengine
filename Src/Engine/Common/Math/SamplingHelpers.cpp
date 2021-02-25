@@ -141,6 +141,20 @@ const Vec2x8f SamplingHelpers::GetRegularPolygon_Simd8(const uint32 n, const Vec
 }
 */
 
+const Vec4f SamplingHelpers::GetBall(const Vec3f u)
+{
+    // based on http://mathworld.wolfram.com/SpherePointPicking.html
+
+    const Vec4f v = Vec4f::MulAndSub(Vec4f(u), 2.0f, VECTOR_ONE);
+
+    const float t = sqrtf(Max(0.0f, 1.0f - v.y * v.y));
+    const float theta = NFE_MATH_PI * v.x;
+    Vec4f result = t * SinCos(theta); // xy
+    result.z = v.y;
+
+    return result * cbrtf(u.z);
+}
+
 const Vec4f SamplingHelpers::GetSphere(const Vec2f u)
 {
     // based on http://mathworld.wolfram.com/SpherePointPicking.html

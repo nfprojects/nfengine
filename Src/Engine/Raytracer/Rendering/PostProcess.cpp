@@ -56,6 +56,7 @@ NFE_DEFINE_CLASS(NFE::RT::PostprocessParams)
     NFE_CLASS_MEMBER(tonemapper).NonNull();
     NFE_CLASS_MEMBER(bloom);
     NFE_CLASS_MEMBER(useDithering);
+    NFE_CLASS_MEMBER(fireflyFilterTreshold).Min(1.0).Max(100.0).LogScale(10.0);
     NFE_CLASS_MEMBER(lutParams);
     NFE_CLASS_MEMBER(colorSpace);
 }
@@ -92,6 +93,7 @@ PostprocessParams::PostprocessParams()
     , filmGrainStrength(0.0f)
     , tonemapper(Common::MakeUniquePtr<ApproxACESTonemapper>())
     , useDithering(true)
+    , fireflyFilterTreshold(1.5f)
     , colorSpace(ColorSpace::Rec709)
 {
 }

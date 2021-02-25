@@ -614,6 +614,7 @@ void Viewport::PerformPostProcess(TaskBuilder& taskBuilder)
     }
 }
 
+template<uint32 NumBits>
 static void ApplyDither(Vec4f& color, Random& randomGenerator)
 {
     // based on:
@@ -621,7 +622,7 @@ static void ApplyDither(Vec4f& color, Random& randomGenerator)
     // https://www.shadertoy.com/view/llXfzS
 
     // quantization scale (2^bits-1)
-    const float scale = 255.0f;
+    constexpr float scale = (1 << NumBits) - 1;
 
     // TODO blue noise dithering
     const Vec4f u1 = randomGenerator.GetVec4f();
@@ -653,14 +654,51 @@ void Viewport::PostProcessTile(const Block& block, uint32 threadID)
     NFE_ASSERT(params.tonemapper, "Tonemapper missing");
 
     const bool useBloom = params.bloom.factor > 0.0f && !mBlurredImages.Empty();
+    const float fireflyFilterTreshold = params.fireflyFilterTreshold;
 
-    const float pixelScaling = 1.0f / (float)(1u + mProgress.passesFinished);
+    // exposure + scale down by number of rendering passes finished
+    // TODO support different number of passes per-pixel (adaptive rendering)
+    const Vec4f pixelScaling = mPostprocessParams.colorScale / (float)(1u + mProgress.passesFinished);
   
     for (uint32 y = block.minY; y < block.maxY; ++y)
     {
         for (uint32 x = block.minX; x < block.maxX; ++x)
         {
-            const Vec4f rawValue = Vec4f_Load_Vec3f_Unsafe(mSum.GetPixelRef<Vec3f>(x, y));
+            Vec4f rawValue = Vec4f_Load_Vec3f_Unsafe(mSum.GetPixelRef<Vec3f>(x, y));
+
+            // anti-firefly filtering
+            if (fireflyFilterTreshold < 100.0f)
+            {
+                Vec4f neighborMax = Vec4f::Zero();
+
+                for (int32 yoffset = -1; yoffset <= 1; ++yoffset)
+                {
+                    for (int32 xoffset = -1; xoffset <= 1; ++xoffset)
+                    {
+                        const uint32 nx = x + xoffset;
+                        const uint32 ny = y + yoffset;
+                        if ((yoffset != 0 || xoffset != 0) &&
+                            nx < mSum.GetWidth() && ny < mSum.GetHeight())
+                        {
+                            neighborMax = Vec4f::Max(neighborMax, Vec4f_Load_Vec3f_Unsafe(mSum.GetPixelRef<Vec3f>(nx, ny)));
+                        }
+                    }
+                }
+
+                rawValue = Vec4f::Select(rawValue, neighborMax, rawValue > neighborMax * fireflyFilterTreshold);
+            }
+
+            // add bloom
+            if (useBloom)
+            {
+                Vec4f bloomColor = Vec4f::Zero();
+                for (uint32 i = 0; i < mBlurredImages.Size(); ++i)
+                {
+                    const Vec4f blurredColor = Vec4f_Load_Vec3f_Unsafe(mBlurredImages[i].GetPixelRef<Vec3f>(x, y));
+                    bloomColor = Vec4f::MulAndAdd(blurredColor, params.bloom.elements[i].weight, bloomColor);
+                }
+                rawValue = Vec4f::Lerp(rawValue, bloomColor, params.bloom.factor);
+            }
 
 #ifdef NFE_ENABLE_SPECTRAL_RENDERING
             Vec4f rgbColor;
@@ -676,29 +714,13 @@ void Viewport::PostProcessTile(const Block& block, uint32 threadID)
             {
                 NFE_FATAL("Invalid color space");
             }
-            rgbColor = Vec4f::Max(Vec4f::Zero(), rgbColor);
 #else
             Vec4f rgbColor = rawValue;
 #endif
 
-            // add bloom
-            if (useBloom)
-            {
-                Vec4f bloomColor = Vec4f::Zero();
-                for (uint32 i = 0; i < mBlurredImages.Size(); ++i)
-                {
-                    const Vec4f blurredColor = Vec4f_Load_Vec3f_Unsafe(mBlurredImages[i].GetPixelRef<Vec3f>(x, y));
-                    bloomColor = Vec4f::MulAndAdd(blurredColor, params.bloom.elements[i].weight, bloomColor);
-                }
-                rgbColor = Vec4f::Lerp(rgbColor, bloomColor, params.bloom.factor);
-            }
-
             // scale down by number of rendering passes finished
             // TODO support different number of passes per-pixel (adaptive rendering)
             rgbColor *= pixelScaling;
-
-            // apply exposure
-            rgbColor *= mPostprocessParams.colorScale;
 
             if (params.filmGrainStrength > 0.0f)
             {
@@ -712,7 +734,7 @@ void Viewport::PostProcessTile(const Block& block, uint32 threadID)
             // add dither
             if (params.useDithering)
             {
-                ApplyDither(rgbColor, randomGenerator);
+                ApplyDither<8>(rgbColor, randomGenerator);
             }
 
             mFrontBuffer.GetPixelRef<uint32>(x, y) = rgbColor.ToRGBA();
@@ -762,25 +784,43 @@ void Viewport::GenerateRenderingTiles()
     mRenderingTiles.Clear();
     mRenderingTiles.Reserve(mBlocks.Size());
 
-    const uint32 tileSize = mParams.tileSize;
+    uint32 tileSizeX = mParams.tileSize;
+    uint32 tileSizeY = mParams.tileSize;
+
+    // during packet traversal, tile sizes must be multiple of SIMD block
+    if (mParams.traversalMode == TraversalMode::Packet)
+    {
+#if (NFE_RT_RAY_GROUP_SIZE == 4)
+        tileSizeX = Math::RoundUp(tileSizeX, 2u);
+        tileSizeY = Math::RoundUp(tileSizeY, 2u);
+#elif (NFE_RT_RAY_GROUP_SIZE == 8)
+        tileSizeX = Math::RoundUp(tileSizeX, 4u);
+        tileSizeY = Math::RoundUp(tileSizeY, 2u);
+#elif (NFE_RT_RAY_GROUP_SIZE == 16)
+        tileSizeX = Math::RoundUp(tileSizeX, 4u);
+        tileSizeY = Math::RoundUp(tileSizeY, 4u);
+#else
+#error Unsupported ray group size
+#endif
+    }
 
     for (const Block& block : mBlocks)
     {
-        const uint32 rows = 1 + (block.Height() - 1) / tileSize;
-        const uint32 columns = 1 + (block.Width() - 1) / tileSize;
+        const uint32 rows = 1 + (block.Height() - 1) / tileSizeX;
+        const uint32 columns = 1 + (block.Width() - 1) / tileSizeY;
 
         Block tile;
 
         for (uint32 j = 0; j < rows; ++j)
         {
-            tile.minY = block.minY + j * tileSize;
-            tile.maxY = Min(block.maxY, block.minY + j * tileSize + tileSize);
+            tile.minY = block.minY + j * tileSizeX;
+            tile.maxY = Min(block.maxY, block.minY + j * tileSizeX + tileSizeX);
             NFE_ASSERT(tile.maxY > tile.minY, "");
 
             for (uint32 i = 0; i < columns; ++i)
             {
-                tile.minX = block.minX + i * tileSize;
-                tile.maxX = Min(block.maxX, block.minX + i * tileSize + tileSize);
+                tile.minX = block.minX + i * tileSizeY;
+                tile.maxX = Min(block.maxX, block.minX + i * tileSizeY + tileSizeY);
                 NFE_ASSERT(tile.maxX > tile.minX, "");
 
                 mRenderingTiles.PushBack(tile);

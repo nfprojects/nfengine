@@ -38,6 +38,9 @@ public:
     NFCOMMON_API static const Vec2x8f GetRegularPolygon_Simd8(const uint32 n, const Vec2x8f& u);
     */
 
+    // get point inside a ball (radius = 1.0)
+    NFCOMMON_API static const Vec4f GetBall(const Vec3f u);
+
     // get point on a sphere (radius = 1.0)
     NFCOMMON_API static const Vec4f GetSphere(const Vec2f u);
 

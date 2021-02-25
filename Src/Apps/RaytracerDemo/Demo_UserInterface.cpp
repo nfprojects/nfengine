@@ -451,8 +451,8 @@ bool DemoWindow::RenderUI_Settings_Camera()
         }
 
         resetFrame |= ImGui::Checkbox("Enable lens distortions", &mCamera.enableBarellDistortion);
-        resetFrame |= ImGui::SliderFloat("Barrel distortion", &mCamera.barrelDistortionConstFactor, 0.0f, 0.2f);
-        resetFrame |= ImGui::SliderFloat("Lens distortion", &mCamera.barrelDistortionVariableFactor, 0.0f, 0.2f);
+        resetFrame |= ImGui::SliderFloat("Barrel distortion", &mCamera.barrelDistortionConstFactor, -0.2f, 0.2f);
+        resetFrame |= ImGui::SliderFloat("Lens distortion", &mCamera.barrelDistortionVariableFactor, -0.2f, 0.2f);
 
         mCamera.mDOF.bokehShape = static_cast<BokehShape>(bokehTypeIndex);
 

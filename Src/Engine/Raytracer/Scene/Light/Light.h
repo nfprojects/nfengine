@@ -89,7 +89,7 @@ public:
 
     // check if a ray hits the light
     virtual void Traverse(const SingleTraversalContext& context, const uint32 objectID) const;
-    virtual bool Traverse_Shadow(const SingleTraversalContext& context) const;
+    virtual bool Traverse_Shadow(const SingleTraversalContext& context, const uint32 objectID) const;
 
     // Illuminate a point in the scene.
     // Returns probability of sampling the returned direction.

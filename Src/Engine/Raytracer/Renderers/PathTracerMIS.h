@@ -31,10 +31,10 @@ private:
     float GetLightPickingProbability(const Scene& scene, RenderingContext& context) const;
 
     // importance sample light sources
-    const RayColor SampleLights(const Scene& scene, const ShadingData& shadingData, const PathState& pathState, RenderingContext& context, const float lightPickProbability) const;
+    const RayColor SampleLights(const Scene& scene, const HitPoint& hitPoint, const ShadingData& shadingData, const PathState& pathState, RenderingContext& context, const float lightPickProbability) const;
 
     // importance sample single light source
-    const RayColor SampleLight(const Scene& scene, const LightSceneObject* lightObject, const ShadingData& shadingData, const PathState& pathState, RenderingContext& context, const float lightPickProbability) const;
+    const RayColor SampleLight(const Scene& scene, const HitPoint& hitPoint, const LightSceneObject* lightObject, const ShadingData& shadingData, const PathState& pathState, RenderingContext& context, const float lightPickProbability) const;
 
     // compute radiance from a hit local lights
     const RayColor EvaluateLight(const LightSceneObject* lightObject, const Math::Ray& ray, float dist, const IntersectionData& intersection, const PathState& pathState, RenderingContext& context, const float lightPickProbability) const;

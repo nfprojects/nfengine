@@ -84,20 +84,34 @@ const RayColor PathTracer::RenderPixel(const Math::Ray& primaryRay, const Render
 
     RayColor resultColor = RayColor::Zero();
     RayColor throughput = RayColor::One();
+    BSDF::EventType lastSampledBsdfEvent = BSDF::NullEvent;
+    PathTerminationReason pathTerminationReason = PathTerminationReason::None;
 
     uint32 depth = 0;
 
-    PathTerminationReason pathTerminationReason = PathTerminationReason::None;
+    const ISceneObject* sceneObject = nullptr;
+    const IMedium* currentMedium = param.scene.GetMediumAtPoint(context, primaryRay.origin);
 
 #ifndef NFE_CONFIGURATION_FINAL
-    const ISceneObject* objectHit = nullptr;
+    const auto reportHitPoint = [&]()
+    {
+        PathDebugData::HitPointData data;
+        data.rayOrigin = ray.origin;
+        data.rayDir = ray.dir;
+        data.hitPoint = hitPoint;
+        data.objectHit = sceneObject;
+        data.shadingData = shadingData;
+        data.throughput = throughput;
+        data.bsdfEvent = lastSampledBsdfEvent;
+        data.medium = currentMedium;
+        context.pathDebugData->data.PushBack(data);
+    };
 #endif // NFE_CONFIGURATION_FINAL
-
-    const IMedium* currentMedium = param.scene.GetMediumAtPoint(context, primaryRay.origin);
 
     for (;;)
     {
         hitPoint.Reset();
+        //hitPoint.distance = HitPoint::DefaultDistance;
         param.scene.Traverse({ ray, hitPoint, context });
 
         // sample medium first
@@ -128,15 +142,7 @@ const RayColor PathTracer::RenderPixel(const Math::Ray& primaryRay, const Render
 #ifndef NFE_CONFIGURATION_FINAL
                 if (context.pathDebugData)
                 {
-                    PathDebugData::HitPointData data;
-                    data.rayOrigin = ray.origin;
-                    data.rayDir = ray.dir;
-                    data.hitPoint = hitPoint;
-                    data.objectHit = objectHit;
-                    data.shadingData = shadingData;
-                    data.throughput = throughput;
-                    data.medium = currentMedium;
-                    context.pathDebugData->data.PushBack(data);
+                    reportHitPoint();
                 }
 #endif // NFE_CONFIGURATION_FINAL
 
@@ -156,7 +162,7 @@ const RayColor PathTracer::RenderPixel(const Math::Ray& primaryRay, const Render
             break;
         }
 
-        const ISceneObject* sceneObject = param.scene.GetHitObject(hitPoint.objectId);
+        sceneObject = param.scene.GetHitObject(hitPoint.objectId);
         NFE_ASSERT(sceneObject, "");
 
         // fill up structure with shading data
@@ -183,6 +189,7 @@ const RayColor PathTracer::RenderPixel(const Math::Ray& primaryRay, const Render
                     currentMedium = nullptr;
                 }
 
+                // TODO get rid of the offset - use ray filters instead
                 ray.origin = ray.GetAtDistance(hitPoint.distance + 0.001f);
                 depth++;
                 continue;
@@ -237,7 +244,6 @@ const RayColor PathTracer::RenderPixel(const Math::Ray& primaryRay, const Render
 
         // sample BSDF
         Vec4f incomingDirWorldSpace;
-        BSDF::EventType lastSampledBsdfEvent = BSDF::NullEvent;
         const RayColor bsdfValue = shadingData.intersection.material->Sample(context.wavelength, incomingDirWorldSpace, shadingData, context.sampler, nullptr, &lastSampledBsdfEvent);
 
         if (lastSampledBsdfEvent == BSDF::NullEvent)
@@ -259,21 +265,13 @@ const RayColor PathTracer::RenderPixel(const Math::Ray& primaryRay, const Render
 #ifndef NFE_CONFIGURATION_FINAL
         if (context.pathDebugData)
         {
-            PathDebugData::HitPointData data;
-            data.rayOrigin = ray.origin;
-            data.rayDir = ray.dir;
-            data.hitPoint = hitPoint;
-            data.objectHit = objectHit;
-            data.shadingData = shadingData;
-            data.throughput = throughput;
-            data.bsdfEvent = lastSampledBsdfEvent;
-            context.pathDebugData->data.PushBack(data);
+            reportHitPoint();
         }
 #endif // NFE_CONFIGURATION_FINAL
 
         // generate secondary ray
         ray = Ray(shadingData.intersection.frame.GetTranslation(), incomingDirWorldSpace);
-        ray.origin += ray.dir * 0.001f;
+        ray.origin += ray.dir * 0.001f; // TODO get rid of that
 
         depth++;
     }
@@ -281,19 +279,12 @@ const RayColor PathTracer::RenderPixel(const Math::Ray& primaryRay, const Render
 #ifndef NFE_CONFIGURATION_FINAL
     if (context.pathDebugData)
     {
-        PathDebugData::HitPointData data;
-        data.rayOrigin = ray.origin;
-        data.rayDir = ray.dir;
-        data.hitPoint = hitPoint;
-        data.objectHit = objectHit;
-        data.shadingData = shadingData;
-        data.throughput = throughput;
-        context.pathDebugData->data.PushBack(data);
+        reportHitPoint();
         context.pathDebugData->terminationReason = pathTerminationReason;
     }
 #endif // NFE_CONFIGURATION_FINAL
 
-    context.counters.numRays += (uint64)depth + 1;
+    context.counters.numRays += depth + 1;
 
     return resultColor;
 }

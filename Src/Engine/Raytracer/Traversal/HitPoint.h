@@ -44,6 +44,7 @@ struct HitPoint
     NFE_FORCE_INLINE void Reset()
     {
         objectId = InvalidObject;
+        subObjectId = InvalidObject;
         distance = DefaultDistance;
         combinedUV = 0;
     }

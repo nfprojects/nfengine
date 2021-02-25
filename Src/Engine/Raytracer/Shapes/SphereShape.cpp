@@ -4,6 +4,7 @@
 #include "../Common/Math/Geometry.hpp"
 #include "../Common/Math/SamplingHelpers.hpp"
 #include "../Common/Math/Transcendental.hpp"
+#include "../Common/Math/Packed.hpp"
 #include "../Common/Reflection/ReflectionClassDefine.hpp"
 
 
@@ -51,7 +52,7 @@ float SphereShape::GetSurfaceArea() const
     return 4.0f * NFE_MATH_PI * Sqr(mRadius);
 }
 
-bool SphereShape::Intersect(const Math::Ray& ray, RenderingContext& renderingCtx, ShapeIntersection& outResult) const
+bool SphereShape::Intersect(const Ray& ray, RenderingContext& renderingCtx, ShapeIntersection& outResult) const
 {
     NFE_UNUSED(renderingCtx);
 
@@ -67,17 +68,36 @@ bool SphereShape::Intersect(const Math::Ray& ray, RenderingContext& renderingCtx
     outResult.nearDist = (float)(v - sqrtDet);
     outResult.farDist = (float)(v + sqrtDet);
 
-    outResult.subObjectId = 0;
+    if (outResult.farDist > outResult.nearDist)
+    {
+        // sphere has no border, so generate dummy IDs
+        const float t = outResult.nearDist > 0.0f ? outResult.nearDist : outResult.farDist;
+        const Vec4f intersectionPoint = ray.GetAtDistance(t) * mInvRadius;
+        const PackedUnitVector3 packedPosition = PackedUnitVector3::FromVector(intersectionPoint);
 
-    return outResult.farDist > outResult.nearDist;
+        outResult.subObjectId =
+            static_cast<uint32>(packedPosition.u & 0xF0u) |
+            (static_cast<uint32>(packedPosition.v & 0xF0u) >> 8u);
+
+        return true;
+    }
+
+    return false;
 }
 
-bool SphereShape::Intersect(const Math::Vec4f& point) const
+bool SphereShape::Intersect(const Vec4f& point) const
 {
     return point.SqrLength3() <= mRadius * mRadius;
 }
 
-const Vec4f SphereShape::Sample(const Vec3f& u, Math::Vec4f* outNormal, float* outPdf) const
+const Vec4f SphereShape::SampleVolume(const Vec3f& u) const
+{
+    const Vec4f point = SamplingHelpers::GetBall(u);
+
+    return point * mRadius;
+}
+
+const Vec4f SphereShape::SampleSurface(const Vec3f& u, Vec4f* outNormal, float* outPdf) const
 {
     if (outPdf)
     {
@@ -94,7 +114,7 @@ const Vec4f SphereShape::Sample(const Vec3f& u, Math::Vec4f* outNormal, float* o
     return point * mRadius;
 }
 
-bool SphereShape::Sample(const Vec4f& ref, const Vec3f& u, ShapeSampleResult& result) const
+bool SphereShape::SampleSurface(const Vec4f& ref, const Vec3f& u, ShapeSampleResult& result) const
 {
     const Vec4f centerDir = -ref; // direction to light center
     const float centerDistSqr = centerDir.SqrLength3();
@@ -139,7 +159,7 @@ bool SphereShape::Sample(const Vec4f& ref, const Vec3f& u, ShapeSampleResult& re
     return true;
 }
 
-float SphereShape::Pdf(const Math::Vec4f& ref, const Math::Vec4f& point) const
+float SphereShape::Pdf(const Vec4f& ref, const Vec4f& point) const
 {
     const Vec4f rayDir = (point - ref).Normalized3();
 

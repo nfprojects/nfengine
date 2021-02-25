@@ -37,10 +37,10 @@ public:
     virtual float GetSurfaceArea() const override;
     virtual void Traverse(const SingleTraversalContext& context, const uint32 objectID) const override;
     virtual void Traverse(const PacketTraversalContext & context, const uint32 objectID, const uint32 numActiveGroups) const override;
-    virtual bool Traverse_Shadow(const SingleTraversalContext& context) const override;
+    virtual bool Traverse_Shadow(const SingleTraversalContext& context, const uint32 objectID) const override;
     virtual bool Intersect(const Math::Ray& ray, RenderingContext& renderingCtx, ShapeIntersection& outResult) const override;
     virtual bool MakeSamplable() override;
-    virtual const Math::Vec4f Sample(const Math::Vec3f& u, Math::Vec4f * outNormal, float* outPdf = nullptr) const override;
+    virtual const Math::Vec4f SampleSurface(const Math::Vec3f& u, Math::Vec4f * outNormal, float* outPdf) const override;
     virtual void EvaluateIntersection(const HitPoint& hitPoint, IntersectionData& outIntersectionData) const override;
 
     NFE_FORCE_INLINE const BVH& GetBVH() const { return mBVH; }
@@ -51,7 +51,7 @@ public:
 
     // Intersect shadow ray(s) with BVH leaf
     // Returns true if any hit was found
-    bool Traverse_Leaf_Shadow(const SingleTraversalContext& context, const BVH::Node& node) const;
+    bool Traverse_Leaf_Shadow(const SingleTraversalContext& context, const uint32 objectID, const BVH::Node& node) const;
 
 private:
 
