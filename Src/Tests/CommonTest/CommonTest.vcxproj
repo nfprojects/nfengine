@@ -177,6 +177,7 @@
     <ClCompile Include="TestCases\Math\RandomTest.cpp" />
     <ClCompile Include="TestCases\Memory\AlignedTest.cpp" />
     <ClCompile Include="TestCases\Memory\MemoryTest.cpp" />
+    <ClCompile Include="TestCases\Reflection\ReflectionBufferTest.cpp" />
     <ClCompile Include="TestCases\Reflection\ReflectionClassTest.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>

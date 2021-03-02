@@ -5,7 +5,7 @@
 #include "Engine/Common/Reflection/ReflectionUtils.hpp"
 #include "Engine/Common/Utils/Stream/BufferOutputStream.hpp"
 #include "Engine/Common/Utils/Stream/BufferInputStream.hpp"
-#include "Engine/Common/Memory/Buffer.hpp"
+#include "Engine/Common/Memory/DynamicBuffer.hpp"
 
 
 using namespace NFE;
@@ -224,7 +224,7 @@ TEST(ReflectionFundamentalTypeTest, SerializeBinaryBool)
 {
     const auto* type = GetType<bool>();
 
-    Buffer buffer;
+    DynamicBuffer buffer;
     SerializationContext context;
     {
         bool obj = false;
@@ -277,7 +277,7 @@ TEST(ReflectionFundamentalTypeTest, SerializeBinaryInt32)
 {
     const auto* type = GetType<int32>();
 
-    Buffer buffer;
+    DynamicBuffer buffer;
     SerializationContext context;
     {
         int32 obj = -1415365;

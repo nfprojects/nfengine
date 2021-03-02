@@ -463,8 +463,8 @@ bool ClassType::DeserializeBinary(void* outObject, InputStream& stream, Serializ
             NFE_LOG_WARNING("Failed to deserialize member '%.*s' - it's not present in class %s. Probably it was removed from code.",
                 memberName.Length(), memberName.Data(), GetName().Str());
 
-            Buffer tempObjectData;
-            if (!tempObjectData.Resize(serializedType->GetSize(), nullptr, serializedType->GetAlignment()))
+            StaticBuffer tempObjectData;
+            if (!tempObjectData.Set(serializedType->GetSize(), nullptr, serializedType->GetAlignment()))
             {
                 NFE_LOG_ERROR("Deserialization failed. Failed to allocate buffer for temporary object");
                 return false;
@@ -491,8 +491,8 @@ bool ClassType::DeserializeBinary(void* outObject, InputStream& stream, Serializ
         // member found and type know, but it does not match the type used in code
         if (memberType != serializedType)
         {
-            Buffer tempObjectData;
-            if (!tempObjectData.Resize(serializedType->GetSize(), nullptr, serializedType->GetAlignment()))
+            StaticBuffer tempObjectData;
+            if (!tempObjectData.Set(serializedType->GetSize(), nullptr, serializedType->GetAlignment()))
             {
                 NFE_LOG_ERROR("Deserialization failed. Failed to allocate buffer for temporary object");
                 return false;

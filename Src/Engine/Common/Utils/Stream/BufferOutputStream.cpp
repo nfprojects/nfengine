@@ -1,12 +1,12 @@
 #include "PCH.hpp"
 #include "BufferOutputStream.hpp"
-#include "Memory/Buffer.hpp"
+#include "Memory/DynamicBuffer.hpp"
 
 
 namespace NFE {
 namespace Common {
 
-BufferOutputStream::BufferOutputStream(Buffer& targetBuffer)
+BufferOutputStream::BufferOutputStream(DynamicBuffer& targetBuffer)
     : mBuffer(targetBuffer)
 {
     mCursor = mBuffer.Size();

@@ -5,7 +5,7 @@
 #include "Engine/Common/Reflection/ReflectionClassDefine.hpp"
 #include "Engine/Common/Utils/Stream/BufferOutputStream.hpp"
 #include "Engine/Common/Utils/Stream/BufferInputStream.hpp"
-#include "Engine/Common/Memory/Buffer.hpp"
+#include "Engine/Common/Memory/DynamicBuffer.hpp"
 
 
 using namespace NFE;
@@ -50,7 +50,7 @@ NFE_END_DEFINE_CLASS()
 
 TEST(ReflectionTypeMismatchTest, IncompatibleType_Binary)
 {
-    Buffer buffer;
+    DynamicBuffer buffer;
     SerializationContext context;
 
     {
@@ -147,7 +147,7 @@ NFE_END_DEFINE_CLASS()
 
 TEST(ReflectionTypeMismatchTest, CompatibleFundamentalType)
 {
-    Buffer buffer;
+    DynamicBuffer buffer;
     SerializationContext context;
 
     {
@@ -217,7 +217,7 @@ NFE_END_DEFINE_CLASS()
 
 TEST(ReflectionTypeMismatchTest, IncompatibleNativeArrayType)
 {
-    Buffer buffer;
+    DynamicBuffer buffer;
     SerializationContext context;
 
     {
@@ -325,7 +325,7 @@ NFE_END_DEFINE_CLASS()
 
 TEST(ReflectionTypeMismatchTest, CompatibleNativeArrayType)
 {
-    Buffer buffer;
+    DynamicBuffer buffer;
     SerializationContext context;
 
     {
@@ -415,7 +415,7 @@ NFE_END_DEFINE_CLASS()
 
 TEST(ReflectionTypeMismatchTest, NativeArrayToDynArray)
 {
-    Buffer buffer;
+    DynamicBuffer buffer;
     SerializationContext context;
 
     {
@@ -488,7 +488,7 @@ NFE_END_DEFINE_CLASS()
 
 TEST(ReflectionTypeMismatchTest, StaticArrayToDynArray)
 {
-    Buffer buffer;
+    DynamicBuffer buffer;
     SerializationContext context;
 
     {
@@ -557,7 +557,7 @@ NFE_END_DEFINE_CLASS()
 
 TEST(ReflectionTypeMismatchTest, CompatibleStaticArrayType)
 {
-    Buffer buffer;
+    DynamicBuffer buffer;
     SerializationContext context;
 
     {
@@ -633,7 +633,7 @@ NFE_END_DEFINE_CLASS()
 
 TEST(ReflectionTypeMismatchTest, IncompatibleStaticArrayType)
 {
-    Buffer buffer;
+    DynamicBuffer buffer;
     SerializationContext context;
 
     {

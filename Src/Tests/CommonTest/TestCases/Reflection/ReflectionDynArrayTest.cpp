@@ -5,6 +5,7 @@
 #include "Engine/Common/Reflection/SerializationContext.hpp"
 #include "Engine/Common/Utils/Stream/BufferOutputStream.hpp"
 #include "Engine/Common/Utils/Stream/BufferInputStream.hpp"
+#include "Engine/Common/Memory/DynamicBuffer.hpp"
 
 using namespace NFE;
 using namespace NFE::Common;
@@ -112,7 +113,7 @@ TEST(ReflectionDynArrayTest, SerializeBinary_Empty)
 {
     const auto* type = GetType<TestDynArray>();
 
-    Buffer buffer;
+    DynamicBuffer buffer;
     SerializationContext context;
     {
         TestDynArray obj;
@@ -133,7 +134,7 @@ TEST(ReflectionDynArrayTest, SerializeBinary)
 {
     const auto* type = GetType<TestDynArray>();
 
-    Buffer buffer;
+    DynamicBuffer buffer;
     SerializationContext context;
     {
         TestDynArray obj;
@@ -180,7 +181,7 @@ TEST(ReflectionDynArrayTest, NestedDynArrays)
     const auto* type = GetType<TestClassWithNestedDynArrays>();
     ASSERT_NE(nullptr, type);
 
-    Buffer buffer;
+    DynamicBuffer buffer;
     SerializationContext context;
 
     {

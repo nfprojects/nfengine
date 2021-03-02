@@ -2,7 +2,7 @@
 
 #include "ReflectionTypeResolver.hpp"
 #include "Types/ReflectionType.hpp"
-#include "../Memory/Buffer.hpp"
+#include "../Memory/StaticBuffer.hpp"
 #include "../System/Assertion.hpp"
 
 
@@ -19,7 +19,7 @@ public:
     Variant();
     ~Variant();
     Variant(Variant&& other);
-    Variant(const Type* dataType, Common::Buffer&& data);
+    Variant(const Type* dataType, Common::StaticBuffer&& data);
     Variant& operator = (Variant&& other);
 
     // Reset variant state (make it null)
@@ -28,7 +28,7 @@ public:
     NFE_FORCE_INLINE bool Empty() const { return mDataType == nullptr; }
     NFE_FORCE_INLINE const Type* GetType() const { return mDataType; }
     NFE_FORCE_INLINE void* GetData() const { return mObjectData.Data(); }
-    NFE_FORCE_INLINE const Common::Buffer& GetDataBuffer() const { return mObjectData; }
+    NFE_FORCE_INLINE const Common::StaticBuffer& GetDataBuffer() const { return mObjectData; }
 
     // Access hold object by reference (the object must exist)
     template<typename T>
@@ -53,7 +53,7 @@ public:
 
 private:
     const Type* mDataType;
-    Common::Buffer mObjectData;
+    Common::StaticBuffer mObjectData;
 };
 
 } // namespace RTTI

@@ -157,9 +157,11 @@
     <ClInclude Include="Math\Vec8iImplAVX2.hpp" />
     <ClInclude Include="Math\Vec8iImplNaive.hpp" />
     <ClInclude Include="Memory\Aligned.hpp" />
-    <ClInclude Include="Memory\Buffer.hpp" />
+    <ClInclude Include="Memory\BufferView.hpp" />
+    <ClInclude Include="Memory\DynamicBuffer.hpp" />
     <ClInclude Include="Memory\DefaultAllocator.hpp" />
     <ClInclude Include="Memory\MemoryHelpers.hpp" />
+    <ClInclude Include="Memory\StaticBuffer.hpp" />
     <ClInclude Include="nfCommon.hpp" />
     <ClInclude Include="PCH.hpp" />
     <ClInclude Include="Reflection\Object.hpp" />
@@ -178,6 +180,7 @@
     <ClInclude Include="Reflection\Serializer.hpp" />
     <ClInclude Include="Reflection\Types\ReflectionArrayType.hpp" />
     <ClInclude Include="Reflection\Types\ReflectionClassType.hpp" />
+    <ClInclude Include="Reflection\Types\ReflectionDynamicBufferType.hpp" />
     <ClInclude Include="Reflection\Types\ReflectionEnumType.hpp" />
     <ClInclude Include="Reflection\Types\ReflectionFundamentalType.hpp" />
     <ClInclude Include="Reflection\Types\ReflectionNativeArrayType.hpp" />
@@ -185,6 +188,7 @@
     <ClInclude Include="Reflection\Types\ReflectionResizableArrayType.hpp" />
     <ClInclude Include="Reflection\Types\ReflectionSharedPtrType.hpp" />
     <ClInclude Include="Reflection\Types\ReflectionStaticArrayType.hpp" />
+    <ClInclude Include="Reflection\Types\ReflectionStaticBufferType.hpp" />
     <ClInclude Include="Reflection\Types\ReflectionStringType.hpp" />
     <ClInclude Include="Reflection\Types\ReflectionType.hpp" />
     <ClInclude Include="Reflection\Types\ReflectionDynArrayType.hpp" />
@@ -294,8 +298,10 @@
     <ClCompile Include="Math\Transform.cpp" />
     <ClCompile Include="Math\Utils.cpp" />
     <ClCompile Include="Math\Vec4f.cpp" />
-    <ClCompile Include="Memory\Buffer.cpp" />
+    <ClCompile Include="Memory\BufferView.cpp" />
+    <ClCompile Include="Memory\DynamicBuffer.cpp" />
     <ClCompile Include="Memory\DefaultAllocator.cpp" />
+    <ClCompile Include="Memory\StaticBuffer.cpp" />
     <ClCompile Include="nfCommon.cpp" />
     <ClCompile Include="PCH.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
@@ -310,6 +316,7 @@
     <ClCompile Include="Reflection\SerializationContext.cpp" />
     <ClCompile Include="Reflection\Serializer.cpp" />
     <ClCompile Include="Reflection\Types\ReflectionClassType.cpp" />
+    <ClCompile Include="Reflection\Types\ReflectionDynamicBufferType.cpp" />
     <ClCompile Include="Reflection\Types\ReflectionDynArrayType.cpp" />
     <ClCompile Include="Reflection\Types\ReflectionEnumType.cpp" />
     <ClCompile Include="Reflection\Types\ReflectionFundamentalType.cpp" />
@@ -317,6 +324,7 @@
     <ClCompile Include="Reflection\Types\ReflectionResizableArrayType.cpp" />
     <ClCompile Include="Reflection\Types\ReflectionSharedPtrType.cpp" />
     <ClCompile Include="Reflection\Types\ReflectionStaticArrayType.cpp" />
+    <ClCompile Include="Reflection\Types\ReflectionStaticBufferType.cpp" />
     <ClCompile Include="Reflection\Types\ReflectionStringType.cpp" />
     <ClCompile Include="Reflection\Types\ReflectionType.cpp" />
     <ClCompile Include="Reflection\Types\ReflectionPointerType.cpp" />

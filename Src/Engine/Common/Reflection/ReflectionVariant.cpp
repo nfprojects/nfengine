@@ -27,7 +27,7 @@ Variant::Variant(Variant&& other)
     NFE_ASSERT(other.mObjectData.Data() == nullptr, "Other object data should have been moved");
 }
 
-Variant::Variant(const Type* dataType, Common::Buffer&& data)
+Variant::Variant(const Type* dataType, Common::StaticBuffer&& data)
     : mDataType(dataType)
     , mObjectData(std::move(data))
 {
@@ -45,7 +45,7 @@ Variant& Variant::operator = (Variant&& other)
     mObjectData = std::move(other.mObjectData);
 
     other.mDataType = nullptr;
-    other.mObjectData.Clear();
+    other.mObjectData.Release();
 
     return *this;
 }
@@ -58,7 +58,6 @@ void Variant::Clear()
         mDataType = nullptr;
     }
     
-    mObjectData.Clear();
     mObjectData.Release();
 }
 

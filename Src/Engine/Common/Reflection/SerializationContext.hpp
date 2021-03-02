@@ -8,7 +8,7 @@
 #include "../Containers/DynArray.hpp"
 #include "../Containers/StringView.hpp"
 #include "../Containers/SharedPtr.hpp"
-#include "../Memory/Buffer.hpp"
+#include "../Memory/StaticBuffer.hpp"
 
 namespace NFE {
 namespace RTTI {
@@ -51,7 +51,7 @@ public:
     NFE_FORCE_INLINE const Common::DynArray<ObjectPtr>& GetMappedObjects() const { return mObjectsTable; }
 
     void InitStage(Stage newStage);
-    bool InitStringTable(Common::Buffer&& stringBuffer);
+    bool InitStringTable(Common::StaticBuffer&& stringBuffer);
     bool PushObject(const ObjectPtr& object);
 
     uint32 MapString(const Common::StringView str);
@@ -92,7 +92,7 @@ private:
     Common::HashMap<const IObject*, MappingInfo> mObjectsMap;
 
     // used during deserialization
-    Common::Buffer mStringBuffer;
+    Common::StaticBuffer mStringBuffer;
 
     // list of information about mismatched member types during deserialization
     Common::DynArray<MemberTypeMismatchInfo> mMemberTypeMismatchInfos;

@@ -1,18 +1,18 @@
 /**
  * @file
- * @author Witek902 (witek902@gmail.com)
- * @brief  Buffer class definition.
+ * @author Witek902
+ * @brief  DynamicBuffer class definition.
  */
 
 #include "PCH.hpp"
-#include "Buffer.hpp"
+#include "DynamicBuffer.hpp"
 #include "Memory/DefaultAllocator.hpp"
 #include "Math/Math.hpp"
 
 namespace NFE {
 namespace Common {
 
-Buffer::Buffer()
+DynamicBuffer::DynamicBuffer()
     : mData(nullptr)
     , mSize(0)
     , mCapacity(0)
@@ -20,7 +20,7 @@ Buffer::Buffer()
 {
 }
 
-Buffer::Buffer(const Buffer& other)
+DynamicBuffer::DynamicBuffer(const DynamicBuffer& other)
     : mData(nullptr)
     , mSize(0)
     , mCapacity(0)
@@ -29,7 +29,7 @@ Buffer::Buffer(const Buffer& other)
     *this = other;
 }
 
-Buffer::Buffer(Buffer&& other)
+DynamicBuffer::DynamicBuffer(DynamicBuffer&& other)
 {
     mSize = other.mSize;
     mCapacity = other.mCapacity;
@@ -42,20 +42,20 @@ Buffer::Buffer(Buffer&& other)
     other.mAlignment = 0;
 }
 
-Buffer::Buffer(const void* data, const size_t dataSize, const size_t alignment)
-    : Buffer()
+DynamicBuffer::DynamicBuffer(const void* data, const size_t dataSize, const size_t alignment)
+    : DynamicBuffer()
 {
     NFE_ASSERT(Math::IsPowerOfTwo(alignment), "Invalid alignment: %zu", alignment);
 
     Resize(dataSize, data, alignment);
 }
 
-Buffer::~Buffer()
+DynamicBuffer::~DynamicBuffer()
 {
     Release();
 }
 
-Buffer& Buffer::operator = (const Buffer& other)
+DynamicBuffer& DynamicBuffer::operator = (const DynamicBuffer& other)
 {
     if (this != &other)
     {
@@ -65,7 +65,7 @@ Buffer& Buffer::operator = (const Buffer& other)
     return *this;
 }
 
-Buffer& Buffer::operator = (Buffer&& other)
+DynamicBuffer& DynamicBuffer::operator = (DynamicBuffer&& other)
 {
     if (this != &other)
     {
@@ -85,7 +85,7 @@ Buffer& Buffer::operator = (Buffer&& other)
     return *this;
 }
 
-void Buffer::Zero()
+void DynamicBuffer::Zero()
 {
     if (mSize)
     {
@@ -94,7 +94,7 @@ void Buffer::Zero()
     }
 }
 
-bool Buffer::Resize(size_t size, const void* newData, const size_t alignment)
+bool DynamicBuffer::Resize(size_t size, const void* newData, const size_t alignment)
 {
     NFE_ASSERT(Math::IsPowerOfTwo(alignment), "Invalid alignment: %zu", alignment);
 
@@ -115,7 +115,7 @@ bool Buffer::Resize(size_t size, const void* newData, const size_t alignment)
     return true;
 }
 
-bool Buffer::Reserve(size_t size, bool preserveData, const size_t alignment)
+bool DynamicBuffer::Reserve(size_t size, bool preserveData, const size_t alignment)
 {
     NFE_ASSERT(Math::IsPowerOfTwo(alignment), "Invalid alignment: %zu", alignment);
 
@@ -148,12 +148,12 @@ bool Buffer::Reserve(size_t size, bool preserveData, const size_t alignment)
     return true;
 }
 
-void Buffer::Clear()
+void DynamicBuffer::Clear()
 {
     mSize = 0;
 }
 
-void Buffer::Release()
+void DynamicBuffer::Release()
 {
     NFE_FREE(mData);
     mSize = 0;

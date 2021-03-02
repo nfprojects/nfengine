@@ -55,7 +55,9 @@ class LogGrouper;
 class LogScope;
 
 // Memory
-class Buffer;
+class BufferView;
+class StaticBuffer;
+class DynamicBuffer;
 class DefaultAllocator;
 struct AllocationDebugInfo;
 struct AllocatorStats;

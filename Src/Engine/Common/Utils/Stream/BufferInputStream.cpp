@@ -1,7 +1,7 @@
 #include "PCH.hpp"
 #include "BufferInputStream.hpp"
 #include "System/Memory.hpp"
-#include "Memory/Buffer.hpp"
+#include "Memory/BufferView.hpp"
 #include "Logger/Logger.hpp"
 
 
@@ -22,8 +22,8 @@ BufferInputStream::BufferInputStream(const void* data, size_t dataSize)
     mPos = 0;
 }
 
-BufferInputStream::BufferInputStream(const Buffer& buffer)
-    : BufferInputStream(buffer.Data(), buffer.Size())
+BufferInputStream::BufferInputStream(const BufferView& bufferView)
+    : BufferInputStream(bufferView.Data(), bufferView.Size())
 { }
 
 uint64 BufferInputStream::GetSize()

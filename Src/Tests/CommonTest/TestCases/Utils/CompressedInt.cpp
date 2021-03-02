@@ -1,7 +1,7 @@
 #include "PCH.hpp"
 #include "Engine/Common/Utils/Stream/BufferOutputStream.hpp"
 #include "Engine/Common/Utils/Stream/BufferInputStream.hpp"
-#include "Engine/Common/Memory/Buffer.hpp"
+#include "Engine/Common/Memory/DynamicBuffer.hpp"
 #include "Engine/Common/Utils/LanguageUtils.hpp"
 
 using namespace NFE;
@@ -35,7 +35,7 @@ TEST(CompressedInt, Stream_Uint32)
     {
         const uint32 refValue = valuesToTest32[i];
 
-        Buffer buffer;
+        DynamicBuffer buffer;
 
         {
             BufferOutputStream stream(buffer);
@@ -76,7 +76,7 @@ TEST(CompressedInt, Stream_Uint64)
     {
         const uint64 refValue = valuesToTest64[i];
 
-        Buffer buffer;
+        DynamicBuffer buffer;
 
         {
             BufferOutputStream stream(buffer);

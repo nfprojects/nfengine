@@ -15,7 +15,7 @@ class NFCOMMON_API BufferOutputStream : public OutputStream
     NFE_MAKE_NONMOVEABLE(BufferOutputStream)
 
 public:
-    BufferOutputStream(Buffer& targetBuffer);
+    BufferOutputStream(DynamicBuffer& targetBuffer);
     ~BufferOutputStream();
 
     size_t GetSize() const;
@@ -26,7 +26,7 @@ public:
     virtual uint64 GetPosition() const override;
 
 private:
-    Buffer& mBuffer;
+    DynamicBuffer& mBuffer;
     size_t mCursor;
 };
 

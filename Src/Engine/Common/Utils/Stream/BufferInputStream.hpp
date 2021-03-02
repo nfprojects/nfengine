@@ -21,7 +21,7 @@ private:
 
 public:
     BufferInputStream(const void* data, size_t dataSize);
-    BufferInputStream(const Buffer& buffer);
+    BufferInputStream(const BufferView& buffer);
 
     uint64 GetSize() override;
     bool Seek(int64 offset, SeekMode mode) override;

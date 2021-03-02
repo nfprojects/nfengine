@@ -128,9 +128,6 @@
     <ClInclude Include="Memory\Aligned.hpp">
       <Filter>Memory</Filter>
     </ClInclude>
-    <ClInclude Include="Memory\Buffer.hpp">
-      <Filter>Memory</Filter>
-    </ClInclude>
     <ClInclude Include="Utils\BVH.hpp">
       <Filter>Utils</Filter>
     </ClInclude>
@@ -707,6 +704,21 @@
     <ClInclude Include="Reflection\Types\ReflectionResizableArrayType.hpp">
       <Filter>Reflection\Types</Filter>
     </ClInclude>
+    <ClInclude Include="Memory\DynamicBuffer.hpp">
+      <Filter>Memory</Filter>
+    </ClInclude>
+    <ClInclude Include="Memory\StaticBuffer.hpp">
+      <Filter>Memory</Filter>
+    </ClInclude>
+    <ClInclude Include="Reflection\Types\ReflectionStaticBufferType.hpp">
+      <Filter>Reflection\Types</Filter>
+    </ClInclude>
+    <ClInclude Include="Memory\BufferView.hpp">
+      <Filter>Memory</Filter>
+    </ClInclude>
+    <ClInclude Include="Reflection\Types\ReflectionDynamicBufferType.hpp">
+      <Filter>Reflection\Types</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="PCH.cpp" />
@@ -768,9 +780,6 @@
       <Filter>Logger\Backends</Filter>
     </ClCompile>
     <ClCompile Include="Memory\DefaultAllocator.cpp">
-      <Filter>Memory</Filter>
-    </ClCompile>
-    <ClCompile Include="Memory\Buffer.cpp">
       <Filter>Memory</Filter>
     </ClCompile>
     <ClCompile Include="Utils\BVH.cpp">
@@ -1011,6 +1020,21 @@
       <Filter>Reflection\Types</Filter>
     </ClCompile>
     <ClCompile Include="Reflection\Types\ReflectionResizableArrayType.cpp">
+      <Filter>Reflection\Types</Filter>
+    </ClCompile>
+    <ClCompile Include="Memory\DynamicBuffer.cpp">
+      <Filter>Memory</Filter>
+    </ClCompile>
+    <ClCompile Include="Memory\StaticBuffer.cpp">
+      <Filter>Memory</Filter>
+    </ClCompile>
+    <ClCompile Include="Reflection\Types\ReflectionStaticBufferType.cpp">
+      <Filter>Reflection\Types</Filter>
+    </ClCompile>
+    <ClCompile Include="Memory\BufferView.cpp">
+      <Filter>Memory</Filter>
+    </ClCompile>
+    <ClCompile Include="Reflection\Types\ReflectionDynamicBufferType.cpp">
       <Filter>Reflection\Types</Filter>
     </ClCompile>
   </ItemGroup>

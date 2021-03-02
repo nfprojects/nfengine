@@ -146,7 +146,7 @@ bool SerializationContext::UnmapObject(const uint32 index, ObjectPtr& outPtr) co
     return false;
 }
 
-bool SerializationContext::InitStringTable(Buffer&& newStringBuffer)
+bool SerializationContext::InitStringTable(StaticBuffer&& newStringBuffer)
 {
     mStringsTable.Clear();
     mStringBuffer = std::move(newStringBuffer);

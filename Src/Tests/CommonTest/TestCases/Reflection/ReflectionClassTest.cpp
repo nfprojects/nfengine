@@ -5,7 +5,7 @@
 #include "Engine/Common/Reflection/ReflectionClassDefine.hpp"
 #include "Engine/Common/Utils/Stream/BufferOutputStream.hpp"
 #include "Engine/Common/Utils/Stream/BufferInputStream.hpp"
-#include "Engine/Common/Memory/Buffer.hpp"
+#include "Engine/Common/Memory/DynamicBuffer.hpp"
 
 
 using namespace NFE;
@@ -98,7 +98,7 @@ TEST(ReflectionClassTest, TestClassWithFundamentalMembers_BinarySerialization)
     const auto* type = GetType<TestClassWithFundamentalMembers>();
     ASSERT_NE(nullptr, type);
 
-    Buffer buffer;
+    DynamicBuffer buffer;
     SerializationContext context;
 
     TestClassWithFundamentalMembers obj;
@@ -161,7 +161,7 @@ NFE_END_DEFINE_CLASS()
 
 TEST(ReflectionTypeMismatchTest, MissingMember)
 {
-    Buffer buffer;
+    DynamicBuffer buffer;
     SerializationContext context;
 
     {
@@ -201,7 +201,7 @@ TEST(ReflectionClassTest, TestClassWithFundamentalMembers_MissingMemberType)
     const auto* type = GetType<TestClassWithFundamentalMembers>();
     ASSERT_NE(nullptr, type);
 
-    Buffer buffer;
+    DynamicBuffer buffer;
     SerializationContext context;
 
     TestClassWithFundamentalMembers defaultObj;
@@ -426,7 +426,7 @@ TEST(ReflectionClassTest, TestClassWithArrayType_BinarySerialization)
     const Type* type = GetType<TestClassWithArrayType>();
     ASSERT_NE(nullptr, type);
 
-    Buffer buffer;
+    DynamicBuffer buffer;
     SerializationContext context;
 
     {
@@ -555,7 +555,7 @@ TEST(ReflectionClassTest, TestClassWithDynArrayType_BinarySerialization)
     const auto* type = GetType<TestClassWithDynArrayType>();
     ASSERT_NE(nullptr, type);
 
-    Buffer buffer;
+    DynamicBuffer buffer;
     SerializationContext context;
 
     TestClassWithDynArrayType obj;

@@ -190,8 +190,8 @@ bool Deserialize(DynArray<ObjectPtr>& outRootObjects, InputStream& inputStream)
             return false;
         }
 
-        Buffer stringBuffer;
-        if (!stringBuffer.Resize(stringTableSizeInBytes))
+        StaticBuffer stringBuffer;
+        if (!stringBuffer.Set(stringTableSizeInBytes))
         {
             NFE_LOG_ERROR("Deserialize: Failed to allocate string table");
             return false;

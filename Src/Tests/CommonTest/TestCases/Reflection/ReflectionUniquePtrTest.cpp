@@ -3,7 +3,7 @@
 #include "Engine/Common/Reflection/SerializationContext.hpp"
 #include "Engine/Common/Utils/Stream/BufferOutputStream.hpp"
 #include "Engine/Common/Utils/Stream/BufferInputStream.hpp"
-#include "Engine/Common/Memory/Buffer.hpp"
+#include "Engine/Common/Memory/DynamicBuffer.hpp"
 
 
 using namespace NFE;
@@ -188,7 +188,7 @@ TEST(ReflectionUniquePtrTest, SerializeBinary_Nullptr)
 {
     const auto* type = GetType<TestUniquePtr>();
 
-    Buffer buffer;
+    DynamicBuffer buffer;
     SerializationContext context;
     {
         TestUniquePtr obj;
@@ -211,7 +211,7 @@ TEST(ReflectionUniquePtrTest, SerializeBinary)
     obj->floatVal = 123.0f;
     obj->intVal = 321;
 
-    Buffer buffer;
+    DynamicBuffer buffer;
     SerializationContext context;
     {
         BufferOutputStream stream(buffer);

@@ -74,7 +74,7 @@ bool Mipmap::SetData(const void* data, uint32 width, uint32 height, size_t dataS
     Release();
     mWidth = width;
     mHeight = height;
-    mData.Resize(dataSize, data);
+    mData.Set(dataSize, data);
 
     if (!mData.Data())
     {

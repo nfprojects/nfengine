@@ -4,7 +4,7 @@
 #include "Engine/Common/Reflection/SerializationContext.hpp"
 #include "Engine/Common/Utils/Stream/BufferOutputStream.hpp"
 #include "Engine/Common/Utils/Stream/BufferInputStream.hpp"
-#include "Engine/Common/Memory/Buffer.hpp"
+#include "Engine/Common/Memory/DynamicBuffer.hpp"
 
 
 using namespace NFE;
@@ -120,7 +120,7 @@ TEST(ReflectionEnumTest, SerializeBinary_Valid)
 {
     const auto* type = GetType<TestEnum>();
 
-    Buffer buffer;
+    DynamicBuffer buffer;
     SerializationContext context;
     {
         TestEnum obj = TestEnum::OptionC;
@@ -139,7 +139,7 @@ TEST(ReflectionEnumTest, SerializeBinary_InvalidOption)
 {
     const auto* type = GetType<TestEnum>();
 
-    Buffer buffer;
+    DynamicBuffer buffer;
     SerializationContext context;
     {
         TestEnum obj = TestEnum::UnknownOption;

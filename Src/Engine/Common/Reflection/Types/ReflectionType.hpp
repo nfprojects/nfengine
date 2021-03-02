@@ -24,12 +24,14 @@ enum class TypeKind : uint8
     Undefined = 0,      // invalid
     Fundamental,        // fundamental type (int, float, bool, etc.)
     Enumeration,        // enum / enum class
-    String,             // NFE::String type
+    String,             // NFE::Common::String type
     NativeArray,        // T[N] types
-    Array,              // NFE::DynArray<T>, NFE::StaticArray<T,N> types
-    UniquePtr,          // NFE::UniquePtr<T> types
-    SharedPtr,          // NFE::SharedPtr<T> types
+    Array,              // NFE::Common::DynArray<T>, NFE::Common::StaticArray<T,N> types
+    UniquePtr,          // NFE::Common::UniquePtr<T> types
+    SharedPtr,          // NFE::Common::SharedPtr<T> types
     Class,              // class type
+    StaticBuffer,       // NFE::Common::StaticBuffer
+    DynamicBuffer,      // NFE::Common::DynamicBuffer
 
     // TODO bitfields
 };
@@ -56,6 +58,7 @@ enum class TypeNameID : uint8
     UniquePtr           = 0x15,
     SharedPtr           = 0x16,
     String              = 0x17,
+    Buffer              = 0x18,
 };
 
 using ConstructorFunc = std::function<void(void*)>;

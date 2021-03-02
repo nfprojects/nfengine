@@ -6,7 +6,7 @@
 #include "Engine/Common/Utils/Stream/BufferInputStream.hpp"
 #include "Engine/Common/Utils/Stream/FileOutputStream.hpp"
 #include "Engine/Common/Utils/Stream/FileInputStream.hpp"
-#include "Engine/Common/Memory/Buffer.hpp"
+#include "Engine/Common/Memory/DynamicBuffer.hpp"
 
 
 using namespace NFE;
@@ -22,7 +22,7 @@ using TestSharedPtr = SharedPtr<TestBaseClass>;
 
 TEST(ReflectionTest, Serialize_Simple_SingleObject)
 {
-    Buffer buffer;
+    DynamicBuffer buffer;
 
     {
         const TestSharedPtr obj = MakeUniquePtr<TestBaseClass>();
@@ -51,7 +51,7 @@ TEST(ReflectionTest, Serialize_Simple_SingleObject)
 
 TEST(ReflectionTest, Serialize_CorruptedBuffer)
 {
-    Buffer originalBuffer;
+    DynamicBuffer originalBuffer;
 
     {
         const TestSharedPtr obj = MakeUniquePtr<TestBaseClass>();
@@ -65,7 +65,7 @@ TEST(ReflectionTest, Serialize_CorruptedBuffer)
 
     for (uint32 i = 0; i < 8u * originalBuffer.Size(); ++i)
     {
-        Buffer bufferCopy = originalBuffer;
+        DynamicBuffer bufferCopy = originalBuffer;
 
         // flip single bit
         const uint32 byteIndex = i / 8u;
@@ -82,7 +82,7 @@ TEST(ReflectionTest, Serialize_CorruptedBuffer)
 
 TEST(ReflectionTest, Serialize_Simple_MultipleObject)
 {
-    Buffer buffer;
+    DynamicBuffer buffer;
     const uint32 numObjects = 10;
 
     {
@@ -119,7 +119,7 @@ TEST(ReflectionTest, Serialize_Simple_MultipleObject)
 
 TEST(ReflectionTest, Serialize_Complex_SingleRootObject)
 {
-    Buffer buffer;
+    DynamicBuffer buffer;
 
     {
         const SharedPtr<SerializationTestClass> obj = MakeSharedPtr<SerializationTestClass>();

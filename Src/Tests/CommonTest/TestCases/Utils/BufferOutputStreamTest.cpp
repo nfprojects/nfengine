@@ -1,6 +1,6 @@
 #include "PCH.hpp"
 #include "Engine/Common/Utils/Stream/BufferOutputStream.hpp"
-#include "Engine/Common/Memory/Buffer.hpp"
+#include "Engine/Common/Memory/DynamicBuffer.hpp"
 #include "Engine/Common/Containers/StringView.hpp"
 
 #include "Constants.hpp"
@@ -11,7 +11,7 @@ using namespace NFE::Common;
 TEST(BufferOutputStreamTest, ConstructorTest)
 {
     // Perform class methods on an empty stream
-    Buffer buffer;
+    DynamicBuffer buffer;
     BufferOutputStream stream(buffer);
     ASSERT_EQ(stream.GetSize(), 0u);
     ASSERT_EQ(stream.GetData(), nullptr);
@@ -21,7 +21,7 @@ TEST(BufferOutputStreamTest, ConstructorTest)
 TEST(BufferOutputStreamTest, WriteTest)
 {
     // Create stream and insert our gText
-    Buffer buffer;
+    DynamicBuffer buffer;
     BufferOutputStream stream(buffer);
     stream.Write(gText.Str(), gTextSize);
 

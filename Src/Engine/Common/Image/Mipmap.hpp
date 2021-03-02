@@ -8,7 +8,7 @@
 
 #include "ImageFormat.hpp"
 #include "../Math/Vec4f.hpp"
-#include "../Memory/Buffer.hpp"
+#include "../Memory/StaticBuffer.hpp"
 
 
 namespace NFE {
@@ -19,7 +19,7 @@ using Color = Math::Vec4f;
 class NFCOMMON_API Mipmap
 {
 protected:
-    Buffer mData;
+    StaticBuffer mData;
 
     uint32 mWidth;
     uint32 mHeight;
