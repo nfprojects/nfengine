@@ -44,6 +44,7 @@ struct TextureDesc
 {
     TextureType type;
     Format format;
+    ResourceAccessMode mode;
     int binding;        //< texture binding mode
     uint32 width;       //< texture width in texels
     uint32 height;      //< texture height in texels, used only for 2D and 3D textures
@@ -62,6 +63,7 @@ struct TextureDesc
     TextureDesc()
         : type(TextureType::Texture2D)
         , format(Format::Unknown)
+        , mode(ResourceAccessMode::Immutable)
         , binding(0)
         , width(1)
         , height(1)

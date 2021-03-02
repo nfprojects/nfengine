@@ -51,7 +51,7 @@ public:
     ~ResourceStateCache();
 
     // Set target expected state for given resource
-    void EnsureResourceState(const Resource* resource, D3D12_RESOURCE_STATES state, uint32 subresource = UINT32_MAX);
+    bool EnsureResourceState(const Resource* resource, D3D12_RESOURCE_STATES state, uint32 subresource = UINT32_MAX);
 
     // Make all requested resource state changes effective
     // This should be called just before executive command (CopyResource, Draw, Dispatch, Clear, etc.)
@@ -66,12 +66,44 @@ public:
 
 private:
 
-    void PushPendingBarrier(const Resource* resource, uint32 subresource, D3D12_RESOURCE_STATES stateBefore, D3D12_RESOURCE_STATES stateAfter);
+    bool PushPendingBarrier(const Resource* resource, uint32 subresource, D3D12_RESOURCE_STATES stateBefore, D3D12_RESOURCE_STATES stateAfter);
 
     Common::DynArray<D3D12_RESOURCE_BARRIER> mPendingResourceBarriers;
 
     ResourceStateMap mCache;
     ResourceStateMap mInitialStates;
+};
+
+//////////////////////////////////////////////////////////////////////////
+
+// A helper class that makes flushing resource barriers easier
+// and tries to reduce number of unnecessary barriers.
+class BarrierFlusher
+{
+public:
+    NFE_FORCE_INLINE BarrierFlusher(ResourceStateCache& cacheObject, ID3D12GraphicsCommandList* d3dCommandList)
+        : mCache(cacheObject)
+        , mD3DCommandList(d3dCommandList)
+    {}
+
+    NFE_FORCE_INLINE ~BarrierFlusher()
+    {
+        if (mNeedFlush)
+        {
+            mCache.FlushPendingBarriers(mD3DCommandList);
+        }
+    }
+
+    BarrierFlusher& EnsureResourceState(const Resource* resource, D3D12_RESOURCE_STATES state, uint32 subresource = UINT32_MAX)
+    {
+        mNeedFlush |= mCache.EnsureResourceState(resource, state, subresource);
+        return *this;
+    }
+
+private:
+    ResourceStateCache& mCache;
+    ID3D12GraphicsCommandList* mD3DCommandList;
+    bool mNeedFlush = false;
 };
 
 

@@ -487,7 +487,7 @@ void CommandRecorder::SetStencilRef(uint8 ref)
     mCommandList->OMSetStencilRef(ref);
 }
 
-void CommandRecorder::Internal_WriteDynamicBuffer(Buffer* buffer, size_t offset, size_t size, const void* data)
+void CommandRecorder::Internal_WriteBuffer(Buffer* buffer, size_t offset, size_t size, const void* data)
 {
     RingBuffer* ringBuffer = gDevice->GetRingBuffer();
     NFE_ASSERT(ringBuffer, "No ring buffer");
@@ -500,8 +500,8 @@ void CommandRecorder::Internal_WriteDynamicBuffer(Buffer* buffer, size_t offset,
     cpuPtr += ringBufferOffset;
     memcpy(cpuPtr, data, size);
 
-    mResourceStateCache.EnsureResourceState(buffer, D3D12_RESOURCE_STATE_COPY_DEST);
-    mResourceStateCache.FlushPendingBarriers(mCommandList);
+    BarrierFlusher(mResourceStateCache, mCommandList)
+        .EnsureResourceState(buffer, D3D12_RESOURCE_STATE_COPY_DEST);
 
     // copy data from staging ring buffer to the target buffer
     mCommandList->CopyBufferRegion(buffer->GetResource(), static_cast<UINT64>(offset),
@@ -569,7 +569,9 @@ bool CommandRecorder::WriteBuffer(const BufferPtr& buffer, size_t offset, size_t
 
     Internal_GetReferencedResources().buffers.Insert(buffer);
 
-    if (bufferPtr->GetMode() == ResourceAccessMode::GPUOnly)
+    const ResourceAccessMode accessMode = bufferPtr->GetMode();
+
+    if (accessMode == ResourceAccessMode::GPUOnly || accessMode == ResourceAccessMode::Immutable)
     {
         if (size > bufferPtr->GetSize())
         {
@@ -577,7 +579,7 @@ bool CommandRecorder::WriteBuffer(const BufferPtr& buffer, size_t offset, size_t
             return false;
         }
 
-        Internal_WriteDynamicBuffer(bufferPtr, offset, size, data);
+        Internal_WriteBuffer(bufferPtr, offset, size, data);
     }
     else if (bufferPtr->GetMode() == ResourceAccessMode::Volatile)
     {
@@ -606,12 +608,12 @@ void CommandRecorder::CopyBuffer(const BufferPtr& src, const BufferPtr& dest, si
     Internal_GetReferencedResources().buffers.Insert(src);
     Internal_GetReferencedResources().buffers.Insert(dest);
 
-    if (srcBuffer->GetMode() != ResourceAccessMode::Upload && srcBuffer->GetMode() != ResourceAccessMode::GPUOnly)
+    if (srcBuffer->GetMode() != ResourceAccessMode::Upload && srcBuffer->GetMode() != ResourceAccessMode::GPUOnly && srcBuffer->GetMode() != ResourceAccessMode::Immutable)
     {
         NFE_FATAL("Invalid source buffer access mode");
     }
 
-    if (destBuffer->GetMode() != ResourceAccessMode::GPUOnly && destBuffer->GetMode() != ResourceAccessMode::Readback)
+    if (destBuffer->GetMode() != ResourceAccessMode::Immutable && destBuffer->GetMode() != ResourceAccessMode::GPUOnly && destBuffer->GetMode() != ResourceAccessMode::Readback)
     {
         NFE_FATAL("Invalid destination buffer access mode");
     }
@@ -624,15 +626,9 @@ void CommandRecorder::CopyBuffer(const BufferPtr& src, const BufferPtr& dest, si
     NFE_ASSERT(srcOffset + size <= srcBuffer->GetSize(), "Out of source buffer range: offset=%u, readSize=%u, bufferSize=%u", srcOffset, size, srcBuffer->GetSize());
     NFE_ASSERT(destOffset + size <= destBuffer->GetSize(), "Out of destination buffer range: offset=%u, readSize=%u, bufferSize=%u", destOffset, size, destBuffer->GetSize());
 
-    if (srcBuffer->GetMode() == ResourceAccessMode::GPUOnly)
-    {
-        mResourceStateCache.EnsureResourceState(srcBuffer, D3D12_RESOURCE_STATE_COPY_SOURCE);
-    }
-    if (destBuffer->GetMode() == ResourceAccessMode::GPUOnly)
-    {
-        mResourceStateCache.EnsureResourceState(destBuffer, D3D12_RESOURCE_STATE_COPY_DEST);
-    }
-    mResourceStateCache.FlushPendingBarriers(mCommandList);
+    BarrierFlusher(mResourceStateCache, mCommandList)
+        .EnsureResourceState(srcBuffer, D3D12_RESOURCE_STATE_COPY_SOURCE)
+        .EnsureResourceState(destBuffer, D3D12_RESOURCE_STATE_COPY_DEST);
 
     mCommandList->CopyBufferRegion(
         destBuffer->GetResource(), srcOffset,
@@ -644,7 +640,6 @@ bool CommandRecorder::WriteTexture(const TexturePtr& texture, const void* data, 
 {
     Texture* texturePtr = static_cast<Texture*>(texture.Get());
     NFE_ASSERT(texturePtr, "Invalid texture");
-    NFE_ASSERT(texturePtr->GetMode() == ResourceAccessMode::GPUOnly, "Invalid texture type");
 
     uint32 targetMipmap = 0u, targetLayer = 0u;
     uint32 writeX = 0u, writeY = 0u, writeZ = 0u;
@@ -733,8 +728,9 @@ bool CommandRecorder::WriteTexture(const TexturePtr& texture, const void* data, 
     }
 
     Internal_GetReferencedResources().textures.Insert(texture);
-    mResourceStateCache.EnsureResourceState(texturePtr, D3D12_RESOURCE_STATE_COPY_DEST, subresourceIndex);
-    mResourceStateCache.FlushPendingBarriers(mCommandList);
+
+    BarrierFlusher(mResourceStateCache, mCommandList)
+        .EnsureResourceState(texturePtr, D3D12_RESOURCE_STATE_COPY_DEST, subresourceIndex);
 
     D3D12_TEXTURE_COPY_LOCATION src;
     src.pResource = ringBuffer->GetD3DResource();
@@ -816,9 +812,9 @@ void CommandRecorder::CopyTextureToBuffer(const TexturePtr& src, const BufferPtr
     const uint32 subresourceIndex = mipmap + layer * srcTex->GetMipmapsNum();
     const uint32 srcRowSize = (srcBox.right - srcBox.left) * GetElementFormatSize(srcTex->GetFormat());
 
-    mResourceStateCache.EnsureResourceState(srcTex, D3D12_RESOURCE_STATE_COPY_SOURCE, subresourceIndex);
-    mResourceStateCache.EnsureResourceState(destBuf, D3D12_RESOURCE_STATE_COPY_DEST);
-    mResourceStateCache.FlushPendingBarriers(mCommandList);
+    BarrierFlusher(mResourceStateCache, mCommandList)
+        .EnsureResourceState(srcTex, D3D12_RESOURCE_STATE_COPY_SOURCE, subresourceIndex)
+        .EnsureResourceState(destBuf, D3D12_RESOURCE_STATE_COPY_DEST);
 
     // compute data layout of source texture data
     D3D12_SUBRESOURCE_FOOTPRINT subresourceFootprint;
@@ -875,9 +871,9 @@ void CommandRecorder::CopyTexture(const TexturePtr& src, const TexturePtr& dest)
         return;
     }
 
-    mResourceStateCache.EnsureResourceState(srcTex, D3D12_RESOURCE_STATE_COPY_SOURCE);
-    mResourceStateCache.EnsureResourceState(destTex, D3D12_RESOURCE_STATE_COPY_DEST);
-    mResourceStateCache.FlushPendingBarriers(mCommandList);
+    BarrierFlusher(mResourceStateCache, mCommandList)
+        .EnsureResourceState(srcTex, D3D12_RESOURCE_STATE_COPY_SOURCE)
+        .EnsureResourceState(destTex, D3D12_RESOURCE_STATE_COPY_DEST);
 
     // perform copy
     if (destTex->GetMode() == ResourceAccessMode::Readback)
@@ -930,9 +926,9 @@ void CommandRecorder::CopyTexture(const TexturePtr& src, const BackbufferPtr& de
     const D3D12_RESOURCE_STATES srcTextureState = srcTex->GetSamplesNum() == 1 ? D3D12_RESOURCE_STATE_COPY_SOURCE : D3D12_RESOURCE_STATE_RESOLVE_SOURCE;
     const D3D12_RESOURCE_STATES destTextureState = srcTex->GetSamplesNum() == 1 ? D3D12_RESOURCE_STATE_COPY_DEST : D3D12_RESOURCE_STATE_RESOLVE_DEST;
 
-    mResourceStateCache.EnsureResourceState(srcTex, srcTextureState);
-    mResourceStateCache.EnsureResourceState(backbuffer, destTextureState);
-    mResourceStateCache.FlushPendingBarriers(mCommandList);
+    BarrierFlusher(mResourceStateCache, mCommandList)
+        .EnsureResourceState(srcTex, srcTextureState)
+        .EnsureResourceState(backbuffer, destTextureState);
 
     // perform copy
     if (srcTex->GetSamplesNum() == 1)
@@ -976,8 +972,8 @@ void CommandRecorder::Clear(uint32 flags, uint32 numTargets, const uint32* slots
             const InternalTexturePtr& tex = mCurrRenderTarget->GetTexture(i);
             uint32 subResource = mCurrRenderTarget->GetSubresourceID(i);
 
-            mResourceStateCache.EnsureResourceState(tex.Get(), D3D12_RESOURCE_STATE_RENDER_TARGET, subResource);
-            mResourceStateCache.FlushPendingBarriers(mCommandList);
+            BarrierFlusher(mResourceStateCache, mCommandList)
+                .EnsureResourceState(tex.Get(), D3D12_RESOURCE_STATE_RENDER_TARGET, subResource);
 
             D3D12_CPU_DESCRIPTOR_HANDLE handle = allocator.GetCpuHandle();
             handle.ptr += mCurrRenderTarget->GetRTV(slot) * allocator.GetDescriptorSize();
@@ -1349,8 +1345,8 @@ void CommandRecorder::DispatchIndirect(const BufferPtr& indirectArgBuffer, uint3
     const uint32 argumentsSize = sizeof(D3D12_DISPATCH_ARGUMENTS);
     NFE_ASSERT(bufferOffset + argumentsSize <= buffer->GetSize(), "Indirect argument buffer is too small");
 
-    mResourceStateCache.EnsureResourceState(buffer, D3D12_RESOURCE_STATE_INDIRECT_ARGUMENT);
-    mResourceStateCache.FlushPendingBarriers(mCommandList);
+    BarrierFlusher(mResourceStateCache, mCommandList)
+        .EnsureResourceState(buffer, D3D12_RESOURCE_STATE_INDIRECT_ARGUMENT);
 
     Internal_PrepareForDispatch();
 
@@ -1384,6 +1380,32 @@ void CommandRecorder::Internal_ReferenceBindingSetInstance(const ResourceBinding
         {
             referencedResources.buffers.Insert(resource.buffer);
         }
+    }
+}
+
+void CommandRecorder::HintTargetCommandQueueType(const BufferPtr& buffer, const CommandQueueType targetType)
+{
+    NFE_ASSERT(mCommandList, "Command buffer is not in recording state");
+
+    Buffer* bufferPtr = static_cast<Buffer*>(buffer.Get());
+    NFE_ASSERT(bufferPtr, "Invalid buffer");
+
+    if (GetCommandQueueFamily(targetType) != GetCommandQueueFamily(mQueueType))
+    {
+        mResourceStateCache.EnsureResourceState(bufferPtr, D3D12_RESOURCE_STATE_COMMON);
+    }
+}
+
+void CommandRecorder::HintTargetCommandQueueType(const TexturePtr& texture, const CommandQueueType targetType)
+{
+    NFE_ASSERT(mCommandList, "Command buffer is not in recording state");
+
+    Texture* texPtr = static_cast<Texture*>(texture.Get());
+    NFE_ASSERT(texPtr, "Invalid texture");
+
+    if (GetCommandQueueFamily(targetType) != GetCommandQueueFamily(mQueueType))
+    {
+        mResourceStateCache.EnsureResourceState(texPtr, D3D12_RESOURCE_STATE_COMMON);
     }
 }
 

@@ -66,7 +66,7 @@ uint64 FenceData::GetCompletedValue() const
     return mFenceObject->GetCompletedValue();
 }
 
-uint64 FenceData::Signal(ID3D12CommandQueue* queue, FencePtr* outFencePtr)
+uint64 FenceData::Signal(ID3D12CommandQueue* queue, const FenceFlags flags, FencePtr* outFencePtr)
 {
     NFE_ASSERT(mFenceObject, "Fence object not created");
 
@@ -81,7 +81,7 @@ uint64 FenceData::Signal(ID3D12CommandQueue* queue, FencePtr* outFencePtr)
 
         if (outFencePtr)
         {
-            fence = MakeSharedPtr<Fence>(fenceValue, mFenceObject.Get());
+            fence = MakeSharedPtr<Fence>(fenceValue, flags, mFenceObject.Get());
             *outFencePtr = fence;
         }
 
@@ -116,10 +116,11 @@ void FenceData::OnValueCompleted(uint64 completedValue)
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-Fence::Fence(uint64 fenceValue, ID3D12Fence* fenceObject)
+Fence::Fence(uint64 fenceValue, const FenceFlags flags, ID3D12Fence* fenceObject)
     : mIsFinished(false)
     , mFenceValue(fenceValue)
     , mFenceObject(fenceObject)
+    , mFlags(flags)
 {
     TaskDesc desc;
     desc.debugName = "NFE::Renderer::Fence::mDependencyTask";
@@ -131,11 +132,16 @@ Fence::Fence(uint64 fenceValue, ID3D12Fence* fenceObject)
 
 Fence::~Fence()
 {
-    NFE_ASSERT(mIsFinished.load(), "Fence should be finished when destroying. Otherwise it may create deadlock as the dependency won't be fulfilled");
+    if (mFlags & FenceFlag_CpuWaitable)
+    {
+        NFE_ASSERT(mIsFinished.load(), "Fence should be finished when destroying. Otherwise it may create deadlock as the dependency won't be fulfilled");
+    }
 }
 
 bool Fence::IsFinished() const
 {
+    NFE_ASSERT(mFlags & FenceFlag_CpuWaitable, "Fence is not CPU-waitable");
+
     return mIsFinished;
 }
 
@@ -152,6 +158,8 @@ void Fence::OnFenceFinished()
 
 void Fence::Sync(TaskBuilder& taskBuilder)
 {
+    NFE_ASSERT(mFlags & FenceFlag_CpuWaitable, "Fence is not CPU-waitable");
+
     NFE_SCOPED_LOCK(mLock);
 
     if (!mIsFinished) // don't put unnecessary dependency in the task builder

@@ -28,6 +28,8 @@ bool Texture::Init(const TextureDesc& desc)
 {
     HRESULT hr;
 
+    NFE_ASSERT(desc.mode == ResourceAccessMode::Immutable || desc.mode == ResourceAccessMode::GPUOnly, "Invalid resource acces mode for a texture");
+
     if (desc.width < 1 || desc.width >= std::numeric_limits<uint16>::max())
     {
         NFE_LOG_ERROR("Invalid texture width (%u), max is %u");
@@ -105,12 +107,16 @@ bool Texture::Init(const TextureDesc& desc)
 
     if (desc.binding & NFE_RENDERER_TEXTURE_BIND_SHADER_WRITABLE)
     {
+        NFE_ASSERT(desc.mode == ResourceAccessMode::GPUOnly, "Invalid access mode for writable texture");
+
         resourceDesc.Flags |= D3D12_RESOURCE_FLAG_ALLOW_UNORDERED_ACCESS;
         initialState = D3D12_RESOURCE_STATE_UNORDERED_ACCESS;
     }
 
     if (desc.binding & NFE_RENDERER_TEXTURE_BIND_RENDERTARGET)
     {
+        NFE_ASSERT(desc.mode == ResourceAccessMode::GPUOnly, "Invalid access mode for rendertarget texture");
+
         clearValue.Format = mSrvFormat;
         clearValue.Color[0] = desc.defaultColorClearValue[0];
         clearValue.Color[1] = desc.defaultColorClearValue[1];
@@ -122,6 +128,8 @@ bool Texture::Init(const TextureDesc& desc)
     }
     else if (desc.binding & NFE_RENDERER_TEXTURE_BIND_DEPTH)
     {
+        NFE_ASSERT(desc.mode == ResourceAccessMode::GPUOnly, "Invalid access mode for depthbuffer texture");
+
         if (!TranslateDepthBufferTypes(desc.format, resourceDesc.Format, mSrvFormat, mDsvFormat))
         {
             NFE_LOG_ERROR("Invalid depth buffer format");
@@ -190,7 +198,7 @@ bool Texture::Init(const TextureDesc& desc)
     mLayersNumOrDepth = mType == TextureType::Texture3D ? static_cast<uint16>(desc.depth) : static_cast<uint16>(desc.layers);
     mMipmapsNum = static_cast<uint8>(desc.mipmaps);
     mSamplesNum = static_cast<uint8>(desc.samplesNum);
-    mMode = ResourceAccessMode::GPUOnly;
+    mMode = desc.mode;
 
     return true;
 }

@@ -18,6 +18,8 @@ class DynamicTextureScene : public Scene
     static constexpr NFE::uint32 TexRegionWidth = 191;
     static constexpr NFE::uint32 TexRegionHeight = 233;
 
+    bool mUseCopyQueue = false;
+
     NFE::Math::Random mRandom;
     NFE::Common::DynArray<NFE::uint32> mTextureData; // assumes RGBA 8-bit format
 
@@ -27,7 +29,7 @@ class DynamicTextureScene : public Scene
     void ReleaseSubsceneResources() override;
 
     // Subscenes
-    bool CreateSubSceneSimple();
+    bool CreateSubSceneSimple(bool useCopyQueue);
 
 public:
     DynamicTextureScene();

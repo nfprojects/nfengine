@@ -7,6 +7,7 @@
 #pragma once
 
 #include "CommandRecorder.hpp"
+#include "Fence.hpp"
 
 #include "../../Common/Containers/ArrayView.hpp"
 
@@ -57,6 +58,15 @@ public:
     }
 
     /**
+     * A helper function to wait for a single fence.
+     */
+    NFE_FORCE_INLINE void Wait(const FencePtr& fence)
+    {
+        IFence* fencePtr = fence.Get();
+        Submit(Common::ArrayView<ICommandList*>(), Common::ArrayView<IFence*>(&fencePtr, 1u));
+    }
+
+    /**
      * A helper function to execute a single command list waiting for a single fence.
      */
     NFE_FORCE_INLINE void Execute(const CommandListPtr& commandList, const FencePtr& fence)
@@ -69,9 +79,10 @@ public:
     /**
      * Signal an event on the queue and return fence that can be used to sync to it.
      * Allows for waiting until all commands submitted to the queue has been completed on the GPU.
-     * @return Fence object.
+     * @param   flags   Additional fence flags.
+     * @return          Fence object.
      */
-    virtual FencePtr Signal() = 0;
+    virtual FencePtr Signal(const FenceFlags flags = FenceFlag_CpuWaitable) = 0;
 };
 
 using CommandQueuePtr = Common::SharedPtr<ICommandQueue>;

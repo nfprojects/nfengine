@@ -13,6 +13,12 @@
 namespace NFE {
 namespace Renderer {
 
+enum FenceFlags
+{
+    FenceFlag_CpuWaitable = (1<<0),
+    FenceFlag_GpuWaitable = (1<<1),
+};
+
 /**
  * Synchronization object
  * Allows for waiting for some GPU commands to finish

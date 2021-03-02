@@ -105,6 +105,7 @@ bool MultisampleScene::CreateVertexBuffer()
 
     TextureDesc texDesc;
     texDesc.type = TextureType::Texture2D;
+    texDesc.mode = ResourceAccessMode::GPUOnly;
     texDesc.width = WINDOW_WIDTH;
     texDesc.height = WINDOW_HEIGHT;
     texDesc.mipmaps = 1;

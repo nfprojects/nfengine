@@ -40,7 +40,7 @@ public:
         const Common::ArrayView<ICommandList*> commandLists,
         const Common::ArrayView<IFence*> waitFences) override;
 
-    virtual FencePtr Signal() override;
+    virtual FencePtr Signal(const FenceFlags flags = FenceFlag_CpuWaitable) override;
 
 private:
     Common::RWLock mLock;

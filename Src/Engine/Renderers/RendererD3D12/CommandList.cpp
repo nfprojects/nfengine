@@ -78,7 +78,7 @@ bool InternalCommandList::Init(CommandQueueType queueType)
     mState = State::Recording;
     mQueueType = queueType;
 
-    NFE_LOG_INFO("Command list was created, ID = %u", mID);
+    NFE_LOG_INFO("%s command list was created, ID = %u", CommandQueueTypeToStr(mQueueType), mID);
     return true;
 }
 

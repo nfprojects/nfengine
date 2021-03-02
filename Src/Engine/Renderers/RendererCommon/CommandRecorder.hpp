@@ -306,6 +306,13 @@ public:
     /**@}*/
 
 
+    /**
+     * Instruct the renderer that a resource will be used on a different queue type after the command list finishes.
+     * @todo    This is a bit hacky, not sure how to handle this properly for now.
+     */
+    virtual void HintTargetCommandQueueType(const BufferPtr& resource, const CommandQueueType targetType) = 0;
+    virtual void HintTargetCommandQueueType(const TexturePtr& resource, const CommandQueueType targetType) = 0;
+
 
     /**
      * CommandBufferDebug   Debugging methods

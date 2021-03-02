@@ -41,16 +41,30 @@ void ResourceStateCache::OnFinishCommandBuffer(ResourceStateMap& outExpectedInit
     outFinalResourceStates = std::move(mCache);
 }
 
-void ResourceStateCache::EnsureResourceState(const Resource* resource, D3D12_RESOURCE_STATES d3dState, uint32 subresource)
+bool ResourceStateCache::EnsureResourceState(const Resource* resource, D3D12_RESOURCE_STATES d3dState, uint32 subresource)
 {
     NFE_ASSERT(resource, "NULL resource");
 
+    if (resource->GetMode() == ResourceAccessMode::Immutable)
+    {
+        if (d3dState != D3D12_RESOURCE_STATE_COMMON)
+        {
+            const D3D12_RESOURCE_STATES allowedStates = D3D12_RESOURCE_STATE_GENERIC_READ | D3D12_RESOURCE_STATE_COPY_DEST;
+            NFE_ASSERT((d3dState & ~d3dState) == 0, "Illegal immutable resource state");
+        }
+
+        // immutable resources are in COMMON state and are promoted to appropriate read state automatically
+        // only exception is the first resource upload
+        return false;
+    }
+
     if (resource->GetMode() == ResourceAccessMode::Upload || resource->GetMode() == ResourceAccessMode::Readback)
     {
-        // static resources are in COMMON state and are promoted to appropriate read state automatically
         // upload/readback resources are in GENERIC_READ/COPY_DEST all the time
-        return;
+        return false;
     }
+
+    bool pushedAnyBarrier = false;
 
     const auto it = mCache.Find(resource);
     if (it != mCache.End())
@@ -62,20 +76,20 @@ void ResourceStateCache::EnsureResourceState(const Resource* resource, D3D12_RES
             if (state.isGlobalState)
             {
                 const D3D12_RESOURCE_STATES prevState = state.globalState;
-                PushPendingBarrier(resource, UINT32_MAX, prevState, d3dState);
+                pushedAnyBarrier |= PushPendingBarrier(resource, UINT32_MAX, prevState, d3dState);
             }
             else
             {
                 for (uint32 i = 0; i < state.subresourceStates.Size(); ++i)
                 {
-                    PushPendingBarrier(resource, i, state.subresourceStates[i], d3dState);
+                    pushedAnyBarrier |= PushPendingBarrier(resource, i, state.subresourceStates[i], d3dState);
                 }
             }
         }
         else
         {
             const D3D12_RESOURCE_STATES prevState = state.Get(subresource);
-            PushPendingBarrier(resource, subresource, prevState, d3dState);
+            pushedAnyBarrier |= PushPendingBarrier(resource, subresource, prevState, d3dState);
         }
 
         // update state in the cache
@@ -93,38 +107,43 @@ void ResourceStateCache::EnsureResourceState(const Resource* resource, D3D12_RES
         mInitialStates.Insert(resource, newState);
     }
 
+    return pushedAnyBarrier;
 }
 
-void ResourceStateCache::PushPendingBarrier(const Resource* resource, uint32 subresource, D3D12_RESOURCE_STATES stateBefore, D3D12_RESOURCE_STATES stateAfter)
+bool ResourceStateCache::PushPendingBarrier(const Resource* resource, uint32 subresource, D3D12_RESOURCE_STATES stateBefore, D3D12_RESOURCE_STATES stateAfter)
 {
     NFE_ASSERT(resource, "Invalid resource");
 
-    if (stateBefore != stateAfter)
+    if (stateBefore == stateAfter)
     {
-        // TODO check for duplicate barriers
-
-        if (!mPendingResourceBarriers.Empty())
-        {
-            // update existing barrier
-            D3D12_RESOURCE_BARRIER& lastBarrier = mPendingResourceBarriers.Back();
-            if (lastBarrier.Type == D3D12_RESOURCE_BARRIER_TYPE_TRANSITION &&
-                lastBarrier.Transition.pResource == resource->GetD3DResource() &&
-                lastBarrier.Transition.Subresource == subresource)
-            {
-                lastBarrier.Transition.StateAfter = stateAfter;
-                return;
-            }
-        }
-
-        D3D12_RESOURCE_BARRIER barrierDesc = {};
-        barrierDesc.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
-        barrierDesc.Transition.pResource = resource->GetD3DResource();
-        barrierDesc.Transition.Subresource = subresource;
-        barrierDesc.Transition.StateBefore = stateBefore;
-        barrierDesc.Transition.StateAfter = stateAfter;
-
-        mPendingResourceBarriers.PushBack(barrierDesc);
+        return false;
     }
+
+    // TODO check for duplicate barriers
+
+    if (!mPendingResourceBarriers.Empty())
+    {
+        // update existing barrier
+        D3D12_RESOURCE_BARRIER& lastBarrier = mPendingResourceBarriers.Back();
+        if (lastBarrier.Type == D3D12_RESOURCE_BARRIER_TYPE_TRANSITION &&
+            lastBarrier.Transition.pResource == resource->GetD3DResource() &&
+            lastBarrier.Transition.Subresource == subresource)
+        {
+            lastBarrier.Transition.StateAfter = stateAfter;
+            return false;
+        }
+    }
+
+    D3D12_RESOURCE_BARRIER barrierDesc = {};
+    barrierDesc.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
+    barrierDesc.Transition.pResource = resource->GetD3DResource();
+    barrierDesc.Transition.Subresource = subresource;
+    barrierDesc.Transition.StateBefore = stateBefore;
+    barrierDesc.Transition.StateAfter = stateAfter;
+
+    mPendingResourceBarriers.PushBack(barrierDesc);
+
+    return true;
 }
 
 void ResourceStateCache::FlushPendingBarriers(ID3D12GraphicsCommandList* d3dCommandList)

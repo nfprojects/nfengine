@@ -21,9 +21,10 @@ using namespace NFE;
 using namespace NFE::Math;
 using namespace NFE::Renderer;
 
-bool DynamicTextureScene::CreateSubSceneSimple()
+bool DynamicTextureScene::CreateSubSceneSimple(bool useCopyQueue)
 {
     TextureDesc textureDesc;
+    textureDesc.mode = ResourceAccessMode::GPUOnly;
     textureDesc.binding = 0;
     textureDesc.format = mBackbufferFormat; // match with backbuffer format, because we copy the data directly
     textureDesc.width = WINDOW_WIDTH;
@@ -47,13 +48,16 @@ bool DynamicTextureScene::CreateSubSceneSimple()
 
     mTextureData.Resize(TexRegionWidth * TexRegionHeight);
 
+    mUseCopyQueue = useCopyQueue;
+
     return true;
 }
 
 DynamicTextureScene::DynamicTextureScene()
     : Scene("DynamicTexture")
 {
-    RegisterSubScene(std::bind(&DynamicTextureScene::CreateSubSceneSimple, this), "Simple");
+    RegisterSubScene(std::bind(&DynamicTextureScene::CreateSubSceneSimple, this, false), "Simple");
+    RegisterSubScene(std::bind(&DynamicTextureScene::CreateSubSceneSimple, this, true), "CopyQueue");
 }
 
 DynamicTextureScene::~DynamicTextureScene()
@@ -93,55 +97,100 @@ void DynamicTextureScene::Draw(float dt)
         mTime -= 1.0f;
     }
 
-    mCommandBuffer->Begin(CommandQueueType::Graphics);
-
-    mCommandBuffer->SetRenderTarget(mRenderTarget);
-
-    // clear target
-    const Vec4fU color(0.0f, 0.0f, 0.0f, 1.0f);
-    mCommandBuffer->Clear(ClearFlagsColor, 1, nullptr, &color);
-
-    mCommandBuffer->SetRenderTarget(nullptr);
-
+    CommandListPtr commandList_CopyToTexture;
     {
-        for (uint32 i = 0; i < TexRegionWidth * TexRegionHeight; ++i)
+        mCommandBuffer->Begin(mUseCopyQueue ? CommandQueueType::Copy : CommandQueueType::Graphics);
+
         {
-            mTextureData[i] = mRandom.GetInt();
-        }
-
-        TextureRegion texRegion;
-        texRegion.x = 100;
-        texRegion.y = 100;
-        texRegion.width = TexRegionWidth;
-        texRegion.height = TexRegionHeight;
-
-        mCommandBuffer->WriteTexture(mTexture, mTextureData.Data(), &texRegion);
-    }
-
-    {
-        const uint32 value = ((uint32)(mTime * 255.0f)) << 16;
-        for (uint32 j = 0; j < TexRegionHeight; ++j)
-        {
-            for (uint32 i = 0; i < TexRegionWidth; ++i)
+            for (uint32 i = 0; i < TexRegionWidth * TexRegionHeight; ++i)
             {
-                mTextureData[i + TexRegionWidth * j] = (i << 8) | j | value;
+                mTextureData[i] = mRandom.GetInt();
             }
+
+            TextureRegion texRegion;
+            texRegion.x = 100;
+            texRegion.y = 100;
+            texRegion.width = TexRegionWidth;
+            texRegion.height = TexRegionHeight;
+
+            mCommandBuffer->WriteTexture(mTexture, mTextureData.Data(), &texRegion);
         }
 
-        TextureRegion texRegion;
-        texRegion.x = 300;
-        texRegion.y = 100;
-        texRegion.width = TexRegionWidth;
-        texRegion.height = TexRegionHeight;
+        {
+            const uint32 value = ((uint32)(mTime * 255.0f)) << 16;
+            for (uint32 j = 0; j < TexRegionHeight; ++j)
+            {
+                for (uint32 i = 0; i < TexRegionWidth; ++i)
+                {
+                    mTextureData[i + TexRegionWidth * j] = (i << 8) | j | value;
+                }
+            }
 
-        mCommandBuffer->WriteTexture(mTexture, mTextureData.Data(), &texRegion);
+            TextureRegion texRegion;
+            texRegion.x = 300;
+            texRegion.y = 100;
+            texRegion.width = TexRegionWidth;
+            texRegion.height = TexRegionHeight;
+
+            mCommandBuffer->WriteTexture(mTexture, mTextureData.Data(), &texRegion);
+        }
+
+        if (mUseCopyQueue)
+        {
+            mCommandBuffer->HintTargetCommandQueueType(mTexture, CommandQueueType::Graphics);
+        }
+
+        commandList_CopyToTexture = mCommandBuffer->Finish();
     }
 
-    // copy result to backbuffer
-    mCommandBuffer->CopyTexture(mTexture, mWindowBackbuffer);
+    CommandListPtr commandList_CopyToBackbuffer;
+    {
+        mCommandBuffer->Begin(CommandQueueType::Graphics);
 
-    CommandListPtr commandList = mCommandBuffer->Finish();
-    mGraphicsQueue->Execute(commandList);
+        // copy result to backbuffer
+        mCommandBuffer->CopyTexture(mTexture, mWindowBackbuffer);
+
+        commandList_CopyToBackbuffer = mCommandBuffer->Finish();
+    }
+
+    CommandListPtr commandList_Clear;
+    {
+        mCommandBuffer->Begin(CommandQueueType::Graphics);
+
+        mCommandBuffer->SetRenderTarget(mRenderTarget);
+
+        // clear target
+        const Vec4fU color(0.0f, 0.0f, 0.0f, 1.0f);
+        mCommandBuffer->Clear(ClearFlagsColor, 1, nullptr, &color);
+
+        if (mUseCopyQueue)
+        {
+            mCommandBuffer->HintTargetCommandQueueType(mTexture, CommandQueueType::Copy);
+        }
+
+        commandList_Clear = mCommandBuffer->Finish();
+    }
+
+    if (mUseCopyQueue)
+    {
+        mGraphicsQueue->Execute(commandList_Clear);
+        FencePtr clearFence = mGraphicsQueue->Signal(FenceFlag_GpuWaitable);
+
+        mCopyQueue->Wait(clearFence);
+
+        mCopyQueue->Execute(commandList_CopyToTexture);
+        FencePtr copyFence = mCopyQueue->Signal(FenceFlag_GpuWaitable);
+
+        mGraphicsQueue->Wait(copyFence);
+    }
+    else
+    {
+        mGraphicsQueue->Execute(commandList_Clear);
+        mGraphicsQueue->Execute(commandList_CopyToTexture);
+    }
+
+    mGraphicsQueue->Execute(commandList_CopyToBackbuffer);
+
     mWindowBackbuffer->Present();
     mRendererDevice->FinishFrame();
 }

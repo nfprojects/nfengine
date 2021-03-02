@@ -99,13 +99,14 @@ void CommandQueue::Submit(const Common::ArrayView<ICommandList*> commandLists, c
         {
             Fence* fencePtr = static_cast<Fence*>(fence);
             NFE_ASSERT(fencePtr, "Invalid fence");
+            NFE_ASSERT(fencePtr->GetFlags() & FenceFlag_GpuWaitable, "Fence is not GPU-waitable");
 
             mQueue->Wait(fencePtr->GetD3DFence(), fencePtr->GetValue());
         }
 
         gDevice->GetCommandListManager()->ExecuteCommandList(*this, commandLists);
 
-        fenceValue = mFenceData.Signal(mQueue.Get());
+        fenceValue = mFenceData.Signal(mQueue.Get(), FenceFlag_CpuWaitable);
 
         // assign fenceValue to command lists
         for (ICommandList* commandList : commandLists)
@@ -125,12 +126,12 @@ void CommandQueue::Submit(const Common::ArrayView<ICommandList*> commandLists, c
     gDevice->GetRingBuffer()->FinishFrame(&mFenceData, fenceValue);
 }
 
-FencePtr CommandQueue::Signal()
+FencePtr CommandQueue::Signal(const FenceFlags flags)
 {
     NFE_ASSERT(mQueue, "Command queue is not initialized");
 
     FencePtr fence;
-    mFenceData.Signal(mQueue.Get(), &fence);
+    mFenceData.Signal(mQueue.Get(), flags, &fence);
     return fence;
 }
 

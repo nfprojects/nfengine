@@ -29,7 +29,7 @@ struct BufferDesc
     const char* debugName;   //< optional debug name
 
     BufferDesc()
-        : mode(ResourceAccessMode::GPUOnly)
+        : mode(ResourceAccessMode::Immutable)
         , usage(0u)
         , size(0u)
         , structSize(0u)

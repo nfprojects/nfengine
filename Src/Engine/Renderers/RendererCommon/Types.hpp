@@ -204,20 +204,28 @@ enum class ResourceAccessMode : uint8
     Invalid,
 
     /**
+     * GPU read-only resource, for example a material's texture.
+     * The content can't be accessed by the CPU. Can be written to only once.
+     * This is the preferred access mode, as it has the lowest overhead.
+     */
+    Immutable,
+
+    /**
      * GPU read-write resource, for example a texture used as a render target or a static texture sampled in a shader.
-     * The content can't be accessed by the CPU.
+     * The content can't be accessed by the CPU. Can be written to many times per frame.
      */
     GPUOnly,
 
     /**
      * GPU read-only resource, for example a constant buffer.
      * The content can be written by the CPU.
+     * WARNING: Memory accesses must be properly synchornized as it's not double-buffered.
      */
     Upload,
 
     /**
      * GPU read-only resource, frequently written by CPU.
-     * The content can be written by the CPU. Assumes the data will be refreshed at least every frame.
+     * The content can be written by the CPU. Assumes the data will be written to every frame.
      * This mode uses no actual Resource/Buffer allocation. Instead, internal Ring Buffer is used
      * to write data.
      */
@@ -227,6 +235,7 @@ enum class ResourceAccessMode : uint8
      * Readback resource, for example a screenshot texture.
      * The content can't be accessed directly by the GPU (only via Copy operations).
      * The data can be read by the CPU.
+     * WARNING: Memory accesses must be properly synchornized as it's not double-buffered.
      */
     Readback
 };

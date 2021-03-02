@@ -181,6 +181,7 @@ bool RenderTargetsScene::CreateRenderTarget(bool withDepthBuffer, bool multipleR
 {
     TextureDesc texDesc;
     texDesc.type = TextureType::Texture2D;
+    texDesc.mode = ResourceAccessMode::GPUOnly;
     texDesc.width = static_cast<uint16>(WINDOW_WIDTH / 2);
     texDesc.height = static_cast<uint16>(WINDOW_HEIGHT / 2);
     texDesc.mipmaps = 1;

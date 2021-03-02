@@ -63,7 +63,7 @@ bool Buffer::Init(const BufferDesc& desc)
     D3D12MA::ALLOCATION_DESC allocationDesc = {};
     D3D12_RESOURCE_STATES initialState = D3D12_RESOURCE_STATE_COMMON;
 
-    if (desc.mode == ResourceAccessMode::GPUOnly)
+    if (desc.mode == ResourceAccessMode::GPUOnly || desc.mode == ResourceAccessMode::Immutable)
     {
         initialState = D3D12_RESOURCE_STATE_COMMON;
         allocationDesc.HeapType = D3D12_HEAP_TYPE_DEFAULT;
@@ -86,6 +86,8 @@ bool Buffer::Init(const BufferDesc& desc)
 
     if (desc.usage & NFE_RENDERER_BUFFER_USAGE_WRITABLE_STRUCT_BUFFER)
     {
+        NFE_ASSERT(desc.mode == ResourceAccessMode::GPUOnly, "Invalid access mode for writable buffer");
+
         resourceDesc.Flags |= D3D12_RESOURCE_FLAG_ALLOW_UNORDERED_ACCESS;
     }
 

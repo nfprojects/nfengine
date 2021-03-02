@@ -71,6 +71,10 @@ public:
     void Dispatch(uint32 x, uint32 y, uint32 z) override;
     void DispatchIndirect(const BufferPtr& indirectArgBuffer, uint32 bufferOffset) override;
 
+    /// Misc
+    void HintTargetCommandQueueType(const BufferPtr& resource, const CommandQueueType targetType) override;
+    void HintTargetCommandQueueType(const TexturePtr& resource, const CommandQueueType targetType) override;
+
     /// Debugging
     void BeginDebugGroup(const char* text) override;
     void EndDebugGroup() override;
@@ -144,7 +148,7 @@ private:
 
     void Internal_ReferenceBindingSetInstance(const ResourceBindingInstancePtr& bindingSetInstance);
 
-    void Internal_WriteDynamicBuffer(Buffer* buffer, size_t offset, size_t size, const void* data);
+    void Internal_WriteBuffer(Buffer* buffer, size_t offset, size_t size, const void* data);
     void Internal_WriteVolatileBuffer(Buffer* buffer, const void* data);
 
     ReferencedResourcesList& Internal_GetReferencedResources();

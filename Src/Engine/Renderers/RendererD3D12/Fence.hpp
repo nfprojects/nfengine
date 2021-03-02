@@ -23,11 +23,12 @@ class FenceManager;
 class Fence : public IFence
 {
 public:
-    Fence(uint64 fenceValue, ID3D12Fence* fenceObject);
+    Fence(uint64 fenceValue, const FenceFlags flags, ID3D12Fence* fenceObject);
     ~Fence();
 
     NFE_FORCE_INLINE uint64 GetValue() const { return mFenceValue; }
     NFE_FORCE_INLINE ID3D12Fence* GetD3DFence() const { return mFenceObject; }
+    NFE_FORCE_INLINE FenceFlags GetFlags() const { return mFlags; }
 
     virtual bool IsFinished() const override;
     virtual void Sync(Common::TaskBuilder& taskBuilder) override;
@@ -38,6 +39,7 @@ private:
     ID3D12Fence* mFenceObject; // TODO command queue - SharedPtr/WeakPtr
     uint64 mFenceValue;
     Common::TaskID mDependencyTask;
+    const FenceFlags mFlags;
     std::atomic<bool> mIsFinished;
     Common::RWLock mLock;
 };
@@ -62,7 +64,7 @@ public:
     bool Init();
     void Release();
 
-    uint64 Signal(ID3D12CommandQueue* queue, FencePtr* outFencePtr = nullptr);
+    uint64 Signal(ID3D12CommandQueue* queue, const FenceFlags flags, FencePtr* outFencePtr = nullptr);
 
     uint64 GetCompletedValue() const;
 
