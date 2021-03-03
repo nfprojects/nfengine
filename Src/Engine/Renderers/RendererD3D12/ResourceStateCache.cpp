@@ -125,12 +125,19 @@ bool ResourceStateCache::PushPendingBarrier(const Resource* resource, uint32 sub
     {
         // update existing barrier
         D3D12_RESOURCE_BARRIER& lastBarrier = mPendingResourceBarriers.Back();
-        if (lastBarrier.Type == D3D12_RESOURCE_BARRIER_TYPE_TRANSITION &&
-            lastBarrier.Transition.pResource == resource->GetD3DResource() &&
-            lastBarrier.Transition.Subresource == subresource)
+        if (lastBarrier.Transition.pResource == resource->GetD3DResource() &&
+            lastBarrier.Transition.Subresource == subresource &&
+            lastBarrier.Transition.StateAfter == stateBefore)
         {
             lastBarrier.Transition.StateAfter = stateAfter;
-            return false;
+
+            if (lastBarrier.Transition.StateBefore == lastBarrier.Transition.StateAfter)
+            {
+                mPendingResourceBarriers.PopBack();
+                return false;
+            }
+
+            return true;
         }
     }
 

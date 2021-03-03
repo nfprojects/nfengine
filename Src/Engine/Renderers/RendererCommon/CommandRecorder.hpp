@@ -214,7 +214,7 @@ public:
      * @{
      */
 
-    virtual void SetVertexBuffers(uint32 num, const BufferPtr* vertexBuffers, uint32* strides, uint32* offsets) = 0;
+    virtual void SetVertexBuffers(uint32 num, const BufferPtr* vertexBuffers, const uint32* strides, const uint32* offsets) = 0;
     virtual void SetIndexBuffer(const BufferPtr& indexBuffer, IndexBufferFormat format) = 0;
 
     /**

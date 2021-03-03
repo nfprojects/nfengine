@@ -1,5 +1,7 @@
 #pragma once
 
+#include "DemoRenderer.h"
+
 #include "Engine/Common/System/Window.hpp"
 #include "Engine/Raytracer/Scene/Scene.h"
 #include "Engine/Raytracer/Scene/Camera.h"
@@ -48,8 +50,10 @@ public:
     void ResetFrame();
 
 private:
+
+    DemoRenderer mDemoRenderer;
+
     Common::UniquePtr<RT::Viewport> mViewport;
-    RT::Bitmap mImage;
 
     Common::KeyCode mLastKeyDown;
 

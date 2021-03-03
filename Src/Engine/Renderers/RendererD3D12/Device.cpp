@@ -125,7 +125,7 @@ bool Device::Init(const DeviceInitParams* params)
     mFenceManager.Initialize();
 
     mRingBuffer = MakeUniquePtr<RingBuffer>();
-    if (!mRingBuffer->Init(8 * 1024 * 1024))
+    if (!mRingBuffer->Init(64 * 1024 * 1024))
     {
         NFE_LOG_ERROR("Failed to initialize ring buffer");
         return false;

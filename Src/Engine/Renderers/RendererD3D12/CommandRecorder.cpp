@@ -176,7 +176,7 @@ void CommandRecorder::SetScissors(int32 left, int32 top, int32 right, int32 bott
     mCommandList->RSSetScissorRects(1, &rect);
 }
 
-void CommandRecorder::SetVertexBuffers(uint32 num, const BufferPtr* vertexBuffers, uint32* strides, uint32* offsets)
+void CommandRecorder::SetVertexBuffers(uint32 num, const BufferPtr* vertexBuffers, const uint32* strides, const uint32* offsets)
 {
     NFE_ASSERT(num < NFE_RENDERER_MAX_VERTEX_BUFFERS, "Too many vertex buffers");
     NFE_ASSERT(mQueueType == CommandQueueType::Graphics, "Invalid queue type");

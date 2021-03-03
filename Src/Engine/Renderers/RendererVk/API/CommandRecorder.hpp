@@ -73,7 +73,7 @@ public:
     void SetResourceBindingLayout(PipelineType pipelineType, const ResourceBindingLayoutPtr& layout) override;
     void SetScissors(int32 left, int32 top, int32 right, int32 bottom) override;
     void SetStencilRef(unsigned char ref) override;
-    void SetVertexBuffers(uint32 num, const BufferPtr* vertexBuffers, uint32* strides, uint32* offsets) override;
+    void SetVertexBuffers(uint32 num, const BufferPtr* vertexBuffers, const uint32* strides, const uint32* offsets) override;
     void SetViewport(float left, float width, float top, float height, float minDepth, float maxDepth) override;
     void Draw(uint32 vertexNum, uint32 instancesNum, uint32 vertexOffset, uint32 instanceOffset) override;
     void DrawIndexed(uint32 indexNum, uint32 instancesNum, uint32 indexOffset, int32 vertexOffset, uint32 instanceOffset) override;

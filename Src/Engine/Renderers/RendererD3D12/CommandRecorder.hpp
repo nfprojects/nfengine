@@ -55,7 +55,7 @@ public:
     void SetResourceBindingLayout(PipelineType pipelineType, const ResourceBindingLayoutPtr& layout) override;
 
     /// Graphics pipeline methods
-    void SetVertexBuffers(uint32 num, const BufferPtr* vertexBuffers, uint32* strides, uint32* offsets) override;
+    void SetVertexBuffers(uint32 num, const BufferPtr* vertexBuffers, const uint32* strides, const uint32* offsets) override;
     void SetIndexBuffer(const BufferPtr& indexBuffer, IndexBufferFormat format) override;
     void SetRenderTarget(const RenderTargetPtr& renderTarget) override;
     void SetPipelineState(const PipelineStatePtr& state) override;

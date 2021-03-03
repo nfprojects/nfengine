@@ -121,13 +121,17 @@ Fence::Fence(uint64 fenceValue, const FenceFlags flags, ID3D12Fence* fenceObject
     , mFenceValue(fenceValue)
     , mFenceObject(fenceObject)
     , mFlags(flags)
+    , mDependencyTask(InvalidTaskID)
 {
-    TaskDesc desc;
-    desc.debugName = "NFE::Renderer::Fence::mDependencyTask";
-    desc.priority = ThreadPool::MaxPriority; // max priority so it will unblock other tasks as soon as possible
+    if (mFlags & FenceFlag_CpuWaitable)
+    {
+        TaskDesc desc;
+        desc.debugName = "NFE::Renderer::Fence::mDependencyTask";
+        desc.priority = ThreadPool::MaxPriority; // max priority so it will unblock other tasks as soon as possible
 
-    mDependencyTask = ThreadPool::GetInstance().CreateTask(desc);
-    NFE_ASSERT(mDependencyTask != InvalidTaskID, "Failed to create dependency task");
+        mDependencyTask = ThreadPool::GetInstance().CreateTask(desc);
+        NFE_ASSERT(mDependencyTask != InvalidTaskID, "Failed to create dependency task");
+    }
 }
 
 Fence::~Fence()

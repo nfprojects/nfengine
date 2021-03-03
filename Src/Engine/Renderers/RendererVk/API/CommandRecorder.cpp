@@ -553,7 +553,7 @@ void CommandRecorder::SetStencilRef(unsigned char ref)
     vkCmdSetStencilReference(mCommandBuffer, VK_STENCIL_FACE_FRONT_AND_BACK, ref);
 }
 
-void CommandRecorder::SetVertexBuffers(uint32 num, const BufferPtr* vertexBuffers, uint32* strides, uint32* offsets)
+void CommandRecorder::SetVertexBuffers(uint32 num, const BufferPtr* vertexBuffers, const uint32* strides, const uint32* offsets)
 {
     NFE_UNUSED(strides);
 

@@ -111,6 +111,9 @@ public:
      */
     void GetSize(uint32& width, uint32& height) const;
 
+    uint32 GetWidth() const { return mWidth; }
+    uint32 GetHeight() const { return mHeight; }
+
     /**
      * Get Window's current aspect ratio.
      */

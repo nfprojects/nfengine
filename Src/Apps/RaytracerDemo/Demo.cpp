@@ -12,9 +12,9 @@
 #include "Engine/Common/System/Timer.hpp"
 #include "Engine/Common/Logger/Logger.hpp"
 #include "Engine/Common/Reflection/Types/ReflectionClassType.hpp"
+#include "Engine/Common/Utils/Waitable.hpp"
 
 #include <imgui/imgui.h>
-#include <imgui_sw/src/imgui_sw.hpp>
 
 namespace NFE {
 
@@ -49,7 +49,7 @@ DemoWindow::DemoWindow()
 
 DemoWindow::~DemoWindow()
 {
-    imgui_sw::unbind_imgui_painting();
+    mDemoRenderer.Release();
 }
 
 bool DemoWindow::Initialize()
@@ -63,39 +63,40 @@ bool DemoWindow::Initialize()
     }
 
     SetSize(gOptions.windowWidth, gOptions.windowHeight);
-    SetTitle("Raytracer Demo [Initializing...]");
 
+    SetTitle("Raytracer Demo [Initializing...]");
     if (!Open())
     {
         NFE_LOG_ERROR("Failed to open window");
         return false;
     }
 
-    InitializeUI();
+    // initialize renderer in parallel
+    Waitable renderInitWaitable;
+    {
+        TaskBuilder taskBuilder(renderInitWaitable);
+        taskBuilder.Task("InitRenderer", [this](const TaskContext&)
+        {
+            if (!mDemoRenderer.Init(*this))
+            {
+                NFE_LOG_ERROR("Failed to init demo renderer");
+            }
+        });
+    }
 
     mRenderingParams.traversalMode = gOptions.enablePacketTracing ? TraversalMode::Packet : TraversalMode::Single;
 
     mViewport = MakeUniquePtr<Viewport>();
-
     mViewport->Resize(gOptions.windowWidth, gOptions.windowHeight);
-
-    NFE_LOG_INFO("%p", &mViewport->GetFrontBuffer());
-
-    NFE_ASSERT(mViewport->GetFrontBuffer().GetWidth() == gOptions.windowWidth, "");
-    NFE_ASSERT(mViewport->GetFrontBuffer().GetHeight() == gOptions.windowHeight, "");
-    NFE_ASSERT(mViewport->GetFrontBuffer().GetFormat() == Bitmap::Format::B8G8R8A8_UNorm, "");
-
-    Bitmap::InitData initData;
-    initData.linearSpace = false;
-    initData.width = gOptions.windowWidth;
-    initData.height = gOptions.windowHeight;
-    initData.format = Bitmap::Format::B8G8R8A8_UNorm;
-    initData.useDefaultAllocator = true; // for some reason displaying a bitmap that uses large page fails
-    mImage.Init(initData);
 
     mCamera.mDOF.aperture = 0.0f;
 
     SwitchScene(gOptions.sceneName);
+
+    SetTitle("Raytracer Demo [Initializing Renderer...]");
+    renderInitWaitable.Wait();
+
+    InitializeUI();
 
     return true;
 }
@@ -105,14 +106,24 @@ void DemoWindow::InitializeUI()
     ImGui::CreateContext();
     ImGui::StyleColorsDark();
 
+    ImGuiIO& io = ImGui::GetIO();
+
     ImFontConfig fontConfig;
     fontConfig.OversampleH = 4;
     fontConfig.OversampleV = 4;
     fontConfig.PixelSnapH = true;
-    ImGui::GetIO().Fonts->AddFontFromFileTTF("Data/Fonts/DroidSans-Regular.otf", 13, &fontConfig);
+    io.Fonts->AddFontFromFileTTF("Data/Fonts/DroidSans-Regular.otf", 13, &fontConfig);
+
+    unsigned char* pixels = nullptr;
+    int width, height;
+    io.Fonts->GetTexDataAsRGBA32(&pixels, &width, &height);
+
+    if (pixels)
+    {
+        mDemoRenderer.SetupFontTexture(width, height, pixels);
+    }
 
     // Setup back-end capabilities flags
-    ImGuiIO& io = ImGui::GetIO();
     io.BackendFlags |= ImGuiBackendFlags_HasMouseCursors;   // We can honor GetMouseCursor() values (optional)
     io.BackendFlags |= ImGuiBackendFlags_HasSetMousePos;    // We can honor io.WantSetMousePos requests (optional, rarely used)
 
@@ -147,7 +158,16 @@ void DemoWindow::InitializeUI()
     ImGui::GetStyle().WindowRounding = 5.0f;
     ImGui::GetStyle().WindowPadding = ImVec2(6, 6);
 
-    imgui_sw::bind_imgui_painting();
+    ImGui::GetStyle().Colors[ImGuiCol_WindowBg] = ImVec4(0.0f, 0.0f, 0.0f, 0.99f);
+    ImGui::GetStyle().Colors[ImGuiCol_Text]     = ImVec4(0.9f, 0.9f, 0.9f, 1.0f);
+
+    ImVec4* colors = ImGui::GetStyle().Colors;
+    for (uint32 i = 0; i < ImGuiCol_COUNT; ++i)
+    {
+        colors[i].x = Math::Convert_sRGB_To_Linear(colors[i].x);
+        colors[i].y = Math::Convert_sRGB_To_Linear(colors[i].y);
+        colors[i].z = Math::Convert_sRGB_To_Linear(colors[i].z);
+    }
 }
 
 void DemoWindow::CheckSceneFileModificationTime()
@@ -219,18 +239,12 @@ void DemoWindow::OnResize(uint32 width, uint32 height)
     if (mViewport)
     {
         mViewport->Resize(width, height);
-
-        Bitmap::InitData initData;
-        initData.linearSpace = true;
-        initData.width = width;
-        initData.height = height;
-        initData.format = Bitmap::Format::B8G8R8A8_UNorm;
-        initData.useDefaultAllocator = true; // for some reason displaying a bitmap that uses large page fails
-        mImage.Init(initData);
     }
 
     UpdateCamera();
     ResetCounters();
+
+    mDemoRenderer.OnResize(*this);
 }
 
 void DemoWindow::OnMouseDown(MouseButton button, int x, int y)
@@ -464,27 +478,23 @@ bool DemoWindow::Loop()
         mViewport->Render(*mScene, mCamera);
         mRenderDeltaTime = localTimer.Stop();
 
-        {
-            NFE_SCOPED_TIMER(CopyFrontBuffer);
-            Bitmap::Copy(mImage, mViewport->GetFrontBuffer());
-        }
-
         if (mVisualizeAdaptiveRenderingBlocks)
         {
-            mViewport->VisualizeActiveBlocks(mImage);
+           // mViewport->VisualizeActiveBlocks(mImage);
         }
 
-        // render UI into the front buffer
-        if (mEnableUI)
         {
-            NFE_SCOPED_TIMER(PaintImGui);
-            imgui_sw::paint_imgui((uint32_t*)mImage.GetData(), mImage.GetWidth(), mImage.GetHeight());
-        }
+            NFE_SCOPED_TIMER(Draw);
 
-        // display pixels in the window
-        {
-            NFE_SCOPED_TIMER(DrawPixels);
-            DrawPixels(mImage.GetData(), mImage.GetWidth(), mImage.GetHeight(), mImage.GetStride());
+            const Bitmap& frontBuffer = mViewport->GetFrontBuffer();
+
+            DemoRenderer::DrawParams drawParams;
+            drawParams.imageData = frontBuffer.GetData();
+            drawParams.imageWidth = frontBuffer.GetWidth();
+            drawParams.imageHeight = frontBuffer.GetHeight();
+            drawParams.imageStride = frontBuffer.GetStride();
+
+            mDemoRenderer.Draw(drawParams);
         }
 
         mLastKeyDown = KeyCode::Invalid;
