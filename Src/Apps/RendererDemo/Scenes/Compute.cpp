@@ -217,7 +217,6 @@ bool ComputeScene::OnInit(void* winHandle)
     bbDesc.height = WINDOW_HEIGHT;
     bbDesc.format = mBackbufferFormat;
     bbDesc.windowHandle = winHandle;
-    bbDesc.vSync = false;
     bbDesc.commandQueue = mGraphicsQueue;
     mWindowBackbuffer = mRendererDevice->CreateBackbuffer(bbDesc);
     if (!mWindowBackbuffer)

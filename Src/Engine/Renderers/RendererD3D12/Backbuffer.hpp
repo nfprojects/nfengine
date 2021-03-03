@@ -23,8 +23,8 @@ public:
 
     Backbuffer();
     ~Backbuffer();
-    bool Resize(int newWidth, int newHeight);
-    bool Present();
+    virtual bool Resize(uint32 newWidth, uint32 newHeight) override;
+    virtual bool Present() override;
     bool Init(const BackbufferDesc& desc);
 
     NFE_INLINE DXGI_FORMAT GetFormat() const
@@ -43,13 +43,16 @@ public:
     }
 
 private:
+
+    bool ExtractBuffers();
+
     uint32 mWidth;
     uint32 mHeight;
 
     DXGI_FORMAT mFormat;
 
     HWND mWindow;
-    bool mVSync;
+    uint8 mVSyncInterval;
 
     CommandQueuePtr mCommandQueue;
 
@@ -57,7 +60,6 @@ private:
 
     // textures for each backbuffer slice
     Common::StaticArray<D3DPtr<ID3D12Resource>, DXGI_MAX_SWAP_CHAIN_BUFFERS> mBuffers;
-
     uint32 mCurrentBuffer;
 
     // for frame synchronization

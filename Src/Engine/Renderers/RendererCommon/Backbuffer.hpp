@@ -23,7 +23,7 @@ struct BackbufferDesc
     uint32 width;
     uint32 height;
     Format format;
-    bool vSync;
+    uint8 vSyncInterval;
     const char* debugName;          //< optional debug name
     // TODO: options such as: UAV usage, mulitsampling, texture format, etc.
     // TODO: buffers number (double buffering, triple buffering, etc.)
@@ -33,7 +33,7 @@ struct BackbufferDesc
         , width(0)
         , height(0)
         , format(Format::R8G8B8A8_U_Norm)
-        , vSync(false)
+        , vSyncInterval(0u)
         , debugName(nullptr)
     {
     }
@@ -45,7 +45,7 @@ public:
     virtual ~IBackbuffer() {}
 
     // should be called when window has been resized
-    virtual bool Resize(int newWidth, int newHeight) = 0;
+    virtual bool Resize(uint32 newWidth, uint32 newHeight) = 0;
 
     // swap buffers
     virtual bool Present() = 0;
