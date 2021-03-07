@@ -24,7 +24,9 @@ class CommandRecorder: public ICommandRecorder
 
     // General fields
     VkCommandBuffer mCommandBuffer;
+    CommandQueueType mQueueType;
     VkCommandBufferBeginInfo mCommandBufferBeginInfo;
+    VkCommandBufferAllocateInfo mCommandBufferAllocInfo;
 
     // Graphics resources
     RenderTarget* mRenderTarget;

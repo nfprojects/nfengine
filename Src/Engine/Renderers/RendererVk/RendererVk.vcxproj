@@ -17,10 +17,12 @@
   <ItemGroup>
     <ClInclude Include="API\Backbuffer.hpp" />
     <ClInclude Include="API\Buffer.hpp" />
+    <ClInclude Include="API\CommandList.hpp" />
     <ClInclude Include="API\CommandQueue.hpp" />
     <ClInclude Include="API\CommandRecorder.hpp" />
     <ClInclude Include="API\ComputePipelineState.hpp" />
     <ClInclude Include="API\Device.hpp" />
+    <ClInclude Include="API\Fence.hpp" />
     <ClInclude Include="API\IResource.hpp" />
     <ClInclude Include="API\MemoryBlock.hpp" />
     <ClInclude Include="API\PipelineState.hpp" />
@@ -35,6 +37,7 @@
     <ClInclude Include="Internal\Extensions.hpp" />
     <ClInclude Include="Internal\GetProc.hpp" />
     <ClInclude Include="Internal\Instance.hpp" />
+    <ClInclude Include="Internal\QueueFamilyManager.hpp" />
     <ClInclude Include="Internal\RenderPassDesc.hpp" />
     <ClInclude Include="Internal\RenderPassManager.hpp" />
     <ClInclude Include="Internal\RingBuffer.hpp" />
@@ -57,11 +60,13 @@
     </ClCompile>
     <ClCompile Include="API\Backbuffer.cpp" />
     <ClCompile Include="API\Buffer.cpp" />
+    <ClCompile Include="API\CommandList.cpp" />
     <ClCompile Include="API\CommandQueue.cpp" />
     <ClCompile Include="API\CommandRecorder.cpp" />
     <ClCompile Include="API\ComputePipelineState.cpp" />
     <ClCompile Include="API\Device.cpp" />
     <ClCompile Include="API\MemoryBlock.cpp" />
+    <ClCompile Include="API\Fence.cpp" />
     <ClCompile Include="API\PipelineState.cpp" />
     <ClCompile Include="API\RenderTarget.cpp" />
     <ClCompile Include="API\ResourceBinding.cpp" />
@@ -74,6 +79,7 @@
     <ClCompile Include="Internal\Debugger.cpp" />
     <ClCompile Include="Internal\Extensions.cpp" />
     <ClCompile Include="Internal\Instance.cpp" />
+    <ClCompile Include="Internal\QueueFamilyManager.cpp" />
     <ClCompile Include="Internal\RenderPassManager.cpp" />
     <ClCompile Include="Internal\RingBuffer.cpp" />
     <ClCompile Include="Internal\SemaphorePool.cpp">

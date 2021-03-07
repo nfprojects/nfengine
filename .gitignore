@@ -26,6 +26,9 @@ Makefile
 *.a
 *.so
 
+# Visual Studio NuGet packages folder
+/packages
+
 # Non-versioned test resource files
 /nfEngineDemo/Data
 /nfEngineDemo/CookedData

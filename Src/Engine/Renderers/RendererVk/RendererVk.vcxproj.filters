@@ -101,6 +101,15 @@
     <ClInclude Include="API\MemoryBlock.hpp">
       <Filter>API</Filter>
     </ClInclude>
+    <ClInclude Include="Internal\QueueFamilyManager.hpp">
+      <Filter>Internal</Filter>
+    </ClInclude>
+    <ClInclude Include="API\Fence.hpp">
+      <Filter>API</Filter>
+    </ClInclude>
+    <ClInclude Include="API\CommandList.hpp">
+      <Filter>API</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp" />
@@ -182,6 +191,15 @@
       <Filter>Internal</Filter>
     </ClCompile>
     <ClCompile Include="API\MemoryBlock.cpp">
+      <Filter>API</Filter>
+    </ClCompile>
+    <ClCompile Include="Internal\QueueFamilyManager.cpp">
+      <Filter>Internal</Filter>
+    </ClCompile>
+    <ClCompile Include="API\Fence.cpp">
+      <Filter>API</Filter>
+    </ClCompile>
+    <ClCompile Include="API\CommandList.cpp">
       <Filter>API</Filter>
     </ClCompile>
   </ItemGroup>

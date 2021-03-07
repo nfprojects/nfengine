@@ -9,9 +9,13 @@ SET(NFE_RENDERERVK_DIRECTORY ${NFE_RENDERERS_DIRECTORY}/RendererVk)
 SET(NFRENDERERVK_SOURCES
     API/Backbuffer.cpp
     API/Buffer.cpp
+    API/CommandList.cpp
+    API/CommandQueue.cpp
     API/CommandRecorder.cpp
     API/ComputePipelineState.cpp
     API/Device.cpp
+    API/Fence.cpp
+    API/MemoryBlock.cpp
     API/PipelineState.cpp
     API/RenderTarget.cpp
     API/ResourceBinding.cpp
@@ -22,20 +26,26 @@ SET(NFRENDERERVK_SOURCES
     Internal/Debugger.cpp
     Internal/Extensions.cpp
     Internal/Instance.cpp
+    Internal/QueueFamilyManager.cpp
     Internal/RenderPassManager.cpp
     Internal/RingBuffer.cpp
     # Internal/SemaphorePool.cpp temporarily commented out
     Internal/ShaderIncluder.cpp
     Internal/Translations.cpp
+    Internal/Utilities.cpp
     )
 
 SET(NFRENDERERVK_HEADERS
     API/Backbuffer.hpp
     API/Buffer.hpp
+    API/CommandList.hpp
+    API/CommandQueue.hpp
     API/CommandRecorder.hpp
     API/ComputePipelineState.hpp
     API/Device.hpp
+    API/Fence.hpp
     API/IResource.hpp
+    API/MemoryBlock.hpp
     API/PipelineState.hpp
     API/RenderTarget.hpp
     API/ResourceBinding.hpp
@@ -47,12 +57,14 @@ SET(NFRENDERERVK_HEADERS
     Internal/Extensions.hpp
     Internal/GetProc.hpp
     Internal/Instance.hpp
+    Internal/QueueFamilyManager.hpp
     Internal/RenderPassDesc.hpp
     Internal/RenderPassManager.hpp
     Internal/RingBuffer.hpp
     # Internal/SemaphorePool.hpp temporarily commented out
     Internal/ShaderIncluder.hpp
     Internal/Translations.hpp
+    Internal/Utilities.hpp
     )
 
 SET(NFRENDERERVK_LINUX_SOURCES

@@ -12,6 +12,7 @@
 
 #include "CommandRecorder.hpp"
 #include "Internal/Instance.hpp"
+#include "Internal/QueueFamilyManager.hpp"
 #include "Internal/RenderPassManager.hpp"
 #include "Internal/SemaphorePool.hpp"
 #include "Internal/RingBuffer.hpp"
@@ -36,14 +37,10 @@ private:
     VkPhysicalDeviceMemoryProperties mMemoryProperties;
     VkDevice mDevice;
     VkDescriptorPool mDescriptorPool;
-    VkCommandPool mCommandPool;
     VkSampler mDefaultSampler;
-    Common::DynArray<VkCommandBuffer> mCommandBufferPool;
-    uint32 mCurrentCommandBuffer;
-    uint32 mGraphicsQueueIndex;
-    VkQueue mGraphicsQueue;
     VkPipelineCache mPipelineCache;
     Common::DynArray<VkSurfaceFormatKHR> mSupportedFormats;
+    QueueFamilyManager mQueueFamilyManager;
     Common::UniquePtr<RenderPassManager> mRenderPassManager;
     Common::UniquePtr<RingBuffer> mRingBuffer;
     bool mDebugEnable;
@@ -79,24 +76,14 @@ public:
         return mDescriptorPool;
     }
 
-    NFE_INLINE const VkCommandPool& GetCommandPool() const
-    {
-        return mCommandPool;
-    }
-
     NFE_INLINE const VkPipelineCache& GetPipelineCache() const
     {
         return mPipelineCache;
     }
 
-    NFE_INLINE const VkQueue& GetQueue() const
+    NFE_INLINE QueueFamilyManager& GetQueueFamilyManager()
     {
-        return mGraphicsQueue;
-    }
-
-    NFE_INLINE const uint32& GetQueueIndex() const
-    {
-        return mGraphicsQueueIndex;
+        return mQueueFamilyManager;
     }
 
     NFE_INLINE RenderPassManager* GetRenderPassManager() const
@@ -109,19 +96,14 @@ public:
         return mRingBuffer.Get();
     }
 
+
     NFE_INLINE const VkSampler& GetDefaultSampler() const
     {
         return mDefaultSampler;
     }
 
-    NFE_INLINE uint32 GetCurrentCommandBuffer() const
-    {
-        return mCurrentCommandBuffer;
-    }
-
     uint32 GetMemoryTypeIndex(uint32 typeBits, VkFlags properties);
-
-    VkCommandBuffer GetAvailableCommandBuffer();
+    FencePtr CreateFence(const FenceFlags flags);
 
     // overrides
     void* GetHandle() const override;
@@ -147,6 +129,8 @@ public:
                                        TexturePlacementInfo& outInfo) const override;
 
     bool FinishFrame() override;
+
+    CommandListPtr CreateCommandList(CommandQueueType queueType, VkCommandBuffer cmdBuffer);
 };
 
 extern Common::UniquePtr<Device> gDevice;

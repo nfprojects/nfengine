@@ -28,13 +28,16 @@ namespace Renderer {
 
 CommandRecorder::CommandRecorder()
     : mCommandBuffer(VK_NULL_HANDLE)
+    , mQueueType(CommandQueueType::Invalid)
     , mCommandBufferBeginInfo()
+    , mCommandBufferAllocInfo()
     , mRenderTarget(nullptr)
     , mActiveRenderPass(false)
     , mResourceBindingLayout(nullptr)
     , mBoundVolatileBuffers()
     , mBoundVolatileOffsets()
     , mRebindDynamicBuffers(false)
+    , mComputeResourceBindingLayout(nullptr)
 {
 }
 
@@ -140,6 +143,11 @@ bool CommandRecorder::Init()
     mCommandBufferBeginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
     mCommandBufferBeginInfo.flags = VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT;
 
+    VK_ZERO_MEMORY(mCommandBufferAllocInfo);
+    mCommandBufferAllocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
+    mCommandBufferAllocInfo.commandBufferCount = 1;
+    mCommandBufferAllocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
+
     NFE_LOG_INFO("Command Buffer initialized successfully.");
     return true;
 }
@@ -149,8 +157,6 @@ bool CommandRecorder::Init()
 
 bool CommandRecorder::Begin(CommandQueueType queueType)
 {
-    NFE_UNUSED(queueType);
-
     mRebindDynamicBuffers = false;
     for (uint32 i = 0; i < VK_MAX_VOLATILE_BUFFERS; ++i)
     {
@@ -160,9 +166,14 @@ bool CommandRecorder::Begin(CommandQueueType queueType)
 
     mRenderTarget = nullptr;
 
-    // acquire command buffer from pool in Device
-    mCommandBuffer = gDevice->GetAvailableCommandBuffer();
-    vkBeginCommandBuffer(mCommandBuffer, &mCommandBufferBeginInfo);
+    // Allocate CommandBuffer on select queue
+    mQueueType = queueType;
+    mCommandBufferAllocInfo.commandPool = gDevice->GetQueueFamilyManager().GetQueueFamily(queueType).commandPool;
+    VkResult result = vkAllocateCommandBuffers(gDevice->GetDevice(), &mCommandBufferAllocInfo, &mCommandBuffer);
+    CHECK_VKRESULT(result, "Failed to allocate Command Buffer");
+
+    result = vkBeginCommandBuffer(mCommandBuffer, &mCommandBufferBeginInfo);
+    CHECK_VKRESULT(result, "Failed to begin Command Buffer");
 
     return true;
 }
@@ -327,9 +338,11 @@ CommandListPtr CommandRecorder::Finish()
         return 0;
     }
 
-    //return gDevice->GetCurrentCommandBuffer() + 1;
-    // TODO
-    return nullptr;
+    // mCommandBuffer is now owned by CommandList
+    CommandListPtr cl = gDevice->CreateCommandList(mQueueType, mCommandBuffer);
+    mCommandBuffer = VK_NULL_HANDLE;
+    mQueueType = CommandQueueType::Invalid;
+    return cl;
 }
 
 

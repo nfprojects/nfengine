@@ -18,6 +18,8 @@
 #include "PipelineState.hpp"
 #include "ComputePipelineState.hpp"
 #include "CommandQueue.hpp"
+#include "CommandList.hpp"
+#include "Fence.hpp"
 #include "MemoryBlock.hpp"
 
 #include "Internal/Translations.hpp"
@@ -45,8 +47,6 @@ NFE::Common::SharedPtr<Type> GenericCreateResource(const Desc& desc)
     return resource;
 }
 
-const NFE::uint32 COMMAND_BUFFER_COUNT = 5;
-
 } // namespace
 
 namespace NFE {
@@ -60,11 +60,6 @@ Device::Device()
     , mMemoryProperties()
     , mDevice(VK_NULL_HANDLE)
     , mDescriptorPool(VK_NULL_HANDLE)
-    , mCommandPool(VK_NULL_HANDLE)
-    , mCommandBufferPool()
-    , mCurrentCommandBuffer(0)
-    , mGraphicsQueueIndex(UINT32_MAX)
-    , mGraphicsQueue(VK_NULL_HANDLE)
     , mPipelineCache(VK_NULL_HANDLE)
     , mSupportedFormats()
     , mRenderPassManager(nullptr)
@@ -80,16 +75,12 @@ Device::~Device()
 
     mRingBuffer.Reset();
     mRenderPassManager.Reset();
-
-    if (mCommandBufferPool.Size())
-        vkFreeCommandBuffers(mDevice, mCommandPool, COMMAND_BUFFER_COUNT, mCommandBufferPool.Data());
+    mQueueFamilyManager.Release();
 
     if (mDefaultSampler != VK_NULL_HANDLE)
         vkDestroySampler(mDevice, mDefaultSampler, nullptr);
     if (mPipelineCache != VK_NULL_HANDLE)
         vkDestroyPipelineCache(mDevice, mPipelineCache, nullptr);
-    if (mCommandPool != VK_NULL_HANDLE)
-        vkDestroyCommandPool(mDevice, mCommandPool, nullptr);
     if (mDescriptorPool != VK_NULL_HANDLE)
         vkDestroyDescriptorPool(mDevice, mDescriptorPool, nullptr);
 
@@ -156,7 +147,7 @@ bool Device::Init(const DeviceInitParams* params)
     CHECK_VKRESULT(result, "Unable to enumerate physical devices");
     if (gpuCount == 0)
     {
-        NFE_LOG_ERROR("0 physical devices available.");
+        NFE_LOG_ERROR("No physical devices available.");
         return false;
     }
 
@@ -201,41 +192,11 @@ bool Device::Init(const DeviceInitParams* params)
     CleanupTemporarySurface(tempSurface);
 
     // Grab queue properties from our selected device
-    uint32 queueCount = 0;
-    vkGetPhysicalDeviceQueueFamilyProperties(mPhysicalDevice, &queueCount, nullptr);
-    if (queueCount == 0)
+    if (!mQueueFamilyManager.PreInit(mPhysicalDevice))
     {
-        NFE_LOG_ERROR("Physical device does not have any queue family properties.");
+        NFE_LOG_ERROR("Queue Family Manager failed to pre-initialize");
         return false;
     }
-
-    Common::DynArray<VkQueueFamilyProperties> queueProps;
-    queueProps.Resize(queueCount);
-    vkGetPhysicalDeviceQueueFamilyProperties(mPhysicalDevice, &queueCount, queueProps.Data());
-
-    for (uint32 i = 0; i < queueCount; ++i)
-    {
-        NFE_LOG_DEBUG("Queue #%u:", i);
-        NFE_LOG_DEBUG("  Flags: %x", queueProps[i].queueFlags);
-    }
-
-    for (mGraphicsQueueIndex = 0; mGraphicsQueueIndex < queueCount; mGraphicsQueueIndex++)
-        if (queueProps[mGraphicsQueueIndex].queueFlags & VK_QUEUE_GRAPHICS_BIT)
-            break;
-
-    if (mGraphicsQueueIndex == queueCount)
-    {
-        NFE_LOG_ERROR("Selected physical device does not support graphics queue.");
-        return false;
-    }
-
-    float queuePriorities[] = { 0.0f };
-    VkDeviceQueueCreateInfo queueInfo;
-    VK_ZERO_MEMORY(queueInfo);
-    queueInfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
-    queueInfo.queueFamilyIndex = mGraphicsQueueIndex;
-    queueInfo.queueCount = 1;
-    queueInfo.pQueuePriorities = queuePriorities;
 
     Common::DynArray<const char*> enabledExtensions;
     enabledExtensions.PushBack(VK_KHR_SWAPCHAIN_EXTENSION_NAME);
@@ -260,8 +221,8 @@ bool Device::Init(const DeviceInitParams* params)
     VK_ZERO_MEMORY(devInfo);
     devInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
     devInfo.pNext = &features;
-    devInfo.queueCreateInfoCount = 1;
-    devInfo.pQueueCreateInfos = &queueInfo;
+    devInfo.queueCreateInfoCount = mQueueFamilyManager.GetCreateInfos().Size();
+    devInfo.pQueueCreateInfos = mQueueFamilyManager.GetCreateInfos().Data();
     devInfo.enabledExtensionCount = enabledExtensions.Size();
     devInfo.ppEnabledExtensionNames = enabledExtensions.Data();
 
@@ -284,7 +245,11 @@ bool Device::Init(const DeviceInitParams* params)
 
     Debugger::Instance().NameObject(reinterpret_cast<uint64_t>(mDevice), VK_OBJECT_TYPE_DEVICE, "Device");
 
-    vkGetDeviceQueue(mDevice, mGraphicsQueueIndex, 0, &mGraphicsQueue);
+    if (!mQueueFamilyManager.Init(mDevice))
+    {
+        NFE_LOG_ERROR("Failed to finish Queue Family Manager initialization");
+        return false;
+    }
 
 
     // TODO resize these if we run out of space
@@ -314,41 +279,7 @@ bool Device::Init(const DeviceInitParams* params)
     Debugger::Instance().NameObject(reinterpret_cast<uint64_t>(mDescriptorPool), VK_OBJECT_TYPE_DESCRIPTOR_POOL, "Device-DescriptorPool");
 
 
-    VkCommandPoolCreateInfo poolInfo;
-    VK_ZERO_MEMORY(poolInfo);
-    poolInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
-    poolInfo.queueFamilyIndex = mGraphicsQueueIndex;
-    poolInfo.flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
-    result = vkCreateCommandPool(mDevice, &poolInfo, nullptr, &mCommandPool);
-    CHECK_VKRESULT(result, "Failed to create Command Pool");
-
-    Debugger::Instance().NameObject(reinterpret_cast<uint64_t>(mCommandPool), VK_OBJECT_TYPE_COMMAND_POOL, "Device-CommandPool");
-
-
-    mCommandBufferPool.Resize(COMMAND_BUFFER_COUNT);
-
-    VkCommandBufferAllocateInfo cbInfo;
-    VK_ZERO_MEMORY(cbInfo);
-    cbInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
-    cbInfo.commandPool = mCommandPool;
-    cbInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
-    cbInfo.commandBufferCount = COMMAND_BUFFER_COUNT;
-    result = vkAllocateCommandBuffers(mDevice, &cbInfo, mCommandBufferPool.Data());
-    CHECK_VKRESULT(result, "Failed to initialize Command Buffer Pool");
-
-    if (Debugger::Instance().IsDebugAnnotationActive())
-    {
-        Common::String cbNamePrefix("Device-CommandBuffer");
-        for (uint32 i = 0; i < COMMAND_BUFFER_COUNT; ++i)
-        {
-            Common::String name = cbNamePrefix + Common::ToString(i);
-            Debugger::Instance().NameObject(reinterpret_cast<uint64_t>(mCommandBufferPool[i]), VK_OBJECT_TYPE_COMMAND_BUFFER, name.Str());
-        }
-    }
-
-
     mRenderPassManager.Reset(new RenderPassManager(mDevice));
-
 
     mRingBuffer.Reset(new RingBuffer(mDevice));
     mRingBuffer->Init(1024 * 1024);
@@ -401,20 +332,25 @@ uint32 Device::GetMemoryTypeIndex(uint32 typeBits, VkFlags properties)
     return UINT32_MAX;
 }
 
-VkCommandBuffer Device::GetAvailableCommandBuffer()
+FencePtr Device::CreateFence(const FenceFlags flags)
 {
-    mCurrentCommandBuffer++;
-    if (mCurrentCommandBuffer >= COMMAND_BUFFER_COUNT)
+    auto f = Common::MakeSharedPtr<Fence>(flags);
+    if (!f)
     {
-        mCurrentCommandBuffer = 0;
+        return nullptr;
     }
 
-    return mCommandBufferPool[mCurrentCommandBuffer];
+    if (!f->Init())
+    {
+        return nullptr;
+    }
+
+    return f;
 }
 
 void* Device::GetHandle() const
 {
-    return nullptr;
+    return reinterpret_cast<void*>(mDevice);
 }
 
 VertexLayoutPtr Device::CreateVertexLayout(const VertexLayoutDesc& desc)
@@ -619,6 +555,17 @@ bool Device::CalculateTexturePlacementInfo(Format format, uint32 width, uint32 h
 bool Device::FinishFrame()
 {
     return false;
+}
+
+CommandListPtr Device::CreateCommandList(CommandQueueType queueType, VkCommandBuffer cmdBuffer)
+{
+    auto cl = Common::MakeUniquePtr<CommandList>(queueType, cmdBuffer);
+    if (!cl)
+    {
+        return nullptr;
+    }
+
+    return cl;
 }
 
 IDevice* Init(const DeviceInitParams* params)

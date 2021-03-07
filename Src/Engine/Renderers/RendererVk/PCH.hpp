@@ -40,6 +40,7 @@
 #endif // NFE_PLATFORM_WINDOWS
 
 
+// TODO Remove
 #include <string.h>
 #include <memory>
 #include <tuple>
