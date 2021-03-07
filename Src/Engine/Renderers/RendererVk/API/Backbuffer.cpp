@@ -113,7 +113,7 @@ bool Backbuffer::SelectSurfaceFormat(const BackbufferDesc& desc)
 
     CHECK_VKRESULT(result, "Unable to retrieve surface formats");
     uint32 formatIndex = 0;
-    mFormat = TranslateElementFormatToVkFormat(desc.format);
+    mFormat = TranslateFormatToVkFormat(desc.format);
     // check if format is supported
     // the only exception is having 1 format - VK_FORMAT_UNDEFINED
     // then we can be sure, the physical device doesn't care what format we choose
@@ -149,9 +149,9 @@ bool Backbuffer::SelectPresentMode(const BackbufferDesc& desc)
     }
     CHECK_VKRESULT(result, "Failed to acquire surface's present modes");
 
-    // By default, assume FIFO present mode (aka vSync enabled)
+    // TODO vSyncInterval support
     mSwapPresentMode = VK_PRESENT_MODE_FIFO_KHR;
-    if (!desc.vSync)
+    if (desc.vSyncInterval == 0)
     {
         // If vsync is to be disabled, go through surface's present modes and find a better one
         for (uint32 i = 0; i < presentModeCount; ++i)
@@ -331,7 +331,7 @@ bool Backbuffer::Init(const BackbufferDesc& desc)
     return true;
 }
 
-bool Backbuffer::Resize(int newWidth, int newHeight)
+bool Backbuffer::Resize(uint32 newWidth, uint32 newHeight)
 {
     mWidth = newWidth;
     mHeight = newHeight;

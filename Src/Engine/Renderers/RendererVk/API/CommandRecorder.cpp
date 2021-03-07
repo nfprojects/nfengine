@@ -87,7 +87,11 @@ bool CommandRecorder::WriteDynamicBuffer(Buffer* b, size_t offset, size_t size, 
 bool CommandRecorder::WriteVolatileBuffer(Buffer* b, size_t size, const void* data)
 {
     NFE_UNUSED(b);
+    NFE_UNUSED(size);
+    NFE_UNUSED(data);
+    return false;
 
+    /*
     b->mVolatileDataOffset = gDevice->GetRingBuffer()->Write(data, static_cast<uint32>(size));
     NFE_ASSERT(b->mVolatileDataOffset != UINT32_MAX, "Failed to write data to Ring Ruffer - the Ring Buffer is full");
 
@@ -104,7 +108,7 @@ bool CommandRecorder::WriteVolatileBuffer(Buffer* b, size_t size, const void* da
         }
     }
 
-    return true;
+    return true;*/
 }
 
 void CommandRecorder::RebindDynamicBuffers() const
@@ -143,8 +147,10 @@ bool CommandRecorder::Init()
 
 // COMMON METHODS
 
-bool CommandRecorder::Begin()
+bool CommandRecorder::Begin(CommandQueueType queueType)
 {
+    NFE_UNUSED(queueType);
+
     mRebindDynamicBuffers = false;
     for (uint32 i = 0; i < VK_MAX_VOLATILE_BUFFERS; ++i)
     {
@@ -159,6 +165,15 @@ bool CommandRecorder::Begin()
     vkBeginCommandBuffer(mCommandBuffer, &mCommandBufferBeginInfo);
 
     return true;
+}
+
+void CommandRecorder::CopyBuffer(const BufferPtr& src, const BufferPtr& dest, size_t size, size_t srcOffset, size_t destOffset)
+{
+    NFE_UNUSED(src);
+    NFE_UNUSED(dest);
+    NFE_UNUSED(size);
+    NFE_UNUSED(srcOffset);
+    NFE_UNUSED(destOffset);
 }
 
 void CommandRecorder::CopyTexture(const TexturePtr& src, const TexturePtr& dest)
@@ -245,6 +260,14 @@ void CommandRecorder::CopyTexture(const TexturePtr& src, const BackbufferPtr& de
     d->Transition(mCommandBuffer, VK_IMAGE_LAYOUT_PRESENT_SRC_KHR);
 }
 
+void CommandRecorder::CopyTextureToBuffer(const TexturePtr& src, const BufferPtr& dest, const TextureRegion* texRegion, uint32 bufferOffset)
+{
+    NFE_UNUSED(src);
+    NFE_UNUSED(dest);
+    NFE_UNUSED(texRegion);
+    NFE_UNUSED(bufferOffset);
+}
+
 bool CommandRecorder::WriteBuffer(const BufferPtr& buffer, size_t offset, size_t size, const void* data)
 {
     Buffer* b = dynamic_cast<Buffer*>(buffer.Get());
@@ -254,7 +277,7 @@ bool CommandRecorder::WriteBuffer(const BufferPtr& buffer, size_t offset, size_t
         return false;
     }
 
-    if (b->mMode == BufferMode::Dynamic)
+    if (b->mMode == ResourceAccessMode::Upload)
     {
         if (static_cast<VkDeviceSize>(size) > b->mBufferSize)
         {
@@ -265,7 +288,7 @@ bool CommandRecorder::WriteBuffer(const BufferPtr& buffer, size_t offset, size_t
 
         return WriteDynamicBuffer(b, offset, size, data);
     }
-    else if (b->mMode == BufferMode::Volatile)
+    else if (b->mMode == ResourceAccessMode::Volatile)
     {
         return WriteVolatileBuffer(b, size, data);
     }
@@ -276,7 +299,17 @@ bool CommandRecorder::WriteBuffer(const BufferPtr& buffer, size_t offset, size_t
     }
 }
 
-CommandListID CommandRecorder::Finish()
+bool CommandRecorder::WriteTexture(const TexturePtr& texture, const void* data, const TextureRegion* texRegion, uint32 srcRowStride)
+{
+    NFE_UNUSED(texture);
+    NFE_UNUSED(data);
+    NFE_UNUSED(texRegion);
+    NFE_UNUSED(srcRowStride);
+
+    return false;
+}
+
+CommandListPtr CommandRecorder::Finish()
 {
     if (mRenderTarget)
     {
@@ -294,15 +327,18 @@ CommandListID CommandRecorder::Finish()
         return 0;
     }
 
-    return gDevice->GetCurrentCommandBuffer() + 1;
+    //return gDevice->GetCurrentCommandBuffer() + 1;
+    // TODO
+    return nullptr;
 }
 
 
 // GRAPHICS PIPELINE METHODS //
 
-void CommandRecorder::BindResources(uint32 slot, const ResourceBindingInstancePtr& bindingSetInstance)
+void CommandRecorder::BindResources(PipelineType pipelineType, uint32 setIndex, const ResourceBindingInstancePtr& bindingSetInstance)
 {
-    NFE_UNUSED(slot);
+    NFE_UNUSED(pipelineType); // TODO
+    NFE_UNUSED(setIndex);
 
     ResourceBindingInstance* rbi = dynamic_cast<ResourceBindingInstance*>(bindingSetInstance.Get());
     if (rbi == nullptr)
@@ -322,12 +358,31 @@ void CommandRecorder::BindResources(uint32 slot, const ResourceBindingInstancePt
                             &rbi->mDescriptorSet, 0, nullptr);
 }
 
-void CommandRecorder::BindVolatileCBuffer(uint32 slot, const BufferPtr& buffer)
+void CommandRecorder::BindBuffer(PipelineType pipelineType, uint32 setIndex, uint32 slotInSet, const BufferPtr& buffer, const BufferView& view)
 {
+    NFE_UNUSED(pipelineType);
+    NFE_UNUSED(setIndex);
+    NFE_UNUSED(slotInSet);
+    NFE_UNUSED(buffer);
+    NFE_UNUSED(view);
+}
+
+void CommandRecorder::BindTexture(PipelineType pipelineType, uint32 setIndex, uint32 slotInSet, const TexturePtr& texture, const TextureView& view)
+{
+    NFE_UNUSED(pipelineType);
+    NFE_UNUSED(setIndex);
+    NFE_UNUSED(slotInSet);
+    NFE_UNUSED(texture);
+    NFE_UNUSED(view);
+}
+
+void CommandRecorder::BindVolatileCBuffer(PipelineType pipelineType, uint32 slot, const BufferPtr& buffer)
+{
+    NFE_UNUSED(pipelineType); // TODO
+
     Buffer* b = dynamic_cast<Buffer*>(buffer.Get());
     NFE_ASSERT(b != nullptr, "Invalid volatile buffer provided");
-    NFE_ASSERT(b->mMode == BufferMode::Volatile, "Buffer is not a Volatile Buffer");
-    NFE_ASSERT(b->mType == BufferType::Constant, "Buffer is not a Constant Buffer");
+    NFE_ASSERT(b->mMode == ResourceAccessMode::Volatile, "Buffer is not a Volatile Buffer");
     NFE_ASSERT(slot < VK_MAX_VOLATILE_BUFFERS, "Binding to slot %d impossible (max available slots 0-7).", slot);
 
     mBoundVolatileBuffers[slot] = b;
@@ -337,6 +392,24 @@ void CommandRecorder::BindVolatileCBuffer(uint32 slot, const BufferPtr& buffer)
     {
         mBoundVolatileOffsets[slot] = b->mVolatileDataOffset;
     }
+}
+
+void CommandRecorder::BindWritableBuffer(PipelineType pipelineType, uint32 setIndex, uint32 slotInSet, const BufferPtr& buffer, const BufferView& view)
+{
+    NFE_UNUSED(pipelineType);
+    NFE_UNUSED(setIndex);
+    NFE_UNUSED(slotInSet);
+    NFE_UNUSED(buffer);
+    NFE_UNUSED(view);
+}
+
+void CommandRecorder::BindWritableTexture(PipelineType pipelineType, uint32 setIndex, uint32 slotInSet, const TexturePtr& texture, const TextureView& view)
+{
+    NFE_UNUSED(pipelineType);
+    NFE_UNUSED(setIndex);
+    NFE_UNUSED(slotInSet);
+    NFE_UNUSED(texture);
+    NFE_UNUSED(view);
 }
 
 void CommandRecorder::Clear(uint32 flags, uint32 numTargets, const uint32* slots, const Math::Vec4fU* colors, float depthValue, uint8 stencilValue)
@@ -431,10 +504,21 @@ void CommandRecorder::SetRenderTarget(const RenderTargetPtr& renderTarget)
     vkCmdBeginRenderPass(mCommandBuffer, &rpBeginInfo, VK_SUBPASS_CONTENTS_INLINE);
 }
 
-void CommandRecorder::SetResourceBindingLayout(const ResourceBindingLayoutPtr& layout)
+void CommandRecorder::SetResourceBindingLayout(PipelineType pipelineType, const ResourceBindingLayoutPtr& layout)
 {
-    mResourceBindingLayout = dynamic_cast<ResourceBindingLayout*>(layout.Get());
-    NFE_ASSERT(mResourceBindingLayout != nullptr, "Incorrect binding layout provided");
+    NFE_ASSERT(pipelineType == PipelineType::Graphics || pipelineType == PipelineType::Compute,
+               "Invalid pipelineType provided");
+
+    if (pipelineType == PipelineType::Graphics)
+    {
+        mResourceBindingLayout = dynamic_cast<ResourceBindingLayout*>(layout.Get());
+        NFE_ASSERT(mResourceBindingLayout != nullptr, "Incorrect graphics binding layout provided");
+    }
+    else
+    {
+        mComputeResourceBindingLayout = dynamic_cast<ResourceBindingLayout*>(layout.Get());
+        NFE_ASSERT(mComputeResourceBindingLayout != nullptr, "Incorrect compute binding layout provided");
+    }
 }
 
 void CommandRecorder::SetPipelineState(const PipelineStatePtr& state)
@@ -444,6 +528,14 @@ void CommandRecorder::SetPipelineState(const PipelineStatePtr& state)
 
     // TODO support compute bind point
     vkCmdBindPipeline(mCommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, ps->mPipeline);
+}
+
+void CommandRecorder::SetComputePipelineState(const ComputePipelineStatePtr& state)
+{
+    ComputePipelineState* cps = dynamic_cast<ComputePipelineState*>(state.Get());
+    NFE_ASSERT(cps != nullptr, "Invalid Compute Pipeline State provided");
+
+    vkCmdBindPipeline(mCommandBuffer, VK_PIPELINE_BIND_POINT_COMPUTE, cps->mPipeline);
 }
 
 void CommandRecorder::SetScissors(int32 left, int32 top, int32 right, int32 bottom)
@@ -474,7 +566,7 @@ void CommandRecorder::SetVertexBuffers(uint32 num, const BufferPtr* vertexBuffer
         Buffer* buf = dynamic_cast<Buffer*>(vertexBuffers[i].Get());
         NFE_ASSERT(buf != nullptr, "Incorrect buffer provided at slot %d", i);
 
-        if (buf->mMode == BufferMode::Volatile)
+        if (buf->mMode == ResourceAccessMode::Volatile)
         {
             buffers[i] = gDevice->GetRingBuffer()->GetVkBuffer();
             offs[i] = static_cast<VkDeviceSize>(offsets[i]) + buf->mVolatileDataOffset;
@@ -524,46 +616,30 @@ void CommandRecorder::DrawIndexed(uint32 indexNum, uint32 instancesNum, uint32 i
     vkCmdDrawIndexed(mCommandBuffer, indexNum, instancesNum, indexOffset, vertexOffset, instanceOffset);
 }
 
-
-// COMPUTE PIPELINE METHODS
-
-void CommandRecorder::BindComputeResources(uint32 slot, const ResourceBindingInstancePtr& bindingSetInstance)
-{
-    NFE_UNUSED(slot);
-
-    ResourceBindingInstance* rbi = dynamic_cast<ResourceBindingInstance*>(bindingSetInstance.Get());
-    if (rbi == nullptr)
-        return; // there is no "unbind" of descriptor sets in Vulkan
-
-    vkCmdBindDescriptorSets(mCommandBuffer, VK_PIPELINE_BIND_POINT_COMPUTE,
-                            mComputeResourceBindingLayout->mPipelineLayout,
-                            rbi->mSet->mSetSlot, 1,
-                            &rbi->mDescriptorSet, 0, nullptr);
-}
-
-void CommandRecorder::BindComputeVolatileCBuffer(uint32 slot, const BufferPtr& buffer)
-{
-    NFE_UNUSED(slot);
-    NFE_UNUSED(buffer);
-}
-
-void CommandRecorder::SetComputePipelineState(const ComputePipelineStatePtr& state)
-{
-    ComputePipelineState* cps = dynamic_cast<ComputePipelineState*>(state.Get());
-    NFE_ASSERT(cps != nullptr, "Invalid Compute Pipeline State provided");
-
-    vkCmdBindPipeline(mCommandBuffer, VK_PIPELINE_BIND_POINT_COMPUTE, cps->mPipeline);
-}
-
-void CommandRecorder::SetComputeResourceBindingLayout(const ResourceBindingLayoutPtr& layout)
-{
-    mComputeResourceBindingLayout = dynamic_cast<ResourceBindingLayout*>(layout.Get());
-    NFE_ASSERT(mComputeResourceBindingLayout != nullptr, "Invalid Compute Resource Binding Layout provided");
-}
-
 void CommandRecorder::Dispatch(uint32 x, uint32 y, uint32 z)
 {
     vkCmdDispatch(mCommandBuffer, x, y, z);
+}
+
+void CommandRecorder::DispatchIndirect(const BufferPtr& indirectArgBuffer, uint32 bufferOffset)
+{
+    NFE_UNUSED(indirectArgBuffer);
+    NFE_UNUSED(bufferOffset);
+}
+
+
+// HINTS/RESOURCE QUEUE TRANSITIONS
+
+void CommandRecorder::HintTargetCommandQueueType(const BufferPtr& resource, const CommandQueueType targetType)
+{
+    NFE_UNUSED(resource);
+    NFE_UNUSED(targetType);
+}
+
+void CommandRecorder::HintTargetCommandQueueType(const TexturePtr& resource, const CommandQueueType targetType)
+{
+    NFE_UNUSED(resource);
+    NFE_UNUSED(targetType);
 }
 
 

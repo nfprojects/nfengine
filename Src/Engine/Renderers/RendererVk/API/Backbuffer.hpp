@@ -70,7 +70,7 @@ public:
 
     bool Init(const BackbufferDesc& desc);
 
-    bool Resize(int newWidth, int newHeight) override;
+    bool Resize(uint32 newWidth, uint32 newHeight) override;
     bool Present() override;
 
     void Transition(VkCommandBuffer cb, VkImageLayout dstLayout);

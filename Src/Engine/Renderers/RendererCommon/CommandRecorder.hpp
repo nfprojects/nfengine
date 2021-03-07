@@ -297,7 +297,7 @@ public:
 
     /**
      * Execute compute shader.
-     * 
+     *
      * @param indirectArgBuffer Buffer containing dispatch params.
      * @param bufferOffset      Offset to the params within the buffer.
      */

@@ -75,7 +75,7 @@ bool VertexLayout::Init(const VertexLayoutDesc& desc)
     {
         viaDesc.location = i;
         viaDesc.binding = desc.elements[i].vertexBufferId;
-        viaDesc.format = TranslateElementFormatToVkFormat(desc.elements[i].format);
+        viaDesc.format = TranslateFormatToVkFormat(desc.elements[i].format);
         viaDesc.offset = desc.elements[i].offset;
         mAttributes.PushBack(viaDesc);
     }

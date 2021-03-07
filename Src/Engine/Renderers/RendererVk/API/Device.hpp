@@ -125,8 +125,6 @@ public:
 
     // overrides
     void* GetHandle() const override;
-    bool GetDeviceInfo(DeviceInfo& info) override;
-    bool IsBackbufferFormatSupported(Format format) override;
 
     VertexLayoutPtr CreateVertexLayout(const VertexLayoutDesc& desc) override;
     BufferPtr CreateBuffer(const BufferDesc& desc) override;
@@ -140,14 +138,14 @@ public:
     ResourceBindingSetPtr CreateResourceBindingSet(const ResourceBindingSetDesc& desc) override;
     ResourceBindingLayoutPtr CreateResourceBindingLayout(const ResourceBindingLayoutDesc& desc) override;
     ResourceBindingInstancePtr CreateResourceBindingInstance(const ResourceBindingSetPtr& set) override;
-
     CommandRecorderPtr CreateCommandRecorder() override;
-    bool Execute(CommandListID commandList) override;
-    bool WaitForGPU() override;
-    bool FinishFrame() override;
+    CommandQueuePtr CreateCommandQueue(CommandQueueType type, const char* debugName) override;
+    bool GetDeviceInfo(DeviceInfo& info) override;
+    bool IsBackbufferFormatSupported(Format format) override;
+    bool CalculateTexturePlacementInfo(Format format, uint32 width, uint32 height, uint32 depth,
+                                       TexturePlacementInfo& outInfo) const override;
 
-    bool DownloadBuffer(const BufferPtr& buffer, size_t offset, size_t size, void* data) override;
-    bool DownloadTexture(const TexturePtr& tex, void* data, uint32 mipmap, uint32 layer) override;
+    bool FinishFrame() override;
 };
 
 extern Common::UniquePtr<Device> gDevice;

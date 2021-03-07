@@ -23,8 +23,7 @@ class Buffer : public IBuffer, public IResource
     VkBuffer mBuffer;
     VkDeviceMemory mBufferMemory;
     VkDeviceSize mBufferSize;
-    BufferMode mMode;
-    BufferType mType;
+    ResourceAccessMode mMode;
 
     uint32 mVolatileBinding;
     uint32 mVolatileDataOffset;
@@ -39,6 +38,9 @@ public:
         // type doesn't exactly match, but it's used only for ResourceBinding purposes
         return ShaderResourceType::CBuffer;
     }
+
+    void* Map(size_t size, size_t offset) override;
+    void Unmap() override;
 };
 
 } // namespace Renderer

@@ -276,98 +276,53 @@ bool ResourceBindingInstance::Init(const ResourceBindingSetPtr& bindingSet)
     return true;
 }
 
-bool ResourceBindingInstance::WriteCBufferView(uint32 slot, const BufferPtr& buffer)
+bool ResourceBindingInstance::SetTextureView(uint32 slot, const TexturePtr& texture, const TextureView& view)
 {
-    Buffer* b = dynamic_cast<Buffer*>(buffer.Get());
-    if (b == nullptr)
-    {
-        NFE_LOG_ERROR("Incorrect Buffer pointer provided");
-        return false;
-    }
-
-    VkDescriptorBufferInfo bufInfo;
-    VK_ZERO_MEMORY(bufInfo);
-    bufInfo.buffer = b->mBuffer;
-    bufInfo.offset = 0;
-    bufInfo.range = b->mBufferSize;
-
-    VkWriteDescriptorSet writeSet;
-    VK_ZERO_MEMORY(writeSet);
-    writeSet.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-    writeSet.dstSet = mDescriptorSet;
-    writeSet.dstBinding = slot;
-    writeSet.dstArrayElement = 0;
-    writeSet.descriptorCount = 1;
-    writeSet.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-    writeSet.pBufferInfo = &bufInfo;
-
-    vkUpdateDescriptorSets(gDevice->GetDevice(), 1, &writeSet, 0, nullptr);
-
-    mWrittenResources[slot] = b;
+    NFE_UNUSED(slot);
+    NFE_UNUSED(texture);
+    NFE_UNUSED(view);
 
     return true;
 }
 
-bool ResourceBindingInstance::WriteTextureView(uint32 slot, const TexturePtr& texture)
+bool ResourceBindingInstance::SetBufferView(uint32 slot, const BufferPtr& buffer, const BufferView& view)
 {
-    Texture* t = dynamic_cast<Texture*>(texture.Get());
-    if (t == nullptr)
-    {
-        NFE_LOG_ERROR("Incorrect Texture pointer provided");
-        return false;
-    }
+    NFE_UNUSED(slot);
+    NFE_UNUSED(buffer);
+    NFE_UNUSED(view);
 
-    VkDescriptorImageInfo imgInfo;
-    VK_ZERO_MEMORY(imgInfo);
-    imgInfo.imageView = t->mImageView;
-    imgInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+    return false;
+}
 
-    VkWriteDescriptorSet writeSet;
-    VK_ZERO_MEMORY(writeSet);
-    writeSet.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-    writeSet.dstSet = mDescriptorSet;
-    writeSet.dstBinding = slot;
-    writeSet.dstArrayElement = 0;
-    writeSet.descriptorCount = 1;
-    writeSet.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-    writeSet.pImageInfo = &imgInfo;
-
-    vkUpdateDescriptorSets(gDevice->GetDevice(), 1, &writeSet, 0, nullptr);
-
-    mWrittenResources[slot] = t;
+bool ResourceBindingInstance::SetCBufferView(uint32 slot, const BufferPtr& buffer)
+{
+    NFE_UNUSED(slot);
+    NFE_UNUSED(buffer);
 
     return true;
 }
 
-bool ResourceBindingInstance::WriteWritableTextureView(uint32 slot, const TexturePtr& texture)
+bool ResourceBindingInstance::SetWritableTextureView(uint32 slot, const TexturePtr& texture, const TextureView& view)
 {
-    Texture* t = dynamic_cast<Texture*>(texture.Get());
-    if (t == nullptr)
-    {
-        NFE_LOG_ERROR("Incorrect Texture pointer provided");
-        return false;
-    }
-
-    VkDescriptorImageInfo imgInfo;
-    VK_ZERO_MEMORY(imgInfo);
-    imgInfo.imageView = t->mImageView;
-    imgInfo.imageLayout = VK_IMAGE_LAYOUT_GENERAL;
-
-    VkWriteDescriptorSet writeSet;
-    VK_ZERO_MEMORY(writeSet);
-    writeSet.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-    writeSet.dstSet = mDescriptorSet;
-    writeSet.dstBinding = slot;
-    writeSet.dstArrayElement = 0;
-    writeSet.descriptorCount = 1;
-    writeSet.descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_IMAGE;
-    writeSet.pImageInfo = &imgInfo;
-
-    vkUpdateDescriptorSets(gDevice->GetDevice(), 1, &writeSet, 0, nullptr);
-
-    mWrittenResources[slot] = t;
+    NFE_UNUSED(slot);
+    NFE_UNUSED(texture);
+    NFE_UNUSED(view);
 
     return true;
+}
+
+bool ResourceBindingInstance::SetWritableBufferView(uint32 slot, const BufferPtr& buffer, const BufferView& view)
+{
+    NFE_UNUSED(slot);
+    NFE_UNUSED(buffer);
+    NFE_UNUSED(view);
+
+    return false;
+}
+
+bool ResourceBindingInstance::Finalize()
+{
+    return false;
 }
 
 } // namespace Renderer

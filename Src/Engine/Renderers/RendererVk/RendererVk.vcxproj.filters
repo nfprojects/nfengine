@@ -92,6 +92,12 @@
     <ClInclude Include="Internal\ShaderIncluder.hpp">
       <Filter>Internal</Filter>
     </ClInclude>
+    <ClInclude Include="API\CommandQueue.hpp">
+      <Filter>API</Filter>
+    </ClInclude>
+    <ClInclude Include="Internal\Utilities.hpp">
+      <Filter>Internal</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp" />
@@ -164,6 +170,12 @@
       <Filter>External</Filter>
     </ClCompile>
     <ClCompile Include="Internal\ShaderIncluder.cpp">
+      <Filter>Internal</Filter>
+    </ClCompile>
+    <ClCompile Include="API\CommandQueue.cpp">
+      <Filter>API</Filter>
+    </ClCompile>
+    <ClCompile Include="Internal\Utilities.cpp">
       <Filter>Internal</Filter>
     </ClCompile>
   </ItemGroup>

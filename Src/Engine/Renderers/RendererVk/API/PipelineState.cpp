@@ -162,9 +162,9 @@ bool PipelineState::Init(const PipelineStateDesc& desc)
 
     // request a render pass from manager
     VkFormat colorFormats[MAX_RENDER_TARGETS];
-    VkFormat depthFormat = TranslateDepthFormatToVkFormat(desc.depthFormat);
+    VkFormat depthFormat = TranslateFormatToVkFormat(desc.depthFormat);
     for (i = 0; i < desc.numRenderTargets; ++i)
-        colorFormats[i] = TranslateElementFormatToVkFormat(desc.rtFormats[i]);
+        colorFormats[i] = TranslateFormatToVkFormat(desc.rtFormats[i]);
 
     RenderPassDesc rpDesc(colorFormats, desc.numRenderTargets, depthFormat);
     VkRenderPass renderPass = gDevice->GetRenderPassManager()->GetRenderPass(rpDesc);

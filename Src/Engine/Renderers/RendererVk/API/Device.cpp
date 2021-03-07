@@ -17,6 +17,7 @@
 #include "VertexLayout.hpp"
 #include "PipelineState.hpp"
 #include "ComputePipelineState.hpp"
+#include "CommandQueue.hpp"
 
 #include "Internal/Translations.hpp"
 #include "Internal/Debugger.hpp"
@@ -74,7 +75,7 @@ Device::Device()
 Device::~Device()
 {
     if (mDevice != VK_NULL_HANDLE)
-        WaitForGPU();
+        vkDeviceWaitIdle(mDevice);
 
     mRingBuffer.Reset();
     mRenderPassManager.Reset();
@@ -502,9 +503,25 @@ CommandRecorderPtr Device::CreateCommandRecorder()
     return cr;
 }
 
+CommandQueuePtr Device::CreateCommandQueue(CommandQueueType type, const char* debugName)
+{
+    auto cq = Common::MakeSharedPtr<CommandQueue>();
+    if (!cq)
+    {
+        return nullptr;
+    }
+
+    if (!cq->Init(type, debugName))
+    {
+        return nullptr;
+    }
+
+    return cq;
+}
+
 bool Device::IsBackbufferFormatSupported(Format format)
 {
-    VkFormat bbFormat = TranslateElementFormatToVkFormat(format);
+    VkFormat bbFormat = TranslateFormatToVkFormat(format);
     for (auto& f: mSupportedFormats)
         if (f.format == bbFormat)
             return true;
@@ -581,58 +598,20 @@ bool Device::GetDeviceInfo(DeviceInfo& info)
     return true;
 }
 
-bool Device::Execute(CommandListID commandList)
+bool Device::CalculateTexturePlacementInfo(Format format, uint32 width, uint32 height, uint32 depth,
+                                           TexturePlacementInfo& outInfo) const
 {
-    if (commandList == INVALID_COMMAND_LIST_ID)
-    {
-        NFE_LOG_ERROR("Invalid Command List ID provided for execution");
-        return false;
-    }
+    NFE_UNUSED(format);
+    NFE_UNUSED(width);
+    NFE_UNUSED(height);
+    NFE_UNUSED(depth);
+    NFE_UNUSED(outInfo);
 
-    gDevice->WaitForGPU(); // TODO TEMPORARY
-
-    VkPipelineStageFlags pipelineStages = VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT;
-
-    VkSubmitInfo submitInfo;
-    VK_ZERO_MEMORY(submitInfo);
-    submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
-    submitInfo.commandBufferCount = 1;
-    submitInfo.pCommandBuffers = &mCommandBufferPool[commandList - 1];
-    submitInfo.pWaitDstStageMask = &pipelineStages;
-
-    VkResult result = vkQueueSubmit(mGraphicsQueue, 1, &submitInfo, VK_NULL_HANDLE);
-    CHECK_VKRESULT(result, "Failed to submit graphics operations");
-
-    return true;
-}
-
-bool Device::WaitForGPU()
-{
-    VkResult result = vkDeviceWaitIdle(mDevice);
-    CHECK_VKRESULT(result, "Failed to wait for graphics device");
-    return true;
+    return false;
 }
 
 bool Device::FinishFrame()
 {
-    return false;
-}
-
-bool Device::DownloadBuffer(const BufferPtr& buffer, size_t offset, size_t size, void* data)
-{
-    NFE_UNUSED(buffer);
-    NFE_UNUSED(offset);
-    NFE_UNUSED(size);
-    NFE_UNUSED(data);
-    return false;
-}
-
-bool Device::DownloadTexture(const TexturePtr& tex, void* data, uint32 mipmap, uint32 layer)
-{
-    NFE_UNUSED(tex);
-    NFE_UNUSED(data);
-    NFE_UNUSED(mipmap);
-    NFE_UNUSED(layer);
     return false;
 }
 
@@ -648,10 +627,6 @@ IDevice* Init(const DeviceInitParams* params)
         }
     }
 
-    // initialize glslang library for shader processing
-    // TODO right now glslang leaks lots of memory (one leak per TShader object,
-    //      and one per glslang's Instance).
-    //      Bump glslang version, fix it by yourself, or use other library for GLSL/HLSL->SPV.
     glslang::InitializeProcess();
 
     return gDevice.Get();

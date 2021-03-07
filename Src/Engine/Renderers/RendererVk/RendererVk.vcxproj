@@ -17,6 +17,7 @@
   <ItemGroup>
     <ClInclude Include="API\Backbuffer.hpp" />
     <ClInclude Include="API\Buffer.hpp" />
+    <ClInclude Include="API\CommandQueue.hpp" />
     <ClInclude Include="API\CommandRecorder.hpp" />
     <ClInclude Include="API\ComputePipelineState.hpp" />
     <ClInclude Include="API\Device.hpp" />
@@ -43,6 +44,7 @@
     </ClInclude>
     <ClInclude Include="Internal\ShaderIncluder.hpp" />
     <ClInclude Include="Internal\Translations.hpp" />
+    <ClInclude Include="Internal\Utilities.hpp" />
     <ClInclude Include="Internal\Win\WinExtensions.hpp" />
     <ClInclude Include="PCH.hpp" />
   </ItemGroup>
@@ -54,6 +56,7 @@
     </ClCompile>
     <ClCompile Include="API\Backbuffer.cpp" />
     <ClCompile Include="API\Buffer.cpp" />
+    <ClCompile Include="API\CommandQueue.cpp" />
     <ClCompile Include="API\CommandRecorder.cpp" />
     <ClCompile Include="API\ComputePipelineState.cpp" />
     <ClCompile Include="API\Device.cpp" />
@@ -82,6 +85,7 @@
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">../PCH.hpp</PrecompiledHeaderFile>
     </ClCompile>
     <ClCompile Include="Internal\Translations.cpp" />
+    <ClCompile Include="Internal\Utilities.cpp" />
     <ClCompile Include="Internal\Win\WinExtensions.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="PCH.cpp">

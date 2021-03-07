@@ -68,9 +68,12 @@ class ResourceBindingInstance : public IResourceBindingInstance
 
 public:
     bool Init(const ResourceBindingSetPtr& bindingSet) override;
-    bool WriteCBufferView(uint32 slot, const BufferPtr& buffer) override;
-    bool WriteTextureView(uint32 slot, const TexturePtr& texture) override;
-    bool WriteWritableTextureView(uint32 slot, const TexturePtr& texture) override;
+    bool SetTextureView(uint32 slot, const TexturePtr& texture, const TextureView& view) override;
+    bool SetBufferView(uint32 slot, const BufferPtr& buffer, const BufferView& view) override;
+    bool SetCBufferView(uint32 slot, const BufferPtr& buffer) override;
+    bool SetWritableTextureView(uint32 slot, const TexturePtr& texture, const TextureView& view) override;
+    bool SetWritableBufferView(uint32 slot, const BufferPtr& buffer, const BufferView& view) override;
+    bool Finalize() override;
 };
 
 } // namespace Renderer

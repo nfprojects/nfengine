@@ -280,15 +280,27 @@ VkBlendOp TranslateBlendOpToVkBlendOp(BlendOp op)
     }
 }
 
-VkBufferUsageFlags TranslateBufferTypeToVkBufferUsage(BufferType type)
+VkBufferUsageFlags TranslateBufferUsageToVkBufferUsage(uint32 type)
 {
-    switch (type)
+    auto translateFlag = [&type](uint32 flag, uint32 result) -> uint32
     {
-    case BufferType::Constant: return VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT;
-    case BufferType::Index: return VK_BUFFER_USAGE_INDEX_BUFFER_BIT;
-    case BufferType::Vertex: return VK_BUFFER_USAGE_VERTEX_BUFFER_BIT;
-    default: return VK_BUFFER_USAGE_FLAG_BITS_MAX_ENUM;
-    }
+        if (type & flag)
+            return result;
+        else
+            return 0;
+    };
+
+    VkBufferUsageFlags result = 0;
+
+    result |= translateFlag(NFE_RENDERER_BUFFER_USAGE_INDEX_BUFFER, VK_BUFFER_USAGE_INDEX_BUFFER_BIT);
+    result |= translateFlag(NFE_RENDERER_BUFFER_USAGE_VERTEX_BUFFER, VK_BUFFER_USAGE_VERTEX_BUFFER_BIT);
+    result |= translateFlag(NFE_RENDERER_BUFFER_USAGE_CONSTANT_BUFFER, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT);
+    // both STRUCT_BUFFER and WRITABLE_STRUCT_BUFFER are handled with the same Vulkan usage
+    // eventual "writableness" is solved in a different way
+    result |= translateFlag(NFE_RENDERER_BUFFER_USAGE_STRUCT_BUFFER, VK_BUFFER_USAGE_STORAGE_BUFFER_BIT);
+    result |= translateFlag(NFE_RENDERER_BUFFER_USAGE_WRITABLE_STRUCT_BUFFER, VK_BUFFER_USAGE_STORAGE_BUFFER_BIT);
+
+    return result;
 }
 
 VkCompareOp TranslateCompareFuncToVkCompareOp(CompareFunc func)
@@ -318,17 +330,6 @@ VkCullModeFlags TranslateCullModeToVkCullMode(CullMode mode)
     }
 }
 
-VkFormat TranslateDepthFormatToVkFormat(DepthBufferFormat format)
-{
-    switch (format)
-    {
-    case DepthBufferFormat::Depth16: return VK_FORMAT_D16_UNORM;
-    case DepthBufferFormat::Depth24_Stencil8: return VK_FORMAT_D24_UNORM_S8_UINT;
-    case DepthBufferFormat::Depth32: return VK_FORMAT_D32_SFLOAT;
-    default: return VK_FORMAT_UNDEFINED;
-    }
-}
-
 VkDescriptorType TranslateDynamicResourceTypeToVkDescriptorType(ShaderResourceType type)
 {
     switch (type)
@@ -338,7 +339,7 @@ VkDescriptorType TranslateDynamicResourceTypeToVkDescriptorType(ShaderResourceTy
     }
 }
 
-VkFormat TranslateElementFormatToVkFormat(Format format)
+VkFormat TranslateFormatToVkFormat(Format format)
 {
     switch (format)
     {
@@ -416,9 +417,14 @@ VkFormat TranslateElementFormatToVkFormat(Format format)
     case Format::BC6H_S_Float:          return VK_FORMAT_BC6H_SFLOAT_BLOCK;
     case Format::BC7_U_Norm:            return VK_FORMAT_BC7_UNORM_BLOCK;
     case Format::BC7_U_Norm_sRGB:       return VK_FORMAT_BC7_SRGB_BLOCK;
+
+    case Format::Depth16:               return VK_FORMAT_D16_UNORM;
+    case Format::Depth24_Stencil8:      return VK_FORMAT_D24_UNORM_S8_UINT;
+    case Format::Depth32:               return VK_FORMAT_D32_SFLOAT;
+    case Format::Depth32_Stencil8:      return VK_FORMAT_D32_SFLOAT_S8_UINT;
     }
 
-    static_assert(64 == (uint32)Format::Max, "Format list changed, update the switch above");
+    static_assert(68 == (uint32)Format::Max, "Format list changed, update the switch above");
 
     return VK_FORMAT_UNDEFINED;
 }

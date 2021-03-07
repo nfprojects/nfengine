@@ -12,6 +12,7 @@
 
 #include "Internal/Translations.hpp"
 #include "Internal/Debugger.hpp"
+#include "Internal/Utilities.hpp"
 
 
 namespace NFE {
@@ -33,11 +34,6 @@ Texture::Texture()
 
 Texture::~Texture()
 {
-    // TODO this needs to go away
-    gDevice->WaitForGPU();
-
-    if (mImageView != VK_NULL_HANDLE)
-        vkDestroyImageView(gDevice->GetDevice(), mImageView, nullptr);
     if (mImage != VK_NULL_HANDLE)
         vkDestroyImage(gDevice->GetDevice(), mImage, nullptr);
     if (mImageMemory != VK_NULL_HANDLE)
@@ -53,13 +49,8 @@ bool Texture::Init(const TextureDesc& desc)
         return false;
     }
 
-    bool hasInitialData = (desc.dataDesc != nullptr);
-
     mType = desc.type;
-    if (desc.depthBufferFormat != DepthBufferFormat::Unknown)
-        mFormat = TranslateDepthFormatToVkFormat(desc.depthBufferFormat);
-    else
-        mFormat = TranslateElementFormatToVkFormat(desc.format);
+    mFormat = TranslateFormatToVkFormat(desc.format);
 
     VkResult result = VK_SUCCESS;
 
@@ -100,10 +91,9 @@ bool Texture::Init(const TextureDesc& desc)
     mImageSubresRange.baseMipLevel = 0;
     mImageSubresRange.levelCount = desc.mipmaps;
     mImageSubresRange.layerCount = desc.layers;
-    if (desc.depthBufferFormat != DepthBufferFormat::Unknown)
-    {
+    if (Util::IsDepthFormat(mFormat)) {
         mImageSubresRange.aspectMask |= VK_IMAGE_ASPECT_DEPTH_BIT;
-        if (desc.depthBufferFormat == DepthBufferFormat::Depth24_Stencil8)
+        if (Util::FormatHasStencil(mFormat))
             mImageSubresRange.aspectMask |= VK_IMAGE_ASPECT_STENCIL_BIT;
     }
     else if (desc.format != Format::Unknown)
@@ -174,157 +164,11 @@ bool Texture::Init(const TextureDesc& desc)
     result = vkBindImageMemory(gDevice->GetDevice(), mImage, mImageMemory, 0);
     CHECK_VKRESULT(result, "Failed to bind Image to its memory");
 
-    VkDeviceMemory stagingBufferMemory = VK_NULL_HANDLE;
-    VkBuffer stagingBuffer = VK_NULL_HANDLE;
 
-    if (hasInitialData)
-    {
-        // create a staging buffer to store texture data
-        VkBufferCreateInfo bufInfo;
-        VK_ZERO_MEMORY(bufInfo);
-        bufInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
-        // TODO multiple dataDesc support
-        switch (mType)
-        {
-        case TextureType::Texture1D:
-            bufInfo.size = desc.dataDesc[0].lineSize;
-            break;
-        case TextureType::Texture2D:
-            bufInfo.size = desc.dataDesc[0].sliceSize;
-            break;
-        case TextureType::Texture3D:
-            bufInfo.size = desc.dataDesc[0].sliceSize * desc.width;
-            break;
-        default:
-            NFE_LOG_ERROR("Unsupported or incorrect texture type.");
-            return false;
-        }
+    // TODO views should be created on-demand - right now there are two spots:
+    //   RenderTarget
+    //   ResourceBindingInstance
 
-        bufInfo.usage = VK_BUFFER_USAGE_TRANSFER_SRC_BIT;
-        bufInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
-        result = vkCreateBuffer(gDevice->GetDevice(), &bufInfo, nullptr, &stagingBuffer);
-        CHECK_VKRESULT(result, "Failed to create staging buffer for data upload");
-
-        VkMemoryRequirements stagingMemReqs;
-        vkGetBufferMemoryRequirements(gDevice->GetDevice(), stagingBuffer, &stagingMemReqs);
-
-        VkMemoryAllocateInfo memInfo;
-        VK_ZERO_MEMORY(memInfo);
-        memInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
-        memInfo.allocationSize = stagingMemReqs.size;
-        memInfo.memoryTypeIndex = gDevice->GetMemoryTypeIndex(stagingMemReqs.memoryTypeBits, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT);
-        result = vkAllocateMemory(gDevice->GetDevice(), &memInfo, nullptr, &stagingBufferMemory);
-        CHECK_VKRESULT(result, "Failed to allocate memory for staging buffer");
-
-        void* bufferData = nullptr;
-        result = vkMapMemory(gDevice->GetDevice(), stagingBufferMemory, 0, memInfo.allocationSize, 0, &bufferData);
-        CHECK_VKRESULT(result, "Failed to map staging buffer's memory");
-        memcpy(bufferData, desc.dataDesc[0].data, static_cast<size_t>(bufInfo.size));
-        vkUnmapMemory(gDevice->GetDevice(), stagingBufferMemory);
-        result = vkBindBufferMemory(gDevice->GetDevice(), stagingBuffer, stagingBufferMemory, 0);
-        CHECK_VKRESULT(result, "Failed to bind staging buffer to its memory");
-    }
-
-    // TODO right now copying is done on a general queue, but devices can support separate Transfer queue.
-    //      Consider moving copy command buffers to transfer queue if device makes it possible.
-    VkCommandBuffer copyCmdBuffer;
-    VkCommandBufferAllocateInfo cmdInfo;
-    VK_ZERO_MEMORY(cmdInfo);
-    cmdInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
-    cmdInfo.commandPool = gDevice->GetCommandPool();
-    cmdInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
-    cmdInfo.commandBufferCount = 1;
-    result = vkAllocateCommandBuffers(gDevice->GetDevice(), &cmdInfo, &copyCmdBuffer);
-    CHECK_VKRESULT(result, "Failed to allocate a command buffer");
-
-    VkCommandBufferBeginInfo cmdBeginInfo;
-    VK_ZERO_MEMORY(cmdBeginInfo);
-    cmdBeginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
-    cmdBeginInfo.flags = VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT;
-    result = vkBeginCommandBuffer(copyCmdBuffer, &cmdBeginInfo);
-    CHECK_VKRESULT(result, "Failed to begin command rendering for buffer copy operation");
-
-    if (hasInitialData)
-    {
-        Transition(copyCmdBuffer, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
-
-        VkBufferImageCopy imageCopyRegion;
-        VK_ZERO_MEMORY(imageCopyRegion);
-        imageCopyRegion.bufferOffset = 0;
-        imageCopyRegion.imageExtent.width = mWidth;
-        imageCopyRegion.imageExtent.height = mHeight;
-        imageCopyRegion.imageExtent.depth = mDepth;
-        imageCopyRegion.imageSubresource.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
-        imageCopyRegion.imageSubresource.layerCount = desc.layers;
-        imageCopyRegion.imageSubresource.mipLevel = 0;
-        vkCmdCopyBufferToImage(copyCmdBuffer, stagingBuffer, mImage, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &imageCopyRegion);
-    }
-
-    // TODO this is a 100% tempshit, get the transition to happen before using the Texture
-    Transition(copyCmdBuffer, mImageLayoutDefault);
-
-    result = vkEndCommandBuffer(copyCmdBuffer);
-    CHECK_VKRESULT(result, "Failure during copy command buffer recording");
-
-    VkSubmitInfo submitInfo;
-    VK_ZERO_MEMORY(submitInfo);
-    submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
-    submitInfo.commandBufferCount = 1;
-    submitInfo.pCommandBuffers = &copyCmdBuffer;
-    vkQueueSubmit(gDevice->GetQueue(), 1, &submitInfo, VK_NULL_HANDLE);
-
-    gDevice->WaitForGPU();
-
-    vkFreeCommandBuffers(gDevice->GetDevice(), gDevice->GetCommandPool(), 1, &copyCmdBuffer);
-
-    if (hasInitialData)
-    {
-        vkDestroyBuffer(gDevice->GetDevice(), stagingBuffer, nullptr);
-        vkFreeMemory(gDevice->GetDevice(), stagingBufferMemory, nullptr);
-    }
-
-    VkImageViewCreateInfo ivInfo;
-    VK_ZERO_MEMORY(ivInfo);
-    ivInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
-    ivInfo.image = mImage;
-
-    switch (mType)
-    {
-    case TextureType::Texture1D:
-        ivInfo.viewType = VK_IMAGE_VIEW_TYPE_1D;
-        break;
-    case TextureType::Texture2D:
-        ivInfo.viewType = VK_IMAGE_VIEW_TYPE_2D;
-        break;
-    case TextureType::Texture3D:
-        ivInfo.viewType = VK_IMAGE_VIEW_TYPE_3D;
-        break;
-    case TextureType::TextureCube:
-        ivInfo.viewType = VK_IMAGE_VIEW_TYPE_CUBE;
-        break;
-    default:
-        NFE_LOG_ERROR("Unsupported or incorrect texture type.");
-        return false;
-    }
-
-    ivInfo.format = imageInfo.format;
-    ivInfo.components = {
-            // order of variables in VkComponentMapping is r, g, b, a
-            VK_COMPONENT_SWIZZLE_R,
-            VK_COMPONENT_SWIZZLE_G,
-            VK_COMPONENT_SWIZZLE_B,
-            VK_COMPONENT_SWIZZLE_A,
-    };
-    ivInfo.subresourceRange = mImageSubresRange;
-    result = vkCreateImageView(gDevice->GetDevice(), &ivInfo, nullptr, &mImageView);
-    CHECK_VKRESULT(result, "Failed to generate Image View from created Texure's image");
-
-    if (desc.debugName)
-    {
-        Common::String ivName(desc.debugName);
-        ivName += "-View";
-        Debugger::Instance().NameObject(reinterpret_cast<uint64_t>(mImageView), VK_OBJECT_TYPE_IMAGE_VIEW, ivName.Str());
-    }
 
     NFE_LOG_INFO("Texture initialized successfully");
     return true;

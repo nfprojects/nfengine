@@ -116,7 +116,7 @@ bool RenderTarget::Init(const RenderTargetDesc& desc)
             if (desc.targets[i].format == Format::Unknown)
                 colorFormats[i] = mAttachments[i]->mFormat;
             else
-                colorFormats[i] = TranslateElementFormatToVkFormat(desc.targets[i].format);
+                colorFormats[i] = TranslateFormatToVkFormat(desc.targets[i].format);
         }
     }
 
