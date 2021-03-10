@@ -279,8 +279,10 @@ void CommandRecorder::BindTexture(PipelineType pipelineType, uint32 setIndex, ui
     NFE_ASSERT(bindingState.bindingLayout, "Binding layout is not set");
     NFE_ASSERT(setIndex < bindingState.bindingLayout->mBindingSets.Size(), "Binding set index out of bounds");
     
+#ifndef NFE_CONFIGURATION_FINAL
     const InternalResourceBindingSetPtr& bindingSet = bindingState.bindingLayout->mBindingSets[setIndex];
     NFE_ASSERT(slotInSet < bindingSet->mBindings.Size(), "Binding slot index within set is out of bounds");
+#endif // !NFE_CONFIGURATION_FINAL
 
     Internal_GetReferencedResources().textures.Insert(texture);
 
@@ -306,8 +308,10 @@ void CommandRecorder::BindWritableTexture(PipelineType pipelineType, uint32 setI
     NFE_ASSERT(bindingState.bindingLayout, "Binding layout is not set");
     NFE_ASSERT(setIndex < bindingState.bindingLayout->mBindingSets.Size(), "Binding set index out of bounds");
 
+#ifndef NFE_CONFIGURATION_FINAL
     const InternalResourceBindingSetPtr& bindingSet = bindingState.bindingLayout->mBindingSets[setIndex];
     NFE_ASSERT(slotInSet < bindingSet->mBindings.Size(), "Binding slot index within set is out of bounds");
+#endif // !NFE_CONFIGURATION_FINAL
 
     Internal_GetReferencedResources().textures.Insert(texture);
 
@@ -333,8 +337,10 @@ void CommandRecorder::BindBuffer(PipelineType pipelineType, uint32 setIndex, uin
     NFE_ASSERT(bindingState.bindingLayout, "Binding layout is not set");
     NFE_ASSERT(setIndex < bindingState.bindingLayout->mBindingSets.Size(), "Binding set index out of bounds");
 
+#ifndef NFE_CONFIGURATION_FINAL
     const InternalResourceBindingSetPtr& bindingSet = bindingState.bindingLayout->mBindingSets[setIndex];
     NFE_ASSERT(slotInSet < bindingSet->mBindings.Size(), "Binding slot index within set is out of bounds");
+#endif // !NFE_CONFIGURATION_FINAL
 
     Internal_GetReferencedResources().buffers.Insert(buffer);
 
@@ -360,8 +366,10 @@ void CommandRecorder::BindWritableBuffer(PipelineType pipelineType, uint32 setIn
     NFE_ASSERT(bindingState.bindingLayout, "Binding layout is not set");
     NFE_ASSERT(setIndex < bindingState.bindingLayout->mBindingSets.Size(), "Binding set index out of bounds");
 
+#ifndef NFE_CONFIGURATION_FINAL
     const InternalResourceBindingSetPtr& bindingSet = bindingState.bindingLayout->mBindingSets[setIndex];
     NFE_ASSERT(slotInSet < bindingSet->mBindings.Size(), "Binding slot index within set is out of bounds");
+#endif // !NFE_CONFIGURATION_FINAL
 
     Internal_GetReferencedResources().buffers.Insert(buffer);
 
