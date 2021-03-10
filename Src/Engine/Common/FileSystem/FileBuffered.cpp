@@ -13,33 +13,37 @@ namespace NFE {
 namespace Common {
 
 FileBuffered::FileBuffered()
-    : mBufferPosition(0)
+    : mFile()
+    , mBufferPosition(0)
+    , mBufferEOFOffset(0)
     , mBufferOccupied(FILE_BUFFERED_BUFFER_SIZE)
+    , mMode(AccessMode::No)
     , mLastOperation(AccessMode::No)
     , mEofReached(false)
-    , mBufferEOFOffset(0)
+    , mBuffer()
 {
 }
 
 FileBuffered::FileBuffered(const StringView& path, AccessMode mode, bool overwrite)
     : mFile(path, mode, overwrite)
     , mBufferPosition(0)
+    , mBufferEOFOffset(0)
     , mBufferOccupied(FILE_BUFFERED_BUFFER_SIZE)
     , mMode(mode)
     , mLastOperation(AccessMode::No)
     , mEofReached(false)
-    , mBufferEOFOffset(0)
+    , mBuffer()
 {
 }
 
 FileBuffered::FileBuffered(FileBuffered&& other)
     : mFile(std::move(other.mFile))
     , mBufferPosition(other.mBufferPosition)
+    , mBufferEOFOffset(other.mBufferEOFOffset)
     , mBufferOccupied(other.mBufferOccupied)
     , mMode(other.mMode)
     , mLastOperation(other.mLastOperation)
     , mEofReached(other.mEofReached)
-    , mBufferEOFOffset(other.mBufferEOFOffset)
 {
     // Used instead of memmove, because it's faster
     memcpy(mBuffer.Data(), other.mBuffer.Data(), FILE_BUFFERED_BUFFER_SIZE);
@@ -126,7 +130,7 @@ size_t FileBuffered::Read(void* data, size_t size)
             mBufferPosition = mFile.GetPos();
             const size_t bytesRead = mFile.Read(mBuffer.Data(), FILE_BUFFERED_BUFFER_SIZE);
             NFE_ASSERT(bytesRead <= FILE_BUFFERED_BUFFER_SIZE, "Invalid num bytes read returned: %zu, %u requested", bytesRead, FILE_BUFFERED_BUFFER_SIZE);
-            
+
             leftSpace = (uint32)bytesRead;
             mBufferOccupied = 0;
 

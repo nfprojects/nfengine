@@ -10,6 +10,7 @@
 #include "../Assertion.hpp"
 
 #include <sys/time.h>
+#include <cerrno>
 
 
 namespace NFE {

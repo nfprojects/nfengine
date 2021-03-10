@@ -157,11 +157,11 @@ struct PipelineStateDesc
         , numControlPoints(0)
         , vertexLayout(nullptr)
         , numRenderTargets(1)
+        , rtFormats(Format::Unknown)
         , depthFormat(Format::Unknown)
         , numSamples(1)
         , resBindingLayout(nullptr)
         , debugName(nullptr)
-        , rtFormats(Format::Unknown)
     {
     }
 };

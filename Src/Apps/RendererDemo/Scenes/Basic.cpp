@@ -217,7 +217,6 @@ bool BasicScene::CreateIndexBuffer()
 
 bool BasicScene::CreateConstantBuffer(ResourceAccessMode cbufferMode)
 {
-    const Matrix4 rotMatrix = Matrix4::MakeRotationNormal(Vec4f(0.0f, 0.0f, 1.0f), Constants::pi<float>);
     mAngle = 0.0f;
     mCBufferMode = cbufferMode;
 

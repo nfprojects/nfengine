@@ -71,7 +71,7 @@ public:
      * Pass ownership to the callee.
      * @remarks Use with caution.
      */
-    NFE_FORCE_INLINE [[nodiscard]] T* ReleaseOwnership();
+    [[nodiscard]] NFE_FORCE_INLINE T* ReleaseOwnership();
 
     /**
      * Check if pointer is not null.

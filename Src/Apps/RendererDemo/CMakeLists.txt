@@ -36,8 +36,8 @@ SET_TARGET_PROPERTIES(RendererDemo PROPERTIES LINK_FLAGS "-pthread")
 
 TARGET_PRECOMPILE_HEADERS(RendererDemo PRIVATE PCH.hpp)
 
-ADD_DEPENDENCIES(RendererDemo Common RendererVk)
-TARGET_LINK_LIBRARIES(RendererDemo Common dl ${NFRENDERERDEMO_DEPS_LIBRARIES})
+ADD_DEPENDENCIES(RendererDemo Common RendererCommon RendererVk)
+TARGET_LINK_LIBRARIES(RendererDemo Common RendererCommon dl ${NFRENDERERDEMO_DEPS_LIBRARIES})
 ADD_CUSTOM_COMMAND(TARGET RendererDemo POST_BUILD
                    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:RendererDemo>
                                                     ${NFE_OUTPUT_DIRECTORY}/${targetfile})
