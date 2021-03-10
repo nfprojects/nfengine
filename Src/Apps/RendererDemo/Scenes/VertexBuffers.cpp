@@ -61,7 +61,7 @@ bool VertexBuffersScene::CreateBuffers(bool withInstanceBuffer, ResourceAccessMo
     };
 
     vbDesc.size = sizeof(vbPositionData);
-    vbDesc.usage = NFE_RENDERER_BUFFER_USAGE_VERTEX_BUFFER;
+    vbDesc.usage = BufferUsageFlag::VertexBuffer;
     mPositionsVertexBuffer = mRendererDevice->CreateBuffer(vbDesc);
     if (!mPositionsVertexBuffer)
         return false;
@@ -77,7 +77,7 @@ bool VertexBuffersScene::CreateBuffers(bool withInstanceBuffer, ResourceAccessMo
     };
 
     vbDesc.size = sizeof(vbColorData);
-    vbDesc.usage = NFE_RENDERER_BUFFER_USAGE_VERTEX_BUFFER;
+    vbDesc.usage = BufferUsageFlag::VertexBuffer;
     mColorVertexBuffer = mRendererDevice->CreateBuffer(vbDesc);
     if (!mColorVertexBuffer)
         return false;
@@ -92,7 +92,7 @@ bool VertexBuffersScene::CreateBuffers(bool withInstanceBuffer, ResourceAccessMo
 
     BufferDesc ibDesc;
     ibDesc.size = sizeof(ibData);
-    ibDesc.usage = NFE_RENDERER_BUFFER_USAGE_INDEX_BUFFER;
+    ibDesc.usage = BufferUsageFlag::IndexBuffer;
     mIndexBuffer = mRendererDevice->CreateBuffer(ibDesc);
     if (!mIndexBuffer)
         return false;
@@ -129,7 +129,7 @@ bool VertexBuffersScene::CreateBuffers(bool withInstanceBuffer, ResourceAccessMo
         mVertexBufferMode = vertexBufferMode;
         vbDesc.mode = vertexBufferMode;
         vbDesc.size = sizeof(InstanceData) * gInstancesNumber;
-        vbDesc.usage = NFE_RENDERER_BUFFER_USAGE_VERTEX_BUFFER;
+        vbDesc.usage = BufferUsageFlag::VertexBuffer;
         mInstanceBuffer = mRendererDevice->CreateBuffer(vbDesc);
         if (!mInstanceBuffer)
             return false;
@@ -178,7 +178,7 @@ bool VertexBuffersScene::CreateBuffers(bool withInstanceBuffer, ResourceAccessMo
         return false;
 
     PipelineStateDesc pipelineStateDesc;
-    pipelineStateDesc.rtFormats[0] = Format::R8G8B8A8_U_Norm;
+    pipelineStateDesc.renderTargetFormats = { Format::R8G8B8A8_U_Norm };
     pipelineStateDesc.vertexShader = mVertexShader;
     pipelineStateDesc.pixelShader = mPixelShader;
     pipelineStateDesc.primitiveType = PrimitiveType::Triangles;
@@ -268,11 +268,8 @@ bool VertexBuffersScene::OnInit(void* winHandle)
     }
 
     // create rendertarget that will render to the window's backbuffer
-    RenderTargetElement rtTarget;
-    rtTarget.texture = mWindowRenderTargetTexture;
     RenderTargetDesc rtDesc;
-    rtDesc.numTargets = 1;
-    rtDesc.targets = &rtTarget;
+    rtDesc.targets = { RenderTargetElement(mWindowRenderTargetTexture) };
     mWindowRenderTarget = mRendererDevice->CreateRenderTarget(rtDesc);
     if (!mWindowRenderTarget)
         return false;

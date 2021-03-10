@@ -22,7 +22,7 @@ const char* TranslateVkFormatToString(VkFormat format);
 // NFE to Vulkan
 VkBlendFactor TranslateBlendFuncToVkBlendFactor(BlendFunc func);
 VkBlendOp TranslateBlendOpToVkBlendOp(BlendOp op);
-VkBufferUsageFlags TranslateBufferUsageToVkBufferUsage(uint32 usage);
+VkBufferUsageFlags TranslateBufferUsageToVkBufferUsage(BufferUsageFlag usage);
 VkCompareOp TranslateCompareFuncToVkCompareOp(CompareFunc func);
 VkCullModeFlags TranslateCullModeToVkCullMode(CullMode mode);
 VkDescriptorType TranslateDynamicResourceTypeToVkDescriptorType(ShaderResourceType type);

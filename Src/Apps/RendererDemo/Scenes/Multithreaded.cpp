@@ -117,7 +117,7 @@ bool MultithreadedScene::CreateVertexBuffer()
 
     BufferDesc vbDesc;
     vbDesc.size = sizeof(vbData);
-    vbDesc.usage = NFE_RENDERER_BUFFER_USAGE_VERTEX_BUFFER;
+    vbDesc.usage = BufferUsageFlag::VertexBuffer;
     mVertexBuffer = mRendererDevice->CreateBuffer(vbDesc);
     if (!mVertexBuffer)
         return false;
@@ -145,7 +145,7 @@ bool MultithreadedScene::CreateVertexBuffer()
         return false;
 
     PipelineStateDesc pipelineStateDesc;
-    pipelineStateDesc.rtFormats[0] = mBackbufferFormat;
+    pipelineStateDesc.renderTargetFormats = { mBackbufferFormat };
     pipelineStateDesc.vertexShader = mVertexShader;
     pipelineStateDesc.pixelShader = mPixelShader;
     pipelineStateDesc.blendState.independent = false;
@@ -171,7 +171,7 @@ bool MultithreadedScene::CreateIndexBuffer()
 
     BufferDesc ibDesc;
     ibDesc.size = sizeof(ibData);
-    ibDesc.usage = NFE_RENDERER_BUFFER_USAGE_INDEX_BUFFER;
+    ibDesc.usage = BufferUsageFlag::IndexBuffer;
     mIndexBuffer = mRendererDevice->CreateBuffer(ibDesc);
     if (!mIndexBuffer)
         return false;
@@ -196,7 +196,7 @@ bool MultithreadedScene::CreateConstantBuffer(ResourceAccessMode cbufferMode)
     BufferDesc cbufferDesc;
     cbufferDesc.mode = cbufferMode;
     cbufferDesc.size = sizeof(VertexCBuffer);
-    cbufferDesc.usage = NFE_RENDERER_BUFFER_USAGE_CONSTANT_BUFFER;
+    cbufferDesc.usage = BufferUsageFlag::ConstantBuffer;
     mConstantBuffer = mRendererDevice->CreateBuffer(cbufferDesc);
     if (!mConstantBuffer)
         return false;
@@ -316,11 +316,8 @@ bool MultithreadedScene::OnInit(void* winHandle)
     }
 
     // create rendertarget that will render to the window's backbuffer
-    RenderTargetElement rtTarget;
-    rtTarget.texture = mWindowRenderTargetTexture;
     RenderTargetDesc rtDesc;
-    rtDesc.numTargets = 1;
-    rtDesc.targets = &rtTarget;
+    rtDesc.targets = { RenderTargetElement(mWindowRenderTargetTexture) };
     mWindowRenderTarget = mRendererDevice->CreateRenderTarget(rtDesc);
     if (!mWindowRenderTarget)
         return false;

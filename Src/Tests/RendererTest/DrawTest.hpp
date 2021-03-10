@@ -76,7 +76,7 @@ protected:
     void VerifyPixelsFloat(uint32 id, const float* expected)
     {
         const TargetTexture& target = mTargetTextures[id];
-        uint32 channels = GetElementFormatChannels(target.format);
+        uint32 channels = GetFormatChannels(target.format);
         const float* pixelData = reinterpret_cast<const float*>(target.pixelData.Get());
 
         for (uint32 y = 0; y < mTestTextureHeight; ++y)

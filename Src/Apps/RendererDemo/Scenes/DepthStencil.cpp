@@ -48,13 +48,12 @@ DepthStencilScene::~DepthStencilScene()
 bool DepthStencilScene::CreateBasicResources(bool withDepth, bool withStencil)
 {
     // create rendertarget that will render to the window's backbuffer
-    RenderTargetElement rtTarget;
-    rtTarget.texture = mWindowRenderTargetTexture;
-    RenderTargetDesc rtDesc;
-    rtDesc.numTargets = 1;
-    rtDesc.targets = &rtTarget;
-    rtDesc.depthBuffer = mDepthBuffer;
-    rtDesc.debugName = "DepthStencilScene::mWindowRenderTarget";
+    const RenderTargetDesc rtDesc =
+    {
+        { RenderTargetElement(mWindowRenderTargetTexture) },
+        mDepthBuffer,
+        "DepthStencilScene::mWindowRenderTarget"
+    };
     mWindowRenderTarget = mRendererDevice->CreateRenderTarget(rtDesc);
     if (!mWindowRenderTarget)
         return false;
@@ -112,7 +111,7 @@ bool DepthStencilScene::CreateBasicResources(bool withDepth, bool withStencil)
     blendStateDesc.rtDescs[0].destColorFunc = BlendFunc::OneMinusSrcAlpha;
 
     PipelineStateDesc psd;
-    psd.rtFormats[0] = Format::R8G8B8A8_U_Norm;
+    psd.renderTargetFormats = { Format::R8G8B8A8_U_Norm };
     psd.vertexShader = mVertexShader;
     psd.pixelShader = mPixelShader;
     psd.raterizerState.cullMode = CullMode::Disabled;
@@ -200,13 +199,13 @@ bool DepthStencilScene::CreateBasicResources(bool withDepth, bool withStencil)
 
     BufferDesc bufferDesc;
     bufferDesc.size = sizeof(vbData);
-    bufferDesc.usage = NFE_RENDERER_BUFFER_USAGE_VERTEX_BUFFER;
+    bufferDesc.usage = BufferUsageFlag::VertexBuffer;
     mVertexBuffer = mRendererDevice->CreateBuffer(bufferDesc);
     if (!mVertexBuffer)
         return false;
 
     bufferDesc.size = sizeof(ibData);
-    bufferDesc.usage = NFE_RENDERER_BUFFER_USAGE_INDEX_BUFFER;
+    bufferDesc.usage = BufferUsageFlag::IndexBuffer;
     mIndexBuffer = mRendererDevice->CreateBuffer(bufferDesc);
     if (!mIndexBuffer)
         return false;
@@ -236,7 +235,7 @@ bool DepthStencilScene::CreateDepthBuffer(bool withStencil)
     depthBufferDesc.mode = ResourceAccessMode::GPUOnly;
     depthBufferDesc.width = static_cast<uint16>(WINDOW_WIDTH);
     depthBufferDesc.height = static_cast<uint16>(WINDOW_HEIGHT);
-    depthBufferDesc.binding = NFE_RENDERER_TEXTURE_BIND_DEPTH;
+    depthBufferDesc.usage = TextureUsageFlag::DepthStencil;
     depthBufferDesc.mipmaps = 1;
     depthBufferDesc.format = withStencil ? Format::Depth24_Stencil8 : Format::Depth16;
     depthBufferDesc.debugName = "DepthStencilScene::mDepthBuffer";
@@ -276,11 +275,8 @@ bool DepthStencilScene::OnInit(void* winHandle)
     }
 
     // create rendertarget that will render to the window's backbuffer
-    RenderTargetElement rtTarget;
-    rtTarget.texture = mWindowRenderTargetTexture;
     RenderTargetDesc rtDesc;
-    rtDesc.numTargets = 1;
-    rtDesc.targets = &rtTarget;
+    rtDesc.targets = { RenderTargetElement(mWindowRenderTargetTexture) };
     mWindowRenderTarget = mRendererDevice->CreateRenderTarget(rtDesc);
     if (!mWindowRenderTarget)
         return false;

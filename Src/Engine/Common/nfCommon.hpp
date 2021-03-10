@@ -172,6 +172,8 @@
 #define NFE_UNIQUE_NAME_INTERNAL(prefix, line) NFE_MERGE(prefix, line)
 #define NFE_UNIQUE_NAME(prefix) NFE_UNIQUE_NAME_INTERNAL(prefix, __LINE__)
 
+// build bit flag
+#define NFE_FLAG(x) (1<<(x))
 
 namespace NFE {
 

@@ -22,9 +22,9 @@ struct ComputePipelineStateDesc
     ResourceBindingLayoutPtr resBindingLayout;
     const char* debugName;   //< optional debug name
 
-    NFE_INLINE ComputePipelineStateDesc(const ShaderPtr& computeShader,
-                                        const ResourceBindingLayoutPtr& resBindingLayout,
-                                        const char* debugName = nullptr)
+    ComputePipelineStateDesc(const ShaderPtr& computeShader,
+                             const ResourceBindingLayoutPtr& resBindingLayout,
+                             const char* debugName = nullptr)
         : computeShader(computeShader)
         , resBindingLayout(resBindingLayout)
         , debugName(debugName)

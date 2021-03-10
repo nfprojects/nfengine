@@ -83,7 +83,7 @@ namespace NFE {
 namespace Renderer {
 
 
-uint32 GetElementFormatChannels(const Format format)
+uint32 GetFormatChannels(const Format format)
 {
     switch (format)
     {
@@ -177,7 +177,7 @@ uint32 GetElementFormatChannels(const Format format)
 }
 
 
-uint32 GetElementFormatSize(const Format format)
+uint32 GetFormatSize(const Format format)
 {
     switch (format)
     {
@@ -272,7 +272,7 @@ uint32 GetElementFormatSize(const Format format)
 }
 
 
-const char* GetElementFormatName(const Format format)
+const char* GetFormatName(const Format format)
 {
     const RTTI::EnumType* type = RTTI::GetType<Format>();
     const Common::StringView formatName = type->FindOptionByValue((uint64)format);

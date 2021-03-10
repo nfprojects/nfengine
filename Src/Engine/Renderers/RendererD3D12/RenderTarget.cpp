@@ -45,9 +45,9 @@ bool RenderTarget::Init(const RenderTargetDesc& desc)
 {
     HeapAllocator& rtvAllocator = gDevice->GetRtvHeapAllocator();
 
-    mRTVs.Reserve(desc.numTargets);
+    mRTVs.Reserve(desc.targets.Size());
 
-    for (uint32 i = 0; i < desc.numTargets; ++i)
+    for (uint32 i = 0; i < desc.targets.Size(); ++i)
     {
         Texture* tex = dynamic_cast<Texture*>(desc.targets[i].texture.Get());
         if (tex == nullptr)

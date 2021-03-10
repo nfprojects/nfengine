@@ -57,7 +57,7 @@ bool Backbuffer::Init(const BackbufferDesc& desc)
     mHeight = desc.height;
     mWindow = static_cast<HWND>(desc.windowHandle);
     mVSyncInterval = desc.vSyncInterval;
-    mFormat = TranslateElementFormat(desc.format);
+    mFormat = TranslateFormat(desc.format);
     mMode = ResourceAccessMode::GPUOnly;
     mCommandQueue = desc.commandQueue;
 
@@ -101,7 +101,7 @@ bool Backbuffer::Init(const BackbufferDesc& desc)
         return false;
     }
 
-    NFE_LOG_DEBUG("Swapchain created successfully (width=%i, height=%i, format=%s)", desc.width, desc.height, GetElementFormatName(desc.format));
+    NFE_LOG_DEBUG("Swapchain created successfully (width=%i, height=%i, format=%s)", desc.width, desc.height, GetFormatName(desc.format));
     return true;
 }
 

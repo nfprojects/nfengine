@@ -84,7 +84,12 @@ bool Buffer::Init(const BufferDesc& desc)
         return false;
     }
 
-    if (desc.usage & NFE_RENDERER_BUFFER_USAGE_WRITABLE_STRUCT_BUFFER)
+    if ((desc.usage & BufferUsageFlag::ReadonlyStruct) != BufferUsageFlag::ReadonlyStruct)
+    {
+        resourceDesc.Flags |= D3D12_RESOURCE_FLAG_DENY_SHADER_RESOURCE;
+    }
+
+    if ((desc.usage & BufferUsageFlag::WritableStruct) == BufferUsageFlag::WritableStruct)
     {
         NFE_ASSERT(desc.mode == ResourceAccessMode::GPUOnly, "Invalid access mode for writable buffer");
 

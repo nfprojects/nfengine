@@ -58,7 +58,7 @@ bool VertexLayout::Init(const VertexLayoutDesc& desc)
         for (uint32 i = 0; i < desc.numElements; ++i)
         {
             if (desc.elements[i].vertexBufferId == std::get<1>(vb))
-                vibDesc.stride += GetElementFormatSize(desc.elements[i].format);
+                vibDesc.stride += GetFormatSize(desc.elements[i].format);
         }
         mBindings.PushBack(vibDesc);
 

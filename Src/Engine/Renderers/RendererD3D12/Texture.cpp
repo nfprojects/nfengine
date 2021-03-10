@@ -68,7 +68,7 @@ bool Texture::Init(const TextureDesc& desc)
     D3D12_RESOURCE_DESC resourceDesc;
     resourceDesc.Alignment = 0;
     resourceDesc.MipLevels = static_cast<UINT16>(desc.mipmaps);
-    resourceDesc.Format = TranslateElementFormat(desc.format);
+    resourceDesc.Format = TranslateFormat(desc.format);
     resourceDesc.SampleDesc.Count = desc.samplesNum;
     resourceDesc.SampleDesc.Quality = 0;
     resourceDesc.Layout = D3D12_TEXTURE_LAYOUT_UNKNOWN;
@@ -102,10 +102,10 @@ bool Texture::Init(const TextureDesc& desc)
     }
 
     // determine formats and clear value
-    mSrvFormat = TranslateElementFormat(desc.format);
+    mSrvFormat = TranslateFormat(desc.format);
     mDsvFormat = DXGI_FORMAT_UNKNOWN;
 
-    if (desc.binding & NFE_RENDERER_TEXTURE_BIND_SHADER_WRITABLE)
+    if ((desc.usage & TextureUsageFlag::ShaderWritableResource) == TextureUsageFlag::ShaderWritableResource)
     {
         NFE_ASSERT(desc.mode == ResourceAccessMode::GPUOnly, "Invalid access mode for writable texture");
 
@@ -113,7 +113,7 @@ bool Texture::Init(const TextureDesc& desc)
         initialState = D3D12_RESOURCE_STATE_UNORDERED_ACCESS;
     }
 
-    if (desc.binding & NFE_RENDERER_TEXTURE_BIND_RENDERTARGET)
+    if ((desc.usage & TextureUsageFlag::RenderTarget) == TextureUsageFlag::RenderTarget)
     {
         NFE_ASSERT(desc.mode == ResourceAccessMode::GPUOnly, "Invalid access mode for rendertarget texture");
 
@@ -126,7 +126,7 @@ bool Texture::Init(const TextureDesc& desc)
 
         resourceDesc.Flags |= D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET;
     }
-    else if (desc.binding & NFE_RENDERER_TEXTURE_BIND_DEPTH)
+    else if ((desc.usage & TextureUsageFlag::DepthStencil) == TextureUsageFlag::DepthStencil)
     {
         NFE_ASSERT(desc.mode == ResourceAccessMode::GPUOnly, "Invalid access mode for depthbuffer texture");
 
@@ -136,13 +136,13 @@ bool Texture::Init(const TextureDesc& desc)
             return false;
         }
 
+        resourceDesc.Flags |= D3D12_RESOURCE_FLAG_ALLOW_DEPTH_STENCIL;
+
         // texture won't be bound as shader resource
-        if ((desc.binding & NFE_RENDERER_TEXTURE_BIND_SHADER) == 0)
+        if ((desc.usage & TextureUsageFlag::ReadonlyShaderResource) != TextureUsageFlag::ReadonlyShaderResource)
         {
             resourceDesc.Flags |= D3D12_RESOURCE_FLAG_DENY_SHADER_RESOURCE;
         }
-
-        resourceDesc.Flags |= D3D12_RESOURCE_FLAG_ALLOW_DEPTH_STENCIL;
 
         clearValue.Format = mDsvFormat;
         clearValue.DepthStencil.Depth = desc.defaultDepthClearValue;
@@ -153,7 +153,7 @@ bool Texture::Init(const TextureDesc& desc)
     }
     else
     {
-        resourceDesc.Format = TranslateElementFormat(desc.format);
+        resourceDesc.Format = TranslateFormat(desc.format);
         mSrvFormat = resourceDesc.Format;
         if (resourceDesc.Format == DXGI_FORMAT_UNKNOWN)
         {

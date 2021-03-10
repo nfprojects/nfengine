@@ -14,7 +14,7 @@
 namespace NFE {
 namespace Renderer {
 
-DXGI_FORMAT TranslateElementFormat(Format format);
+DXGI_FORMAT TranslateFormat(Format format);
 D3D12_COMPARISON_FUNC TranslateComparisonFunc(CompareFunc func);
 D3D12_STENCIL_OP TranslateStencilOp(StencilOp op);
 D3D12_BLEND TranslateBlendFunc(BlendFunc func);

@@ -45,22 +45,16 @@ bool RenderTarget::Init(const RenderTargetDesc& desc)
 {
     VkResult result = VK_SUCCESS;
 
-    const bool hasColorAttachments = ((desc.numTargets > 0) && (desc.targets != nullptr));
+    const bool hasColorAttachments = !desc.targets.Empty();
     if (!hasColorAttachments && !desc.depthBuffer)
     {
         NFE_LOG_ERROR("Cannot create Render Target without any color or depth targets");
         return false;
     }
 
-    if (desc.numTargets > MAX_RENDER_TARGETS)
-    {
-        NFE_LOG_ERROR("Too many Render Target targets provided: %u (max %u)", desc.numTargets, MAX_RENDER_TARGETS);
-        return false;
-    }
-
     if (hasColorAttachments)
     {
-        for (uint32 i = 0; i < desc.numTargets; ++i)
+        for (uint32 i = 0; i < desc.targets.Size(); ++i)
         {
             mAttachments.PushBack(dynamic_cast<Texture*>(desc.targets[i].texture.Get()));
             if (!mAttachments[i])
@@ -79,7 +73,7 @@ bool RenderTarget::Init(const RenderTargetDesc& desc)
         mHeight = mAttachments[0]->mHeight;
 
         // check if other attachments are compatible
-        for (uint32 i = 0; i < desc.numTargets; ++i)
+        for (uint32 i = 0; i < desc.targets.Size(); ++i)
         {
             Texture* t = dynamic_cast<Texture*>(desc.targets[i].texture.Get());
             if ((t->mWidth != mWidth) || (t->mHeight != mHeight))
@@ -111,7 +105,7 @@ bool RenderTarget::Init(const RenderTargetDesc& desc)
 
     if (hasColorAttachments)
     {
-        for (uint32 i = 0; i < desc.numTargets; ++i)
+        for (uint32 i = 0; i < desc.targets.Size(); ++i)
         {
             if (desc.targets[i].format == Format::Unknown)
                 colorFormats[i] = mAttachments[i]->mFormat;
@@ -123,13 +117,13 @@ bool RenderTarget::Init(const RenderTargetDesc& desc)
     if (mDepthAttachment)
         depthFormat = mDepthAttachment->mFormat;
 
-    RenderPassDesc rpDesc(colorFormats, desc.numTargets, depthFormat);
+    RenderPassDesc rpDesc(colorFormats, desc.targets.Size(), depthFormat);
     mRenderPass = gDevice->GetRenderPassManager()->GetRenderPass(rpDesc);
     if (mRenderPass == VK_NULL_HANDLE)
         return false;
 
     Common::StaticArray<VkImageView, MAX_RENDER_TARGETS + 1> fbAtts;
-    for (uint32 i = 0; i < desc.numTargets; ++i)
+    for (uint32 i = 0; i < desc.targets.Size(); ++i)
         fbAtts.PushBack(mAttachments[i]->mImageView);
 
     if (mDepthAttachment)

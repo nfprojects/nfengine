@@ -381,17 +381,17 @@ enum class TextureMagFilter : uint8
 /**
  * Get format pixel channels.
  */
-NFE_RENDERER_COMMON_API uint32 GetElementFormatChannels(const Format format);
+NFE_RENDERER_COMMON_API uint32 GetFormatChannels(const Format format);
 
 /**
  * Get bytes per element.
  */
-NFE_RENDERER_COMMON_API uint32 GetElementFormatSize(const Format format);
+NFE_RENDERER_COMMON_API uint32 GetFormatSize(const Format format);
 
 /**
  * Convert format to string.
  */
-NFE_RENDERER_COMMON_API const char* GetElementFormatName(const Format format);
+NFE_RENDERER_COMMON_API const char* GetFormatName(const Format format);
 
 
 NFE_INLINE bool IsDepthFormat(const Format format)

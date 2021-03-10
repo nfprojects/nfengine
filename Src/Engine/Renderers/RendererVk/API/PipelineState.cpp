@@ -129,7 +129,7 @@ bool PipelineState::Init(const PipelineStateDesc& desc)
     VkPipelineColorBlendAttachmentState states[MAX_RENDER_TARGETS];
 
     uint32 ind, i;
-    for (i = 0; i < desc.numRenderTargets; ++i)
+    for (i = 0; i < desc.renderTargetFormats.Size(); ++i)
     {
         VK_ZERO_MEMORY(states[i]);
         ind = desc.blendState.independent ? i : 0;
@@ -163,10 +163,10 @@ bool PipelineState::Init(const PipelineStateDesc& desc)
     // request a render pass from manager
     VkFormat colorFormats[MAX_RENDER_TARGETS];
     VkFormat depthFormat = TranslateFormatToVkFormat(desc.depthFormat);
-    for (i = 0; i < desc.numRenderTargets; ++i)
-        colorFormats[i] = TranslateFormatToVkFormat(desc.rtFormats[i]);
+    for (i = 0; i < desc.renderTargetFormats.Size(); ++i)
+        colorFormats[i] = TranslateFormatToVkFormat(desc.renderTargetFormats[i]);
 
-    RenderPassDesc rpDesc(colorFormats, desc.numRenderTargets, depthFormat);
+    RenderPassDesc rpDesc(colorFormats, desc.renderTargetFormats.Size(), depthFormat);
     VkRenderPass renderPass = gDevice->GetRenderPassManager()->GetRenderPass(rpDesc);
     if (renderPass == VK_NULL_HANDLE)
         return false;

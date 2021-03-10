@@ -29,7 +29,7 @@ bool VertexLayout::Init(const VertexLayoutDesc& desc)
         D3D12_INPUT_ELEMENT_DESC el;
         el.SemanticName = (i == 0) ? "POSITION" : "TEXCOORD";
         el.SemanticIndex = (i == 0) ? 0 : (i - 1);
-        el.Format = TranslateElementFormat(desc.elements[i].format);
+        el.Format = TranslateFormat(desc.elements[i].format);
         el.InputSlot = desc.elements[i].vertexBufferId;
         el.AlignedByteOffset = desc.elements[i].offset;
         el.InputSlotClass = desc.elements[i].perInstance ?

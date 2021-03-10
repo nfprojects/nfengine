@@ -38,5 +38,12 @@ To>::type BitCast(const From& src) noexcept
     return dst;
 }
 
+#define DEFINE_ENUM_OPERATORS(EnumType) \
+    NFE_INLINE EnumType operator & (EnumType a, EnumType b) { return static_cast<EnumType>(static_cast<uint32>(a) & static_cast<uint32>(b)); } \
+    NFE_INLINE EnumType operator | (EnumType a, EnumType b) { return static_cast<EnumType>(static_cast<uint32>(a) | static_cast<uint32>(b)); } \
+    NFE_INLINE EnumType operator ^ (EnumType a, EnumType b) { return static_cast<EnumType>(static_cast<uint32>(a) ^ static_cast<uint32>(b)); } \
+    NFE_INLINE EnumType& operator |= (EnumType& lhs, EnumType rhs) { lhs = static_cast<EnumType>(static_cast<uint32>(lhs) | static_cast<uint32>(rhs)); return lhs; } \
+    NFE_INLINE EnumType& operator &= (EnumType& lhs, EnumType rhs) { lhs = static_cast<EnumType>(static_cast<uint32>(lhs) & static_cast<uint32>(rhs)); return lhs; } \
+    NFE_INLINE EnumType& operator ^= (EnumType& lhs, EnumType rhs) { lhs = static_cast<EnumType>(static_cast<uint32>(lhs) ^ static_cast<uint32>(rhs)); return lhs; } \
 
 } // namespace NFE

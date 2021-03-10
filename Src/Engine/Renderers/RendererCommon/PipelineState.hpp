@@ -10,6 +10,7 @@
 #include "Shader.hpp"
 #include "VertexLayout.hpp"
 #include "../../Common/Containers/FixedArray.hpp"
+#include "../../Common/Containers/StaticArray.hpp"
 
 namespace NFE {
 namespace Renderer {
@@ -132,38 +133,21 @@ struct PipelineStateDesc
     BlendStateDesc blendState;
     DepthStateDesc depthState;
 
-    PrimitiveType primitiveType;
-    uint32 numControlPoints; //< for tessellation
+    PrimitiveType primitiveType = PrimitiveType::Unknown;
+    uint8 numControlPoints = 0; //< for tessellation
     VertexLayoutPtr vertexLayout;
 
-    uint32 numRenderTargets;
-    Common::FixedArray<Format, MAX_RENDER_TARGETS> rtFormats;
-    Format depthFormat;
-    uint32 numSamples; // for multisampling
+    // list of render targets, empty means no render targets (depth buffer only)
+    Common::StaticArray<Format, MAX_RENDER_TARGETS> renderTargetFormats;
+    Format depthFormat = Format::Unknown;
+
+    // for multisampling
+    uint8 numSamples = 1u;
 
     ResourceBindingLayoutPtr resBindingLayout;
-    const char* debugName;   //< optional debug name
 
-    NFE_INLINE PipelineStateDesc()
-        : vertexShader(nullptr)
-        , hullShader(nullptr)
-        , domainShader(nullptr)
-        , geometryShader(nullptr)
-        , pixelShader(nullptr)
-        , raterizerState()
-        , blendState()
-        , depthState()
-        , primitiveType(PrimitiveType::Unknown)
-        , numControlPoints(0)
-        , vertexLayout(nullptr)
-        , numRenderTargets(1)
-        , rtFormats(Format::Unknown)
-        , depthFormat(Format::Unknown)
-        , numSamples(1)
-        , resBindingLayout(nullptr)
-        , debugName(nullptr)
-    {
-    }
+    // optional debug name
+    const char* debugName = nullptr;
 };
 
 /**

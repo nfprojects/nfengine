@@ -72,7 +72,7 @@ bool RenderTargetsScene::CreateBasicResources(bool multipleRT, bool withDepthBuf
         return false;
 
     PipelineStateDesc pipelineStateDesc;
-    pipelineStateDesc.rtFormats[0] = Format::R8G8B8A8_U_Norm;
+    pipelineStateDesc.renderTargetFormats = { Format::R8G8B8A8_U_Norm };
     pipelineStateDesc.vertexShader = mVertexShader;
     pipelineStateDesc.resBindingLayout = mResBindingLayout;
     pipelineStateDesc.primitiveType = PrimitiveType::Triangles;
@@ -98,11 +98,17 @@ bool RenderTargetsScene::CreateBasicResources(bool multipleRT, bool withDepthBuf
     if (!mSecondTargetPipelineState)
         return false;
 
-    pipelineStateDesc.rtFormats[0] = Format::R8G8B8A8_U_Norm;
-    pipelineStateDesc.rtFormats[1] = Format::R8G8B8A8_U_Norm;
+    if (multipleRT)
+    {
+        pipelineStateDesc.renderTargetFormats = { Format::R8G8B8A8_U_Norm, Format::R8G8B8A8_U_Norm };
+    }
+    else
+    {
+        pipelineStateDesc.renderTargetFormats = { Format::R8G8B8A8_U_Norm };
+    }
+
     pipelineStateDesc.pixelShader = mRTPixelShader;
     pipelineStateDesc.depthFormat = withDepthBuffer ? Format::Depth16 : Format::Unknown;
-    pipelineStateDesc.numRenderTargets = multipleRT ? 2 : 1;
     pipelineStateDesc.depthState.depthWriteEnable = withDepthBuffer;
     pipelineStateDesc.depthState.depthTestEnable = withDepthBuffer;
     mPipelineStateMRT = mRendererDevice->CreatePipelineState(pipelineStateDesc);
@@ -147,20 +153,20 @@ bool RenderTargetsScene::CreateBasicResources(bool multipleRT, bool withDepthBuf
 
     BufferDesc bufferDesc;
     bufferDesc.size = sizeof(vbData);
-    bufferDesc.usage = NFE_RENDERER_BUFFER_USAGE_VERTEX_BUFFER;
+    bufferDesc.usage = BufferUsageFlag::VertexBuffer;
     mVertexBuffer = mRendererDevice->CreateBuffer(bufferDesc);
     if (!mVertexBuffer)
         return false;
 
     bufferDesc.size = sizeof(ibData);
-    bufferDesc.usage = NFE_RENDERER_BUFFER_USAGE_INDEX_BUFFER;
+    bufferDesc.usage = BufferUsageFlag::IndexBuffer;
     mIndexBuffer = mRendererDevice->CreateBuffer(bufferDesc);
     if (!mIndexBuffer)
         return false;
 
     bufferDesc.mode = ResourceAccessMode::Volatile;
     bufferDesc.size = sizeof(VertexCBuffer);
-    bufferDesc.usage = NFE_RENDERER_BUFFER_USAGE_CONSTANT_BUFFER;
+    bufferDesc.usage = BufferUsageFlag::ConstantBuffer;
     mConstantBuffer = mRendererDevice->CreateBuffer(bufferDesc);
     if (!mConstantBuffer)
         return false;
@@ -189,7 +195,7 @@ bool RenderTargetsScene::CreateRenderTarget(bool withDepthBuffer, bool multipleR
 
     // render target texture
     texDesc.format = Format::R8G8B8A8_U_Norm;
-    texDesc.binding = NFE_RENDERER_TEXTURE_BIND_RENDERTARGET | NFE_RENDERER_TEXTURE_BIND_SHADER;
+    texDesc.usage = TextureUsageFlag::RenderTarget | TextureUsageFlag::ReadonlyShaderResource;
 
     texDesc.defaultColorClearValue[0] = 0.2f;
     texDesc.defaultColorClearValue[1] = 0.3f;
@@ -235,7 +241,7 @@ bool RenderTargetsScene::CreateRenderTarget(bool withDepthBuffer, bool multipleR
     // render target's depth buffer
     if (withDepthBuffer)
     {
-        texDesc.binding = NFE_RENDERER_TEXTURE_BIND_DEPTH | NFE_RENDERER_TEXTURE_BIND_SHADER;
+        texDesc.usage = TextureUsageFlag::DepthStencil | TextureUsageFlag::ReadonlyShaderResource;
         texDesc.format = Format::Depth16;
         texDesc.debugName = "RenderTargetsScene::mDepthBuffer";
         mDepthBuffer = mRendererDevice->CreateTexture(texDesc);
@@ -252,12 +258,12 @@ bool RenderTargetsScene::CreateRenderTarget(bool withDepthBuffer, bool multipleR
             return false;
     }
 
-    RenderTargetElement rtTargets[2];
-    rtTargets[0].texture = mRenderTargetTextures[0];
-    rtTargets[1].texture = mRenderTargetTextures[1];
     RenderTargetDesc rtDesc;
-    rtDesc.numTargets = multipleRT ? 2 : 1;
-    rtDesc.targets = rtTargets;
+    rtDesc.targets.PushBack(RenderTargetElement(mRenderTargetTextures[0]));
+    if (multipleRT)
+    {
+        rtDesc.targets.PushBack(RenderTargetElement(mRenderTargetTextures[1]));
+    }
     rtDesc.depthBuffer = withDepthBuffer ? mDepthBuffer : nullptr;
     rtDesc.debugName = "RenderTargetsScene::mRenderTarget";
     mRenderTarget = mRendererDevice->CreateRenderTarget(rtDesc);
@@ -389,11 +395,8 @@ bool RenderTargetsScene::OnInit(void* winHandle)
     }
 
     // create rendertarget that will render to the window's backbuffer
-    RenderTargetElement rtTarget;
-    rtTarget.texture = mWindowRenderTargetTexture;
     RenderTargetDesc rtDesc;
-    rtDesc.numTargets = 1;
-    rtDesc.targets = &rtTarget;
+    rtDesc.targets = { RenderTargetElement(mWindowRenderTargetTexture) };
     mWindowRenderTarget = mRendererDevice->CreateRenderTarget(rtDesc);
     if (!mWindowRenderTarget)
         return false;

@@ -144,7 +144,7 @@ bool BasicScene::CreateVertexBuffer(bool withExtraVert)
 
     BufferDesc vbDesc;
     vbDesc.size = withExtraVert ? sizeof(vbDataExtra) : sizeof(vbData);
-    vbDesc.usage = NFE_RENDERER_BUFFER_USAGE_VERTEX_BUFFER;
+    vbDesc.usage = BufferUsageFlag::VertexBuffer;
     mVertexBuffer = mRendererDevice->CreateBuffer(vbDesc);
     if (!mVertexBuffer)
         return false;
@@ -172,7 +172,7 @@ bool BasicScene::CreateVertexBuffer(bool withExtraVert)
         return false;
 
     PipelineStateDesc pipelineStateDesc;
-    pipelineStateDesc.rtFormats[0] = Format::R8G8B8A8_U_Norm;
+    pipelineStateDesc.renderTargetFormats = { Format::R8G8B8A8_U_Norm };
     pipelineStateDesc.vertexShader = mVertexShader;
     pipelineStateDesc.pixelShader = mPixelShader;
     pipelineStateDesc.blendState.independent = false;
@@ -199,7 +199,7 @@ bool BasicScene::CreateIndexBuffer()
 
     BufferDesc ibDesc;
     ibDesc.size = sizeof(ibData);
-    ibDesc.usage = NFE_RENDERER_BUFFER_USAGE_INDEX_BUFFER;
+    ibDesc.usage = BufferUsageFlag::IndexBuffer;
     mIndexBuffer = mRendererDevice->CreateBuffer(ibDesc);
     if (!mIndexBuffer)
         return false;
@@ -222,7 +222,7 @@ bool BasicScene::CreateConstantBuffer(ResourceAccessMode cbufferMode)
 
     BufferDesc cbufferDesc;
     cbufferDesc.mode = cbufferMode;
-    cbufferDesc.usage = NFE_RENDERER_BUFFER_USAGE_CONSTANT_BUFFER;
+    cbufferDesc.usage = BufferUsageFlag::ConstantBuffer;
     cbufferDesc.size = sizeof(VertexCBuffer);
     cbufferDesc.debugName = "BasicScene::CreateConstantBuffer";
 
@@ -248,7 +248,7 @@ bool BasicScene::CreateConstantBuffer(ResourceAccessMode cbufferMode)
 bool BasicScene::CreateTexture()
 {
     TextureDesc textureDesc;
-    textureDesc.binding = NFE_RENDERER_TEXTURE_BIND_SHADER;
+    textureDesc.usage = TextureUsageFlag::ReadonlyShaderResource;
     textureDesc.format = Format::R8G8B8A8_U_Norm;
     textureDesc.width = 2;
     textureDesc.height = 2;
@@ -442,11 +442,8 @@ bool BasicScene::OnInit(void* winHandle)
     }
 
     // create rendertarget that will render to the window's backbuffer
-    RenderTargetElement rtTarget;
-    rtTarget.texture = mWindowRenderTargetTexture;
     RenderTargetDesc rtDesc;
-    rtDesc.numTargets = 1;
-    rtDesc.targets = &rtTarget;
+    rtDesc.targets = { RenderTargetElement(mWindowRenderTargetTexture) };
     mWindowRenderTarget = mRendererDevice->CreateRenderTarget(rtDesc);
     if (!mWindowRenderTarget)
         return false;

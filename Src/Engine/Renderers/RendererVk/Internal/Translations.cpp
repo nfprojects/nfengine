@@ -280,25 +280,22 @@ VkBlendOp TranslateBlendOpToVkBlendOp(BlendOp op)
     }
 }
 
-VkBufferUsageFlags TranslateBufferUsageToVkBufferUsage(uint32 type)
+VkBufferUsageFlags TranslateBufferUsageToVkBufferUsage(BufferUsageFlag type)
 {
-    auto translateFlag = [&type](uint32 flag, uint32 result) -> uint32
+    auto translateFlag = [&type](BufferUsageFlag flag, uint32 result) -> uint32
     {
-        if (type & flag)
-            return result;
-        else
-            return 0;
+        return ((type & flag) == flag) ? result : 0;
     };
 
     VkBufferUsageFlags result = 0;
 
-    result |= translateFlag(NFE_RENDERER_BUFFER_USAGE_INDEX_BUFFER, VK_BUFFER_USAGE_INDEX_BUFFER_BIT);
-    result |= translateFlag(NFE_RENDERER_BUFFER_USAGE_VERTEX_BUFFER, VK_BUFFER_USAGE_VERTEX_BUFFER_BIT);
-    result |= translateFlag(NFE_RENDERER_BUFFER_USAGE_CONSTANT_BUFFER, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT);
+    result |= translateFlag(BufferUsageFlag::IndexBuffer, VK_BUFFER_USAGE_INDEX_BUFFER_BIT);
+    result |= translateFlag(BufferUsageFlag::VertexBuffer, VK_BUFFER_USAGE_VERTEX_BUFFER_BIT);
+    result |= translateFlag(BufferUsageFlag::ConstantBuffer, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT);
     // both STRUCT_BUFFER and WRITABLE_STRUCT_BUFFER are handled with the same Vulkan usage
     // eventual "writableness" is solved in a different way
-    result |= translateFlag(NFE_RENDERER_BUFFER_USAGE_STRUCT_BUFFER, VK_BUFFER_USAGE_STORAGE_BUFFER_BIT);
-    result |= translateFlag(NFE_RENDERER_BUFFER_USAGE_WRITABLE_STRUCT_BUFFER, VK_BUFFER_USAGE_STORAGE_BUFFER_BIT);
+    result |= translateFlag(BufferUsageFlag::ReadonlyStruct, VK_BUFFER_USAGE_STORAGE_BUFFER_BIT);
+    result |= translateFlag(BufferUsageFlag::WritableStruct, VK_BUFFER_USAGE_STORAGE_BUFFER_BIT);
 
     return result;
 }

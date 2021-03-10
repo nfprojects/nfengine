@@ -81,7 +81,7 @@ bool TessellationScene::CreateVertexBuffer()
 
     BufferDesc vbDesc;
     vbDesc.size = sizeof(vbData);
-    vbDesc.usage = NFE_RENDERER_BUFFER_USAGE_VERTEX_BUFFER;
+    vbDesc.usage = BufferUsageFlag::VertexBuffer;
     mVertexBuffer = mRendererDevice->CreateBuffer(vbDesc);
     if (!mVertexBuffer)
         return false;
@@ -107,7 +107,7 @@ bool TessellationScene::CreateVertexBuffer()
         return false;
 
     PipelineStateDesc pipelineStateDesc;
-    pipelineStateDesc.rtFormats[0] = Format::R8G8B8A8_U_Norm;
+    pipelineStateDesc.renderTargetFormats = { Format::R8G8B8A8_U_Norm };
     pipelineStateDesc.vertexShader = mVertexShader;
     pipelineStateDesc.pixelShader = mPixelShader;
     pipelineStateDesc.hullShader = mHullShader;
@@ -180,11 +180,8 @@ bool TessellationScene::OnInit(void* winHandle)
     }
 
     // create rendertarget that will render to the window's backbuffer
-    RenderTargetElement rtTarget;
-    rtTarget.texture = mWindowRenderTargetTexture;
     RenderTargetDesc rtDesc;
-    rtDesc.numTargets = 1;
-    rtDesc.targets = &rtTarget;
+    rtDesc.targets = { RenderTargetElement(mWindowRenderTargetTexture) };
     mWindowRenderTarget = mRendererDevice->CreateRenderTarget(rtDesc);
     if (!mWindowRenderTarget)
         return false;

@@ -14,17 +14,18 @@
 namespace NFE {
 namespace Renderer {
 
-// allow binding a texture as a shader resource
-#define NFE_RENDERER_TEXTURE_BIND_SHADER (1 << 0)
+/**
+ * Texture's usage flags. The texture usage must be determined upon creation.
+ */
+enum class TextureUsageFlag : uint8
+{
+    ReadonlyShaderResource  = NFE_FLAG(0),
+    ShaderWritableResource  = NFE_FLAG(1),
+    RenderTarget            = NFE_FLAG(2),
+    DepthStencil            = NFE_FLAG(3),
+};
 
-// allow binding a texture as a rendertarget
-#define NFE_RENDERER_TEXTURE_BIND_RENDERTARGET (1 << 1)
-
-// allow binding a texture as a depth buffer
-#define NFE_RENDERER_TEXTURE_BIND_DEPTH (1 << 2)
-
-// allow binding a texture as a writable shader resource
-#define NFE_RENDERER_TEXTURE_BIND_SHADER_WRITABLE (1 << 3)
+DEFINE_ENUM_OPERATORS(TextureUsageFlag);
 
 /**
  * Texture subresource's range specified when binding a texture.
@@ -45,13 +46,13 @@ struct TextureDesc
     TextureType type;
     Format format;
     ResourceAccessMode mode;
-    int binding;        //< texture binding mode
-    uint32 width;       //< texture width in texels
-    uint32 height;      //< texture height in texels, used only for 2D and 3D textures
-    uint32 depth;       //< texture depth in texels, used only for 3D textures
-    uint32 layers;      //< number of texture layers, used only for 1D and 2D textures
-    uint32 samplesNum;  //< when bigger than 1, the texture is multisampled
-    uint32 mipmaps;     //< number of mipmap levels
+    TextureUsageFlag usage; //< texture usage
+    uint32 width;           //< texture width in texels
+    uint32 height;          //< texture height in texels, used only for 2D and 3D textures
+    uint32 depth;           //< texture depth in texels, used only for 3D textures
+    uint32 layers;          //< number of texture layers, used only for 1D and 2D textures
+    uint32 samplesNum;      //< when bigger than 1, the texture is multisampled
+    uint32 mipmaps;         //< number of mipmap levels
 
     // optional
     float defaultColorClearValue[4];
@@ -64,7 +65,7 @@ struct TextureDesc
         : type(TextureType::Texture2D)
         , format(Format::Unknown)
         , mode(ResourceAccessMode::Immutable)
-        , binding(0)
+        , usage(static_cast<TextureUsageFlag>(0))
         , width(1)
         , height(1)
         , depth(1)

@@ -720,7 +720,7 @@ bool Device::DetectMonitors()
 bool Device::IsBackbufferFormatSupported(Format format)
 {
     D3D12_FEATURE_DATA_FORMAT_SUPPORT formatData;
-    formatData.Format = TranslateElementFormat(format);
+    formatData.Format = TranslateFormat(format);
 
     HRESULT hr = mDevice->CheckFeatureSupport(D3D12_FEATURE_FORMAT_SUPPORT, &formatData, sizeof(formatData));
     if (FAILED(hr))
@@ -741,7 +741,7 @@ bool Device::CalculateTexturePlacementInfo(Format format, uint32 width, uint32 h
 
     // TODO handle BC texture formats
 
-    const uint32 bytesInRow = width * GetElementFormatSize(format);
+    const uint32 bytesInRow = width * GetFormatSize(format);
 
     outInfo.alignment = D3D12_TEXTURE_DATA_PLACEMENT_ALIGNMENT;
     outInfo.rowPitch = Math::RoundUp<uint32>(bytesInRow, D3D12_TEXTURE_DATA_PITCH_ALIGNMENT);

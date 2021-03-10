@@ -692,7 +692,7 @@ bool CommandRecorder::WriteTexture(const TexturePtr& texture, const void* data, 
     const uint32 subresourceIndex = targetMipmap + targetLayer * texturePtr->GetMipmapsNum();
 
     // compute src row size & stride
-    const uint32 srcRowSize = writeWidth * GetElementFormatSize(texturePtr->GetFormat()); 
+    const uint32 srcRowSize = writeWidth * GetFormatSize(texturePtr->GetFormat()); 
     if (srcRowStride > 0u)
     {
         NFE_ASSERT(srcRowStride >= srcRowSize, "Row stride is too small");
@@ -704,7 +704,7 @@ bool CommandRecorder::WriteTexture(const TexturePtr& texture, const void* data, 
 
     // compute data layout of source texture data
     D3D12_SUBRESOURCE_FOOTPRINT subresourceFootprint;
-    subresourceFootprint.Format = TranslateElementFormat(texturePtr->GetFormat());
+    subresourceFootprint.Format = TranslateFormat(texturePtr->GetFormat());
     subresourceFootprint.Width = writeWidth;
     subresourceFootprint.Height = writeHeight;
     subresourceFootprint.Depth = writeDepth;
@@ -818,7 +818,7 @@ void CommandRecorder::CopyTextureToBuffer(const TexturePtr& src, const BufferPtr
     NFE_ASSERT(layer < srcTex->GetLayersNum(), "Invalid mipmap");
 
     const uint32 subresourceIndex = mipmap + layer * srcTex->GetMipmapsNum();
-    const uint32 srcRowSize = (srcBox.right - srcBox.left) * GetElementFormatSize(srcTex->GetFormat());
+    const uint32 srcRowSize = (srcBox.right - srcBox.left) * GetFormatSize(srcTex->GetFormat());
 
     BarrierFlusher(mResourceStateCache, mCommandList)
         .EnsureResourceState(srcTex, D3D12_RESOURCE_STATE_COPY_SOURCE, subresourceIndex)
@@ -826,7 +826,7 @@ void CommandRecorder::CopyTextureToBuffer(const TexturePtr& src, const BufferPtr
 
     // compute data layout of source texture data
     D3D12_SUBRESOURCE_FOOTPRINT subresourceFootprint;
-    subresourceFootprint.Format = TranslateElementFormat(srcTex->GetFormat());
+    subresourceFootprint.Format = TranslateFormat(srcTex->GetFormat());
     subresourceFootprint.Width = srcBox.right - srcBox.left;
     subresourceFootprint.Height = srcBox.bottom - srcBox.top;
     subresourceFootprint.Depth = srcBox.back - srcBox.front;

@@ -76,7 +76,7 @@ bool MultisampleScene::CreateVertexBuffer()
 
     BufferDesc vbDesc;
     vbDesc.size = sizeof(vbData);
-    vbDesc.usage = NFE_RENDERER_BUFFER_USAGE_VERTEX_BUFFER;
+    vbDesc.usage = BufferUsageFlag::VertexBuffer;
     mVertexBuffer = mRendererDevice->CreateBuffer(vbDesc);
     if (!mVertexBuffer)
         return false;
@@ -111,7 +111,7 @@ bool MultisampleScene::CreateVertexBuffer()
     texDesc.mipmaps = 1;
     texDesc.samplesNum = MULTISAMPLE_SAMPLES;
     texDesc.format = Format::R8G8B8A8_U_Norm;
-    texDesc.binding = NFE_RENDERER_TEXTURE_BIND_RENDERTARGET | NFE_RENDERER_TEXTURE_BIND_SHADER;
+    texDesc.usage = TextureUsageFlag::RenderTarget | TextureUsageFlag::ReadonlyShaderResource;
     texDesc.defaultColorClearValue[0] = 0.2f;
     texDesc.defaultColorClearValue[1] = 0.3f;
     texDesc.defaultColorClearValue[2] = 0.4f;
@@ -121,18 +121,15 @@ bool MultisampleScene::CreateVertexBuffer()
     if (!mRenderTargetTexture)
         return false;
 
-    RenderTargetElement rtTargets[2];
-    rtTargets[0].texture = mRenderTargetTexture;
     RenderTargetDesc rtDesc;
-    rtDesc.numTargets = 1;
-    rtDesc.targets = rtTargets;
+    rtDesc.targets = { RenderTargetElement(mRenderTargetTexture) };
     rtDesc.debugName = "MultisampleScene::mRenderTarget";
     mRenderTarget = mRendererDevice->CreateRenderTarget(rtDesc);
     if (!mRenderTarget)
         return false;
 
     PipelineStateDesc pipelineStateDesc;
-    pipelineStateDesc.rtFormats[0] = mBackbufferFormat;
+    pipelineStateDesc.renderTargetFormats = { mBackbufferFormat };
     pipelineStateDesc.vertexShader = mVertexShader;
     pipelineStateDesc.pixelShader = mPixelShader;
     pipelineStateDesc.blendState.independent = false;
@@ -192,11 +189,8 @@ bool MultisampleScene::OnInit(void* winHandle)
     }
 
     // create rendertarget that will render to the window's backbuffer
-    RenderTargetElement rtTarget;
-    rtTarget.texture = mWindowRenderTargetTexture;
     RenderTargetDesc rtDesc;
-    rtDesc.numTargets = 1;
-    rtDesc.targets = &rtTarget;
+    rtDesc.targets = { RenderTargetElement(mWindowRenderTargetTexture) };
     mWindowRenderTarget = mRendererDevice->CreateRenderTarget(rtDesc);
     if (!mWindowRenderTarget)
         return false;

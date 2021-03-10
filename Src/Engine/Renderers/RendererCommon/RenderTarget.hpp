@@ -8,6 +8,7 @@
 
 #include "Texture.hpp"
 #include "Types.hpp"
+#include "../../Common/Containers/StaticArray.hpp"
 
 namespace NFE {
 namespace Renderer {
@@ -18,14 +19,14 @@ namespace Renderer {
 struct RenderTargetElement
 {
     TexturePtr texture;     //< target texture object
-    uint32 level;           //< target mipmap level within the texture
-    uint32 layer;           //< target layer (or slice for 3D textures) within the texture
+    uint16 layer;           //< target layer (or slice for 3D textures) within the texture
+    uint8 level;            //< target mipmap level within the texture
     Format format;          //< texture format override (use "Unknown" to inherit from the texture)
 
     RenderTargetElement(const TexturePtr& texture = nullptr)
         : texture(texture)
-        , level(0)
-        , layer(0)
+        , level(0u)
+        , layer(0u)
         , format(Format::Unknown)
     {}
 };
@@ -35,16 +36,14 @@ struct RenderTargetElement
  */
 struct RenderTargetDesc
 {
-    uint32 numTargets;                  //< number of targets
-    const RenderTargetElement* targets; //< array of RenderTargetElement
-    TexturePtr depthBuffer;             //< optional pointer to a depth buffer's texture
-    const char* debugName;              //< optional debug name
+    // array of RenderTargetElements
+    Common::StaticArray<RenderTargetElement, MAX_RENDER_TARGETS> targets;
 
-    RenderTargetDesc()
-        : numTargets(0)
-        , targets(nullptr)
-        , debugName(nullptr)
-    {}
+    // optional pointer to a depth buffer's texture
+    TexturePtr depthBuffer;
+
+    // optional debug name
+    const char* debugName = nullptr;
 };
 
 /**

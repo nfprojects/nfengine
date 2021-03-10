@@ -8,14 +8,22 @@
 
 #include "Types.hpp"
 
-#define NFE_RENDERER_BUFFER_USAGE_INDEX_BUFFER              (1<<0)
-#define NFE_RENDERER_BUFFER_USAGE_VERTEX_BUFFER             (1<<1)
-#define NFE_RENDERER_BUFFER_USAGE_CONSTANT_BUFFER           (1<<2)
-#define NFE_RENDERER_BUFFER_USAGE_STRUCT_BUFFER             (1<<3)
-#define NFE_RENDERER_BUFFER_USAGE_WRITABLE_STRUCT_BUFFER    (1<<4)
-
 namespace NFE {
 namespace Renderer {
+
+/**
+ * Buffer's usage flags. The buffer usage must be determined upon creation.
+ */
+enum class BufferUsageFlag : uint8
+{
+    IndexBuffer     = NFE_FLAG(0),
+    VertexBuffer    = NFE_FLAG(1),
+    ConstantBuffer  = NFE_FLAG(2),
+    ReadonlyStruct  = NFE_FLAG(3),
+    WritableStruct  = NFE_FLAG(4),
+};
+
+DEFINE_ENUM_OPERATORS(BufferUsageFlag);
 
 /**
  * Description of renderer's buffer
@@ -23,14 +31,14 @@ namespace Renderer {
 struct BufferDesc
 {
     ResourceAccessMode mode;
-    uint32 usage;
+    BufferUsageFlag usage;
     size_t size;
     uint32 structSize;
     const char* debugName;   //< optional debug name
 
     BufferDesc()
         : mode(ResourceAccessMode::Immutable)
-        , usage(0u)
+        , usage(static_cast<BufferUsageFlag>(0))
         , size(0u)
         , structSize(0u)
         , debugName(nullptr)

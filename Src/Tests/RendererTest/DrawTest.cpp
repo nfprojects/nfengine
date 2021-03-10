@@ -20,22 +20,19 @@ void DrawTest::BeginTestFrame(uint32 width, uint32 height, uint32 numTargets, co
     {
         TargetTexture targetTexture;
         targetTexture.format = formats[i];
-        targetTexture.textureRowPitch = width * GetElementFormatSize(formats[i]);
+        targetTexture.textureRowPitch = width * GetFormatSize(formats[i]);
         targetTexture.textureSize = width * targetTexture.textureRowPitch;
 
         TextureDesc texDesc;
-        texDesc.binding = NFE_RENDERER_TEXTURE_BIND_RENDERTARGET;
+        texDesc.usage = TextureUsageFlag::RenderTarget;
         texDesc.format = formats[i];
         texDesc.width = width;
         texDesc.height = height;
         targetTexture.texture = gRendererDevice->CreateTexture(texDesc);
         ASSERT_FALSE(!targetTexture.texture);
 
-        RenderTargetElement rtTarget;
-        rtTarget.texture = targetTexture.texture;
         RenderTargetDesc rtDesc;
-        rtDesc.numTargets = 1;
-        rtDesc.targets = &rtTarget;
+        rtDesc.targets = { RenderTargetElement(targetTexture.texture) };
         mTestRenderTarget = gRendererDevice->CreateRenderTarget(rtDesc);
         ASSERT_FALSE(!mTestRenderTarget);
 

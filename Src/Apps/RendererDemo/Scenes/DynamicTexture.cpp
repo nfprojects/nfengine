@@ -25,11 +25,10 @@ bool DynamicTextureScene::CreateSubSceneSimple(bool useCopyQueue)
 {
     TextureDesc textureDesc;
     textureDesc.mode = ResourceAccessMode::GPUOnly;
-    textureDesc.binding = 0;
     textureDesc.format = mBackbufferFormat; // match with backbuffer format, because we copy the data directly
     textureDesc.width = WINDOW_WIDTH;
     textureDesc.height = WINDOW_HEIGHT;
-    textureDesc.binding = NFE_RENDERER_TEXTURE_BIND_RENDERTARGET;
+    textureDesc.usage = TextureUsageFlag::RenderTarget;
     mTexture = mRendererDevice->CreateTexture(textureDesc);
     if (!mTexture)
     {
@@ -37,11 +36,8 @@ bool DynamicTextureScene::CreateSubSceneSimple(bool useCopyQueue)
     }
 
     // create rendertarget (for clearing)
-    RenderTargetElement rtTarget;
-    rtTarget.texture = mTexture;
     RenderTargetDesc rtDesc;
-    rtDesc.numTargets = 1;
-    rtDesc.targets = &rtTarget;
+    rtDesc.targets = { RenderTargetElement(mTexture) };
     mRenderTarget = mRendererDevice->CreateRenderTarget(rtDesc);
     if (!mRenderTarget)
         return false;

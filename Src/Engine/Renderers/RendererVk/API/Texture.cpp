@@ -108,26 +108,25 @@ bool Texture::Init(const TextureDesc& desc)
     imageInfo.samples = TranslateSamplesNumToVkSampleCount(desc.samplesNum);
     imageInfo.tiling = VK_IMAGE_TILING_OPTIMAL;
 
-    // TODO SHADER_WRITABLE
-    if (desc.binding & NFE_RENDERER_TEXTURE_BIND_DEPTH)
+    if ((desc.usage & TextureUsageFlag::DepthStencil) == TextureUsageFlag::DepthStencil)
     {
         imageInfo.usage |= VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT;
         mImageLayoutDefault = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
     }
 
-    if (desc.binding & NFE_RENDERER_TEXTURE_BIND_RENDERTARGET)
+    if ((desc.usage & TextureUsageFlag::RenderTarget) == TextureUsageFlag::RenderTarget)
     {
         imageInfo.usage |= VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
         mImageLayoutDefault = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
     }
 
-    if (desc.binding & NFE_RENDERER_TEXTURE_BIND_SHADER)
+    if ((desc.usage & TextureUsageFlag::ReadonlyShaderResource) == TextureUsageFlag::ReadonlyShaderResource)
     {
         imageInfo.usage |= VK_IMAGE_USAGE_SAMPLED_BIT;
         mImageLayoutDefault = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
     }
 
-    if (desc.binding & NFE_RENDERER_TEXTURE_BIND_SHADER_WRITABLE)
+    if ((desc.usage & TextureUsageFlag::ShaderWritableResource) == TextureUsageFlag::ShaderWritableResource)
     {
         imageInfo.usage |= VK_IMAGE_USAGE_STORAGE_BIT;
         mImageLayoutDefault = VK_IMAGE_LAYOUT_GENERAL;

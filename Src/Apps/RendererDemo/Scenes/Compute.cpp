@@ -99,7 +99,7 @@ bool ComputeScene::CreateSubSceneSimple()
                                            1.0f / static_cast<float>(WINDOW_HEIGHT), 0.0f, 0.0f);
     BufferDesc cbufferDesc;
     cbufferDesc.size = sizeof(CBuffer);
-    cbufferDesc.usage = NFE_RENDERER_BUFFER_USAGE_CONSTANT_BUFFER;
+    cbufferDesc.usage = BufferUsageFlag::ConstantBuffer;
     mConstantBuffer = mRendererDevice->CreateBuffer(cbufferDesc);
     if (!mConstantBuffer)
         return false;
@@ -115,7 +115,7 @@ bool ComputeScene::CreateSubSceneSimple()
     // create texture that compute shader will write to
     TextureDesc textureDesc;
     textureDesc.mode = ResourceAccessMode::GPUOnly;
-    textureDesc.binding = NFE_RENDERER_TEXTURE_BIND_SHADER_WRITABLE;
+    textureDesc.usage = TextureUsageFlag::ShaderWritableResource;
     textureDesc.format = mBackbufferFormat; // match with backbuffer format, because we copy the data directly
     textureDesc.width = WINDOW_WIDTH;
     textureDesc.height = WINDOW_HEIGHT;
@@ -170,7 +170,7 @@ bool ComputeScene::CreateSubSceneIndirect()
     bufferDesc.size = 3 * sizeof(uint32);
     bufferDesc.structSize = sizeof(uint32);
     bufferDesc.mode = ResourceAccessMode::GPUOnly;
-    bufferDesc.usage = NFE_RENDERER_BUFFER_USAGE_WRITABLE_STRUCT_BUFFER;
+    bufferDesc.usage = BufferUsageFlag::WritableStruct;
     mIndirectArgBuffer = mRendererDevice->CreateBuffer(bufferDesc);
     if (!mIndirectArgBuffer)
     {

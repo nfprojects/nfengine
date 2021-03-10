@@ -37,13 +37,6 @@ bool PipelineState::Init(const PipelineStateDesc& desc)
 {
     // validate
 
-    if (desc.numRenderTargets > MAX_RENDER_TARGETS)
-    {
-        NFE_LOG_ERROR("Too many render targets: %u (max is %u)",
-                  desc.numRenderTargets, MAX_RENDER_TARGETS);
-        return false;
-    }
-
     mBindingLayout = StaticCast<ResourceBindingLayout>(desc.resBindingLayout);
     if (!mBindingLayout)
     {
@@ -108,7 +101,7 @@ bool PipelineState::Init(const PipelineStateDesc& desc)
     }
 
     // workaround for D3D runtime bug
-    for (int i = 0; i < 8; ++i)
+    for (int i = 0; i < MAX_RENDER_TARGETS; ++i)
     {
         blendDesc.RenderTarget[i].LogicOp = D3D12_LOGIC_OP_SET;
         blendDesc.RenderTarget[i].LogicOpEnable = FALSE;
@@ -158,10 +151,10 @@ bool PipelineState::Init(const PipelineStateDesc& desc)
     psd.IBStripCutValue = D3D12_INDEX_BUFFER_STRIP_CUT_VALUE_DISABLED;
     psd.PrimitiveTopologyType = TranslatePrimitiveTopologyType(desc.primitiveType);
 
-    psd.NumRenderTargets = desc.numRenderTargets;
-    for (uint32 i = 0; i < desc.numRenderTargets; ++i)
+    psd.NumRenderTargets = desc.renderTargetFormats.Size();
+    for (uint32 i = 0; i < psd.NumRenderTargets; ++i)
     {
-        psd.RTVFormats[i] = TranslateElementFormat(desc.rtFormats[i]);
+        psd.RTVFormats[i] = TranslateFormat(desc.renderTargetFormats[i]);
         if (psd.RTVFormats[i] == DXGI_FORMAT_UNKNOWN)
         {
             Release();
@@ -170,11 +163,11 @@ bool PipelineState::Init(const PipelineStateDesc& desc)
         }
     }
 
-    for (uint32 i = desc.numRenderTargets; i < MAX_RENDER_TARGETS; ++i)
+    for (uint32 i = psd.NumRenderTargets; i < MAX_RENDER_TARGETS; ++i)
     {
         psd.RTVFormats[i] = DXGI_FORMAT_UNKNOWN;
     }
-    psd.DSVFormat = TranslateElementFormat(desc.depthFormat);
+    psd.DSVFormat = TranslateFormat(desc.depthFormat);
 
     psd.SampleDesc.Count = desc.numSamples;
     psd.SampleDesc.Quality = 0;
