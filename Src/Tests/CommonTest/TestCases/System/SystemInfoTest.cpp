@@ -7,22 +7,22 @@ using namespace NFE::Common;
 TEST(SystemInfoTest, CpuInfoTest)
 {
     SystemInfo& sysInfoPtr = SystemInfo::Instance();
-    ASSERT_FALSE(sysInfoPtr.GetCPUBrand().Empty());
-    ASSERT_GE(sysInfoPtr.GetCPUCoreNo(), 1);
-    ASSERT_GT(sysInfoPtr.GetPageSize(), 100);
-    ASSERT_GE(sysInfoPtr.GetCacheLineSize(), 32);
+    EXPECT_FALSE(sysInfoPtr.GetCPUBrand().Empty());
+    EXPECT_GE(sysInfoPtr.GetCPUCoreNo(), 1);
+    EXPECT_GT(sysInfoPtr.GetPageSize(), 100);
+    EXPECT_GE(sysInfoPtr.GetCacheLineSize(), 32);
 }
 
 TEST(SystemInfoTest, MemoryInfoTest)
 {
     SystemInfo& sysInfoPtr = SystemInfo::Instance();
-    ASSERT_GT(sysInfoPtr.GetMemTotalPhysKb(), 1000);
-    ASSERT_GE(sysInfoPtr.GetMemTotalVirtKb(), 0);
-    ASSERT_LT(sysInfoPtr.GetMemTotalSwapKb(), 1000000000);
-    ASSERT_GT(sysInfoPtr.GetMemFreePhysKb(), 1000);
-    ASSERT_GE(sysInfoPtr.GetMemFreeVirtKb(), 0);
-    ASSERT_LT(sysInfoPtr.GetMemFreeSwapKb(), 1000000000);
-    ASSERT_GT(sysInfoPtr.GetFreeMemoryKb(), 0);
+    EXPECT_GT(sysInfoPtr.GetMemTotalPhysKb(), 1000);
+    EXPECT_GE(sysInfoPtr.GetMemTotalVirtKb(), 0);
+    EXPECT_LT(sysInfoPtr.GetMemTotalSwapKb(), 1000000000);
+    EXPECT_GT(sysInfoPtr.GetMemFreePhysKb(), 1000);
+    EXPECT_GE(sysInfoPtr.GetMemFreeVirtKb(), 0);
+    EXPECT_LT(sysInfoPtr.GetMemFreeSwapKb(), 1000000000);
+    EXPECT_GT(sysInfoPtr.GetFreeMemoryKb(), 0);
 }
 
 TEST(SystemInfoTest, InfoStringTest)

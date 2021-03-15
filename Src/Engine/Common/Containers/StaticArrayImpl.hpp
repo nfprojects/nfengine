@@ -55,14 +55,28 @@ StaticArray<ElementType, MaxSize>& StaticArray<ElementType, MaxSize>::operator =
     if (&other == this)
         return *this;
 
-    Clear();
+    ElementType* thisElements = Data();
+    const ElementType* otherElements = other.Data();
+
+    // copy-assign what can be copy-assigned
+    for (uint32 i = 0; i < Math::Min(this->mSize, other.mSize); ++i)
+    {
+        thisElements[i] = otherElements[i];
+    }
+
+    // copy-construct missing elements
+    for (uint32 i = this->mSize; i < other.mSize; ++i)
+    {
+        new (thisElements + i) ElementType(otherElements[i]);
+    }
+
+    // destroy excess elements in 'this'
+    for (uint32 i = other.mSize; i < this->mSize; ++i)
+    {
+        thisElements[i].~ElementType();
+    }
 
     this->mSize = other.mSize;
-
-    for (uint32 i = 0; i < other.mSize; ++i)
-    {
-        new (Data() + i) ElementType(other[i]);
-    }
 
     return *this;
 }
@@ -73,16 +87,31 @@ StaticArray<ElementType, MaxSize>& StaticArray<ElementType, MaxSize>::operator =
     if (&other == this)
         return *this;
 
-    Clear();
+    ElementType* thisElements = Data();
+    ElementType* otherElements = other.Data();
+
+    // move-assign what can be move-assigned
+    for (uint32 i = 0; i < Math::Min(this->mSize, other.mSize); ++i)
+    {
+        thisElements[i] = std::move(otherElements[i]);
+        otherElements[i].~ElementType();
+    }
+
+    // move-construct missing elements
+    for (uint32 i = this->mSize; i < other.mSize; ++i)
+    {
+        new (thisElements + i) ElementType(std::move(otherElements[i]));
+        otherElements[i].~ElementType();
+    }
+
+    // destroy excess elements in 'this'
+    for (uint32 i = other.mSize; i < this->mSize; ++i)
+    {
+        thisElements[i].~ElementType();
+    }
 
     this->mSize = other.mSize;
-    other.mSize = 0;
-
-    for (uint32 i = 0; i < this->mSize; ++i)
-    {
-        Data()[i] = std::move(other.Data()[i]);
-        other.Data()[i].~ElementType();
-    }
+    other.mSize = 0u;
 
     return *this;
 }
@@ -93,7 +122,7 @@ StaticArray<ElementType, MaxSize>::StaticArray(const std::initializer_list<Eleme
 {
     NFE_ASSERT(static_cast<uint32>(list.size()) <= MaxSize, "Initializer list is too big to fit the static array");
 
-    for (const ElementType element : list)
+    for (const ElementType& element : list)
     {
         PushBack(element);
     }
@@ -248,6 +277,18 @@ typename StaticArray<ElementType, MaxSize>::Iterator StaticArray<ElementType, Ma
     NFE_ASSERT(mSize < MaxSize, "StaticArray size exceeded");
 
     new (Data() + this->mSize) ElementType(std::move(element));
+
+    const uint32 index = this->mSize++;
+    return GetView().Begin() + index;
+}
+
+template<typename ElementType, uint32 MaxSize>
+template<typename ... Args>
+typename StaticArray<ElementType, MaxSize>::Iterator StaticArray<ElementType, MaxSize>::EmplaceBack(Args&& ... args)
+{
+    NFE_ASSERT(mSize < MaxSize, "StaticArray size exceeded");
+
+    new (Data() + this->mSize) ElementType(std::forward<Args>(args) ...);
 
     const uint32 index = this->mSize++;
     return GetView().Begin() + index;

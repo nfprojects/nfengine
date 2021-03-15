@@ -144,15 +144,12 @@ public:
         {
             mCounters->moveConstructor++;
         }
-
-        rhs.mCounters = nullptr;
     }
 
     MoveOnlyTestClass& operator=(MoveOnlyTestClass&& rhs)
     {
         mPayload = std::move(rhs.mPayload);
         mCounters = rhs.mCounters;
-        rhs.mCounters = nullptr;
 
         if (mCounters)
         {

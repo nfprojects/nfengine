@@ -273,10 +273,10 @@ TEST(StaticArray, Assign)
         // array2 = [1, 2]
         EXPECT_EQ(4, counters.constructor);
         EXPECT_EQ(0, counters.moveConstructor);
-        EXPECT_EQ(6, counters.copyConstructor);
+        EXPECT_EQ(4, counters.copyConstructor);
         EXPECT_EQ(0, counters.moveAssignment);
-        EXPECT_EQ(0, counters.assignment);
-        EXPECT_EQ(2, counters.destructor);
+        EXPECT_EQ(2, counters.assignment);
+        EXPECT_EQ(0, counters.destructor);
 
         ASSERT_EQ(2u, array.Size());
         ASSERT_EQ(2u, array2.Size());
@@ -296,10 +296,10 @@ TEST(StaticArray, Assign)
 
     EXPECT_EQ(4, counters.constructor);
     EXPECT_EQ(0, counters.moveConstructor);
-    EXPECT_EQ(6, counters.copyConstructor);
+    EXPECT_EQ(4, counters.copyConstructor);
     EXPECT_EQ(0, counters.moveAssignment);
-    EXPECT_EQ(0, counters.assignment);
-    EXPECT_EQ(6, counters.destructor);
+    EXPECT_EQ(2, counters.assignment);
+    EXPECT_EQ(4, counters.destructor);
 }
 
 TEST(StaticArray, MoveConstructor)
@@ -312,14 +312,14 @@ TEST(StaticArray, MoveConstructor)
         // initialize source StaticArray
         ArrayType array;
         {
-            auto iter = array.PushBack(Type(&counters, 1));
+            auto iter = array.EmplaceBack(&counters, 1);
             ASSERT_NE(array.End(), iter);
-            iter = array.PushBack(Type(&counters, 2));
+            iter = array.EmplaceBack(&counters, 2);
             ASSERT_NE(array.End(), iter);
         }
         // array = [1, 2]
         EXPECT_EQ(2, counters.constructor);
-        EXPECT_EQ(2, counters.moveConstructor);
+        EXPECT_EQ(0, counters.moveConstructor);
         EXPECT_EQ(0, counters.copyConstructor);
         EXPECT_EQ(0, counters.moveAssignment);
         EXPECT_EQ(0, counters.assignment);
@@ -330,11 +330,11 @@ TEST(StaticArray, MoveConstructor)
         // array = []
         // array2 = [1, 2]
         EXPECT_EQ(2, counters.constructor);
-        EXPECT_EQ(4, counters.moveConstructor);
+        EXPECT_EQ(2, counters.moveConstructor);
         EXPECT_EQ(0, counters.copyConstructor);
         EXPECT_EQ(0, counters.moveAssignment);
         EXPECT_EQ(0, counters.assignment);
-        EXPECT_EQ(0, counters.destructor);
+        EXPECT_EQ(2, counters.destructor);
 
         // "array" should be now empty
         EXPECT_EQ(0u, array.Size());
@@ -346,11 +346,11 @@ TEST(StaticArray, MoveConstructor)
     }
 
     EXPECT_EQ(2, counters.constructor);
-    EXPECT_EQ(4, counters.moveConstructor);
+    EXPECT_EQ(2, counters.moveConstructor);
     EXPECT_EQ(0, counters.copyConstructor);
     EXPECT_EQ(0, counters.moveAssignment);
     EXPECT_EQ(0, counters.assignment);
-    EXPECT_EQ(2, counters.destructor);
+    EXPECT_EQ(4, counters.destructor);
 }
 
 TEST(StaticArray, MoveAssignment)
@@ -363,14 +363,14 @@ TEST(StaticArray, MoveAssignment)
         // initialize target array
         ArrayType array;
         {
-            auto iter = array.PushBack(Type(&counters, 1));
+            auto iter = array.EmplaceBack(&counters, 1);
             ASSERT_NE(array.End(), iter);
-            iter = array.PushBack(Type(&counters, 2));
+            iter = array.EmplaceBack(&counters, 2);
             ASSERT_NE(array.End(), iter);
         }
         // array = [1, 2]
         EXPECT_EQ(2, counters.constructor);
-        EXPECT_EQ(2, counters.moveConstructor);
+        EXPECT_EQ(0, counters.moveConstructor);
         EXPECT_EQ(0, counters.copyConstructor);
         EXPECT_EQ(0, counters.moveAssignment);
         EXPECT_EQ(0, counters.assignment);
@@ -387,22 +387,22 @@ TEST(StaticArray, MoveAssignment)
         // array = [1, 2]
         // array2 = [3, 4]
         EXPECT_EQ(4, counters.constructor);
-        EXPECT_EQ(4, counters.moveConstructor);
+        EXPECT_EQ(2, counters.moveConstructor);
         EXPECT_EQ(0, counters.copyConstructor);
         EXPECT_EQ(0, counters.moveAssignment);
         EXPECT_EQ(0, counters.assignment);
-        EXPECT_EQ(0, counters.destructor);
+        EXPECT_EQ(2, counters.destructor);
 
         // move assign
         array2 = std::move(array);
         // array = []
         // array2 = [1, 2]
         EXPECT_EQ(4, counters.constructor);
-        EXPECT_EQ(4, counters.moveConstructor);
+        EXPECT_EQ(2, counters.moveConstructor);
         EXPECT_EQ(0, counters.copyConstructor);
         EXPECT_EQ(2, counters.moveAssignment);
         EXPECT_EQ(0, counters.assignment);
-        EXPECT_EQ(2, counters.destructor);
+        EXPECT_EQ(4, counters.destructor);
 
         // "array" should be now empty
         EXPECT_EQ(0u, array.Size());
@@ -414,11 +414,11 @@ TEST(StaticArray, MoveAssignment)
     }
 
     EXPECT_EQ(4, counters.constructor);
-    EXPECT_EQ(4, counters.moveConstructor);
+    EXPECT_EQ(2, counters.moveConstructor);
     EXPECT_EQ(0, counters.copyConstructor);
     EXPECT_EQ(2, counters.moveAssignment);
     EXPECT_EQ(0, counters.assignment);
-    EXPECT_EQ(4, counters.destructor);
+    EXPECT_EQ(6, counters.destructor);
 }
 
 TEST(StaticArray, PushBackArray)

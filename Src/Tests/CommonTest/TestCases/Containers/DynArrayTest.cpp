@@ -360,14 +360,14 @@ TEST(DynArray, MoveConstructor)
         ArrayType array;
         array.Reserve(2);
         {
-            auto iter = array.PushBack(Type(&counters, 1));
+            auto iter = array.EmplaceBack(&counters, 1);
             ASSERT_NE(array.End(), iter);
-            iter = array.PushBack(Type(&counters, 2));
+            iter = array.EmplaceBack(&counters, 2);
             ASSERT_NE(array.End(), iter);
         }
         // array = [1, 2]
         EXPECT_EQ(2, counters.constructor);
-        EXPECT_EQ(2, counters.moveConstructor);
+        EXPECT_EQ(0, counters.moveConstructor);
         EXPECT_EQ(0, counters.copyConstructor);
         EXPECT_EQ(0, counters.moveAssignment);
         EXPECT_EQ(0, counters.assignment);
@@ -378,7 +378,7 @@ TEST(DynArray, MoveConstructor)
         // array = []
         // array2 = [1, 2]
         EXPECT_EQ(2, counters.constructor);
-        EXPECT_EQ(2, counters.moveConstructor);
+        EXPECT_EQ(0, counters.moveConstructor);
         EXPECT_EQ(0, counters.copyConstructor);
         EXPECT_EQ(0, counters.moveAssignment);
         EXPECT_EQ(0, counters.assignment);
@@ -394,7 +394,7 @@ TEST(DynArray, MoveConstructor)
     }
 
     EXPECT_EQ(2, counters.constructor);
-    EXPECT_EQ(2, counters.moveConstructor);
+    EXPECT_EQ(0, counters.moveConstructor);
     EXPECT_EQ(0, counters.copyConstructor);
     EXPECT_EQ(0, counters.moveAssignment);
     EXPECT_EQ(0, counters.assignment);
@@ -412,14 +412,14 @@ TEST(DynArray, MoveAssignment)
         ArrayType array;
         array.Reserve(2);
         {
-            auto iter = array.PushBack(Type(&counters, 1));
+            auto iter = array.EmplaceBack(&counters, 1);
             ASSERT_NE(array.End(), iter);
-            iter = array.PushBack(Type(&counters, 2));
+            iter = array.EmplaceBack(&counters, 2);
             ASSERT_NE(array.End(), iter);
         }
         // array = [1, 2]
         EXPECT_EQ(2, counters.constructor);
-        EXPECT_EQ(2, counters.moveConstructor);
+        EXPECT_EQ(0, counters.moveConstructor);
         EXPECT_EQ(0, counters.copyConstructor);
         EXPECT_EQ(0, counters.moveAssignment);
         EXPECT_EQ(0, counters.assignment);
@@ -429,15 +429,15 @@ TEST(DynArray, MoveAssignment)
         ArrayType array2;
         array2.Reserve(2);
         {
-            auto iter = array2.PushBack(Type(&counters, 3));
+            auto iter = array2.EmplaceBack(&counters, 3);
             ASSERT_NE(array2.End(), iter);
-            iter = array2.PushBack(Type(&counters, 4));
+            iter = array2.EmplaceBack(&counters, 4);
             ASSERT_NE(array2.End(), iter);
         }
         // array = [1, 2]
         // array2 = [3, 4]
         EXPECT_EQ(4, counters.constructor);
-        EXPECT_EQ(4, counters.moveConstructor);
+        EXPECT_EQ(0, counters.moveConstructor);
         EXPECT_EQ(0, counters.copyConstructor);
         EXPECT_EQ(0, counters.moveAssignment);
         EXPECT_EQ(0, counters.assignment);
@@ -448,7 +448,7 @@ TEST(DynArray, MoveAssignment)
         // array = []
         // array2 = [1, 2]
         EXPECT_EQ(4, counters.constructor);
-        EXPECT_EQ(4, counters.moveConstructor);
+        EXPECT_EQ(0, counters.moveConstructor);
         EXPECT_EQ(0, counters.copyConstructor);
         EXPECT_EQ(0, counters.moveAssignment);
         EXPECT_EQ(0, counters.assignment);
@@ -464,7 +464,7 @@ TEST(DynArray, MoveAssignment)
     }
 
     EXPECT_EQ(4, counters.constructor);
-    EXPECT_EQ(4, counters.moveConstructor);
+    EXPECT_EQ(0, counters.moveConstructor);
     EXPECT_EQ(0, counters.copyConstructor);
     EXPECT_EQ(0, counters.moveAssignment);
     EXPECT_EQ(0, counters.assignment);

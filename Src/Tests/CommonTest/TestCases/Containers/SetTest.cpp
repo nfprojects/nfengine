@@ -274,7 +274,7 @@ TYPED_TEST(SetTest, InsertViaMove)
         EXPECT_EQ(0, counters.copyConstructor);
         EXPECT_EQ(0, counters.moveAssignment);
         EXPECT_EQ(0, counters.assignment);
-        EXPECT_EQ(0, counters.destructor);
+        EXPECT_EQ(2, counters.destructor);
 
         // replace existing element - the old one should be deleted
         {
@@ -289,7 +289,7 @@ TYPED_TEST(SetTest, InsertViaMove)
             EXPECT_EQ(0, counters.copyConstructor);
             EXPECT_EQ(0, counters.moveAssignment);
             EXPECT_EQ(0, counters.assignment);
-            EXPECT_EQ(1, counters.destructor);
+            EXPECT_EQ(4, counters.destructor);
         }
     }
 
@@ -298,7 +298,7 @@ TYPED_TEST(SetTest, InsertViaMove)
     EXPECT_EQ(0, counters.copyConstructor);
     EXPECT_EQ(0, counters.moveAssignment);
     EXPECT_EQ(0, counters.assignment);
-    EXPECT_EQ(3, counters.destructor);
+    EXPECT_EQ(6, counters.destructor);
 }
 
 TYPED_TEST(SetTest, MoveConstructor)
@@ -318,7 +318,7 @@ TYPED_TEST(SetTest, MoveConstructor)
         EXPECT_EQ(0, counters.copyConstructor);
         EXPECT_EQ(0, counters.moveAssignment);
         EXPECT_EQ(0, counters.assignment);
-        EXPECT_EQ(0, counters.destructor);
+        EXPECT_EQ(2, counters.destructor);
 
         // call the move constructor
         SetType set2(std::move(set));
@@ -329,7 +329,7 @@ TYPED_TEST(SetTest, MoveConstructor)
         EXPECT_EQ(0, counters.copyConstructor);
         EXPECT_EQ(0, counters.moveAssignment);
         EXPECT_EQ(0, counters.assignment);
-        EXPECT_EQ(0, counters.destructor);
+        EXPECT_EQ(2, counters.destructor);
 
         // "set" should be now empty
         EXPECT_EQ(0u, set.Size());
@@ -345,7 +345,7 @@ TYPED_TEST(SetTest, MoveConstructor)
     EXPECT_EQ(0, counters.copyConstructor);
     EXPECT_EQ(0, counters.moveAssignment);
     EXPECT_EQ(0, counters.assignment);
-    EXPECT_EQ(2, counters.destructor);
+    EXPECT_EQ(4, counters.destructor);
 }
 
 TYPED_TEST(SetTest, MoveAssignment)
@@ -365,7 +365,7 @@ TYPED_TEST(SetTest, MoveAssignment)
         EXPECT_EQ(0, counters.copyConstructor);
         EXPECT_EQ(0, counters.moveAssignment);
         EXPECT_EQ(0, counters.assignment);
-        EXPECT_EQ(0, counters.destructor);
+        EXPECT_EQ(2, counters.destructor);
 
         // initialize source set
         SetType set2;
@@ -378,7 +378,7 @@ TYPED_TEST(SetTest, MoveAssignment)
         EXPECT_EQ(0, counters.copyConstructor);
         EXPECT_EQ(0, counters.moveAssignment);
         EXPECT_EQ(0, counters.assignment);
-        EXPECT_EQ(0, counters.destructor);
+        EXPECT_EQ(4, counters.destructor);
 
         // move assign
         set2 = std::move(set);
@@ -389,7 +389,7 @@ TYPED_TEST(SetTest, MoveAssignment)
         EXPECT_EQ(0, counters.copyConstructor);
         EXPECT_EQ(0, counters.moveAssignment);
         EXPECT_EQ(0, counters.assignment);
-        EXPECT_EQ(2, counters.destructor);
+        EXPECT_EQ(6, counters.destructor);
 
         // "set" should be now empty
         EXPECT_EQ(0u, set.Size());
@@ -405,7 +405,7 @@ TYPED_TEST(SetTest, MoveAssignment)
     EXPECT_EQ(0, counters.copyConstructor);
     EXPECT_EQ(0, counters.moveAssignment);
     EXPECT_EQ(0, counters.assignment);
-    EXPECT_EQ(4, counters.destructor);
+    EXPECT_EQ(8, counters.destructor);
 }
 
 TYPED_TEST(SetTest, Iterator)

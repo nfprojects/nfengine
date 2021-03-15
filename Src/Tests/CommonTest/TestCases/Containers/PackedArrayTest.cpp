@@ -211,11 +211,11 @@ TEST(PackedArray, ComplexTypeMove)
         EXPECT_EQ(1, counter.constructor);
         EXPECT_EQ(1, counter.moveConstructor);
         EXPECT_EQ(0, counter.moveAssignment);
-        EXPECT_EQ(0, counter.destructor);
+        EXPECT_EQ(1, counter.destructor);
     }
 
     EXPECT_EQ(1, counter.constructor);
     EXPECT_EQ(1, counter.moveConstructor);
     EXPECT_EQ(0, counter.moveAssignment);
-    EXPECT_EQ(1, counter.destructor);
+    EXPECT_EQ(2, counter.destructor);
 }
