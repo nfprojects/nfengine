@@ -52,9 +52,6 @@ template<typename ElementType>
 DynArray<ElementType>::DynArray(DynArray&& other)
     : ArrayView<ElementType>()
 {
-    // don't free memory if not needed
-    Clear(true);
-
     this->mElements = other.mElements;
     this->mSize = other.mSize;
     mAllocSize = other.mAllocSize;
@@ -67,21 +64,21 @@ DynArray<ElementType>::DynArray(DynArray&& other)
 template<typename ElementType>
 DynArray<ElementType>& DynArray<ElementType>::operator = (const DynArray& other)
 {
-    if (&other == this)
-        return *this;
-
-    Clear();
-
-    if (!Reserve(other.mSize))
+    if (&other != this)
     {
-        NFE_LOG_ERROR("Failed to reserve memory for DynArray");
-        return *this;
-    }
+        Clear();
 
-    this->mSize = other.mSize;
-    for (uint32 i = 0; i < other.mSize; ++i)
-    {
-        new (this->mElements + i) ElementType(other.mElements[i]);
+        if (!Reserve(other.mSize))
+        {
+            NFE_LOG_ERROR("Failed to reserve memory for DynArray");
+            return *this;
+        }
+
+        this->mSize = other.mSize;
+        for (uint32 i = 0; i < other.mSize; ++i)
+        {
+            new (this->mElements + i) ElementType(other.mElements[i]);
+        }
     }
 
     return *this;
@@ -90,16 +87,19 @@ DynArray<ElementType>& DynArray<ElementType>::operator = (const DynArray& other)
 template<typename ElementType>
 DynArray<ElementType>& DynArray<ElementType>::operator = (DynArray&& other)
 {
-    // don't free memory if not needed
-    Clear(true);
+    if (&other != this)
+    {
+        // don't free memory if not needed
+        Clear(true);
 
-    this->mElements = other.mElements;
-    this->mSize = other.mSize;
-    mAllocSize = other.mAllocSize;
+        this->mElements = other.mElements;
+        this->mSize = other.mSize;
+        mAllocSize = other.mAllocSize;
 
-    other.mElements = nullptr;
-    other.mSize = 0;
-    other.mAllocSize = 0;
+        other.mElements = nullptr;
+        other.mSize = 0;
+        other.mAllocSize = 0;
+    }
 
     return *this;
 }
@@ -201,37 +201,55 @@ void DynArray<ElementType>::Clear(bool freeMemory)
 }
 
 template<typename ElementType>
-bool DynArray<ElementType>::ContainsElement(const ElementType& element) const
+NFE_FORCE_INLINE bool DynArray<ElementType>::ContainsElement(const ElementType& element) const
 {
     return (&element - this->mElements >= 0) && (&element < this->mElements + this->mSize);
 }
 
+
 template<typename ElementType>
 typename DynArray<ElementType>::IteratorType DynArray<ElementType>::PushBack(const ElementType& element)
 {
-    NFE_ASSERT(!ContainsElement(element), "Adding element to a DynArray that is already contained by the array is not supported");
+    const ElementType* elementPtr = &element;
+    const ElementType* prevElementsArray = this->mElements;
+
+    const bool isContainedElement = ContainsElement(element);
 
     if (!Reserve(this->mSize + 1))
     {
         return this->End();
     }
 
-    new (this->mElements + this->mSize) ElementType(element);
+    if (isContainedElement)
+    {
+        // if the element is contained by the array, offset the pointer to account for memory reallocation
+        elementPtr += (this->mElements - prevElementsArray);
+    }
+
+    new (this->mElements + this->mSize) ElementType(*elementPtr);
     return IteratorType(this->mElements, this->mSize++);
 }
 
 template<typename ElementType>
 typename DynArray<ElementType>::IteratorType DynArray<ElementType>::PushBack(ElementType&& element)
 {
-    NFE_ASSERT(!ContainsElement(element), "Adding element to a DynArray that is already contained by the array is not supported");
+    ElementType* elementPtr = &element;
+    const ElementType* prevElementsArray = this->mElements;
+
+    const bool isContainedElement = ContainsElement(element);
 
     if (!Reserve(this->mSize + 1))
     {
-        // memory allocation failed
         return this->End();
     }
 
-    new (this->mElements + this->mSize) ElementType(std::move(element));
+    if (isContainedElement)
+    {
+        // if the element is contained by the array, offset the pointer to account for memory reallocation
+        elementPtr += (this->mElements - prevElementsArray);
+    }
+
+    new (this->mElements + this->mSize) ElementType(std::move(*elementPtr));
     return IteratorType(this->mElements, this->mSize++);
 }
 

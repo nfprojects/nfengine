@@ -471,6 +471,26 @@ TEST(DynArray, MoveAssignment)
     EXPECT_EQ(4, counters.destructor);
 }
 
+TEST(DynArray, PushBackContainedElement)
+{
+    DynArray<int> array;
+    array.Reserve(4);
+    array.PushBack(10);
+    array.PushBack(20);
+    array.PushBack(30);
+    array.PushBack(40);
+
+    ASSERT_EQ(4u, array.Capacity());
+    ASSERT_EQ(4u, array.Size());
+
+    array.PushBack(array[1]);
+
+    ASSERT_LE(5u, array.Capacity());
+    ASSERT_EQ(5u, array.Size());
+
+    EXPECT_EQ(20, array[4]);
+}
+
 TEST(DynArray, PushBackArray)
 {
     DynArray<int> array;

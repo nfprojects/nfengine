@@ -46,6 +46,9 @@ public:
     // initialize with given size
     DynArray(uint32 size, const ElementType& value);
 
+    // get size of allocated space (in elements)
+    uint32 Capacity() const { return mAllocSize; }
+
     /**
      * Remove all the elements.
      * @param freeMemory    Release memory?
@@ -149,10 +152,10 @@ public:
     void Swap(DynArray& other);
 
     // lower-case aliases for Begin()/End(), required by C++ for range-based 'for' to work
-    NFE_INLINE ConstIteratorType begin() const { return this->Begin(); }
-    NFE_INLINE ConstIteratorType end() const { return this->End(); }
-    NFE_INLINE IteratorType begin() { return this->Begin(); }
-    NFE_INLINE IteratorType end() { return this->End(); }
+    NFE_FORCE_INLINE ConstIteratorType begin() const { return this->Begin(); }
+    NFE_FORCE_INLINE ConstIteratorType end() const { return this->End(); }
+    NFE_FORCE_INLINE IteratorType begin() { return this->Begin(); }
+    NFE_FORCE_INLINE IteratorType end() { return this->End(); }
 
 private:
 
