@@ -1,6 +1,6 @@
 /**
  * @file
- * @author  Witek902 (witek902@gmail.com)
+ * @author  Witek902
  * @brief   Declarations of low-level rendering interface.
  */
 
@@ -15,6 +15,8 @@ namespace NFE {
 namespace Renderer {
 
 /// predeclarations
+struct MemoryBlockDesc;
+class IMemoryBlock;
 class ITexture;
 class IBuffer;
 class ISampler;
@@ -35,6 +37,7 @@ class IFence;
 using CommandRecorderPtr = Common::SharedPtr<ICommandRecorder>;
 using CommandQueuePtr = Common::SharedPtr<ICommandQueue>;
 using CommandListPtr = Common::UniquePtr<ICommandList>;
+using MemoryBlockPtr = Common::SharedPtr<IMemoryBlock>;
 using TexturePtr = Common::SharedPtr<ITexture>;
 using BufferPtr = Common::SharedPtr<IBuffer>;
 using SamplerPtr = Common::SharedPtr<ISampler>;
@@ -62,6 +65,20 @@ enum class ResourceType : uint8
     Buffer,
 
     Max,
+};
+
+/**
+ * Common description of renderer's resource (buffer or texture)
+ */
+struct CommonResourceDesc
+{
+    // memory block to allocate the buffer from
+    // if not provided, renderer will automatically manage memory for the resource
+    MemoryBlockPtr memoryBlock;
+    uint64 memoryBlockOffset = 0u;
+
+    // optional debug name
+    const char* debugName = nullptr;
 };
 
 

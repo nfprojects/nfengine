@@ -22,6 +22,7 @@
     <ClInclude Include="API\ComputePipelineState.hpp" />
     <ClInclude Include="API\Device.hpp" />
     <ClInclude Include="API\IResource.hpp" />
+    <ClInclude Include="API\MemoryBlock.hpp" />
     <ClInclude Include="API\PipelineState.hpp" />
     <ClInclude Include="API\RenderTarget.hpp" />
     <ClInclude Include="API\ResourceBinding.hpp" />
@@ -60,6 +61,7 @@
     <ClCompile Include="API\CommandRecorder.cpp" />
     <ClCompile Include="API\ComputePipelineState.cpp" />
     <ClCompile Include="API\Device.cpp" />
+    <ClCompile Include="API\MemoryBlock.cpp" />
     <ClCompile Include="API\PipelineState.cpp" />
     <ClCompile Include="API\RenderTarget.cpp" />
     <ClCompile Include="API\ResourceBinding.cpp" />

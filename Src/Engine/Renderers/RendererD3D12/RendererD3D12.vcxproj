@@ -140,6 +140,7 @@ COPY "$(WindowsSdkDir)redist\d3d\x64\dxil.dll" "$(SolutionDir)Bin\$(Platform)\$(
     <ClCompile Include="ComputePipelineState.cpp" />
     <ClCompile Include="Fence.cpp" />
     <ClCompile Include="HeapAllocator.cpp" />
+    <ClCompile Include="MemoryBlock.cpp" />
     <ClCompile Include="PipelineState.cpp" />
     <ClCompile Include="Buffer.cpp" />
     <ClCompile Include="CommandRecorder.cpp" />
@@ -191,6 +192,7 @@ COPY "$(WindowsSdkDir)redist\d3d\x64\dxil.dll" "$(SolutionDir)Bin\$(Platform)\$(
     <ClInclude Include="Fence.hpp" />
     <ClInclude Include="Format.hpp" />
     <ClInclude Include="HeapAllocator.hpp" />
+    <ClInclude Include="MemoryBlock.hpp" />
     <ClInclude Include="PipelineState.hpp" />
     <ClInclude Include="PCH.hpp" />
     <ClInclude Include="ReferencedResourcesList.hpp" />

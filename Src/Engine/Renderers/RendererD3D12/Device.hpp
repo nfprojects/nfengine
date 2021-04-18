@@ -1,6 +1,6 @@
 /**
  * @file
- * @author  Witek902 (witek902@gmail.com)
+ * @author  Witek902
  * @brief   Declaration of Direct3D 12 render's device.
  */
 
@@ -44,6 +44,8 @@ struct MonitorInfo
 
 struct DeviceCaps
 {
+    D3D_FEATURE_LEVEL featureLevel;
+    D3D12_FEATURE_DATA_D3D12_OPTIONS d3dOptions;
     bool tearingSupport = false;
 };
 
@@ -57,8 +59,6 @@ class Device : public IDevice
     friend class Texture;
 
     DeviceCaps mCaps;
-
-    D3D_FEATURE_LEVEL mFeatureLevel;
 
     D3DPtr<IDXGIAdapter> mAdapter;
     D3DPtr<IDXGIFactory4> mDXGIFactory;
@@ -119,6 +119,7 @@ public:
     /// Resources creation functions
 
     virtual VertexLayoutPtr CreateVertexLayout(const VertexLayoutDesc& desc) override;
+    virtual MemoryBlockPtr CreateMemoryBlock(const MemoryBlockDesc& desc) override;
     virtual BufferPtr CreateBuffer(const BufferDesc& desc) override;
     virtual TexturePtr CreateTexture(const TextureDesc& desc) override;
     virtual BackbufferPtr CreateBackbuffer(const BackbufferDesc& desc) override;

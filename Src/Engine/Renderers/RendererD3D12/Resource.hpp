@@ -3,6 +3,7 @@
 #include "Common.hpp"
 #include "ResourceState.hpp"
 #include "D3D12MemAlloc.h"
+#include "../RendererCommon/MemoryBlock.hpp"
 
 
 namespace NFE {
@@ -22,6 +23,11 @@ class Resource
 public:
     virtual ~Resource() = default;
 
+    NFE_FORCE_INLINE const IMemoryBlock* GetMemoryBlock() const
+    {
+        return mMemoryBlock.Get();
+    }
+
     NFE_FORCE_INLINE virtual ID3D12Resource* GetD3DResource() const
     {
         return mResource.Get();
@@ -40,6 +46,7 @@ public:
 protected:
     explicit Resource(const D3D12_RESOURCE_STATES defaultState);
 
+    MemoryBlockPtr mMemoryBlock;
     D3DPtr<ID3D12Resource> mResource;
     D3DPtr<D3D12MA::Allocation> mAllocation;
     ResourceState mState;

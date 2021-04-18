@@ -1,6 +1,6 @@
 /**
  * @file
- * @author  Witek902 (witek902@gmail.com)
+ * @author  Witek902
  * @brief   Declarations of low-level rendering interface.
  * @details The interface is communication layer between rendering API (such as Direct3D or Vulkan)
  *          and high-level engine's renderer. The API provides basic abstract classes:
@@ -80,6 +80,7 @@ public:
      */
 
     virtual VertexLayoutPtr CreateVertexLayout(const VertexLayoutDesc& desc) = 0;
+    virtual MemoryBlockPtr CreateMemoryBlock(const MemoryBlockDesc& desc) = 0;
     virtual BufferPtr CreateBuffer(const BufferDesc& desc) = 0;
     virtual TexturePtr CreateTexture(const TextureDesc& desc) = 0;
     virtual BackbufferPtr CreateBackbuffer(const BackbufferDesc& desc) = 0;
@@ -113,7 +114,6 @@ public:
      */
     virtual bool FinishFrame() = 0;
 };
-
 
 /**
  * Structure containing rendering device initialization parameters.

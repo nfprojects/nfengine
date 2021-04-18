@@ -7,6 +7,7 @@
 #pragma once
 
 #include "Types.hpp"
+#include "MemoryBlock.hpp"
 
 #include <cfloat>
 
@@ -41,7 +42,7 @@ struct TextureView
 /**
  * Texture descriptor.
  */
-struct TextureDesc
+struct TextureDesc : public CommonResourceDesc
 {
     TextureType type;
     Format format;
@@ -59,8 +60,6 @@ struct TextureDesc
     float defaultDepthClearValue;
     uint8 defaultStencilClearValue;
 
-    const char* debugName; //< optional debug name
-
     TextureDesc()
         : type(TextureType::Texture2D)
         , format(Format::Unknown)
@@ -75,7 +74,6 @@ struct TextureDesc
         , defaultColorClearValue{0.0f, 0.0f, 0.0f, 1.0f}
         , defaultDepthClearValue(1.0f)
         , defaultStencilClearValue(0)
-        , debugName(nullptr)
     {}
 };
 

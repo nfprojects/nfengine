@@ -185,6 +185,62 @@ String ToString(double value)
     return String(buffer);
 }
 
+String BytesToString(uint32 size, bool withSpace)
+{
+    String str;
+
+    if (size < 1024u)
+    {
+        str = ToString(size);
+        if (withSpace) str += ' ';
+        str += "bytes";
+    }
+    else if (size < (1024u << 10u))
+    {
+        str = String::Printf("%.3f", size / static_cast<float>(1024u));
+        if (withSpace) str += ' ';
+        str += "KB";
+    }
+    else if (size < (1024u << 20u))
+    {
+        str = String::Printf("%.3f", size / static_cast<float>(1024u << 10u));
+        if (withSpace) str += ' ';
+        str += "MB";
+    }
+    else
+    {
+        str = String::Printf("%.3f", size / static_cast<float>(1024u << 20u));
+        if (withSpace) str += ' ';
+        str += "GB";
+    }
+
+    return str;
+}
+
+String BytesToString(uint64 size, bool withSpace)
+{
+    String str;
+
+    if (size <= UINT32_MAX)
+    {
+        str = BytesToString(static_cast<uint32>(size), withSpace);
+    }
+    else if (size < (1024ull << 40u))
+    {
+        str = String::Printf("%.3f", size / static_cast<float>(1024ull << 30u));
+        if (withSpace) str += ' ';
+        str += "TB";
+    }
+    else
+    {
+        str = String::Printf("%.3f", size / static_cast<float>(1024ull << 40u));
+        if (withSpace) str += ' ';
+        str += "PB";
+    }
+
+    return str;
+}
+
 DynArray<StringView> Split(const StringView& a, char delim)
 {
     DynArray<StringView> result;

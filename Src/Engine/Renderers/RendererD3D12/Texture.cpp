@@ -6,14 +6,18 @@
 
 #include "PCH.hpp"
 #include "Texture.hpp"
+#include "MemoryBlock.hpp"
 #include "RendererD3D12.hpp"
 #include "Translations.hpp"
 #include "Engine/Common/Logger/Logger.hpp"
 #include "Engine/Common/System/Timer.hpp"
+#include "Engine/Common/Utils/StringUtils.hpp"
 
 
 namespace NFE {
 namespace Renderer {
+
+using namespace Common;
 
 Texture::Texture()
     : Resource(D3D12_RESOURCE_STATE_COMMON)
@@ -162,21 +166,42 @@ bool Texture::Init(const TextureDesc& desc)
         }
     }
 
-    UINT64 requiredSize = 0;
-    gDevice->GetDevice()->GetCopyableFootprints(&resourceDesc, 0, 1, 0, nullptr, nullptr, nullptr, &requiredSize);
-    NFE_LOG_DEBUG("Allocating texture '%s' requires %llu bytes", desc.debugName, requiredSize);
-
-    D3D12MA::ALLOCATION_DESC allocationDesc = {};
-    allocationDesc.HeapType = D3D12_HEAP_TYPE_DEFAULT;
+    const D3D12_RESOURCE_ALLOCATION_INFO allocationInfo = gDevice->GetDevice()->GetResourceAllocationInfo(0u, 1u, &resourceDesc);
+    NFE_LOG_DEBUG("Allocating texture '%s' requires %s aligned to %s",
+        desc.debugName,
+        BytesToString(allocationInfo.SizeInBytes).Str(),
+        BytesToString(allocationInfo.Alignment).Str());
 
     // create the texture resource
-    hr = D3D_CALL_CHECK(gDevice->GetAllocator()->CreateResource(
-        &allocationDesc,
-        &resourceDesc,
-        initialState,
-        passClearValue ? &clearValue : nullptr,
-        mAllocation.GetPtr(),
-        IID_PPV_ARGS(mResource.GetPtr())));
+    if (desc.memoryBlock)
+    {
+        const MemoryBlock* memoryBlock = static_cast<const MemoryBlock*>(desc.memoryBlock.Get());
+
+        NFE_ASSERT(desc.memoryBlockOffset + allocationInfo.SizeInBytes <= memoryBlock->GetSize(),
+            "Resource won't fit memory block. Resource size: %llu, memory block size: %llu, offset in block: $llu",
+            allocationInfo.SizeInBytes, memoryBlock->GetSize(), desc.memoryBlockOffset);
+
+        hr = D3D_CALL_CHECK(gDevice->GetAllocator()->CreateAliasingResource(
+            memoryBlock->GetAllocation(),
+            desc.memoryBlockOffset,
+            &resourceDesc,
+            initialState,
+            passClearValue ? &clearValue : nullptr,
+            IID_PPV_ARGS(mResource.GetPtr())));
+    }
+    else
+    {
+        D3D12MA::ALLOCATION_DESC allocationDesc = {};
+        allocationDesc.HeapType = D3D12_HEAP_TYPE_DEFAULT;
+
+        hr = D3D_CALL_CHECK(gDevice->GetAllocator()->CreateResource(
+            &allocationDesc,
+            &resourceDesc,
+            initialState,
+            passClearValue ? &clearValue : nullptr,
+            mAllocation.GetPtr(),
+            IID_PPV_ARGS(mResource.GetPtr())));
+    }
 
     if (FAILED(hr))
     {
@@ -186,7 +211,7 @@ bool Texture::Init(const TextureDesc& desc)
 
     mState.Set(initialState);
 
-    if (desc.debugName && !SetDebugName(mResource.Get(), Common::StringView(desc.debugName)))
+    if (desc.debugName && !SetDebugName(mResource.Get(), StringView(desc.debugName)))
     {
         NFE_LOG_WARNING("Failed to set debug name");
     }
@@ -199,6 +224,7 @@ bool Texture::Init(const TextureDesc& desc)
     mMipmapsNum = static_cast<uint8>(desc.mipmaps);
     mSamplesNum = static_cast<uint8>(desc.samplesNum);
     mMode = desc.mode;
+    mMemoryBlock = desc.memoryBlock;
 
     return true;
 }

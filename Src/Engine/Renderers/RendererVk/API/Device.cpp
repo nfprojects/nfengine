@@ -18,6 +18,7 @@
 #include "PipelineState.hpp"
 #include "ComputePipelineState.hpp"
 #include "CommandQueue.hpp"
+#include "MemoryBlock.hpp"
 
 #include "Internal/Translations.hpp"
 #include "Internal/Debugger.hpp"
@@ -419,6 +420,11 @@ void* Device::GetHandle() const
 VertexLayoutPtr Device::CreateVertexLayout(const VertexLayoutDesc& desc)
 {
     return GenericCreateResource<VertexLayout, VertexLayoutDesc>(desc);
+}
+
+MemoryBlockPtr Device::CreateMemoryBlock(const MemoryBlockDesc& desc)
+{
+    return GenericCreateResource<MemoryBlock, MemoryBlockDesc>(desc);
 }
 
 BufferPtr Device::CreateBuffer(const BufferDesc& desc)

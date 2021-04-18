@@ -37,12 +37,14 @@ bool Buffer::Init(const BufferDesc& desc)
     }
 
     // buffer size is required to be 256-byte aligned
-    mSize = static_cast<uint32>(desc.size);
+    mSize = desc.size;
     mStructureSize = desc.structSize;
     mMode = desc.mode;
 
     if (desc.mode == ResourceAccessMode::Volatile)
     {
+        NFE_ASSERT(!desc.memoryBlock, "Volatile resources cannot be allocated in memory block");
+
         // volatile buffers are handled via ring buffer
         return true;
     }

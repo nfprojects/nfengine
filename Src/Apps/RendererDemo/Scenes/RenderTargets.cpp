@@ -11,6 +11,7 @@
 
 #include "Engine/Common/Math/Matrix4.hpp"
 #include "Engine/Renderers/RendererCommon/Fence.hpp"
+#include "Engine/Renderers/RendererCommon/MemoryBlock.hpp"
 
 #include <vector>
 #include <functional>
@@ -35,12 +36,10 @@ struct VertexCBuffer
 RenderTargetsScene::RenderTargetsScene()
     : Scene("RenderTarget")
 {
-    RegisterSubScene(std::bind(&RenderTargetsScene::CreateSubSceneNoDepthBuffer, this),
-                     "Single target without depth buffer");
-    RegisterSubScene(std::bind(&RenderTargetsScene::CreateSubSceneDepthBuffer, this),
-                     "Single target with depth buffer");
-    RegisterSubScene(std::bind(&RenderTargetsScene::CreateSubSceneMRT, this),
-                     "Two targets with depth buffer");
+    RegisterSubScene(std::bind(&RenderTargetsScene::CreateSubSceneNoDepthBuffer, this), "Single target without depth buffer");
+    RegisterSubScene(std::bind(&RenderTargetsScene::CreateSubSceneDepthBuffer, this),   "Single target with depth buffer");
+    RegisterSubScene(std::bind(&RenderTargetsScene::CreateSubSceneMRT, this, false),    "Two targets with depth buffer");
+    RegisterSubScene(std::bind(&RenderTargetsScene::CreateSubSceneMRT, this, true),     "Two targets with depth buffer (with aliasing)");
     //RegisterSubScene(std::bind(&RenderTargetsScene::CreateSubSceneMRTandMSAA, this),
     //                 "Two targets with depth buffer (with MSAA)");
 }
@@ -243,6 +242,7 @@ bool RenderTargetsScene::CreateRenderTarget(bool withDepthBuffer, bool multipleR
     {
         texDesc.usage = TextureUsageFlag::DepthStencil | TextureUsageFlag::ReadonlyShaderResource;
         texDesc.format = Format::Depth16;
+        texDesc.memoryBlock = mMemoryBlock;
         texDesc.debugName = "RenderTargetsScene::mDepthBuffer";
         mDepthBuffer = mRendererDevice->CreateTexture(texDesc);
         if (!mDepthBuffer)
@@ -369,8 +369,21 @@ bool RenderTargetsScene::CreateSubSceneDepthBuffer()
     return CreateRenderTarget(true);
 }
 
-bool RenderTargetsScene::CreateSubSceneMRT()
+bool RenderTargetsScene::CreateSubSceneMRT(bool aliasDepthBuffer)
 {
+    if (aliasDepthBuffer)
+    {
+        MemoryBlockDesc desc;
+        desc.alignment = 1 << 16;
+        desc.size = 64 * 1024 * 1024;
+        mMemoryBlock = mRendererDevice->CreateMemoryBlock(desc);
+
+        if (!mMemoryBlock)
+        {
+            return false;
+        }
+    }
+
     if (!CreateShaders(true))
         return false;
     if (!CreateBasicResources(true, true))
@@ -546,7 +559,7 @@ void RenderTargetsScene::ReleaseSubsceneResources()
     mIndexBuffer.Reset();
     mVertexLayout.Reset();
     mSampler.Reset();
-
+    mMemoryBlock.Reset();
 
     mPSBindingInstancePrimary.Reset();
     mPSBindingInstanceDepth.Reset();

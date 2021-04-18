@@ -1,6 +1,6 @@
 /**
  * @file
- * @author  Witek902 (witek902@gmail.com)
+ * @author  Witek902
  * @brief   D3D12 implementation of renderer's device
  */
 
@@ -12,6 +12,7 @@
 #include "RendererD3D12.hpp"
 #include "VertexLayout.hpp"
 #include "Buffer.hpp"
+#include "MemoryBlock.hpp"
 #include "Backbuffer.hpp"
 #include "RenderTarget.hpp"
 #include "ComputePipelineState.hpp"
@@ -263,6 +264,15 @@ bool Device::InitializeDevice(const DeviceInitParams* params)
         return false;
     }
 
+    {
+        mCaps.d3dOptions = {};
+        hr = mDevice->CheckFeatureSupport(D3D12_FEATURE_D3D12_OPTIONS, &mCaps.d3dOptions, sizeof(D3D12_FEATURE_DATA_D3D12_OPTIONS));
+        if (FAILED(hr))
+        {
+            NFE_LOG_WARNING("Failed to query D3D12 device options");
+        }
+    }
+
     return true;
 }
 
@@ -369,6 +379,12 @@ VertexLayoutPtr Device::CreateVertexLayout(const VertexLayoutDesc& desc)
 {
     return CreateGenericResource<VertexLayout, VertexLayoutDesc>(desc);
 }
+
+MemoryBlockPtr Device::CreateMemoryBlock(const MemoryBlockDesc& desc)
+{
+    return CreateGenericResource<MemoryBlock, MemoryBlockDesc>(desc);
+}
+
 
 BufferPtr Device::CreateBuffer(const BufferDesc& desc)
 {
@@ -494,8 +510,8 @@ bool Device::DetectFeatureLevel()
     if (SUCCEEDED(mDevice->CheckFeatureSupport(D3D12_FEATURE_FEATURE_LEVELS, &featureLevelsInfo, sizeof(featureLevelsInfo))))
     {
         const char* featureLevelStr = "unknown";
-        mFeatureLevel = featureLevelsInfo.MaxSupportedFeatureLevel;
-        switch (mFeatureLevel)
+        mCaps.featureLevel = featureLevelsInfo.MaxSupportedFeatureLevel;
+        switch (mCaps.featureLevel)
         {
         case D3D_FEATURE_LEVEL_9_1:     featureLevelStr = "9_1";    break;
         case D3D_FEATURE_LEVEL_9_2:     featureLevelStr = "9_2";    break;
@@ -513,7 +529,7 @@ bool Device::DetectFeatureLevel()
     else
     {
         NFE_LOG_ERROR("Failed to obtain Direct3D feature level");
-        mFeatureLevel = D3D_FEATURE_LEVEL_9_1;
+        mCaps.featureLevel = D3D_FEATURE_LEVEL_9_1;
         return false;
     }
 

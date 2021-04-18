@@ -22,6 +22,10 @@ NFCOMMON_API String ToString(int64 value);
 NFCOMMON_API String ToString(float value);
 NFCOMMON_API String ToString(double value);
 
+// Convert bytes into human-readable form, e.g. "1.23 GB"
+NFCOMMON_API String BytesToString(uint32 size, bool withSpace = true);
+NFCOMMON_API String BytesToString(uint64 size, bool withSpace = true);
+
 /**
  * Split given string view into tokens, accoridng to a given delimiter
  * @param   a       Input string which is to be split

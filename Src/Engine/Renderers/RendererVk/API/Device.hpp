@@ -127,6 +127,7 @@ public:
     void* GetHandle() const override;
 
     VertexLayoutPtr CreateVertexLayout(const VertexLayoutDesc& desc) override;
+    MemoryBlockPtr CreateMemoryBlock(const MemoryBlockDesc& desc) override;
     BufferPtr CreateBuffer(const BufferDesc& desc) override;
     TexturePtr CreateTexture(const TextureDesc& desc) override;
     BackbufferPtr CreateBackbuffer(const BackbufferDesc& desc) override;

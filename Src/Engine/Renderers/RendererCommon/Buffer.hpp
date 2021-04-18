@@ -7,6 +7,7 @@
 #pragma once
 
 #include "Types.hpp"
+#include "MemoryBlock.hpp"
 
 namespace NFE {
 namespace Renderer {
@@ -28,21 +29,19 @@ DEFINE_ENUM_OPERATORS(BufferUsageFlag);
 /**
  * Description of renderer's buffer
  */
-struct BufferDesc
+struct BufferDesc : public CommonResourceDesc
 {
-    ResourceAccessMode mode;
-    BufferUsageFlag usage;
-    size_t size;
-    uint32 structSize;
-    const char* debugName;   //< optional debug name
+    // buffer access mode
+    ResourceAccessMode mode = ResourceAccessMode::Immutable;
 
-    BufferDesc()
-        : mode(ResourceAccessMode::Immutable)
-        , usage(static_cast<BufferUsageFlag>(0))
-        , size(0u)
-        , structSize(0u)
-        , debugName(nullptr)
-    {}
+    // buffer usage flags
+    BufferUsageFlag usage = static_cast<BufferUsageFlag>(0);
+
+    // buffer size in bytes
+    uint32 size = 0u;
+
+    // structure size in bytes (only applicable for structured buffers)
+    uint32 structSize = 0u;
 };
 
 /**

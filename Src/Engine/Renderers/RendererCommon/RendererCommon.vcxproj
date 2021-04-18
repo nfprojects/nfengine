@@ -117,6 +117,7 @@
     <ClInclude Include="ComputePipelineState.hpp" />
     <ClInclude Include="Device.hpp" />
     <ClInclude Include="Fence.hpp" />
+    <ClInclude Include="MemoryBlock.hpp" />
     <ClInclude Include="PCH.hpp" />
     <ClInclude Include="PipelineState.hpp" />
     <ClInclude Include="CommandQueue.hpp" />
