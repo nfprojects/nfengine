@@ -11,6 +11,8 @@
 
 #include <imgui/imgui.h>
 
+#pragma optimize("",off)
+
 namespace NFE {
 
 using namespace NFE::RTTI;
@@ -18,15 +20,16 @@ using namespace NFE::Common;
 
 struct EditPropertyContext
 {
-    const char* name;
+    RTTI::MemberPath path;  // full path to edited property
+    const char* name;       // name of property (does not apply to arrays)
     const Type* type;
-    void* data;
+    const void* data;
     const MemberMetadata* metadata = nullptr;
 };
 
-static bool EditObject_Internal(const EditPropertyContext& ctx);
+static bool EditObject_Internal(const EditPropertyContext& ctx, EditObjectContext& editCtx);
 
-static bool EditObject_Internal_LdrColorRGB(const char* name, Math::LdrColorRGB* color)
+static bool EditObject_Internal_LdrColorRGB(const char* name, const Math::LdrColorRGB* color, EditObjectContext& editCtx)
 {
     // property name
     ImGui::AlignTextToFramePadding();
@@ -44,9 +47,12 @@ static bool EditObject_Internal_LdrColorRGB(const char* name, Math::LdrColorRGB*
     bool changed = false;
     if (ImGui::ColorEdit3("", values))
     {
-        color->r = static_cast<uint8>(values[0] * 255.0f);
-        color->g = static_cast<uint8>(values[1] * 255.0f);
-        color->b = static_cast<uint8>(values[2] * 255.0f);
+        // TODO create variant
+        // color->r = static_cast<uint8>(values[0] * 255.0f);
+        // color->g = static_cast<uint8>(values[1] * 255.0f);
+        // color->b = static_cast<uint8>(values[2] * 255.0f);
+        NFE_FATAL("Not implemented");
+
         changed = true;
     }
 
@@ -55,7 +61,7 @@ static bool EditObject_Internal_LdrColorRGB(const char* name, Math::LdrColorRGB*
     return changed;
 }
 
-static bool EditObject_Internal_HdrColorRGB(const char* name, Math::HdrColorRGB* color)
+static bool EditObject_Internal_HdrColorRGB(const char* name, const Math::HdrColorRGB* color, EditObjectContext& editCtx)
 {
     // property name
     ImGui::AlignTextToFramePadding();
@@ -65,17 +71,26 @@ static bool EditObject_Internal_HdrColorRGB(const char* name, Math::HdrColorRGB*
     // property value
     ImGui::SetNextItemWidth(-1);
 
-	bool changed = ImGui::ColorEdit3("", &(color->r), ImGuiColorEditFlags_Float | ImGuiColorEditFlags_HDR);
-    color->r = Math::Max(0.0f, color->r);
-    color->g = Math::Max(0.0f, color->g);
-    color->b = Math::Max(0.0f, color->b);
+    Math::HdrColorRGB colorCopy = *color;
+
+	bool changed = ImGui::ColorEdit3("", &(colorCopy.r), ImGuiColorEditFlags_Float | ImGuiColorEditFlags_HDR);
+
+    if (changed)
+    {
+        colorCopy.r = Math::Max(0.0f, colorCopy.r);
+        colorCopy.g = Math::Max(0.0f, colorCopy.g);
+        colorCopy.b = Math::Max(0.0f, colorCopy.b);
+        NFE_FATAL("Not implemented");
+
+        // TODO create variant
+    }
 
     ImGui::NextColumn();
 
     return changed;
 }
 
-static bool EditObject_Internal_FloatVector(const char* name, float* data, uint32 numComponents)
+static bool EditObject_Internal_FloatVector(const char* name, const float* data, uint32 numComponents, EditObjectContext& editCtx)
 {
     // property name
     ImGui::AlignTextToFramePadding();
@@ -85,14 +100,24 @@ static bool EditObject_Internal_FloatVector(const char* name, float* data, uint3
     // property value
     ImGui::SetNextItemWidth(-1);
 
-    bool changed = ImGui::InputScalarN("", ImGuiDataType_Float, data, numComponents, nullptr, nullptr, "%.4f");
+    NFE_ASSERT(numComponents > 0 && numComponents <= 4, "");
+    float dataCopy[4];
+    memcpy(dataCopy, data, sizeof(float) * numComponents);
+
+    bool changed = ImGui::InputScalarN("", ImGuiDataType_Float, dataCopy, numComponents, nullptr, nullptr, "%.4f");
+
+    if (changed)
+    {
+        // TODO create variant
+        NFE_FATAL("Not implemented");
+    }
 
     ImGui::NextColumn();
 
     return changed;
 }
 
-static bool EditObject_Internal_Quaternion(const char* name, Math::Quaternion* quat)
+static bool EditObject_Internal_Quaternion(const char* name, const Math::Quaternion* quat, EditObjectContext& editCtx)
 {
     // property name
     ImGui::AlignTextToFramePadding();
@@ -109,7 +134,11 @@ static bool EditObject_Internal_Quaternion(const char* name, Math::Quaternion* q
     if (ImGui::InputFloat3("", &angles.x, 2))
     {
         angles *= NFE_MATH_PI / 180.0f;
-        *quat = Math::Quaternion::FromEulerAngles(angles);
+
+        // TODO create variant
+        //*quat = Math::Quaternion::FromEulerAngles(angles);
+        NFE_FATAL("Not implemented");
+
         changed = true;
     }
 
@@ -119,7 +148,7 @@ static bool EditObject_Internal_Quaternion(const char* name, Math::Quaternion* q
 }
 
 template<typename T, ImGuiDataType_ ImGuiDataType>
-static bool EditObject_Internal_Fundamental_Typed(const EditPropertyContext& ctx)
+static bool EditObject_Internal_Fundamental_Typed(const EditPropertyContext& ctx, EditObjectContext& editCtx)
 {
     const T min = (ctx.metadata && ctx.metadata->HasMinRange()) ? static_cast<T>(ctx.metadata->min) : std::numeric_limits<T>::min();
     const T max = (ctx.metadata && ctx.metadata->HasMaxRange()) ? static_cast<T>(ctx.metadata->max) : std::numeric_limits<T>::max();
@@ -128,21 +157,44 @@ static bool EditObject_Internal_Fundamental_Typed(const EditPropertyContext& ctx
 
     bool changed = false;
 
+    T value = *reinterpret_cast<const T*>(ctx.data);
+
     if (!hasSlider)
     {
-        changed = ImGui::InputScalar("##value", ImGuiDataType, reinterpret_cast<T*>(ctx.data));
+        changed = ImGui::InputScalar("##value", ImGuiDataType, &value);
     }
     else
     {
         const float power = std::is_floating_point_v<T> ? ctx.metadata->logScalePower : 1.0f;
 
-        changed = ImGui::SliderScalar("##value", ImGuiDataType, reinterpret_cast<T*>(ctx.data), &min, &max, nullptr, power);
+        changed = ImGui::SliderScalar("##value", ImGuiDataType, &value, &min, &max, nullptr, power);
+    }
+
+    if (changed)
+    {
+        editCtx.objectAfter = Variant::FromObject(value);
+        editCtx.modifiedPath = ctx.path;
     }
 
     return changed;
 }
 
-static bool EditObject_Internal_Fundamental(const EditPropertyContext& ctx)
+static bool EditObject_Internal_Fundamental_Bool(const EditPropertyContext& ctx, EditObjectContext& editCtx)
+{
+    bool value = *reinterpret_cast<const bool*>(ctx.data);
+
+    bool changed = ImGui::Checkbox("##value", &value);
+
+    if (changed)
+    {
+        editCtx.objectAfter = Variant::FromObject(value);
+        editCtx.modifiedPath = ctx.path;
+    }
+
+    return changed;
+}
+
+static bool EditObject_Internal_Fundamental(const EditPropertyContext& ctx, EditObjectContext& editCtx)
 {
     bool changed = false;
 
@@ -155,54 +207,19 @@ static bool EditObject_Internal_Fundamental(const EditPropertyContext& ctx)
 
     // property value
     ImGui::SetNextItemWidth(-1);
-    if (GetType<bool>() == ctx.type)
-    {
-        changed = ImGui::Checkbox("##value", reinterpret_cast<bool*>(ctx.data));
-    }
-    else if (GetType<int8>() == ctx.type)
-    {
-        changed = EditObject_Internal_Fundamental_Typed<int8, ImGuiDataType_S8>(ctx);
-    }
-    else if (GetType<int16>() == ctx.type)
-    {
-        changed = EditObject_Internal_Fundamental_Typed<int16, ImGuiDataType_S16>(ctx);
-    }
-    else if (GetType<int32>() == ctx.type)
-    {
-        changed = EditObject_Internal_Fundamental_Typed<int32, ImGuiDataType_S32>(ctx);
-    }
-    else if (GetType<int64>() == ctx.type)
-    {
-        changed = EditObject_Internal_Fundamental_Typed<int64, ImGuiDataType_S64>(ctx);
-    }
-    else if (GetType<uint8>() == ctx.type)
-    {
-        changed = EditObject_Internal_Fundamental_Typed<uint64, ImGuiDataType_U8>(ctx);
-    }
-    else if (GetType<uint16>() == ctx.type)
-    {
-        changed = EditObject_Internal_Fundamental_Typed<uint64, ImGuiDataType_U16>(ctx);
-    }
-    else if (GetType<uint32>() == ctx.type)
-    {
-        changed = EditObject_Internal_Fundamental_Typed<uint64, ImGuiDataType_U32>(ctx);
-    }
-    else if (GetType<uint64>() == ctx.type)
-    {
-        changed = EditObject_Internal_Fundamental_Typed<uint64, ImGuiDataType_U64>(ctx);
-    }
-    else if (GetType<float>() == ctx.type)
-    {
-        changed = EditObject_Internal_Fundamental_Typed<float, ImGuiDataType_Float>(ctx);
-    }
-    else if (GetType<double>() == ctx.type)
-    {
-        changed = EditObject_Internal_Fundamental_Typed<double, ImGuiDataType_Float>(ctx);
-    }
-    else
-    {
-        NFE_FATAL("Invalid fundamental type");
-    }
+
+    if (GetType<bool>() == ctx.type)            changed = EditObject_Internal_Fundamental_Bool(ctx, editCtx);
+    else if (GetType<int8>() == ctx.type)       changed = EditObject_Internal_Fundamental_Typed<int8, ImGuiDataType_S8>(ctx, editCtx);
+    else if (GetType<int16>() == ctx.type)      changed = EditObject_Internal_Fundamental_Typed<int16, ImGuiDataType_S16>(ctx, editCtx);
+    else if (GetType<int32>() == ctx.type)      changed = EditObject_Internal_Fundamental_Typed<int32, ImGuiDataType_S32>(ctx, editCtx);
+    else if (GetType<int64>() == ctx.type)      changed = EditObject_Internal_Fundamental_Typed<int64, ImGuiDataType_S64>(ctx, editCtx);
+    else if (GetType<uint8>() == ctx.type)      changed = EditObject_Internal_Fundamental_Typed<uint8, ImGuiDataType_U8>(ctx, editCtx);
+    else if (GetType<uint16>() == ctx.type)     changed = EditObject_Internal_Fundamental_Typed<uint16, ImGuiDataType_U16>(ctx, editCtx);
+    else if (GetType<uint32>() == ctx.type)     changed = EditObject_Internal_Fundamental_Typed<uint32, ImGuiDataType_U32>(ctx, editCtx);
+    else if (GetType<uint64>() == ctx.type)     changed = EditObject_Internal_Fundamental_Typed<uint64, ImGuiDataType_U64>(ctx, editCtx);
+    else if (GetType<float>() == ctx.type)      changed = EditObject_Internal_Fundamental_Typed<float, ImGuiDataType_Float>(ctx, editCtx);
+    else if (GetType<double>() == ctx.type)     changed = EditObject_Internal_Fundamental_Typed<double, ImGuiDataType_Float>(ctx, editCtx);
+    else NFE_FATAL("Invalid fundamental type");
 
     ImGui::NextColumn();
 
@@ -220,7 +237,7 @@ static bool EditObject_EnumItemGetter(void* data, int idx, const char** outText)
     return true;
 }
 
-static bool EditObject_Internal_Enum(const EditPropertyContext& ctx)
+static bool EditObject_Internal_Enum(const EditPropertyContext& ctx, EditObjectContext& editCtx)
 {
     bool changed = false;
 
@@ -251,7 +268,7 @@ static bool EditObject_Internal_Enum(const EditPropertyContext& ctx)
 
     if (changed && currentItem >= 0)
     {
-        type->WriteRawValue(ctx.data, options[currentItem].value);
+        editCtx.objectAfter = std::move(type->MakeVariant(options[currentItem].value));
     }
 
     ImGui::NextColumn();
@@ -259,8 +276,10 @@ static bool EditObject_Internal_Enum(const EditPropertyContext& ctx)
     return changed;
 }
 
-static bool EditObject_Internal_Class_Members(const ClassType* type, void* data)
+static bool EditObject_Internal_Class_Members(const EditPropertyContext& ctx, EditObjectContext& editCtx)
 {
+    const ClassType* type = static_cast<const ClassType*>(ctx.type);
+
     bool changed = false;
 
     Common::DynArray<Member> members;
@@ -270,10 +289,14 @@ static bool EditObject_Internal_Class_Members(const ClassType* type, void* data)
     {
         const Member& member = members[i];
 
-        void* memberData = reinterpret_cast<uint8*>(data) + member.GetOffset();
+        const void* memberData = reinterpret_cast<const uint8*>(ctx.data) + member.GetOffset();
+
+        MemberPath childPath = ctx.path;
+        childPath.Append(member.GetName());
 
         struct EditPropertyContext propertyContext =
         {
+            childPath,
             member.GetDescriptiveName(),
             member.GetType(),
             memberData,
@@ -281,18 +304,18 @@ static bool EditObject_Internal_Class_Members(const ClassType* type, void* data)
         };
 
         ImGui::PushID(i);
-        const bool propertyChanged = EditObject_Internal(propertyContext);
+        const bool propertyChanged = EditObject_Internal(propertyContext, editCtx);
         ImGui::PopID();
 
         if (propertyChanged)
         {
-            // notify object
-            if (type->IsA(GetType<IObject>()))
-            {
-                IObject* object = reinterpret_cast<IObject*>(data);
-                const bool propertyChangeHandled = object->OnPropertyChanged(StringView(member.GetName()));
-                NFE_ASSERT(propertyChangeHandled, "Property change not handled");
-            }
+            //// notify object
+            //if (type->IsA(GetType<IObject>()))
+            //{
+            //    IObject* object = reinterpret_cast<IObject*>(data);
+            //    const bool propertyChangeHandled = object->OnPropertyChanged(StringView(member.GetName()));
+            //    NFE_ASSERT(propertyChangeHandled, "Property change not handled");
+            //}
             changed = true;
         }
     }
@@ -300,7 +323,7 @@ static bool EditObject_Internal_Class_Members(const ClassType* type, void* data)
     return changed;
 }
 
-static bool EditObject_Internal_Class(const EditPropertyContext& ctx)
+static bool EditObject_Internal_Class(const EditPropertyContext& ctx, EditObjectContext& editCtx)
 {
     const ClassType* type = static_cast<const ClassType*>(ctx.type);
 
@@ -316,7 +339,7 @@ static bool EditObject_Internal_Class(const EditPropertyContext& ctx)
 
     if (isOpen)
     {
-        changed = EditObject_Internal_Class_Members(type, ctx.data);
+        changed = EditObject_Internal_Class_Members(ctx, editCtx);
         ImGui::TreePop();
     }
 
@@ -342,7 +365,7 @@ static bool EditObject_TypeGetter(void* data, int idx, const char** outText)
     return true;
 }
 
-static bool EditObject_Internal_Pointer(const EditPropertyContext& ctx)
+static bool EditObject_Internal_Pointer(const EditPropertyContext& ctx, EditObjectContext& editCtx)
 {
     bool changed = false;
 
@@ -396,7 +419,9 @@ static bool EditObject_Internal_Pointer(const EditPropertyContext& ctx)
 
     if (changed)
     {
-        type->Reset(ctx.data, currentType);
+        // TODO create variant
+        //type->Reset(ctx.data, currentType);
+        NFE_FATAL("Not implemented");
     }
 
     ImGui::NextColumn();
@@ -405,21 +430,22 @@ static bool EditObject_Internal_Pointer(const EditPropertyContext& ctx)
     {
         if (currentType)
         {
+            struct EditPropertyContext propertyContext =
+            {
+                ctx.path,
+                "[value]",
+                currentType,
+                type->GetPointedData(ctx.data),
+            };
+
             if (currentType->IsA(GetType<IObject>()))
             {
                 // skip header for class types
-                changed |= EditObject_Internal_Class_Members(static_cast<const ClassType*>(currentType), type->GetPointedData(ctx.data));
+                changed |= EditObject_Internal_Class_Members(propertyContext, editCtx);
             }
             else
             {
-                struct EditPropertyContext propertyContext =
-                {
-                    "[value]",
-                    currentType,
-                    type->GetPointedData(ctx.data),
-                };
-
-                changed |= EditObject_Internal(propertyContext);
+                changed |= EditObject_Internal(propertyContext, editCtx);
             }
         }
         ImGui::TreePop();
@@ -428,7 +454,7 @@ static bool EditObject_Internal_Pointer(const EditPropertyContext& ctx)
     return changed;
 }
 
-static bool EditObject_Internal_NativeArray(const EditPropertyContext& ctx)
+static bool EditObject_Internal_NativeArray(const EditPropertyContext& ctx, EditObjectContext& editCtx)
 {
     bool changed = false;
 
@@ -446,22 +472,26 @@ static bool EditObject_Internal_NativeArray(const EditPropertyContext& ctx)
     {
         const uint32 size = type->GetArraySize();
 
-        for (uint32 i = 0; i < size; ++i)
+        for (uint32 index = 0; index < size; ++index)
         {
-            void* elementData = type->GetElementPointer(ctx.data, i);
+            const void* elementData = type->GetElementPointer(ctx.data, index);
 
             char elementIndexStr[16];
-            sprintf(elementIndexStr, "[%u]", i);
+            sprintf(elementIndexStr, "[%u]", index);
+
+            MemberPath childPath = ctx.path;
+            childPath.Append(index);
 
             struct EditPropertyContext propertyContext =
             {
+                childPath,
                 elementIndexStr,
                 type->GetUnderlyingType(),
                 elementData,
             };
 
-            ImGui::PushID(i);
-            changed |= EditObject_Internal(propertyContext);
+            ImGui::PushID(index);
+            changed |= EditObject_Internal(propertyContext, editCtx);
             ImGui::PopID();
         }
 
@@ -471,7 +501,7 @@ static bool EditObject_Internal_NativeArray(const EditPropertyContext& ctx)
     return changed;
 }
 
-static bool EditObject_Internal_DynArray(const EditPropertyContext& ctx)
+static bool EditObject_Internal_DynArray(const EditPropertyContext& ctx, EditObjectContext& editCtx)
 {
     bool changed = false;
 
@@ -489,22 +519,26 @@ static bool EditObject_Internal_DynArray(const EditPropertyContext& ctx)
 
     if (isOpen)
     {
-        for (uint32 i = 0; i < arraySize; ++i)
+        for (uint32 index = 0; index < arraySize; ++index)
         {
-            void* elementData = type->GetElementPointer(ctx.data, i);
+            const void* elementData = type->GetElementPointer(ctx.data, index);
 
             char elementIndexStr[16];
-            sprintf(elementIndexStr, "[%u]", i);
+            sprintf(elementIndexStr, "[%u]", index);
+
+            MemberPath childPath = ctx.path;
+            childPath.Append(index);
 
             struct EditPropertyContext propertyContext =
             {
+                childPath,
                 elementIndexStr,
                 type->GetUnderlyingType(),
                 elementData,
             };
 
-            ImGui::PushID(i);
-            changed |= EditObject_Internal(propertyContext);
+            ImGui::PushID(index);
+            changed |= EditObject_Internal(propertyContext, editCtx);
             ImGui::PopID();
         }
 
@@ -514,60 +548,60 @@ static bool EditObject_Internal_DynArray(const EditPropertyContext& ctx)
     return changed;
 }
 
-static bool EditObject_Internal(const EditPropertyContext& ctx)
+static bool EditObject_Internal(const EditPropertyContext& ctx, EditObjectContext& editCtx)
 {
     bool changed = false;
 
     if (ctx.type == RTTI::GetType<Math::LdrColorRGB>())
     {
-        changed = EditObject_Internal_LdrColorRGB(ctx.name, static_cast<Math::LdrColorRGB*>(ctx.data));
+        changed = EditObject_Internal_LdrColorRGB(ctx.name, static_cast<const Math::LdrColorRGB*>(ctx.data), editCtx);
     }
     else if (ctx.type == RTTI::GetType<Math::HdrColorRGB>())
     {
-        changed = EditObject_Internal_HdrColorRGB(ctx.name, static_cast<Math::HdrColorRGB*>(ctx.data));
+        changed = EditObject_Internal_HdrColorRGB(ctx.name, static_cast<const Math::HdrColorRGB*>(ctx.data), editCtx);
     }
     else if (ctx.type == RTTI::GetType<Math::Vec2f>())
     {
-        changed = EditObject_Internal_FloatVector(ctx.name, static_cast<float*>(ctx.data), 2);
+        changed = EditObject_Internal_FloatVector(ctx.name, static_cast<const float*>(ctx.data), 2, editCtx);
     }
     else if (ctx.type == RTTI::GetType<Math::Vec3f>())
     {
-        changed = EditObject_Internal_FloatVector(ctx.name, static_cast<float*>(ctx.data), 3);
+        changed = EditObject_Internal_FloatVector(ctx.name, static_cast<const float*>(ctx.data), 3, editCtx);
     }
     else if (ctx.type == RTTI::GetType<Math::Vec4fU>())
     {
-        changed = EditObject_Internal_FloatVector(ctx.name, static_cast<float*>(ctx.data), 4);
+        changed = EditObject_Internal_FloatVector(ctx.name, static_cast<const float*>(ctx.data), 4, editCtx);
     }
     else if (ctx.type == RTTI::GetType<Math::Vec4f>())
     {
-        changed = EditObject_Internal_FloatVector(ctx.name, static_cast<float*>(ctx.data), 4);
+        changed = EditObject_Internal_FloatVector(ctx.name, static_cast<const float*>(ctx.data), 4, editCtx);
     }
     else if (ctx.type == RTTI::GetType<Math::Quaternion>())
     {
-        changed = EditObject_Internal_Quaternion(ctx.name, static_cast<Math::Quaternion*>(ctx.data));
+        changed = EditObject_Internal_Quaternion(ctx.name, static_cast<const Math::Quaternion*>(ctx.data), editCtx);
     }
     else
     {
         switch (ctx.type->GetKind())
         {
         case TypeKind::Fundamental:
-            changed = EditObject_Internal_Fundamental(ctx);
+            changed = EditObject_Internal_Fundamental(ctx, editCtx);
             break;
         case TypeKind::Enumeration:
-            changed = EditObject_Internal_Enum(ctx);
+            changed = EditObject_Internal_Enum(ctx, editCtx);
             break;
         case TypeKind::Class:
-            changed = EditObject_Internal_Class(ctx);
+            changed = EditObject_Internal_Class(ctx, editCtx);
             break;
         case TypeKind::UniquePtr:
         case TypeKind::SharedPtr:
-            changed = EditObject_Internal_Pointer(ctx);
+            changed = EditObject_Internal_Pointer(ctx, editCtx);
             break;
         case TypeKind::NativeArray:
-            changed = EditObject_Internal_NativeArray(ctx);
+            changed = EditObject_Internal_NativeArray(ctx, editCtx);
             break;
         case TypeKind::DynArray:
-            changed = EditObject_Internal_DynArray(ctx);
+            changed = EditObject_Internal_DynArray(ctx, editCtx);
             break;
         default:
             NFE_FATAL("Invalid type");
@@ -578,19 +612,44 @@ static bool EditObject_Internal(const EditPropertyContext& ctx)
     return changed;
 }
 
-bool EditObject_Root_Internal(const char* rootName, const Type* type, void* data)
+bool EditObject_Root_Internal(const char* rootName, const Type* type, const void* data, EditObjectContext& editCtx)
 {
     ImGui::PushStyleVar(ImGuiStyleVar_IndentSpacing, 8.0f);
     ImGui::Columns(2);
 
-    struct EditPropertyContext propertyContext = { rootName, type, data, };
+    struct EditPropertyContext propertyContext = { MemberPath(), rootName, type, data };
 
-    bool changed = EditObject_Internal(propertyContext);
+    bool changed = EditObject_Internal(propertyContext, editCtx);
 
     ImGui::Columns(1);
     ImGui::PopStyleVar();
 
     return changed;
+}
+
+bool ApplyObjectChanges_Internal(const RTTI::Type* type, void* data, const EditObjectContext& context)
+{
+    const RTTI::Type* memberType = nullptr;
+    void* memberData = nullptr;
+
+    if (!type->GetMemberByPath(data, context.modifiedPath, memberType, memberData))
+    {
+        NFE_LOG_ERROR("Failed to find edited member");
+        return false;
+    }
+
+    NFE_ASSERT(memberData, "Invalid member data");
+    NFE_ASSERT(memberType == context.objectAfter.GetType(),
+        "Member type (%s) does not match type found in variant (%s)",
+        memberType->GetName().Str(), context.objectAfter.GetType()->GetName().Str());
+
+    if (!memberType->Clone(memberData, context.objectAfter.GetData()))
+    {
+        NFE_LOG_ERROR("Failed to clone object data");
+        return false;
+    }
+
+    return true;
 }
 
 } // namesapce NFE

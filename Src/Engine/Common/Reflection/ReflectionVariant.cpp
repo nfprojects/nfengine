@@ -62,5 +62,26 @@ void Variant::Clear()
     mObjectData.Release();
 }
 
+Variant Variant::FromObject(const Type* type, const void* object)
+{
+    NFE_ASSERT(type, "Invalid type");
+
+    Common::Buffer buffer;
+    if (!buffer.Resize(type->GetSize(), nullptr, type->GetAlignment()))
+    {
+        NFE_FATAL("Failed to allocate memory");
+        return Variant{};
+    }
+
+    type->ConstructObject(buffer.Data());
+    if (!type->Clone(buffer.Data(), object))
+    {
+        NFE_FATAL("Failed to clone object");
+        return Variant{};
+    }
+
+    return Variant(type, std::move(buffer));
+}
+
 } // namespace RTTI
 } // namespace NFE

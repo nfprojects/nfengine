@@ -339,6 +339,8 @@ void DemoWindow::RenderUI_Debugging_Color()
 //#endif
 }
 
+#pragma optimize("",off)
+
 bool DemoWindow::RenderUI_Settings()
 {
     bool resetFrame = false;
@@ -349,12 +351,14 @@ bool DemoWindow::RenderUI_Settings()
     //    ImGui::TreePop();
     //}
 
-    if (EditObject("Renderer", mRenderer))
+    EditObjectContext editCtx;
+
+    if (EditObject("Renderer", mRenderer, editCtx))
     {
         resetFrame = true;
     }
 
-    if (EditObject("Rendering Params", mRenderingParams))
+    if (EditObject("Rendering Params", mRenderingParams, editCtx))
     {
         resetFrame = true;
     }
@@ -365,17 +369,19 @@ bool DemoWindow::RenderUI_Settings()
         ImGui::TreePop();
     }
 
-    if (EditObject("Postprocess Params", mPostprocessParams))
+    if (EditObject("Postprocess Params", mPostprocessParams, editCtx))
     {
         // TODO async
         // notify Viewport that params has changed, which requires full frame refresh
         // otherwise, only rendered parts of viewport need postprocessing being applied
         //mViewport->SetPostprocessParams(mPostprocessParams);
+
+        ApplyObjectChanges(mPostprocessParams, editCtx);
     }
 
     if (mSelectedObject)
     {
-        if (EditObject("Selection", *mSelectedObject))
+        if (EditObject("Selection", *mSelectedObject, editCtx))
         {
             resetFrame = true;
 
@@ -386,7 +392,7 @@ bool DemoWindow::RenderUI_Settings()
 
     if (mSelectedMaterial)
     {
-        if (EditObject("Material", *mSelectedMaterial))
+        if (EditObject("Material", *mSelectedMaterial, editCtx))
         {
             resetFrame = true;
         }

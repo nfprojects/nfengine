@@ -182,6 +182,13 @@ public:
     // Applies to fundamental types and POD structures
     virtual bool CanBeMemcopied() const;
 
+    /**
+     * Get member pointer by path.
+     * Returns member pointer and type.
+     * Returns false if traversal fails (e.g. unknown member name, array out of range, etc.)
+     */
+    virtual bool GetMemberByPath(void* object, const MemberPath& path, const Type*& outMemberType, void*& outMemberData) const;
+
 protected:
 
     // type name (including namespace)

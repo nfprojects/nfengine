@@ -19,11 +19,7 @@ class NFCOMMON_API ArrayType : public Type
     NFE_MAKE_NONCOPYABLE(ArrayType)
 
 public:
-    NFE_FORCE_INLINE ArrayType(const Type* underlyingType)
-        : mUnderlyingType(underlyingType)
-    {
-        NFE_ASSERT(mUnderlyingType, "Array's underlying type cannot be null. Type: %s", GetName().Str());
-    }
+    ArrayType(const Type* underlyingType);
 
     // get number of array elements
     virtual uint32 GetArraySize(const void* arrayObject) const = 0;
@@ -34,6 +30,8 @@ public:
     // access element data
     virtual void* GetElementPointer(void* arrayObject, uint32 index) const = 0;
     virtual const void* GetElementPointer(const void* arrayObject, uint32 index) const = 0;
+
+    virtual bool GetMemberByPath(void* object, const MemberPath& path, const Type*& outMemberType, void*& outMemberData) const override;
 
 protected:
     const Type* mUnderlyingType;    // array element type

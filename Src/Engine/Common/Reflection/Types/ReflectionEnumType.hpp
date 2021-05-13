@@ -58,6 +58,8 @@ public:
     void WriteRawValue(void* object, uint64 rawValue) const;
     uint64 ReadRawValue(const void* object) const;
 
+    Variant MakeVariant(const uint64 rawValue) const;
+
     void PrintInfo() const override;
     bool Serialize(const void* object, Common::IConfig& config, Common::ConfigValue& outValue, SerializationContext& context) const override;
     bool SerializeBinary(const void* object, Common::OutputStream* stream, SerializationContext& context) const override;

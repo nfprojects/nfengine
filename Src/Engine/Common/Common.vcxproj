@@ -307,6 +307,7 @@
     <ClCompile Include="Reflection\ReflectionVariant.cpp" />
     <ClCompile Include="Reflection\SerializationContext.cpp" />
     <ClCompile Include="Reflection\Serializer.cpp" />
+    <ClCompile Include="Reflection\Types\ReflectionArrayType.cpp" />
     <ClCompile Include="Reflection\Types\ReflectionClassType.cpp" />
     <ClCompile Include="Reflection\Types\ReflectionDynArrayType.cpp" />
     <ClCompile Include="Reflection\Types\ReflectionEnumType.cpp" />

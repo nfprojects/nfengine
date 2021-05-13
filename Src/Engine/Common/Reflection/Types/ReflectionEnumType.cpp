@@ -209,6 +209,36 @@ bool EnumType::FindOptionByName(const Common::StringView name, uint64& outValue)
     return false;
 }
 
+Variant EnumType::MakeVariant(const uint64 rawValue) const
+{
+    const size_t size = GetSize();
+    if (size == 1u)
+    {
+        NFE_ASSERT(rawValue <= UINT8_MAX, "Invalid 8-bit enum value: %llu", rawValue);
+        const uint8 value = static_cast<uint8>(rawValue);
+        return Variant::FromObject(this, &value);
+    }
+    else if (size == 2u)
+    {
+        NFE_ASSERT(rawValue <= UINT16_MAX, "Invalid 16-bit enum value: %llu", rawValue);
+        const uint16 value = static_cast<uint16>(rawValue);
+        return Variant::FromObject(this, &value);
+    }
+    else if (size == 4u)
+    {
+        NFE_ASSERT(rawValue <= UINT32_MAX, "Invalid 32-bit enum value: %llu", rawValue);
+        const uint32 value = static_cast<uint32>(rawValue);
+        return Variant::FromObject(this, &value);
+    }
+    else if (size == 8u)
+    {
+        return Variant::FromObject(this, &rawValue);
+    }
+    
+    NFE_FATAL("Invalid enum type size: %zu", size);
+    return Variant();
+}
+
 void EnumType::WriteRawValue(void* object, uint64 rawValue) const
 {
     NFE_ASSERT(object, "Invalid object");

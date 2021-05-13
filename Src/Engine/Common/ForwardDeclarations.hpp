@@ -166,6 +166,7 @@ class ClassType;
 class DynArrayType;
 class TypeRegistry;
 class Member;
+struct MemberPath;
 class Variant;
 class SerializationContext;
 class ITypeSerializer;

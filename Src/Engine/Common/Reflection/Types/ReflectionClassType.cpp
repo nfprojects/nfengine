@@ -634,5 +634,35 @@ bool ClassType::Clone(void* destObject, const void* sourceObject) const
     return success;
 }
 
+bool ClassType::GetMemberByPath(void* object, const MemberPath& path, const Type*& outMemberType, void*& outMemberData) const
+{
+    // empty path means we access 'this' object (not member)
+    if (path.elements.Empty())
+    {
+        outMemberData = object;
+        outMemberType = this;
+        return true;
+    }
+
+    const MemberPath::Element pathElement = path.elements.Front();
+    NFE_ASSERT(pathElement.type == MemberPath::ElementType::Name, "Class member must be referenced by name");
+
+    for (const Member& member : mMembers)
+    {
+        if (member.GetName() == pathElement.name)
+        {
+            // trim first element
+            MemberPath childPath = path;
+            childPath.elements.Erase(childPath.elements.Begin(), childPath.elements.Begin() + 1);
+
+            // traverse child memeber
+            return member.GetType()->GetMemberByPath(member.GetMemberPtr(object), childPath, outMemberType, outMemberData);
+        }
+    }
+
+    // member not found
+    return false;
+}
+
 } // namespace RTTI
 } // namespace NFE

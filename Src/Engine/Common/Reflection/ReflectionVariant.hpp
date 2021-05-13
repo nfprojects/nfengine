@@ -10,7 +10,7 @@ namespace NFE {
 namespace RTTI {
 
 /**
- * Hold an object of any RTTI type.
+ * Holds an object of any RTTI type.
  * Note: the variant has ownership of the object - it's destroyed when the variant is destroyed.
  */
 class NFCOMMON_API Variant
@@ -49,6 +49,16 @@ public:
             return reinterpret_cast<T*>(mObjectData.Data());
         }
         return nullptr;
+    }
+
+    // Build variant out of existing object (creates deep copy of it)
+    static Variant FromObject(const Type* type, const void* object);
+
+    // Build variant out of existing object (creates deep copy of it)
+    template<typename T>
+    static Variant FromObject(const T& object)
+    {
+        return FromObject(RTTI::GetType<T>(), &object);
     }
 
 private:

@@ -55,6 +55,12 @@ struct MemberPath
     NFE_FORCE_INLINE MemberPath(const MemberPath&) = default;
     NFE_FORCE_INLINE MemberPath(MemberPath&&) = default;
 
+    NFE_FORCE_INLINE MemberPath& operator = (const MemberPath& other)
+    {
+        elements = other.elements;
+        return *this;
+    }
+
     NFE_FORCE_INLINE MemberPath(const char* name)
     {
         elements.PushBack(Element(name));
@@ -65,13 +71,13 @@ struct MemberPath
         elements.PushBack(Element(name));
     }
 
-    NFE_FORCE_INLINE MemberPath& operator[] (const char* name)
+    NFE_FORCE_INLINE MemberPath& Append(const char* name)
     {
         elements.PushBack(Element(name));
         return *this;
     }
 
-    NFE_FORCE_INLINE MemberPath& operator[] (const uint32 index)
+    NFE_FORCE_INLINE MemberPath& Append(const uint32 index)
     {
         elements.PushBack(Element(index));
         return *this;

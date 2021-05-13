@@ -6,6 +6,7 @@
 
 #include "PCH.hpp"
 #include "ReflectionType.hpp"
+#include "../ReflectionMemberPath.hpp"
 #include "../../Logger/Logger.hpp"
 #include "../../Containers/StringView.hpp"
 #include "../../Memory/DefaultAllocator.hpp"
@@ -140,6 +141,16 @@ bool Type::TryLoadFromDifferentType(void* outObject, const Variant& otherObject)
 bool Type::CanBeMemcopied() const
 {
     return false;
+}
+
+bool Type::GetMemberByPath(void* object, const MemberPath& path, const Type*& outMemberType, void*& outMemberData) const
+{
+    NFE_ASSERT(path.elements.Empty(), "Leaf members are expected to have empty path");
+
+    outMemberData = object;
+    outMemberType = this;
+
+    return true;
 }
 
 } // namespace RTTI

@@ -77,6 +77,7 @@ public:
     virtual bool DeserializeBinary(void* outObject, Common::InputStream& stream, SerializationContext& context) const override;
     virtual bool Compare(const void* objectA, const void* objectB) const override;
     virtual bool Clone(void* destObject, const void* sourceObject) const override;
+    virtual bool GetMemberByPath(void* object, const MemberPath& path, const Type*& outMemberType, void*& outMemberData) const override;
 
 private:
 

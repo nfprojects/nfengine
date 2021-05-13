@@ -1001,6 +1001,9 @@
     <ClCompile Include="Reflection\ReflectionVariant.cpp">
       <Filter>Reflection</Filter>
     </ClCompile>
+    <ClCompile Include="Reflection\Types\ReflectionArrayType.cpp">
+      <Filter>Reflection\Types</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Natvis Include="Math\Math.natvis">
