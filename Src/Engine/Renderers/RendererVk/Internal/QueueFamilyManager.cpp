@@ -166,6 +166,9 @@ void QueueFamilyManager::FreeQueue(CommandQueueType type, uint32 index)
 
 void QueueFamilyManager::Release()
 {
+    if (mDevice == VK_NULL_HANDLE)
+        return;
+
     for (uint32 i = 0; i < mFamilies.Size(); ++i)
     {
         if (mFamilies[i].commandPool != VK_NULL_HANDLE)

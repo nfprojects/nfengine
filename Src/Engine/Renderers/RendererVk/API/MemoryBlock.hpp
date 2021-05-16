@@ -1,6 +1,7 @@
 /**
  * @file
  * @author  Witek902
+ * @author  LKostyra (costyrra.xl@gmail.com)
  * @brief   Declaration of Vulkan renderer's memory block.
  */
 
@@ -11,8 +12,12 @@
 namespace NFE {
 namespace Renderer {
 
-class MemoryBlock : public IMemoryBlock
+class MemoryBlock: public IMemoryBlock
 {
+    VkDeviceMemory mMemory;
+    uint64 mSize;
+    uint32 mAlignment;
+
 public:
     MemoryBlock();
     ~MemoryBlock();
@@ -28,10 +33,6 @@ public:
     {
         return mAlignment;
     }
-
-private:
-    uint64 mSize;
-    uint32 mAlignment;
 };
 
 } // namespace Renderer

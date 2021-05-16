@@ -1,6 +1,7 @@
 /**
  * @file
  * @author  Witek902
+ * @author  LKostyra (costyrra.xl@gmail.com)
  * @brief   Vulkan implementation of renderer's memory block.
  */
 
@@ -12,7 +13,8 @@ namespace NFE {
 namespace Renderer {
 
 MemoryBlock::MemoryBlock()
-    : mSize(0)
+    : mMemory(VK_NULL_HANDLE)
+    , mSize(0)
     , mAlignment(0)
 {
 }

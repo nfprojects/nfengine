@@ -37,5 +37,9 @@
     memset(&x, 0, sizeof(x))
 #endif // VK_ZERO_MEMORY
 
+#ifndef MS_TO_NS
+#define MS_TO_NS(x) (x * 1'000'000)
+#endif // S_IN_NS
+
 #define VK_MAX_VOLATILE_BUFFERS 8
 #define VK_SEMAPHORE_POOL_SIZE 16

@@ -110,6 +110,9 @@
     <ClInclude Include="API\CommandList.hpp">
       <Filter>API</Filter>
     </ClInclude>
+    <ClInclude Include="Internal\FenceSignaller.hpp">
+      <Filter>Internal</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp" />
@@ -201,6 +204,9 @@
     </ClCompile>
     <ClCompile Include="API\CommandList.cpp">
       <Filter>API</Filter>
+    </ClCompile>
+    <ClCompile Include="Internal\FenceSignaller.cpp">
+      <Filter>Internal</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

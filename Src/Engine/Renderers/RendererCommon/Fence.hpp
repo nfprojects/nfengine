@@ -8,6 +8,7 @@
 
 #include "RendererCommon.hpp"
 
+#include "../../Common/Containers/SharedPtr.hpp"
 #include "../../Common/Containers/WeakPtr.hpp"
 
 namespace NFE {

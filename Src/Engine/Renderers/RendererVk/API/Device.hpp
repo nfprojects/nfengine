@@ -13,6 +13,7 @@
 #include "CommandRecorder.hpp"
 #include "Internal/Instance.hpp"
 #include "Internal/QueueFamilyManager.hpp"
+#include "Internal/FenceSignaller.hpp"
 #include "Internal/RenderPassManager.hpp"
 #include "Internal/SemaphorePool.hpp"
 #include "Internal/RingBuffer.hpp"
@@ -41,6 +42,7 @@ private:
     VkPipelineCache mPipelineCache;
     Common::DynArray<VkSurfaceFormatKHR> mSupportedFormats;
     QueueFamilyManager mQueueFamilyManager;
+    FenceSignaller mFenceSignaller;
     Common::UniquePtr<RenderPassManager> mRenderPassManager;
     Common::UniquePtr<RingBuffer> mRingBuffer;
     bool mDebugEnable;
@@ -84,6 +86,11 @@ public:
     NFE_INLINE QueueFamilyManager& GetQueueFamilyManager()
     {
         return mQueueFamilyManager;
+    }
+
+    NFE_INLINE FenceSignaller& GetFenceSignaller()
+    {
+        return mFenceSignaller;
     }
 
     NFE_INLINE RenderPassManager* GetRenderPassManager() const

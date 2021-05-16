@@ -7,57 +7,26 @@
 namespace NFE {
 namespace Renderer {
 
-Fence::Fence(const FenceFlags flags)
-    : mFlags(flags)
-    , mSyncTask(Common::InvalidTaskID)
-    , mFinished(false)
-    , mLock()
-{
-}
 
-Fence::~Fence()
+bool FenceData::Init()
 {
-    if (mFlags & FenceFlag_CpuWaitable)
+    if (flags & FenceFlag_CpuWaitable)
     {
-        NFE_ASSERT(mFinished.load(), "Fence should be finished when destroying. Otherwise it may create a deadlock as the dependency won't be fulfilled");
-    }
-}
-
-bool Fence::Init()
-{
-    if (mFlags & FenceFlag_CpuWaitable)
-    {
-        Common::TaskDesc desc;
-        desc.debugName = "NFE::Renderer::Fence::mSyncTask";
-        desc.priority = Common::ThreadPool::MaxPriority;
-        desc.function = [this](const Common::TaskContext&) {
-            vkWaitForFences(gDevice->GetDevice(), 1, &mSynchronizable.mFence, VK_TRUE, UINT64_MAX);
-
-            {
-                NFE_SCOPED_LOCK(mLock);
-                mFinished.exchange(true);
-            }
-        };
-
-        mSyncTask = Common::ThreadPool::GetInstance().CreateTask(desc);
-        if (mSyncTask == Common::InvalidTaskID)
-        {
-            NFE_LOG_ERROR("Failed to create Fence dependency task");
-            return false;
-        }
-
+        // TODO this should be preallocated and taken from a pool. This way we will not allocate a new
+        //      Fence each time we call CommandQueue::Signal() - instead we can just reset a Fence and
+        //      reuse it.
         VkFenceCreateInfo info;
         VK_ZERO_MEMORY(info);
         info.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO;
-        VkResult result = vkCreateFence(gDevice->GetDevice(), &info, nullptr, &mSynchronizable.mFence);
+        VkResult result = vkCreateFence(gDevice->GetDevice(), &info, nullptr, &synchronizable.fence);
         CHECK_VKRESULT(result, "Failed to create Vulkan Fence");
     }
-    else if (mFlags & FenceFlag_GpuWaitable)
+    else if (flags & FenceFlag_GpuWaitable)
     {
         VkSemaphoreCreateInfo info;
         VK_ZERO_MEMORY(info);
         info.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;
-        VkResult result = vkCreateSemaphore(gDevice->GetDevice(), &info, nullptr, &mSynchronizable.mSemaphore);
+        VkResult result = vkCreateSemaphore(gDevice->GetDevice(), &info, nullptr, &synchronizable.semaphore);
         CHECK_VKRESULT(result, "Failed to create Vulkan Semaphore");
     }
     else
@@ -66,25 +35,76 @@ bool Fence::Init()
         return false;
     }
 
+    return false;
+}
+
+
+Fence::Fence(const FenceFlags flags)
+    : mSyncTask(Common::InvalidTaskID)
+    , mFinished(false)
+    , mLock()
+    , mData(Common::MakeSharedPtr<FenceData>(flags, [this]() { OnSignalled(); }))
+{
+    NFE_ASSERT(mData->flags & (FenceFlag_CpuWaitable | FenceFlag_GpuWaitable), "Invalid Fence flags provided");
+    NFE_ASSERT(mData->flags != (FenceFlag_CpuWaitable | FenceFlag_GpuWaitable), "Fence should have only one type");
+}
+
+Fence::~Fence()
+{
+    if (mData->flags & FenceFlag_CpuWaitable)
+    {
+        NFE_ASSERT(mFinished.load(), "Fence should be finished when destroying. Otherwise it may create a deadlock as the dependency won't be fulfilled");
+    }
+
+    mData.Reset();
+}
+
+bool Fence::Init()
+{
+    mData->Init();
+
+    if (mData->flags & FenceFlag_CpuWaitable)
+    {
+        Common::TaskDesc desc;
+        desc.debugName = "NFE::Renderer::Fence::mSyncTask";
+        desc.priority = Common::ThreadPool::MaxPriority;
+        mSyncTask = Common::ThreadPool::GetInstance().CreateTask(desc);
+        if (mSyncTask == Common::InvalidTaskID)
+        {
+            NFE_LOG_ERROR("Failed to create Fence dependency task");
+            return false;
+        }
+    }
+
+    gDevice->GetFenceSignaller().RegisterFence(mData);
+
     return true;
+}
+
+void Fence::OnSignalled()
+{
+    NFE_SCOPED_LOCK(mLock);
+
+    const bool wasFinished = mFinished.exchange(true);
+    NFE_ASSERT(!wasFinished, "Fence was already finished, this should happen only once");
+
+    Common::ThreadPool::GetInstance().DispatchTask(mSyncTask);
 }
 
 bool Fence::IsFinished() const
 {
-    NFE_ASSERT(mFlags & FenceFlag_CpuWaitable, "Cannot check if GPU-waitable Fence is finished");
+    NFE_ASSERT(mData->flags & FenceFlag_CpuWaitable, "Cannot check if GPU-waitable Fence is finished");
     return mFinished;
 }
 
 void Fence::Sync(Common::TaskBuilder& taskBuilder)
 {
-    NFE_ASSERT(mFlags & FenceFlag_CpuWaitable, "Cannot check if GPU-waitable Fence is finished");
+    NFE_ASSERT(mData->flags & FenceFlag_CpuWaitable, "Cannot sync to GPU-waitable Fence");
 
     NFE_SCOPED_LOCK(mLock);
 
     if (!mFinished)
-    {
         taskBuilder.CustomTask(mSyncTask);
-    }
 }
 
 } // namespace Renderer

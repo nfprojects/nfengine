@@ -74,11 +74,11 @@ void CommandQueue::Submit(const Common::ArrayView<ICommandList*> commandLists,
 
         if (f->GetFlags() & FenceFlag_CpuWaitable)
         {
-            fences.PushBack(f->GetSynchronizable().mFence);
+            fences.PushBack(f->GetSynchronizable().fence);
         }
         else if (f->GetFlags() & FenceFlag_GpuWaitable)
         {
-            semaphores.PushBack(f->GetSynchronizable().mSemaphore);
+            semaphores.PushBack(f->GetSynchronizable().semaphore);
             // TODO Wait stages are assumed to be TOP_OF_PIPE for now to ensure proper synchronization.
             //      This could be made faster by providing proper stages.
             semaphoreWaitStages.PushBack(VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT);
@@ -117,18 +117,24 @@ void CommandQueue::Submit(const Common::ArrayView<ICommandList*> commandLists,
 
 FencePtr CommandQueue::Signal(const FenceFlags flags)
 {
-    // flags determines whether it's CPU wait or GPU wait
-    // see Demo::DynamicTextureScene.cpp@176 for more info/use case
     FencePtr fence = gDevice->CreateFence(flags);
     NFE_ASSERT(fence.Get() != nullptr, "Failed to create a Fence object for signalling");
     Fence* f = dynamic_cast<Fence*>(fence.Get());
+
+    VkResult result = VK_SUCCESS;
 
     // TODO handle mutliple Signal() calls:
     //  - Cache created objects until the next Submit
     //  - Submit them all in one batch before submitting next CommandLists
     if (flags & FenceFlag_CpuWaitable)
     {
-        vkQueueSubmit(mQueue, 0, nullptr, f->GetSynchronizable().mFence);
+        NFE_LOG_INFO("Fence ptr: %p", f);
+        result = vkQueueSubmit(mQueue, 0, nullptr, f->GetSynchronizable().fence);
+        if (result != VK_SUCCESS)
+        {
+            NFE_LOG_ERROR("Failed to submit CpuWaitable fence: %d (%s)", result, TranslateVkResultToString(result));
+            return nullptr;
+        }
     }
     else
     {
@@ -136,8 +142,13 @@ FencePtr CommandQueue::Signal(const FenceFlags flags)
         VK_ZERO_MEMORY(info);
         info.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
         info.signalSemaphoreCount = 1;
-        info.pSignalSemaphores = &f->GetSynchronizable().mSemaphore;
-        vkQueueSubmit(mQueue, 1, &info, VK_NULL_HANDLE);
+        info.pSignalSemaphores = &f->GetSynchronizable().semaphore;
+        result = vkQueueSubmit(mQueue, 1, &info, VK_NULL_HANDLE);
+        if (result != VK_SUCCESS)
+        {
+            NFE_LOG_ERROR("Failed to submit GpuWaitable fence: %d (%s)", result, TranslateVkResultToString(result));
+            return nullptr;
+        }
     }
 
     return fence;

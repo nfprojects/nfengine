@@ -288,7 +288,7 @@ bool CommandRecorder::WriteBuffer(const BufferPtr& buffer, size_t offset, size_t
         return false;
     }
 
-    if (b->mMode == ResourceAccessMode::Upload)
+    if (b->mMode == ResourceAccessMode::GPUOnly || b->mMode == ResourceAccessMode::Immutable)
     {
         if (static_cast<VkDeviceSize>(size) > b->mBufferSize)
         {

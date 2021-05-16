@@ -25,6 +25,7 @@ SET(NFRENDERERVK_SOURCES
     API/VertexLayout.cpp
     Internal/Debugger.cpp
     Internal/Extensions.cpp
+    Internal/FenceSignaller.cpp
     Internal/Instance.cpp
     Internal/QueueFamilyManager.cpp
     Internal/RenderPassManager.cpp
@@ -55,6 +56,7 @@ SET(NFRENDERERVK_HEADERS
     API/VertexLayout.hpp
     Internal/Debugger.hpp
     Internal/Extensions.hpp
+    Internal/FenceSignaller.hpp
     Internal/GetProc.hpp
     Internal/Instance.hpp
     Internal/QueueFamilyManager.hpp

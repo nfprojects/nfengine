@@ -62,6 +62,8 @@ Device::Device()
     , mDescriptorPool(VK_NULL_HANDLE)
     , mPipelineCache(VK_NULL_HANDLE)
     , mSupportedFormats()
+    , mQueueFamilyManager()
+    , mFenceSignaller()
     , mRenderPassManager(nullptr)
     , mRingBuffer(nullptr)
     , mDebugEnable(false)
@@ -75,6 +77,7 @@ Device::~Device()
 
     mRingBuffer.Reset();
     mRenderPassManager.Reset();
+    mFenceSignaller.Release();
     mQueueFamilyManager.Release();
 
     if (mDefaultSampler != VK_NULL_HANDLE)
@@ -279,9 +282,10 @@ bool Device::Init(const DeviceInitParams* params)
     Debugger::Instance().NameObject(reinterpret_cast<uint64_t>(mDescriptorPool), VK_OBJECT_TYPE_DESCRIPTOR_POOL, "Device-DescriptorPool");
 
 
-    mRenderPassManager.Reset(new RenderPassManager(mDevice));
+    mRenderPassManager = Common::MakeUniquePtr<RenderPassManager>(mDevice);
 
-    mRingBuffer.Reset(new RingBuffer(mDevice));
+    // TODO Ring Buffer must be per command pool most probably
+    mRingBuffer = Common::MakeUniquePtr<RingBuffer>(mDevice);
     mRingBuffer->Init(1024 * 1024);
 
 
@@ -315,6 +319,14 @@ bool Device::Init(const DeviceInitParams* params)
 
 
     Debugger::Instance().NameObject(reinterpret_cast<uint64_t>(mPipelineCache), VK_OBJECT_TYPE_PIPELINE_CACHE, "Device-PipelineCache");
+
+
+    if (!mFenceSignaller.Init())
+    {
+        NFE_LOG_ERROR("Failed to start Fence Signaller");
+        return false;
+    }
+
 
     NFE_LOG_INFO("Vulkan device initialized successfully");
     return true;
@@ -554,7 +566,8 @@ bool Device::CalculateTexturePlacementInfo(Format format, uint32 width, uint32 h
 
 bool Device::FinishFrame()
 {
-    return false;
+    mRingBuffer->FinishFrame();
+    return true;
 }
 
 CommandListPtr Device::CreateCommandList(CommandQueueType queueType, VkCommandBuffer cmdBuffer)
@@ -572,7 +585,7 @@ IDevice* Init(const DeviceInitParams* params)
 {
     if (gDevice == nullptr)
     {
-        gDevice.Reset(new Device);
+        gDevice = Common::MakeUniquePtr<Device>();
         if (!gDevice->Init(params))
         {
             gDevice.Reset();

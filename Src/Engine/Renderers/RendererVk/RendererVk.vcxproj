@@ -35,6 +35,7 @@
     <ClInclude Include="Defines.hpp" />
     <ClInclude Include="Internal\Debugger.hpp" />
     <ClInclude Include="Internal\Extensions.hpp" />
+    <ClInclude Include="Internal\FenceSignaller.hpp" />
     <ClInclude Include="Internal\GetProc.hpp" />
     <ClInclude Include="Internal\Instance.hpp" />
     <ClInclude Include="Internal\QueueFamilyManager.hpp" />
@@ -78,6 +79,7 @@
     <ClCompile Include="API\Win\WinDevice.cpp" />
     <ClCompile Include="Internal\Debugger.cpp" />
     <ClCompile Include="Internal\Extensions.cpp" />
+    <ClCompile Include="Internal\FenceSignaller.cpp" />
     <ClCompile Include="Internal\Instance.cpp" />
     <ClCompile Include="Internal\QueueFamilyManager.cpp" />
     <ClCompile Include="Internal\RenderPassManager.cpp" />
