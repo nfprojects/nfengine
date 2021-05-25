@@ -39,8 +39,8 @@ TARGET_LINK_DIRECTORIES(RaytracerDemo
 
 SET_TARGET_PROPERTIES(RaytracerDemo PROPERTIES LINK_FLAGS "-pthread")
 
-ADD_DEPENDENCIES(RaytracerDemo Raytracer)
-TARGET_LINK_LIBRARIES(RaytracerDemo Raytracer)
+ADD_DEPENDENCIES(RaytracerDemo Raytracer RendererCommon)
+TARGET_LINK_LIBRARIES(RaytracerDemo Raytracer RendererCommon)
 TARGET_PRECOMPILE_HEADERS(RaytracerDemo PRIVATE PCH.h)
 
 ADD_CUSTOM_COMMAND(TARGET RaytracerDemo POST_BUILD COMMAND

@@ -24,7 +24,7 @@ enum class BufferUsageFlag : uint8
     WritableStruct  = NFE_FLAG(4),
 };
 
-DEFINE_ENUM_OPERATORS(BufferUsageFlag);
+DEFINE_ENUM_OPERATORS(BufferUsageFlag)
 
 /**
  * Description of renderer's buffer

@@ -26,7 +26,7 @@ enum class TextureUsageFlag : uint8
     DepthStencil            = NFE_FLAG(3),
 };
 
-DEFINE_ENUM_OPERATORS(TextureUsageFlag);
+DEFINE_ENUM_OPERATORS(TextureUsageFlag)
 
 /**
  * Texture subresource's range specified when binding a texture.

@@ -25,8 +25,8 @@ struct RenderTargetElement
 
     RenderTargetElement(const TexturePtr& texture = nullptr)
         : texture(texture)
-        , level(0u)
         , layer(0u)
+        , level(0u)
         , format(Format::Unknown)
     {}
 };
