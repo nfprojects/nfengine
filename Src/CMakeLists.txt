@@ -25,6 +25,14 @@ SET(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -Wno-gnu-anonymous-struct -Wno-nested-a
 SET(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -Wno-format-security")
 SET(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -Wno-self-assign-overloaded")
 
+# Warning exceptions for Release build
+# We make sure of avoiding these situations in Debug via asserts.
+# Asserts are compiled out on Release build, causing below excessive errors.
+IF(CMAKE_BUILD_TYPE STREQUAL "Release")
+SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-maybe-uninitialized")
+SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-array-bounds")
+ENDIF(CMAKE_BUILD_TYPE STREQUAL "Release")
+
 ADD_SUBDIRECTORY("Engine")
 ADD_SUBDIRECTORY("Tests")
 #ADD_SUBDIRECTORY("Benchmarks")
