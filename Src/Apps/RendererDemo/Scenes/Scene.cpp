@@ -8,6 +8,7 @@
 #include "Scene.hpp"
 #include "Engine/Common/nfCommon.hpp"
 #include "Engine/Common/Utils/LanguageUtils.hpp"
+#include "Engine/Common/Logger/Logger.hpp"
 
 
 using namespace NFE;
@@ -43,6 +44,11 @@ uint32 Scene::GetAvailableSubSceneCount() const
     return mHighestAvailableSubScene;
 }
 
+uint32 Scene::GetSubsceneCount() const
+{
+    return mSubScenes.Size();
+}
+
 std::string Scene::GetCurrentSubSceneName() const
 {
     if (mCurrentSubScene > mHighestAvailableSubScene)
@@ -68,7 +74,7 @@ void Scene::ReleaseSubsceneResources()
 {
 }
 
-bool Scene::Init(IDevice* rendererDevice, const CommandQueuePtr& graphicsQueue, const CommandQueuePtr& copyQueue, void* winHandle)
+bool Scene::Init(IDevice* rendererDevice, const CommandQueuePtr& graphicsQueue, const CommandQueuePtr& copyQueue, void* winHandle, int32 subscene)
 {
     NFE_ASSERT(rendererDevice, "Invalid renderer device");
     NFE_ASSERT(graphicsQueue, "Invalid graphics queue");
@@ -104,24 +110,35 @@ bool Scene::Init(IDevice* rendererDevice, const CommandQueuePtr& graphicsQueue, 
     if (!OnInit(winHandle))
         return false;
 
-    // ensure the subscene reload
-    mCurrentSubScene = UINT32_MAX;
-
-    // Basic stuff initialized, try to find the highest subscene possible
-    for (mHighestAvailableSubScene = mSubScenes.Size() - 1u; ; mHighestAvailableSubScene--)
+    if (subscene < 0)
     {
-        if (SwitchSubscene(mHighestAvailableSubScene))
-            break; // the scene initialized successfully
-
-        if (mHighestAvailableSubScene == 0)
+        // Basic stuff initialized, try to find the highest subscene possible
+        mCurrentSubScene = UINT32_MAX;
+        for (mHighestAvailableSubScene = mSubScenes.Size() - 1u; ; mHighestAvailableSubScene--)
         {
-            ReleaseSubsceneResources();
-            mHighestAvailableSubScene = UINT32_MAX;
-            return false; // we hit the end of our scenes vector, no scene successfully initialized
+            if (SwitchSubscene(mHighestAvailableSubScene))
+                break; // the scene initialized successfully
+
+            if (mHighestAvailableSubScene == 0)
+            {
+                ReleaseSubsceneResources();
+                mHighestAvailableSubScene = UINT32_MAX;
+                return false; // we hit the end of our scenes vector, no scene successfully initialized
+            }
+        }
+
+        mCurrentSubScene = mHighestAvailableSubScene;
+    }
+    else
+    {
+        // User requested a specific subscene - try to load it and leave if it fails
+        if (!SwitchSubscene(subscene))
+        {
+            NFE_LOG_ERROR("Failed to switch to requested subscene %u", subscene);
+            return false;
         }
     }
 
-    mCurrentSubScene = mHighestAvailableSubScene;
     return true;
 }
 

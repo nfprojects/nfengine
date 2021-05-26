@@ -67,13 +67,17 @@ public:
      * Initializes the scene
      *
      * @param rendererDevice Pointer to valid NFE::Renderer::IDevice interface.
+     * @param graphicsQueue  Graphics-capable Queue to perform rendering operations on
+     * @param copyQueue      Copy-capable Queue for transferring data to/from GPU
      * @param winHandle      Valid window handle, used by NFE::Renderer::Backbuffer during init.
+     * @param subscene       Subscene ID to
      * @return True on success, false otherwise.
      *
      * The method provides rendererDevice for further devices initialization, and winHandle in case
      * Backbuffer must be initialized.
      */
-    bool Init(NFE::Renderer::IDevice* rendererDevice, const NFE::Renderer::CommandQueuePtr& graphicsQueue, const NFE::Renderer::CommandQueuePtr& copyQueue, void* winHandle);
+    bool Init(NFE::Renderer::IDevice* rendererDevice, const NFE::Renderer::CommandQueuePtr& graphicsQueue,
+              const NFE::Renderer::CommandQueuePtr& copyQueue, void* winHandle, NFE::int32 subscene = -1);
 
     /**
      * Switches the SubScene in current Scene
@@ -95,6 +99,17 @@ public:
      * set this value to lower than all subscene count.
      */
     NFE::uint32 GetAvailableSubSceneCount() const;
+
+    /**
+     * Retrieves total amount of subscenes
+     *
+     * @return Amount of all available subscenes
+     *
+     * @note Compared to GetAvailableSubSceneCount() this call returns how many Subscenes are
+     * actually registered. This does not mean that all are working/available, but helps to
+     * determine how many Subscenes given Scene has before calling Init() method.
+     */
+    NFE::uint32 GetSubsceneCount() const;
 
     /**
      * Retrieves current subscene number

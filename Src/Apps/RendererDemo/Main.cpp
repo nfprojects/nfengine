@@ -27,6 +27,7 @@
 #include "Engine/Common/System/Timer.hpp"
 #include "Engine/Common/System/KeyCodes.hpp"
 #include "Engine/Common/Logger/Logger.hpp"
+#include "Engine/Common/Utils/StringUtils.hpp"
 #include "Engine/Common/Utils/TaskBuilder.hpp"
 #include "Engine/Common/Utils/Waitable.hpp"
 
@@ -195,6 +196,7 @@ public:
      * Initializes Demo with selected scene
      *
      * @param scene Scene index to initialize.
+     * @param subscene Subscene index to initialize. Provide -1 (default) for last properly loaded Subscene.
      * @return True on success, false otherwise
      *
      * InitScene initializes selected scene. Should be used only during Demo initialization. To
@@ -202,13 +204,25 @@ public:
      *
      * @see DemoWindow::OnKeyPress
      */
-    bool InitScene(uint32 scene)
+    bool InitScene(uint32 scene, int32 subscene = -1)
     {
         if (scene >= mScenes.Size())
+        {
+            NFE_LOG_ERROR("Cannot initialize demo scene - requested scene %d is too high", scene);
             return false;
+        }
 
-        if (!mScenes[scene]->Init(mRendererDevice, mGraphicsQueue, mCopyQueue, GetHandle()))
+        if ((subscene >= 0) && (subscene >= static_cast<NFE::int32>(mScenes[scene]->GetSubsceneCount())))
+        {
+            NFE_LOG_ERROR("Requested subscene %d not available (highest subscene ID is %u)", subscene, mScenes[scene]->GetAvailableSubSceneCount());
             return false;
+        }
+
+        if (!mScenes[scene]->Init(mRendererDevice, mGraphicsQueue, mCopyQueue, GetHandle(), subscene))
+        {
+            NFE_LOG_ERROR("Failed to initialize scene %d", scene);
+            return false;
+        }
 
         mCurrentScene = scene;
 
@@ -333,6 +347,7 @@ int InnerMain(int argc, char* argv[])
 
     Common::String selectedBackend;
     int initialScene = 0;
+    int initialSubscene = -1;
     int selectedCard = -1;
     int debugLevel = 0;
 
@@ -347,7 +362,7 @@ int InnerMain(int argc, char* argv[])
             }
             else
             {
-                NFE_LOG_ERROR("Missing command line parameter");
+                NFE_LOG_ERROR("Missing renderer name parameter");
                 return 1;
             }
         }
@@ -355,11 +370,15 @@ int InnerMain(int argc, char* argv[])
         {
             if (i + 1 < argc)
             {
-                selectedCard = atoi(argv[++i]);
+                if (!Common::FromString(argv[++i], selectedCard))
+                {
+                    NFE_LOG_ERROR("Invalid card ID parameter");
+                    return 1;
+                }
             }
             else
             {
-                NFE_LOG_ERROR("Missing command line parameter");
+                NFE_LOG_ERROR("Missing card ID parameter");
                 return 1;
             }
         }
@@ -367,11 +386,15 @@ int InnerMain(int argc, char* argv[])
         {
             if (i + 1 < argc)
             {
-                debugLevel = atoi(argv[++i]);
+                if (!Common::FromString(argv[++i], debugLevel))
+                {
+                    NFE_LOG_ERROR("Invalid debug level parameter");
+                    return 1;
+                }
             }
             else
             {
-                NFE_LOG_ERROR("Missing command line parameter");
+                NFE_LOG_ERROR("Missing debug level parameter");
                 return 1;
             }
         }
@@ -379,7 +402,37 @@ int InnerMain(int argc, char* argv[])
         {
             if (i + 1 < argc)
             {
-                initialScene = atoi(argv[++i]);
+                NFE::Common::StringView sceneId(argv[++i]);
+                NFE::uint32 split = sceneId.FindFirst(':');
+                if (split == Common::StringView::END())
+                {
+                    if (!Common::FromString(sceneId, initialScene))
+                    {
+                        NFE_LOG_INFO("Invalid scene number parameter");
+                        return 1;
+                    }
+
+                    NFE_LOG_INFO("Requested scene %d", initialScene);
+                }
+                else
+                {
+                    NFE::Common::StringView sceneStr = sceneId.Range(0, split);
+                    NFE::Common::StringView subsceneStr = sceneId.Range(split + 1, sceneId.Length() - split - 1);
+
+                    if (!Common::FromString(sceneStr, initialScene))
+                    {
+                        NFE_LOG_ERROR("Invalid scene ID parameter");
+                        return 1;
+                    }
+
+                    if (!Common::FromString(subsceneStr, initialSubscene))
+                    {
+                        NFE_LOG_ERROR("Invalid subscene ID parameter");
+                        return 1;
+                    }
+
+                    NFE_LOG_INFO("Requested scene:subscene = %d:%d", initialScene, initialSubscene);
+                }
             }
             else
             {
@@ -439,7 +492,7 @@ int InnerMain(int argc, char* argv[])
     }
 
     /// Initial scene to begin with
-    if (!window.InitScene(initialScene))
+    if (!window.InitScene(initialScene, initialSubscene))
     {
         NFE_LOG_ERROR("Scene failed to initialize");
         return 3;
