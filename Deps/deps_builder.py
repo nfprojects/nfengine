@@ -367,13 +367,14 @@ def HasMSBuild():
 
 def HasSubmodules():
     print("   ==> Checking for submodules... ", end='')
+    # TODO move below array to __main__ to have all "configuration" elements
+    #      in one common place
     submodules = [
         "cxxopts",
         "freetype2",
         "glslang",
         "googletest",
         "imgui",
-        "imgui_sw",
         "libpng",
         "libsquish",
         "nfenginedeps",

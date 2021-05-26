@@ -10,7 +10,6 @@ SET(RAYTRACER_EXTERNAL_IMGUI_SOURCES
     ${NFEDEPS_ROOT_DIRECTORY}/imgui/imgui.cpp
     ${NFEDEPS_ROOT_DIRECTORY}/imgui/imgui_draw.cpp
     ${NFEDEPS_ROOT_DIRECTORY}/imgui/imgui_widgets.cpp
-    ${NFEDEPS_ROOT_DIRECTORY}/imgui_sw/src/imgui_sw.cpp
 )
 SET(RAYTRACER_EXTERNAL_TINYOBJ_SOURCES
     ${NFEDEPS_ROOT_DIRECTORY}/tinyobjloader/tiny_obj_loader.cc
