@@ -12,6 +12,7 @@
 #include "Device.hpp"
 
 #include "Internal/Debugger.hpp"
+#include "Internal/Utilities.hpp"
 
 #include "Engine/Common/Containers/StaticArray.hpp"
 
@@ -32,7 +33,8 @@ RenderTarget::RenderTarget()
 RenderTarget::~RenderTarget()
 {
     // Render pass is cleaned by Render Pass Manager
-    vkDestroyFramebuffer(gDevice->GetDevice(), mFramebuffer, nullptr);
+    if (mFramebuffer != VK_NULL_HANDLE)
+        vkDestroyFramebuffer(gDevice->GetDevice(), mFramebuffer, nullptr);
 }
 
 void RenderTarget::GetDimensions(int& width, int& height)

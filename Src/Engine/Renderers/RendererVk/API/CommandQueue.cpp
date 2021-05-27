@@ -60,6 +60,7 @@ void CommandQueue::Submit(const Common::ArrayView<ICommandList*> commandLists,
     Common::DynArray<VkFence> fences;
     Common::DynArray<VkSemaphore> semaphores;
     Common::DynArray<VkPipelineStageFlags> semaphoreWaitStages;
+    VkResult result = VK_SUCCESS;
 
     // All these DynArrays will never be fully filled at the same time.
     // However, it's faster to preallocate this space with a bit of backup instead of
@@ -98,9 +99,12 @@ void CommandQueue::Submit(const Common::ArrayView<ICommandList*> commandLists,
         commandBuffers[i] = cl->GetCommandBuffer();
     }
 
-    // Wait on VkFences
-    VkResult result = vkWaitForFences(gDevice->GetDevice(), fences.Size(), fences.Data(), VK_TRUE, UINT64_MAX);
-    NFE_ASSERT(result == VK_SUCCESS, "Failed to wait for Vulkan Fences before submit: %d (%s)", result, TranslateVkResultToString(result));
+    // Wait on VkFences if there are any
+    if (fences.Size() > 0)
+    {
+        result = vkWaitForFences(gDevice->GetDevice(), fences.Size(), fences.Data(), VK_TRUE, UINT64_MAX);
+        NFE_ASSERT(result == VK_SUCCESS, "Failed to wait for Vulkan Fences before submit: %d (%s)", result, TranslateVkResultToString(result));
+    }
 
     // Submit command lists and possible wait for semaphores
     VkSubmitInfo info;

@@ -13,8 +13,6 @@
 namespace NFE {
 namespace Renderer {
 
-class Fence;
-
 class FenceData
 {
 public:

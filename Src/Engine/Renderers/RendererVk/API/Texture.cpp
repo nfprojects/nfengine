@@ -27,6 +27,7 @@ Texture::Texture()
     , mImage(VK_NULL_HANDLE)
     , mImageView(VK_NULL_HANDLE)
     , mImageLayout(VK_IMAGE_LAYOUT_UNDEFINED)
+    , mImageLayoutDefault(VK_IMAGE_LAYOUT_UNDEFINED)
     , mImageMemory(VK_NULL_HANDLE)
     , mImageSubresRange()
 {
@@ -34,6 +35,8 @@ Texture::Texture()
 
 Texture::~Texture()
 {
+    if (mImageView != VK_NULL_HANDLE)
+        vkDestroyImageView(gDevice->GetDevice(), mImageView, nullptr);
     if (mImage != VK_NULL_HANDLE)
         vkDestroyImage(gDevice->GetDevice(), mImage, nullptr);
     if (mImageMemory != VK_NULL_HANDLE)
@@ -164,9 +167,19 @@ bool Texture::Init(const TextureDesc& desc)
     CHECK_VKRESULT(result, "Failed to bind Image to its memory");
 
 
-    // TODO views should be created on-demand - right now there are two spots:
-    //   RenderTarget
-    //   ResourceBindingInstance
+    VkImageViewCreateInfo viewInfo;
+    VK_ZERO_MEMORY(viewInfo);
+    viewInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
+    viewInfo.image = mImage;
+    viewInfo.viewType = Util::TextureTypeToVkImageViewType(mType);
+    viewInfo.format = mFormat;
+    viewInfo.components.r = VK_COMPONENT_SWIZZLE_R;
+    viewInfo.components.g = VK_COMPONENT_SWIZZLE_G;
+    viewInfo.components.b = VK_COMPONENT_SWIZZLE_B;
+    viewInfo.components.a = VK_COMPONENT_SWIZZLE_A;
+    viewInfo.subresourceRange = mImageSubresRange;
+    result = vkCreateImageView(gDevice->GetDevice(), &viewInfo, nullptr, &mImageView);
+    CHECK_VKRESULT(result, "Failed to create image view for color attachment");
 
 
     NFE_LOG_INFO("Texture initialized successfully");

@@ -49,6 +49,18 @@ NFE_FORCE_INLINE bool IsDepthFormat(VkFormat format)
     }
 }
 
+NFE_FORCE_INLINE VkImageViewType TextureTypeToVkImageViewType(TextureType type)
+{
+    switch (type)
+    {
+    case TextureType::Texture1D:    return VK_IMAGE_VIEW_TYPE_1D;
+    case TextureType::Texture2D:    return VK_IMAGE_VIEW_TYPE_2D;
+    case TextureType::Texture3D:    return VK_IMAGE_VIEW_TYPE_3D;
+    case TextureType::TextureCube:  return VK_IMAGE_VIEW_TYPE_CUBE;
+    default: return VK_IMAGE_VIEW_TYPE_MAX_ENUM;
+    }
+}
+
 } // namespace Util
 } // namespace Renderer
 } // namespace NFE

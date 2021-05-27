@@ -53,6 +53,13 @@ void FenceSignaller::ThreadMain()
             }
         }
 
+        // wait until Fence lights up
+        // TODO For now it is a little bit hacked. vkWaitForFences can only wait for - you guessed it - VkFences.
+        // A better solution (but more complex - requires some multi-platform code) would be:
+        //  - In Fence class extract a platform-specific Waitable/Synchronizable primitive
+        //     -> refer to vkGetFenceWin32HandleKHR/vkGetFenceFdKHR
+        //  - Create an extra Waitable to wait on in addition to our fences (LoopEvent/LoopHandle? LoopFD?)
+        //  - Signal LoopEvent when we need to leave the loop or interrupt the main waiting process
         do
         {
             if (fencesToWait.Size() > 0)
@@ -89,7 +96,7 @@ void FenceSignaller::ThreadMain()
                 NFE_LOG_ERROR("Error while checking Fence status: %d (%s)", result, TranslateVkResultToString(result));
         }
 
-        //
+        // inform Fence that it's signalled and unregister it
         for (uint32 i = 0; i < signalledFences.Size(); ++i)
         {
             uint32 fenceDataIdx = fenceIDs[signalledFences[i]];

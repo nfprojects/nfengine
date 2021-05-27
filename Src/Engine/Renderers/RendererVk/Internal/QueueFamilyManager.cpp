@@ -139,6 +139,7 @@ bool QueueFamilyManager::GetQueue(CommandQueueType type, VkQueue& queue, uint32&
             VkDeviceQueueInfo2 info;
             VK_ZERO_MEMORY(info);
             info.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_INFO_2;
+            //info.flags =
             info.queueFamilyIndex = family.familyIndex;
             info.queueIndex = i;
             vkGetDeviceQueue2(mDevice, &info, &family.queues[i].queue);
