@@ -110,6 +110,49 @@ TEST(StringUtils, ToStringDouble)
     EXPECT_EQ("1e+06", ToString(1000000.0));
 }
 
+// FromString(String, ...) calls FromString(StringView, ...)
+// so testing String variant we test both
+TEST(StringUtils, FromStringInt32)
+{
+    int32 ret = 0;
+
+    // positive tests
+    ASSERT_TRUE(FromString("0", ret));          EXPECT_EQ(0, ret);
+    ASSERT_TRUE(FromString("-0", ret));         EXPECT_EQ(0, ret);
+    ASSERT_TRUE(FromString("1234", ret));       EXPECT_EQ(1234, ret);
+    ASSERT_TRUE(FromString("-1234", ret));      EXPECT_EQ(-1234, ret);
+    ASSERT_TRUE(FromString("55555555", ret));   EXPECT_EQ(55555555, ret);
+    ASSERT_TRUE(FromString("-55555555", ret));  EXPECT_EQ(-55555555, ret);
+
+    // negative tests - ret should remain unchanged (0) at all times
+    ret = 0;
+    ASSERT_FALSE(FromString("-555555a", ret));  EXPECT_EQ(0, ret);
+    ASSERT_FALSE(FromString("555555a", ret));   EXPECT_EQ(0, ret);
+    ASSERT_FALSE(FromString("-31\n2234", ret)); EXPECT_EQ(0, ret);
+    ASSERT_FALSE(FromString("31\n2234", ret));  EXPECT_EQ(0, ret);
+}
+
+TEST(StringUtils, FromStringUint32)
+{
+    uint32 ret = 0;
+
+    // positive tests
+    ASSERT_TRUE(FromString("0", ret));          EXPECT_EQ(0u, ret);
+    ASSERT_TRUE(FromString("1234", ret));       EXPECT_EQ(1234u, ret);
+    ASSERT_TRUE(FromString("55555555", ret));   EXPECT_EQ(55555555u, ret);
+
+    // negative tests - ret should remain unchanged (0) at all times
+    ret = 0;
+    ASSERT_FALSE(FromString("555555a", ret));   EXPECT_EQ(0u, ret);
+    ASSERT_FALSE(FromString("31\n2234", ret));  EXPECT_EQ(0u, ret);
+
+    // negative input numbers also should return error
+    ret = UINT32_MAX;
+    ASSERT_FALSE(FromString("-0", ret));        EXPECT_EQ(UINT32_MAX, ret);
+    ASSERT_FALSE(FromString("-1234", ret));     EXPECT_EQ(UINT32_MAX, ret);
+    ASSERT_FALSE(FromString("-55555555", ret)); EXPECT_EQ(UINT32_MAX, ret);
+}
+
 TEST(StringUtils, Split_StringView)
 {
     // splitting with default delimiter (newline)

@@ -185,6 +185,47 @@ String ToString(double value)
     return String(buffer);
 }
 
+bool FromString(const StringView& string, int32& ret)
+{
+    int32 r = 0;
+    int8 num = 0;
+
+    uint32 i = 0;
+    if (string[0] == '-')
+        ++i;
+
+    for (; i < string.Length(); ++i)
+    {
+        num = string[i] - '0';
+        if (num < 0 || num > 9)
+            return false;
+        r = r * 10 + num;
+    }
+
+    if (string[0] == '-')
+        r *= -1;
+
+    ret = r;
+    return true;
+}
+
+bool FromString(const StringView& string, uint32& ret)
+{
+    int32 r = 0;
+    int8 num = 0;
+
+    for (uint32 i = 0; i < string.Length(); ++i)
+    {
+        num = string[i] - '0';
+        if (num < 0 || num > 9)
+            return false;
+        r = r * 10 + num;
+    }
+
+    ret = r;
+    return true;
+}
+
 String BytesToString(uint32 size, bool withSpace)
 {
     String str;
