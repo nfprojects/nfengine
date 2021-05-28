@@ -113,6 +113,9 @@
     <ClInclude Include="Internal\FenceSignaller.hpp">
       <Filter>Internal</Filter>
     </ClInclude>
+    <ClInclude Include="Internal\CommandBufferManager.hpp">
+      <Filter>Internal</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp" />
@@ -206,6 +209,9 @@
       <Filter>API</Filter>
     </ClCompile>
     <ClCompile Include="Internal\FenceSignaller.cpp">
+      <Filter>Internal</Filter>
+    </ClCompile>
+    <ClCompile Include="Internal\CommandBufferManager.cpp">
       <Filter>Internal</Filter>
     </ClCompile>
   </ItemGroup>

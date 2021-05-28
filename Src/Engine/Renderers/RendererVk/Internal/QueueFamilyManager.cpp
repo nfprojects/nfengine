@@ -2,7 +2,6 @@
 #include "QueueFamilyManager.hpp"
 #include "Defines.hpp"
 
-#include "Internal/Utilities.hpp"
 #include "Internal/Debugger.hpp"
 
 
@@ -97,35 +96,12 @@ bool QueueFamilyManager::PreInit(VkPhysicalDevice physicalDevice)
 bool QueueFamilyManager::Init(VkDevice device)
 {
     mDevice = device;
-
-    VkResult result = VK_SUCCESS;
-    Common::String poolNamePrefix("CommandPool-");
-
-    VkCommandPoolCreateInfo info;
-    VK_ZERO_MEMORY(info);
-    info.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
-
-    for (uint32 i = 0; i < mFamilies.Size(); ++i)
-    {
-        info.queueFamilyIndex = mFamilies[i].familyIndex;
-        result = vkCreateCommandPool(mDevice, &info, nullptr, &mFamilies[i].commandPool);
-        CHECK_VKRESULT(result, "Failed to create Command Pool");
-
-        if (Debugger::Instance().IsDebugAnnotationActive())
-        {
-            Common::String poolName = poolNamePrefix + CommandQueueTypeToStr(mFamilies[i].type);
-            Debugger::Instance().NameObject(reinterpret_cast<uint64_t>(mFamilies[i].commandPool),
-                                            VK_OBJECT_TYPE_COMMAND_POOL,
-                                            poolName.Str());
-        }
-    }
-
     return true;
 }
 
 bool QueueFamilyManager::GetQueue(CommandQueueType type, VkQueue& queue, uint32& index)
 {
-    uint32 familyIdx = CommandQueueTypeToIndex(type);
+    uint32 familyIdx = Util::CommandQueueTypeToIndex(type);
     QueueFamily& family = mFamilies[familyIdx];
     bool found = false;
 
@@ -139,7 +115,6 @@ bool QueueFamilyManager::GetQueue(CommandQueueType type, VkQueue& queue, uint32&
             VkDeviceQueueInfo2 info;
             VK_ZERO_MEMORY(info);
             info.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_INFO_2;
-            //info.flags =
             info.queueFamilyIndex = family.familyIndex;
             info.queueIndex = i;
             vkGetDeviceQueue2(mDevice, &info, &family.queues[i].queue);
@@ -160,22 +135,13 @@ bool QueueFamilyManager::GetQueue(CommandQueueType type, VkQueue& queue, uint32&
 
 void QueueFamilyManager::FreeQueue(CommandQueueType type, uint32 index)
 {
-    Queue& q = mFamilies[CommandQueueTypeToIndex(type)].queues[index];
+    Queue& q = mFamilies[Util::CommandQueueTypeToIndex(type)].queues[index];
     NFE_ASSERT(q.state != QueueState::Available, "Freeing already freed queue");
     q.state = QueueState::Available;
 }
 
 void QueueFamilyManager::Release()
 {
-    if (mDevice == VK_NULL_HANDLE)
-        return;
-
-    for (uint32 i = 0; i < mFamilies.Size(); ++i)
-    {
-        if (mFamilies[i].commandPool != VK_NULL_HANDLE)
-            vkDestroyCommandPool(mDevice, mFamilies[i].commandPool, nullptr);
-    }
-
     mDevice = VK_NULL_HANDLE;
 }
 

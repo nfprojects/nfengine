@@ -23,6 +23,7 @@ SET(NFRENDERERVK_SOURCES
     API/Shader.cpp
     API/Texture.cpp
     API/VertexLayout.cpp
+    Internal/CommandBufferManager.cpp
     Internal/Debugger.cpp
     Internal/Extensions.cpp
     Internal/FenceSignaller.cpp
@@ -54,6 +55,7 @@ SET(NFRENDERERVK_HEADERS
     API/Shader.hpp
     API/Texture.hpp
     API/VertexLayout.hpp
+    Internal/CommandBufferManager.hpp
     Internal/Debugger.hpp
     Internal/Extensions.hpp
     Internal/FenceSignaller.hpp

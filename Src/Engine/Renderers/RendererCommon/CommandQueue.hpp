@@ -8,21 +8,12 @@
 
 #include "CommandRecorder.hpp"
 #include "Fence.hpp"
+#include "Types.hpp"
 
 #include "../../Common/Containers/ArrayView.hpp"
 
 namespace NFE {
 namespace Renderer {
-
-enum class CommandQueueType : uint8
-{
-    Graphics,
-    Compute,
-    Copy,
-
-    Invalid,
-    Max = Invalid,
-};
 
 /**
  * Class representing rendering commands queue.

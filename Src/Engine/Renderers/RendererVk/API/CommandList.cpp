@@ -2,6 +2,8 @@
 #include "CommandList.hpp"
 #include "Device.hpp"
 
+#include "Engine/Common/Logger/Logger.hpp"
+
 
 namespace NFE {
 namespace Renderer {
@@ -15,9 +17,9 @@ CommandList::CommandList(CommandQueueType queueType, VkCommandBuffer commandBuff
 
 CommandList::~CommandList()
 {
+    // Release CB ownership back to Manager
     if (mCommandBuffer != VK_NULL_HANDLE)
-        vkFreeCommandBuffers(gDevice->GetDevice(), gDevice->GetQueueFamilyManager().GetQueueFamily(mQueueType).commandPool,
-                             1, &mCommandBuffer);
+        gDevice->GetCommandBufferManager(mQueueType).Free(mCommandBuffer);
 }
 
 } // namespace Renderer

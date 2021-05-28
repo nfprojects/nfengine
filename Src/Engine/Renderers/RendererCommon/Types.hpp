@@ -59,6 +59,16 @@ using FencePtr = Common::SharedPtr<IFence>;
 #define NFE_GRAPHICS_SHADER_TYPES_NUM 5
 
 
+enum class CommandQueueType : uint8
+{
+    Graphics,
+    Compute,
+    Copy,
+
+    Invalid,
+    Max = Invalid,
+};
+
 enum class ResourceType : uint8
 {
     Texture,

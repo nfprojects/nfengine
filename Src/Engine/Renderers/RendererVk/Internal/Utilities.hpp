@@ -9,6 +9,34 @@ namespace NFE {
 namespace Renderer {
 namespace Util {
 
+NFE_FORCE_INLINE uint32 CommandQueueTypeToIndex(CommandQueueType type)
+{
+    // Note that this DOES NOT have to mean queueFamilyIndex assigned by driver! Only an
+    // internal index used by Renderer
+    switch (type)
+    {
+    case CommandQueueType::Graphics: return 0;
+    case CommandQueueType::Compute: return 1;
+    case CommandQueueType::Copy: return 2;
+    default:
+        NFE_ASSERT(0, "Invalid command queue type");
+        return UINT32_MAX;
+    }
+}
+
+NFE_FORCE_INLINE const char* CommandQueueTypeToString(CommandQueueType type)
+{
+    switch (type)
+    {
+    case CommandQueueType::Graphics: return "Graphics";
+    case CommandQueueType::Compute:  return "Compute";
+    case CommandQueueType::Copy:     return "Copy";
+    default:
+        NFE_ASSERT(0, "Invalid command queue type");
+        return "INVALID";
+    }
+}
+
 NFE_FORCE_INLINE VkQueueFlags CommandQueueTypeToVkQueueFlags(CommandQueueType type)
 {
     switch (type)

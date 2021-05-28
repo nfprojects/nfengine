@@ -33,6 +33,7 @@
     <ClInclude Include="API\Texture.hpp" />
     <ClInclude Include="API\VertexLayout.hpp" />
     <ClInclude Include="Defines.hpp" />
+    <ClInclude Include="Internal\CommandBufferManager.hpp" />
     <ClInclude Include="Internal\Debugger.hpp" />
     <ClInclude Include="Internal\Extensions.hpp" />
     <ClInclude Include="Internal\FenceSignaller.hpp" />
@@ -77,6 +78,7 @@
     <ClCompile Include="API\VertexLayout.cpp" />
     <ClCompile Include="API\Win\WinBackbuffer.cpp" />
     <ClCompile Include="API\Win\WinDevice.cpp" />
+    <ClCompile Include="Internal\CommandBufferManager.cpp" />
     <ClCompile Include="Internal\Debugger.cpp" />
     <ClCompile Include="Internal\Extensions.cpp" />
     <ClCompile Include="Internal\FenceSignaller.cpp" />
@@ -162,7 +164,7 @@
       </UndefinePreprocessorDefinitions>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>$(VULKAN_SDK)\Lib\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories);$(VULKAN_SDK)\Lib\</AdditionalLibraryDirectories>
       <AdditionalDependencies>vulkan-1.lib;RendererCommon.lib;Common.lib;glslangd.lib;hlsld.lib;OGLCompilerd.lib;SPIRVd.lib;SPIRV-Toolsd.lib;SPIRV-Tools-optd.lib;OSDependentd.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
@@ -182,7 +184,7 @@
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>$(VULKAN_SDK)\Lib\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories);$(VULKAN_SDK)\Lib\</AdditionalLibraryDirectories>
       <AdditionalDependencies>vulkan-1.lib;RendererCommon.lib;Common.lib;glslang.lib;hlsl.lib;OGLCompiler.lib;SPIRV.lib;SPIRV-Tools.lib;SPIRV-Tools-opt.lib;OSDependent.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
@@ -202,7 +204,7 @@
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>$(VULKAN_SDK)\Lib\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories);$(VULKAN_SDK)\Lib\</AdditionalLibraryDirectories>
       <AdditionalDependencies>vulkan-1.lib;RendererCommon.lib;Common.lib;glslang.lib;hlsl.lib;OGLCompiler.lib;SPIRV.lib;SPIRV-Tools.lib;SPIRV-Tools-opt.lib;OSDependent.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>

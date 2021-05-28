@@ -78,6 +78,8 @@ Device::~Device()
     mRingBuffer.Reset();
     mRenderPassManager.Reset();
     mFenceSignaller.Release();
+    for (auto& cbm: mCommandBufferManagers)
+        cbm.Release();
     mQueueFamilyManager.Release();
 
     if (mDefaultSampler != VK_NULL_HANDLE)
@@ -252,6 +254,15 @@ bool Device::Init(const DeviceInitParams* params)
     {
         NFE_LOG_ERROR("Failed to finish Queue Family Manager initialization");
         return false;
+    }
+
+    for (uint32 i = 0; i < static_cast<uint32>(CommandQueueType::Max); ++i)
+    {
+        if (!mCommandBufferManagers[i].Init(mDevice, mQueueFamilyManager, static_cast<CommandQueueType>(i)))
+        {
+            NFE_LOG_ERROR("Failed to initialize Command Buffer Manager for Queue Family #%u", i);
+            return false;
+        }
     }
 
 
@@ -567,6 +578,9 @@ bool Device::CalculateTexturePlacementInfo(Format format, uint32 width, uint32 h
 bool Device::FinishFrame()
 {
     mRingBuffer->FinishFrame();
+    for (auto& cbm: mCommandBufferManagers)
+        cbm.FinishFrame();
+
     return true;
 }
 

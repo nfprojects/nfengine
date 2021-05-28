@@ -30,7 +30,6 @@ CommandRecorder::CommandRecorder()
     : mCommandBuffer(VK_NULL_HANDLE)
     , mQueueType(CommandQueueType::Invalid)
     , mCommandBufferBeginInfo()
-    , mCommandBufferAllocInfo()
     , mRenderTarget(nullptr)
     , mActiveRenderPass(false)
     , mResourceBindingLayout(nullptr)
@@ -143,11 +142,6 @@ bool CommandRecorder::Init()
     mCommandBufferBeginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
     mCommandBufferBeginInfo.flags = VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT;
 
-    VK_ZERO_MEMORY(mCommandBufferAllocInfo);
-    mCommandBufferAllocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
-    mCommandBufferAllocInfo.commandBufferCount = 1;
-    mCommandBufferAllocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
-
     NFE_LOG_INFO("Command Buffer initialized successfully.");
     return true;
 }
@@ -166,13 +160,10 @@ bool CommandRecorder::Begin(CommandQueueType queueType)
 
     mRenderTarget = nullptr;
 
-    // Allocate CommandBuffer on select queue
+    // Get CommandBuffer from select queue
+    mCommandBuffer = gDevice->GetCommandBufferManager(queueType).Acquire();
     mQueueType = queueType;
-    mCommandBufferAllocInfo.commandPool = gDevice->GetQueueFamilyManager().GetQueueFamily(queueType).commandPool;
-    VkResult result = vkAllocateCommandBuffers(gDevice->GetDevice(), &mCommandBufferAllocInfo, &mCommandBuffer);
-    CHECK_VKRESULT(result, "Failed to allocate Command Buffer");
-
-    result = vkBeginCommandBuffer(mCommandBuffer, &mCommandBufferBeginInfo);
+    VkResult result = vkBeginCommandBuffer(mCommandBuffer, &mCommandBufferBeginInfo);
     CHECK_VKRESULT(result, "Failed to begin Command Buffer");
 
     return true;

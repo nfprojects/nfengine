@@ -39,13 +39,18 @@ bool CommandQueue::Init(CommandQueueType type, const char* debugName)
     if (debugName)
         Debugger::Instance().NameObject(reinterpret_cast<uint64_t>(mQueue), VK_OBJECT_TYPE_QUEUE, debugName);
 
+    gDevice->GetCommandBufferManager(type).RegisterQueue(mQueue);
+
     return true;
 }
 
 void CommandQueue::Release()
 {
     if (mQueue != VK_NULL_HANDLE)
+    {
+        gDevice->GetCommandBufferManager(mType).UnregisterQueue(mQueue);
         gDevice->GetQueueFamilyManager().FreeQueue(mType, mIndex);
+    }
 }
 
 CommandQueueType CommandQueue::GetType() const

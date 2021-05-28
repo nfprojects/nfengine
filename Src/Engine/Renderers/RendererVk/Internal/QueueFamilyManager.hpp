@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Internal/Utilities.hpp"
+
 #include "Engine/Common/nfCommon.hpp"
 #include "Engine/Common/Containers/StaticArray.hpp"
 #include "../RendererCommon/CommandQueue.hpp"
@@ -23,7 +25,7 @@ namespace Renderer {
 class QueueFamilyManager
 {
 public:
-        enum class QueueState
+    enum class QueueState
     {
         NotAcquired = 0,
         Available,
@@ -46,14 +48,12 @@ public:
     {
         CommandQueueType type;
         uint32 familyIndex;
-        VkCommandPool commandPool;
         Common::DynArray<Queue> queues;
         Common::DynArray<float> priorities;
 
         QueueFamily()
             : type(CommandQueueType::Invalid)
             , familyIndex(UINT32_MAX)
-            , commandPool(VK_NULL_HANDLE)
             , queues()
             , priorities()
         {
@@ -67,19 +67,6 @@ private:
     static_assert(static_cast<uint32>(CommandQueueType::Max) == 3, "Command queue types has been changed, update this class");
 
     uint32 DetermineFamilyIndex(const Common::DynArray<VkQueueFamilyProperties> props, CommandQueueType type);
-
-    NFE_FORCE_INLINE uint32 CommandQueueTypeToIndex(CommandQueueType type) const
-    {
-        switch (type)
-        {
-        case CommandQueueType::Graphics: return 0;
-        case CommandQueueType::Compute: return 1;
-        case CommandQueueType::Copy: return 2;
-        default:
-            NFE_ASSERT(0, "Invalid command queue type");
-            return UINT32_MAX;
-        }
-    }
 
 public:
     QueueFamilyManager();
@@ -116,7 +103,7 @@ public:
 
     NFE_FORCE_INLINE const QueueFamily& GetQueueFamily(CommandQueueType type) const
     {
-        return mFamilies[CommandQueueTypeToIndex(type)];
+        return mFamilies[Util::CommandQueueTypeToIndex(type)];
     }
 };
 
