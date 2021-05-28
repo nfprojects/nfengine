@@ -130,11 +130,15 @@ TEST(StringUtils, FromStringInt32)
     ASSERT_FALSE(FromString("555555a", ret));   EXPECT_EQ(0, ret);
     ASSERT_FALSE(FromString("-31\n2234", ret)); EXPECT_EQ(0, ret);
     ASSERT_FALSE(FromString("31\n2234", ret));  EXPECT_EQ(0, ret);
+
+    // Empty string = error, retvalue unchanged
+    ret = 123456;
+    ASSERT_FALSE(FromString(String(), ret));    EXPECT_EQ(123456, ret);
 }
 
 TEST(StringUtils, FromStringUint32)
 {
-    uint32 ret = 0;
+    uint32 ret = 0u;
 
     // positive tests
     ASSERT_TRUE(FromString("0", ret));          EXPECT_EQ(0u, ret);
@@ -142,7 +146,7 @@ TEST(StringUtils, FromStringUint32)
     ASSERT_TRUE(FromString("55555555", ret));   EXPECT_EQ(55555555u, ret);
 
     // negative tests - ret should remain unchanged (0) at all times
-    ret = 0;
+    ret = 0u;
     ASSERT_FALSE(FromString("555555a", ret));   EXPECT_EQ(0u, ret);
     ASSERT_FALSE(FromString("31\n2234", ret));  EXPECT_EQ(0u, ret);
 
@@ -151,6 +155,10 @@ TEST(StringUtils, FromStringUint32)
     ASSERT_FALSE(FromString("-0", ret));        EXPECT_EQ(UINT32_MAX, ret);
     ASSERT_FALSE(FromString("-1234", ret));     EXPECT_EQ(UINT32_MAX, ret);
     ASSERT_FALSE(FromString("-55555555", ret)); EXPECT_EQ(UINT32_MAX, ret);
+
+    // Empty string = error, retvalue unchanged
+    ret = 123456u;
+    ASSERT_FALSE(FromString(String(), ret));    EXPECT_EQ(123456u, ret);
 }
 
 TEST(StringUtils, Split_StringView)

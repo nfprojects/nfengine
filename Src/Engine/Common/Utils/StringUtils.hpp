@@ -37,7 +37,7 @@ NFCOMMON_API String ToString(double value);
 /**
  * String to fundamental types converter.
  *
- * Accept String or StringView as input param.
+ * Accept String or StringView as input param. Empty string is considered an error.
  * Value is returned in output param "ret". In case of error, it is left unchanged.
  *
  * Returns true when successful, false on parsing error.

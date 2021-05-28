@@ -187,6 +187,9 @@ String ToString(double value)
 
 bool FromString(const StringView& string, int32& ret)
 {
+    if (string.Length() == 0u)
+        return false;
+
     int32 r = 0;
     int8 num = 0;
 
@@ -211,6 +214,9 @@ bool FromString(const StringView& string, int32& ret)
 
 bool FromString(const StringView& string, uint32& ret)
 {
+    if (string.Length() == 0u)
+        return false;
+
     int32 r = 0;
     int8 num = 0;
 
