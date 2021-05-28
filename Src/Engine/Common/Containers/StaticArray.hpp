@@ -189,6 +189,8 @@ public:
 
 private:
 
+    friend class RTTI::StaticArrayType;
+
     // number of elements in the array
     uint32 mSize;
 
