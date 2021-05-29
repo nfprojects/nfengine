@@ -40,7 +40,7 @@ bool ResizableArrayType::ResizeArray(void* arrayObject, uint32 targetSize) const
     return false;
 }
 
-bool ResizableArrayType::TryLoadFromDifferentType(void* outObject, const Variant& otherObject) const
+bool ResizableArrayType::TryLoadFromDifferentType(void* outObject, const VariantView& otherObject) const
 {
     NFE_ASSERT(otherObject.GetType(), "Empty variant");
 
@@ -50,12 +50,7 @@ bool ResizableArrayType::TryLoadFromDifferentType(void* outObject, const Variant
     {
         const IArrayType* otherType = static_cast<const IArrayType*>(otherObject.GetType());
         const Type* underlyingType = GetUnderlyingType();
-
-        // TODO should be able to upgrade if underlying types are compatible as well
-        if (otherType->GetUnderlyingType() != underlyingType)
-        {
-            return false;
-        }
+        const Type* otherUnderlyingType = otherType->GetUnderlyingType();
 
         // try resize to target size
         const uint32 targetSize = otherType->GetArraySize(otherObject.GetData());
@@ -68,12 +63,31 @@ bool ResizableArrayType::TryLoadFromDifferentType(void* outObject, const Variant
             return false;
         }
 
-        // copy array elements
-        for (uint32 i = 0; i < targetSize; ++i)
+        if (otherUnderlyingType == underlyingType)
         {
-            if (!underlyingType->Clone(GetElementPointer(outObject, i), otherType->GetElementPointer(otherObject.GetData(), i)))
+            // underlying type is matching - copy array elements directly
+            for (uint32 i = 0; i < targetSize; ++i)
             {
-                return false;
+                if (!underlyingType->Clone(GetElementPointer(outObject, i), otherType->GetElementPointer(otherObject.GetData(), i)))
+                {
+                    return false;
+                }
+            }
+        }
+        else
+        {
+            // underlying type are mismatched - try upgrading element by element
+            for (uint32 i = 0; i < targetSize; ++i)
+            {
+                const void* otherElement = otherType->GetElementPointer(otherObject.GetData(), i);
+                const VariantView otherElementVariant(otherUnderlyingType, otherElement);
+
+                if (!underlyingType->TryLoadFromDifferentType(GetElementPointer(outObject, i), otherElementVariant))
+                {
+                    NFE_LOG_ERROR("Failed to upgrade array element (%u) from type '%s' to '%s'",
+                        i, otherUnderlyingType->GetName().Str(), underlyingType->GetName().Str());
+                    return false;
+                }
             }
         }
 

@@ -170,6 +170,7 @@ class StaticArrayType;
 class TypeRegistry;
 class Member;
 class Variant;
+class VariantView;
 class SerializationContext;
 class ITypeSerializer;
 template<typename T> class TypeCreator;

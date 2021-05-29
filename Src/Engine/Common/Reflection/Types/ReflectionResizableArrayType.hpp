@@ -41,7 +41,7 @@ public:
     virtual bool SerializeBinary(const void* object, Common::OutputStream* stream, SerializationContext& context) const override final;
     virtual bool DeserializeBinary(void* outObject, Common::InputStream& stream, SerializationContext& context) const override final;
     virtual bool SerializeTypeName(Common::OutputStream* stream, SerializationContext& context) const override final;
-    virtual bool TryLoadFromDifferentType(void* outObject, const Variant& otherObject) const override final;
+    virtual bool TryLoadFromDifferentType(void* outObject, const VariantView& otherObject) const override final;
     virtual bool Compare(const void* objectA, const void* objectB) const override final;
     virtual bool Clone(void* destObject, const void* sourceObject) const override final;
 };

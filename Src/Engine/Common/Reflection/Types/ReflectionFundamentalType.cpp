@@ -34,7 +34,7 @@ bool FundamentalType::DeserializeBinary(void* outObject, Common::InputStream& st
 }
 
 template<typename DestType, typename SrcType>
-static bool TryUpgradeFundamentalType(void* outObject, const FundamentalType* outType, const Variant& otherObject)
+static bool TryUpgradeFundamentalType(void* outObject, const FundamentalType* outType, const VariantView& otherObject)
 {
     if (GetType<DestType>() == outType && GetType<SrcType>() == otherObject.GetType())
     {
@@ -44,7 +44,7 @@ static bool TryUpgradeFundamentalType(void* outObject, const FundamentalType* ou
     return false;
 }
 
-bool FundamentalType::TryLoadFromDifferentType(void* outObject, const Variant& otherObject) const
+bool FundamentalType::TryLoadFromDifferentType(void* outObject, const VariantView& otherObject) const
 {
     // upgrading unsigned int to a bigger type is safe
     if (TryUpgradeFundamentalType<uint64, uint32>(outObject, this, otherObject)) return true;

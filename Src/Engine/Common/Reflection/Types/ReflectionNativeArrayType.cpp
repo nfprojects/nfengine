@@ -128,21 +128,40 @@ bool NativeArrayType::Clone(void* destObject, const void* sourceObject) const
     return success;
 }
 
-bool NativeArrayType::TryLoadFromDifferentType(void* outObject, const Variant& otherObject) const
+bool NativeArrayType::TryLoadFromDifferentType(void* outObject, const VariantView& otherObject) const
 {
     NFE_ASSERT(otherObject.GetType(), "Empty variant");
 
     if (otherObject.GetType()->GetKind() == TypeKind::NativeArray)
     {
         const NativeArrayType* otherType = static_cast<const NativeArrayType*>(otherObject.GetType());
+        const Type* otherUnderlyingType = otherType->GetUnderlyingType();
 
-        // TODO should be able to upgrade if underlying types are compatible as well
-        if (otherType->GetUnderlyingType() == GetUnderlyingType())
+        // can only upgrade from smaller array (otherwise we may loose data)
+        if (otherType->GetArraySize() <= GetArraySize())
         {
-            // can only upgrade from smaller array (otherwise we may loose data)
-            if (otherType->GetArraySize() <= GetArraySize())
+            if (otherUnderlyingType == GetUnderlyingType())
             {
-                return otherType->Clone(outObject, otherObject.GetDataBuffer().Data());
+                // underlying type is matching - copy array elements directly
+                return otherType->Clone(outObject, otherObject.GetData());
+            }
+            else
+            {
+                // underlying type are mismatched - try upgrading element by element
+                for (uint32 i = 0; i < otherType->GetArraySize(); ++i)
+                {
+                    const void* otherElement = otherType->GetElementPointer(otherObject.GetData(), i);
+                    const VariantView otherElementVariant(otherUnderlyingType, otherElement);
+
+                    if (!GetUnderlyingType()->TryLoadFromDifferentType(GetElementPointer(outObject, i), otherElementVariant))
+                    {
+                        NFE_LOG_ERROR("Failed to upgrade array element (%u) from type '%s' to '%s'",
+                            i, otherUnderlyingType->GetName().Str(), GetUnderlyingType()->GetName().Str());
+                        return false;
+                    }
+                }
+
+                return true;
             }
         }
     }

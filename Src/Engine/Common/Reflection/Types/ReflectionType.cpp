@@ -143,7 +143,7 @@ void Type::DeleteObject(void* objectPtr) const
     }
 }
 
-bool Type::TryLoadFromDifferentType(void* outObject, const Variant& otherObject) const
+bool Type::TryLoadFromDifferentType(void* outObject, const VariantView& otherObject) const
 {
     NFE_UNUSED(outObject);
     NFE_UNUSED(otherObject);

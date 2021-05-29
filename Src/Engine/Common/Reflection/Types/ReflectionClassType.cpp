@@ -507,7 +507,7 @@ bool ClassType::DeserializeBinary(void* outObject, InputStream& stream, Serializ
 
             Variant readObject(serializedType, std::move(tempObjectData));
 
-            if (memberType->TryLoadFromDifferentType(targetMember->GetMemberPtr(outObject), readObject))
+            if (memberType->TryLoadFromDifferentType(targetMember->GetMemberPtr(outObject), readObject.ToView()))
             {
                 NFE_LOG_DEBUG("Successfully upgraded member '%.*s' of class %s. Type in data was '%s', but in code it is '%s'",
                     memberName.Length(), memberName.Data(), GetName().Str(), serializedType->GetName().Str(), memberType->GetName().Str());

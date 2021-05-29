@@ -41,7 +41,7 @@ public:
 
     virtual bool Compare(const void* objectA, const void* objectB) const override;
     virtual bool Clone(void* destObject, const void* sourceObject) const override;
-    virtual bool TryLoadFromDifferentType(void* outObject, const Variant& otherObject) const override final;
+    virtual bool TryLoadFromDifferentType(void* outObject, const VariantView& otherObject) const override final;
     virtual bool CanBeMemcopied() const override;
 
     // access element data

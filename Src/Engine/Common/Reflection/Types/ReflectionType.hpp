@@ -210,7 +210,7 @@ public:
      * Try to copy data from a different type.
      * Mainly used in deserialization for upgrading compatible types.
      */
-    virtual bool TryLoadFromDifferentType(void* outObject, const Variant& otherObject) const;
+    virtual bool TryLoadFromDifferentType(void* outObject, const VariantView& otherObject) const;
 
     // Returns true if can be copied/serialized via simple memcopy
     // Applies to fundamental types and POD structures

@@ -25,7 +25,7 @@ public:
     virtual bool SerializeBinary(const void* object, Common::OutputStream* stream, SerializationContext& context) const override final;
     virtual bool DeserializeBinary(void* outObject, Common::InputStream& stream, SerializationContext& context) const override final;
     virtual bool CanBeMemcopied() const override final { return true; }
-    virtual bool TryLoadFromDifferentType(void* outObject, const Variant& otherObject) const override final;
+    virtual bool TryLoadFromDifferentType(void* outObject, const VariantView& otherObject) const override final;
 };
 
 
