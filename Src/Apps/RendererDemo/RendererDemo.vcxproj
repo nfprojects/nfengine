@@ -205,16 +205,7 @@
   <ItemGroup>
     <ClInclude Include="Common.hpp" />
     <ClInclude Include="PCH.hpp" />
-    <ClInclude Include="Scenes\Basic.hpp" />
-    <ClInclude Include="Scenes\Compute.hpp" />
-    <ClInclude Include="Scenes\DepthStencil.hpp" />
-    <ClInclude Include="Scenes\DynamicTexture.hpp" />
-    <ClInclude Include="Scenes\Multisample.hpp" />
-    <ClInclude Include="Scenes\Multithreaded.hpp" />
-    <ClInclude Include="Scenes\RenderTargets.hpp" />
     <ClInclude Include="Scenes\Scene.hpp" />
-    <ClInclude Include="Scenes\Tessellation.hpp" />
-    <ClInclude Include="Scenes\VertexBuffers.hpp" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shaders\HLSL5\InstancingTestPS.hlsl">

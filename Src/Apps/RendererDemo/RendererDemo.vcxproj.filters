@@ -74,34 +74,7 @@
     <ClInclude Include="Common.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Scenes\DepthStencil.hpp">
-      <Filter>Header Files\Scenes</Filter>
-    </ClInclude>
-    <ClInclude Include="Scenes\VertexBuffers.hpp">
-      <Filter>Header Files\Scenes</Filter>
-    </ClInclude>
-    <ClInclude Include="Scenes\Basic.hpp">
-      <Filter>Header Files\Scenes</Filter>
-    </ClInclude>
     <ClInclude Include="Scenes\Scene.hpp">
-      <Filter>Header Files\Scenes</Filter>
-    </ClInclude>
-    <ClInclude Include="Scenes\RenderTargets.hpp">
-      <Filter>Header Files\Scenes</Filter>
-    </ClInclude>
-    <ClInclude Include="Scenes\Tessellation.hpp">
-      <Filter>Header Files\Scenes</Filter>
-    </ClInclude>
-    <ClInclude Include="Scenes\Compute.hpp">
-      <Filter>Header Files\Scenes</Filter>
-    </ClInclude>
-    <ClInclude Include="Scenes\Multithreaded.hpp">
-      <Filter>Header Files\Scenes</Filter>
-    </ClInclude>
-    <ClInclude Include="Scenes\Multisample.hpp">
-      <Filter>Header Files\Scenes</Filter>
-    </ClInclude>
-    <ClInclude Include="Scenes\DynamicTexture.hpp">
       <Filter>Header Files\Scenes</Filter>
     </ClInclude>
   </ItemGroup>

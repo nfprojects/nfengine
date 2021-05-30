@@ -8,15 +8,7 @@
 #include "PCH.hpp"
 
 #include "Common.hpp"
-#include "Scenes/Basic.hpp"
-#include "Scenes/DepthStencil.hpp"
-#include "Scenes/VertexBuffers.hpp"
-#include "Scenes/RenderTargets.hpp"
-#include "Scenes/Tessellation.hpp"
-#include "Scenes/Compute.hpp"
-#include "Scenes/Multithreaded.hpp"
-#include "Scenes/Multisample.hpp"
-#include "Scenes/DynamicTexture.hpp"
+#include "Scenes/Scene.hpp"
 
 #include "Engine/Renderers/RendererCommon/Device.hpp"
 #include "Engine/Renderers/RendererCommon/Fence.hpp"
@@ -30,6 +22,7 @@
 #include "Engine/Common/Utils/StringUtils.hpp"
 #include "Engine/Common/Utils/TaskBuilder.hpp"
 #include "Engine/Common/Utils/Waitable.hpp"
+#include "Engine/Common/Reflection/Types/ReflectionClassType.hpp"
 
 #include <algorithm>
 #include <string.h>
@@ -50,13 +43,13 @@ class DemoWindow : public Window
 
     void SetWindowTitle()
     {
-        std::string title = "nfRendererDemo - scene: " +
-            std::to_string(mCurrentScene) + " (" + mScenes[mCurrentScene]->GetSceneName() + ')' +
-            ", subscene: " + std::to_string(mScenes[mCurrentScene]->GetCurrentSubSceneNumber()) +
+        String title = "nfRendererDemo - scene: " +
+            ToString(mCurrentScene) + " (" + mScenes[mCurrentScene]->GetSceneName() + ')' +
+            ", subscene: " + ToString(mScenes[mCurrentScene]->GetCurrentSubSceneNumber()) +
             " (" + mScenes[mCurrentScene]->GetCurrentSubSceneName() + "), dt: " +
-            std::to_string(mDeltaTime * 1000.0f) + "ms";
+            ToString(mDeltaTime * 1000.0f) + "ms";
 
-        SetTitle(title.c_str());
+        SetTitle(title.Str());
     }
 
     void SwitchScene(uint32 scene)
@@ -124,18 +117,17 @@ public:
         , mRendererDevice(nullptr)
         , mDeltaTime(0.0f)
     {
-        // TODO: move scene registration to their source files
-        // TODO: switching to arbitrary scene (e.g. omitting a single scene should be
-        //       possible, when a feature is not implemented in renderer
-        mScenes.PushBack(MakeUniquePtr<BasicScene>());
-        mScenes.PushBack(MakeUniquePtr<MultisampleScene>());
-        mScenes.PushBack(MakeUniquePtr<DepthStencilScene>());
-        mScenes.PushBack(MakeUniquePtr<RenderTargetsScene>());
-        mScenes.PushBack(MakeUniquePtr<VertexBuffersScene>());
-        mScenes.PushBack(MakeUniquePtr<TessellationScene>());
-        mScenes.PushBack(MakeUniquePtr<ComputeScene>());
-        mScenes.PushBack(MakeUniquePtr<MultithreadedScene>());
-        mScenes.PushBack(MakeUniquePtr<DynamicTextureScene>());
+        RTTI::GetType<Scene>()->ListSubtypes([this](const RTTI::ClassType* type)
+        {
+            Scene* scenePtr = type->CreateObject<Scene>();
+            mScenes.PushBack(UniquePtr<Scene>(scenePtr));
+        }, /*skipAbstractTypes*/ true);
+
+        // sort scenes by name
+        std::sort(mScenes.Begin(), mScenes.End(), [](const UniquePtr<Scene>& a, const UniquePtr<Scene>& b)
+        {
+            return a->GetDynamicType()->GetName() < b->GetDynamicType()->GetName();
+        });
     }
 
     /**

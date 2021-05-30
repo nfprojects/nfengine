@@ -6,8 +6,7 @@
 
 #include "../PCH.hpp"
 
-#include "Multithreaded.hpp"
-#include "../Common.hpp"
+#include "Scene.hpp"
 
 #include "Engine/Common/Math/Math.hpp"
 #include "Engine/Common/Math/Matrix4.hpp"
@@ -17,8 +16,74 @@
 #include "Engine/Common/Utils/Waitable.hpp"
 #include "Engine/Common/Utils/TaskBuilder.hpp"
 #include "Engine/Renderers/RendererCommon/Fence.hpp"
+#include "Engine/Common/Reflection/ReflectionClassDefine.hpp"
 
-#include <functional>
+
+class MultithreadedScene : public Scene
+{
+    NFE_DECLARE_POLYMORPHIC_CLASS(MultithreadedScene)
+
+    using CollectedCommandLists = NFE::Common::DynArray<NFE::Renderer::CommandListPtr>;
+
+    NFE::Common::DynArray<CollectedCommandLists> mCollectedCommandLists; // separate for each thread
+    NFE::Common::DynArray<NFE::Renderer::CommandRecorderPtr> mCommandRecorders;
+
+    NFE::Renderer::RenderTargetPtr mWindowRenderTarget;
+    NFE::Renderer::PipelineStatePtr mPipelineState;
+    NFE::Renderer::ShaderPtr mVertexShader;
+    NFE::Renderer::ShaderPtr mPixelShader;
+    NFE::Renderer::BufferPtr mVertexBuffer;
+    NFE::Renderer::VertexLayoutPtr mVertexLayout;
+    NFE::Renderer::BufferPtr mIndexBuffer;
+    NFE::Renderer::BufferPtr mConstantBuffer;
+
+    NFE::Renderer::ResourceBindingSetPtr mVSBindingSet;
+    NFE::Renderer::ResourceBindingLayoutPtr mResBindingLayout;
+    NFE::Renderer::ResourceBindingInstancePtr mVSBindingInstance;
+
+    int mCBufferSlot;
+
+    // Used for objects rotation in Constant Buffer scenes and onward
+    float mAngle;
+
+    // how many instances will be drawn?
+    int mGridSize;
+
+    int mVSBindingSlot;
+
+    // cbuffer mode
+    NFE::Renderer::ResourceAccessMode mCBufferMode;
+
+    // Releases only subscene-related resources. Backbuffer, RT and BlendState stay intact.
+    void ReleaseSubsceneResources() override;
+
+    // Resource creators for subscenes
+    bool CreateCommandRecorders();
+    bool CreateShaders(NFE::Renderer::ResourceAccessMode cbufferMode);
+    bool CreateVertexBuffer();
+    bool CreateIndexBuffer();
+    bool CreateConstantBuffer(NFE::Renderer::ResourceAccessMode cbufferMode);
+
+    // Subscenes
+    bool CreateSubSceneEmpty();
+    bool CreateSubSceneNormal(NFE::Renderer::ResourceAccessMode cbufferMode, int gridSize);
+
+    // drawing task (will be called from thread pool)
+    void DrawTask(const NFE::Common::TaskContext& ctx, int i, int j);
+
+public:
+    MultithreadedScene();
+    ~MultithreadedScene();
+
+    bool OnInit(void* winHandle) override;
+    void Draw(float dt) override;
+    void Release() override;
+};
+
+
+NFE_DEFINE_POLYMORPHIC_CLASS(MultithreadedScene)
+    NFE_CLASS_PARENT(Scene)
+NFE_END_DEFINE_CLASS()
 
 
 using namespace NFE;

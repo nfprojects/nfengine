@@ -9,25 +9,27 @@
 #include "../Common.hpp"
 
 #include "Engine/Renderers/RendererCommon/Device.hpp"
-
-#include <vector>
+#include "Engine/Common/Reflection/ReflectionClassDeclare.hpp"
+#include "Engine/Common/Containers/String.hpp"
 
 typedef std::function<bool()> SubSceneInitializer;
 
 struct SubSceneDefinition
 {
     SubSceneInitializer initializer;
-    std::string name;
+    NFE::Common::StringView name;
 };
 
 /**
  * Base class describing a scene
  */
-class Scene
+class Scene : public NFE::IObject
 {
+    NFE_DECLARE_POLYMORPHIC_CLASS(Scene)
+
     NFE::uint32 mCurrentSubScene;
     NFE::uint32 mHighestAvailableSubScene;
-    std::string mName;  //< scene name
+    NFE::Common::StringView mName;
     NFE::Common::DynArray<SubSceneDefinition> mSubScenes;
 
 protected:
@@ -43,13 +45,13 @@ protected:
 
     virtual bool OnInit(void* winHandle);
     virtual bool OnSwitchSubscene();
-    void RegisterSubScene(SubSceneInitializer initializer, const std::string& name);
+    void RegisterSubScene(SubSceneInitializer initializer, const NFE::Common::StringView name);
 
     // Methods common for all scenes:
     NFE::Renderer::ShaderPtr CompileShader(const char* path, NFE::Renderer::ShaderType type, NFE::Renderer::ShaderMacro* macros, NFE::uint32 macrosNum);
 
 public:
-    Scene(const std::string& name);
+    Scene(const NFE::Common::StringView name);
 
     /**
      * Virtual destructor for Scene
@@ -61,7 +63,7 @@ public:
     /**
      * Retrieves scene name
      */
-    std::string GetSceneName() const;
+    const NFE::Common::StringView GetSceneName() const;
 
     /**
      * Initializes the scene
@@ -121,7 +123,7 @@ public:
     /**
      * Retrieves current subscene name
      */
-    std::string GetCurrentSubSceneName() const;
+    const NFE::Common::StringView GetCurrentSubSceneName() const;
 
     /**
      * Drawing call

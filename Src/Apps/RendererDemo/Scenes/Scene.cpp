@@ -9,12 +9,16 @@
 #include "Engine/Common/nfCommon.hpp"
 #include "Engine/Common/Utils/LanguageUtils.hpp"
 #include "Engine/Common/Logger/Logger.hpp"
+#include "Engine/Common/Reflection/ReflectionClassDefine.hpp"
 
 
 using namespace NFE;
 using namespace Renderer;
 
-Scene::Scene(const std::string& name)
+NFE_DEFINE_POLYMORPHIC_CLASS(Scene)
+NFE_END_DEFINE_CLASS()
+
+Scene::Scene(const Common::StringView name)
     : mCurrentSubScene(UINT32_MAX)
     , mHighestAvailableSubScene(UINT32_MAX)
     , mName(name)
@@ -29,7 +33,7 @@ Scene::~Scene()
     mCopyQueue.Reset();
 }
 
-std::string Scene::GetSceneName() const
+const Common::StringView Scene::GetSceneName() const
 {
     return mName;
 }
@@ -49,10 +53,10 @@ uint32 Scene::GetSubsceneCount() const
     return mSubScenes.Size();
 }
 
-std::string Scene::GetCurrentSubSceneName() const
+const Common::StringView Scene::GetCurrentSubSceneName() const
 {
     if (mCurrentSubScene > mHighestAvailableSubScene)
-        return std::string();
+        return Common::StringView();
 
     return mSubScenes[mCurrentSubScene].name;
 }
@@ -62,7 +66,7 @@ bool Scene::OnSwitchSubscene()
     return true;
 }
 
-void Scene::RegisterSubScene(SubSceneInitializer initializer, const std::string& name)
+void Scene::RegisterSubScene(SubSceneInitializer initializer, const NFE::Common::StringView name)
 {
     SubSceneDefinition def;
     def.initializer = initializer;
