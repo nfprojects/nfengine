@@ -14,14 +14,14 @@ class LookupTable
 public:
     void Init(const Common::ArrayView<const float> keys, const Common::ArrayView<const ValueType> values)
     {
-        NFE_ASSERT(keys.Size() == values.Size());
+        NFE_ASSERT(keys.Size() == values.Size(), "Keys and values size do not match");
         mKeys = keys;
         mValues = values;
     }
 
     void Init(Common::DynArray<float>&& keys, Common::DynArray<ValueType>&& values)
     {
-        NFE_ASSERT(keys.Size() == values.Size());
+        NFE_ASSERT(keys.Size() == values.Size(), "Keys and values size do not match");
         mKeys = std::move(keys);
         mValues = std::move(values);
     }

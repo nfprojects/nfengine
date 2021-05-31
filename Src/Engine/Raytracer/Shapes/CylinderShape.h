@@ -7,7 +7,7 @@ namespace RT {
 
 class CylinderShape : public IShape
 {
-    NFE_DECLARE_POLYMORPHIC_CLASS(CylinderShape);
+    NFE_DECLARE_POLYMORPHIC_CLASS(CylinderShape)
 
 public:
     NFE_RAYTRACER_API CylinderShape(const float radius = 1.0f, const float height = 1.0f);

@@ -138,7 +138,7 @@ float Microfacet::SampleHeight(const Vec4f& wr, const float hr, const float u) c
 
 float Microfacet::EvalPhaseFunction(const Vec4f& wi, const Vec4f& wo) const
 {
-    // half vector 
+    // half vector
     const Vec4f wh = (wi + wo).Normalized3();
     if (wh.z < 0.0f)
     {
@@ -168,7 +168,8 @@ const Vec2f Microfacet::SampleP22_11(const float theta_i, const float U, const f
     const float tan_theta_i = sin_theta_i / cos_theta_i;
 
     // slope associated to theta_i
-    const float slope_i = cos_theta_i / sin_theta_i;
+    // commented out - unused
+    //const float slope_i = cos_theta_i / sin_theta_i;
 
     // projected area
     const float projectedarea = 0.5f * (cos_theta_i + 1.0f);
@@ -213,7 +214,7 @@ const Vec2f Microfacet::SampleP22_11(const float theta_i, const float U, const f
 
 const Vec4f Microfacet::SampleD(const Vec4f& wi, const float U1, const float U2) const
 {
-    // stretch to match configuration with alpha=1.0	
+    // stretch to match configuration with alpha=1.0
     const Vec4f wi_11 = Vec4f(mAlphaX * wi.x, mAlphaY * wi.y, wi.z).Normalized3();
 
     // sample visible slope with alpha=1.0

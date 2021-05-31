@@ -684,13 +684,13 @@ void Bitmap::GetPixelBlock(const Vec4ui coords, Vec4f* outColors) const
         const float g2 = Convert_sRGB_To_Linear_8bit(rowData1[4u * coords.x + 1u]);
         const float r2 = Convert_sRGB_To_Linear_8bit(rowData1[4u * coords.x + 2u]);
         const float a2 =   (1.0f / 255.0f) * (float)(rowData1[4u * coords.x + 3u]);
-        color[2] = Vec4f(r2, g2, b2, a1);
+        color[2] = Vec4f(r2, g2, b2, a2);
 
         const float b3 = Convert_sRGB_To_Linear_8bit(rowData1[4u * coords.z     ]);
         const float g3 = Convert_sRGB_To_Linear_8bit(rowData1[4u * coords.z + 1u]);
         const float r3 = Convert_sRGB_To_Linear_8bit(rowData1[4u * coords.z + 2u]);
         const float a3 =   (1.0f / 255.0f) * (float)(rowData1[4u * coords.z + 3u]);
-        color[3] = Vec4f(r3, g3, b3, a2);
+        color[3] = Vec4f(r3, g3, b3, a3);
 
         break;
     }
@@ -772,13 +772,13 @@ void Bitmap::GetPixelBlock(const Vec4ui coords, Vec4f* outColors) const
         const float g2 = Convert_sRGB_To_Linear_8bit(source2[1]);
         const float r2 = Convert_sRGB_To_Linear_8bit(source2[2]);
         const float a2 = (1.0f / 255.0f) * (float)(source2[3]);
-        color[2] = Vec4f(r2, g2, b2, a1);
+        color[2] = Vec4f(r2, g2, b2, a2);
 
         const float b3 = Convert_sRGB_To_Linear_8bit(source3[0]);
         const float g3 = Convert_sRGB_To_Linear_8bit(source3[1]);
         const float r3 = Convert_sRGB_To_Linear_8bit(source3[2]);
         const float a3 = (1.0f / 255.0f) * (float)(source3[3]);
-        color[3] = Vec4f(r3, g3, b3, a2);
+        color[3] = Vec4f(r3, g3, b3, a3);
 
         break;
     }
@@ -962,7 +962,7 @@ void Bitmap::GetPixelBlock(const Vec4ui coords, Vec4f* outColors) const
         color[3] = Vec4f_Load_Half4(reinterpret_cast<const Half4*>(source3));
         break;
     }
-    
+
     case Format::R9G9B9E5_SharedExp:
     {
         const Vec4ui offsets = coords << 2; // offset = 4 * coords

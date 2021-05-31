@@ -27,7 +27,7 @@ CylinderShape::CylinderShape(const float radius, const float height)
     , mInvRadius(1.0f / radius)
     , mHeight(height)
 {
-    NFE_ASSERT(mRadius > 0.0f);
+    NFE_ASSERT(mRadius > 0.0f, "Radius should be higher than 0");
 }
 
 bool CylinderShape::OnPropertyChanged(const Common::StringView propertyName)
@@ -112,7 +112,6 @@ const Vec4f CylinderShape::Sample(const Vec3f& u, Vec4f* outNormal, float* outPd
     }
 
     const float capSurfaceArea = NFE_MATH_PI * Sqr(mRadius);
-    const float sideSurfaceArea = NFE_MATH_2PI * mRadius * mHeight;
 
     Vec4f point, normal;
 

@@ -49,7 +49,6 @@ bool RoughMetalBSDF::Sample(SamplingContext& ctx) const
         while (scatteringOrder <= mMaxScatteringOrder)
         {
             // next height
-            const float prevHr = hr;
             const float u = Clamp(ctx.sampler.GetFloat(), 0.00001f, 0.99999f);
             hr = microfacet.SampleHeight(wr, hr, u);
             NFE_ASSERT(!IsNaN(hr), "");
@@ -206,7 +205,7 @@ const RayColor RoughMetalBSDF::Evaluate(const EvaluationContext& ctx, float* out
                 sum += throughput * I;
             }
 
-            NFE_ASSERT(!IsNaN(hr));
+            NFE_ASSERT(!IsNaN(hr), "Sample height is NaN");
         }
 
         return sum;

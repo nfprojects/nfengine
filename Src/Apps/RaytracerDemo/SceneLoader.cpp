@@ -532,13 +532,13 @@ static ShapePtr ParseShape(const rapidjson::Value& value, MaterialsMap& material
         float radius = 0.5f;
         if (!TryParseFloat(value, "radius", false, radius))
         {
-            return false;
+            return nullptr;
         }
 
         float height = 1.0f;
         if (!TryParseFloat(value, "height", false, height))
         {
-            return false;
+            return nullptr;
         }
 
         shape = MakeUniquePtr<CylinderShape>(radius, height);
