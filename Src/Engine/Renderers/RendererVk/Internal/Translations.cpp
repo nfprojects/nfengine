@@ -249,6 +249,20 @@ const char* TranslateVkFormatToString(VkFormat format)
     }
 }
 
+const char* TranslateResourceAccessModeToString(ResourceAccessMode mode)
+{
+    switch (mode)
+    {
+    case ResourceAccessMode::Invalid: return "Invalid";
+    case ResourceAccessMode::GPUOnly: return "GPUOnly";
+    case ResourceAccessMode::Immutable: return "Immutable";
+    case ResourceAccessMode::Readback: return "Readback";
+    case ResourceAccessMode::Upload: return "Upload";
+    case ResourceAccessMode::Volatile: return "Volatile";
+    default: return "UNKNOWN";
+    }
+}
+
 VkBlendFactor TranslateBlendFuncToVkBlendFactor(BlendFunc func)
 {
     switch (func)
