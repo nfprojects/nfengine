@@ -35,15 +35,12 @@ bool Buffer::Init(const BufferDesc& desc)
 {
     VkResult result = VK_SUCCESS;
 
-    // Temporary early leave until below types are implemented
-    if (desc.mode == ResourceAccessMode::GPUOnly || desc.mode == ResourceAccessMode::Readback)
-    {
-        NFE_LOG_ERROR("Requested unsupported buffer mode");
-        return false;
-    }
-
     mMode = desc.mode;
     mBufferSize = static_cast<VkDeviceSize>(desc.size);
+
+    // Volatile buffers are handled via Ring Buffer - no need for Buffer allocation
+    if (desc.mode == ResourceAccessMode::Volatile)
+        goto finish;
 
     VkBufferCreateInfo bufInfo;
     VK_ZERO_MEMORY(bufInfo);
@@ -57,6 +54,7 @@ bool Buffer::Init(const BufferDesc& desc)
 
     // Determine base buffer usage
     bufInfo.usage = TranslateBufferUsageToVkBufferUsage(desc.usage);
+    bufInfo.usage |= VK_BUFFER_USAGE_TRANSFER_SRC_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT;
 
     result = vkCreateBuffer(gDevice->GetDevice(), &bufInfo, nullptr, &mBuffer);
     CHECK_VKRESULT(result, "Failed to create device buffer");
@@ -67,8 +65,24 @@ bool Buffer::Init(const BufferDesc& desc)
     VkMemoryRequirements deviceMemReqs;
     vkGetBufferMemoryRequirements(gDevice->GetDevice(), mBuffer, &deviceMemReqs);
 
+    VkMemoryPropertyFlags mempropFlags;
+    switch (desc.mode)
+    {
+    case ResourceAccessMode::GPUOnly:
+    case ResourceAccessMode::Immutable:
+        mempropFlags = VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT;
+        break;
+    case ResourceAccessMode::Readback:
+    case ResourceAccessMode::Upload:
+        mempropFlags = VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT;
+        break;
+    default:
+        NFE_ASSERT(0, "Invalid Resource Access Mode");
+        return false;
+    }
+
     memInfo.allocationSize = deviceMemReqs.size;
-    memInfo.memoryTypeIndex = gDevice->GetMemoryTypeIndex(deviceMemReqs.memoryTypeBits, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
+    memInfo.memoryTypeIndex = gDevice->GetMemoryTypeIndex(deviceMemReqs.memoryTypeBits, mempropFlags);
     result = vkAllocateMemory(gDevice->GetDevice(), &memInfo, nullptr, &mBufferMemory);
     CHECK_VKRESULT(result, "Failed to allocate memory for device buffer");
 
@@ -82,18 +96,8 @@ bool Buffer::Init(const BufferDesc& desc)
     result = vkBindBufferMemory(gDevice->GetDevice(), mBuffer, mBufferMemory, 0);
     CHECK_VKRESULT(result, "Failed to bind device buffer to its memory");
 
-    std::string resourceAccessModeStr;
-    switch (mMode)
-    {
-    case ResourceAccessMode::Immutable: resourceAccessModeStr = "Immutable"; break;
-    case ResourceAccessMode::GPUOnly: resourceAccessModeStr = "GPUOnly"; break;
-    case ResourceAccessMode::Upload: resourceAccessModeStr = "Upload"; break;
-    case ResourceAccessMode::Volatile: resourceAccessModeStr = "Volatile"; break;
-    case ResourceAccessMode::Readback: resourceAccessModeStr = "Readback"; break;
-    default: resourceAccessModeStr = "Unknown";
-    }
-
-    NFE_LOG_INFO("%u-byte %s Buffer created successfully", desc.size, resourceAccessModeStr.c_str());
+finish:
+    NFE_LOG_INFO("%u-byte %s Buffer created successfully", desc.size, TranslateResourceAccessModeToString(mMode));
     return true;
 }
 
