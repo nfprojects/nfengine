@@ -4,6 +4,8 @@
 
 #include "../RendererCommon/CommandQueue.hpp"
 
+#include "Defines.hpp"
+
 
 namespace NFE {
 namespace Renderer {
@@ -89,6 +91,43 @@ NFE_FORCE_INLINE VkImageViewType TextureTypeToVkImageViewType(TextureType type)
     }
 }
 
+NFE_FORCE_INLINE VkImageSubresourceRange TextureViewToVkImageSubresourceRange(const TextureView& view, VkImageAspectFlags aspect)
+{
+    VkImageSubresourceRange range;
+    VK_ZERO_MEMORY(range);
+    range.aspectMask = aspect;
+    range.baseArrayLayer = view.baseLayer;
+    range.baseMipLevel = view.baseMip;
+    range.layerCount = view.numLayers;
+    range.levelCount = view.numMips;
+    return range;
+}
+
 } // namespace Util
+
+
+////
+// Comparison operators between different types (most commonly VK vs NFE types)
+//
+// To be visible these have to be outside Util namespace
+////
+
+// Comparison between Vulkan Image Subresource Range and NFE Texture View
+NFE_FORCE_INLINE bool operator==(const ::VkImageSubresourceRange& vkSubresRange, const NFE::Renderer::TextureView& nfeTexView)
+{
+    return (vkSubresRange.baseArrayLayer == nfeTexView.baseLayer) &&
+           (vkSubresRange.baseMipLevel == nfeTexView.baseMip) &&
+           (vkSubresRange.layerCount == nfeTexView.numLayers) &&
+           (vkSubresRange.levelCount == nfeTexView.numMips);
+}
+
+NFE_FORCE_INLINE bool operator!=(const ::VkImageSubresourceRange& vkSubresRange, const NFE::Renderer::TextureView& nfeTexView)
+{
+    return (vkSubresRange.baseArrayLayer != nfeTexView.baseLayer) ||
+           (vkSubresRange.baseMipLevel != nfeTexView.baseMip) ||
+           (vkSubresRange.layerCount != nfeTexView.numLayers) ||
+           (vkSubresRange.levelCount != nfeTexView.numMips);
+}
+
 } // namespace Renderer
 } // namespace NFE

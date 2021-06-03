@@ -17,6 +17,7 @@ Buffer::Buffer()
     : mBuffer(VK_NULL_HANDLE)
     , mBufferMemory(VK_NULL_HANDLE)
     , mBufferSize(0)
+    , mStructureSize(0)
     , mMode(ResourceAccessMode::Invalid)
     , mVolatileBinding(UINT32_MAX)
     , mVolatileDataOffset(UINT32_MAX)
@@ -37,6 +38,7 @@ bool Buffer::Init(const BufferDesc& desc)
 
     mMode = desc.mode;
     mBufferSize = static_cast<VkDeviceSize>(desc.size);
+    mStructureSize = static_cast<VkDeviceSize>(desc.structSize);
 
     // Volatile buffers are handled via Ring Buffer - no need for Buffer allocation
     if (desc.mode == ResourceAccessMode::Volatile)
