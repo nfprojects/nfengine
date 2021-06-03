@@ -35,6 +35,7 @@ public:
     {
     }
 
+    ~FenceData();
     bool Init();
 };
 

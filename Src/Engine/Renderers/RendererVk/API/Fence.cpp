@@ -38,6 +38,18 @@ bool FenceData::Init()
     return false;
 }
 
+FenceData::~FenceData()
+{
+    // can check any of the Synchronizable union here, both are a Vulkan handle
+    if (synchronizable.fence != VK_NULL_HANDLE)
+    {
+        if (flags & FenceFlag_CpuWaitable)
+            vkDestroyFence(gDevice->GetDevice(), synchronizable.fence, nullptr);
+        else if (flags & FenceFlag_GpuWaitable)
+            vkDestroySemaphore(gDevice->GetDevice(), synchronizable.semaphore, nullptr);
+    }
+}
+
 
 Fence::Fence(const FenceFlags flags)
     : mSyncTask(Common::InvalidTaskID)

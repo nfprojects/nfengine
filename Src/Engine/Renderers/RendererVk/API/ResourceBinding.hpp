@@ -25,7 +25,8 @@ class ResourceBindingSet : public IResourceBindingSet
     friend class CommandRecorder;
 
     VkDescriptorSetLayout mDescriptorLayout;
-    uint32_t mResourceCount;
+    uint32 mResourceCount;
+    uint32 mTexResourceCount;
     uint16 mSetSlot;
 
 public:
@@ -64,9 +65,15 @@ class ResourceBindingInstance : public IResourceBindingInstance
 
     ResourceBindingSet* mSet;
     VkDescriptorSet mDescriptorSet;
+    Common::DynArray<VkImageView> mTextureViews;
     Common::DynArray<IResource*> mWrittenResources; // needed for barriers/image layout transitions
+    Common::DynArray<VkDescriptorImageInfo> mImageInfos;
+    Common::DynArray<VkDescriptorBufferInfo> mBufferInfos;
+    Common::DynArray<VkWriteDescriptorSet> mWrites;
 
 public:
+    ~ResourceBindingInstance();
+
     bool Init(const ResourceBindingSetPtr& bindingSet) override;
     bool SetTextureView(uint32 slot, const TexturePtr& texture, const TextureView& view) override;
     bool SetBufferView(uint32 slot, const BufferPtr& buffer, const BufferView& view) override;

@@ -88,29 +88,20 @@ bool CommandRecorder::WriteDynamicBuffer(Buffer* b, size_t offset, size_t size, 
 
 bool CommandRecorder::WriteVolatileBuffer(Buffer* b, size_t size, const void* data)
 {
-    NFE_UNUSED(b);
-    NFE_UNUSED(size);
-    NFE_UNUSED(data);
-    return false;
-
-    /*
     b->mVolatileDataOffset = gDevice->GetRingBuffer()->Write(data, static_cast<uint32>(size));
     NFE_ASSERT(b->mVolatileDataOffset != UINT32_MAX, "Failed to write data to Ring Ruffer - the Ring Buffer is full");
 
-    if (b->mType == BufferType::Constant)
+    for (uint32 i = 0; i < VK_MAX_VOLATILE_BUFFERS; ++i)
     {
-        for (uint32 i = 0; i < VK_MAX_VOLATILE_BUFFERS; ++i)
+        if (b == mBoundVolatileBuffers[i])
         {
-            if (b == mBoundVolatileBuffers[i])
-            {
-                mBoundVolatileOffsets[i] = b->mVolatileDataOffset;
-                mRebindDynamicBuffers = true;
-                break;
-            }
+            mBoundVolatileOffsets[i] = b->mVolatileDataOffset;
+            mRebindDynamicBuffers = true;
+            break;
         }
     }
 
-    return true;*/
+    return true;
 }
 
 void CommandRecorder::RebindDynamicBuffers() const
