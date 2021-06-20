@@ -12,20 +12,30 @@ using namespace Math;
 
 ITexture::~ITexture() = default;
 
-bool ITexture::MakeSamplable()
+bool ITexture::MakeSamplable(SampleDistortion distortion)
 {
+    NFE_UNUSED(distortion);
     return true;
 }
 
-bool ITexture::IsSamplable() const
+bool ITexture::IsSamplable(SampleDistortion distortion) const
 {
+    NFE_UNUSED(distortion);
     return true;
 }
 
-const Vec4f ITexture::Sample(const Vec2f u, Vec4f& outCoords, float* outPdf) const
+float ITexture::Pdf(SampleDistortion distortion, const Math::Vec4f& coords) const
+{
+    NFE_UNUSED(distortion);
+    NFE_UNUSED(coords);
+    return 1.0f;
+}
+
+const Vec4f ITexture::Sample(const Vec3f u, Vec4f& outCoords, SampleDistortion distortion, float* outPdf) const
 {
     NFE_UNUSED(u);
     NFE_UNUSED(outCoords);
+    NFE_UNUSED(distortion);
     NFE_UNUSED(outPdf);
 
     NFE_FATAL("Not implemented");

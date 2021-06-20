@@ -9,6 +9,12 @@
 namespace NFE {
 namespace RT {
 
+enum class SampleDistortion
+{
+    Uniform,
+    Spherical,
+};
+
 /**
  * Class representing 2D texture.
  */
@@ -27,14 +33,21 @@ public:
     // evaluate texture color at given coordinates
     virtual const Math::Vec4f Evaluate(const Math::Vec4f& coords) const = 0;
 
+    // get pdf of sampling given coordinates
+    virtual float Pdf(SampleDistortion distortion, const Math::Vec4f& coords) const;
+
     // generate random sample on the texture
-    virtual const Math::Vec4f Sample(const Math::Vec2f u, Math::Vec4f& outCoords, float* outPdf = nullptr) const;
+    virtual const Math::Vec4f Sample(
+        const Math::Vec3f u,
+        Math::Vec4f& outCoords,
+        SampleDistortion distortion = SampleDistortion::Uniform,
+        float* outPdf = nullptr) const;
 
     // must be called before using Sample() method
-    virtual bool MakeSamplable();
+    virtual bool MakeSamplable(SampleDistortion distortion);
 
     // check if the texture is samplable (if it's not, calling Sample is illegal)
-    virtual bool IsSamplable() const;
+    virtual bool IsSamplable(SampleDistortion distortion) const;
 };
 
 using TexturePtr = Common::SharedPtr<ITexture>;

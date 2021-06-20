@@ -41,8 +41,10 @@ const Vec4f MixTexture::Evaluate(const Vec4f& coords) const
     return Vec4f::Lerp(colorA, colorB, weight);
 }
 
-const Vec4f MixTexture::Sample(const Vec2f u, Vec4f& outCoords, float* outPdf) const
+const Vec4f MixTexture::Sample(const Vec3f u, Vec4f& outCoords, SampleDistortion distortion, float* outPdf) const
 {
+    NFE_UNUSED(distortion);
+
     // TODO
     
     outCoords = Vec4f(u);

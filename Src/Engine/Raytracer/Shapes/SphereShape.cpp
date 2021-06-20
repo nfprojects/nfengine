@@ -212,7 +212,7 @@ void SphereShape::EvaluateIntersection(const HitPoint& hitPoint, IntersectionDat
 {
     NFE_UNUSED(hitPoint);
 
-    outData.texCoord = CartesianToSphericalCoordinates(-outData.frame.GetTranslation());
+    outData.texCoord = CartesianToSpherical(-outData.frame.GetTranslation());
     outData.frame[2] = outData.frame.GetTranslation() * mInvRadius;
 
     // equivalent of: Vec4f::Cross3(outData.normal, VECTOR_Y);

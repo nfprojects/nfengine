@@ -478,7 +478,7 @@ bool VertexConnectionAndMerging::GenerateLightSample(const Scene& scene, PathSta
         lightObject->GetTransform(ctx.time),
         ctx.wavelength,
         ctx.randomGenerator.GetVec3f(),
-        ctx.randomGenerator.GetVec2f(),
+        ctx.randomGenerator.GetVec3f(),
     };
 
     ILight::EmitResult emitResult;

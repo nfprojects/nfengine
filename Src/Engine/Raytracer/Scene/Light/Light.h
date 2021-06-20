@@ -66,7 +66,7 @@ public:
         const Math::Matrix4 lightToWorld; // transform from light local space to world space
         Wavelength& wavelength;
         Math::Vec3f positionSample;
-        Math::Vec2f directionSample;
+        Math::Vec3f directionSample;
     };
 
     struct EmitResult

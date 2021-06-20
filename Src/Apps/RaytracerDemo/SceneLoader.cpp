@@ -643,9 +643,9 @@ static bool ParseLight(const rapidjson::Value& value, Scene& scene, const Textur
         if (!TryParseTextureName(value, "texture", textures, areaLight->mTexture))
             return false;
 
-        if (areaLight->mTexture && !areaLight->mTexture->IsSamplable())
+        if (areaLight->mTexture && !areaLight->mTexture->IsSamplable(SampleDistortion::Uniform))
         {
-            areaLight->mTexture->MakeSamplable();
+            areaLight->mTexture->MakeSamplable(SampleDistortion::Uniform);
         }
 
 
@@ -792,7 +792,7 @@ static bool ParseCamera(const rapidjson::Value& value, const TexturesMap& textur
 
     if (camera.mDOF.bokehTexture)
     {
-        camera.mDOF.bokehTexture->MakeSamplable();
+        camera.mDOF.bokehTexture->MakeSamplable(SampleDistortion::Uniform);
         camera.mDOF.bokehShape = BokehShape::Texture;
     }
 

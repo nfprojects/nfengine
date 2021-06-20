@@ -251,7 +251,7 @@ const RayColor PathTracerMIS::EvaluateGlobalLights(const Scene& scene, const Ray
 
         if (!lightContribution.AlmostZero())
         {
-            NFE_ASSERT(directPdfW > 0.0f && IsValid(directPdfW), "");
+            NFE_ASSERT(directPdfW >= 0.0f && IsValid(directPdfW), "");
 
             float misWeight = 1.0f;
             if (pathState.depth > 0 && !pathState.lastSpecular)

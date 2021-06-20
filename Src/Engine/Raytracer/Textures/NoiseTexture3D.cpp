@@ -128,8 +128,10 @@ const Vec4f NoiseTexture3D::Evaluate(const Vec4f& coords) const
     return mScale * Vec4f::Lerp(mColorA.ToVec4f(), mColorB.ToVec4f(), value);
 }
 
-const Vec4f NoiseTexture3D::Sample(const Vec2f u, Vec4f& outCoords, float* outPdf) const
+const Vec4f NoiseTexture3D::Sample(const Vec3f u, Vec4f& outCoords, SampleDistortion distortion, float* outPdf) const
 {
+    NFE_UNUSED(distortion);
+
     float pdf = 1.0f;
     
     outCoords = Vec4f(u);

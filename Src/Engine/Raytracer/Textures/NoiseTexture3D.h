@@ -21,7 +21,7 @@ public:
 
     virtual const char* GetName() const override;
     virtual const Math::Vec4f Evaluate(const Math::Vec4f& coords) const override;
-    virtual const Math::Vec4f Sample(const Math::Vec2f u, Math::Vec4f& outCoords, float* outPdf) const override;
+    virtual const Math::Vec4f Sample(const Math::Vec3f u, Math::Vec4f& outCoords, SampleDistortion distortion, float* outPdf) const override;
 
     virtual bool OnPropertyChanged(const Common::StringView propertyName) override;
 

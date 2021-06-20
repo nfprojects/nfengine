@@ -23,6 +23,12 @@ Distribution::~Distribution()
     mPDF = nullptr;
 }
 
+float Distribution::Pdf(uint32 valueIndex) const
+{
+    NFE_ASSERT(valueIndex < mSize, "Index out of bounds");
+    return mPDF[valueIndex];
+}
+
 bool Distribution::Initialize(const float* pdfValues, uint32 numValues)
 {
     if (numValues == 0)
@@ -52,21 +58,21 @@ bool Distribution::Initialize(const float* pdfValues, uint32 numValues)
     }
 
     // compute cumulated distribution function
-    float accumulated = 0.0f;
+    double accumulated = 0.0;
     mCDF[0] = 0.0f;
     for (uint32 i = 0; i < numValues; ++i)
     {
         NFE_ASSERT(IsValid(pdfValues[i]), "Corrupted pdf");
-        NFE_ASSERT(pdfValues[i] >= 0.0f, "Pdf must be non-negative");
+        NFE_ASSERT(pdfValues[i] >= 0.0f, "Pdf must be non-negative. Value number %u is %f", i, pdfValues[i]);
 
         accumulated += pdfValues[i];
-        mCDF[i + 1] = accumulated;
+        mCDF[i + 1] = static_cast<float>(accumulated);
     }
 
     NFE_ASSERT(accumulated > 0.0f, "Pdf must be non-zero");
 
     // normalize
-    const float cdfNormFactor = 1.0f / accumulated;
+    const float cdfNormFactor = 1.0f / static_cast<float>(accumulated);
     const float pdfNormFactor = cdfNormFactor * static_cast<float>(numValues);
     for (uint32 i = 0; i < numValues; ++i)
     {
@@ -102,6 +108,7 @@ uint32 Distribution::SampleDiscrete(const float u, float& outPdf) const
     
     uint32 offset = low - 1u;
 
+    NFE_ASSERT(offset < mSize, "");
     outPdf = mPDF[offset];
 
     return offset;

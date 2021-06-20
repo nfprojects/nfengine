@@ -46,7 +46,7 @@ const RayColor LightTracer::RenderPixel(const Ray&, const RenderParam& param, Re
         lightObject->GetTransform(ctx.time),
         ctx.wavelength,
         ctx.randomGenerator.GetVec3f(),
-        ctx.randomGenerator.GetVec2f(),
+        ctx.randomGenerator.GetVec3f(),
     };
 
     ILight::EmitResult emitResult;

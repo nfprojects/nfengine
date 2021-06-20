@@ -98,7 +98,7 @@ const Vec4f BitmapTexture3D::Evaluate(const Vec4f& coords) const
     return result;
 }
 
-const Vec4f BitmapTexture3D::Sample(const Vec2f u, Vec4f& outCoords, float* outPdf) const
+const Vec4f BitmapTexture3D::Sample(const Vec3f u, Vec4f& outCoords, SampleDistortion distortion, float* outPdf) const
 {
     // TODO
 
@@ -106,21 +106,10 @@ const Vec4f BitmapTexture3D::Sample(const Vec2f u, Vec4f& outCoords, float* outP
 
     NFE_UNUSED(u);
     NFE_UNUSED(outCoords);
+    NFE_UNUSED(distortion);
     NFE_UNUSED(outPdf);
 
     return Vec4f::Zero();
-}
-
-bool BitmapTexture3D::MakeSamplable()
-{
-    // TODO
-
-    return false;
-}
-
-bool BitmapTexture3D::IsSamplable() const
-{
-    return false;
 }
 
 } // namespace RT

@@ -6,6 +6,8 @@
 #include "../Common/Math/WindowFunctions.hpp"
 #include "../Common/Containers/DynArray.hpp"
 #include "../Common/Reflection/ReflectionClassDefine.hpp"
+#include "../Common/Utils/TaskBuilder.hpp"
+#include "../Common/Utils/Waitable.hpp"
 
 NFE_BEGIN_DEFINE_ENUM(NFE::RT::BitmapTextureFilter)
 {
@@ -154,12 +156,61 @@ const Vec4f BitmapTexture::Evaluate(const Vec4f& coords) const
     return result;
 }
 
-const Vec4f BitmapTexture::Sample(const Vec2f u, Vec4f& outCoords, float* outPdf) const
+float BitmapTexture::Pdf(SampleDistortion distortion, const Math::Vec4f& coords) const
 {
-    NFE_ASSERT(mImportanceMap, "Bitmap texture is not samplable");
+    const Bitmap* bitmapPtr = mBitmap.Get();
+
+    if (!bitmapPtr)
+    {
+        return 0.0f;
+    }
+
+    // bitmap size
+    const Vec4i size(bitmapPtr->GetSize().Swizzle<0, 1, 0, 1>());
+
+    // wrap to 0..1 range
+    const Vec4f warpedCoords = Vec4f::Mod1(coords);
+
+    // half pixel offset
+    const Vec4f pixelOffset = mFilter != BitmapTextureFilter::NearestNeighbor ? Vec4f(0.5f) : Vec4f::Zero();
+
+    // compute texel coordinates
+    const Vec4f scaledCoords = warpedCoords * bitmapPtr->mFloatSize.Swizzle<0, 1, 0, 1>() - pixelOffset;
+    const Vec4i intCoords = Vec4i::Convert(Vec4f::Floor(scaledCoords));
+
+    Vec4i texelCoords = intCoords;
+    texelCoords -= Vec4i::AndNot(intCoords < size, size);
+    texelCoords += size & (intCoords < Vec4i::Zero());
+
+    const uint32 valueIndex = texelCoords.x + texelCoords.y * bitmapPtr->GetWidth();
+
+    return GetImportanceMap(distortion)->Pdf(valueIndex);
+}
+
+const Math::Distribution* BitmapTexture::GetImportanceMap(const SampleDistortion distortion) const
+{
+    if (distortion == SampleDistortion::Uniform)
+    {
+        return mImportanceMap[0].Get();
+    }
+    else if (distortion == SampleDistortion::Spherical)
+    {
+        return mImportanceMap[1].Get();
+    }
+    else
+    {
+        NFE_FATAL("Invalid distortion mode");
+        return nullptr;
+    }
+}
+
+const Vec4f BitmapTexture::Sample(const Vec3f u, Vec4f& outCoords, SampleDistortion distortion, float* outPdf) const
+{
+    const Math::Distribution* importanceMap = GetImportanceMap(distortion);
+    NFE_ASSERT(importanceMap, "Bitmap texture is not samplable");
 
     float pdf = 0.0f;
-    const uint32 pixelIndex = mImportanceMap->SampleDiscrete(u.x, pdf);
+    const uint32 pixelIndex = importanceMap->SampleDiscrete(u.x, pdf);
 
     const uint32 width = mBitmap->GetWidth();
     const uint32 height = mBitmap->GetHeight();
@@ -171,7 +222,8 @@ const Vec4f BitmapTexture::Sample(const Vec2f u, Vec4f& outCoords, float* outPdf
     NFE_ASSERT(y < height, "");
 
     // TODO this is redundant, because BitmapTexture::Evaluate multiplies coords by size again...
-    outCoords = Vec4f::FromIntegers(x, y, 0, 0) / mBitmap->mFloatSize;
+    // TODO bilinar sampling?
+    outCoords = (Vec4f::FromIntegers(x, y, 0, 0) + Vec4f(u.y, u.z)) / mBitmap->mFloatSize;
 
     if (outPdf)
     {
@@ -181,9 +233,10 @@ const Vec4f BitmapTexture::Sample(const Vec2f u, Vec4f& outCoords, float* outPdf
     return BitmapTexture::Evaluate(outCoords);
 }
 
-bool BitmapTexture::MakeSamplable()
+bool BitmapTexture::MakeSamplable(SampleDistortion distortion)
 {
-    if (mImportanceMap)
+    const Math::Distribution* importanceMap = GetImportanceMap(distortion);
+    if (importanceMap)
     {
         return true;
     }
@@ -202,22 +255,53 @@ bool BitmapTexture::MakeSamplable()
     DynArray<float> importancePdf;
     importancePdf.Resize(width * height);
 
-    for (uint32 j = 0; j < height; ++j)
+    Waitable waitable;
     {
-        for (uint32 i = 0; i < width; ++i)
+        TaskBuilder taskBuilder(waitable);
+        taskBuilder.ParallelFor("BitmapTexture/MakeSamplable", height, [&](const TaskContext&, uint32 j)
         {
-            const Vec4f value = mBitmap->GetPixel(i, j);
-            importancePdf[width * j + i] = Vec4f::Dot3(c_rgbIntensityWeights, value);
-        }
+            float rowWeight = 1.0f;
+
+            if (distortion == SampleDistortion::Spherical)
+            {
+                rowWeight = sinf(((float)j + 0.5f) * NFE_MATH_PI / (float)height);
+            }
+
+            for (uint32 i = 0; i < width; ++i)
+            {
+                const Vec4f value = mBitmap->GetPixel(i, j);
+
+                NFE_ASSERT(value.IsValid(), "Invalid value in texture. X=%u, Y=%u", i, j);
+
+                importancePdf[width * j + i] = Max(0.0f, rowWeight * Vec4f::Dot3(c_rgbIntensityWeights, value));
+            }
+        });
+    }
+    waitable.Wait();
+
+    bool result = false;
+
+    if (distortion == SampleDistortion::Uniform)
+    {
+        mImportanceMap[0] = MakeUniquePtr<Math::Distribution>();
+        result =  mImportanceMap[0]->Initialize(importancePdf.Data(), importancePdf.Size());
+    }
+    else if (distortion == SampleDistortion::Spherical)
+    {
+        mImportanceMap[1] = MakeUniquePtr<Math::Distribution>();
+        result = mImportanceMap[1]->Initialize(importancePdf.Data(), importancePdf.Size());
+    }
+    else
+    {
+        NFE_FATAL("Invalid distortion mode");
     }
 
-    mImportanceMap = MakeUniquePtr<Math::Distribution>();
-    return mImportanceMap->Initialize(importancePdf.Data(), importancePdf.Size());
+    return result;
 }
 
-bool BitmapTexture::IsSamplable() const
+bool BitmapTexture::IsSamplable(SampleDistortion distortion) const
 {
-    return mImportanceMap != nullptr;
+    return GetImportanceMap(distortion) != nullptr;
 }
 
 } // namespace RT

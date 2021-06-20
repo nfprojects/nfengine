@@ -22,6 +22,9 @@ public:
     // sample discrete
     uint32 SampleDiscrete(const float u, float& outPdf) const;
 
+    // get PDF of given value
+    float Pdf(uint32 valueIndex) const;
+
 private:
     float* mPDF;
     float* mCDF; // Cumulative distribution function

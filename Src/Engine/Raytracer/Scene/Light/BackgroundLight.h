@@ -25,7 +25,7 @@ public:
     virtual const RayColor Emit(const EmitParam& param, EmitResult& outResult) const override;
     virtual Flags GetFlags() const override final;
 
-    const RayColor GetBackgroundColor(const Math::Vec4f& dir, const Wavelength& wavelength) const;
+    //const RayColor GetBackgroundColor(const Math::Vec4f& dir, const Wavelength& wavelength, float* outDirectPdfW, float* outEmissionPdfW) const;
 
 private:
     TexturePtr mTexture = nullptr;

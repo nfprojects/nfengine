@@ -74,8 +74,10 @@ const Vec4f CheckerboardTexture::Evaluate(const Vec4f& coords) const
     return (conditionVec.Get<0>() ^ conditionVec.Get<1>() ^ conditionVec.Get<2>()) ? mColorA.ToVec4f() : mColorB.ToVec4f();
 }
 
-const Vec4f CheckerboardTexture::Sample(const Vec2f u, Vec4f& outCoords, float* outPdf) const
+const Vec4f CheckerboardTexture::Sample(const Vec3f u, Vec4f& outCoords, SampleDistortion distortion, float* outPdf) const
 {
+    NFE_UNUSED(distortion);
+
     // TODO
 
     outCoords = Vec4f(u);

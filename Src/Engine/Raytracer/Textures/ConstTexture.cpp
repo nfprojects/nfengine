@@ -32,8 +32,10 @@ const Vec4f ConstTexture::Evaluate(const Vec4f& coords) const
     return mColor.ToVec4f();
 }
 
-const Vec4f ConstTexture::Sample(const Vec2f u, Vec4f& outCoords, float* outPdf) const
+const Vec4f ConstTexture::Sample(const Vec3f u, Vec4f& outCoords, SampleDistortion distortion, float* outPdf) const
 {
+    NFE_UNUSED(distortion);
+
     outCoords = Vec4f(u);
 
     if (outPdf)

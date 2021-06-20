@@ -32,14 +32,17 @@ public:
 
     virtual const char* GetName() const override;
     virtual const Math::Vec4f Evaluate(const Math::Vec4f& coords) const override;
-    virtual const Math::Vec4f Sample(const Math::Vec2f u, Math::Vec4f& outCoords, float* outPdf) const override;
+    virtual const Math::Vec4f Sample(const Math::Vec3f u, Math::Vec4f& outCoords, SampleDistortion distortion, float* outPdf) const override;
+    virtual float Pdf(SampleDistortion distortion, const Math::Vec4f& coords) const override;
 
-    virtual bool MakeSamplable() override;
-    virtual bool IsSamplable() const override;
+    virtual bool MakeSamplable(SampleDistortion distortion) override;
+    virtual bool IsSamplable(SampleDistortion distortion) const override;
 
 private:
+    const Math::Distribution* GetImportanceMap(const SampleDistortion distortion) const;
+
     BitmapPtr mBitmap;
-    Common::UniquePtr<Math::Distribution> mImportanceMap;
+    Common::UniquePtr<Math::Distribution> mImportanceMap[2];
 
     BitmapTextureFilter mFilter;
     uint8 mBicubicB;

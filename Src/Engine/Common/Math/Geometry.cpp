@@ -326,11 +326,24 @@ bool Intersect(const Frustum& frustum, const Sphere& sphere)
     return false;
 }
 
-const Vec4f CartesianToSphericalCoordinates(const Vec4f& input)
+const Vec4f CartesianToSpherical(const Vec4f& input)
 {
-    const float theta = FastACos(Clamp(input.y, -1.0f, 1.0f));
-    const float phi = Abs(input.x) > FLT_EPSILON ? FastATan2(input.z, input.x) : 0.0f;
-    return Vec4f(phi / (2.0f * NFE_MATH_PI) + 0.5f, theta / NFE_MATH_PI, 0.0f, 0.0f);
+    const float phi = FastACos(Clamp(input.y, -1.0f, 1.0f));
+    const float theta = Abs(input.x) > FLT_EPSILON ? FastATan2(input.z, input.x) : 0.0f;
+    return Vec4f(theta / (2.0f * NFE_MATH_PI) + 0.5f, phi / NFE_MATH_PI, 0.0f, 0.0f);
+}
+
+const Vec4f SphericalToCartesian(float x, float y)
+{
+    const float theta = NFE_MATH_2PI * (x - 0.5f);
+    const float phi = y * NFE_MATH_PI;
+
+    return
+    {
+        sinf(phi) * cosf(theta),
+        cosf(phi),
+        sinf(phi) * sinf(theta),
+    };
 }
 
 void BuildOrthonormalBasis(const Vec4f& n, Vec4f& u, Vec4f& v)

@@ -46,7 +46,10 @@ template<typename ShapeType>
 bool Intersect(const Ray& ray, const ShapeType& shape, Vec4f& dist);
 
 // convert cartesian (x,y,z) to spherical coordinates (phi,theta)
-NFCOMMON_API const Vec4f CartesianToSphericalCoordinates(const Vec4f& input);
+NFCOMMON_API const Vec4f CartesianToSpherical(const Vec4f& input);
+
+// convert spherical (phi,theta) to cartesian coordinates (x,y,z)
+NFCOMMON_API const Vec4f SphericalToCartesian(float phi, float theta);
 
 NFE_FORCE_INLINE constexpr float UniformHemispherePdf()
 {
