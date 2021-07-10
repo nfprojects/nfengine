@@ -1,6 +1,7 @@
 #include "PCH.h"
 #include "Bitmap.h"
 #include "../Common/Containers/DynArray.hpp"
+#include "../Common/Math/Half.hpp"
 #include "tinyexr/tinyexr.h"
 
 namespace NFE {
@@ -64,6 +65,39 @@ bool Bitmap::LoadEXR(FILE* file, const char* path)
     initData.width = exrImage.width;
     initData.height = exrImage.height;
 
+    size_t numInvalidValues = 0;
+    size_t numNegativeValues = 0;
+
+    const auto validateFloatValue = [&numInvalidValues, &numNegativeValues](float& val)
+    {
+        if (!IsValid(val))
+        {
+            numInvalidValues++;
+            val = 0.0f;
+        }
+
+        if (val < 0.0f)
+        {
+            numNegativeValues++;
+            val = 0.0f;
+        }
+    };
+
+    const auto validateHalfValue = [&numInvalidValues, &numNegativeValues](Half& val)
+    {
+        if (!val.IsValid())
+        {
+            numInvalidValues++;
+            val = 0;
+        }
+
+        if (val.components.sign)
+        {
+            numNegativeValues++;
+            val = 0;
+        }
+    };
+
     if (exrHeader.num_channels == 3)
     {
         const bool sameFormat = exrHeader.pixel_types[0] == exrHeader.pixel_types[1] && exrHeader.pixel_types[0] == exrHeader.pixel_types[2];
@@ -90,6 +124,9 @@ bool Bitmap::LoadEXR(FILE* file, const char* path)
                     typedData[3 * x    ] = reinterpret_cast<const float*>(exrImage.images[2])[index];
                     typedData[3 * x + 1] = reinterpret_cast<const float*>(exrImage.images[1])[index];
                     typedData[3 * x + 2] = reinterpret_cast<const float*>(exrImage.images[0])[index];
+                    validateFloatValue(typedData[3 * x    ]);
+                    validateFloatValue(typedData[3 * x + 1]);
+                    validateFloatValue(typedData[3 * x + 2]);
                 }
             }
         }
@@ -103,13 +140,16 @@ bool Bitmap::LoadEXR(FILE* file, const char* path)
 
             for (size_t y = 0; y < (size_t)exrImage.height; ++y)
             {
-                uint16* typedData = reinterpret_cast<uint16*>(mData + GetStride() * y);
+                Half* typedData = reinterpret_cast<Half*>(mData + GetStride() * y);
                 for (size_t x = 0; x < (size_t)exrImage.width; ++x)
                 {
                     const size_t index = y * exrImage.width + x;
-                    typedData[3 * x    ] = reinterpret_cast<const uint16*>(exrImage.images[2])[index];
-                    typedData[3 * x + 1] = reinterpret_cast<const uint16*>(exrImage.images[1])[index];
-                    typedData[3 * x + 2] = reinterpret_cast<const uint16*>(exrImage.images[0])[index];
+                    typedData[3 * x    ] = reinterpret_cast<const Half*>(exrImage.images[2])[index];
+                    typedData[3 * x + 1] = reinterpret_cast<const Half*>(exrImage.images[1])[index];
+                    typedData[3 * x + 2] = reinterpret_cast<const Half*>(exrImage.images[0])[index];
+                    validateHalfValue(typedData[3 * x    ]);
+                    validateHalfValue(typedData[3 * x + 1]);
+                    validateHalfValue(typedData[3 * x + 2]);
                 }
             }
         }
@@ -148,6 +188,10 @@ bool Bitmap::LoadEXR(FILE* file, const char* path)
                     typedData[4 * x + 1] = reinterpret_cast<const float*>(exrImage.images[2])[index];
                     typedData[4 * x + 2] = reinterpret_cast<const float*>(exrImage.images[1])[index];
                     typedData[4 * x + 3] = reinterpret_cast<const float*>(exrImage.images[0])[index];
+                    validateFloatValue(typedData[4 * x    ]);
+                    validateFloatValue(typedData[4 * x + 1]);
+                    validateFloatValue(typedData[4 * x + 2]);
+                    validateFloatValue(typedData[4 * x + 3]);
                 }
             }
         }
@@ -161,14 +205,18 @@ bool Bitmap::LoadEXR(FILE* file, const char* path)
 
             for (size_t y = 0; y < (size_t)exrImage.height; ++y)
             {
-                uint16* typedData = reinterpret_cast<uint16*>(mData + GetStride() * y);
+                Half* typedData = reinterpret_cast<Half*>(mData + GetStride() * y);
                 for (size_t x = 0; x < (size_t)exrImage.width; ++x)
                 {
                     const size_t index = y * exrImage.width + x;
-                    typedData[4 * x    ] = reinterpret_cast<const uint16*>(exrImage.images[3])[index];
-                    typedData[4 * x + 1] = reinterpret_cast<const uint16*>(exrImage.images[2])[index];
-                    typedData[4 * x + 2] = reinterpret_cast<const uint16*>(exrImage.images[1])[index];
-                    typedData[4 * x + 3] = reinterpret_cast<const uint16*>(exrImage.images[0])[index];
+                    typedData[4 * x    ] = reinterpret_cast<const Half*>(exrImage.images[3])[index];
+                    typedData[4 * x + 1] = reinterpret_cast<const Half*>(exrImage.images[2])[index];
+                    typedData[4 * x + 2] = reinterpret_cast<const Half*>(exrImage.images[1])[index];
+                    typedData[4 * x + 3] = reinterpret_cast<const Half*>(exrImage.images[0])[index];
+                    validateHalfValue(typedData[4 * x    ]);
+                    validateHalfValue(typedData[4 * x + 1]);
+                    validateHalfValue(typedData[4 * x + 2]);
+                    validateHalfValue(typedData[4 * x + 3]);
                 }
             }
         }
@@ -182,6 +230,16 @@ bool Bitmap::LoadEXR(FILE* file, const char* path)
     {
         NFE_LOG_ERROR("Unsupported EXR format.", path);
         goto exrImageError;
+    }
+
+    if (numInvalidValues)
+    {
+        NFE_LOG_WARNING("EXR image contains %zu invalid values", numInvalidValues);
+    }
+
+    if (numNegativeValues)
+    {
+        NFE_LOG_WARNING("EXR image contains %zu invalid values", numNegativeValues);
     }
 
     // 4. Free image data

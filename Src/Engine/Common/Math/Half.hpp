@@ -26,6 +26,9 @@ union Half
     // convert to 32-bit float
     NFE_INLINE float ToFloat() const;
 
+    // check if not NaN or infinity
+    NFE_INLINE bool IsValid() const;
+
     NFE_UNNAMED_STRUCT struct
     {
         uint16 mantissa : 10;

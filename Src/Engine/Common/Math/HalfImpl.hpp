@@ -12,6 +12,10 @@ static_assert(sizeof(Half2) == 4, "Invalid Half2 type size");
 static_assert(sizeof(Half3) == 6, "Invalid Half3 type size");
 static_assert(sizeof(Half4) == 8, "Invalid Half4 type size");
 
+bool Half::IsValid() const
+{
+    return (value & 0x7C00) != 0x7C00;
+}
 
 Half::Half(const float other)
 {
