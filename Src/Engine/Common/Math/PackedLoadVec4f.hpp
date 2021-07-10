@@ -32,7 +32,8 @@ NFE_FORCE_INLINE const Vec4f Vec4f_Load_Vec3f_Unsafe(const Vec3f& src)
 NFE_FORCE_INLINE const Vec4f Vec4f_Load_Half2(const Half2& src)
 {
 #ifdef NFE_USE_FP16C
-    uint32 value = (uint32)src.x.value | ((uint32)(src.y.value) << 16);
+    uint32 value;
+    memcpy(&value, &src, sizeof(Half2));
     return _mm_cvtph_ps(_mm_set1_epi32(value));
 #else // NFE_USE_FP16C
     return Vec4f(src.x.ToFloat(), src.y.ToFloat(), 0.0f, 0.0f);
@@ -48,7 +49,8 @@ NFE_FORCE_INLINE const Vec4f Vec4f_Load_Half4(const Half4& src)
 {
 #ifdef NFE_USE_FP16C
 #if defined(NFE_ARCH_X64)
-    uint32 value = (uint64)src.x.value | ((uint64)(src.y.value) << 16) | ((uint64)(src.z.value) << 32) | ((uint64)(src.w.value) << 24);
+    uint64 value;
+    memcpy(&value, &src, sizeof(Half4));
     return _mm_cvtph_ps(_mm_cvtsi64_si128(value));
 #elif defined(NFE_ARCH_X86)
     return _mm_cvtph_ps(_mm_set_epi64x(0, src.packed));
