@@ -24,7 +24,7 @@ Backbuffer::Backbuffer()
     , mImageNum(0)
     , mCurrentImage(0)
     , mImages()
-    , mImageExtraDatas()
+    , mResourceIDs()
     , mColorSpace(VK_COLORSPACE_SRGB_NONLINEAR_KHR)
     , mPresentQueueIndex(UINT32_MAX)
     , mPresentQueue(VK_NULL_HANDLE)
@@ -244,15 +244,10 @@ bool Backbuffer::CreateSwapchain(const BackbufferDesc& desc)
     mImageNum = swapImageCount;
 
     mImages.Resize(mImageNum);
-    mImageExtraDatas.Resize(mImageNum);
+    mResourceIDs.Resize(mImageNum);
 
     result = vkGetSwapchainImagesKHR(gDevice->GetDevice(), mSwapchain, &mImageNum, mImages.Data());
     CHECK_VKRESULT(result, "Failed to get swapchain images");
-
-    for (auto& d: mImageExtraDatas)
-    {
-        d.layout = VK_IMAGE_LAYOUT_UNDEFINED;
-    }
 
     mImageSubresRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
     mImageSubresRange.baseArrayLayer = 0;
@@ -325,6 +320,11 @@ bool Backbuffer::Init(const BackbufferDesc& desc)
     mWidth = desc.width;
     mHeight = desc.height;
 
+    for (uint32 i = 0; i < mImages.Size(); ++i)
+    {
+        mResourceIDs[i] = gDevice->GetLayoutTracker().Register(mImages[i], mImageSubresRange);
+    }
+
     if (!AcquireNextImage()) return false;
 
     NFE_LOG_INFO("Backbuffer initialized successfully.");
@@ -356,7 +356,7 @@ bool Backbuffer::Present()
 
     return AcquireNextImage();
 }
-
+/*
 void Backbuffer::Transition(VkCommandBuffer cb, VkImageLayout dstLayout)
 {
     VkImage& img = mImages[mCurrentImage];
@@ -385,7 +385,7 @@ void Backbuffer::Transition(VkCommandBuffer cb, VkImageLayout dstLayout)
                          0, nullptr, 0, nullptr, 1, &imageBarrier);
 
     data.layout = dstLayout;
-}
+}*/
 
 } // namespace Renderer
 } // namespace NFE

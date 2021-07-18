@@ -8,14 +8,17 @@
 
 #include "../RendererCommon/Backbuffer.hpp"
 #include "Texture.hpp"
+#include "Internal/Types.hpp"
+
 
 namespace NFE {
 namespace Renderer {
 
 
-class Backbuffer : public IBackbuffer
+class Backbuffer : public IBackbuffer, public IResource
 {
     friend class CommandRecorder;
+    friend class ResourceTracker;
 
     VkSurfaceKHR mSurface;
 
@@ -27,11 +30,6 @@ class Backbuffer : public IBackbuffer
 #error Invalid platform
 #endif
 
-    struct ImageExtraData
-    {
-        // to keep some data related to transitioning layouts
-        VkImageLayout layout;
-    };
 
     uint32 mWidth;
     uint32 mHeight;
@@ -39,7 +37,7 @@ class Backbuffer : public IBackbuffer
     uint32 mImageNum;
     uint32 mCurrentImage;
     Common::DynArray<VkImage> mImages;
-    Common::DynArray<ImageExtraData> mImageExtraDatas;
+    Common::DynArray<Internal::ResourceID> mResourceIDs;
     VkImageSubresourceRange mImageSubresRange;
 
     VkColorSpaceKHR mColorSpace;
@@ -73,7 +71,17 @@ public:
     bool Resize(uint32 newWidth, uint32 newHeight) override;
     bool Present() override;
 
-    void Transition(VkCommandBuffer cb, VkImageLayout dstLayout);
+    //void Transition(VkCommandBuffer cb, VkImageLayout dstLayout);
+
+    const Internal::ResourceType GetType() const override
+    {
+        return Internal::ResourceType::Backbuffer;
+    }
+
+    NFE_INLINE Internal::ResourceID GetCurrentResourceID() const
+    {
+        return mResourceIDs[mCurrentImage];
+    }
 };
 
 } // namespace Renderer

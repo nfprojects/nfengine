@@ -66,6 +66,7 @@ Device::Device()
     , mFenceSignaller()
     , mRenderPassManager(nullptr)
     , mRingBuffer(nullptr)
+    , mLayoutTracker()
     , mDebugEnable(false)
 {
 }
@@ -203,9 +204,11 @@ bool Device::Init(const DeviceInitParams* params)
         return false;
     }
 
+
     Common::DynArray<const char*> enabledExtensions;
     enabledExtensions.PushBack(VK_KHR_SWAPCHAIN_EXTENSION_NAME);
     enabledExtensions.PushBack(VK_EXT_VERTEX_ATTRIBUTE_DIVISOR_EXTENSION_NAME);
+    enabledExtensions.PushBack(VK_KHR_COPY_COMMANDS_2_EXTENSION_NAME);
 
 
     VkPhysicalDeviceVertexAttributeDivisorFeaturesEXT divisorFeatures;

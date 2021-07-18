@@ -18,6 +18,7 @@
 #include "Internal/RenderPassManager.hpp"
 #include "Internal/SemaphorePool.hpp"
 #include "Internal/RingBuffer.hpp"
+#include "Internal/LayoutTracker.hpp"
 #include "Internal/Utilities.hpp"
 
 #include "Engine/Common/Containers/UniquePtr.hpp"
@@ -48,6 +49,7 @@ private:
     FenceSignaller mFenceSignaller;
     Common::UniquePtr<RenderPassManager> mRenderPassManager;
     Common::UniquePtr<RingBuffer> mRingBuffer;
+    LayoutTracker mLayoutTracker;
     bool mDebugEnable;
 
     VkPhysicalDevice SelectPhysicalDevice(const Common::DynArray<VkPhysicalDevice>& devices, int preferredId);
@@ -109,6 +111,11 @@ public:
     NFE_INLINE RingBuffer* GetRingBuffer() const
     {
         return mRingBuffer.Get();
+    }
+
+    NFE_INLINE LayoutTracker& GetLayoutTracker()
+    {
+        return mLayoutTracker;
     }
 
 

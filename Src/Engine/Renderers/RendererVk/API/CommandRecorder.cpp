@@ -47,6 +47,36 @@ CommandRecorder::~CommandRecorder()
 
 // PRIVATE METHODS //
 
+void CommandRecorder::EnsureOutsideRenderPass()
+{
+    if (mActiveRenderPass)
+    {
+        vkCmdEndRenderPass(mCommandBuffer);
+
+        mActiveRenderPass = false;
+    }
+}
+
+void CommandRecorder::EnsureInsideRenderPass()
+{
+    if (!mActiveRenderPass)
+    {
+        NFE_ASSERT(mRenderTarget, "Render Target was not set!");
+
+        VkRenderPassBeginInfo rpBeginInfo;
+        VK_ZERO_MEMORY(rpBeginInfo);
+        rpBeginInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
+        rpBeginInfo.renderPass = mRenderTarget->mRenderPass;
+        rpBeginInfo.framebuffer = mRenderTarget->mFramebuffer;
+        rpBeginInfo.renderArea.offset = { 0, 0 };
+        rpBeginInfo.renderArea.extent = { static_cast<uint32>(mRenderTarget->mWidth),
+                                          static_cast<uint32>(mRenderTarget->mHeight) };
+        vkCmdBeginRenderPass(mCommandBuffer, &rpBeginInfo, VK_SUBPASS_CONTENTS_INLINE);
+
+        mActiveRenderPass = true;
+    }
+}
+
 bool CommandRecorder::WriteDynamicBuffer(Buffer* b, size_t offset, size_t size, const void* data)
 {
     // copy data to Ring Buffer
@@ -59,8 +89,7 @@ bool CommandRecorder::WriteDynamicBuffer(Buffer* b, size_t offset, size_t size, 
     }
 
     // CopyBuffer has to be call outside a Render Pass
-    if (mRenderTarget)
-        vkCmdEndRenderPass(mCommandBuffer);
+    EnsureOutsideRenderPass();
 
     VkBufferCopy region;
     VK_ZERO_MEMORY(region);
@@ -68,20 +97,6 @@ bool CommandRecorder::WriteDynamicBuffer(Buffer* b, size_t offset, size_t size, 
     region.srcOffset = static_cast<VkDeviceSize>(sourceOffset);
     region.dstOffset = static_cast<VkDeviceSize>(offset);
     vkCmdCopyBuffer(mCommandBuffer, gDevice->GetRingBuffer()->GetVkBuffer(), b->mBuffer, 1, &region);
-
-    // Restore previously-active RenderPass after copy to buffer is done
-    if (mRenderTarget)
-    {
-        VkRenderPassBeginInfo rpBeginInfo;
-        VK_ZERO_MEMORY(rpBeginInfo);
-        rpBeginInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
-        rpBeginInfo.renderPass = mRenderTarget->mRenderPass;
-        rpBeginInfo.framebuffer = mRenderTarget->mFramebuffer;
-        rpBeginInfo.renderArea.offset = { 0, 0 };
-        rpBeginInfo.renderArea.extent = { static_cast<uint32>(mRenderTarget->mWidth),
-                                          static_cast<uint32>(mRenderTarget->mHeight) };
-        vkCmdBeginRenderPass(mCommandBuffer, &rpBeginInfo, VK_SUBPASS_CONTENTS_INLINE);
-    }
 
     return true;
 }
@@ -185,14 +200,10 @@ void CommandRecorder::CopyTexture(const TexturePtr& src, const BackbufferPtr& de
     NFE_ASSERT(s != nullptr, "Invalid source texture provided");
     NFE_ASSERT(d != nullptr, "Invalid destination backbuffer provided");
 
-    if (mRenderTarget)
-    {
-        vkCmdEndRenderPass(mCommandBuffer);
-        mRenderTarget = nullptr;
-    }
+    EnsureOutsideRenderPass();
 
-    s->Transition(mCommandBuffer, VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL);
-    d->Transition(mCommandBuffer, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
+    gDevice->GetLayoutTracker().EnsureLayout(mCommandBuffer, s->GetID(), VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL);
+    gDevice->GetLayoutTracker().EnsureLayout(mCommandBuffer, d->GetCurrentResourceID(), VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
 
     if ((s->mFormat == d->mFormat) && (s->mWidth == d->mWidth) && (s->mHeight == d->mHeight))
     {
@@ -249,8 +260,8 @@ void CommandRecorder::CopyTexture(const TexturePtr& src, const BackbufferPtr& de
                        1, &blitRegion, VK_FILTER_NEAREST);
     }
 
-    s->Transition(mCommandBuffer);
-    d->Transition(mCommandBuffer, VK_IMAGE_LAYOUT_PRESENT_SRC_KHR);
+    // TODO HACK
+    gDevice->GetLayoutTracker().EnsureLayout(mCommandBuffer, d->GetCurrentResourceID(), VK_IMAGE_LAYOUT_PRESENT_SRC_KHR);
 }
 
 void CommandRecorder::CopyTextureToBuffer(const TexturePtr& src, const BufferPtr& dest, const TextureRegion* texRegion, uint32 bufferOffset)
@@ -294,23 +305,97 @@ bool CommandRecorder::WriteBuffer(const BufferPtr& buffer, size_t offset, size_t
 
 bool CommandRecorder::WriteTexture(const TexturePtr& texture, const void* data, const TextureRegion* texRegion, uint32 srcRowStride)
 {
-    NFE_UNUSED(texture);
-    NFE_UNUSED(data);
-    NFE_UNUSED(texRegion);
-    NFE_UNUSED(srcRowStride);
+    Texture* tex = dynamic_cast<Texture*>(texture.Get());
+    NFE_ASSERT(tex != nullptr, "Invalid texture ptr");
+    NFE_ASSERT(data != nullptr, "Invalid data ptr");
 
-    return false;
+    uint32 texSize;
+    uint32 offsetLinear;
+    if (texRegion != nullptr)
+    {
+        texSize = (texRegion->width - texRegion->x) *
+                  (texRegion->height - texRegion->y) *
+                  (texRegion->depth - texRegion->z);
+        offsetLinear = (texRegion->width * texRegion->height) * texRegion->z +
+                       (texRegion->width) * texRegion->y +
+                        texRegion->x;
+    }
+    else
+    {
+        texSize = tex->mWidth * tex->mHeight * tex->mDepth;
+        offsetLinear = 0;
+    }
+
+    uint32 bytesPerTexel = Util::GetVkFormatByteSize(tex->mFormat);
+    texSize *= bytesPerTexel;
+    offsetLinear *= bytesPerTexel;
+
+    // TODO this is probably wrong and will result in a malformed texture if TextureRegion uses offsets
+    const uint8* dataBytesPtr = reinterpret_cast<const uint8*>(data);
+    uint32 textureLocation = gDevice->GetRingBuffer()->Write(dataBytesPtr + offsetLinear, texSize);
+    if (textureLocation == UINT32_MAX)
+    {
+        NFE_LOG_ERROR("Failed to write texture data to Ring Buffer - out of memory");
+        return false;
+    }
+
+    // TODO I think we should also switch to some different Texture layout here?
+
+    VkBufferImageCopy2KHR region;
+    VK_ZERO_MEMORY(region);
+    region.sType = VK_STRUCTURE_TYPE_BUFFER_IMAGE_COPY_2_KHR;
+    region.bufferOffset = textureLocation;
+    if (srcRowStride)
+    {
+        region.bufferImageHeight = srcRowStride * (texRegion->height - texRegion->y);
+        region.bufferRowLength = srcRowStride;
+    }
+    else
+    {
+        region.bufferImageHeight = tex->mHeight;
+        region.bufferRowLength = tex->mWidth;
+    }
+    if (texRegion != nullptr)
+    {
+        region.imageOffset.x = texRegion->x;
+        region.imageOffset.y = texRegion->y;
+        region.imageOffset.z = texRegion->z;
+        region.imageExtent.width = texRegion->width;
+        region.imageExtent.height = texRegion->height;
+        region.imageExtent.depth = texRegion->depth;
+        region.imageSubresource.mipLevel = texRegion->mipmap;
+        region.imageSubresource.baseArrayLayer = texRegion->layer;
+    }
+    else
+    {
+        region.imageOffset.x = 0;
+        region.imageOffset.y = 0;
+        region.imageOffset.z = 0;
+        region.imageExtent.width = tex->mWidth;
+        region.imageExtent.height = tex->mHeight;
+        region.imageExtent.depth = tex->mDepth;
+        region.imageSubresource.mipLevel = tex->mImageSubresRange.baseMipLevel;
+        region.imageSubresource.baseArrayLayer = tex->mImageSubresRange.baseArrayLayer;
+    }
+    region.imageSubresource.aspectMask = tex->mImageSubresRange.aspectMask;
+    region.imageSubresource.layerCount = 1;
+
+    VkCopyBufferToImageInfo2KHR copyInfo;
+    VK_ZERO_MEMORY(copyInfo);
+    copyInfo.sType = VK_STRUCTURE_TYPE_COPY_BUFFER_TO_IMAGE_INFO_2_KHR;
+    copyInfo.srcBuffer = gDevice->GetRingBuffer()->GetVkBuffer();
+    copyInfo.dstImage = tex->mImage;
+    copyInfo.dstImageLayout = tex->mImageLayout;
+    copyInfo.regionCount = 1;
+    copyInfo.pRegions = &region;
+    vkCmdCopyBufferToImage2KHR(mCommandBuffer, &copyInfo);
+
+    return true;
 }
 
 CommandListPtr CommandRecorder::Finish()
 {
-    if (mRenderTarget)
-    {
-        vkCmdEndRenderPass(mCommandBuffer);
-
-        mRenderTarget->TransitionColorAttachments(mCommandBuffer);
-        mRenderTarget->TransitionDSAttachment(mCommandBuffer);
-    }
+    EnsureOutsideRenderPass();
 
     VkResult result = vkEndCommandBuffer(mCommandBuffer);
     if (result != VK_SUCCESS)
@@ -339,12 +424,14 @@ void CommandRecorder::BindResources(PipelineType pipelineType, uint32 setIndex, 
     if (rbi == nullptr)
         return; // there is no "unbind" of descriptor sets in Vulkan
 
+    EnsureOutsideRenderPass();
+
     for (auto& r: rbi->mWrittenResources)
     {
-        if ((r != nullptr) && (r->GetType() == ShaderResourceType::Texture))
+        if ((r != nullptr) && (r->GetType() == Internal::ResourceType::Texture))
         {
             Texture* t = dynamic_cast<Texture*>(r);
-            t->Transition(mCommandBuffer, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
+            gDevice->GetLayoutTracker().EnsureLayout(mCommandBuffer, t->GetID(), VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
         }
     }
 
@@ -412,6 +499,8 @@ void CommandRecorder::Clear(uint32 flags, uint32 numTargets, const uint32* slots
     if (!mRenderTarget)
         return;
 
+    EnsureInsideRenderPass();
+
     VkClearAttachment clearAtts[MAX_RENDER_TARGETS + 2];
     uint32 clearAttsNum = 0;
 
@@ -468,15 +557,7 @@ void CommandRecorder::SetIndexBuffer(const BufferPtr& indexBuffer, IndexBufferFo
 
 void CommandRecorder::SetRenderTarget(const RenderTargetPtr& renderTarget)
 {
-    if (mRenderTarget)
-    {
-        // there is a previous render pass active, end it
-        vkCmdEndRenderPass(mCommandBuffer);
-
-        // revert attachments to default
-        mRenderTarget->TransitionColorAttachments(mCommandBuffer);
-        mRenderTarget->TransitionDSAttachment(mCommandBuffer);
-    }
+    EnsureOutsideRenderPass();
 
     if (renderTarget == nullptr)
     {
@@ -485,18 +566,17 @@ void CommandRecorder::SetRenderTarget(const RenderTargetPtr& renderTarget)
     }
 
     mRenderTarget = dynamic_cast<RenderTarget*>(renderTarget.Get());
-    mRenderTarget->TransitionColorAttachments(mCommandBuffer, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL);
-    mRenderTarget->TransitionDSAttachment(mCommandBuffer, VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL);
 
-    VkRenderPassBeginInfo rpBeginInfo;
-    VK_ZERO_MEMORY(rpBeginInfo);
-    rpBeginInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
-    rpBeginInfo.renderPass = mRenderTarget->mRenderPass;
-    rpBeginInfo.framebuffer = mRenderTarget->mFramebuffer;
-    rpBeginInfo.renderArea.offset = { 0, 0 };
-    rpBeginInfo.renderArea.extent = { static_cast<uint32>(mRenderTarget->mWidth),
-                                      static_cast<uint32>(mRenderTarget->mHeight) };
-    vkCmdBeginRenderPass(mCommandBuffer, &rpBeginInfo, VK_SUBPASS_CONTENTS_INLINE);
+    LayoutTracker& tracker = gDevice->GetLayoutTracker();
+    for (uint32 i = 0; i < mRenderTarget->mAttachments.Size(); ++i)
+    {
+        tracker.EnsureLayout(mCommandBuffer, mRenderTarget->mAttachments[i]->GetID(), VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL);
+    }
+
+    if (mRenderTarget->mDepthAttachment != nullptr)
+    {
+        tracker.EnsureLayout(mCommandBuffer, mRenderTarget->mDepthAttachment->GetID(), VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL);
+    }
 }
 
 void CommandRecorder::SetResourceBindingLayout(PipelineType pipelineType, const ResourceBindingLayoutPtr& layout)
@@ -597,6 +677,8 @@ void CommandRecorder::Draw(uint32 vertexNum, uint32 instancesNum, uint32 vertexO
         mRebindDynamicBuffers = false;
     }
 
+    EnsureInsideRenderPass();
+
     vkCmdDraw(mCommandBuffer, vertexNum, instancesNum, vertexOffset, instanceOffset);
 }
 
@@ -607,6 +689,8 @@ void CommandRecorder::DrawIndexed(uint32 indexNum, uint32 instancesNum, uint32 i
         RebindDynamicBuffers();
         mRebindDynamicBuffers = false;
     }
+
+    EnsureInsideRenderPass();
 
     vkCmdDrawIndexed(mCommandBuffer, indexNum, instancesNum, indexOffset, vertexOffset, instanceOffset);
 }

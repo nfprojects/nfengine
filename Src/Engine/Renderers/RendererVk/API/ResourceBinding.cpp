@@ -352,6 +352,7 @@ bool ResourceBindingInstance::SetTextureView(uint32 slot, const TexturePtr& text
     writeSet.pImageInfo = &mImageInfos.Back();
 
     mWrites.PushBack(writeSet);
+    mWrittenResources.PushBack(t);
 
     return true;
 }
@@ -384,6 +385,7 @@ bool ResourceBindingInstance::SetBufferView(uint32 slot, const BufferPtr& buffer
     writeSet.pBufferInfo = &mBufferInfos.Back();
 
     mWrites.PushBack(writeSet);
+    mWrittenResources.PushBack(b);
 
     return true;
 }
@@ -416,6 +418,7 @@ bool ResourceBindingInstance::SetCBufferView(uint32 slot, const BufferPtr& buffe
     writeSet.pBufferInfo = &mBufferInfos.Back();
 
     mWrites.PushBack(writeSet);
+    mWrittenResources.PushBack(b);
 
     return true;
 }

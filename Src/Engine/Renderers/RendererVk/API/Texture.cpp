@@ -181,39 +181,10 @@ bool Texture::Init(const TextureDesc& desc)
     result = vkCreateImageView(gDevice->GetDevice(), &viewInfo, nullptr, &mImageView);
     CHECK_VKRESULT(result, "Failed to create image view for color attachment");
 
+    mID = gDevice->GetLayoutTracker().Register(mImage, mImageSubresRange);
 
     NFE_LOG_INFO("Texture initialized successfully");
     return true;
-}
-
-void Texture::Transition(VkCommandBuffer cb, VkImageLayout dstLayout)
-{
-    // no need to transition if destination is the same
-    if (dstLayout == mImageLayout)
-        return;
-
-    if (dstLayout == VK_IMAGE_LAYOUT_UNDEFINED)
-        dstLayout = mImageLayoutDefault; // revert to default
-
-    // TODO take access masks and pipeline stages into account
-    VkImageMemoryBarrier imageBarrier;
-    VK_ZERO_MEMORY(imageBarrier);
-    imageBarrier.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
-    imageBarrier.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
-    imageBarrier.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
-    imageBarrier.srcAccessMask = 0;
-    imageBarrier.dstAccessMask = 0;
-    imageBarrier.oldLayout = mImageLayout;
-    imageBarrier.newLayout = dstLayout;
-    imageBarrier.image = mImage;
-    imageBarrier.subresourceRange = mImageSubresRange;
-
-    // assume all barriers are full blocking, like in D3D12 renderer
-    vkCmdPipelineBarrier(cb,
-                         VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT, VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT, 0,
-                         0, nullptr, 0, nullptr, 1, &imageBarrier);
-
-    mImageLayout = dstLayout;
 }
 
 } // namespace Renderer

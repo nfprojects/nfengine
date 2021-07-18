@@ -113,6 +113,12 @@
     <ClInclude Include="Internal\CommandBufferManager.hpp">
       <Filter>Internal</Filter>
     </ClInclude>
+    <ClInclude Include="Internal\LayoutTracker.hpp">
+      <Filter>Internal</Filter>
+    </ClInclude>
+    <ClInclude Include="Internal\Types.hpp">
+      <Filter>Internal</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp" />
@@ -205,6 +211,9 @@
       <Filter>Internal</Filter>
     </ClCompile>
     <ClCompile Include="Internal\CommandBufferManager.cpp">
+      <Filter>Internal</Filter>
+    </ClCompile>
+    <ClCompile Include="Internal\LayoutTracker.cpp">
       <Filter>Internal</Filter>
     </ClCompile>
     <ClCompile Include="Internal\Win\WinExtensions.cpp">

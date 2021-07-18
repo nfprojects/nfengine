@@ -38,6 +38,8 @@ class CommandRecorder: public ICommandRecorder
     // Compute resources
     ResourceBindingLayout* mComputeResourceBindingLayout;
 
+    void EnsureOutsideRenderPass();
+    void EnsureInsideRenderPass();
     bool WriteDynamicBuffer(Buffer* b, size_t offset, size_t size, const void* data);
     bool WriteVolatileBuffer(Buffer* b, size_t size, const void* data);
     void RebindDynamicBuffers() const;

@@ -34,14 +34,13 @@ public:
     ~Buffer();
     bool Init(const BufferDesc& desc);
 
-    const ShaderResourceType GetType() const override
-    {
-        // type doesn't exactly match, but it's used only for ResourceBinding purposes
-        return ShaderResourceType::CBuffer;
-    }
-
     void* Map(size_t size, size_t offset) override;
     void Unmap() override;
+
+    const Internal::ResourceType GetType() const override
+    {
+        return Internal::ResourceType::Buffer;
+    }
 };
 
 } // namespace Renderer

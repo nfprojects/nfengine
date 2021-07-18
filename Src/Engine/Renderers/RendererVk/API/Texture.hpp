@@ -21,6 +21,7 @@ class Texture : public ITexture, public IResource
     friend class CommandRecorder;
     friend class RenderTarget;
     friend class ResourceBindingInstance;
+    friend class ResourceTracker;
 
 protected:
     TextureType mType;
@@ -40,11 +41,9 @@ public:
     virtual ~Texture();
     bool Init(const TextureDesc& desc);
 
-    void Transition(VkCommandBuffer cb, VkImageLayout dstLayout = VK_IMAGE_LAYOUT_UNDEFINED);
-
-    const ShaderResourceType GetType() const override
+    const Internal::ResourceType GetType() const override
     {
-        return ShaderResourceType::Texture;
+        return Internal::ResourceType::Texture;
     }
 };
 

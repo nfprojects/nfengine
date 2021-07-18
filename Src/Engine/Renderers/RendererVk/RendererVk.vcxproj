@@ -39,9 +39,11 @@
     <ClInclude Include="Internal\FenceSignaller.hpp" />
     <ClInclude Include="Internal\GetProc.hpp" />
     <ClInclude Include="Internal\Instance.hpp" />
+    <ClInclude Include="Internal\Types.hpp" />
     <ClInclude Include="Internal\QueueFamilyManager.hpp" />
     <ClInclude Include="Internal\RenderPassDesc.hpp" />
     <ClInclude Include="Internal\RenderPassManager.hpp" />
+    <ClInclude Include="Internal\LayoutTracker.hpp" />
     <ClInclude Include="Internal\RingBuffer.hpp" />
     <ClInclude Include="Internal\SemaphorePool.hpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
@@ -80,6 +82,7 @@
     <ClCompile Include="Internal\Instance.cpp" />
     <ClCompile Include="Internal\QueueFamilyManager.cpp" />
     <ClCompile Include="Internal\RenderPassManager.cpp" />
+    <ClCompile Include="Internal\LayoutTracker.cpp" />
     <ClCompile Include="Internal\RingBuffer.cpp" />
     <ClCompile Include="Internal\SemaphorePool.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>

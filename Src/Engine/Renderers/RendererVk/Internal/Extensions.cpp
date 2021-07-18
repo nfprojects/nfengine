@@ -43,11 +43,13 @@ bool nfvkInstanceExtensionsInit(VkInstance instance)
 }
 
 
+PFN_vkCmdCopyBufferToImage2KHR vkCmdCopyBufferToImage2KHR = nullptr;
+
 bool nfvkDeviceExtensionsInit(VkDevice device)
 {
     bool allExtensionsAvailable = true;
 
-    NFE_UNUSED(device);
+    VK_GET_DEVICEPROC(device, vkCmdCopyBufferToImage2KHR);
 
     return allExtensionsAvailable;
 }

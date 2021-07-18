@@ -24,6 +24,7 @@ bool nfvkInstanceExtensionsInit(VkInstance instance);
 
 // Device extensions
 // If any useful Device-related extensions show up outside of VK Core, they should go in here
+extern PFN_vkCmdCopyBufferToImage2KHR vkCmdCopyBufferToImage2KHR;
 
 /**
  * Initializes Vulkan Device extensions used by nfRendererVk.
