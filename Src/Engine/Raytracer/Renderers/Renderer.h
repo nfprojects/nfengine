@@ -52,6 +52,11 @@ public:
 
     virtual void Raytrace_Packet(RayPacket& packet, const RenderParam& param, RenderingContext& context) const;
 
+protected:
+
+    static constexpr float SecondaryRayOffset = 0.001f;
+    static constexpr float SecondaryRayLengthScale = 0.999f;
+
 private:
     IRenderer(const IRenderer&) = delete;
     IRenderer& operator = (const IRenderer&) = delete;

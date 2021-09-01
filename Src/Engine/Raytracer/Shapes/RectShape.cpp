@@ -23,7 +23,7 @@ using namespace Math;
 RectShape::RectShape(const Vec2f size, const Vec2f texScale)
     : mSize(size)
     , mTextureScale(texScale)
-    , mEnableSolidAngleSampling(false)
+    , mEnableSolidAngleSampling(true)
 {
     NFE_ASSERT(mSize.x > 0.0f, "");
     NFE_ASSERT(mSize.y > 0.0f, "");
@@ -81,8 +81,9 @@ bool RectShape::SampleSurface(const Math::Vec4f& ref, const Math::Vec3f& u, Shap
     {
         SphericalQuad squad;
         squad.Init(Vec4f(-mSize.x, -mSize.y), Vec4f(2.0f * mSize.x, 0.0f), Vec4f(0.0f, 2.0f * mSize.y), ref);
-        const Vec4f lightPoint = squad.Sample(u.x, u.y, result.pdf);
+        const Vec4f lightPoint = squad.Sample(u.x, u.y);
 
+        result.pdf = squad.Pdf();
         result.direction = lightPoint - ref;
         result.normal = VECTOR_Z;
         const float sqrDistance = result.direction.SqrLength3();
@@ -104,6 +105,35 @@ bool RectShape::SampleSurface(const Math::Vec4f& ref, const Math::Vec3f& u, Shap
     }
 
     return IShape::SampleSurface(ref, u, result);
+}
+
+float RectShape::Pdf(const Math::Vec4f& ref, const Math::Vec4f& point) const
+{
+    if (mEnableSolidAngleSampling)
+    {
+        const Vec4f direction = point - ref;
+        const float sqrDistance = direction.SqrLength3();
+
+        if (sqrDistance > Sqr(FLT_EPSILON))
+        {
+            SphericalQuad squad;
+            squad.Init(Vec4f(-mSize.x, -mSize.y), Vec4f(2.0f * mSize.x, 0.0f), Vec4f(0.0f, 2.0f * mSize.y), ref);
+
+            const float pdfW = squad.Pdf();
+            NFE_ASSERT(pdfW >= 0.0f, "");
+            NFE_ASSERT(IsValid(pdfW), "");
+
+            const float cosThere = direction.z / sqrtf(sqrDistance);
+
+            const float pdfA = pdfW * Abs(cosThere) / sqrDistance;
+            NFE_ASSERT(pdfA >= 0.0f, "");
+            NFE_ASSERT(IsValid(pdfA), "");
+
+            return pdfA;
+        }
+    }
+
+    return IShape::Pdf(ref, point);
 }
 
 /*

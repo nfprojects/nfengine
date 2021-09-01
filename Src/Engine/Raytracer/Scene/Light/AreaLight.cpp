@@ -9,7 +9,6 @@
 #include "../../../Common/Reflection/ReflectionClassDefine.hpp"
 #include "../Common/Reflection/Types/ReflectionSharedPtrType.hpp"
 
-
 NFE_DEFINE_POLYMORPHIC_CLASS(NFE::RT::AreaLight)
 {
     NFE_CLASS_PARENT(NFE::RT::ILight);

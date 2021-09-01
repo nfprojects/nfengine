@@ -21,7 +21,8 @@ struct SphericalQuad
     float S; // solid angle of �Q�
 
     NFE_INLINE void Init(const Vec4f& s, const Vec4f& ex, const Vec4f& ey, const Vec4f& o);
-    NFE_INLINE const Vec4f Sample(float u, float v, float& outPdf) const;
+    NFE_INLINE float Pdf() const;
+    NFE_INLINE const Vec4f Sample(float u, float v) const;
 };
 
 void SphericalQuad::Init(const Vec4f& s, const Vec4f& ex, const Vec4f& ey, const Vec4f& ref)
@@ -68,10 +69,13 @@ void SphericalQuad::Init(const Vec4f& s, const Vec4f& ex, const Vec4f& ey, const
     S = g0 + g1 - k;
 }
 
-const Vec4f SphericalQuad::Sample(float u, float v, float& outPdf) const
+float SphericalQuad::Pdf() const
 {
-    outPdf = 1.0f / Max(NFE_MATH_EPSILON, S);
+    return 1.0f / Max(NFE_MATH_EPSILON, S);
+}
 
+const Vec4f SphericalQuad::Sample(float u, float v) const
+{
     // 1. compute �cu�
     float au = u * S + k;
     float fu = (cosf(au) * b0 - b1) / sinf(au);

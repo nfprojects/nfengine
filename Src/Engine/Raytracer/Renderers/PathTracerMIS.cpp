@@ -93,20 +93,24 @@ const RayColor PathTracerMIS::SampleLight(const Scene& scene, const HitPoint& hi
         HitPoint shadowHitPoint;
         shadowHitPoint.objectId = hitPoint.objectId;
         shadowHitPoint.subObjectId = hitPoint.subObjectId;
-        shadowHitPoint.distance = illuminateResult.distance * 0.999f; // TODO get rid of that
+        // -2*offset so it doesn't hit light nor mesh
+        shadowHitPoint.distance = Min(illuminateResult.distance - 2.0f * SecondaryRayOffset, illuminateResult.distance * SecondaryRayLengthScale);
 
-        Ray shadowRay(shadingData.intersection.frame.GetTranslation(), illuminateResult.directionToLight);
-        shadowRay.origin += shadowRay.dir * 0.001f; // TODO get rid of that
+        if (shadowHitPoint.distance > 0.0f)
+        {
+            Ray shadowRay(shadingData.intersection.frame.GetTranslation(), illuminateResult.directionToLight);
+            shadowRay.origin += shadowRay.dir * SecondaryRayOffset;
 
-        context.counters.numShadowRays++;
-        if (scene.Traverse_Shadow({ shadowRay, shadowHitPoint, context }))
-        {
-            // shadow ray missed the light - light is occluded
-            return RayColor::Zero();
-        }
-        else
-        {
-            context.counters.numShadowRaysHit++;
+            context.counters.numShadowRays++;
+            if (scene.Traverse_Shadow({ shadowRay, shadowHitPoint, context }))
+            {
+                // shadow ray missed the light - light is occluded
+                return RayColor::Zero();
+            }
+            else
+            {
+                context.counters.numShadowRaysHit++;
+            }
         }
     }
 
@@ -207,7 +211,7 @@ const RayColor PathTracerMIS::EvaluateLight(const LightSceneObject* lightObject,
         return RayColor::Zero();
     }
 
-    NFE_ASSERT(directPdfA > 0.0f, "");
+    NFE_ASSERT(directPdfA >= 0.0f, "");
 
     float misWeight = 1.0f;
     if (pathState.depth > 0 && !pathState.lastSpecular)
@@ -444,7 +448,7 @@ const RayColor PathTracerMIS::RenderPixel(const Math::Ray& primaryRay, const Ren
 
         // generate secondary ray
         ray = Ray(shadingData.intersection.frame.GetTranslation(), incomingDirWorldSpace);
-        ray.origin += ray.dir * 0.001f; // TODO get rid of that
+        ray.origin += ray.dir * SecondaryRayOffset;
 
         pathState.depth++;
     }

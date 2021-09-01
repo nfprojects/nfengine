@@ -554,7 +554,7 @@ bool VertexConnectionAndMerging::AdvancePath(PathState& path, const ShadingData&
 
     // generate secondary ray
     path.ray = Ray(shadingData.intersection.frame.GetTranslation(), incomingDirWorldSpace);
-    path.ray.origin += path.ray.dir * 0.001f;
+    path.ray.origin += path.ray.dir * SecondaryRayOffset;
     NFE_ASSERT(path.ray.IsValid(), "");
 
     path.lastSampledBsdfEvent = sampledEvent;
@@ -701,15 +701,19 @@ const RayColor VertexConnectionAndMerging::SampleLight(const Scene& scene, const
     // cast shadow ray
     {
         HitPoint hitPoint;
-        hitPoint.distance = illuminateResult.distance * 0.999f;
+        // -2*offset so it doesn't hit light nor mesh
+        hitPoint.distance = Min(illuminateResult.distance - 2.0f * SecondaryRayOffset, illuminateResult.distance * SecondaryRayLengthScale);
 
-        Ray shadowRay(shadingData.intersection.frame.GetTranslation(), illuminateResult.directionToLight);
-        shadowRay.origin += shadowRay.dir * 0.0001f;
-
-        if (scene.Traverse_Shadow({ shadowRay, hitPoint, ctx }))
+        if (hitPoint.distance > 0.0f)
         {
-            // shadow ray missed the light - light is occluded
-            return RayColor::Zero();
+            Ray shadowRay(shadingData.intersection.frame.GetTranslation(), illuminateResult.directionToLight);
+            shadowRay.origin += shadowRay.dir * SecondaryRayOffset;
+
+            if (scene.Traverse_Shadow({ shadowRay, hitPoint, ctx }))
+            {
+                // shadow ray missed the light - light is occluded
+                return RayColor::Zero();
+            }
         }
     }
 
@@ -807,15 +811,19 @@ const RayColor VertexConnectionAndMerging::ConnectVertices(const Scene& scene, P
     //// cast shadow ray
     {
         HitPoint hitPoint;
-        hitPoint.distance = distance * 0.999f;
+        // -2*offset so it doesn't hit meshes on both ends of the ray
+        hitPoint.distance = Min(distance - 2.0f * SecondaryRayOffset, distance * SecondaryRayLengthScale);
 
-        Ray shadowRay(shadingData.intersection.frame.GetTranslation(), lightDir);
-        shadowRay.origin += shadowRay.dir * 0.0001f;
-
-        if (scene.Traverse_Shadow({ shadowRay, hitPoint, ctx }))
+        if (hitPoint.distance > 0.0f)
         {
-            // line between vertices is occluded by other geometry
-            return RayColor::Zero();
+            Ray shadowRay(shadingData.intersection.frame.GetTranslation(), lightDir);
+            shadowRay.origin += shadowRay.dir * SecondaryRayOffset;
+
+            if (scene.Traverse_Shadow({ shadowRay, hitPoint, ctx }))
+            {
+                // line between vertices is occluded by other geometry
+                return RayColor::Zero();
+            }
         }
     }
 
@@ -958,15 +966,18 @@ void VertexConnectionAndMerging::ConnectToCamera(const RenderParam& renderParams
     }
 
     HitPoint shadowHitPoint;
-    shadowHitPoint.distance = cameraDistance * 0.999f;
+    shadowHitPoint.distance = Min(cameraDistance - SecondaryRayOffset, cameraDistance * SecondaryRayLengthScale);
 
-    Ray shadowRay(samplePos, dirToCamera);
-    shadowRay.origin += shadowRay.dir * 0.0001f;
-
-    if (renderParams.scene.Traverse_Shadow({ shadowRay, shadowHitPoint, ctx }))
+    if (shadowHitPoint.distance > 0.0f)
     {
-        // vertex is occluded
-        return;
+        Ray shadowRay(samplePos, dirToCamera);
+        shadowRay.origin += shadowRay.dir * SecondaryRayOffset;
+
+        if (renderParams.scene.Traverse_Shadow({ shadowRay, shadowHitPoint, ctx }))
+        {
+            // vertex is occluded
+            return;
+        }
     }
 
     const float cosToCamera = Vec4f::Dot3(dirToCamera, lightVertex.shadingData.intersection.frame[2]);

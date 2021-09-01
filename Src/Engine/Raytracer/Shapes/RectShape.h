@@ -18,6 +18,7 @@ private:
     virtual bool Intersect(const Math::Ray& ray, RenderingContext& renderingCtx, ShapeIntersection& outResult) const override;
     virtual const Math::Vec4f SampleSurface(const Math::Vec3f& u, Math::Vec4f* outNormal, float* outPdf) const override;
     virtual bool SampleSurface(const Math::Vec4f& ref, const Math::Vec3f& u, ShapeSampleResult& result) const override;
+    virtual float Pdf(const Math::Vec4f& ref, const Math::Vec4f& point) const override;
     virtual void EvaluateIntersection(const HitPoint& hitPoint, IntersectionData& outIntersectionData) const override;
 
     Math::Vec2f mSize;
