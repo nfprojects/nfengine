@@ -419,7 +419,7 @@
       </Command>
     </PostBuildEvent>
     <PreBuildEvent>
-      <Command>"$(SolutionDir)Deps\deps_builder.py" --noanim</Command>
+      <Command>python.exe "$(SolutionDir)Deps\deps_builder.py" --noanim</Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -446,7 +446,7 @@
       </Command>
     </PostBuildEvent>
     <PreBuildEvent>
-      <Command>"$(SolutionDir)Deps\deps_builder.py" --noanim</Command>
+      <Command>python.exe "$(SolutionDir)Deps\deps_builder.py" --noanim</Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Final|x64'">
@@ -473,7 +473,7 @@
       </Command>
     </PostBuildEvent>
     <PreBuildEvent>
-      <Command>"$(SolutionDir)Deps\deps_builder.py" --noanim</Command>
+      <Command>python.exe "$(SolutionDir)Deps\deps_builder.py" --noanim</Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
