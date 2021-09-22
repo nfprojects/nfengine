@@ -64,25 +64,25 @@ const RayColor DebugRenderer::RenderPixel(const Math::Ray& ray, const RenderPara
     {
         const float num = static_cast<float>(ctx.localCounters.numRayBoxTests);
         const Vec4f resultColor = Vec4f(num * 0.01f, num * 0.004f, num * 0.001f, 0.0f);
-        return RayColor::ResolveRGB(ctx.wavelength, Spectrum(resultColor));
+        return RayColor::ResolveRGB(ctx.wavelength, resultColor);
     }
     else if (renderingMode == DebugRenderingMode::RayBoxIntersectionPassed)
     {
         const float num = static_cast<float>(ctx.localCounters.numPassedRayBoxTests);
         const Vec4f resultColor = Vec4f(num * 0.01f, num * 0.005f, num * 0.001f, 0.0f);
-        return RayColor::ResolveRGB(ctx.wavelength, Spectrum(resultColor));
+        return RayColor::ResolveRGB(ctx.wavelength, resultColor);
     }
     else if (renderingMode == DebugRenderingMode::RayTriIntersection)
     {
         const float num = static_cast<float>(ctx.localCounters.numRayTriangleTests);
         const Vec4f resultColor = Vec4f(num * 0.01f, num * 0.004f, num * 0.001f, 0.0f);
-        return RayColor::ResolveRGB(ctx.wavelength, Spectrum(resultColor));
+        return RayColor::ResolveRGB(ctx.wavelength, resultColor);
     }
     else if (renderingMode == DebugRenderingMode::RayTriIntersectionPassed)
     {
         const float num = static_cast<float>(ctx.localCounters.numPassedRayTriangleTests);
         const Vec4f resultColor = Vec4f(num * 0.01f, num * 0.004f, num * 0.001f, 0.0f);
-        return RayColor::ResolveRGB(ctx.wavelength, Spectrum(resultColor));
+        return RayColor::ResolveRGB(ctx.wavelength, resultColor);
     }
 #endif // NFE_ENABLE_INTERSECTION_COUNTERS
 

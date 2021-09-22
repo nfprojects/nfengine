@@ -62,7 +62,7 @@ NFE_FORCE_NOINLINE void GenericTraverse(const PacketTraversalContext& context, c
         uint32 raysHit = TestRayPacket(context.ray, numGroups, *frame.node, context.context, traversalDepth);
 
 #ifdef NFE_ENABLE_INTERSECTION_COUNTERS
-        context.context.localCounters.numRayBoxTests += RayPacketTypes::GroupType * numGroups;
+        context.context.localCounters.numRayBoxTests += RayPacketTypes::GroupSize * numGroups;
         context.context.localCounters.numPassedRayBoxTests += raysHit;
 #endif // NFE_ENABLE_INTERSECTION_COUNTERS
 

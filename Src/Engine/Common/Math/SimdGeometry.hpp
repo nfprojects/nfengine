@@ -7,7 +7,7 @@
 // Defining it will replace VBLENDVPS instruction with VMINPS/VMAXPS
 // Makes the code faster on Haswell and Broadwell
 // Probably not needed on Skylake (and higher) and AMD
-#define RT_ARCH_SLOW_BLENDV
+//#define RT_ARCH_SLOW_BLENDV
 
 namespace NFE {
 namespace Math {

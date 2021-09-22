@@ -370,7 +370,7 @@ void MeshShape::Traverse_Leaf(const PacketTraversalContext& context, const uint3
             context.StoreIntersection(rayGroup, distance, u, v, mask, objectID, triangleIndex);
 
 #ifdef NFE_ENABLE_INTERSECTION_COUNTERS
-            context.context.localCounters.numPassedRayTriangleTests += PopCount(mask.GetMask());
+            context.context.localCounters.numPassedRayTriangleTests += BitUtils<uint32>::CountBits(mask.GetMask());
 #endif // NFE_ENABLE_INTERSECTION_COUNTERS
         }
     }
