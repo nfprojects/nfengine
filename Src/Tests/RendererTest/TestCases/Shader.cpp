@@ -10,8 +10,6 @@ class ShaderTest : public RendererTest
 
 TEST_F(ShaderTest, Disassemble)
 {
-    const size_t resourceBindings = 3;
-
     const String shaderPath = gShaderPathPrefix + "Simple" + gShaderPathExt;
 
     ShaderDesc desc;

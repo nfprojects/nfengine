@@ -50,7 +50,7 @@ bool ResourceStateCache::EnsureResourceState(const Resource* resource, D3D12_RES
         if (d3dState != D3D12_RESOURCE_STATE_COMMON)
         {
             const D3D12_RESOURCE_STATES allowedStates = D3D12_RESOURCE_STATE_GENERIC_READ | D3D12_RESOURCE_STATE_COPY_DEST;
-            NFE_ASSERT((d3dState & ~d3dState) == 0, "Illegal immutable resource state");
+            NFE_ASSERT((d3dState & ~allowedStates) == 0, "Illegal immutable resource state");
         }
 
         // immutable resources are in COMMON state and are promoted to appropriate read state automatically
