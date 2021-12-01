@@ -1,6 +1,6 @@
 /**
  * @file
- * @author  LKostyra (costyrra.xl@gmail.com)
+ * @author  Lookey (costyrra.xl@gmail.com)
  * @brief   Definition of renderer's Backbuffer for Win32 Vulkan surface
  */
 

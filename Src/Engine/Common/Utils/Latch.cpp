@@ -1,7 +1,7 @@
 /**
  * @file
  * @author Witek902 (witek902@gmail.com)
- * @author LKostyra (costyrra.xl@gmail.com)
+ * @author Lookey (costyrra.xl@gmail.com)
  * @brief  Latch methods definition.
  */
 

@@ -1,6 +1,6 @@
 /**
  * @file
- * @author LKostyra (costyrra.xl@gmail.com)
+ * @author Lookey (costyrra.xl@gmail.com)
  * @author mkulagowski (mkkulagowski(at)gmail.com)
  * @author Witek902 (witek902@gmail.com)
  * @brief  File with defined bitwise operations

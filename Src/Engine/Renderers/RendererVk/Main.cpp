@@ -1,6 +1,6 @@
 /**
  * @file
- * @author  LKostyra (costyrra.xl@gmail.com)
+ * @author  Lookey (costyrra.xl@gmail.com)
  * @brief   DLL entry point definition for Vulkan renderer
  */
 

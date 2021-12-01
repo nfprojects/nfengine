@@ -1,6 +1,6 @@
 /**
  * @file
- * @author LKostyra (costyrra.xl@gmail.com)
+ * @author Lookey (costyrra.xl@gmail.com)
  * @brief  Unit tests for Latch class.
  */
 
@@ -19,7 +19,7 @@ TEST(Latch, Wait)
 {
     Latch latch;
     Thread thread;
-    
+
     ASSERT_TRUE(thread.Run([&latch]() {
         latch.Set();
     }));

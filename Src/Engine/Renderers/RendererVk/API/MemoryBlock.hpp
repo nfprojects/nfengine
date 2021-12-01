@@ -1,7 +1,7 @@
 /**
  * @file
  * @author  Witek902
- * @author  LKostyra (costyrra.xl@gmail.com)
+ * @author  Lookey (costyrra.xl@gmail.com)
  * @brief   Declaration of Vulkan renderer's memory block.
  */
 

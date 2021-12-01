@@ -1,6 +1,6 @@
 /**
  * @file
- * @author LKostyra (costyrra.xl@gmail.com)
+ * @author Lookey (costyrra.xl@gmail.com)
  * @brief  Module for handling MD5 calculations
  */
 

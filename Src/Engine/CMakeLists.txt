@@ -1,5 +1,5 @@
 # @file
-# @author LKostyra (costyrra.xl@gmail.com)
+# @author Lookey (costyrra.xl@gmail.com)
 # @brief  CMake for nfEngine
 
 SET(NFE_ENGINE_DIRECTORY ${NFE_SRC_DIRECTORY}/Engine)

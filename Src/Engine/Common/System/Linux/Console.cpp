@@ -1,6 +1,6 @@
 /**
  * @file
- * @author LKostyra (costyrra.xl@gmail.com)
+ * @author Lookey (costyrra.xl@gmail.com)
  * @brief  Implementation of Console-related function specific for Linux
  */
 
