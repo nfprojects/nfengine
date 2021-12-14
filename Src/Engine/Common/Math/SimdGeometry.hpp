@@ -4,11 +4,6 @@
 #include "SimdBox.hpp"
 #include "SimdTriangle.hpp"
 
-// Defining it will replace VBLENDVPS instruction with VMINPS/VMAXPS
-// Makes the code faster on Haswell and Broadwell
-// Probably not needed on Skylake (and higher) and AMD
-//#define RT_ARCH_SLOW_BLENDV
-
 namespace NFE {
 namespace Math {
 
@@ -124,18 +119,8 @@ struct Simd
 
         // TODO we can get rid of this 3 mins and 3 maxes by sorting the rays into octants
         // and processing each octant separately
-#if defined(RT_ARCH_SLOW_BLENDV) || !defined(NFE_USE_AVX)
         const Vec3f lmax = Vec3f::Max(tmp1, tmp2);
         const Vec3f lmin = Vec3f::Min(tmp1, tmp2);
-#else // RT_ARCH_SLOW_BLENDV
-        Vec3f lmin, lmax;
-        lmax.x = _mm256_blendv_ps(tmp2.x, tmp1.x, rayInvDir.x);
-        lmax.y = _mm256_blendv_ps(tmp2.y, tmp1.y, rayInvDir.y);
-        lmax.z = _mm256_blendv_ps(tmp2.z, tmp1.z, rayInvDir.z);
-        lmin.x = _mm256_blendv_ps(tmp1.x, tmp2.x, rayInvDir.x);
-        lmin.y = _mm256_blendv_ps(tmp1.y, tmp2.y, rayInvDir.y);
-        lmin.z = _mm256_blendv_ps(tmp1.z, tmp2.z, rayInvDir.z);
-#endif // RT_ARCH_SLOW_BLENDV
 
         // calculate minimum and maximum plane distances by taking min and max of all 3 components
         const Float maxT = Float::Min(lmax.z, Float::Min(lmax.x, lmax.y));

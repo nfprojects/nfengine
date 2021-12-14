@@ -236,7 +236,8 @@ const RayPacketTypes::Vec2f Camera::GenerateSimdBokeh(RenderingContext& context)
         //    return context.randomGenerator.GetRegularPolygon_Simd8(mDOF.apertureBlades);
     }
 
-    NFE_FATAL("Invalid bokeh type");
+    // TODO commented out due to compiler crash
+    //NFE_FATAL("Invalid bokeh type");
     return RayPacketTypes::Vec2f::Zero();
 }
 

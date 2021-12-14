@@ -36,6 +36,11 @@
 #pragma warning(disable : 4702)
 #endif // NFE_CONFIGURATION_FINAL
 
+// "local variable is initialized but not referenced" - in Final we can get a lot of those
+#ifdef NFE_CONFIGURATION_FINAL
+#pragma warning(disable : 4189)
+#endif // NFE_CONFIGURATION_FINAL
+
 #ifndef strdup
 #define strdup _strdup
 #endif
