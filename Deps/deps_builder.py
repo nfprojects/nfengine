@@ -458,7 +458,7 @@ def main():
 
     try:
         builder = DepsBuilder(projectName="nfEngine",
-                              generator="Visual Studio 16 2019",
+                              generator="Visual Studio 17 2022",
                               requirements=reqs, deps=deps,
                               platforms=plats, configurations=confs)
         builder.Build()
