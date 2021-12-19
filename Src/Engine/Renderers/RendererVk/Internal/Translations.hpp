@@ -8,6 +8,7 @@
 
 #include "../RendererCommon/Types.hpp"
 #include "../RendererCommon/ResourceBinding.hpp"
+#include "../RendererCommon/CommandRecorder.hpp"
 
 #include "Defines.hpp"
 
@@ -33,6 +34,7 @@ VkIndexType TranslateIndexBufferFormatToVkIndexType(IndexBufferFormat format);
 VkFilter TranslateMagFilterToVkFilter(TextureMagFilter filter);
 VkFilter TranslateMinFilterToVkFilter(TextureMinFilter filter);
 VkSamplerMipmapMode TranslateMinFilterToVkSamplerMipmapMode(TextureMinFilter filter);
+VkPipelineBindPoint TranslatePipelineTypeToVkPipelineBindPoint(PipelineType type);
 VkPrimitiveTopology TranslatePrimitiveTypeToVkTopology(PrimitiveType type);
 VkSampleCountFlagBits TranslateSamplesNumToVkSampleCount(uint32 sampleNum);
 VkDescriptorType TranslateShaderResourceTypeToVkDescriptorType(ShaderResourceType type);

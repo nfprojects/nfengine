@@ -225,9 +225,8 @@ int Shader::GetResourceSlotByName(const char* name)
         // encode slot/binding pair onto a single uint
         // 16 MSB are set slot, 16 LSB are binding slot in that set
         const glslang::TQualifier& qualifier = o.getType()->getQualifier();
-        uint32 result = qualifier.layoutSet;
-        result <<= 16;
-        result |= qualifier.layoutBinding;
+        int result = (qualifier.layoutSet & 0xFFFF) << 16;
+        result |= (qualifier.layoutBinding & 0xFFFF);
         return static_cast<int>(result);
     };
 

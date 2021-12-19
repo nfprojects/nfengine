@@ -35,6 +35,7 @@ SET(NFRENDERERVK_SOURCES
     Internal/Extensions.cpp
     Internal/FenceSignaller.cpp
     Internal/Instance.cpp
+    Internal/LayoutTracker.cpp
     Internal/QueueFamilyManager.cpp
     Internal/RenderPassManager.cpp
     Internal/RingBuffer.cpp
@@ -69,6 +70,7 @@ SET(NFRENDERERVK_HEADERS
     Internal/FenceSignaller.hpp
     Internal/GetProc.hpp
     Internal/Instance.hpp
+    Internal/LayoutTracker.hpp
     Internal/QueueFamilyManager.hpp
     Internal/RenderPassDesc.hpp
     Internal/RenderPassManager.hpp
@@ -76,6 +78,7 @@ SET(NFRENDERERVK_HEADERS
     # Internal/SemaphorePool.hpp temporarily commented out
     Internal/ShaderIncluder.hpp
     Internal/Translations.hpp
+    Internal/Types.hpp
     Internal/Utilities.hpp
 )
 

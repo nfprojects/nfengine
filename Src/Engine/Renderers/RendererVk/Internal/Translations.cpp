@@ -498,6 +498,16 @@ VkSamplerMipmapMode TranslateMinFilterToVkSamplerMipmapMode(TextureMinFilter fil
     }
 }
 
+VkPipelineBindPoint TranslatePipelineTypeToVkPipelineBindPoint(PipelineType type)
+{
+    switch (type)
+    {
+    case PipelineType::Graphics: return VK_PIPELINE_BIND_POINT_GRAPHICS;
+    case PipelineType::Compute: return VK_PIPELINE_BIND_POINT_COMPUTE;
+    default: return VK_PIPELINE_BIND_POINT_MAX_ENUM;
+    }
+}
+
 VkPrimitiveTopology TranslatePrimitiveTypeToVkTopology(PrimitiveType type)
 {
     switch (type)

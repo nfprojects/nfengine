@@ -22,6 +22,20 @@ class CommandRecorder: public ICommandRecorder
 {
     friend class Device;
 
+    struct TemporaryResourceBind
+    {
+        IResource* resource;
+        uint32 set;
+        uint32 slot;
+
+        TemporaryResourceBind(IResource* r, uint32 set, uint32 slot)
+            : resource(r)
+            , set(set)
+            , slot(slot)
+        {
+        }
+    };
+
     // General fields
     VkCommandBuffer mCommandBuffer;
     CommandQueueType mQueueType;
@@ -34,6 +48,11 @@ class CommandRecorder: public ICommandRecorder
     Buffer* mBoundVolatileBuffers[VK_MAX_VOLATILE_BUFFERS];
     uint32 mBoundVolatileOffsets[VK_MAX_VOLATILE_BUFFERS];
     bool mRebindDynamicBuffers;
+    VkDescriptorSet mBoundDescriptorSets[VK_MAX_BOUND_DESCRIPTOR_SETS];
+    ResourceBindingSet* mBoundDescriptorSetLayouts[VK_MAX_BOUND_DESCRIPTOR_SETS];
+    Common::StaticArray<TemporaryResourceBind, VK_MAX_PENDING_RESOURCES> mPendingResources;
+    Common::StaticArray<VkDescriptorSet, 32> mTemporaryDescriptorSets; // TODO not 32 but the other thing you know what lmao
+    Common::StaticArray<VkDescriptorSetLayout, 32> mTemporaryDescriptorSetLayouts;
 
     // Compute resources
     ResourceBindingLayout* mComputeResourceBindingLayout;
@@ -44,6 +63,14 @@ class CommandRecorder: public ICommandRecorder
     bool WriteVolatileBuffer(Buffer* b, size_t size, const void* data);
     void RebindDynamicBuffers() const;
 
+    NFE_INLINE void StoreDescriptorSetBinding(uint32 slot, VkDescriptorSet set, VkDescriptorSetLayout layout)
+    {
+        mTemporaryDescriptorSets[slot] = set;
+        mTemporaryDescriptorSetLayouts[slot] = layout;
+    }
+
+    void ClearDescriptorSetBindings();
+    void BindPendingResources();
 
 public:
     CommandRecorder();

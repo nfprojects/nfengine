@@ -19,7 +19,9 @@ namespace Renderer {
 
 ResourceBindingSet::ResourceBindingSet()
     : mDescriptorLayout(VK_NULL_HANDLE)
+    , mShaderStage(0)
     , mResourceCount(0)
+    , mTexResourceCount(0)
     , mSetSlot(UINT16_MAX)
 {
 }
@@ -36,10 +38,10 @@ bool ResourceBindingSet::Init(const ResourceBindingSetDesc& desc)
     // gather the layout right here, will be useful to allocate proper sets later on
     Common::DynArray<VkDescriptorSetLayoutBinding> bindings;
 
-    VkShaderStageFlags stage = TranslateShaderTypeToVkShaderStage(desc.shaderVisibility);
+    mShaderStage = TranslateShaderTypeToVkShaderStage(desc.shaderVisibility);
     VkDescriptorSetLayoutBinding layoutBinding;
     VK_ZERO_MEMORY(layoutBinding);
-    layoutBinding.stageFlags = stage;
+    layoutBinding.stageFlags = mShaderStage;
 
     mTexResourceCount = 0;
     bool setApplied = false;
@@ -48,6 +50,11 @@ bool ResourceBindingSet::Init(const ResourceBindingSetDesc& desc)
         ResourceBindingDesc rb = desc.resourceBindings[i];
 
         // decode set and bind from slot value
+        // In contrast to D3D12, Vulkan connects all resources using a pair of numbers "set-binding inside set".
+        // To make this work we heavily rely on Shader extracting Resource slot by name - in our case it is encoded
+        // on a 32-bit value by splitting it into two parts. We need these values now because afterwards we have to
+        // assign Descriptor Set Layouts created here in a proper order while creating a Pipeline Layout.
+        // TODO MAYBE this could be avoided by creating the Pipeline Layout at a different stage? needs investigation
         if (setApplied)
         {
             if ((rb.slot >> 16) != mSetSlot)
@@ -129,6 +136,7 @@ bool ResourceBindingLayout::Init(const ResourceBindingLayoutDesc& desc)
     Common::DynArray<VkDescriptorSetLayout> dsls;
     const uint32 totalSetCount = desc.numBindingSets + desc.numVolatileCBuffers;
     dsls.Resize(totalSetCount);
+    mLayoutStages.Resize(totalSetCount);
     for (uint32 i = 0; i < desc.numBindingSets; ++i)
     {
         ResourceBindingSet* rbs = dynamic_cast<ResourceBindingSet*>(desc.bindingSets[i].Get());
@@ -144,6 +152,7 @@ bool ResourceBindingLayout::Init(const ResourceBindingLayoutDesc& desc)
             return false;
         }
 
+        mLayoutStages[rbs->mSetSlot] = rbs->mShaderStage;
         dsls[rbs->mSetSlot] = rbs->mDescriptorLayout;
     }
 
@@ -197,6 +206,7 @@ bool ResourceBindingLayout::Init(const ResourceBindingLayoutDesc& desc)
         Debugger::Instance().NameObject(reinterpret_cast<uint64_t>(mVolatileBufferLayout), VK_OBJECT_TYPE_DESCRIPTOR_SET_LAYOUT, "VolatileBufferDSL");
 
         dsls[mVolatileBufferSetSlot] = mVolatileBufferLayout;
+        mLayoutStages[mVolatileBufferSetSlot] = layoutBinding.stageFlags;
     }
 
     VkPipelineLayoutCreateInfo info;

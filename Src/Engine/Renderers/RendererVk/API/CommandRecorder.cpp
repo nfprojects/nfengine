@@ -36,12 +36,16 @@ CommandRecorder::CommandRecorder()
     , mBoundVolatileBuffers()
     , mBoundVolatileOffsets()
     , mRebindDynamicBuffers(false)
+    , mBoundDescriptorSets()
+    , mPendingResources()
+    , mTemporaryDescriptorSets()
     , mComputeResourceBindingLayout(nullptr)
 {
 }
 
 CommandRecorder::~CommandRecorder()
 {
+    ClearDescriptorSetBindings();
 }
 
 
@@ -139,6 +143,164 @@ void CommandRecorder::RebindDynamicBuffers() const
     }
 }
 
+void CommandRecorder::ClearDescriptorSetBindings()
+{
+    memset(mBoundDescriptorSets, 0, sizeof(*mBoundDescriptorSets) * VK_MAX_BOUND_DESCRIPTOR_SETS);
+    memset(mBoundDescriptorSetLayouts, 0, sizeof(*mBoundDescriptorSetLayouts) * VK_MAX_BOUND_DESCRIPTOR_SETS);
+
+    for (VkDescriptorSetLayout& l: mTemporaryDescriptorSetLayouts)
+        vkDestroyDescriptorSetLayout(gDevice->GetDevice(), l, nullptr);
+    mTemporaryDescriptorSetLayouts.Clear();
+
+    if (mTemporaryDescriptorSets.Size() > 0)
+        vkFreeDescriptorSets(gDevice->GetDevice(), gDevice->GetDescriptorPool(),
+                            mTemporaryDescriptorSets.Size(), mTemporaryDescriptorSets.Data());
+    mTemporaryDescriptorSets.Clear();
+}
+
+void CommandRecorder::BindPendingResources()
+{
+    VkResult result = VK_SUCCESS;
+
+    for (const auto& r: mPendingResources)
+    {
+        VkDescriptorSet tempSet = VK_NULL_HANDLE, boundSet = VK_NULL_HANDLE;
+        VkDescriptorSetLayout tempSetLayout = VK_NULL_HANDLE;
+        ResourceBindingSet* boundRBS = nullptr;
+        Internal::ResourceType resType = r.resource->GetType();
+        VkDescriptorType descType;
+        uint32 layoutSetCount = 0;
+        Texture* t = nullptr;
+        Buffer* b = nullptr;
+
+        switch (resType)
+        {
+        case Internal::ResourceType::Buffer:
+            descType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+            b = dynamic_cast<Buffer*>(r.resource);
+            break;
+        case Internal::ResourceType::Texture:
+            descType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+            t = dynamic_cast<Texture*>(r.resource);
+            break;
+        default:
+            NFE_LOG_WARNING("Invalid resource type for pending resource bind, skipping");
+            continue;
+        }
+
+        VkDescriptorSetLayout usedLayout = VK_NULL_HANDLE;
+        boundRBS = mBoundDescriptorSetLayouts[r.set];
+        if (boundRBS == nullptr)
+        {
+            VkDescriptorSetLayoutBinding binding;
+            VK_ZERO_MEMORY(binding);
+            binding.binding = r.slot;
+            binding.descriptorCount = 1;
+            binding.descriptorType = descType;
+            binding.stageFlags = mResourceBindingLayout->mLayoutStages[r.set];
+            if (descType == VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER)
+                binding.pImmutableSamplers = &gDevice->GetDefaultSampler();
+
+            VkDescriptorSetLayoutCreateInfo layoutInfo;
+            VK_ZERO_MEMORY(layoutInfo);
+            layoutInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
+            layoutInfo.pBindings = &binding;
+            layoutInfo.bindingCount = 1;
+            result = vkCreateDescriptorSetLayout(gDevice->GetDevice(), &layoutInfo, nullptr, &tempSetLayout);
+            if (result != VK_SUCCESS)
+            {
+                NFE_LOG_WARNING("Failed to create temporary set layout: %d (%s)", result, TranslateVkResultToString(result));
+                continue;
+            }
+
+            layoutSetCount = 1;
+            usedLayout = tempSetLayout;
+        }
+        else
+        {
+            layoutSetCount = boundRBS->mResourceCount;
+            usedLayout = boundRBS->mDescriptorLayout;
+        }
+
+        VkDescriptorSetAllocateInfo allocInfo;
+        VK_ZERO_MEMORY(allocInfo);
+        allocInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
+        allocInfo.pSetLayouts = &usedLayout;
+        allocInfo.descriptorSetCount = 1;
+        allocInfo.descriptorPool = gDevice->GetDescriptorPool();
+        // TODO use temporary pool? might be easier to manage in case of fragmentation
+        result = vkAllocateDescriptorSets(gDevice->GetDevice(), &allocInfo, &tempSet);
+        if (result != VK_SUCCESS)
+        {
+            NFE_LOG_WARNING("Failed to allocate temporary descriptor set: %d (%s)", result, TranslateVkResultToString(result));
+            if (tempSetLayout != VK_NULL_HANDLE)
+                vkDestroyDescriptorSetLayout(gDevice->GetDevice(), tempSetLayout, nullptr);
+            continue;
+        }
+
+        VkDescriptorBufferInfo bufferInfo;
+        VK_ZERO_MEMORY(bufferInfo);
+        VkDescriptorImageInfo imageInfo;
+        VK_ZERO_MEMORY(imageInfo);
+
+        switch (resType)
+        {
+        case Internal::ResourceType::Buffer:
+            bufferInfo.buffer = b->mBuffer;
+            bufferInfo.range = b->mBufferSize;
+            bufferInfo.offset = 0;
+            break;
+        case Internal::ResourceType::Texture:
+            gDevice->GetLayoutTracker().EnsureLayout(mCommandBuffer, t->GetID(), VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
+            imageInfo.imageView = t->mImageView;
+            imageInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+            imageInfo.sampler = nullptr;
+            break;
+        default:
+            // won't happen
+            break;
+        }
+
+        VkWriteDescriptorSet writeSet;
+        VK_ZERO_MEMORY(writeSet);
+        writeSet.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+        writeSet.dstSet = tempSet;
+        writeSet.dstBinding = r.slot;
+        writeSet.descriptorCount = 1;
+        writeSet.descriptorType = descType;
+        writeSet.pBufferInfo = (resType == Internal::ResourceType::Buffer ? &bufferInfo : nullptr);
+        writeSet.pImageInfo = (resType == Internal::ResourceType::Texture ? &imageInfo : nullptr);
+
+        boundSet = mBoundDescriptorSets[r.set];
+        if (boundSet != VK_NULL_HANDLE)
+        {
+            VkCopyDescriptorSet copySet;
+            VK_ZERO_MEMORY(copySet);
+            copySet.sType = VK_STRUCTURE_TYPE_COPY_DESCRIPTOR_SET;
+            copySet.srcSet = boundSet;
+            copySet.srcBinding = 0;
+            copySet.dstSet = tempSet;
+            copySet.dstBinding = 0;
+            copySet.descriptorCount = layoutSetCount;
+            vkUpdateDescriptorSets(gDevice->GetDevice(), 0, nullptr, 1, &copySet);
+        }
+
+        vkUpdateDescriptorSets(gDevice->GetDevice(), 1, &writeSet, 0, nullptr);
+
+        vkCmdBindDescriptorSets(mCommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS,
+                                mResourceBindingLayout->mPipelineLayout,
+                                r.set, 1, &tempSet, 0, nullptr);
+
+        if (tempSet)
+            mTemporaryDescriptorSets.PushBack(tempSet);
+
+        if (tempSetLayout)
+            mTemporaryDescriptorSetLayouts.PushBack(tempSetLayout);
+    }
+
+    mPendingResources.Clear();
+}
+
 
 // INITIALIZATION
 
@@ -165,6 +327,7 @@ bool CommandRecorder::Begin(CommandQueueType queueType)
     }
 
     mRenderTarget = nullptr;
+    ClearDescriptorSetBindings();
 
     // Get CommandBuffer from select queue
     mCommandBuffer = gDevice->GetCommandBufferManager(queueType).Acquire();
@@ -339,7 +502,7 @@ bool CommandRecorder::WriteTexture(const TexturePtr& texture, const void* data, 
         return false;
     }
 
-    // TODO I think we should also switch to some different Texture layout here?
+    gDevice->GetLayoutTracker().EnsureLayout(mCommandBuffer, tex->GetID(), VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
 
     VkBufferImageCopy2KHR region;
     VK_ZERO_MEMORY(region);
@@ -385,7 +548,7 @@ bool CommandRecorder::WriteTexture(const TexturePtr& texture, const void* data, 
     copyInfo.sType = VK_STRUCTURE_TYPE_COPY_BUFFER_TO_IMAGE_INFO_2_KHR;
     copyInfo.srcBuffer = gDevice->GetRingBuffer()->GetVkBuffer();
     copyInfo.dstImage = tex->mImage;
-    copyInfo.dstImageLayout = tex->mImageLayout;
+    copyInfo.dstImageLayout = VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL;
     copyInfo.regionCount = 1;
     copyInfo.pRegions = &region;
     vkCmdCopyBufferToImage2KHR(mCommandBuffer, &copyInfo);
@@ -417,7 +580,6 @@ CommandListPtr CommandRecorder::Finish()
 
 void CommandRecorder::BindResources(PipelineType pipelineType, uint32 setIndex, const ResourceBindingInstancePtr& bindingSetInstance)
 {
-    NFE_UNUSED(pipelineType); // TODO
     NFE_UNUSED(setIndex);
 
     ResourceBindingInstance* rbi = dynamic_cast<ResourceBindingInstance*>(bindingSetInstance.Get());
@@ -435,9 +597,11 @@ void CommandRecorder::BindResources(PipelineType pipelineType, uint32 setIndex, 
         }
     }
 
-    vkCmdBindDescriptorSets(mCommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS,
+    vkCmdBindDescriptorSets(mCommandBuffer, TranslatePipelineTypeToVkPipelineBindPoint(pipelineType),
                             mResourceBindingLayout->mPipelineLayout, rbi->mSet->mSetSlot, 1,
                             &rbi->mDescriptorSet, 0, nullptr);
+    mBoundDescriptorSets[rbi->mSet->mSetSlot] = rbi->mDescriptorSet;
+    mBoundDescriptorSetLayouts[rbi->mSet->mSetSlot] = rbi->mSet;
 }
 
 void CommandRecorder::BindBuffer(PipelineType pipelineType, uint32 setIndex, uint32 slotInSet, const BufferPtr& buffer, const BufferView& view)
@@ -451,11 +615,16 @@ void CommandRecorder::BindBuffer(PipelineType pipelineType, uint32 setIndex, uin
 
 void CommandRecorder::BindTexture(PipelineType pipelineType, uint32 setIndex, uint32 slotInSet, const TexturePtr& texture, const TextureView& view)
 {
-    NFE_UNUSED(pipelineType);
-    NFE_UNUSED(setIndex);
-    NFE_UNUSED(slotInSet);
-    NFE_UNUSED(texture);
+    NFE_UNUSED(pipelineType); // TODO
     NFE_UNUSED(view);
+
+    EnsureOutsideRenderPass();
+
+    Texture* t = dynamic_cast<Texture*>(texture.Get());
+    NFE_ASSERT(t != nullptr, "Invalid Texture pointer");
+
+    gDevice->GetLayoutTracker().EnsureLayout(mCommandBuffer, t->GetID(), VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
+    mPendingResources.EmplaceBack(t, setIndex, slotInSet);
 }
 
 void CommandRecorder::BindVolatileCBuffer(PipelineType pipelineType, uint32 slot, const BufferPtr& buffer)
@@ -677,6 +846,7 @@ void CommandRecorder::Draw(uint32 vertexNum, uint32 instancesNum, uint32 vertexO
         mRebindDynamicBuffers = false;
     }
 
+    BindPendingResources();
     EnsureInsideRenderPass();
 
     vkCmdDraw(mCommandBuffer, vertexNum, instancesNum, vertexOffset, instanceOffset);
@@ -690,6 +860,7 @@ void CommandRecorder::DrawIndexed(uint32 indexNum, uint32 instancesNum, uint32 i
         mRebindDynamicBuffers = false;
     }
 
+    BindPendingResources();
     EnsureInsideRenderPass();
 
     vkCmdDrawIndexed(mCommandBuffer, indexNum, instancesNum, indexOffset, vertexOffset, instanceOffset);

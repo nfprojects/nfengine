@@ -41,6 +41,9 @@
 #define MS_TO_NS(x) (x * 1'000'000)
 #endif // S_IN_NS
 
+// RendererVk limits
+#define VK_MAX_BOUND_DESCRIPTOR_SETS 16
+#define VK_MAX_PENDING_RESOURCES 16
 #define VK_MAX_VOLATILE_BUFFERS 8
 #define VK_SEMAPHORE_POOL_SIZE 16
 #define VK_COMMAND_BUFFER_POOL_SIZE 32

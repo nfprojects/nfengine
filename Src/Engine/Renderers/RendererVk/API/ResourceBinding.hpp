@@ -25,6 +25,7 @@ class ResourceBindingSet : public IResourceBindingSet
     friend class CommandRecorder;
 
     VkDescriptorSetLayout mDescriptorLayout;
+    VkShaderStageFlags mShaderStage;
     uint32 mResourceCount;
     uint32 mTexResourceCount;
     uint16 mSetSlot;
@@ -48,6 +49,7 @@ class ResourceBindingLayout : public IResourceBindingLayout
     friend class ComputePipelineState;
 
     VkPipelineLayout mPipelineLayout;
+    Common::DynArray<VkShaderStageFlags> mLayoutStages;
     VkDescriptorSetLayout mVolatileBufferLayout;
     VkDescriptorSet mVolatileBufferSet;
     uint32 mVolatileBufferSetSlot;

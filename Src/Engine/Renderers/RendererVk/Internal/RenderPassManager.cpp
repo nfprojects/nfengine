@@ -79,9 +79,9 @@ VkRenderPass RenderPassManager::ConstructRenderPass(const RenderPassDesc& desc)
     VK_ZERO_MEMORY(subpassDependency);
     subpassDependency.srcSubpass = 0;
     subpassDependency.dstSubpass = 0;
-    subpassDependency.srcStageMask = VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT;
+    subpassDependency.srcStageMask = VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT;
     subpassDependency.srcAccessMask = 0;
-    subpassDependency.dstStageMask = VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT;
+    subpassDependency.dstStageMask = VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT;
     subpassDependency.dstAccessMask = 0;
     subpassDependency.dependencyFlags = 0;
 

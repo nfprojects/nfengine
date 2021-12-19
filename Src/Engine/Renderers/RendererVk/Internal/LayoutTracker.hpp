@@ -19,7 +19,7 @@ class LayoutTracker
 
         ResourceData()
             : image(VK_NULL_HANDLE)
-            , subresRange{0,}
+            , subresRange{0, 0, 0, 0, 0}
             , layout(VK_IMAGE_LAYOUT_UNDEFINED)
         {
         }
