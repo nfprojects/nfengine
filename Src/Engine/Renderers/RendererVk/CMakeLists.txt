@@ -4,9 +4,15 @@
 
 MESSAGE("Generating Makefile for RendererVk")
 
+IF(NOT EXISTS $ENV{VULKAN_SDK})
+    MESSAGE($ENV{VULKAN_SDK})
+    MESSAGE(FATAL_ERROR "Path to Vulkan SDK not provided or invalid - specify it via an env variable VULKAN_SDK.")
+ENDIF(NOT EXISTS $ENV{VULKAN_SDK})
+
 SET(NFE_RENDERERVK_DIRECTORY ${NFE_RENDERERS_DIRECTORY}/RendererVk)
 
 SET(NFRENDERERVK_SOURCES
+    PCH.cpp
     API/Backbuffer.cpp
     API/Buffer.cpp
     API/CommandList.cpp
@@ -38,6 +44,7 @@ SET(NFRENDERERVK_SOURCES
     )
 
 SET(NFRENDERERVK_HEADERS
+    Defines.hpp
     API/Backbuffer.hpp
     API/Buffer.hpp
     API/CommandList.hpp
@@ -71,15 +78,30 @@ SET(NFRENDERERVK_HEADERS
     Internal/Utilities.hpp
     )
 
-SET(NFRENDERERVK_LINUX_SOURCES
-    API/Linux/XcbBackbuffer.cpp
-    API/Linux/XcbDevice.cpp
-    Internal/Linux/XcbExtensions.cpp
-    )
+IF(WIN32)
+    SET(NFRENDERERVK_SOURCES ${NFRENDERERVK_SOURCES}
+        Main.cpp
+        API/Win/WinBackbuffer.cpp
+        API/Win/WinDevice.cpp
+        Internal/Win/WinExtensions.cpp
+        )
 
-SET(NFRENDERERVK_LINUX_HEADERS
-    Internal/Linux/XcbExtensions.hpp
-    )
+    SET(NFRENDERERVK_HEADERS ${NFRENDERERVK_HEADERS}
+        Internal/Win/WinExtensions.hpp
+        )
+ELSEIF(UNIX)
+    SET(NFRENDERERVK_SOURCES ${NFRENDERERVK_SOURCES}
+        API/Linux/XcbBackbuffer.cpp
+        API/Linux/XcbDevice.cpp
+        Internal/Linux/XcbExtensions.cpp
+        )
+
+    SET(NFRENDERERVK_HEADERS ${NFRENDERERVK_HEADERS}
+        Internal/Linux/XcbExtensions.hpp
+        )
+ELSE(WIN32)
+    MESSAGE(FATAL_ERROR "Target platform not supported")
+ENDIF(WIN32)
 
 # GLSLang's default resource limits definition
 SET(NFRENDERERVK_GLSLANG_DEFAULT_RESOURCE_LIMITS
@@ -87,41 +109,48 @@ SET(NFRENDERERVK_GLSLANG_DEFAULT_RESOURCE_LIMITS
     ${NFEDEPS_ROOT_DIRECTORY}/glslang/StandAlone/ResourceLimits.h
     )
 
-# Skips Main.cpp on purpose, because there's only Main.cpp definition for Win32
-SET(NFRENDERERVK_MAIN_SOURCES
-    PCH.cpp
-    )
-
-SET(NFRENDERERVK_MAIN_HEADERS
-    PCH.hpp
-    )
-
 ADD_LIBRARY(RendererVk SHARED
             ${NFRENDERERVK_SOURCES} ${NFRENDERERVK_HEADERS}
-            ${NFRENDERERVK_LINUX_SOURCES} ${NFRENDERERVK_LINUX_HEADERS}
-            ${NFRENDERERVK_MAIN_SOURCES} ${NFRENDERERVK_MAIN_HEADERS}
             ${NFRENDERERVK_GLSLANG_DEFAULT_RESOURCE_LIMITS}
             )
 
-# To enable XCB-specific Vulkan extensions
 TARGET_COMPILE_DEFINITIONS(RendererVk
-                           PRIVATE "-DVK_USE_PLATFORM_XCB_KHR"
-)
+                           PRIVATE RENDERERVK_EXPORTS
+                           )
+
+# To enable platform-specific Vulkan extensions
+IF(WIN32)
+    TARGET_COMPILE_DEFINITIONS(RendererVk PRIVATE VK_USE_PLATFORM_WIN32_KHR)
+ELSEIF(UNIX)
+    # Linux build uses XCB for window system communication
+    TARGET_COMPILE_DEFINITIONS(RendererVk PRIVATE VK_USE_PLATFORM_XCB_KHR)
+ELSE(WIN32)
+    MESSAGE(FATAL_ERROR "Target platform not supported")
+ENDIF(WIN32)
 
 TARGET_INCLUDE_DIRECTORIES(RendererVk
                            PRIVATE ${NFE_RENDERERVK_DIRECTORY}
                            PRIVATE ${NFE_SRC_DIRECTORY}
                            PRIVATE ${NFEDEPS_ROOT_DIRECTORY}
-                           PRIVATE ${VULKAN_SDK}/include
-)
+                           PRIVATE $ENV{VULKAN_SDK}/include
+                           )
 
 TARGET_LINK_DIRECTORIES(RendererVk
                         PRIVATE ${NFEDEPS_LIB_DIRECTORY}
-)
+                        PRIVATE $ENV{VULKAN_SDK}/lib
+                        )
 
 ADD_DEPENDENCIES(RendererVk RendererCommon)
 
-TARGET_LINK_LIBRARIES(RendererVk RendererCommon vulkan glslang HLSL SPIRV SPIRV-Tools SPIRV-Tools-opt OGLCompiler OSDependent)
+IF(WIN32)
+    SET(NFRENDERERVK_VULKAN_LIB vulkan-1)
+ELSEIF(UNIX)
+    SET(NFRENDERERVK_VULKAN_LIB vulkan)
+ELSE(WIN32)
+    MESSAGE(FATAL_ERROR "Target platform not supported")
+ENDIF(WIN32)
+
+TARGET_LINK_LIBRARIES(RendererVk RendererCommon ${NFRENDERERVK_VULKAN_LIB} glslang HLSL SPIRV SPIRV-Tools SPIRV-Tools-opt OGLCompiler OSDependent)
 
 TARGET_PRECOMPILE_HEADERS(RendererVk PRIVATE PCH.hpp)
 

@@ -6,20 +6,40 @@ MESSAGE("Generating Makefile for CommonPerfTest")
 
 SET(NFE_COMMON_PERF_TEST_DIRECTORY ${NFE_TESTS_DIRECTORY}/CommonPerfTest)
 
-FILE(GLOB NFCOMMONPERFTEST_SOURCES *.cpp)
-FILE(GLOB NFCOMMONPERFTEST_HEADERS *.hpp)
-FILE(GLOB NFCOMMONPERFTEST_TEST_CASES_SOURCES TestCases/*.cpp)
+SET(NFCOMMONPERFTEST_SOURCES
+    PCH.cpp
+    Main.cpp
+    )
 
-# Search for dependencies
-PKG_CHECK_MODULES(NFCOMMONPERFTEST_DEPS REQUIRED
-                  xcb)
+SET(NFCOMMONPERFTEST_HEADERS
+    PCH.hpp
+    Test.hpp
+    )
+
+SET(NFCOMMONPERFTEST_TEST_CASES_SOURCES
+    TestCases/BVHPerfTest.cpp
+    TestCases/ConfigPerfTest.cpp
+    TestCases/FilePerfTest.cpp
+    TestCases/HashSetPerfTest.cpp
+    TestCases/LoggerPerfTest.cpp
+    TestCases/SetPerfTest.cpp
+    TestCases/ThreadPoolPerfTest.cpp
+    )
+
+IF(UNIX)
+    # Search for dependencies
+    PKG_CHECK_MODULES(NFCOMMONPERFTEST_DEPS REQUIRED
+                      xcb)
+ENDIF(UNIX)
 
 # setup directories
 ADD_EXECUTABLE(CommonPerfTest
                ${NFCOMMONPERFTEST_SOURCES} ${NFCOMMONPERFTEST_HEADERS} ${NFCOMMONPERFTEST_TEST_CASES_SOURCES})
 
-SET_TARGET_PROPERTIES(CommonPerfTest PROPERTIES
-                      LINK_FLAGS "-pthread")
+IF(UNIX)
+    SET_TARGET_PROPERTIES(CommonPerfTest PROPERTIES
+                          LINK_FLAGS "-pthread")
+ENDIF(UNIX)
 
 TARGET_INCLUDE_DIRECTORIES(CommonPerfTest
                            PRIVATE ${NFE_COMMON_PERF_TEST_DIRECTORY}
@@ -36,7 +56,14 @@ TARGET_LINK_DIRECTORIES(CommonPerfTest
 TARGET_PRECOMPILE_HEADERS(CommonPerfTest PRIVATE PCH.hpp)
 
 ADD_DEPENDENCIES(CommonPerfTest Common)
-TARGET_LINK_LIBRARIES(CommonPerfTest Common gtest dl ${NFCOMMONPERFTEST_DEPS_LIBRARIES})
+
+IF(WIN32)
+    SET(NFCOMMONPERFTEST_SYSTEM_DEPS )
+ELSEIF(UNIX)
+    SET(NFCOMMONPERFTEST_SYSTEM_DEPS dl)
+ENDIF(WIN32)
+
+TARGET_LINK_LIBRARIES(CommonPerfTest Common gtest ${NFCOMMONPERFTEST_SYSTEM_DEPS} ${NFCOMMONPERFTEST_DEPS_LIBRARIES})
 ADD_CUSTOM_COMMAND(TARGET CommonPerfTest POST_BUILD COMMAND
                    ${CMAKE_COMMAND} -E copy $<TARGET_FILE:CommonPerfTest>
                                             ${NFE_OUTPUT_DIRECTORY}/${targetfile})
