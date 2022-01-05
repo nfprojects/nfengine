@@ -154,7 +154,12 @@ bool Thread::SetName(const char* name)
         return false;
     }
 
-    auto retVal = pthread_setname_np(mThreadData->id, name);
+    // pthread requires thread name to have 16 chars max, including NULL
+    char threadName[16];
+    strncpy(threadName, name, 16);
+    threadName[15] = 0;
+
+    auto retVal = pthread_setname_np(mThreadData->id, threadName);
     if (retVal != 0)
     {
         NFE_LOG_ERROR("Error while setting threads name to '%s': %s", name, strerror(retVal));
@@ -166,6 +171,11 @@ bool Thread::SetName(const char* name)
 
 bool Thread::SetCurrentThreadName(const char* name)
 {
+    // pthread requires thread name to have 16 chars max, including NULL
+    char threadName[16];
+    strncpy(threadName, name, 16);
+    threadName[15] = 0;
+
     auto retVal = pthread_setname_np(pthread_self(), name);
     if (retVal != 0)
     {
