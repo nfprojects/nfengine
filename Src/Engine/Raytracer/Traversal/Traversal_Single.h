@@ -5,6 +5,7 @@
 #include "BVH/BVH.h"
 #include "Utils/iacaMarks.h"
 #include "Rendering/Counters.h"
+#include "Rendering/RenderingContext.h"
 #include "../../Common/Math/Ray.hpp"
 #include "../../Common/Math/Geometry.hpp"
 

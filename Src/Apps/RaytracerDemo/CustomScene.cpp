@@ -23,6 +23,7 @@
 #include "Engine/Raytracer/Shapes/SphereShape.h"
 
 #include "Engine/Raytracer/Medium/Medium.h"
+#include "Engine/Raytracer/Medium/PhaseFunction.h"
 
 namespace NFE {
 namespace helpers {
@@ -151,9 +152,6 @@ bool LoadCustomScene(Scene& scene, Camera& camera)
         }
         // homogenous emissive sphere (sphere)
         {
-            const float density = 5.0f;
-            const Vec4f attenuation = Vec4f(0.25f, 0.5f, 1.0f) * density;
-
             ShapePtr shape = MakeUniquePtr<SphereShape>(1.0f);
             MediumPtr medium = MakeUniquePtr<HomogenousEmissiveMedium>(Vec4f(0.5f, 1.0, 2.0f));
 

@@ -92,8 +92,8 @@ PostprocessParams::PostprocessParams()
     : exposure(0.0f)
     , filmGrainStrength(0.0f)
     , tonemapper(Common::MakeUniquePtr<ApproxACESTonemapper>())
-    , useDithering(true)
     , fireflyFilterTreshold(1.5f)
+    , useDithering(true)
     , colorSpace(ColorSpace::Rec709)
 {
 }
