@@ -12,7 +12,8 @@ IF(NOT DEFINED NFE_BUILD_PLATFORM)
         SET(NFE_BUILD_PLATFORM ${CMAKE_GENERATOR_PLATFORM})
     ELSEIF(UNIX)
         EXECUTE_PROCESS(COMMAND uname -m
-                        OUTPUT_VARIABLE NFE_BUILD_PLATFORM OUTPUT_STRIP_TRAILING_WHITESPACE)
+            OUTPUT_VARIABLE NFE_BUILD_PLATFORM OUTPUT_STRIP_TRAILING_WHITESPACE
+        )
     ELSE(WIN32)
         MESSAGE(FATAL_ERROR "Unsupported build platform")
     ENDIF(WIN32)
@@ -49,13 +50,13 @@ ADD_SUBDIRECTORY(libpng)
 
 # glslang
 SET(ENABLE_SPVREMAPPER OFF CACHE BOOL "Enables building of SPVRemapper")
-SET(ENABLE_GLSLANG_BINARIES OFF CACHE BOOL "Builds glslangValidator and spirv-remap")
 SET(ENABLE_CTEST OFF CACHE BOOL "Enables testing")
 SET(ENABLE_OPT ON CACHE BOOL "Enables spirv-opt capability if present")
 SET(BUILD_EXTERNAL ON CACHE BOOL "Build external dependencies in /External")
+SET(SKIP_GLSLANG_INSTALL ON CACHE BOOL "Skip installation")
 
 IF(NOT EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/glslang/External/spirv-tools)
-MESSAGE(FATAL_ERROR "SPIRV-Tools are not downloaded for Glslang build. Please enter Deps/glslang and run update_glslang_sources.py")
+    MESSAGE(FATAL_ERROR "SPIRV-Tools are not downloaded for Glslang build. Please enter Deps/glslang and run update_glslang_sources.py")
 ENDIF(NOT EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/glslang/External/spirv-tools)
 
 ADD_SUBDIRECTORY(glslang)
@@ -65,10 +66,29 @@ SET(BUILD_GMOCK OFF CACHE BOOL "Builds the googlemock subproject")
 SET(INSTALL_GTEST OFF CACHE BOOL "Enable installation of googletest. (Projects embedding googletest may want to turn this OFF.)")
 ADD_SUBDIRECTORY(googletest)
 
+# tinyexr
+SET(TINYEXR_BUILD_SAMPLE OFF CACHE BOOL "Build a sample")
+ADD_SUBDIRECTORY(tinyexr)
+
 # remainders which don't need additional options
 ADD_SUBDIRECTORY(freetype2)
 ADD_SUBDIRECTORY(libsquish)
+ADD_SUBDIRECTORY(tinyobjloader)
+ADD_SUBDIRECTORY(cxxopts)
 ADD_SUBDIRECTORY(nfenginedeps)
+
+
+## FAKE TARGETS for parts which don't have easy access to their CMakeLists targets ##
+
+# D3D12MemAllocator has to be built separately due to no CMake and warnings produced
+IF(WIN32)
+    SET(NFEDEPS_D3D12MEMALLOC_SRC_DIR D3D12MemoryAllocator/src)
+    SET(NFEDEPS_D3D12MEMALLOC_SOURCES
+        ${NFEDEPS_D3D12MEMALLOC_SRC_DIR}/D3D12MemAlloc.cpp
+        ${NFEDEPS_D3D12MEMALLOC_SRC_DIR}/Common.cpp
+    )
+    ADD_LIBRARY(D3D12MemoryAllocator ${NFEDEPS_D3D12MEMALLOC_SOURCES})
+ENDIF(WIN32)
 
 
 # Determine one specified dir for outputs
@@ -78,7 +98,9 @@ ENDIF(NOT NFEDEPS_LIB_DIRECTORY)
 
 
 # Copy outputs via a custom target
-ADD_CUSTOM_TARGET(NFEDepsPostBuild ALL DEPENDS glslang jpeg squish png_static zlibstatic gtest freetype SPIRV-Tools
+ADD_CUSTOM_TARGET(NFEDepsPostBuild ALL
+    DEPENDS glslang glslang-default-resource-limits jpeg squish png_static zlibstatic gtest freetype
+            SPIRV-Tools tinyexr tinyobjloader cxxopts
     COMMENT "Commands called post-build NFE dependencies"
 )
 
@@ -93,20 +115,30 @@ ELSEIF(UNIX)
 ENDIF()
 
 ADD_CUSTOM_COMMAND(TARGET NFEDepsPostBuild POST_BUILD
-                   COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:squish> ${NFEDEPS_LIB_DIRECTORY}
-                   COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:jpeg> ${NFEDEPS_LIB_DIRECTORY}
-                   COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:png_static> ${NFEDEPS_LIB_DIRECTORY}
-                   COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:zlibstatic> ${NFEDEPS_LIB_DIRECTORY}
-                   COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:glslang> ${NFEDEPS_LIB_DIRECTORY}
-                   COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:HLSL> ${NFEDEPS_LIB_DIRECTORY}
-                   COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:OSDependent> ${NFEDEPS_LIB_DIRECTORY}
-                   COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:OGLCompiler> ${NFEDEPS_LIB_DIRECTORY}
-                   COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:SPIRV> ${NFEDEPS_LIB_DIRECTORY}
-                   COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:SPIRV-Tools> ${NFEDEPS_LIB_DIRECTORY}
-                   COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:SPIRV-Tools-opt> ${NFEDEPS_LIB_DIRECTORY}
-                   COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:gtest> ${NFEDEPS_LIB_DIRECTORY}
-                   COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:freetype> ${NFEDEPS_LIB_DIRECTORY}
-                   VERBATIM
+    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:squish> ${NFEDEPS_LIB_DIRECTORY}
+    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:jpeg> ${NFEDEPS_LIB_DIRECTORY}
+    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:png_static> ${NFEDEPS_LIB_DIRECTORY}
+    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:zlibstatic> ${NFEDEPS_LIB_DIRECTORY}
+    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:glslang> ${NFEDEPS_LIB_DIRECTORY}
+    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:glslang-default-resource-limits> ${NFEDEPS_LIB_DIRECTORY}
+    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:HLSL> ${NFEDEPS_LIB_DIRECTORY}
+    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:OSDependent> ${NFEDEPS_LIB_DIRECTORY}
+    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:OGLCompiler> ${NFEDEPS_LIB_DIRECTORY}
+    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:SPIRV> ${NFEDEPS_LIB_DIRECTORY}
+    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:SPIRV-Tools> ${NFEDEPS_LIB_DIRECTORY}
+    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:SPIRV-Tools-opt> ${NFEDEPS_LIB_DIRECTORY}
+    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:gtest> ${NFEDEPS_LIB_DIRECTORY}
+    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:freetype> ${NFEDEPS_LIB_DIRECTORY}
+    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:tinyexr> ${NFEDEPS_LIB_DIRECTORY}
+    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:tinyobjloader> ${NFEDEPS_LIB_DIRECTORY}
+    VERBATIM
 )
+
+IF(WIN32)
+    ADD_CUSTOM_COMMAND(TARGET NFEDepsPostBuild POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:D3D12MemoryAllocator> ${NFEDEPS_LIB_DIRECTORY}
+        VERBATIM
+    )
+ENDIF(WIN32)
 
 FILE(MAKE_DIRECTORY ${NFEDEPS_LIB_DIRECTORY})

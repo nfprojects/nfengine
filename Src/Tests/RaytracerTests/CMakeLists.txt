@@ -1,21 +1,39 @@
-MESSAGE("Generating Makefile for RaytracerTest project")
+MESSAGE(STATUS "Generating build files for RaytracerTest project")
 
-FILE(GLOB RT_TESTS_SOURCES *.cpp)
-FILE(GLOB_RECURSE RT_TESTS_EXTERNAL_SOURCES ../External/googletest/*.cc)
-FILE(GLOB RT_TESTS_HEADERS *.h)
+SET(RT_TESTS_SOURCES
+    PCH.cpp
+    Main.cpp
+    BitmapTest.cpp
+    HashGridTest.cpp
+    KdTreeTest.cpp
+    MathDistributionTest.cpp
+    RaytracingTests.cpp
+)
 
-# Search for dependencies
-# PKG_CHECK_MODULES(RT_TESTS_DEPS REQUIRED)
-
-INCLUDE_DIRECTORIES(${RT_TESTS_DIRECTORY}/ ${RT_ROOT_DIRECTORY}/External/googletest/include/ ${RT_ROOT_DIRECTORY}/External/googletest/)
-LINK_DIRECTORIES(${RT_LIB_DIRECTORY} ${NFE_OUTPUT_DIRECTORY})
+SET(RT_TESTS_HEADERS
+    PCH.h
+)
 
 ADD_EXECUTABLE(RaytracerTest ${RT_TESTS_SOURCES} ${RT_TESTS_HEADERS} ${RT_TESTS_EXTERNAL_SOURCES} ${RT_TESTS_LINUX_SOURCES})
+
+TARGET_INCLUDE_DIRECTORIES(RaytracerTest
+    PRIVATE ${RT_TESTS_DIRECTORY}
+    PRIVATE ${NFEDEPS_ROOT_DIRECTORY}
+)
+
+TARGET_LINK_DIRECTORIES(RaytracerTest
+    PRIVATE ${RT_LIB_DIRECTORY}
+    PRIVATE ${NFE_OUTPUT_DIRECTORY}
+)
+
 SET_TARGET_PROPERTIES(RaytracerTest PROPERTIES LINK_FLAGS "-pthread")
 
-TARGET_PRECOMPILE_HEADERS(RendererTest PRIVATE PCH.hpp)
+TARGET_PRECOMPILE_HEADERS(RaytracerTest PRIVATE PCH.hpp)
 
 ADD_DEPENDENCIES(RaytracerTest Core)
-TARGET_LINK_LIBRARIES(RaytracerTest Core dl ${RT_TESTS_DEPS_LIBRARIES})
+
+TARGET_LINK_LIBRARIES(RaytracerTest Core ${RT_TESTS_DEPS_LIBRARIES})
+
 ADD_CUSTOM_COMMAND(TARGET RaytracerTest POST_BUILD COMMAND
-                   ${CMAKE_COMMAND} -E copy $<TARGET_FILE:RaytracerTest> ${NFE_OUTPUT_DIRECTORY}/${targetfile})
+    ${CMAKE_COMMAND} -E copy $<TARGET_FILE:RaytracerTest> ${NFE_OUTPUT_DIRECTORY}
+)

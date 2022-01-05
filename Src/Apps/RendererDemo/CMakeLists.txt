@@ -2,25 +2,40 @@
 # @author Lookey (costyrra.xl@gmail.com)
 # @brief  CMake for RendererDemo
 
-MESSAGE("Generating Makefile for RendererDemo")
+MESSAGE(STATUS "Generating build files for RendererDemo")
 
 SET(NFE_RENDERER_DEMO_DIRECTORY ${NFE_APPS_DIRECTORY}/RendererDemo)
 
-FILE(GLOB NFRENDERERDEMO_SOURCES *.cpp)
-FILE(GLOB NFRENDERERDEMO_HEADERS *.hpp)
-FILE(GLOB NFRENDERERDEMO_SCENE_SOURCES Scenes/*.cpp)
-FILE(GLOB NFRENDERERDEMO_SCENE_HEADERS Scenes/*.hpp)
+SET(NFRENDERERDEMO_SOURCES
+    PCH.cpp
+    Main.cpp
+    Common.cpp
+    Scenes/Basic.cpp
+    Scenes/Compute.cpp
+    Scenes/DepthStencil.cpp
+    Scenes/DynamicTexture.cpp
+    Scenes/Multisample.cpp
+    Scenes/Multithreaded.cpp
+    Scenes/RenderTargets.cpp
+    Scenes/Scene.cpp
+    Scenes/Tessellation.cpp
+    Scenes/VertexBuffers.cpp
+)
+
+SET(NFRENDERERDEMO_HEADERS
+    PCH.hpp
+    Common.hpp
+    Scenes/Scene.hpp
+)
 
 IF(UNIX)
     # Search for dependencies
     PKG_CHECK_MODULES(NFRENDERERDEMO_DEPS REQUIRED
-                    xcb
+        xcb
     )
 ENDIF(UNIX)
 
-ADD_EXECUTABLE(RendererDemo
-    ${NFRENDERERDEMO_SOURCES} ${NFRENDERERDEMO_HEADERS} ${NFRENDERERDEMO_SCENE_SOURCES} ${NFRENDERERDEMO_SCENE_HEADERS}
-)
+ADD_EXECUTABLE(RendererDemo ${NFRENDERERDEMO_SOURCES} ${NFRENDERERDEMO_HEADERS})
 
 TARGET_INCLUDE_DIRECTORIES(RendererDemo
     PRIVATE ${NFE_RENDERER_DEMO_DIRECTORY}
@@ -34,12 +49,19 @@ TARGET_LINK_DIRECTORIES(RendererDemo
     PRIVATE ${NFE_OUTPUT_DIRECTORY}
 )
 
-SET_TARGET_PROPERTIES(RendererDemo PROPERTIES LINK_FLAGS "-pthread")
+IF(UNIX)
+    SET_TARGET_PROPERTIES(RendererDemo PROPERTIES LINK_FLAGS "-pthread")
+ENDIF(UNIX)
 
 TARGET_PRECOMPILE_HEADERS(RendererDemo PRIVATE PCH.hpp)
 
 ADD_DEPENDENCIES(RendererDemo Common RendererCommon RendererVk)
-TARGET_LINK_LIBRARIES(RendererDemo Common RendererCommon dl ${NFRENDERERDEMO_DEPS_LIBRARIES})
+IF(WIN32)
+    ADD_DEPENDENCIES(RendererDemo RendererD3D12)
+ENDIF(WIN32)
+
+TARGET_LINK_LIBRARIES(RendererDemo Common RendererCommon ${NFRENDERERDEMO_DEPS_LIBRARIES})
+
 ADD_CUSTOM_COMMAND(TARGET RendererDemo POST_BUILD
-                   COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:RendererDemo>
-                                                    ${NFE_OUTPUT_DIRECTORY}/${targetfile})
+    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:RendererDemo> ${NFE_OUTPUT_DIRECTORY}
+)

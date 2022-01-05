@@ -53,7 +53,7 @@ protected:
         const T maxError = 2;
 
         const TargetTexture& target = mTargetTextures[id];
-        uint32 channels = GetElementFormatChannels(target.format);
+        uint32 channels = GetFormatChannels(target.format);
         const T* pixelData = reinterpret_cast<const T*>(target.pixelData.Get());
 
         for (uint32 y = 0; y < mTestTextureHeight; ++y)

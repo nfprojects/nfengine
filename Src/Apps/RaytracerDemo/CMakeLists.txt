@@ -1,4 +1,4 @@
-MESSAGE("Generating Makefile for RaytracerDemo")
+MESSAGE(STATUS "Generating build files for RaytracerDemo")
 
 SET(NFE_RAYTRACER_DEMO_DIRECTORY ${NFE_APPS_DIRECTORY}/RaytracerDemo)
 
@@ -29,14 +29,9 @@ SET(RAYTRACER_EXTERNAL_IMGUI_SOURCES
     ${NFEDEPS_ROOT_DIRECTORY}/imgui/imgui_widgets.cpp
 )
 
-SET(RAYTRACER_EXTERNAL_TINYOBJ_SOURCES
-    ${NFEDEPS_ROOT_DIRECTORY}/tinyobjloader/tiny_obj_loader.cc
-)
-
 ADD_EXECUTABLE(RaytracerDemo
     ${RAYTRACER_DEMO_SOURCES}
     ${RAYTRACER_EXTERNAL_IMGUI_SOURCES}
-    ${RAYTRACER_EXTERNAL_TINYOBJ_SOURCES}
 )
 
 TARGET_INCLUDE_DIRECTORIES(RaytracerDemo
@@ -57,9 +52,14 @@ IF(UNIX)
     SET_TARGET_PROPERTIES(RaytracerDemo PROPERTIES LINK_FLAGS "-pthread")
 ENDIF(UNIX)
 
-ADD_DEPENDENCIES(RaytracerDemo Raytracer RendererCommon)
-TARGET_LINK_LIBRARIES(RaytracerDemo Raytracer RendererCommon)
+ADD_DEPENDENCIES(RaytracerDemo Raytracer RendererCommon tinyobjloader cxxopts RendererVk)
+IF(WIN32)
+    ADD_DEPENDENCIES(RaytracerDemo RendererD3D12)
+ENDIF(WIN32)
+
+TARGET_LINK_LIBRARIES(RaytracerDemo Raytracer RendererCommon tinyobjloader)
 TARGET_PRECOMPILE_HEADERS(RaytracerDemo PRIVATE PCH.h)
 
 ADD_CUSTOM_COMMAND(TARGET RaytracerDemo POST_BUILD COMMAND
-                   ${CMAKE_COMMAND} -E copy $<TARGET_FILE:RaytracerDemo> ${NFE_OUTPUT_DIRECTORY}/${targetfile})
+    ${CMAKE_COMMAND} -E copy $<TARGET_FILE:RaytracerDemo> ${NFE_OUTPUT_DIRECTORY}
+)

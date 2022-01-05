@@ -2,7 +2,7 @@
 # @author Lookey (costyrra.xl@gmail.com)
 # @brief  CMake for Common
 
-MESSAGE("Generating build files for Common")
+MESSAGE(STATUS "Generating build files for Common")
 
 SET(NFE_COMMON_DIRECTORY ${NFE_ENGINE_DIRECTORY}/Common)
 
@@ -96,7 +96,7 @@ SET(NFCOMMON_SOURCES
     Utils/Stream/FileOutputStream.cpp
     Utils/Stream/InputStream.cpp
     Utils/Stream/OutputStream.cpp
-    )
+)
 
 SET(NFCOMMON_HEADERS
     Config/Config.hpp
@@ -317,7 +317,7 @@ SET(NFCOMMON_HEADERS
     Utils/ThreadPool.hpp
     Utils/ThreadPoolTask.hpp
     Utils/Waitable.hpp
-    )
+)
 
 IF(WIN32)
     # Windows-specific files
@@ -338,7 +338,7 @@ IF(WIN32)
         System/Windows/Thread.cpp
         System/Windows/Timer.cpp
         System/Windows/Window.cpp
-        )
+    )
 
     SET(NFCOMMON_HEADERS ${NFCOMMON_HEADERS}
         System/Windows/AsyncQueueManager.hpp
@@ -347,7 +347,7 @@ IF(WIN32)
         System/Windows/Console.hpp
         System/Windows/MutexImpl.hpp
         System/Windows/RWLockImpl.hpp
-        )
+    )
 ELSEIF(UNIX)
     # Linux-specific files
     SET(NFCOMMON_SOURCES ${NFCOMMON_SOURCES}
@@ -364,7 +364,7 @@ ELSEIF(UNIX)
         System/Linux/Thread.cpp
         System/Linux/Timer.cpp
         System/Linux/Window.cpp
-        )
+    )
 
     SET(NFCOMMON_HEADERS ${NFCOMMON_HEADERS}
         System/Linux/AsyncQueueManager.hpp
@@ -372,7 +372,7 @@ ELSEIF(UNIX)
         System/Linux/Console.hpp
         System/Linux/MutexImpl.hpp
         System/Linux/RWLockImpl.hpp
-        )
+    )
 ELSE(WIN32)
     MESSAGE(FATAL_ERROR "Target platform not supported")
 ENDIF(WIN32)
@@ -386,20 +386,20 @@ ENDIF(UNIX)
 ADD_LIBRARY(Common SHARED ${NFCOMMON_SOURCES} ${NFCOMMON_HEADERS})
 
 TARGET_COMPILE_DEFINITIONS(Common
-                           PRIVATE NFCOMMON_EXPORTS
-                           )
+    PRIVATE NFCOMMON_EXPORTS
+)
 
 TARGET_INCLUDE_DIRECTORIES(Common
-                           PRIVATE ${NFEDEPS_ROOT_DIRECTORY}
-                           PRIVATE ${NFEDEPS_ROOT_DIRECTORY}/nfenginedeps
-                           PRIVATE ${NFE_COMMON_DIRECTORY}
-                           PRIVATE ${NFE_BUILD_DIRECTORY}/Deps/libpng
-                           PRIVATE ${NFE_BUILD_DIRECTORY}/Deps/zlib
-                           )
+    PRIVATE ${NFEDEPS_ROOT_DIRECTORY}
+    PRIVATE ${NFEDEPS_ROOT_DIRECTORY}/nfenginedeps
+    PRIVATE ${NFE_COMMON_DIRECTORY}
+    PRIVATE ${NFE_BUILD_DIRECTORY}/Deps/libpng
+    PRIVATE ${NFE_BUILD_DIRECTORY}/Deps/zlib
+)
 
 TARGET_LINK_DIRECTORIES(Common
-                        PRIVATE ${NFEDEPS_LIB_DIRECTORY}
-                        )
+    PRIVATE ${NFEDEPS_LIB_DIRECTORY}
+)
 
 ADD_DEPENDENCIES(Common NFEDepsPostBuild)
 TARGET_PRECOMPILE_HEADERS(Common PRIVATE PCH.hpp)
@@ -413,4 +413,5 @@ ENDIF(WIN32)
 TARGET_LINK_LIBRARIES(Common squish jpeg png_static ${NFE_COMMON_SYSTEM_DEPS} ${NFE_COMMON_DEPS_LIBRARIES})
 
 ADD_CUSTOM_COMMAND(TARGET Common POST_BUILD COMMAND
-                   ${CMAKE_COMMAND} -E copy $<TARGET_FILE:Common> ${NFE_OUTPUT_DIRECTORY}/${targetfile})
+    ${CMAKE_COMMAND} -E copy $<TARGET_FILE:Common> ${NFE_OUTPUT_DIRECTORY}
+)

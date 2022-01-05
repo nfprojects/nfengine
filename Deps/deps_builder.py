@@ -444,6 +444,8 @@ def main():
         ("nfEngineDeps", "glslang\SPIRV"),
         ("nfEngineDeps", "gtest"),
         ("nfEngineDeps", "freetype"),
+        ("nfEngineDeps", "tinyexr"),
+        ("nfEngineDeps", "tinyobjloader"),
         ("nfEngineDeps", "NFEDepsPostBuild")
     ]
 

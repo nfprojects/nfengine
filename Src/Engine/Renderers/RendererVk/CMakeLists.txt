@@ -2,10 +2,11 @@
 # @author Lookey (costyrra.xl@gmail.com)
 # @brief  CMake for RendererVk
 
-MESSAGE("Generating Makefile for RendererVk")
+MESSAGE(STATUS "Generating build files for RendererVk")
+
+MESSAGE(STATUS "RendererVk - Vulkan SDK Path: $ENV{VULKAN_SDK}")
 
 IF(NOT EXISTS $ENV{VULKAN_SDK})
-    MESSAGE($ENV{VULKAN_SDK})
     MESSAGE(FATAL_ERROR "Path to Vulkan SDK not provided or invalid - specify it via an env variable VULKAN_SDK.")
 ENDIF(NOT EXISTS $ENV{VULKAN_SDK})
 
@@ -41,7 +42,7 @@ SET(NFRENDERERVK_SOURCES
     Internal/ShaderIncluder.cpp
     Internal/Translations.cpp
     Internal/Utilities.cpp
-    )
+)
 
 SET(NFRENDERERVK_HEADERS
     Defines.hpp
@@ -76,7 +77,7 @@ SET(NFRENDERERVK_HEADERS
     Internal/ShaderIncluder.hpp
     Internal/Translations.hpp
     Internal/Utilities.hpp
-    )
+)
 
 IF(WIN32)
     SET(NFRENDERERVK_SOURCES ${NFRENDERERVK_SOURCES}
@@ -84,39 +85,30 @@ IF(WIN32)
         API/Win/WinBackbuffer.cpp
         API/Win/WinDevice.cpp
         Internal/Win/WinExtensions.cpp
-        )
+    )
 
     SET(NFRENDERERVK_HEADERS ${NFRENDERERVK_HEADERS}
         Internal/Win/WinExtensions.hpp
-        )
+    )
 ELSEIF(UNIX)
     SET(NFRENDERERVK_SOURCES ${NFRENDERERVK_SOURCES}
         API/Linux/XcbBackbuffer.cpp
         API/Linux/XcbDevice.cpp
         Internal/Linux/XcbExtensions.cpp
-        )
+    )
 
     SET(NFRENDERERVK_HEADERS ${NFRENDERERVK_HEADERS}
         Internal/Linux/XcbExtensions.hpp
-        )
+    )
 ELSE(WIN32)
     MESSAGE(FATAL_ERROR "Target platform not supported")
 ENDIF(WIN32)
 
-# GLSLang's default resource limits definition
-SET(NFRENDERERVK_GLSLANG_DEFAULT_RESOURCE_LIMITS
-    ${NFEDEPS_ROOT_DIRECTORY}/glslang/StandAlone/ResourceLimits.cpp
-    ${NFEDEPS_ROOT_DIRECTORY}/glslang/StandAlone/ResourceLimits.h
-    )
-
-ADD_LIBRARY(RendererVk SHARED
-            ${NFRENDERERVK_SOURCES} ${NFRENDERERVK_HEADERS}
-            ${NFRENDERERVK_GLSLANG_DEFAULT_RESOURCE_LIMITS}
-            )
+ADD_LIBRARY(RendererVk SHARED ${NFRENDERERVK_SOURCES} ${NFRENDERERVK_HEADERS})
 
 TARGET_COMPILE_DEFINITIONS(RendererVk
-                           PRIVATE RENDERERVK_EXPORTS
-                           )
+    PRIVATE RENDERERVK_EXPORTS
+)
 
 # To enable platform-specific Vulkan extensions
 IF(WIN32)
@@ -129,18 +121,18 @@ ELSE(WIN32)
 ENDIF(WIN32)
 
 TARGET_INCLUDE_DIRECTORIES(RendererVk
-                           PRIVATE ${NFE_RENDERERVK_DIRECTORY}
-                           PRIVATE ${NFE_SRC_DIRECTORY}
-                           PRIVATE ${NFEDEPS_ROOT_DIRECTORY}
-                           PRIVATE $ENV{VULKAN_SDK}/include
-                           )
+    PRIVATE ${NFE_RENDERERVK_DIRECTORY}
+    PRIVATE ${NFE_SRC_DIRECTORY}
+    PRIVATE ${NFEDEPS_ROOT_DIRECTORY}
+    PRIVATE $ENV{VULKAN_SDK}/include
+)
 
 TARGET_LINK_DIRECTORIES(RendererVk
-                        PRIVATE ${NFEDEPS_LIB_DIRECTORY}
-                        PRIVATE $ENV{VULKAN_SDK}/lib
-                        )
+    PRIVATE ${NFEDEPS_LIB_DIRECTORY}
+    PRIVATE $ENV{VULKAN_SDK}/lib
+)
 
-ADD_DEPENDENCIES(RendererVk RendererCommon)
+ADD_DEPENDENCIES(RendererVk RendererCommon glslang glslang-default-resource-limits HLSL SPIRV)
 
 IF(WIN32)
     SET(NFRENDERERVK_VULKAN_LIB vulkan-1)
@@ -150,10 +142,13 @@ ELSE(WIN32)
     MESSAGE(FATAL_ERROR "Target platform not supported")
 ENDIF(WIN32)
 
-TARGET_LINK_LIBRARIES(RendererVk RendererCommon ${NFRENDERERVK_VULKAN_LIB} glslang HLSL SPIRV SPIRV-Tools SPIRV-Tools-opt OGLCompiler OSDependent)
+TARGET_LINK_LIBRARIES(RendererVk
+    RendererCommon ${NFRENDERERVK_VULKAN_LIB} glslang glslang-default-resource-limits HLSL SPIRV SPIRV-Tools SPIRV-Tools-opt OGLCompiler OSDependent
+)
 
 TARGET_PRECOMPILE_HEADERS(RendererVk PRIVATE PCH.hpp)
 
 ADD_CUSTOM_COMMAND(TARGET RendererVk POST_BUILD COMMAND
-                   ${CMAKE_COMMAND} -E copy $<TARGET_FILE:RendererVk> ${NFE_OUTPUT_DIRECTORY}/${targetfile})
+    ${CMAKE_COMMAND} -E copy $<TARGET_FILE:RendererVk> ${NFE_OUTPUT_DIRECTORY}
+)
 

@@ -1,4 +1,4 @@
-MESSAGE("Generating Makefile for Raytracer")
+MESSAGE(STATUS "Generating build files for Raytracer")
 
 SET(NFE_RAYTRACER_DIRECTORY ${NFE_ENGINE_DIRECTORY}/Raytracer)
 
@@ -85,7 +85,7 @@ SET(RAYTRACER_SOURCES
     Utils/KdTree.cpp
     Utils/Memory.cpp
     Utils/Profiler.cpp
-    )
+)
 
 SET(RAYTRACER_HEADERS
     PCH.h
@@ -182,34 +182,31 @@ SET(RAYTRACER_HEADERS
     Utils/LookupTable.h
     Utils/Memory.h
     Utils/Profiler.h
-    )
+)
 
-FILE(GLOB_RECURSE RAYTRACER_EXTERNAL_TINYEXR_SOURCES ${NFEDEPS_ROOT_DIRECTORY}/tinyexr/tinyexr.cc)
-
-ADD_LIBRARY(Raytracer SHARED
-            ${RAYTRACER_SOURCES}
-            ${RAYTRACER_EXTERNAL_TINYEXR_SOURCES}
-            ${RAYTRACER_EXTERNAL_IMGUI_SOURCES}
-            )
+ADD_LIBRARY(Raytracer SHARED ${RAYTRACER_SOURCES} ${RAYTRACER_HEADERS})
 
 TARGET_COMPILE_DEFINITIONS(Raytracer
-                           PRIVATE NFE_RAYTRACER_EXPORTS
-                           )
+    PRIVATE NFE_RAYTRACER_EXPORTS
+)
 
 TARGET_INCLUDE_DIRECTORIES(Raytracer
-                           PRIVATE ${NFE_RAYTRACER_DIRECTORY}
-                           PRIVATE ${NFEDEPS_ROOT_DIRECTORY}
-                           PRIVATE ${NFE_SRC_DIRECTORY}
-                           )
+    PRIVATE ${NFE_RAYTRACER_DIRECTORY}
+    PRIVATE ${NFEDEPS_ROOT_DIRECTORY}
+    PRIVATE ${NFE_SRC_DIRECTORY}
+)
 
 TARGET_LINK_DIRECTORIES(Raytracer
-                        PRIVATE ${NFEDEPS_LIB_DIRECTORY}
-                        PRIVATE ${NFE_OUTPUT_DIRECTORY}
-                        )
+    PRIVATE ${NFEDEPS_LIB_DIRECTORY}
+    PRIVATE ${NFE_OUTPUT_DIRECTORY}
+)
 
-TARGET_LINK_LIBRARIES(Raytracer Common)
+ADD_DEPENDENCIES(Raytracer Common tinyexr)
+
+TARGET_LINK_LIBRARIES(Raytracer Common tinyexr)
 
 TARGET_PRECOMPILE_HEADERS(Raytracer PRIVATE PCH.h)
 
 ADD_CUSTOM_COMMAND(TARGET Raytracer POST_BUILD COMMAND
-                   ${CMAKE_COMMAND} -E copy $<TARGET_FILE:Raytracer> ${NFE_OUTPUT_DIRECTORY}/${targetfile})
+    ${CMAKE_COMMAND} -E copy $<TARGET_FILE:Raytracer> ${NFE_OUTPUT_DIRECTORY}
+)
