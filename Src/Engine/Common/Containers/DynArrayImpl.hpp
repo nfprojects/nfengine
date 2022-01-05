@@ -124,7 +124,7 @@ DynArray<ElementType>::DynArray(const std::initializer_list<ElementType>& list)
         return;
     }
 
-    for (const ElementType element : list)
+    for (const ElementType& element : list)
     {
         PushBack(element);
     }
