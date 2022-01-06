@@ -433,20 +433,21 @@ def main():
     ]
 
     deps = [
-        ("nfEngineDeps", "zlibstatic"),
-        ("nfEngineDeps", "png_static"),
-        ("nfEngineDeps", "squish"),
-        ("nfEngineDeps", "jpeg"),
-        ("nfEngineDeps", "glslang\OSDependent"),
-        ("nfEngineDeps", "hlsl\HLSL"),
-        ("nfEngineDeps", "glslang\OGLCompiler"),
-        ("nfEngineDeps", "glslang\glslang"),
-        ("nfEngineDeps", "glslang\SPIRV"),
-        ("nfEngineDeps", "gtest"),
-        ("nfEngineDeps", "freetype"),
-        ("nfEngineDeps", "tinyexr"),
-        ("nfEngineDeps", "tinyobjloader"),
-        ("nfEngineDeps", "NFEDepsPostBuild")
+        ("nfEngineDeps", "Deps\\zlibstatic"),
+        ("nfEngineDeps", "Deps\\png_static"),
+        ("nfEngineDeps", "Deps\\squish"),
+        ("nfEngineDeps", "Deps\\jpeg"),
+        ("nfEngineDeps", "Deps\\glslang\\OSDependent"),
+        ("nfEngineDeps", "Deps\\hlsl\\HLSL"),
+        ("nfEngineDeps", "Deps\\glslang\\OGLCompiler"),
+        ("nfEngineDeps", "Deps\\glslang\\glslang"),
+        ("nfEngineDeps", "Deps\\glslang\\SPIRV"),
+        ("nfEngineDeps", "Deps\\gtest"),
+        ("nfEngineDeps", "Deps\\freetype"),
+        ("nfEngineDeps", "Deps\\deps\\miniz"),
+        ("nfEngineDeps", "Deps\\tinyexr"),
+        ("nfEngineDeps", "Deps\\tinyobjloader"),
+        ("nfEngineDeps", "Deps\\NFEDepsPostBuild")
     ]
 
     plats = [

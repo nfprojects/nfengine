@@ -102,7 +102,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
-      <AdditionalDependencies>Common.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>miniz.lib;tinyexr.lib;Common.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -135,7 +135,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
-      <AdditionalDependencies>Common.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>miniz.lib;tinyexr.lib;Common.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Final|x64'">
@@ -168,19 +168,16 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
-      <AdditionalDependencies>Common.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>miniz.lib;tinyexr.lib;Common.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\Deps\tinyexr\tinyexr.h" />
     <ClInclude Include="BVH\BVH.h" />
     <ClInclude Include="BVH\BVHBuilder.h" />
     <ClInclude Include="Color\BlackBodyColor.h" />
     <ClInclude Include="Color\ColorRGB.h" />
     <ClInclude Include="Color\MonochromaticColor.h" />
     <ClInclude Include="Color\RayColor.h" />
-    <ClInclude Include="Color\ColorHelpers.h" />
-    <ClInclude Include="Color\LdrColor.h" />
     <ClInclude Include="Color\Color.h" />
     <ClInclude Include="Color\Wavelength.h" />
     <ClInclude Include="Config.h" />
@@ -200,8 +197,8 @@
     <ClInclude Include="Material\MaterialParameter.h" />
     <ClInclude Include="Medium\Medium.h" />
     <ClInclude Include="Medium\PhaseFunction.h" />
-    <ClInclude Include="Mesh\Mesh.h" />
     <ClInclude Include="PCH.h" />
+    <ClInclude Include="RayLib.h" />
     <ClInclude Include="Raytracer.h" />
     <ClInclude Include="Renderers\DebugRenderer.h" />
     <ClInclude Include="Renderers\LightTracer.h" />
@@ -210,7 +207,6 @@
     <ClInclude Include="Renderers\Renderer.h" />
     <ClInclude Include="Renderers\RendererContext.h" />
     <ClInclude Include="Renderers\VertexConnectionAndMerging.h" />
-    <ClInclude Include="Rendering\AdaptiveRendering.h" />
     <ClInclude Include="Rendering\RenderingContext.h" />
     <ClInclude Include="Rendering\RenderingParams.h" />
     <ClInclude Include="Rendering\Tonemapping.h" />
@@ -270,18 +266,8 @@
     <ClInclude Include="Utils\iacaMarks.h" />
     <ClInclude Include="Utils\KdTree.h" />
     <ClInclude Include="Utils\Profiler.h" />
-    <ClInclude Include="Utils\Texture.h" />
-    <ClInclude Include="Utils\TextureEvaluator.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\Deps\tinyexr\tinyexr.cc">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Final|x64'">NotUsing</PrecompiledHeader>
-      <TreatWarningAsError Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</TreatWarningAsError>
-      <TreatWarningAsError Condition="'$(Configuration)|$(Platform)'=='Final|x64'">false</TreatWarningAsError>
-      <TreatWarningAsError Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</TreatWarningAsError>
-    </ClCompile>
     <ClCompile Include="BVH\BVH.cpp" />
     <ClCompile Include="BVH\BVHBuilder.cpp" />
     <ClCompile Include="Color\BlackBodyColor.cpp" />
@@ -317,11 +303,6 @@
     <ClCompile Include="Renderers\Renderer.cpp" />
     <ClCompile Include="Renderers\RendererContext.cpp" />
     <ClCompile Include="Renderers\VertexConnectionAndMerging.cpp" />
-    <ClCompile Include="Rendering\AdaptiveRendering.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Final|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-    </ClCompile>
     <ClCompile Include="Rendering\RenderingContext.cpp" />
     <ClCompile Include="Rendering\RenderingParams.cpp" />
     <ClCompile Include="Rendering\Tonemapping.cpp" />

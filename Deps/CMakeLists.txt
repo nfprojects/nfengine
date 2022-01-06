@@ -7,6 +7,8 @@ IF(NOT DEFINED NFEDEPS_ROOT_DIRECTORY)
     SET(NFEDEPS_ROOT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
 ENDIF(NOT DEFINED NFEDEPS_ROOT_DIRECTORY)
 
+SET(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
+
 IF(NOT DEFINED NFE_BUILD_PLATFORM)
     IF(WIN32)
         SET(NFE_BUILD_PLATFORM ${CMAKE_GENERATOR_PLATFORM})
@@ -24,14 +26,10 @@ IF(UNIX)
     ADD_DEFINITIONS("-fPIC")
 ENDIF(UNIX)
 
-# force using static runtime linking
-IF(WIN32)
-    IF("${CMAKE_BUILD_TYPE}" STREQUAL "Debug")
-        ADD_DEFINITIONS("/MDd")
-    ELSE("${CMAKE_BUILD_TYPE}" STREQUAL "Debug")
-        ADD_DEFINITIONS("/MD")
-    ENDIF("${CMAKE_BUILD_TYPE}" STREQUAL "Debug")
-ENDIF(WIN32)
+
+# Disable testing via CTest - might shave off some targets
+SET(ENABLE_CTEST OFF CACHE BOOL "Enables testing")
+SET(BUILD_TESTING OFF CACHE BOOL "Build testing")
 
 
 # Add dependencies with respective settings
@@ -50,7 +48,6 @@ ADD_SUBDIRECTORY(libpng)
 
 # glslang
 SET(ENABLE_SPVREMAPPER OFF CACHE BOOL "Enables building of SPVRemapper")
-SET(ENABLE_CTEST OFF CACHE BOOL "Enables testing")
 SET(ENABLE_OPT ON CACHE BOOL "Enables spirv-opt capability if present")
 SET(BUILD_EXTERNAL ON CACHE BOOL "Build external dependencies in /External")
 SET(SKIP_GLSLANG_INSTALL ON CACHE BOOL "Skip installation")
@@ -62,8 +59,9 @@ ENDIF(NOT EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/glslang/External/spirv-tools)
 ADD_SUBDIRECTORY(glslang)
 
 # googletest
-SET(BUILD_GMOCK OFF CACHE BOOL "Builds the googlemock subproject")
-SET(INSTALL_GTEST OFF CACHE BOOL "Enable installation of googletest. (Projects embedding googletest may want to turn this OFF.)")
+SET(build_gmock OFF CACHE BOOL "Builds the googlemock subproject")
+SET(install_gtest OFF CACHE BOOL "Enable installation of googletest. (Projects embedding googletest may want to turn this OFF.)")
+SET(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 ADD_SUBDIRECTORY(googletest)
 
 # tinyexr
@@ -100,7 +98,7 @@ ENDIF(NOT NFEDEPS_LIB_DIRECTORY)
 # Copy outputs via a custom target
 ADD_CUSTOM_TARGET(NFEDepsPostBuild ALL
     DEPENDS glslang glslang-default-resource-limits jpeg squish png_static zlibstatic gtest freetype
-            SPIRV-Tools tinyexr tinyobjloader cxxopts
+            SPIRV-Tools miniz tinyexr tinyobjloader cxxopts
     COMMENT "Commands called post-build NFE dependencies"
 )
 
@@ -123,12 +121,15 @@ ADD_CUSTOM_COMMAND(TARGET NFEDepsPostBuild POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:glslang-default-resource-limits> ${NFEDEPS_LIB_DIRECTORY}
     COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:HLSL> ${NFEDEPS_LIB_DIRECTORY}
     COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:OSDependent> ${NFEDEPS_LIB_DIRECTORY}
+    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:MachineIndependent> ${NFEDEPS_LIB_DIRECTORY}
+    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:GenericCodeGen> ${NFEDEPS_LIB_DIRECTORY}
     COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:OGLCompiler> ${NFEDEPS_LIB_DIRECTORY}
     COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:SPIRV> ${NFEDEPS_LIB_DIRECTORY}
     COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:SPIRV-Tools> ${NFEDEPS_LIB_DIRECTORY}
     COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:SPIRV-Tools-opt> ${NFEDEPS_LIB_DIRECTORY}
     COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:gtest> ${NFEDEPS_LIB_DIRECTORY}
     COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:freetype> ${NFEDEPS_LIB_DIRECTORY}
+    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:miniz> ${NFEDEPS_LIB_DIRECTORY}
     COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:tinyexr> ${NFEDEPS_LIB_DIRECTORY}
     COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:tinyobjloader> ${NFEDEPS_LIB_DIRECTORY}
     VERBATIM
@@ -140,5 +141,16 @@ IF(WIN32)
         VERBATIM
     )
 ENDIF(WIN32)
+
+
+# Group targets under "Deps" filter - helps if this is built as part of main Win Engine solution
+INCLUDE(NFEGetAllTargets)
+NFE_GET_ALL_TARGETS(DEPS_TARGETS)
+
+FOREACH(DEP ${DEPS_TARGETS})
+    GET_PROPERTY(DEP_FOLDER TARGET ${DEP} PROPERTY FOLDER)
+    SET_PROPERTY(TARGET ${DEP} PROPERTY FOLDER "Deps/${DEP_FOLDER}")
+ENDFOREACH()
+
 
 FILE(MAKE_DIRECTORY ${NFEDEPS_LIB_DIRECTORY})

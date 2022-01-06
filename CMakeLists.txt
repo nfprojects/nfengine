@@ -2,7 +2,7 @@
 # @author Lookey (costyrra.xl@gmail.com)
 # @brief  Main CMake file for nfEngine
 
-CMAKE_MINIMUM_REQUIRED(VERSION 3.12)
+CMAKE_MINIMUM_REQUIRED(VERSION 3.16)
 
 PROJECT(nfEngine)
 
@@ -14,6 +14,8 @@ IF("${CMAKE_BINARY_DIR}" STREQUAL "${CMAKE_SOURCE_DIR}")
             "    $ cmake .."
             )
 ENDIF("${CMAKE_BINARY_DIR}" STREQUAL "${CMAKE_SOURCE_DIR}")
+
+SET(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 
 MESSAGE(STATUS "Generating build files for nfEngine project")
 
@@ -72,10 +74,10 @@ ADD_SUBDIRECTORY("Src")
 
 FILE(MAKE_DIRECTORY ${NFE_OUTPUT_DIRECTORY})
 
-# Meta target to build engine and all required dependencies.
+# Meta target to build engine and all required dependencies and tests as needed.
 # Added because default ALL_BUILD will also produce lots of extra "bloat" builds from
 # targets added by dependencies. We attach it to Demo Apps, which should pull other deps
 # as needed.
-ADD_CUSTOM_TARGET(Engine_All DEPENDS RendererDemo RaytracerDemo
+ADD_CUSTOM_TARGET(NFE_All DEPENDS Apps_All Engine_All Tests_All
     COMMENT "Build all Engine projects and dependencies"
 )

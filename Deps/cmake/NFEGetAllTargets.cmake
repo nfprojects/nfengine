@@ -1,0 +1,26 @@
+# @file
+# @author Lookey (costyrra.xl@gmail.com)
+# @brief  CMake module defining NFE_GET_ALL_TARGETS function
+
+
+# @f NFE_GET_ALL_TARGETS
+#
+# Acquire a list of all targets defined up to the point of calling in CMake.
+FUNCTION(NFE_GET_ALL_TARGETS VAR)
+    SET(TARGETS)
+    __NFE_GET_ALL_TARGETS_RECURSIVE(TARGETS ${CMAKE_CURRENT_SOURCE_DIR})
+    SET(${VAR} ${TARGETS} PARENT_SCOPE)
+ENDFUNCTION()
+
+# @f __NFE_GET_ALL_TARGETS_RECURSIVE
+#
+# Helper macro for recursive acquisition of buildsystem targets
+MACRO(__NFE_GET_ALL_TARGETS_RECURSIVE TARGETS DIR)
+    GET_PROPERTY(SUBDIRS DIRECTORY ${DIR} PROPERTY SUBDIRECTORIES)
+    FOREACH(SUBDIR ${SUBDIRS})
+        __NFE_GET_ALL_TARGETS_RECURSIVE(${TARGETS} ${SUBDIR})
+    ENDFOREACH()
+
+    GET_PROPERTY(CUR_TARGETS DIRECTORY ${DIR} PROPERTY BUILDSYSTEM_TARGETS)
+    LIST(APPEND ${TARGETS} ${CUR_TARGETS})
+ENDMACRO()

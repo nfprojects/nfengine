@@ -13,9 +13,6 @@
     <Filter Include="API\Win">
       <UniqueIdentifier>{ab7effb7-0bd8-4580-bed6-79a5139b5c98}</UniqueIdentifier>
     </Filter>
-    <Filter Include="External">
-      <UniqueIdentifier>{de63c885-39f8-4ed1-ab43-480575241b82}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Defines.hpp" />
@@ -183,10 +180,6 @@
     <ClCompile Include="API\Win\WinDevice.cpp">
       <Filter>API\Win</Filter>
     </ClCompile>
-    <ClCompile Include="Internal\Win\WinExtensions.cpp" />
-    <ClCompile Include="..\..\..\..\Deps\glslang\StandAlone\ResourceLimits.cpp">
-      <Filter>External</Filter>
-    </ClCompile>
     <ClCompile Include="Internal\ShaderIncluder.cpp">
       <Filter>Internal</Filter>
     </ClCompile>
@@ -213,6 +206,9 @@
     </ClCompile>
     <ClCompile Include="Internal\CommandBufferManager.cpp">
       <Filter>Internal</Filter>
+    </ClCompile>
+    <ClCompile Include="Internal\Win\WinExtensions.cpp">
+      <Filter>Internal\Win</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

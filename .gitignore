@@ -12,8 +12,6 @@
 CMakeFiles
 CMakeCache.txt
 cmake_install.cmake
-Makefile
-*.cmake
 
 # Visual Studio precompiled headers
 /ipch
@@ -53,7 +51,7 @@ Makefile
 *.VC.db
 .vs/
 
-# Build results on Linux
+# Build results via CMake
 /build*
 
 # Smart Commandline Arguments plugin
