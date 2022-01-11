@@ -67,13 +67,15 @@ bool Logger::Init()
 #ifdef NFE_PLATFORM_WINDOWS
     wchar_t* wideRootDir = NFE_ROOT_DIRECTORY;
     UTF16ToUTF8(wideRootDir, mPathPrefix);
+    const StringView searchPatternForTrim("Src\\Engine");
 #else
     mPathPrefix = NFE_ROOT_DIRECTORY;
+    const StringView searchPatternForTrim("Src/Engine");
 #endif
     // This file should always be in Src/Engine directory. Try finding "Src/Engine" dir in
     // __FILE__ and based on that determine what to trim from paths in logs.
     const StringView exampleFile(__FILE__);
-    mPathPrefixLen = exampleFile.FindFirst("Src/Engine");
+    mPathPrefixLen = exampleFile.FindFirst(searchPatternForTrim);
     if (mPathPrefixLen == StringView::END())
     {
         NFE_LOG_WARNING("Failed to find \"Src\" dir in __FILE__ - no prefix path removal applied to logs");
