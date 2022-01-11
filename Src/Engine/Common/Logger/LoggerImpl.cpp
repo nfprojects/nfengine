@@ -70,7 +70,15 @@ bool Logger::Init()
 #else
     mPathPrefix = NFE_ROOT_DIRECTORY;
 #endif
-    mPathPrefixLen = mPathPrefix.Length();
+    // This file should always be in Src/Engine directory. Try finding "Src/Engine" dir in
+    // __FILE__ and based on that determine what to trim from paths in logs.
+    const StringView exampleFile(__FILE__);
+    mPathPrefixLen = exampleFile.FindFirst("Src/Engine");
+    if (mPathPrefixLen == StringView::END())
+    {
+        NFE_LOG_WARNING("Failed to find \"Src\" dir in __FILE__ - no prefix path removal applied to logs");
+        mPathPrefixLen = 0;
+    }
 
     const String execPath = NFE::Common::FileSystem::GetExecutablePath();
     const StringView execDir = NFE::Common::FileSystem::GetParentDir(execPath);
