@@ -8,30 +8,20 @@ SET(NFE_CORE_DIRECTORY ${NFE_ENGINE_DIRECTORY}/Core)
 
 SET(CORE_SOURCES
     PCH.cpp
-    Main.cpp
     Input/InputEvent.cpp
-    Resources_old/Material.cpp
-    Resources_old/Mesh.cpp
-    Resources_old/MultiPipelineState.cpp
-    Resources_old/Multishader.cpp
-    Resources_old/Resource.cpp
-    Resources_old/ResourcesManager.cpp
-    Resources_old/SoundSample.cpp
-    Resources_old/Texture.cpp
+    Scene/Entity.cpp
+    Scene/EntityController.cpp
+    Scene/Scene.cpp
     Scene/Components/Component.cpp
     Scene/Components/ComponentCamera.cpp
     Scene/Components/ComponentController.cpp
     Scene/Components/ComponentLight.cpp
     Scene/Components/ComponentMesh.cpp
     Scene/Components/ComponentTrigger.cpp
-    Scene/Entity.cpp
-    Scene/EntityController.cpp
     Scene/Events/Event.cpp
     Scene/Events/Event_Input.cpp
     Scene/Events/Event_Tick.cpp
     Scene/Events/Event_Trigger.cpp
-    Scene/Scene.cpp
-    Scene/SceneManager.cpp
     Scene/Systems/EntitySystem.cpp
     Scene/Systems/EventSystem.cpp
     Scene/Systems/InputSystem.cpp
@@ -49,27 +39,19 @@ SET(CORE_HEADERS
     ForwardDeclarations.hpp
     ShaderCommon.hpp
     Input/InputEvent.hpp
-    Resources_old/Material.hpp
-    Resources_old/Mesh.hpp
-    Resources_old/MultiPipelineState.hpp
-    Resources_old/Multishader.hpp
-    Resources_old/Resource.hpp
-    Resources_old/ResourcesManager.hpp
-    Resources_old/SoundSample.hpp
-    Resources_old/Texture.hpp
+    Scene/Entity.hpp
+    Scene/EntityController.hpp
+    Scene/Scene.hpp
     Scene/Components/Component.hpp
     Scene/Components/ComponentCamera.hpp
     Scene/Components/ComponentController.hpp
     Scene/Components/ComponentLight.hpp
     Scene/Components/ComponentMesh.hpp
     Scene/Components/ComponentTrigger.hpp
-    Scene/Entity.hpp
-    Scene/EntityController.hpp
     Scene/Events/Event.hpp
     Scene/Events/Event_Input.hpp
     Scene/Events/Event_Tick.hpp
     Scene/Events/Event_Trigger.hpp
-    Scene/Scene.hpp
     Scene/Systems/EntitySystem.hpp
     Scene/Systems/EventSystem.hpp
     Scene/Systems/InputSystem.hpp
@@ -84,7 +66,13 @@ SET(CORE_HEADERS
 
 SET(CORE_IMGUI_EXTERNAL_SOURCES
     ${NFEDEPS_ROOT_DIRECTORY}/imgui/imgui.cpp
+    ${NFEDEPS_ROOT_DIRECTORY}/imgui/imgui_draw.cpp
+    ${NFEDEPS_ROOT_DIRECTORY}/imgui/imgui_widgets.cpp
 )
+
+IF(WIN32)
+    LIST(APPEND CORE_SOURCES Main.cpp)
+ENDIF(WIN32)
 
 ADD_LIBRARY(Core SHARED ${CORE_SOURCES} ${CORE_HEADERS} ${CORE_IMGUI_EXTERNAL_SOURCES})
 
@@ -115,7 +103,7 @@ ENDIF(WIN32)
 
 # Core depends on all Renderers, but it doesn't link directly to them.
 # Renderer is chosen in runtime.
-TARGET_LINK_LIBRARIES(Core Common freetype2 zlibstatic)
+TARGET_LINK_LIBRARIES(Core Common freetype zlibstatic)
 
 TARGET_PRECOMPILE_HEADERS(Core PRIVATE PCH.hpp)
 

@@ -111,6 +111,6 @@ ADD_SUBDIRECTORY("Src")
 # Added because default ALL_BUILD will also produce lots of extra "bloat" builds from
 # targets added by dependencies. We attach it to Demo Apps, which should pull other deps
 # as needed.
-ADD_CUSTOM_TARGET(NFE_All DEPENDS Apps_All Engine_All Tests_All
+ADD_CUSTOM_TARGET(NFE_All DEPENDS Engine_All Apps_All Tests_All
     COMMENT "Build all Engine projects and dependencies"
 )
