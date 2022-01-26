@@ -12,13 +12,14 @@
 #include "IResource.hpp"
 
 #include <Engine/Common/Containers/DynArray.hpp>
+#include <Engine/Common/Containers/SharedPtr.hpp>
 
 
 
 namespace NFE {
 namespace Renderer {
 
-class ResourceBindingSet : public IResourceBindingSet
+class ResourceBindingSet: public IResourceBindingSet
 {
     friend class ResourceBindingInstance;
     friend class ResourceBindingLayout;
@@ -35,6 +36,7 @@ public:
     ~ResourceBindingSet();
 
     bool Init(const ResourceBindingSetDesc& desc) override;
+    bool InitVolatile(ShaderType visibility, uint16 setSlot, uint16 binding, ShaderResourceType resType);
 
     NFE_INLINE uint16 GetSetSlot() const
     {
@@ -42,17 +44,17 @@ public:
     }
 };
 
-class ResourceBindingLayout : public IResourceBindingLayout
+class ResourceBindingLayout: public IResourceBindingLayout
 {
     friend class CommandRecorder;
     friend class PipelineState;
     friend class ComputePipelineState;
 
     VkPipelineLayout mPipelineLayout;
-    Common::DynArray<VkShaderStageFlags> mLayoutStages;
-    VkDescriptorSetLayout mVolatileBufferLayout;
+    Common::DynArray<Common::SharedPtr<ResourceBindingSet>> mBindingSets;
+    Common::SharedPtr<ResourceBindingSet> mVolatileBufferBindingSet;
     VkDescriptorSet mVolatileBufferSet;
-    uint32 mVolatileBufferSetSlot;
+    uint16 mVolatileBufferSetSlot;
 
 public:
     ResourceBindingLayout();
@@ -61,7 +63,7 @@ public:
     bool Init(const ResourceBindingLayoutDesc& desc) override;
 };
 
-class ResourceBindingInstance : public IResourceBindingInstance
+class ResourceBindingInstance: public IResourceBindingInstance
 {
     friend class CommandRecorder;
 

@@ -146,11 +146,6 @@ void CommandRecorder::RebindDynamicBuffers() const
 void CommandRecorder::ClearDescriptorSetBindings()
 {
     memset(mBoundDescriptorSets, 0, sizeof(*mBoundDescriptorSets) * VK_MAX_BOUND_DESCRIPTOR_SETS);
-    memset(mBoundDescriptorSetLayouts, 0, sizeof(*mBoundDescriptorSetLayouts) * VK_MAX_BOUND_DESCRIPTOR_SETS);
-
-    for (VkDescriptorSetLayout& l: mTemporaryDescriptorSetLayouts)
-        vkDestroyDescriptorSetLayout(gDevice->GetDevice(), l, nullptr);
-    mTemporaryDescriptorSetLayouts.Clear();
 
     if (mTemporaryDescriptorSets.Size() > 0)
         vkFreeDescriptorSets(gDevice->GetDevice(), gDevice->GetDescriptorPool(),
@@ -165,8 +160,6 @@ void CommandRecorder::BindPendingResources()
     for (const auto& r: mPendingResources)
     {
         VkDescriptorSet tempSet = VK_NULL_HANDLE, boundSet = VK_NULL_HANDLE;
-        VkDescriptorSetLayout tempSetLayout = VK_NULL_HANDLE;
-        ResourceBindingSet* boundRBS = nullptr;
         Internal::ResourceType resType = r.resource->GetType();
         VkDescriptorType descType;
         uint32 layoutSetCount = 0;
@@ -188,44 +181,10 @@ void CommandRecorder::BindPendingResources()
             continue;
         }
 
-        VkDescriptorSetLayout usedLayout = VK_NULL_HANDLE;
-        boundRBS = mBoundDescriptorSetLayouts[r.set];
-        if (boundRBS == nullptr)
-        {
-            VkDescriptorSetLayoutBinding binding;
-            VK_ZERO_MEMORY(binding);
-            binding.binding = r.slot;
-            binding.descriptorCount = 1;
-            binding.descriptorType = descType;
-            binding.stageFlags = mResourceBindingLayout->mLayoutStages[r.set];
-            if (descType == VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER)
-                binding.pImmutableSamplers = &gDevice->GetDefaultSampler();
-
-            VkDescriptorSetLayoutCreateInfo layoutInfo;
-            VK_ZERO_MEMORY(layoutInfo);
-            layoutInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
-            layoutInfo.pBindings = &binding;
-            layoutInfo.bindingCount = 1;
-            result = vkCreateDescriptorSetLayout(gDevice->GetDevice(), &layoutInfo, nullptr, &tempSetLayout);
-            if (result != VK_SUCCESS)
-            {
-                NFE_LOG_WARNING("Failed to create temporary set layout: %d (%s)", result, TranslateVkResultToString(result));
-                continue;
-            }
-
-            layoutSetCount = 1;
-            usedLayout = tempSetLayout;
-        }
-        else
-        {
-            layoutSetCount = boundRBS->mResourceCount;
-            usedLayout = boundRBS->mDescriptorLayout;
-        }
-
         VkDescriptorSetAllocateInfo allocInfo;
         VK_ZERO_MEMORY(allocInfo);
         allocInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
-        allocInfo.pSetLayouts = &usedLayout;
+        allocInfo.pSetLayouts = &mResourceBindingLayout->mBindingSets[r.set]->mDescriptorLayout;
         allocInfo.descriptorSetCount = 1;
         allocInfo.descriptorPool = gDevice->GetDescriptorPool();
         // TODO use temporary pool? might be easier to manage in case of fragmentation
@@ -233,8 +192,6 @@ void CommandRecorder::BindPendingResources()
         if (result != VK_SUCCESS)
         {
             NFE_LOG_WARNING("Failed to allocate temporary descriptor set: %d (%s)", result, TranslateVkResultToString(result));
-            if (tempSetLayout != VK_NULL_HANDLE)
-                vkDestroyDescriptorSetLayout(gDevice->GetDevice(), tempSetLayout, nullptr);
             continue;
         }
 
@@ -293,9 +250,6 @@ void CommandRecorder::BindPendingResources()
 
         if (tempSet)
             mTemporaryDescriptorSets.PushBack(tempSet);
-
-        if (tempSetLayout)
-            mTemporaryDescriptorSetLayouts.PushBack(tempSetLayout);
     }
 
     mPendingResources.Clear();
@@ -600,8 +554,8 @@ void CommandRecorder::BindResources(PipelineType pipelineType, uint32 setIndex, 
     vkCmdBindDescriptorSets(mCommandBuffer, TranslatePipelineTypeToVkPipelineBindPoint(pipelineType),
                             mResourceBindingLayout->mPipelineLayout, rbi->mSet->mSetSlot, 1,
                             &rbi->mDescriptorSet, 0, nullptr);
-    mBoundDescriptorSets[rbi->mSet->mSetSlot] = rbi->mDescriptorSet;
-    mBoundDescriptorSetLayouts[rbi->mSet->mSetSlot] = rbi->mSet;
+
+    StoreDescriptorSetBinding(rbi->mSet->mSetSlot, rbi->mDescriptorSet);
 }
 
 void CommandRecorder::BindBuffer(PipelineType pipelineType, uint32 setIndex, uint32 slotInSet, const BufferPtr& buffer, const BufferView& view)

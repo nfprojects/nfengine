@@ -103,9 +103,38 @@ bool ResourceBindingSet::Init(const ResourceBindingSetDesc& desc)
     VkResult result = vkCreateDescriptorSetLayout(gDevice->GetDevice(), &descInfo, nullptr, &mDescriptorLayout);
     CHECK_VKRESULT(result, "Failed to create Descriptor Set Layout");
 
-    Debugger::Instance().NameObject(reinterpret_cast<uint64_t>(mDescriptorLayout), VK_OBJECT_TYPE_DESCRIPTOR_SET_LAYOUT, "DescriptorSetLayout");
+    Debugger::Instance().NameObject(reinterpret_cast<uint64_t>(mDescriptorLayout), static_cast<VkObjectType>(VK_OBJECT_TYPE_DESCRIPTOR_SET_LAYOUT), "DescriptorSetLayout");
 
     mResourceCount = bindings.Size();
+
+    return true;
+}
+
+bool ResourceBindingSet::InitVolatile(ShaderType visibility, uint16 setSlot, uint16 binding, ShaderResourceType resType)
+{
+    NFE_UNUSED(resType);
+
+    mShaderStage = TranslateShaderTypeToVkShaderStage(visibility);
+    VkDescriptorSetLayoutBinding layoutBinding;
+    VK_ZERO_MEMORY(layoutBinding);
+    layoutBinding.stageFlags = mShaderStage;
+    layoutBinding.binding = binding;
+    layoutBinding.descriptorCount = 1;
+    layoutBinding.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC;
+
+    VkDescriptorSetLayoutCreateInfo descInfo;
+    VK_ZERO_MEMORY(descInfo);
+    descInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
+    descInfo.bindingCount = 1;
+    descInfo.pBindings = &layoutBinding;
+    VkResult result = vkCreateDescriptorSetLayout(gDevice->GetDevice(), &descInfo, nullptr, &mDescriptorLayout);
+    CHECK_VKRESULT(result, "Failed to create Descriptor Set Layout");
+
+    Debugger::Instance().NameObject(reinterpret_cast<uint64_t>(mDescriptorLayout), VK_OBJECT_TYPE_DESCRIPTOR_SET_LAYOUT, "DescriptorSetLayout");
+
+    mResourceCount = 1;
+    mTexResourceCount = 0;
+    mSetSlot = setSlot;
 
     return true;
 }
@@ -113,9 +142,10 @@ bool ResourceBindingSet::Init(const ResourceBindingSetDesc& desc)
 
 ResourceBindingLayout::ResourceBindingLayout()
     : mPipelineLayout(VK_NULL_HANDLE)
-    , mVolatileBufferLayout(VK_NULL_HANDLE)
+    , mBindingSets()
+    , mVolatileBufferBindingSet()
     , mVolatileBufferSet(VK_NULL_HANDLE)
-    , mVolatileBufferSetSlot(UINT32_MAX)
+    , mVolatileBufferSetSlot(UINT16_MAX)
 {
 }
 
@@ -123,8 +153,8 @@ ResourceBindingLayout::~ResourceBindingLayout()
 {
     if (mVolatileBufferSet != VK_NULL_HANDLE)
         vkFreeDescriptorSets(gDevice->GetDevice(), gDevice->GetDescriptorPool(), 1, &mVolatileBufferSet);
-    if (mVolatileBufferLayout != VK_NULL_HANDLE)
-        vkDestroyDescriptorSetLayout(gDevice->GetDevice(), mVolatileBufferLayout, nullptr);
+    mBindingSets.Clear();
+    mVolatileBufferBindingSet.Reset();
     if (mPipelineLayout != VK_NULL_HANDLE)
         vkDestroyPipelineLayout(gDevice->GetDevice(), mPipelineLayout, nullptr);
 }
@@ -136,10 +166,10 @@ bool ResourceBindingLayout::Init(const ResourceBindingLayoutDesc& desc)
     Common::DynArray<VkDescriptorSetLayout> dsls;
     const uint32 totalSetCount = desc.numBindingSets + desc.numVolatileCBuffers;
     dsls.Resize(totalSetCount);
-    mLayoutStages.Resize(totalSetCount);
+    mBindingSets.Resize(totalSetCount);
     for (uint32 i = 0; i < desc.numBindingSets; ++i)
     {
-        ResourceBindingSet* rbs = dynamic_cast<ResourceBindingSet*>(desc.bindingSets[i].Get());
+        Common::SharedPtr<ResourceBindingSet> rbs = Common::DynamicCast<ResourceBindingSet>(desc.bindingSets[i]);
         if (rbs == nullptr)
         {
             NFE_LOG_ERROR("Invalid Resource Binding Set provided at %d spot", i);
@@ -152,61 +182,28 @@ bool ResourceBindingLayout::Init(const ResourceBindingLayoutDesc& desc)
             return false;
         }
 
-        mLayoutStages[rbs->mSetSlot] = rbs->mShaderStage;
+        mBindingSets[rbs->mSetSlot] = rbs;
         dsls[rbs->mSetSlot] = rbs->mDescriptorLayout;
     }
 
     if (desc.numVolatileCBuffers > 0)
     {
-        Common::DynArray<VkDescriptorSetLayoutBinding> volatileCBufferBindings;
-        bool setApplied = false;
-        VkDescriptorSetLayoutBinding layoutBinding;
-        VK_ZERO_MEMORY(layoutBinding);
-        for (uint32 i = 0; i < desc.numVolatileCBuffers; ++i)
+        // TODO support multiple
+        const VolatileCBufferBinding& vb = desc.volatileCBuffers[0];
+
+        mVolatileBufferSetSlot = (vb.slot >> 16);
+        mVolatileBufferBindingSet = Common::MakeSharedPtr<ResourceBindingSet>();
+        if (!mVolatileBufferBindingSet->InitVolatile(vb.shaderVisibility, mVolatileBufferSetSlot, vb.slot & 0xFFFF, vb.resourceType))
         {
-            const VolatileCBufferBinding& vb = desc.volatileCBuffers[i];
-
-            // decode set and bind from slot value
-            if (setApplied)
-            {
-                if ((vb.slot >> 16) != mVolatileBufferSetSlot)
-                {
-                    NFE_LOG_ERROR("Supplied bindings do not belong in the same descriptor set.");
-                    return false;
-                }
-            }
-            else
-            {
-                mVolatileBufferSetSlot = vb.slot >> 16;
-                setApplied = true;
-            }
-
-            layoutBinding.stageFlags = TranslateShaderTypeToVkShaderStage(vb.shaderVisibility);
-            layoutBinding.binding = vb.slot;
-            layoutBinding.descriptorCount = 1;
-            layoutBinding.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC;
-            layoutBinding.pImmutableSamplers = nullptr;
-            volatileCBufferBindings.PushBack(layoutBinding);
-        }
-
-        if (mVolatileBufferSetSlot > totalSetCount)
-        {
-            NFE_LOG_ERROR("Resource Binding Layout has too high set slot assigned.");
+            NFE_LOG_ERROR("Failed to create Volatile Buffer RBS");
             return false;
         }
 
-        VkDescriptorSetLayoutCreateInfo descInfo;
-        VK_ZERO_MEMORY(descInfo);
-        descInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
-        descInfo.bindingCount = volatileCBufferBindings.Size();
-        descInfo.pBindings = volatileCBufferBindings.Data();
-        result = vkCreateDescriptorSetLayout(gDevice->GetDevice(), &descInfo, nullptr, &mVolatileBufferLayout);
-        CHECK_VKRESULT(result, "Failed to create Volatile CBuffer Descriptor Set Layout");
+        Debugger::Instance().NameObject(reinterpret_cast<uint64_t>(mVolatileBufferBindingSet->mDescriptorLayout),
+                                        VK_OBJECT_TYPE_DESCRIPTOR_SET_LAYOUT, "VolatileBufferDSL");
 
-        Debugger::Instance().NameObject(reinterpret_cast<uint64_t>(mVolatileBufferLayout), VK_OBJECT_TYPE_DESCRIPTOR_SET_LAYOUT, "VolatileBufferDSL");
-
-        dsls[mVolatileBufferSetSlot] = mVolatileBufferLayout;
-        mLayoutStages[mVolatileBufferSetSlot] = layoutBinding.stageFlags;
+        mBindingSets[mVolatileBufferSetSlot] = mVolatileBufferBindingSet;
+        dsls[mVolatileBufferSetSlot] = mVolatileBufferBindingSet->mDescriptorLayout;
     }
 
     VkPipelineLayoutCreateInfo info;
@@ -227,7 +224,7 @@ bool ResourceBindingLayout::Init(const ResourceBindingLayoutDesc& desc)
         allocInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
         allocInfo.descriptorPool = gDevice->GetDescriptorPool();
         allocInfo.descriptorSetCount = 1;
-        allocInfo.pSetLayouts = &mVolatileBufferLayout;
+        allocInfo.pSetLayouts = &mVolatileBufferBindingSet->mDescriptorLayout;
         result = vkAllocateDescriptorSets(gDevice->GetDevice(), &allocInfo, &mVolatileBufferSet);
         CHECK_VKRESULT(result, "Failed to allocate Volatile Buffer Set");
 
