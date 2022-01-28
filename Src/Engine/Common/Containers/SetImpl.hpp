@@ -10,6 +10,9 @@
 #include "../System/Assertion.hpp"
 #include "../Memory/MemoryHelpers.hpp"
 
+// TODO remove and instead of std::cout use Logger, or return a string to be logged
+#include <iostream>
+
 
 namespace NFE {
 namespace Common {

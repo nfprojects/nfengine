@@ -10,9 +10,15 @@
 #include "ForwardDeclarations.hpp"
 
 
- // DLL import / export macro
-#ifdef NF_CORE_EXPORTS
-#define CORE_API __declspec(dllexport)
+// DLL import / export macro
+#ifdef NFE_PLATFORM_WINDOWS
+    #ifdef NF_CORE_EXPORTS
+        #define CORE_API __declspec(dllexport)
+    #else
+        #define CORE_API __declspec(dllimport)
+    #endif
+#elif defined(NFE_PLATFORM_LINUX)
+    #define CORE_API __attribute__((visibility("default")))
 #else
-#define CORE_API __declspec(dllimport)
+    #error "Target platform not supported"
 #endif

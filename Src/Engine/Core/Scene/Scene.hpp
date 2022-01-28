@@ -60,7 +60,7 @@ public:
     {
         static_assert(std::is_base_of<ISystem, SystemType>::value, "Given system type does not derive from ISystem");
         static_assert(SystemType::ID < MaxSystems, "Invalid system");
-        return static_cast<SystemType*>(mSystems[typename SystemType::ID].Get());
+        return static_cast<SystemType*>(mSystems[SystemType::ID].Get());
     }
 
     void Update(const SceneUpdateInfo& info);

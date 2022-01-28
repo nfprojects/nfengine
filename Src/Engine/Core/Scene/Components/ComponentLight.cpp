@@ -110,6 +110,7 @@ void LightComponent::SetDirLight(const DirLightDesc& desc)
 
 void LightComponent::CreateRenderingProxy(bool update)
 {
+    NFE_UNUSED(update);
     //Entity* entity = GetEntity();
     //if (!GetEntity())
     //    return;

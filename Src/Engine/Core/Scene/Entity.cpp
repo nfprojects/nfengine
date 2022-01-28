@@ -119,6 +119,7 @@ bool Entity::DetachChildEntity(Entity* childToRemove)
 bool Entity::SetParentEntity(Entity* newParent)
 {
     // TODO
+    NFE_UNUSED(newParent);
     return false;
 }
 

@@ -8,6 +8,8 @@
 
 #include "../Core.hpp"
 
+#include "Components/Component.hpp"
+
 #include "../../Common/Math/Transform.hpp"
 #include "../../Common/Math/Box.hpp"
 #include "../../Common/Memory/Aligned.hpp"

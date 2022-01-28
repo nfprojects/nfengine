@@ -28,6 +28,7 @@ RendererSystem::RendererSystem(Scene& scene)
 
 void RendererSystem::Update(const SystemUpdateContext& context)
 {
+    NFE_UNUSED(context);
     //if (!mRenderScene)
     //    return;
 

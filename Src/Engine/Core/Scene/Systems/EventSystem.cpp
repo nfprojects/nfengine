@@ -77,6 +77,7 @@ void EventSystem::Broadcast(EventPtr&& event)
 
 void EventSystem::Update(const SystemUpdateContext& context)
 {
+    NFE_UNUSED(context);
     // TODO multithreaded processing !!!
 
     // process single-target events

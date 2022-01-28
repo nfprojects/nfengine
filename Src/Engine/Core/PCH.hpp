@@ -67,9 +67,9 @@
 #include "freetype/ftglyph.h"
 
 // RapidXML library
-#include "rapidxml.hpp"
-#include "rapidxml_iterators.hpp"
-#include "rapidxml_print.hpp"
+//#include "rapidxml.hpp"
+//#include "rapidxml_iterators.hpp"
+//#include "rapidxml_print.hpp"
 
 #ifdef GetWindowFont
 #undef GetWindowFont  // ImGui workaround - GetWindowFont is both WinAPI macro and ImGui function

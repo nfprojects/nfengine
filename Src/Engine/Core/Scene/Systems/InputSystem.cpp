@@ -102,6 +102,7 @@ float InputSystem::GetAxisValue(const char* name) const
 
 void InputSystem::Update(const SystemUpdateContext& context)
 {
+    NFE_UNUSED(context);
     EventSystem* eventSystem = GetScene().GetSystem<EventSystem>();
     NFE_ASSERT(eventSystem, "Invalid event system");
 

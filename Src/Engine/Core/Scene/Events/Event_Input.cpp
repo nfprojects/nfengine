@@ -3,8 +3,6 @@
  * @author Witek902 (witek902@gmail.com)
  */
 
-#pragma once
-
 #include "PCH.hpp"
 #include "Event_Input.hpp"
 #include "Engine/Common/Reflection/ReflectionClassDefine.hpp"
