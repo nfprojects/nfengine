@@ -74,18 +74,8 @@ ADD_SUBDIRECTORY(libsquish)
 ADD_SUBDIRECTORY(tinyobjloader)
 ADD_SUBDIRECTORY(cxxopts)
 ADD_SUBDIRECTORY(nfenginedeps)
-
-
-## FAKE TARGETS for parts which don't have easy access to their CMakeLists targets ##
-
-# D3D12MemAllocator has to be built separately due to no CMake and warnings produced
 IF(WIN32)
-    SET(NFEDEPS_D3D12MEMALLOC_SRC_DIR D3D12MemoryAllocator/src)
-    SET(NFEDEPS_D3D12MEMALLOC_SOURCES
-        ${NFEDEPS_D3D12MEMALLOC_SRC_DIR}/D3D12MemAlloc.cpp
-        ${NFEDEPS_D3D12MEMALLOC_SRC_DIR}/Common.cpp
-    )
-    ADD_LIBRARY(D3D12MemoryAllocator ${NFEDEPS_D3D12MEMALLOC_SOURCES})
+    ADD_SUBDIRECTORY(D3D12MemoryAllocator)
 ENDIF(WIN32)
 
 

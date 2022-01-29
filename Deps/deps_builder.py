@@ -447,6 +447,7 @@ def main():
         ("nfEngineDeps", "Deps\\deps\\miniz"),
         ("nfEngineDeps", "Deps\\tinyexr"),
         ("nfEngineDeps", "Deps\\tinyobjloader"),
+        ("nfEngineDeps", "Deps\\D3D12MemoryAllocator"),
         ("nfEngineDeps", "Deps\\NFEDepsPostBuild")
     ]
 
