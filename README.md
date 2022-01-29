@@ -10,12 +10,12 @@ Building the project - Windows
 
 To make the code compilable, the following requirements have to be met:
 
-1. Installed Visual Studio 2019 with Windows SDK.
-2. Installed Vulkan SDK (if you want to build Vulkan renderer; otherwise, it can be excluded from building)
+1. Installed Visual Studio 2022 with Windows SDK.
+2. (Optional) Installed Vulkan SDK (if you want to build Vulkan renderer; otherwise, it can be excluded from building)
 3. Pulled external dependencies via Git submodules: `git submodule update --init --recursive`
-4. CMake, with cmake.exe visible in PATH
-5. msbuild.exe visible in PATH (for VS2019 Community it is typically located in
-   `C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\MSBuild\Current\Bin`)
+4. CMake (3.21 or newer), with cmake.exe visible in PATH
+5. msbuild.exe visible in PATH (for VS2022 Community it is typically located in
+   `C:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Current\Bin`)
 
 
 Building the project - Linux
