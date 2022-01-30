@@ -85,8 +85,11 @@ uint64 FenceData::Signal(ID3D12CommandQueue* queue, const FenceFlags flags, Fenc
             *outFencePtr = fence;
         }
 
-        // add to pending list before signaling it
-        gDevice->GetFenceManager().OnFenceRequested(this, fenceValue, fence);
+        if (flags & FenceFlag_CpuWaitable)
+        {
+            // add to pending list before signaling it
+            gDevice->GetFenceManager().OnFenceRequested(this, fenceValue, fence);
+        }
 
         if (FAILED(D3D_CALL_CHECK(queue->Signal(mFenceObject.Get(), fenceValue))))
         {
@@ -151,6 +154,8 @@ bool Fence::IsFinished() const
 
 void Fence::OnFenceFinished()
 {
+    NFE_ASSERT(mFlags & FenceFlag_CpuWaitable, "Fence is not CPU-waitable");
+
     NFE_SCOPED_LOCK(mLock);
 
     const bool wasFinished = mIsFinished.exchange(true);
@@ -302,6 +307,8 @@ void FenceManager::Loop()
                 // only wait for pending fences
                 if (fenceData->mLastSignaledValue > fenceData->mLastCompletedValue)
                 {
+                    NFE_ASSERT(fenceData->mFenceObject);
+
                     const uint64 expectedValue = fenceData->mLastCompletedValue + 1;
                     fencesToWait.PushBack(fenceData->mFenceObject.Get());
                     valuesToWait.PushBack(expectedValue);
@@ -311,8 +318,6 @@ void FenceManager::Loop()
 
         if (!fencesToWait.Empty())
         {
-            // TODO this may crash if command queue is destroyed in the meantime
-            // we should keep fence object reference here
             HRESULT hr = D3D_CALL_CHECK(gDevice->GetDevice()->SetEventOnMultipleFenceCompletion(
                 fencesToWait.Data(), valuesToWait.Data(), fencesToWait.Size(), D3D12_MULTIPLE_FENCE_WAIT_FLAG_ANY, mFenceWaitEvent));
             if (FAILED(hr))
