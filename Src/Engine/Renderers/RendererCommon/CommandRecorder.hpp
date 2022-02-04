@@ -14,7 +14,6 @@
 #include "Texture.hpp"
 #include "Backbuffer.hpp"
 #include "RenderTarget.hpp"
-#include "ResourceBinding.hpp"
 
 #include <memory>
 
@@ -165,45 +164,27 @@ public:
      */
 
     /**
-     * Bind shader resources via setting a binding set instance.
-     * @param setIndex              Target binding set slot within current binding layout.
-     * @param bindingSetInstance    Binding set instance to be bound to the pipeline or NULL
-     *                              to clear all bound resources for this set.
-     */
-    virtual void BindResources(PipelineType pipelineType, uint32 setIndex, const ResourceBindingInstancePtr& bindingSetInstance) = 0;
-
-    /**
-     * Bind texture directly without using binding set instance.
-     * Only given resource set slot will be affected, all other bound resources will be unaffected.
-     * @param setIndex              Target binding set slot within current binding layout.
-     * @param slotInSet             Resource slot in given binding set.
+     * Bind texture directly to predefined slots.
+     * @param slot                  Resource slot index.
      * @param texture,view          Texture and its view to be bound
      */
-    virtual void BindTexture(PipelineType pipelineType, uint32 setIndex, uint32 slotInSet, const TexturePtr& texture, const TextureView& view = TextureView()) = 0;
-    virtual void BindWritableTexture(PipelineType pipelineType, uint32 setIndex, uint32 slotInSet, const TexturePtr& texture, const TextureView& view = TextureView()) = 0;
+    virtual void BindTexture(ShaderType stage, uint32 slot, const TexturePtr& texture, const TextureView& view = TextureView()) = 0;
+    virtual void BindWritableTexture(ShaderType stage, uint32 slot, const TexturePtr& texture, const TextureView& view = TextureView()) = 0;
 
     /**
-     * Bind a buffer directly without using binding set instance.
-     * Only given resource set slot will be affected, all other bound resources will be unaffected.
-     * @param setIndex              Target binding set slot within current binding layout.
-     * @param slotInSet             Resource slot in given binding set.
+     * Bind a buffer directly to predefined slots.
+     * @param slot                  Resource slot index.
      * @param buffer,view           Buffer and its view to be bound
      */
-    virtual void BindBuffer(PipelineType pipelineType, uint32 setIndex, uint32 slotInSet, const BufferPtr& buffer, const BufferView& view = BufferView()) = 0;
-    virtual void BindWritableBuffer(PipelineType pipelineType, uint32 setIndex, uint32 slotInSet, const BufferPtr& buffer, const BufferView& view = BufferView()) = 0;
+    virtual void BindBuffer(ShaderType stage, uint32 slot, const BufferPtr& buffer, const BufferView& view = BufferView()) = 0;
+    virtual void BindWritableBuffer(ShaderType stage, uint32 slot, const BufferPtr& buffer, const BufferView& view = BufferView()) = 0;
 
     /**
-     * Bind dynamic buffer to the graphics pipeline.
+     * Bind constant buffer to the graphics pipeline.
      * @param slot      Dynamic buffer slot in the current resource binding layout.
      * @param buffer    Buffer to bind.
      */
-    virtual void BindVolatileCBuffer(PipelineType pipelineType, uint32 slot, const BufferPtr& buffer) = 0;
-
-    /**
-     * Set new shaders resources binding layout for graphics pipeline.
-     * @param layout Resource binding layout
-     */
-    virtual void SetResourceBindingLayout(PipelineType pipelineType, const ResourceBindingLayoutPtr& layout) = 0;
+    virtual void BindConstantBuffer(ShaderType stage, uint32 slot, const BufferPtr& buffer) = 0;
 
     /**@}*/
 

@@ -144,8 +144,6 @@ struct PipelineStateDesc
     // for multisampling
     uint8 numSamples = 1u;
 
-    ResourceBindingLayoutPtr resBindingLayout;
-
     // optional debug name
     const char* debugName = nullptr;
 };

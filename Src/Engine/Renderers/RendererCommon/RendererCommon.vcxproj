@@ -123,7 +123,6 @@
     <ClInclude Include="CommandQueue.hpp" />
     <ClInclude Include="RendererCommon.hpp" />
     <ClInclude Include="RenderTarget.hpp" />
-    <ClInclude Include="ResourceBinding.hpp" />
     <ClInclude Include="Shader.hpp" />
     <ClInclude Include="Texture.hpp" />
     <ClInclude Include="Types.hpp" />
