@@ -51,12 +51,20 @@ SET(ENABLE_SPVREMAPPER OFF CACHE BOOL "Enables building of SPVRemapper")
 SET(ENABLE_OPT ON CACHE BOOL "Enables spirv-opt capability if present")
 SET(BUILD_EXTERNAL ON CACHE BOOL "Build external dependencies in /External")
 SET(SKIP_GLSLANG_INSTALL ON CACHE BOOL "Skip installation")
+SET(SPIRV_HEADERS_SKIP_EXAMPLES ON CACHE BOOL "Skip building examples")
+SET(SPIRV_HEADERS_SKIP_INSTALL ON CACHE BOOL "Skip install")
 
 IF(NOT EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/glslang/External/spirv-tools)
     MESSAGE(FATAL_ERROR "SPIRV-Tools are not downloaded for Glslang build. Please enter Deps/glslang and run update_glslang_sources.py")
 ENDIF(NOT EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/glslang/External/spirv-tools)
 
 ADD_SUBDIRECTORY(glslang)
+
+# SPIRV-Relfect
+SET(SPIRV_REFLECT_EXECUTABLE OFF CACHE BOOL "Build spirv-reflect executable")
+SET(SPIRV_REFLECT_EXAMPLES OFF CACHE BOOL "Build stripper examples")
+SET(SPIRV_REFLECT_STATIC_LIB ON CACHE BOOL "Build a SPIRV-Reflect static library")
+ADD_SUBDIRECTORY(SPIRV-Reflect)
 
 # googletest
 SET(build_gmock OFF CACHE BOOL "Builds the googlemock subproject")
@@ -117,6 +125,7 @@ ADD_CUSTOM_COMMAND(TARGET NFEDepsPostBuild POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:SPIRV> ${NFEDEPS_LIB_DIRECTORY}
     COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:SPIRV-Tools> ${NFEDEPS_LIB_DIRECTORY}
     COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:SPIRV-Tools-opt> ${NFEDEPS_LIB_DIRECTORY}
+    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:spirv-reflect-static> ${NFEDEPS_LIB_DIRECTORY}
     COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:gtest> ${NFEDEPS_LIB_DIRECTORY}
     COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:freetype> ${NFEDEPS_LIB_DIRECTORY}
     COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:miniz> ${NFEDEPS_LIB_DIRECTORY}

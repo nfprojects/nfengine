@@ -43,3 +43,6 @@
 [submodule "Deps/D3D12MemoryAllocator"]
 	path = Deps/D3D12MemoryAllocator
 	url = https://github.com/GPUOpen-LibrariesAndSDKs/D3D12MemoryAllocator.git
+[submodule "Deps/SPIRV-Reflect"]
+	path = Deps/SPIRV-Reflect
+	url = https://github.com/KhronosGroup/SPIRV-Reflect.git

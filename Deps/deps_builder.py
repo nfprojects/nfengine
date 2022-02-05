@@ -442,6 +442,7 @@ def main():
         ("nfEngineDeps", "Deps\\glslang\\OGLCompiler"),
         ("nfEngineDeps", "Deps\\glslang\\glslang"),
         ("nfEngineDeps", "Deps\\glslang\\SPIRV"),
+        ("nfEngineDeps", "Deps\\spirv-reflect-static"),
         ("nfEngineDeps", "Deps\\gtest"),
         ("nfEngineDeps", "Deps\\freetype"),
         ("nfEngineDeps", "Deps\\deps\\miniz"),
