@@ -30,7 +30,16 @@
         NFE_LOG_ERROR("%s: %d (%s)", errstr, result, TranslateVkResultToString(result));\
         return false;                                                               \
     }
-#endif // LOG_VKRESULT
+#endif // CHECK_VKRESULT
+
+#ifndef CHECK_SPVREFLECTRESULT
+#define CHECK_SPVREFLECTRESULT(result, errstr)                                      \
+    if (result != SPV_REFLECT_RESULT_SUCCESS)                                       \
+    {                                                                               \
+        NFE_LOG_ERROR("%s: %d (%s)", errstr, result, TranslateSpvReflectResultToString(result));\
+        return false;                                                               \
+    }
+#endif // CHECK_SPVREFLECTRESULT
 
 #ifndef VK_ZERO_MEMORY
 #define VK_ZERO_MEMORY(x) \

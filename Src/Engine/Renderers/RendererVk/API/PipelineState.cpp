@@ -18,7 +18,10 @@ namespace NFE {
 namespace Renderer {
 
 PipelineState::PipelineState()
-    : mPipeline(VK_NULL_HANDLE)
+    : mDesc()
+    , mShaderStageDescs()
+    , mShaderStages()
+    , mPipeline(VK_NULL_HANDLE)
 {
 }
 
@@ -31,15 +34,15 @@ PipelineState::~PipelineState()
         vkDestroyShaderModule(gDevice->GetDevice(), s, nullptr);
 }
 
-VkShaderModule PipelineState::CreateShaderModule(const Common::DynArray<uint32>& shaderSpv)
+VkShaderModule PipelineState::CreateShaderModule(const SpvReflectShaderModule& shaderSpv)
 {
     VkShaderModule s = VK_NULL_HANDLE;
 
     VkShaderModuleCreateInfo shaderInfo;
     VK_ZERO_MEMORY(shaderInfo);
     shaderInfo.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
-    shaderInfo.codeSize = shaderSpv.Size() * sizeof(uint32);
-    shaderInfo.pCode = shaderSpv.Data();
+    shaderInfo.codeSize = spvReflectGetCodeSize(&shaderSpv);
+    shaderInfo.pCode = spvReflectGetCode(&shaderSpv);
     VkResult result = vkCreateShaderModule(gDevice->GetDevice(), &shaderInfo, nullptr, &s);
     if (result != VK_SUCCESS)
     {
@@ -56,7 +59,7 @@ bool PipelineState::PrepareShaderStage(const ShaderPtr& shader)
         return true; // quietly exit, we are skipping an optional stage
 
     Shader* s = dynamic_cast<Shader*>(shader.Get());
-    VkShaderModule shaderModule = CreateShaderModule(s->mShaderSpv);
+    VkShaderModule shaderModule = CreateShaderModule(s->mSpvReflectModule);
     if (shaderModule == VK_NULL_HANDLE)
         return false;
 

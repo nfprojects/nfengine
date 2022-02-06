@@ -17,6 +17,7 @@ namespace Renderer {
 
 // debugging helpers
 const char* TranslateDeviceTypeToString(VkPhysicalDeviceType type);
+const char* TranslateSpvReflectResultToString(SpvReflectResult result);
 const char* TranslateVkResultToString(VkResult result);
 const char* TranslateVkFormatToString(VkFormat format);
 const char* TranslateResourceAccessModeToString(ResourceAccessMode mode);

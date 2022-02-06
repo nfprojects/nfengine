@@ -26,7 +26,7 @@ class PipelineState : public IPipelineState
     Common::StaticArray<VkShaderModule, 5> mShaderStages;
     VkPipeline mPipeline;
 
-    VkShaderModule CreateShaderModule(const Common::DynArray<uint32>& shaderSpv);
+    VkShaderModule CreateShaderModule(const SpvReflectShaderModule& shaderSpv);
     bool PrepareShaderStage(const ShaderPtr& shader);
 
 public:

@@ -39,6 +39,11 @@ const Common::String SHADER_HEADER_TAIL("\0");
 
 Shader::Shader()
     : mType(ShaderType::Unknown)
+    , mShaderPath()
+    , mShaderGlslang()
+    , mProgramGlslang()
+    , mStageInfo()
+    , mSpvReflectModule()
 {
 }
 
@@ -162,6 +167,9 @@ bool Shader::Init(const ShaderDesc& desc)
         return false;
     }
 
+    // TODO we should try avoiding this and use spirv-reflect instead.
+    // Problem is, glslang loses names of descriptor sets when generating SPV bytecode.
+    // Try to solve this somehow (maybe) or remove this comment if it's impossible.
     if (!mProgramGlslang->buildReflection())
     {
         NFE_LOG_ERROR("Failed to build reflection for shader program");
@@ -179,8 +187,10 @@ bool Shader::Init(const ShaderDesc& desc)
     std::vector<uint32> shaderSpv;
     glslang::GlslangToSpv(*progInt, shaderSpv, &spvLogger);
 
-    mShaderSpv.Resize(static_cast<uint32>(shaderSpv.size()));
-    memcpy(mShaderSpv.Data(), shaderSpv.data(), shaderSpv.size() * sizeof(uint32));
+    SpvReflectResult spvResult = spvReflectCreateShaderModule2(
+        SPV_REFLECT_MODULE_FLAG_NONE, shaderSpv.size() * sizeof(uint32), shaderSpv.data(), &mSpvReflectModule
+    );
+    CHECK_SPVREFLECTRESULT(spvResult, "Failed to create reflection of shader SPIR-V code");
 
     // Prepare shader stage info for later use
     // Shader Module is not created here - it will be modified when creating PSO in order to
@@ -199,8 +209,9 @@ bool Shader::Disassemble(bool html, Common::String& output)
     NFE_UNUSED(html); // TODO
     // Disassemble the shader, to provide parsing source for slot extraction
 
-    std::vector<uint32> shaderSpv(mShaderSpv.Size());
-    memcpy(shaderSpv.data(), mShaderSpv.Data(), mShaderSpv.Size() * sizeof(uint32));
+    uint32 spvCodeSize = spvReflectGetCodeSize(&mSpvReflectModule);
+    std::vector<uint32> shaderSpv(spvCodeSize / sizeof(uint32));
+    memcpy(shaderSpv.data(), spvReflectGetCode(&mSpvReflectModule), spvCodeSize);
 
     std::stringstream ss;
     spv::Disassemble(ss, shaderSpv);

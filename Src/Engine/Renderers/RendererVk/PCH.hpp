@@ -35,6 +35,8 @@
 #include <glslang/SPIRV/disassemble.h>
 #include <glslang/StandAlone/ResourceLimits.h>
 
+#include <SPIRV-Reflect/spirv_reflect.h>
+
 #ifdef NFE_PLATFORM_WINDOWS
 #pragma warning(pop)
 #endif // NFE_PLATFORM_WINDOWS

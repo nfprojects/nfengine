@@ -135,7 +135,7 @@ TARGET_LINK_DIRECTORIES(RendererVk
     PRIVATE $ENV{VULKAN_SDK}/lib
 )
 
-ADD_DEPENDENCIES(RendererVk RendererCommon glslang glslang-default-resource-limits HLSL SPIRV)
+ADD_DEPENDENCIES(RendererVk RendererCommon glslang glslang-default-resource-limits HLSL SPIRV spirv-reflect-static)
 
 IF(WIN32)
     SET(NFRENDERERVK_VULKAN_LIB vulkan-1)
@@ -146,7 +146,9 @@ ELSE(WIN32)
 ENDIF(WIN32)
 
 TARGET_LINK_LIBRARIES(RendererVk
-    RendererCommon ${NFRENDERERVK_VULKAN_LIB} glslang glslang-default-resource-limits HLSL SPIRV SPIRV-Tools SPIRV-Tools-opt OGLCompiler OSDependent
+    RendererCommon ${NFRENDERERVK_VULKAN_LIB} glslang glslang-default-resource-limits
+    HLSL SPIRV SPIRV-Tools SPIRV-Tools-opt OGLCompiler OSDependent
+    spirv-reflect-static
 )
 
 TARGET_PRECOMPILE_HEADERS(RendererVk PRIVATE PCH.hpp)
