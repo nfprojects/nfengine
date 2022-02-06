@@ -1,6 +1,8 @@
 # Set required variables
 # TODO Final configuration support
 
+MESSAGE(STATUS "Generating NFE build files")
+
 INCLUDE(NFESourceGroup)
 
 # TODO this is chosen by platform, instead it should probably be chosen

@@ -26,6 +26,47 @@ PipelineState::~PipelineState()
 {
     if (mPipeline != VK_NULL_HANDLE)
         vkDestroyPipeline(gDevice->GetDevice(), mPipeline, nullptr);
+
+    for (auto& s: mShaderStages)
+        vkDestroyShaderModule(gDevice->GetDevice(), s, nullptr);
+}
+
+VkShaderModule PipelineState::CreateShaderModule(const Common::DynArray<uint32>& shaderSpv)
+{
+    VkShaderModule s = VK_NULL_HANDLE;
+
+    VkShaderModuleCreateInfo shaderInfo;
+    VK_ZERO_MEMORY(shaderInfo);
+    shaderInfo.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
+    shaderInfo.codeSize = shaderSpv.Size() * sizeof(uint32);
+    shaderInfo.pCode = shaderSpv.Data();
+    VkResult result = vkCreateShaderModule(gDevice->GetDevice(), &shaderInfo, nullptr, &s);
+    if (result != VK_SUCCESS)
+    {
+        NFE_LOG_ERROR("Failed to create Shader module");
+        return VK_NULL_HANDLE;
+    }
+
+    return s;
+}
+
+bool PipelineState::PrepareShaderStage(const ShaderPtr& shader)
+{
+    if (!shader)
+        return true; // quietly exit, we are skipping an optional stage
+
+    Shader* s = dynamic_cast<Shader*>(shader.Get());
+    VkShaderModule shaderModule = CreateShaderModule(s->mShaderSpv);
+    if (shaderModule == VK_NULL_HANDLE)
+        return false;
+
+    Debugger::Instance().NameObject(reinterpret_cast<uint64_t>(shaderModule), VK_OBJECT_TYPE_SHADER_MODULE, s->mShaderPath.Str());
+
+    mShaderStages.PushBack(shaderModule);
+
+    mShaderStageDescs.EmplaceBack(s->mStageInfo);
+    mShaderStageDescs.Back().module = shaderModule;
+    return true;
 }
 
 bool PipelineState::Init(const PipelineStateDesc& desc)
@@ -177,46 +218,42 @@ bool PipelineState::Init(const PipelineStateDesc& desc)
 
 
     // shader stages
-    VkPipelineShaderStageCreateInfo stages[5];
-    uint32 stageCount = 0;
+    if (!PrepareShaderStage(desc.vertexShader))
+    {
+        NFE_LOG_ERROR("Failed to prepare Vertex Shader Stage for Pipeline");
+        return false;
+    }
 
-    if (mDesc.vertexShader)
+    if (!PrepareShaderStage(desc.hullShader))
     {
-        Shader* s = dynamic_cast<Shader*>(mDesc.vertexShader.Get());
-        stages[stageCount] = s->mStageInfo;
-        stageCount++;
+        NFE_LOG_ERROR("Failed to prepare Hull Shader Stage for Pipeline");
+        return false;
     }
-    if (mDesc.hullShader)
+
+    if (!PrepareShaderStage(desc.domainShader))
     {
-        Shader* s = dynamic_cast<Shader*>(mDesc.hullShader.Get());
-        stages[stageCount] = s->mStageInfo;
-        stageCount++;
+        NFE_LOG_ERROR("Failed to prepare Domain Shader Stage for Pipeline");
+        return false;
     }
-    if (mDesc.domainShader)
+
+    if (!PrepareShaderStage(desc.geometryShader))
     {
-        Shader* s = dynamic_cast<Shader*>(mDesc.domainShader.Get());
-        stages[stageCount] = s->mStageInfo;
-        stageCount++;
+        NFE_LOG_ERROR("Failed to prepare Geometry Shader Stage for Pipeline");
+        return false;
     }
-    if (mDesc.geometryShader)
+
+    if (!PrepareShaderStage(desc.pixelShader))
     {
-        Shader* s = dynamic_cast<Shader*>(mDesc.geometryShader.Get());
-        stages[stageCount] = s->mStageInfo;
-        stageCount++;
-    }
-    if (mDesc.pixelShader)
-    {
-        Shader* s = dynamic_cast<Shader*>(mDesc.pixelShader.Get());
-        stages[stageCount] = s->mStageInfo;
-        stageCount++;
+        NFE_LOG_ERROR("Failed to prepare Pixel Shader Stage for Pipeline");
+        return false;
     }
 
 
     VkGraphicsPipelineCreateInfo pipeInfo;
     VK_ZERO_MEMORY(pipeInfo);
     pipeInfo.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
-    pipeInfo.stageCount = stageCount;
-    pipeInfo.pStages = stages;
+    pipeInfo.stageCount = mShaderStageDescs.Size();
+    pipeInfo.pStages = mShaderStageDescs.Data();
     pipeInfo.pVertexInputState = &pvisInfo;
     pipeInfo.pInputAssemblyState = &piasInfo;
     if ((mDesc.numControlPoints > 0) && (mDesc.hullShader != nullptr) && (mDesc.domainShader != nullptr))

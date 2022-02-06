@@ -10,6 +10,7 @@
 #include "Defines.hpp"
 
 #include "Engine/Common/Containers/DynArray.hpp"
+#include "Engine/Common/Containers/String.hpp"
 
 
 namespace NFE {
@@ -22,10 +23,10 @@ class Shader : public IShader
     friend class ComputePipelineState;
 
     ShaderType mType;
+    Common::String mShaderPath;
     Common::UniquePtr<glslang::TShader> mShaderGlslang;
     Common::UniquePtr<glslang::TProgram> mProgramGlslang;
     Common::DynArray<uint32> mShaderSpv;
-    VkShaderModule mShader;
     VkPipelineShaderStageCreateInfo mStageInfo;
 
 public:

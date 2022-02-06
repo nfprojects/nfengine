@@ -39,18 +39,17 @@ const Common::String SHADER_HEADER_TAIL("\0");
 
 Shader::Shader()
     : mType(ShaderType::Unknown)
-    , mShader(VK_NULL_HANDLE)
-{}
+{
+}
 
 Shader::~Shader()
 {
-    if (mShader != VK_NULL_HANDLE)
-        vkDestroyShaderModule(gDevice->GetDevice(), mShader, nullptr);
 }
 
 bool Shader::Init(const ShaderDesc& desc)
 {
     mType = desc.type;
+    mShaderPath = desc.path;
 
     Common::DynArray<char> str;
     int32 shaderSize = 0;
@@ -130,7 +129,7 @@ bool Shader::Init(const ShaderDesc& desc)
     // set environment
     mShaderGlslang->setEnvInput(glslang::EShSourceHlsl, lang, glslang::EShClientVulkan, DEFAULT_VERSION);
     mShaderGlslang->setEnvClient(glslang::EShClientVulkan, glslang::EShTargetVulkan_1_1);
-    mShaderGlslang->setEnvTarget(glslang::EShTargetSpv, glslang::EShTargetSpv_1_1);
+    mShaderGlslang->setEnvTarget(glslang::EShTargetSpv, glslang::EShTargetSpv_1_3);
 
     // input shader strings
     const char* shaderStrs[] = { shaderHead.Str(), code };
@@ -183,24 +182,15 @@ bool Shader::Init(const ShaderDesc& desc)
     mShaderSpv.Resize(static_cast<uint32>(shaderSpv.size()));
     memcpy(mShaderSpv.Data(), shaderSpv.data(), shaderSpv.size() * sizeof(uint32));
 
-    // now we have spirv representation of shader, provide it to Vulkan
-    VkShaderModuleCreateInfo shaderInfo;
-    VK_ZERO_MEMORY(shaderInfo);
-    shaderInfo.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
-    shaderInfo.codeSize = mShaderSpv.Size() * sizeof(uint32);
-    shaderInfo.pCode = mShaderSpv.Data();
-    VkResult result = vkCreateShaderModule(gDevice->GetDevice(), &shaderInfo, nullptr, &mShader);
-    CHECK_VKRESULT(result, "Failed to create Shader module");
-
-    Debugger::Instance().NameObject(reinterpret_cast<uint64_t>(mShader), VK_OBJECT_TYPE_SHADER_MODULE, desc.path);
-
+    // Prepare shader stage info for later use
+    // Shader Module is not created here - it will be modified when creating PSO in order to
+    // remap descriptor sets
     VK_ZERO_MEMORY(mStageInfo);
     mStageInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
     mStageInfo.stage = TranslateShaderTypeToVkShaderStage(desc.type);
-    mStageInfo.module = mShader;
     mStageInfo.pName = "main";
 
-    NFE_LOG_SUCCESS("Shader '%s' compiled successfully", desc.path);
+    NFE_LOG_SUCCESS("Shader '%s' compiled to SPV successfully", desc.path);
     return true;
 }
 
