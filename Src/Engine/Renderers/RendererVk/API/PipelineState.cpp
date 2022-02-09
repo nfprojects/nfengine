@@ -30,6 +30,9 @@ PipelineState::~PipelineState()
     if (mPipeline != VK_NULL_HANDLE)
         vkDestroyPipeline(gDevice->GetDevice(), mPipeline, nullptr);
 
+    if (mPipelineLayout != VK_NULL_HANDLE)
+        vkDestroyPipelineLayout(gDevice->GetDevice(), mPipelineLayout, nullptr);
+
     for (auto& s: mShaderStages)
         vkDestroyShaderModule(gDevice->GetDevice(), s, nullptr);
 }
@@ -51,6 +54,28 @@ VkShaderModule PipelineState::CreateShaderModule(const SpvReflectShaderModule& s
     }
 
     return s;
+}
+
+bool PipelineState::CreatePipelineLayout()
+{
+    VkResult result = VK_SUCCESS;
+
+    // TODO
+
+    VkPipelineLayoutCreateInfo plInfo;
+    VK_ZERO_MEMORY(plInfo);
+    plInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
+    result = vkCreatePipelineLayout(gDevice->GetDevice(), &plInfo, nullptr, &mPipelineLayout);
+    CHECK_VKRESULT(result, "Failed to create Pipeline Layout");
+
+    // TODO evaluate the name to be something more interesting and helpful
+    Debugger::Instance().NameObject(
+        reinterpret_cast<uint64_t>(mPipelineLayout),
+        VK_OBJECT_TYPE_PIPELINE_LAYOUT,
+        "Graphics Pipeline Layout"
+    );
+
+    return true;
 }
 
 bool PipelineState::PrepareShaderStage(const ShaderPtr& shader)
@@ -251,6 +276,14 @@ bool PipelineState::Init(const PipelineStateDesc& desc)
     }
 
 
+    // Now that we prepared shader stages, create a PipelineLayout based on reflection data
+    if (!CreatePipelineLayout())
+    {
+        NFE_LOG_ERROR("Failed to create a Pipeline Layout for this PipelineState");
+        return false;
+    }
+
+
     VkGraphicsPipelineCreateInfo pipeInfo;
     VK_ZERO_MEMORY(pipeInfo);
     pipeInfo.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
@@ -267,7 +300,7 @@ bool PipelineState::Init(const PipelineStateDesc& desc)
     pipeInfo.pColorBlendState = &pcbsInfo;
     pipeInfo.pDynamicState = &pdsInfo;
     pipeInfo.renderPass = renderPass;
-    pipeInfo.layout = VK_NULL_HANDLE; // TODO
+    pipeInfo.layout = mPipelineLayout;
     pipeInfo.subpass = 0;
     VkResult result = vkCreateGraphicsPipelines(gDevice->GetDevice(), VK_NULL_HANDLE, 1, &pipeInfo,
                                                 nullptr, &mPipeline);

@@ -23,10 +23,12 @@ class PipelineState : public IPipelineState
     PipelineStateDesc mDesc;
     Common::StaticArray<VkPipelineShaderStageCreateInfo, 5> mShaderStageDescs;
     Common::StaticArray<VkShaderModule, 5> mShaderStages;
+    VkPipelineLayout mPipelineLayout;
     VkPipeline mPipeline;
 
     VkShaderModule CreateShaderModule(const SpvReflectShaderModule& shaderSpv);
     bool PrepareShaderStage(const ShaderPtr& shader);
+    bool CreatePipelineLayout();
 
 public:
     PipelineState();

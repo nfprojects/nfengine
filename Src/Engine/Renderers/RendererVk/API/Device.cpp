@@ -210,9 +210,15 @@ bool Device::Init(const DeviceInitParams* params)
     enabledExtensions.PushBack(VK_KHR_COPY_COMMANDS_2_EXTENSION_NAME);
 
 
+    VkPhysicalDeviceRobustness2FeaturesEXT robustnessFeatures;
+    VK_ZERO_MEMORY(robustnessFeatures);
+    robustnessFeatures.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_ROBUSTNESS_2_FEATURES_EXT;
+    robustnessFeatures.nullDescriptor = VK_TRUE;
+
     VkPhysicalDeviceVertexAttributeDivisorFeaturesEXT divisorFeatures;
     VK_ZERO_MEMORY(divisorFeatures);
     divisorFeatures.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VERTEX_ATTRIBUTE_DIVISOR_FEATURES_EXT;
+    divisorFeatures.pNext = &robustnessFeatures;
     divisorFeatures.vertexAttributeInstanceRateDivisor = VK_TRUE;
     divisorFeatures.vertexAttributeInstanceRateZeroDivisor = VK_TRUE;
 
