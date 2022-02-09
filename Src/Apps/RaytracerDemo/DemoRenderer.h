@@ -48,12 +48,15 @@ private:
     Renderer::ShaderPtr mVertexShader;
     Renderer::ShaderPtr mPixelShader;
     Renderer::SamplerPtr mSampler;
-    Renderer::ResourceBindingLayoutPtr mBindingLayout;
     Renderer::PipelineStatePtr mPipelineState;
     Renderer::BufferPtr mCBuffer;
     Renderer::BufferPtr mVertexBuffer;
     Renderer::BufferPtr mIndexBuffer;
     Renderer::TexturePtr mFontAtlasTexture;
+
+    int mCBufferSlot;
+    int mFontTextureSlot;
+    int mFontSamplerSlot;
 };
 
 } // namespace NFE

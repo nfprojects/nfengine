@@ -7,7 +7,6 @@
 #pragma once
 
 #include "Shader.hpp"
-#include "ResourceBinding.hpp"
 
 
 namespace NFE {
@@ -19,14 +18,11 @@ namespace Renderer {
 struct ComputePipelineStateDesc
 {
     ShaderPtr computeShader;
-    ResourceBindingLayoutPtr resBindingLayout;
     const char* debugName;   //< optional debug name
 
     ComputePipelineStateDesc(const ShaderPtr& computeShader,
-                             const ResourceBindingLayoutPtr& resBindingLayout,
                              const char* debugName = nullptr)
         : computeShader(computeShader)
-        , resBindingLayout(resBindingLayout)
         , debugName(debugName)
     {
     }

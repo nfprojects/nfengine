@@ -165,26 +165,39 @@ public:
 
     /**
      * Bind texture directly to predefined slots.
-     * @param slot                  Resource slot index.
-     * @param texture,view          Texture and its view to be bound
+     * @param stage     Shader stage to bind the Buffer to.
+     * @param slot      Resource slot index.
+     * @param texture   Texture to bind (can be nullptr to unbind).
+     * @param view      View on the texture to be bound.
      */
     virtual void BindTexture(ShaderType stage, uint32 slot, const TexturePtr& texture, const TextureView& view = TextureView()) = 0;
     virtual void BindWritableTexture(ShaderType stage, uint32 slot, const TexturePtr& texture, const TextureView& view = TextureView()) = 0;
 
     /**
      * Bind a buffer directly to predefined slots.
-     * @param slot                  Resource slot index.
-     * @param buffer,view           Buffer and its view to be bound
+     * @param stage     Shader stage to bind the Buffer to.
+     * @param slot      Resource slot index.
+     * @param buffer    Buffer to bind (can be nullptr to unbind).
+     * @param view      View on the buffer to be bound.
      */
     virtual void BindBuffer(ShaderType stage, uint32 slot, const BufferPtr& buffer, const BufferView& view = BufferView()) = 0;
     virtual void BindWritableBuffer(ShaderType stage, uint32 slot, const BufferPtr& buffer, const BufferView& view = BufferView()) = 0;
 
     /**
      * Bind constant buffer to the graphics pipeline.
-     * @param slot      Dynamic buffer slot in the current resource binding layout.
-     * @param buffer    Buffer to bind.
+     * @param stage     Shader stage to bind the sampler to.
+     * @param slot      Slot to which bind the Constant Buffer.
+     * @param buffer    Buffer to bind (can be nullptr to unbind).
      */
     virtual void BindConstantBuffer(ShaderType stage, uint32 slot, const BufferPtr& buffer) = 0;
+
+    /**
+     * Bind a sampler to the specified shader stage.
+     * @param stage     Shader stage to bind the sampler to.
+     * @param slot      Slot at which sampler will be bound.
+     * @param sampler   Sampler to bind (can be nullptr to unbind, aka. use default).
+     */
+    virtual void BindSampler(ShaderType stage, uint32 slot, const SamplerPtr& sampler) = 0;
 
     /**@}*/
 

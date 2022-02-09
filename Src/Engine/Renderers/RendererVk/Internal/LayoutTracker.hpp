@@ -2,6 +2,7 @@
 
 #include "API/IResource.hpp"
 #include "Engine/Common/Containers/Set.hpp"
+#include "Engine/Common/Containers/HashMap.hpp"
 #include "Types.hpp"
 
 

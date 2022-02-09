@@ -8,7 +8,6 @@
 #include "ComputePipelineState.hpp"
 #include "Device.hpp"
 #include "Shader.hpp"
-#include "ResourceBinding.hpp"
 
 #include "Internal/Debugger.hpp"
 
@@ -36,18 +35,11 @@ bool ComputePipelineState::Init(const ComputePipelineStateDesc& desc)
         return false;
     }
 
-    ResourceBindingLayout* rbl = dynamic_cast<ResourceBindingLayout*>(desc.resBindingLayout.Get());
-    if (rbl == nullptr)
-    {
-        NFE_LOG_ERROR("Invalid resource binding layout provided for compute pipeline state");
-        return false;
-    }
-
     VkComputePipelineCreateInfo info;
     VK_ZERO_MEMORY(info);
     info.sType = VK_STRUCTURE_TYPE_COMPUTE_PIPELINE_CREATE_INFO;
     info.stage = s->mStageInfo;
-    info.layout = rbl->mPipelineLayout;
+    info.layout = VK_NULL_HANDLE; // TODO
     VkResult result = vkCreateComputePipelines(gDevice->GetDevice(), gDevice->GetPipelineCache(), 1, &info, nullptr, &mPipeline);
     CHECK_VKRESULT(result, "Failed to create Compute Pipeline");
 

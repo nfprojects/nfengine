@@ -33,9 +33,8 @@ class DepthStencilScene : public Scene
     NFE::Renderer::PipelineStatePtr mFloorPipelineState;
     NFE::Renderer::PipelineStatePtr mCubePipelineState;
 
-    NFE::Renderer::ResourceBindingLayoutPtr mResBindingLayout;
-
     float mAngle;
+    int mCBufferSlot;
 
     void ReleaseSubsceneResources() override;
 
@@ -132,15 +131,8 @@ bool DepthStencilScene::CreateBasicResources(bool withDepth, bool withStencil)
     if (!mPixelShader)
         return false;
 
-    int cbufferSlot = mVertexShader->GetResourceSlotByName("TestCBuffer");
-    if (cbufferSlot < 0)
-        return false;
-
-    // create binding layout
-    VolatileCBufferBinding cbufferDesc(ShaderType::Vertex, ShaderResourceType::CBuffer, 0,
-                                       sizeof(VertexCBuffer));
-    mResBindingLayout = mRendererDevice->CreateResourceBindingLayout(ResourceBindingLayoutDesc(nullptr, 0, &cbufferDesc, 1));
-    if (!mResBindingLayout)
+    mCBufferSlot = mVertexShader->GetResourceSlotByName("TestCBuffer");
+    if (mCBufferSlot < 0)
         return false;
 
     DepthStateDesc depthStateDesc;
@@ -165,7 +157,6 @@ bool DepthStencilScene::CreateBasicResources(bool withDepth, bool withStencil)
     psd.raterizerState.cullMode = CullMode::Disabled;
     psd.primitiveType = PrimitiveType::Triangles;
     psd.vertexLayout = mVertexLayout;
-    psd.resBindingLayout = mResBindingLayout;
 
     if (withDepth && !withStencil)
     {
@@ -359,8 +350,7 @@ void DepthStencilScene::Draw(float dt)
                                 static_cast<float>(WINDOW_HEIGHT), 0.0f, 1.0f);
     mCommandBuffer->SetScissors(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
     mCommandBuffer->SetRenderTarget(mWindowRenderTarget);
-    mCommandBuffer->SetResourceBindingLayout(PipelineType::Graphics, mResBindingLayout);
-    mCommandBuffer->BindVolatileCBuffer(PipelineType::Graphics, 0, mConstantBuffer);
+    mCommandBuffer->BindConstantBuffer(ShaderType::Vertex, mCBufferSlot, mConstantBuffer);
 
     uint32 stride = 9 * sizeof(float);
     uint32 offset = 0;
@@ -437,7 +427,6 @@ void DepthStencilScene::ReleaseSubsceneResources()
     mReflectionPipelineState.Reset();
     mFloorPipelineState.Reset();
     mCubePipelineState.Reset();
-    mResBindingLayout.Reset();
 }
 
 void DepthStencilScene::Release()

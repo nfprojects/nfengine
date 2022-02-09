@@ -152,11 +152,6 @@
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">../PCH.hpp</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Final|x64'">../PCH.hpp</PrecompiledHeaderFile>
     </ClCompile>
-    <ClCompile Include="TestCases\ResourceBinding.cpp">
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">../PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Final|x64'">../PCH.hpp</PrecompiledHeaderFile>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shaders\HLSL5\SimpleDrawPS.hlsl">

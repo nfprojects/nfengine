@@ -25,7 +25,6 @@ SET(NFRENDERER_COMMON_HEADERS
     PipelineState.hpp
     RendererCommon.hpp
     RenderTarget.hpp
-    ResourceBinding.hpp
     Shader.hpp
     Texture.hpp
     Types.hpp

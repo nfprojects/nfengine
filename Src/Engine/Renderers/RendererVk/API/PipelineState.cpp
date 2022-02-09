@@ -216,8 +216,7 @@ bool PipelineState::Init(const PipelineStateDesc& desc)
         return false;
 
 
-    // bind resource layout
-    ResourceBindingLayout* rbl = dynamic_cast<ResourceBindingLayout*>(desc.resBindingLayout.Get());
+    // TODO add resource binding layout from shader reflection analysis
 
 
     // shader stages
@@ -268,7 +267,7 @@ bool PipelineState::Init(const PipelineStateDesc& desc)
     pipeInfo.pColorBlendState = &pcbsInfo;
     pipeInfo.pDynamicState = &pdsInfo;
     pipeInfo.renderPass = renderPass;
-    pipeInfo.layout = rbl->mPipelineLayout;
+    pipeInfo.layout = VK_NULL_HANDLE; // TODO
     pipeInfo.subpass = 0;
     VkResult result = vkCreateGraphicsPipelines(gDevice->GetDevice(), VK_NULL_HANDLE, 1, &pipeInfo,
                                                 nullptr, &mPipeline);

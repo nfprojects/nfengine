@@ -25,7 +25,6 @@ SET(NFRENDERERD3D12_SOURCES
     ReferencedResourcesList.cpp
     RendererD3D12.cpp
     RenderTarget.cpp
-    ResourceBinding.cpp
     Resource.cpp
     ResourceStateCache.cpp
     ResourceState.cpp
@@ -58,7 +57,6 @@ SET(NFRENDERERD3D12_HEADERS
     ReferencedResourcesList.hpp
     RendererD3D12.hpp
     RenderTarget.hpp
-    ResourceBinding.hpp
     Resource.hpp
     ResourceStateCache.hpp
     ResourceState.hpp

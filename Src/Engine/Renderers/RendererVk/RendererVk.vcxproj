@@ -27,7 +27,6 @@
     <ClInclude Include="API\MemoryBlock.hpp" />
     <ClInclude Include="API\PipelineState.hpp" />
     <ClInclude Include="API\RenderTarget.hpp" />
-    <ClInclude Include="API\ResourceBinding.hpp" />
     <ClInclude Include="API\Sampler.hpp" />
     <ClInclude Include="API\Shader.hpp" />
     <ClInclude Include="API\Texture.hpp" />
@@ -68,7 +67,6 @@
     <ClCompile Include="API\Fence.cpp" />
     <ClCompile Include="API\PipelineState.cpp" />
     <ClCompile Include="API\RenderTarget.cpp" />
-    <ClCompile Include="API\ResourceBinding.cpp" />
     <ClCompile Include="API\Sampler.cpp" />
     <ClCompile Include="API\Shader.cpp" />
     <ClCompile Include="API\Texture.cpp" />

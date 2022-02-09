@@ -14,7 +14,6 @@ SET(NFRENDERERTEST_SOURCES
     RendererTest.cpp
     TestCases/Buffer.cpp
     TestCases/CommandBuffer.cpp
-    TestCases/ResourceBinding.cpp
     TestCases/Shader.cpp
     TestCases/SimpleDraw.cpp
     TestCases/Texture2D.cpp

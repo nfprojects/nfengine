@@ -29,7 +29,6 @@ class TessellationScene : public Scene
 
     NFE::Renderer::BufferPtr mVertexBuffer;
     NFE::Renderer::VertexLayoutPtr mVertexLayout;
-    NFE::Renderer::ResourceBindingLayoutPtr mResBindingLayout;
 
     // Releases only subscene-related resources. Backbuffer, RT and BlendState stay intact.
     void ReleaseSubsceneResources() override;
@@ -99,11 +98,6 @@ bool TessellationScene::LoadShaders()
     if (!mPixelShader)
         return false;
 
-    // create binding layout
-    mResBindingLayout = mRendererDevice->CreateResourceBindingLayout(ResourceBindingLayoutDesc());
-    if (!mResBindingLayout)
-        return false;
-
     return true;
 }
 
@@ -157,7 +151,6 @@ bool TessellationScene::CreateVertexBuffer()
     pipelineStateDesc.primitiveType = PrimitiveType::Patch;
     pipelineStateDesc.numControlPoints = 4;
     pipelineStateDesc.vertexLayout = mVertexLayout;
-    pipelineStateDesc.resBindingLayout = mResBindingLayout;
     mPipelineState = mRendererDevice->CreatePipelineState(pipelineStateDesc);
     if (!mPipelineState)
         return false;
@@ -209,7 +202,6 @@ void TessellationScene::ReleaseSubsceneResources()
     mVertexShader.Reset();
 
     mPipelineState.Reset();
-    mResBindingLayout.Reset();
 }
 
 bool TessellationScene::OnInit(void* winHandle)
@@ -247,9 +239,6 @@ void TessellationScene::Draw(float dt)
         const BufferPtr vertexBuffers[] = { mVertexBuffer };
         mCommandBuffer->SetVertexBuffers(1, vertexBuffers, &stride, &offset);
     }
-
-    if (mResBindingLayout)
-        mCommandBuffer->SetResourceBindingLayout(PipelineType::Graphics, mResBindingLayout);
 
     if (mPipelineState)
         mCommandBuffer->SetPipelineState(mPipelineState);

@@ -25,7 +25,6 @@ SET(NFRENDERERVK_SOURCES
     API/MemoryBlock.cpp
     API/PipelineState.cpp
     API/RenderTarget.cpp
-    API/ResourceBinding.cpp
     API/Sampler.cpp
     API/Shader.cpp
     API/Texture.cpp
@@ -59,7 +58,6 @@ SET(NFRENDERERVK_HEADERS
     API/MemoryBlock.hpp
     API/PipelineState.hpp
     API/RenderTarget.hpp
-    API/ResourceBinding.hpp
     API/Sampler.hpp
     API/Shader.hpp
     API/Texture.hpp

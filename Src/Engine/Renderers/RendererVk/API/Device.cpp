@@ -12,7 +12,6 @@
 #include "RenderTarget.hpp"
 #include "Sampler.hpp"
 #include "Shader.hpp"
-#include "ResourceBinding.hpp"
 #include "Buffer.hpp"
 #include "VertexLayout.hpp"
 #include "PipelineState.hpp"
@@ -427,32 +426,6 @@ SamplerPtr Device::CreateSampler(const SamplerDesc& desc)
 ShaderPtr Device::CreateShader(const ShaderDesc& desc)
 {
     return GenericCreateResource<Shader, ShaderDesc>(desc);
-}
-
-ResourceBindingSetPtr Device::CreateResourceBindingSet(const ResourceBindingSetDesc& desc)
-{
-    return GenericCreateResource<ResourceBindingSet, ResourceBindingSetDesc>(desc);
-}
-
-ResourceBindingLayoutPtr Device::CreateResourceBindingLayout(const ResourceBindingLayoutDesc& desc)
-{
-    return GenericCreateResource<ResourceBindingLayout, ResourceBindingLayoutDesc>(desc);
-}
-
-ResourceBindingInstancePtr Device::CreateResourceBindingInstance(const ResourceBindingSetPtr& set)
-{
-    auto rbi = Common::MakeSharedPtr<ResourceBindingInstance>();
-    if (!rbi)
-    {
-        return nullptr;
-    }
-
-    if (!rbi->Init(set))
-    {
-        return nullptr;
-    }
-
-    return rbi;
 }
 
 CommandRecorderPtr Device::CreateCommandRecorder()

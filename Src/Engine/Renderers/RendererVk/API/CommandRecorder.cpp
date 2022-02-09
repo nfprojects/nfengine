@@ -8,7 +8,6 @@
 
 #include "CommandRecorder.hpp"
 #include "Device.hpp"
-#include "ResourceBinding.hpp"
 #include "Buffer.hpp"
 #include "Texture.hpp"
 #include "Backbuffer.hpp"
@@ -32,14 +31,12 @@ CommandRecorder::CommandRecorder()
     , mCommandBufferBeginInfo()
     , mRenderTarget(nullptr)
     , mActiveRenderPass(false)
-    , mResourceBindingLayout(nullptr)
     , mBoundVolatileBuffers()
     , mBoundVolatileOffsets()
     , mRebindDynamicBuffers(false)
     , mBoundDescriptorSets()
     , mPendingResources()
     , mTemporaryDescriptorSets()
-    , mComputeResourceBindingLayout(nullptr)
 {
 }
 
@@ -124,7 +121,7 @@ bool CommandRecorder::WriteVolatileBuffer(Buffer* b, size_t size, const void* da
 }
 
 void CommandRecorder::RebindDynamicBuffers() const
-{
+{/*
     uint32 offsets[VK_MAX_VOLATILE_BUFFERS];
     uint32 offsetCount = 0;
     for (uint32 i = 0; i < VK_MAX_VOLATILE_BUFFERS; ++i)
@@ -140,7 +137,7 @@ void CommandRecorder::RebindDynamicBuffers() const
         vkCmdBindDescriptorSets(mCommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, mResourceBindingLayout->mPipelineLayout,
                                 mResourceBindingLayout->mVolatileBufferSetSlot, 1, &mResourceBindingLayout->mVolatileBufferSet,
                                 offsetCount, offsets);
-    }
+    }*/
 }
 
 void CommandRecorder::ClearDescriptorSetBindings()
@@ -184,7 +181,7 @@ void CommandRecorder::BindPendingResources()
         VkDescriptorSetAllocateInfo allocInfo;
         VK_ZERO_MEMORY(allocInfo);
         allocInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
-        allocInfo.pSetLayouts = &mResourceBindingLayout->mBindingSets[r.set]->mDescriptorLayout;
+        allocInfo.pSetLayouts = VK_NULL_HANDLE; // TODO
         allocInfo.descriptorSetCount = 1;
         allocInfo.descriptorPool = gDevice->GetDescriptorPool();
         // TODO use temporary pool? might be easier to manage in case of fragmentation
@@ -243,10 +240,10 @@ void CommandRecorder::BindPendingResources()
         }
 
         vkUpdateDescriptorSets(gDevice->GetDevice(), 1, &writeSet, 0, nullptr);
-
+/*
         vkCmdBindDescriptorSets(mCommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS,
                                 mResourceBindingLayout->mPipelineLayout,
-                                r.set, 1, &tempSet, 0, nullptr);
+                                r.set, 1, &tempSet, 0, nullptr);*/
 
         if (tempSet)
             mTemporaryDescriptorSets.PushBack(tempSet);
@@ -532,59 +529,21 @@ CommandListPtr CommandRecorder::Finish()
 
 // GRAPHICS PIPELINE METHODS //
 
-void CommandRecorder::BindResources(PipelineType pipelineType, uint32 setIndex, const ResourceBindingInstancePtr& bindingSetInstance)
+void CommandRecorder::BindBuffer(ShaderType stage, uint32 slot, const BufferPtr& buffer, const BufferView& view)
 {
-    NFE_UNUSED(setIndex);
-
-    ResourceBindingInstance* rbi = dynamic_cast<ResourceBindingInstance*>(bindingSetInstance.Get());
-    if (rbi == nullptr)
-        return; // there is no "unbind" of descriptor sets in Vulkan
-
-    EnsureOutsideRenderPass();
-
-    for (auto& r: rbi->mWrittenResources)
-    {
-        if ((r != nullptr) && (r->GetType() == Internal::ResourceType::Texture))
-        {
-            Texture* t = dynamic_cast<Texture*>(r);
-            gDevice->GetLayoutTracker().EnsureLayout(mCommandBuffer, t->GetID(), VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
-        }
-    }
-
-    vkCmdBindDescriptorSets(mCommandBuffer, TranslatePipelineTypeToVkPipelineBindPoint(pipelineType),
-                            mResourceBindingLayout->mPipelineLayout, rbi->mSet->mSetSlot, 1,
-                            &rbi->mDescriptorSet, 0, nullptr);
-
-    StoreDescriptorSetBinding(rbi->mSet->mSetSlot, rbi->mDescriptorSet);
-}
-
-void CommandRecorder::BindBuffer(PipelineType pipelineType, uint32 setIndex, uint32 slotInSet, const BufferPtr& buffer, const BufferView& view)
-{
-    NFE_UNUSED(pipelineType);
-    NFE_UNUSED(setIndex);
-    NFE_UNUSED(slotInSet);
+    NFE_UNUSED(stage);
+    NFE_UNUSED(slot);
     NFE_UNUSED(buffer);
     NFE_UNUSED(view);
 }
 
-void CommandRecorder::BindTexture(PipelineType pipelineType, uint32 setIndex, uint32 slotInSet, const TexturePtr& texture, const TextureView& view)
+void CommandRecorder::BindConstantBuffer(ShaderType stage, uint32 slot, const BufferPtr& buffer)
 {
-    NFE_UNUSED(pipelineType); // TODO
-    NFE_UNUSED(view);
+    NFE_UNUSED(stage);
+    NFE_UNUSED(slot);
+    NFE_UNUSED(buffer);
 
-    EnsureOutsideRenderPass();
-
-    Texture* t = dynamic_cast<Texture*>(texture.Get());
-    NFE_ASSERT(t != nullptr, "Invalid Texture pointer");
-
-    gDevice->GetLayoutTracker().EnsureLayout(mCommandBuffer, t->GetID(), VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
-    mPendingResources.EmplaceBack(t, setIndex, slotInSet);
-}
-
-void CommandRecorder::BindVolatileCBuffer(PipelineType pipelineType, uint32 slot, const BufferPtr& buffer)
-{
-    NFE_UNUSED(pipelineType); // TODO
-
+/*
     Buffer* b = dynamic_cast<Buffer*>(buffer.Get());
     NFE_ASSERT(b != nullptr, "Invalid volatile buffer provided");
     NFE_ASSERT(b->mMode == ResourceAccessMode::Volatile, "Buffer is not a Volatile Buffer");
@@ -596,23 +555,44 @@ void CommandRecorder::BindVolatileCBuffer(PipelineType pipelineType, uint32 slot
     if (b->mVolatileDataOffset != UINT32_MAX)
     {
         mBoundVolatileOffsets[slot] = b->mVolatileDataOffset;
-    }
+    }*/
 }
 
-void CommandRecorder::BindWritableBuffer(PipelineType pipelineType, uint32 setIndex, uint32 slotInSet, const BufferPtr& buffer, const BufferView& view)
+void CommandRecorder::BindTexture(ShaderType stage, uint32 slot, const TexturePtr& texture, const TextureView& view)
 {
-    NFE_UNUSED(pipelineType);
-    NFE_UNUSED(setIndex);
-    NFE_UNUSED(slotInSet);
+    NFE_UNUSED(stage);
+    NFE_UNUSED(slot);
+    NFE_UNUSED(texture);
+    NFE_UNUSED(view);
+
+/*
+    EnsureOutsideRenderPass();
+    Texture* t = dynamic_cast<Texture*>(texture.Get());
+    NFE_ASSERT(t != nullptr, "Invalid Texture pointer");
+
+    gDevice->GetLayoutTracker().EnsureLayout(mCommandBuffer, t->GetID(), VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
+    mPendingResources.EmplaceBack(t, setIndex, slotInSet);*/
+}
+
+void CommandRecorder::BindSampler(ShaderType stage, uint32 slot, const SamplerPtr& sampler)
+{
+    NFE_UNUSED(stage);
+    NFE_UNUSED(slot);
+    NFE_UNUSED(sampler);
+}
+
+void CommandRecorder::BindWritableBuffer(ShaderType stage, uint32 slot, const BufferPtr& buffer, const BufferView& view)
+{
+    NFE_UNUSED(stage);
+    NFE_UNUSED(slot);
     NFE_UNUSED(buffer);
     NFE_UNUSED(view);
 }
 
-void CommandRecorder::BindWritableTexture(PipelineType pipelineType, uint32 setIndex, uint32 slotInSet, const TexturePtr& texture, const TextureView& view)
+void CommandRecorder::BindWritableTexture(ShaderType stage, uint32 slot, const TexturePtr& texture, const TextureView& view)
 {
-    NFE_UNUSED(pipelineType);
-    NFE_UNUSED(setIndex);
-    NFE_UNUSED(slotInSet);
+    NFE_UNUSED(stage);
+    NFE_UNUSED(slot);
     NFE_UNUSED(texture);
     NFE_UNUSED(view);
 }
@@ -699,23 +679,6 @@ void CommandRecorder::SetRenderTarget(const RenderTargetPtr& renderTarget)
     if (mRenderTarget->mDepthAttachment != nullptr)
     {
         tracker.EnsureLayout(mCommandBuffer, mRenderTarget->mDepthAttachment->GetID(), VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL);
-    }
-}
-
-void CommandRecorder::SetResourceBindingLayout(PipelineType pipelineType, const ResourceBindingLayoutPtr& layout)
-{
-    NFE_ASSERT(pipelineType == PipelineType::Graphics || pipelineType == PipelineType::Compute,
-               "Invalid pipelineType provided");
-
-    if (pipelineType == PipelineType::Graphics)
-    {
-        mResourceBindingLayout = dynamic_cast<ResourceBindingLayout*>(layout.Get());
-        NFE_ASSERT(mResourceBindingLayout != nullptr, "Incorrect graphics binding layout provided");
-    }
-    else
-    {
-        mComputeResourceBindingLayout = dynamic_cast<ResourceBindingLayout*>(layout.Get());
-        NFE_ASSERT(mComputeResourceBindingLayout != nullptr, "Incorrect compute binding layout provided");
     }
 }
 

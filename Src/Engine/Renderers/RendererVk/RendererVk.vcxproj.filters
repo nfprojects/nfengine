@@ -65,9 +65,6 @@
     <ClInclude Include="API\RenderTarget.hpp">
       <Filter>API</Filter>
     </ClInclude>
-    <ClInclude Include="API\ResourceBinding.hpp">
-      <Filter>API</Filter>
-    </ClInclude>
     <ClInclude Include="API\Sampler.hpp">
       <Filter>API</Filter>
     </ClInclude>
@@ -163,9 +160,6 @@
       <Filter>API</Filter>
     </ClCompile>
     <ClCompile Include="API\RenderTarget.cpp">
-      <Filter>API</Filter>
-    </ClCompile>
-    <ClCompile Include="API\ResourceBinding.cpp">
       <Filter>API</Filter>
     </ClCompile>
     <ClCompile Include="API\Sampler.cpp">

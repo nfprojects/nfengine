@@ -124,6 +124,9 @@ bool DemoRenderer::Init(const Common::Window& window)
         NFE_ASSERT(mVertexShader, "Failed to create VS");
     }
 
+    mCBufferSlot = mVertexShader->GetResourceSlotByName("vertexBuffer");
+    NFE_ASSERT(mCBufferSlot >= 0, "Failed to acquire Vertex Shader CBuffer slot");
+
     // pixel shader
     {
         ShaderDesc desc;
@@ -134,23 +137,16 @@ bool DemoRenderer::Init(const Common::Window& window)
         NFE_ASSERT(mPixelShader, "Failed to create PS");
     }
 
+    mFontTextureSlot = mVertexShader->GetResourceSlotByName("texture0");
+    NFE_ASSERT(mFontTextureSlot >= 0, "Failed to acquire Pixel Shader texture slot");
+    mFontSamplerSlot = mVertexShader->GetResourceSlotByName("sampler0");
+    NFE_ASSERT(mFontSamplerSlot >= 0, "Failed to acquire Pixel Shader sampler slot");
+
     // sampler
     {
         SamplerDesc samplerDesc;
         mSampler = mDevice->CreateSampler(samplerDesc);
         NFE_ASSERT(mSampler, "Failed to create sampler");
-    }
-
-    // binding layout
-    {
-        const VolatileCBufferBinding volatileCBufferBinding(ShaderType::Vertex, ShaderResourceType::CBuffer, 0, 16 * 4);
-
-        ResourceBindingDesc pixelShaderBindingDesc(ShaderResourceType::Texture, 0, mSampler);
-        const ResourceBindingSetPtr pixelShaderBinding = mDevice->CreateResourceBindingSet(ResourceBindingSetDesc(&pixelShaderBindingDesc, 1, ShaderType::Pixel));
-        NFE_ASSERT(pixelShaderBinding, "Failed to create PS binding set");
-
-        mBindingLayout = mDevice->CreateResourceBindingLayout(ResourceBindingLayoutDesc(&pixelShaderBinding, 1u, &volatileCBufferBinding, 1u));
-        NFE_ASSERT(mBindingLayout, "Failed to create binding layout");
     }
 
     // pipeline state object
@@ -166,7 +162,6 @@ bool DemoRenderer::Init(const Common::Window& window)
         pipelineStateDesc.blendState.rtDescs[0].destAlphaFunc = BlendFunc::OneMinusSrcAlpha;
         pipelineStateDesc.primitiveType = PrimitiveType::Triangles;
         pipelineStateDesc.vertexLayout = mVertexLayout;
-        pipelineStateDesc.resBindingLayout = mBindingLayout;
 
         mPipelineState = mDevice->CreatePipelineState(pipelineStateDesc);
         NFE_ASSERT(mPipelineState, "Failed to create pipeline state");
@@ -246,7 +241,6 @@ void DemoRenderer::Release()
     mVertexShader.Reset();
     mPixelShader.Reset();
     mSampler.Reset();
-    mBindingLayout.Reset();
     mPipelineState.Reset();
     mCBuffer.Reset();
     mVertexBuffer.Reset();
@@ -316,7 +310,6 @@ void DemoRenderer::Draw(const DrawParams& params)
 
     mCommandRecorder->SetRenderTarget(mRenderTarget);
     mCommandRecorder->SetPipelineState(mPipelineState);
-    mCommandRecorder->SetResourceBindingLayout(PipelineType::Graphics, mBindingLayout);
 
     {
         const uint32 stride = sizeof(ImDrawVert);
@@ -325,7 +318,8 @@ void DemoRenderer::Draw(const DrawParams& params)
         mCommandRecorder->SetIndexBuffer(mIndexBuffer, IndexBufferFormat::Uint16);
     }
 
-    mCommandRecorder->BindTexture(PipelineType::Graphics, 0, 0, mFontAtlasTexture);
+    mCommandRecorder->BindTexture(ShaderType::Pixel, mFontTextureSlot, mFontAtlasTexture);
+    mCommandRecorder->BindSampler(ShaderType::Pixel, mFontSamplerSlot, mSampler);
 
     // draw ImGui
     if (const ImDrawData* draw_data = ImGui::GetDrawData())
@@ -346,7 +340,7 @@ void DemoRenderer::Draw(const DrawParams& params)
                 { (R + L) / (L - R),    (T + B) / (B - T),  0.5f,       1.0f },
             };
 
-            mCommandRecorder->BindVolatileCBuffer(PipelineType::Graphics, 0, mCBuffer);
+            mCommandRecorder->BindConstantBuffer(ShaderType::Vertex, mCBufferSlot, mCBuffer);
             mCommandRecorder->WriteBuffer(mCBuffer, 0, 16 * 4, cbufferData);
         }
 

@@ -28,10 +28,6 @@ class ComputeScene : public Scene
     NFE::Renderer::BufferPtr mConstantBuffer;
     NFE::Renderer::TexturePtr mTexture; // compute shader target
 
-    NFE::Renderer::ResourceBindingSetPtr mBindingSet;
-    NFE::Renderer::ResourceBindingLayoutPtr mResBindingLayout;
-    NFE::Renderer::ResourceBindingInstancePtr mBindingInstance;
-
     NFE::Renderer::BufferPtr mIndirectArgBuffer;
 
     // Releases only subscene-related resources. Backbuffer, RT and BlendState stay intact.
@@ -44,6 +40,9 @@ class ComputeScene : public Scene
     bool mUseIndirectDispatch;
     NFE::uint32 mDispatchX;
     NFE::uint32 mDispatchY;
+    int mCBufferSlot;
+    int mTextureSlot;
+    int mRWBufferSlot;
 
 public:
     ComputeScene();
@@ -96,48 +95,32 @@ bool ComputeScene::CreateSubSceneSimple()
         return false;
     }
 
-    int mCBufferSlot = mShader_Main->GetResourceSlotByName("gParams");
+    mCBufferSlot = mShader_Main->GetResourceSlotByName("gParams");
     if (mCBufferSlot < 0)
     {
         NFE_LOG_ERROR("Slot not found");
         return false;
     }
 
-    int mTextureSlot = mShader_Main->GetResourceSlotByName("gOutputTexture");
+    mTextureSlot = mShader_Main->GetResourceSlotByName("gOutputTexture");
     if (mTextureSlot < 0)
     {
         NFE_LOG_ERROR("Slot not found");
         return false;
     }
 
-    // create binding set for pixel shader bindings
-    ResourceBindingDesc bindings[] =
-    {
-        ResourceBindingDesc(ShaderResourceType::CBuffer, mCBufferSlot),
-        ResourceBindingDesc(ShaderResourceType::WritableTexture, mTextureSlot),
-    };
-    mBindingSet = mRendererDevice->CreateResourceBindingSet(ResourceBindingSetDesc(bindings, 2, ShaderType::Compute));
-    if (!mBindingSet)
-        return false;
-
-    // create binding layout
-    const ResourceBindingSetPtr bindingSets[] = { mBindingSet };
-    mResBindingLayout = mRendererDevice->CreateResourceBindingLayout(ResourceBindingLayoutDesc(bindingSets, 1));
-    if (!mResBindingLayout)
-        return false;
-
     // create pipeline state
-    ComputePipelineStateDesc pipelineStateDesc(mShader_Main, mResBindingLayout);
+    ComputePipelineStateDesc pipelineStateDesc(mShader_Main);
     mPipelineState_Main = mRendererDevice->CreateComputePipelineState(pipelineStateDesc);
     if (!mPipelineState_Main)
         return false;
 
     // create cbuffer
-    CBuffer cubfferData;
-    cubfferData.resolution[0] = WINDOW_WIDTH;
-    cubfferData.resolution[1] = WINDOW_HEIGHT;
-    cubfferData.resolution[2] = cubfferData.resolution[3] = 0;
-    cubfferData.resolutionInverse = Vec4fU(1.0f / static_cast<float>(WINDOW_WIDTH),
+    CBuffer cbufferData;
+    cbufferData.resolution[0] = WINDOW_WIDTH;
+    cbufferData.resolution[1] = WINDOW_HEIGHT;
+    cbufferData.resolution[2] = cbufferData.resolution[3] = 0;
+    cbufferData.resolutionInverse = Vec4fU(1.0f / static_cast<float>(WINDOW_WIDTH),
                                            1.0f / static_cast<float>(WINDOW_HEIGHT), 0.0f, 0.0f);
     BufferDesc cbufferDesc;
     cbufferDesc.size = sizeof(CBuffer);
@@ -149,7 +132,7 @@ bool ComputeScene::CreateSubSceneSimple()
     // upload cbuffer data
     {
         mCommandBuffer->Begin(CommandQueueType::Copy);
-        mCommandBuffer->WriteBuffer(mConstantBuffer, 0, sizeof(CBuffer), &cubfferData);
+        mCommandBuffer->WriteBuffer(mConstantBuffer, 0, sizeof(CBuffer), &cbufferData);
         mCopyQueue->Execute(mCommandBuffer->Finish());
         mCopyQueue->Signal()->Wait();
     }
@@ -164,17 +147,6 @@ bool ComputeScene::CreateSubSceneSimple()
     textureDesc.debugName = "ComputeScene::mTexture";
     mTexture = mRendererDevice->CreateTexture(textureDesc);
     if (!mTexture)
-        return false;
-
-    // create and fill binding set instance
-    mBindingInstance = mRendererDevice->CreateResourceBindingInstance(mBindingSet);
-    if (!mBindingInstance)
-        return false;
-    if (!mBindingInstance->SetCBufferView(0, mConstantBuffer))
-        return false;
-    if (!mBindingInstance->SetWritableTextureView(1, mTexture))
-        return false;
-    if (!mBindingInstance->Finalize())
         return false;
 
     mUseIndirectDispatch = false;
@@ -202,8 +174,15 @@ bool ComputeScene::CreateSubSceneIndirect()
         return false;
     }
 
+    mRWBufferSlot = mShader_Main->GetResourceSlotByName("gOutputIndirectArgBuffer");
+    if (mRWBufferSlot < 0)
+    {
+        NFE_LOG_ERROR("Slot not found");
+        return false;
+    }
+
     // create pipeline state
-    ComputePipelineStateDesc pipelineStateDesc(mShader_PrepareArg, mResBindingLayout);
+    ComputePipelineStateDesc pipelineStateDesc(mShader_PrepareArg);
     mPipelineState_PrepareArg = mRendererDevice->CreateComputePipelineState(pipelineStateDesc);
     if (!mPipelineState_PrepareArg)
         return false;
@@ -239,10 +218,6 @@ void ComputeScene::ReleaseSubsceneResources()
 {
     Scene::ReleaseSubsceneResources();
 
-    mBindingInstance.Reset();
-    mBindingSet.Reset();
-    mResBindingLayout.Reset();
-
     mTexture.Reset();
     mConstantBuffer.Reset();
     mShader_Main.Reset();
@@ -274,23 +249,22 @@ void ComputeScene::Draw(float dt)
     // reset bound resources and set them once again
     mCommandBuffer->Begin(CommandQueueType::Graphics);
 
-    // bind resources
-    mCommandBuffer->SetResourceBindingLayout(PipelineType::Compute, mResBindingLayout);
-    mCommandBuffer->BindResources(PipelineType::Compute, 0, mBindingInstance);
-    
+    mCommandBuffer->BindConstantBuffer(ShaderType::Compute, mCBufferSlot, mConstantBuffer);
+
     // execute compute shader
     if (mUseIndirectDispatch)
     {
         mCommandBuffer->SetComputePipelineState(mPipelineState_PrepareArg);
-        mCommandBuffer->BindWritableBuffer(PipelineType::Compute, 0, 1, mIndirectArgBuffer);
+        mCommandBuffer->BindWritableBuffer(ShaderType::Compute, mRWBufferSlot, mIndirectArgBuffer);
         mCommandBuffer->Dispatch();
 
         mCommandBuffer->SetComputePipelineState(mPipelineState_Main);
-        mCommandBuffer->BindWritableTexture(PipelineType::Compute, 0, 1, mTexture);
+        mCommandBuffer->BindWritableTexture(ShaderType::Compute, mTextureSlot, mTexture);
         mCommandBuffer->DispatchIndirect(mIndirectArgBuffer);
     }
     else
-    {   
+    {
+        mCommandBuffer->BindWritableTexture(ShaderType::Compute, mTextureSlot, mTexture);
         mCommandBuffer->SetComputePipelineState(mPipelineState_Main);
         mCommandBuffer->Dispatch(mDispatchX, mDispatchY);
     }

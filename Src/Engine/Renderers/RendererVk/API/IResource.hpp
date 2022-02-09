@@ -6,7 +6,6 @@
 
 #pragma once
 
-#include "../RendererCommon/ResourceBinding.hpp"
 #include "Engine/Common/Containers/SharedPtr.hpp"
 #include "Internal/Types.hpp"
 

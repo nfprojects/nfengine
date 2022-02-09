@@ -14,9 +14,6 @@
     <ClCompile Include="TestCases\CommandBuffer.cpp">
       <Filter>TestCases</Filter>
     </ClCompile>
-    <ClCompile Include="TestCases\ResourceBinding.cpp">
-      <Filter>TestCases</Filter>
-    </ClCompile>
     <ClCompile Include="TestCases\Buffer.cpp">
       <Filter>TestCases</Filter>
     </ClCompile>

@@ -37,7 +37,6 @@ class VertexBuffersScene : public Scene
     NFE::Renderer::VertexLayoutPtr mVertexLayout;
 
     NFE::Renderer::PipelineStatePtr mPipelineState;
-    NFE::Renderer::ResourceBindingLayoutPtr mResBindingLayout;
 
 
     // for dynamic vertex buffers
@@ -226,11 +225,6 @@ bool VertexBuffersScene::CreateBuffers(bool withInstanceBuffer, ResourceAccessMo
     if (!mVertexLayout)
         return false;
 
-    // create empty binding layout
-    mResBindingLayout = mRendererDevice->CreateResourceBindingLayout(ResourceBindingLayoutDesc());
-    if (!mResBindingLayout)
-        return false;
-
     PipelineStateDesc pipelineStateDesc;
     pipelineStateDesc.renderTargetFormats = { Format::R8G8B8A8_U_Norm };
     pipelineStateDesc.vertexShader = mVertexShader;
@@ -238,7 +232,6 @@ bool VertexBuffersScene::CreateBuffers(bool withInstanceBuffer, ResourceAccessMo
     pipelineStateDesc.primitiveType = PrimitiveType::Triangles;
     pipelineStateDesc.vertexLayout = mVertexLayout;
     pipelineStateDesc.raterizerState.cullMode = CullMode::Disabled;
-    pipelineStateDesc.resBindingLayout = mResBindingLayout;
     mPipelineState = mRendererDevice->CreatePipelineState(pipelineStateDesc);
     if (!mPipelineState)
         return false;
@@ -311,7 +304,6 @@ void VertexBuffersScene::ReleaseSubsceneResources()
 
     mPixelShader.Reset();
     mVertexShader.Reset();
-    mResBindingLayout.Reset();
 }
 
 bool VertexBuffersScene::OnInit(void* winHandle)
@@ -341,7 +333,6 @@ void VertexBuffersScene::Draw(float dt)
     mCommandBuffer->SetRenderTarget(mWindowRenderTarget);
 
     mCommandBuffer->SetPipelineState(mPipelineState);
-    mCommandBuffer->SetResourceBindingLayout(PipelineType::Graphics, mResBindingLayout);
 
     mCommandBuffer->SetIndexBuffer(mIndexBuffer, IndexBufferFormat::Uint16);
 

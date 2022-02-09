@@ -14,6 +14,6 @@ ELSE(WIN32)
 ENDIF(WIN32)
 
 # Meta target to build all test apps
-ADD_CUSTOM_TARGET(Apps_All DEPENDS RaytracerDemo RendererDemo ${NFE_ENGINEDEMO_DEPENDENCY}
+ADD_CUSTOM_TARGET(Apps_All DEPENDS RendererDemo RaytracerDemo ${NFE_ENGINEDEMO_DEPENDENCY}
     COMMENT "Build all apps and their dependencies"
 )

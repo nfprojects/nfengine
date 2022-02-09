@@ -8,7 +8,6 @@
 
 #include "../RendererCommon/PipelineState.hpp"
 #include "Defines.hpp"
-#include "ResourceBinding.hpp"
 
 #include "Engine/Common/Containers/DynArray.hpp"
 #include "Engine/Common/Containers/StaticArray.hpp"

@@ -40,17 +40,13 @@ class RenderTargetsScene : public Scene
     NFE::Renderer::BufferPtr mIndexBuffer;
     NFE::Renderer::VertexLayoutPtr mVertexLayout;
 
-    NFE::Renderer::SamplerPtr mSampler;
     NFE::Renderer::PipelineStatePtr mPipelineStateMRT;
     NFE::Renderer::PipelineStatePtr mPrimaryTargetPipelineState;
     NFE::Renderer::PipelineStatePtr mDepthPipelineState;
     NFE::Renderer::PipelineStatePtr mSecondTargetPipelineState;
 
-    NFE::Renderer::ResourceBindingSetPtr mPSBindingSet;
-    NFE::Renderer::ResourceBindingLayoutPtr mResBindingLayout;
-    NFE::Renderer::ResourceBindingInstancePtr mPSBindingInstancePrimary;
-    NFE::Renderer::ResourceBindingInstancePtr mPSBindingInstanceDepth;
-    NFE::Renderer::ResourceBindingInstancePtr mPSBindingInstanceSecondary;
+    int mCBufferSlot;
+    int mTextureSlot;
 
     float mAngle;
 
@@ -119,11 +115,6 @@ RenderTargetsScene::~RenderTargetsScene()
 
 bool RenderTargetsScene::CreateBasicResources(bool multipleRT, bool withDepthBuffer)
 {
-    SamplerDesc samplerDesc;
-    mSampler = mRendererDevice->CreateSampler(samplerDesc);
-    if (!mSampler)
-        return false;
-
     VertexLayoutElement vertexLayoutElements[] =
     {
         { Format::R32G32B32_Float,       0, 0, false, 0 }, // position
@@ -141,7 +132,6 @@ bool RenderTargetsScene::CreateBasicResources(bool multipleRT, bool withDepthBuf
     PipelineStateDesc pipelineStateDesc;
     pipelineStateDesc.renderTargetFormats = { Format::R8G8B8A8_U_Norm };
     pipelineStateDesc.vertexShader = mVertexShader;
-    pipelineStateDesc.resBindingLayout = mResBindingLayout;
     pipelineStateDesc.primitiveType = PrimitiveType::Triangles;
     pipelineStateDesc.vertexLayout = mVertexLayout;
     pipelineStateDesc.depthState.depthCompareFunc = CompareFunc::Less;
@@ -273,17 +263,6 @@ bool RenderTargetsScene::CreateRenderTarget(bool withDepthBuffer, bool multipleR
     if (!mRenderTargetTextures[0])
         return false;
 
-    // create and fill binding set instance
-    {
-        mPSBindingInstancePrimary = mRendererDevice->CreateResourceBindingInstance(mPSBindingSet);
-        if (!mPSBindingInstancePrimary)
-            return false;
-        if (!mPSBindingInstancePrimary->SetTextureView(0, mRenderTargetTextures[0]))
-            return false;
-        if (!mPSBindingInstancePrimary->Finalize())
-            return false;
-    }
-
     if (multipleRT)
     {
         texDesc.defaultColorClearValue[0] = 0.8f;
@@ -293,15 +272,6 @@ bool RenderTargetsScene::CreateRenderTarget(bool withDepthBuffer, bool multipleR
         texDesc.debugName = "RenderTargetsScene::mRenderTargetTexture[1]";
         mRenderTargetTextures[1] = mRendererDevice->CreateTexture(texDesc);
         if (!mRenderTargetTextures[1])
-            return false;
-
-        // create and fill binding set instance
-        mPSBindingInstanceSecondary = mRendererDevice->CreateResourceBindingInstance(mPSBindingSet);
-        if (!mPSBindingInstanceSecondary)
-            return false;
-        if (!mPSBindingInstanceSecondary->SetTextureView(0, mRenderTargetTextures[1]))
-            return false;
-        if (!mPSBindingInstanceSecondary->Finalize())
             return false;
     }
 
@@ -314,15 +284,6 @@ bool RenderTargetsScene::CreateRenderTarget(bool withDepthBuffer, bool multipleR
         texDesc.debugName = "RenderTargetsScene::mDepthBuffer";
         mDepthBuffer = mRendererDevice->CreateTexture(texDesc);
         if (!mDepthBuffer)
-            return false;
-
-        // create and fill binding set instance
-        mPSBindingInstanceDepth = mRendererDevice->CreateResourceBindingInstance(mPSBindingSet);
-        if (!mPSBindingInstanceDepth)
-            return false;
-        if (!mPSBindingInstanceDepth->SetTextureView(0, mDepthBuffer))
-            return false;
-        if (!mPSBindingInstanceDepth->Finalize())
             return false;
     }
 
@@ -391,29 +352,11 @@ bool RenderTargetsScene::CreateShaders(bool multipleRT, bool withMSAA)
      * We can obtain slot only for one shader program, because we use the same shaders
      * with hardcoded binding slots.
      */
-    int cbufferSlot = mVertexShader->GetResourceSlotByName("TestCBuffer");
-    if (cbufferSlot < 0)
+    mCBufferSlot = mVertexShader->GetResourceSlotByName("TestCBuffer");
+    if (mCBufferSlot < 0)
         return false;
-    int textureSlot = mPrimaryTargetPixelShader->GetResourceSlotByName("gTexture");
-    if (textureSlot < 0)
-        return false;
-
-    // define cbuffer binding for VS
-    VolatileCBufferBinding cbufferDesc(ShaderType::Vertex, ShaderResourceType::CBuffer, cbufferSlot,
-                                       sizeof(VertexCBuffer));
-
-    // create binding set for pixel shader
-    ResourceBindingDesc pixelShaderBinding(ShaderResourceType::Texture,
-                                           textureSlot,
-                                           mSampler);
-    mPSBindingSet = mRendererDevice->CreateResourceBindingSet(ResourceBindingSetDesc(&pixelShaderBinding, 1, ShaderType::Pixel));
-    if (!mPSBindingSet)
-        return false;
-
-    // create binding layout
-    ResourceBindingSetPtr bindingSets[] = { mPSBindingSet };
-    mResBindingLayout = mRendererDevice->CreateResourceBindingLayout(ResourceBindingLayoutDesc(bindingSets, 1, &cbufferDesc, 1));
-    if (!mResBindingLayout)
+    mTextureSlot = mPrimaryTargetPixelShader->GetResourceSlotByName("gTexture");
+    if (mTextureSlot < 0)
         return false;
 
     return true;
@@ -510,10 +453,9 @@ void RenderTargetsScene::Draw(float dt)
     const BufferPtr vertexBuffers[] = { mVertexBuffer };
     mCommandBuffer->SetVertexBuffers(1, vertexBuffers, &stride, &offset);
     mCommandBuffer->SetIndexBuffer(mIndexBuffer, IndexBufferFormat::Uint16);
-    mCommandBuffer->SetResourceBindingLayout(PipelineType::Graphics, mResBindingLayout);
 
     BufferPtr cb = mConstantBuffer;
-    mCommandBuffer->BindVolatileCBuffer(PipelineType::Graphics, 0, cb);
+    mCommandBuffer->BindConstantBuffer(ShaderType::Vertex, mCBufferSlot, cb);
 
     // render cube to a texture
     {
@@ -544,7 +486,7 @@ void RenderTargetsScene::Draw(float dt)
 
     // begin rendering to the window
     mCommandBuffer->SetPipelineState(mPrimaryTargetPipelineState);
-    mCommandBuffer->BindResources(PipelineType::Graphics, 0, mPSBindingInstancePrimary);
+    mCommandBuffer->BindTexture(ShaderType::Pixel, mTextureSlot, mRenderTargetTextures[0]);
     mCommandBuffer->SetRenderTarget(mWindowRenderTarget);
     mCommandBuffer->SetViewport(0.0f, (float)WINDOW_WIDTH, 0.0f, (float)WINDOW_HEIGHT, 0.0f, 1.0f);
     mCommandBuffer->SetScissors(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
@@ -573,7 +515,7 @@ void RenderTargetsScene::Draw(float dt)
         mCommandBuffer->WriteBuffer(cb, 0, sizeof(VertexCBuffer), &cbuffer);
 
         mCommandBuffer->SetPipelineState(mDepthPipelineState);
-        mCommandBuffer->BindResources(PipelineType::Graphics, 0, mPSBindingInstanceDepth);
+        mCommandBuffer->BindTexture(ShaderType::Pixel, mTextureSlot, mRenderTargetTextures[1]);
         mCommandBuffer->DrawIndexed(2 * 3,      // 2 triangles
                                     1,          // no instancing
                                     2 * 6 * 3); // omit cube vertices
@@ -588,14 +530,14 @@ void RenderTargetsScene::Draw(float dt)
         mCommandBuffer->WriteBuffer(cb, 0, sizeof(VertexCBuffer), &cbuffer);
 
         mCommandBuffer->SetPipelineState(mSecondTargetPipelineState);
-        mCommandBuffer->BindResources(PipelineType::Graphics, 0, mPSBindingInstanceSecondary);
+        mCommandBuffer->BindTexture(ShaderType::Pixel, mTextureSlot, mRenderTargetTextures[2]);
         mCommandBuffer->DrawIndexed(2 * 3,      // 2 triangles
                                     1,          // no instancing
                                     2 * 6 * 3); // omit cube vertices
     }
 
     // unbind texture from pixel shader, because we will be rendering to it in the next frame
-    mCommandBuffer->BindResources(PipelineType::Graphics, 0, nullptr);
+    mCommandBuffer->BindTexture(ShaderType::Pixel, mTextureSlot, nullptr);
 
     mCommandBuffer->CopyTexture(mWindowRenderTargetTexture, mWindowBackbuffer);
 
@@ -626,14 +568,7 @@ void RenderTargetsScene::ReleaseSubsceneResources()
     mVertexBuffer.Reset();
     mIndexBuffer.Reset();
     mVertexLayout.Reset();
-    mSampler.Reset();
     mMemoryBlock.Reset();
-
-    mPSBindingInstancePrimary.Reset();
-    mPSBindingInstanceDepth.Reset();
-    mPSBindingInstanceSecondary.Reset();
-    mResBindingLayout.Reset();
-    mPSBindingSet.Reset();
 }
 
 void RenderTargetsScene::Release()

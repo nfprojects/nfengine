@@ -31,23 +31,15 @@ class BasicScene : public Scene
     NFE::Renderer::SamplerPtr mSampler;
     NFE::Renderer::TexturePtr mTexture;
 
-    NFE::Renderer::ResourceBindingSetPtr mVSBindingSet;
-    NFE::Renderer::ResourceBindingSetPtr mPSBindingSet;
-    NFE::Renderer::ResourceBindingLayoutPtr mResBindingLayout;
-    NFE::Renderer::ResourceBindingInstancePtr mVSBindingInstance;
-    NFE::Renderer::ResourceBindingInstancePtr mPSBindingInstance;
-
-    int mTextureSlot;
     int mCBufferSlot;
+    int mTextureSlot;
+    int mSamplerSlot;
 
     // Used for objects rotation in Constant Buffer scenes and onward
     float mAngle;
 
     // how many instances will be drawn?
     int mGridSize;
-
-    int mVSBindingSlot;
-    int mPSBindingSlot;
 
     // bind resources via binding instance or directly
     bool mUseBindingInstance;
@@ -59,7 +51,7 @@ class BasicScene : public Scene
     void ReleaseSubsceneResources() override;
 
     // Resource creators for subscenes
-    bool CreateShaders(bool useCBuffer, bool useTexture, NFE::Renderer::ResourceAccessMode cbufferMode);
+    bool CreateShaders(bool useCBuffer, bool useTexture);
     bool CreateVertexBuffer(bool withExtraVert);
     bool CreateIndexBuffer();
     bool CreateConstantBuffer(NFE::Renderer::ResourceAccessMode cbufferMode);
@@ -70,8 +62,8 @@ class BasicScene : public Scene
     bool CreateSubSceneEmpty();
     bool CreateSubSceneVertexBuffer();
     bool CreateSubSceneIndexBuffer();
-    bool CreateSubSceneConstantBuffer(NFE::Renderer::ResourceAccessMode cbufferMode, bool useBindingInstance);
-    bool CreateSubSceneTexture(NFE::Renderer::ResourceAccessMode cbufferMode, bool useBindingInstance, int gridSize = 1);
+    bool CreateSubSceneConstantBuffer(NFE::Renderer::ResourceAccessMode cbufferMode);
+    bool CreateSubSceneTexture(NFE::Renderer::ResourceAccessMode cbufferMode, int gridSize = 1);
 
 public:
     BasicScene();
@@ -108,7 +100,7 @@ struct PixelCBuffer
 
 /// Helper creators for the Scene
 
-bool BasicScene::CreateShaders(bool useCBuffer, bool useTexture, ResourceAccessMode cbufferMode)
+bool BasicScene::CreateShaders(bool useCBuffer, bool useTexture)
 {
     mTextureSlot = -1;
     mCBufferSlot = -1;
@@ -125,9 +117,6 @@ bool BasicScene::CreateShaders(bool useCBuffer, bool useTexture, ResourceAccessM
     if (!mPixelShader)
         return false;
 
-    int numBindingSets = 0;
-    ResourceBindingSetPtr bindingSets[2];
-
     // create binding set
     if (useCBuffer)
     {
@@ -141,42 +130,11 @@ bool BasicScene::CreateShaders(bool useCBuffer, bool useTexture, ResourceAccessM
             if (mTextureSlot < 0)
                 return false;
 
-            // create binding set for pixel shader bindings
-            ResourceBindingDesc pixelShaderBinding(ShaderResourceType::Texture,
-                                                   mTextureSlot,
-                                                   mSampler);
-            mPSBindingSet = mRendererDevice->CreateResourceBindingSet(ResourceBindingSetDesc(&pixelShaderBinding, 1, ShaderType::Pixel));
-            if (!mPSBindingSet)
+            mSamplerSlot = mPixelShader->GetResourceSlotByName("gSampler");
+            if (mSamplerSlot < 0)
                 return false;
-
-            mPSBindingSlot = numBindingSets++;
-            bindingSets[mPSBindingSlot] = mPSBindingSet;
-        }
-
-        if (cbufferMode == ResourceAccessMode::GPUOnly)
-        {
-            ResourceBindingDesc vertexShaderBinding(ShaderResourceType::CBuffer,
-                                                    mCBufferSlot,
-                                                    mSampler);
-            mVSBindingSet = mRendererDevice->CreateResourceBindingSet(ResourceBindingSetDesc(&vertexShaderBinding, 1, ShaderType::Vertex));
-            if (!mVSBindingSet)
-                return false;
-
-            mVSBindingSlot = numBindingSets++;
-            bindingSets[mVSBindingSlot] = mVSBindingSet;
         }
     }
-
-    bool useVolatileCBufferBinding = useCBuffer && (cbufferMode == ResourceAccessMode::Volatile);
-    VolatileCBufferBinding volatileCBufferBinding(ShaderType::Vertex,
-                                                  ShaderResourceType::CBuffer,
-                                                  mCBufferSlot, sizeof(VertexCBuffer));
-
-    // create binding layout
-    mResBindingLayout = mRendererDevice->CreateResourceBindingLayout(
-        ResourceBindingLayoutDesc(bindingSets, numBindingSets, &volatileCBufferBinding, useVolatileCBufferBinding ? 1 : 0));
-    if (!mResBindingLayout)
-        return false;
 
     return true;
 }
@@ -249,7 +207,6 @@ bool BasicScene::CreateVertexBuffer(bool withExtraVert)
     pipelineStateDesc.blendState.rtDescs[0].enable = true;
     pipelineStateDesc.primitiveType = PrimitiveType::Triangles;
     pipelineStateDesc.vertexLayout = mVertexLayout;
-    pipelineStateDesc.resBindingLayout = mResBindingLayout;
     mPipelineState = mRendererDevice->CreatePipelineState(pipelineStateDesc);
     if (!mPipelineState)
         return false;
@@ -300,18 +257,6 @@ bool BasicScene::CreateConstantBuffer(ResourceAccessMode cbufferMode)
     if (!mConstantBuffer)
         return false;
 
-    if (cbufferMode == ResourceAccessMode::GPUOnly)
-    {
-        // create and fill binding set instance
-        mVSBindingInstance = mRendererDevice->CreateResourceBindingInstance(mVSBindingSet);
-        if (!mVSBindingInstance)
-            return false;
-        if (!mVSBindingInstance->SetCBufferView(0, mConstantBuffer))
-            return false;
-        if (!mVSBindingInstance->Finalize())
-            return false;
-    }
-
     return true;
 }
 
@@ -339,18 +284,6 @@ bool BasicScene::CreateTexture()
         mCopyQueue->Signal()->Wait();
     }
 
-    if (mUseBindingInstance)
-    {
-        // create and fill binding set instance
-        mPSBindingInstance = mRendererDevice->CreateResourceBindingInstance(mPSBindingSet);
-        if (!mPSBindingInstance)
-            return false;
-        if (!mPSBindingInstance->SetTextureView(0, mTexture))
-            return false;
-        if (!mPSBindingInstance->Finalize())
-            return false;
-    }
-
     return true;
 }
 
@@ -375,7 +308,7 @@ bool BasicScene::CreateSubSceneEmpty()
     if (!CreateSampler())
         return false;
 
-    return CreateShaders(false, false, ResourceAccessMode::GPUOnly);
+    return CreateShaders(false, false);
 }
 
 // Adds vertex buffer creation
@@ -387,7 +320,7 @@ bool BasicScene::CreateSubSceneVertexBuffer()
     if (!CreateSampler())
         return false;
 
-    if (!CreateShaders(false, false, ResourceAccessMode::GPUOnly))
+    if (!CreateShaders(false, false))
         return false;
 
     return CreateVertexBuffer(false);
@@ -402,7 +335,7 @@ bool BasicScene::CreateSubSceneIndexBuffer()
     if (!CreateSampler())
         return false;
 
-    if (!CreateShaders(false, false, ResourceAccessMode::GPUOnly))
+    if (!CreateShaders(false, false))
         return false;
 
     if (!CreateVertexBuffer(true))
@@ -413,15 +346,14 @@ bool BasicScene::CreateSubSceneIndexBuffer()
 
 // Adds constant buffers
 // The triangle and the square should rotate
-bool BasicScene::CreateSubSceneConstantBuffer(ResourceAccessMode cbufferMode, bool useBindingInstance)
+bool BasicScene::CreateSubSceneConstantBuffer(ResourceAccessMode cbufferMode)
 {
     mGridSize = 1;
-    mUseBindingInstance = useBindingInstance;
 
     if (!CreateSampler())
         return false;
 
-    if (!CreateShaders(true, false, cbufferMode))
+    if (!CreateShaders(true, false))
         return false;
 
     if (!CreateVertexBuffer(true))
@@ -435,15 +367,14 @@ bool BasicScene::CreateSubSceneConstantBuffer(ResourceAccessMode cbufferMode, bo
 
 // Add texture support
 // The triangle should be rendered checked
-bool BasicScene::CreateSubSceneTexture(ResourceAccessMode cbufferMode, bool useBindingInstance, int gridSize)
+bool BasicScene::CreateSubSceneTexture(ResourceAccessMode cbufferMode, int gridSize)
 {
     mGridSize = gridSize;
-    mUseBindingInstance = useBindingInstance;
 
     if (!CreateSampler())
         return false;
 
-    if (!CreateShaders(true, true, cbufferMode))
+    if (!CreateShaders(true, true))
         return false;
 
     if (!CreateVertexBuffer(true))
@@ -468,13 +399,12 @@ BasicScene::BasicScene()
     RegisterSubScene(std::bind(&BasicScene::CreateSubSceneEmpty, this), "Empty");
     RegisterSubScene(std::bind(&BasicScene::CreateSubSceneVertexBuffer, this), "VertexBuffer");
     RegisterSubScene(std::bind(&BasicScene::CreateSubSceneIndexBuffer, this), "IndexBuffer");
-    RegisterSubScene(std::bind(&BasicScene::CreateSubSceneConstantBuffer, this, ResourceAccessMode::GPUOnly, true), "ConstantBuffer (Dynamic)");
-    RegisterSubScene(std::bind(&BasicScene::CreateSubSceneConstantBuffer, this, ResourceAccessMode::Volatile, true), "ConstantBuffer (Volatile)");
-    RegisterSubScene(std::bind(&BasicScene::CreateSubSceneTexture, this, ResourceAccessMode::GPUOnly, true, 1), "Texture + Dynamic CBuffer");
-    RegisterSubScene(std::bind(&BasicScene::CreateSubSceneTexture, this, ResourceAccessMode::GPUOnly, false, 1), "Texture + Dynamic CBuffer + Direct Binding");
-    RegisterSubScene(std::bind(&BasicScene::CreateSubSceneTexture, this, ResourceAccessMode::Volatile, true, 1), "Texture + Volatile CBuffer");
-    RegisterSubScene(std::bind(&BasicScene::CreateSubSceneTexture, this, ResourceAccessMode::Volatile, true, 5), "CBufferStress5");
-    RegisterSubScene(std::bind(&BasicScene::CreateSubSceneTexture, this, ResourceAccessMode::Volatile, false, 30), "CBufferStress30 + Direct Binding");
+    RegisterSubScene(std::bind(&BasicScene::CreateSubSceneConstantBuffer, this, ResourceAccessMode::GPUOnly), "ConstantBuffer (GPUOnly)");
+    RegisterSubScene(std::bind(&BasicScene::CreateSubSceneConstantBuffer, this, ResourceAccessMode::Volatile), "ConstantBuffer (Volatile)");
+    RegisterSubScene(std::bind(&BasicScene::CreateSubSceneTexture, this, ResourceAccessMode::GPUOnly, 1), "Texture + CBuffer");
+    RegisterSubScene(std::bind(&BasicScene::CreateSubSceneTexture, this, ResourceAccessMode::Volatile, 1), "Texture + Volatile CBuffer");
+    RegisterSubScene(std::bind(&BasicScene::CreateSubSceneTexture, this, ResourceAccessMode::Volatile, 5), "CBufferStress5");
+    RegisterSubScene(std::bind(&BasicScene::CreateSubSceneTexture, this, ResourceAccessMode::Volatile, 30), "CBufferStress30");
 }
 
 BasicScene::~BasicScene()
@@ -496,12 +426,6 @@ void BasicScene::ReleaseSubsceneResources()
     mPixelShader.Reset();
     mVertexShader.Reset();
     mPipelineState.Reset();
-
-    mVSBindingInstance.Reset();
-    mPSBindingInstance.Reset();
-    mResBindingLayout.Reset();
-    mVSBindingSet.Reset();
-    mPSBindingSet.Reset();
 }
 
 bool BasicScene::OnInit(void* winHandle)
@@ -541,28 +465,14 @@ void BasicScene::Draw(float dt)
         mCommandBuffer->SetVertexBuffers(1, &vb, &stride, &offset);
     }
 
-    if (mResBindingLayout)
-        mCommandBuffer->SetResourceBindingLayout(PipelineType::Graphics, mResBindingLayout);
-
     if (mTexture)
     {
-        if (mUseBindingInstance)
-        {
-            mCommandBuffer->BindResources(PipelineType::Graphics, mPSBindingSlot, mPSBindingInstance);
-        }
-        else
-        {
-            mCommandBuffer->BindTexture(PipelineType::Graphics, mPSBindingSlot, 0, mTexture);
-        }
+        mCommandBuffer->BindTexture(ShaderType::Pixel, mTextureSlot, mTexture);
+        mCommandBuffer->BindSampler(ShaderType::Pixel, mSamplerSlot, mSampler);
     }
 
     if (mConstantBuffer)
-    {
-        if (mCBufferMode == ResourceAccessMode::GPUOnly)
-            mCommandBuffer->BindResources(PipelineType::Graphics, mVSBindingSlot, mVSBindingInstance);
-        else if (mCBufferMode == ResourceAccessMode::Volatile)
-            mCommandBuffer->BindVolatileCBuffer(PipelineType::Graphics, 0, mConstantBuffer);
-    }
+        mCommandBuffer->BindConstantBuffer(ShaderType::Vertex, mCBufferSlot, mConstantBuffer);
 
     if (mPipelineState)
         mCommandBuffer->SetPipelineState(mPipelineState);

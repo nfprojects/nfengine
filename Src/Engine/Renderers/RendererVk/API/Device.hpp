@@ -140,9 +140,6 @@ public:
     ComputePipelineStatePtr CreateComputePipelineState(const ComputePipelineStateDesc& desc) override;
     SamplerPtr CreateSampler(const SamplerDesc& desc) override;
     ShaderPtr CreateShader(const ShaderDesc& desc) override;
-    ResourceBindingSetPtr CreateResourceBindingSet(const ResourceBindingSetDesc& desc) override;
-    ResourceBindingLayoutPtr CreateResourceBindingLayout(const ResourceBindingLayoutDesc& desc) override;
-    ResourceBindingInstancePtr CreateResourceBindingInstance(const ResourceBindingSetPtr& set) override;
     CommandRecorderPtr CreateCommandRecorder() override;
     CommandQueuePtr CreateCommandQueue(CommandQueueType type, const char* debugName) override;
     bool GetDeviceInfo(DeviceInfo& info) override;

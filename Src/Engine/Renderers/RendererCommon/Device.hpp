@@ -89,9 +89,6 @@ public:
     virtual ComputePipelineStatePtr CreateComputePipelineState(const ComputePipelineStateDesc& desc) = 0;
     virtual SamplerPtr CreateSampler(const SamplerDesc& desc) = 0;
     virtual ShaderPtr CreateShader(const ShaderDesc& desc) = 0;
-    virtual ResourceBindingSetPtr CreateResourceBindingSet(const ResourceBindingSetDesc& desc) = 0;
-    virtual ResourceBindingLayoutPtr CreateResourceBindingLayout(const ResourceBindingLayoutDesc& desc) = 0;
-    virtual ResourceBindingInstancePtr CreateResourceBindingInstance(const ResourceBindingSetPtr& set) = 0;
 
     /**@}*/
 

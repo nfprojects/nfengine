@@ -44,16 +44,12 @@ class CommandRecorder: public ICommandRecorder
     // Graphics resources
     RenderTarget* mRenderTarget;
     bool mActiveRenderPass;
-    ResourceBindingLayout* mResourceBindingLayout;
     Buffer* mBoundVolatileBuffers[VK_MAX_VOLATILE_BUFFERS];
     uint32 mBoundVolatileOffsets[VK_MAX_VOLATILE_BUFFERS];
     bool mRebindDynamicBuffers;
     VkDescriptorSet mBoundDescriptorSets[VK_MAX_BOUND_DESCRIPTOR_SETS];
     Common::StaticArray<TemporaryResourceBind, VK_MAX_PENDING_RESOURCES> mPendingResources;
     Common::StaticArray<VkDescriptorSet, 32> mTemporaryDescriptorSets; // TODO not 32 but the other thing you know what lmao
-
-    // Compute resources
-    ResourceBindingLayout* mComputeResourceBindingLayout;
 
     void EnsureOutsideRenderPass();
     void EnsureInsideRenderPass();
@@ -86,18 +82,17 @@ public:
     CommandListPtr Finish() override;
 
     /// Commands/calls
-    void BindResources(PipelineType pipelineType, uint32 setIndex, const ResourceBindingInstancePtr& bindingSetInstance) override;
-    void BindBuffer(PipelineType pipelineType, uint32 setIndex, uint32 slotInSet, const BufferPtr& buffer, const BufferView& view) override;
-    void BindTexture(PipelineType pipelineType, uint32 setIndex, uint32 slotInSet, const TexturePtr& texture, const TextureView& view) override;
-    void BindVolatileCBuffer(PipelineType pipelineType, uint32 slot, const BufferPtr& buffer) override;
-    void BindWritableBuffer(PipelineType pipelineType, uint32 setIndex, uint32 slotInSet, const BufferPtr& buffer, const BufferView& view) override;
-    void BindWritableTexture(PipelineType pipelineType, uint32 setIndex, uint32 slotInSet, const TexturePtr& texture, const TextureView& view) override;
+    void BindBuffer(ShaderType stage, uint32 slot, const BufferPtr& buffer, const BufferView& view) override;
+    void BindConstantBuffer(ShaderType stage, uint32 slot, const BufferPtr& buffer) override;
+    void BindTexture(ShaderType stage, uint32 slot, const TexturePtr& texture, const TextureView& view) override;
+    void BindSampler(ShaderType stage, uint32 slot, const SamplerPtr& sampler) override;
+    void BindWritableBuffer(ShaderType stage, uint32 slot, const BufferPtr& buffer, const BufferView& view) override;
+    void BindWritableTexture(ShaderType stage, uint32 slot, const TexturePtr& texture, const TextureView& view) override;
     void Clear(uint32 flags, uint32 numTargets, const uint32* slots, const Math::Vec4fU* colors, float depthValue, uint8 stencilValue) override;
     void SetIndexBuffer(const BufferPtr& indexBuffer, IndexBufferFormat format) override;
     void SetRenderTarget(const RenderTargetPtr& renderTarget) override;
     void SetPipelineState(const PipelineStatePtr& state) override;
     void SetComputePipelineState(const ComputePipelineStatePtr& state) override;
-    void SetResourceBindingLayout(PipelineType pipelineType, const ResourceBindingLayoutPtr& layout) override;
     void SetScissors(int32 left, int32 top, int32 right, int32 bottom) override;
     void SetStencilRef(unsigned char ref) override;
     void SetVertexBuffers(uint32 num, const BufferPtr* vertexBuffers, const uint32* strides, const uint32* offsets) override;

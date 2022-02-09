@@ -37,10 +37,6 @@ class MultithreadedScene : public Scene
     NFE::Renderer::BufferPtr mIndexBuffer;
     NFE::Renderer::BufferPtr mConstantBuffer;
 
-    NFE::Renderer::ResourceBindingSetPtr mVSBindingSet;
-    NFE::Renderer::ResourceBindingLayoutPtr mResBindingLayout;
-    NFE::Renderer::ResourceBindingInstancePtr mVSBindingInstance;
-
     int mCBufferSlot;
 
     // Used for objects rotation in Constant Buffer scenes and onward
@@ -48,8 +44,6 @@ class MultithreadedScene : public Scene
 
     // how many instances will be drawn?
     int mGridSize;
-
-    int mVSBindingSlot;
 
     // cbuffer mode
     NFE::Renderer::ResourceAccessMode mCBufferMode;
@@ -59,7 +53,7 @@ class MultithreadedScene : public Scene
 
     // Resource creators for subscenes
     bool CreateCommandRecorders();
-    bool CreateShaders(NFE::Renderer::ResourceAccessMode cbufferMode);
+    bool CreateShaders();
     bool CreateVertexBuffer();
     bool CreateIndexBuffer();
     bool CreateConstantBuffer(NFE::Renderer::ResourceAccessMode cbufferMode);
@@ -117,7 +111,7 @@ bool MultithreadedScene::CreateCommandRecorders()
     return true;
 }
 
-bool MultithreadedScene::CreateShaders(ResourceAccessMode cbufferMode)
+bool MultithreadedScene::CreateShaders()
 {
     mCBufferSlot = -1;
 
@@ -133,35 +127,8 @@ bool MultithreadedScene::CreateShaders(ResourceAccessMode cbufferMode)
     if (!mPixelShader)
         return false;
 
-    int numBindingSets = 0;
-    ResourceBindingSetPtr bindingSets[2];
-
-    // create binding set
-
     mCBufferSlot = mVertexShader->GetResourceSlotByName("TestCBuffer");
     if (mCBufferSlot < 0)
-        return false;
-
-    if (cbufferMode == ResourceAccessMode::GPUOnly)
-    {
-        ResourceBindingDesc vertexShaderBinding(ShaderResourceType::CBuffer, mCBufferSlot);
-        mVSBindingSet = mRendererDevice->CreateResourceBindingSet(ResourceBindingSetDesc(&vertexShaderBinding, 1, ShaderType::Vertex));
-        if (!mVSBindingSet)
-            return false;
-
-        mVSBindingSlot = numBindingSets++;
-        bindingSets[mVSBindingSlot] = mVSBindingSet;
-    }
-
-    bool useVolatileCBufferBinding = cbufferMode == ResourceAccessMode::Volatile;
-    VolatileCBufferBinding volatileCBufferBinding(ShaderType::Vertex,
-                                                  ShaderResourceType::CBuffer,
-                                                  mCBufferSlot, sizeof(VertexCBuffer));
-
-    // create binding layout
-    mResBindingLayout = mRendererDevice->CreateResourceBindingLayout(
-        ResourceBindingLayoutDesc(bindingSets, numBindingSets, &volatileCBufferBinding, useVolatileCBufferBinding ? 1 : 0));
-    if (!mResBindingLayout)
         return false;
 
     return true;
@@ -217,7 +184,6 @@ bool MultithreadedScene::CreateVertexBuffer()
     pipelineStateDesc.blendState.rtDescs[0].enable = true;
     pipelineStateDesc.primitiveType = PrimitiveType::Triangles;
     pipelineStateDesc.vertexLayout = mVertexLayout;
-    pipelineStateDesc.resBindingLayout = mResBindingLayout;
     mPipelineState = mRendererDevice->CreatePipelineState(pipelineStateDesc);
     if (!mPipelineState)
         return false;
@@ -274,18 +240,6 @@ bool MultithreadedScene::CreateConstantBuffer(ResourceAccessMode cbufferMode)
         mCopyQueue->Signal()->Wait();
     }
 
-    if (cbufferMode == ResourceAccessMode::GPUOnly)
-    {
-        // create and fill binding set instance
-        mVSBindingInstance = mRendererDevice->CreateResourceBindingInstance(mVSBindingSet);
-        if (!mVSBindingInstance)
-            return false;
-        if (!mVSBindingInstance->SetCBufferView(0, mConstantBuffer))
-            return false;
-        if (!mVSBindingInstance->Finalize())
-            return false;
-    }
-
     return true;
 }
 
@@ -303,7 +257,7 @@ bool MultithreadedScene::CreateSubSceneEmpty()
     if (!CreateCommandRecorders())
         return false;
 
-    return CreateShaders(ResourceAccessMode::GPUOnly);
+    return CreateShaders();
 }
 
 bool MultithreadedScene::CreateSubSceneNormal(ResourceAccessMode cbufferMode, int gridSize)
@@ -313,7 +267,7 @@ bool MultithreadedScene::CreateSubSceneNormal(ResourceAccessMode cbufferMode, in
     if (!CreateCommandRecorders())
         return false;
 
-    if (!CreateShaders(cbufferMode))
+    if (!CreateShaders())
         return false;
 
     if (!CreateVertexBuffer())
@@ -366,10 +320,6 @@ void MultithreadedScene::ReleaseSubsceneResources()
     mVertexShader.Reset();
     mPipelineState.Reset();
 
-    mVSBindingInstance.Reset();
-    mResBindingLayout.Reset();
-    mVSBindingSet.Reset();
-
     mCommandRecorders.Clear();
 }
 
@@ -411,13 +361,9 @@ void MultithreadedScene::DrawTask(const Common::TaskContext& ctx, int i, int j)
     recorder->SetVertexBuffers(1, &vb, &stride, &offset);
     recorder->SetIndexBuffer(mIndexBuffer, IndexBufferFormat::Uint16);
 
-    recorder->SetResourceBindingLayout(PipelineType::Graphics, mResBindingLayout);
     recorder->SetPipelineState(mPipelineState);
 
-    if (mCBufferMode == ResourceAccessMode::GPUOnly)
-        recorder->BindResources(PipelineType::Graphics, mVSBindingSlot, mVSBindingInstance);
-    else if (mCBufferMode == ResourceAccessMode::Volatile)
-        recorder->BindVolatileCBuffer(PipelineType::Graphics, 0, mConstantBuffer);
+    recorder->BindConstantBuffer(ShaderType::Vertex, mCBufferSlot, mConstantBuffer);
 
 
     const float scaleCoeff = 1.0f / static_cast<float>(mGridSize);

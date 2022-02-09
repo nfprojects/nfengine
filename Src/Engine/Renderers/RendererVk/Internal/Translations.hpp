@@ -7,7 +7,6 @@
 #pragma once
 
 #include "../RendererCommon/Types.hpp"
-#include "../RendererCommon/ResourceBinding.hpp"
 #include "../RendererCommon/CommandRecorder.hpp"
 
 #include "Defines.hpp"

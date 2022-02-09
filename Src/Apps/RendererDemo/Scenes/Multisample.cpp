@@ -24,17 +24,8 @@ class MultisampleScene : public Scene
     NFE::Renderer::TexturePtr mRenderTargetTexture;
     NFE::Renderer::RenderTargetPtr mRenderTarget;
 
-    NFE::Renderer::ResourceBindingSetPtr mVSBindingSet;
-    NFE::Renderer::ResourceBindingSetPtr mPSBindingSet;
-    NFE::Renderer::ResourceBindingLayoutPtr mResBindingLayout;
-    NFE::Renderer::ResourceBindingInstancePtr mVSBindingInstance;
-    NFE::Renderer::ResourceBindingInstancePtr mPSBindingInstance;
-
     int mTextureSlot;
     int mCBufferSlot;
-
-    int mVSBindingSlot;
-    int mPSBindingSlot;
 
     // Releases only subscene-related resources. Backbuffer, RT and BlendState stay intact.
     void ReleaseSubsceneResources() override;
@@ -96,11 +87,6 @@ bool MultisampleScene::CreateShaders()
     const Common::String psPath = gShaderPathPrefix + "TestPS" + gShaderPathExt;
     mPixelShader = CompileShader(psPath.Str(), ShaderType::Pixel, psMacro, 1);
     if (!mPixelShader)
-        return false;
-
-    // create binding layout
-    mResBindingLayout = mRendererDevice->CreateResourceBindingLayout(ResourceBindingLayoutDesc());
-    if (!mResBindingLayout)
         return false;
 
     return true;
@@ -184,7 +170,6 @@ bool MultisampleScene::CreateVertexBuffer()
     //pipelineStateDesc.blendState.rtDescs[0].enable = true;
     pipelineStateDesc.primitiveType = PrimitiveType::Triangles;
     pipelineStateDesc.vertexLayout = mVertexLayout;
-    pipelineStateDesc.resBindingLayout = mResBindingLayout;
     pipelineStateDesc.numSamples = MULTISAMPLE_SAMPLES;
     mPipelineState = mRendererDevice->CreatePipelineState(pipelineStateDesc);
     if (!mPipelineState)
@@ -221,12 +206,6 @@ void MultisampleScene::ReleaseSubsceneResources()
     mPixelShader.Reset();
     mVertexShader.Reset();
     mPipelineState.Reset();
-
-    mVSBindingInstance.Reset();
-    mPSBindingInstance.Reset();
-    mResBindingLayout.Reset();
-    mVSBindingSet.Reset();
-    mPSBindingSet.Reset();
 }
 
 bool MultisampleScene::OnInit(void* winHandle)
@@ -263,11 +242,6 @@ void MultisampleScene::Draw(float dt)
     {
         const BufferPtr& vb = mVertexBuffer;
         mCommandBuffer->SetVertexBuffers(1, &vb, &stride, &offset);
-    }
-
-    if (mResBindingLayout)
-    {
-        mCommandBuffer->SetResourceBindingLayout(PipelineType::Graphics, mResBindingLayout);
     }
 
     if (mPipelineState)
