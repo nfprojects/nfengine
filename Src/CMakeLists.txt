@@ -5,6 +5,17 @@ MESSAGE(STATUS "Generating NFE build files")
 
 INCLUDE(NFESourceGroup)
 
+
+IF(UNIX)
+    # Setup CMake to provide our libraries with $ORIGIN as RPATH/RUNPATH
+    # This solves issues with dlopen not finding dependencies on systems where
+    # new RUNPATH is the default.
+    SET(CMAKE_BUILD_RPATH_USE_ORIGIN TRUE)
+    SET(CMAKE_INSTALL_RPATH \$ORIGIN)
+    SET(CMAKE_BUILD_WITH_INSTALL_RPATH TRUE)
+ENDIF(UNIX)
+
+
 # TODO this is chosen by platform, instead it should probably be chosen
 #      by compiler (WIN32 options are MSVC-specific)
 IF(WIN32)
