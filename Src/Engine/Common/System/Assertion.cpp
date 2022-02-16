@@ -8,6 +8,9 @@
 #include "Assertion.hpp"
 #include "Console.hpp"
 
+#include <chrono>
+#include <thread>
+
 
 namespace NFE {
 namespace Common {
@@ -63,6 +66,9 @@ void ReportFatalAssertion(const char* expressionStr, const char* functionStr, co
     PrintColored(ConsoleColor::White, "Callstack:\n");
     PrintCallstack(2); // skipping 2 functions: PrintCallstack and this one (ReportFatalAssertion)
     fflush(stdout);
+
+    using namespace std::chrono_literals;
+    std::this_thread::sleep_for(2000ms);
 }
 
 static volatile bool gThisIsAlwaysTrue = true;

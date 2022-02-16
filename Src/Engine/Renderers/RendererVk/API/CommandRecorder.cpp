@@ -10,6 +10,7 @@
 #include "Device.hpp"
 #include "Buffer.hpp"
 #include "Texture.hpp"
+#include "Sampler.hpp"
 #include "Backbuffer.hpp"
 #include "PipelineState.hpp"
 #include "ComputePipelineState.hpp"
@@ -34,7 +35,6 @@ CommandRecorder::CommandRecorder()
     , mBoundVolatileBuffers()
     , mBoundVolatileOffsets()
     , mRebindDynamicBuffers(false)
-    , mBoundDescriptorSets()
     , mPendingResources()
     , mTemporaryDescriptorSets()
 {
@@ -120,134 +120,134 @@ bool CommandRecorder::WriteVolatileBuffer(Buffer* b, size_t size, const void* da
     return true;
 }
 
-void CommandRecorder::RebindDynamicBuffers() const
-{/*
-    uint32 offsets[VK_MAX_VOLATILE_BUFFERS];
-    uint32 offsetCount = 0;
-    for (uint32 i = 0; i < VK_MAX_VOLATILE_BUFFERS; ++i)
-    {
-        if (mBoundVolatileBuffers[i] != nullptr)
-        {
-            offsets[offsetCount++] = mBoundVolatileOffsets[i];
-        }
-    }
-
-    if (offsetCount > 0)
-    {
-        vkCmdBindDescriptorSets(mCommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, mResourceBindingLayout->mPipelineLayout,
-                                mResourceBindingLayout->mVolatileBufferSetSlot, 1, &mResourceBindingLayout->mVolatileBufferSet,
-                                offsetCount, offsets);
-    }*/
-}
-
 void CommandRecorder::ClearDescriptorSetBindings()
 {
-    memset(mBoundDescriptorSets, 0, sizeof(*mBoundDescriptorSets) * VK_MAX_BOUND_DESCRIPTOR_SETS);
-
     if (mTemporaryDescriptorSets.Size() > 0)
         vkFreeDescriptorSets(gDevice->GetDevice(), gDevice->GetDescriptorPool(),
                             mTemporaryDescriptorSets.Size(), mTemporaryDescriptorSets.Data());
     mTemporaryDescriptorSets.Clear();
 }
 
+uint32 CommandRecorder::AcquireTargetDescriptorSetIdx(ShaderType stage, ShaderResourceType type)
+{
+    VkShaderStageFlags stageFlags = TranslateShaderTypeToVkShaderStage(stage);
+    VkDescriptorType descType;
+
+    switch (type)
+    {
+        case ShaderResourceType::UniformBuffer: descType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER; break;
+        case ShaderResourceType::SampledImage: descType = VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE; break;
+        case ShaderResourceType::Sampler: descType = VK_DESCRIPTOR_TYPE_SAMPLER; break;
+        case ShaderResourceType::StorageBuffer: descType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER; break;
+        case ShaderResourceType::StorageImage: descType = VK_DESCRIPTOR_TYPE_STORAGE_IMAGE; break;
+        default: return UINT32_MAX;
+    }
+
+    for (uint32 i = 0; i < mPipelineState->mDescriptorSetMetadata.Size(); ++i)
+    {
+        const PipelineState::DescriptorSetMetadata& metadata = mPipelineState->mDescriptorSetMetadata[i];
+        if (stageFlags == metadata.stage && descType == metadata.type)
+            return metadata.set;
+    }
+
+    return UINT32_MAX;
+}
+
 void CommandRecorder::BindPendingResources()
 {
     VkResult result = VK_SUCCESS;
 
-    for (const auto& r: mPendingResources)
-    {
-        VkDescriptorSet tempSet = VK_NULL_HANDLE, boundSet = VK_NULL_HANDLE;
-        Internal::ResourceType resType = r.resource->GetType();
-        VkDescriptorType descType;
-        uint32 layoutSetCount = 0;
-        Texture* t = nullptr;
-        Buffer* b = nullptr;
+    if (mPendingResources.Empty())
+        return;
 
-        switch (resType)
+    // TODO make this faster:
+    //  - Create a cache/store for DS
+    //  - Create DS when cache misses, reuse existing ones if possible
+    //  - Bonus points for garbage collecting them after some time
+    mTemporaryDescriptorSets.Resize(mPipelineState->mDescriptorSetLayouts.Size());
+
+    VkDescriptorSetAllocateInfo allocInfo;
+    VK_ZERO_MEMORY(allocInfo);
+    allocInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
+    allocInfo.pSetLayouts = mPipelineState->mDescriptorSetLayouts.Data();
+    allocInfo.descriptorSetCount = mPipelineState->mDescriptorSetLayouts.Size();
+    allocInfo.descriptorPool = gDevice->GetDescriptorPool();
+    // TODO use temporary pool? might be easier to manage in case of fragmentation
+    result = vkAllocateDescriptorSets(gDevice->GetDevice(), &allocInfo, mTemporaryDescriptorSets.Data());
+    if (result != VK_SUCCESS)
+    {
+        NFE_LOG_WARNING("Failed to allocate temporary descriptor sets: %d (%s)", result, TranslateVkResultToString(result));
+        return;
+    }
+
+    VkDescriptorBufferInfo bufferInfo;
+    VK_ZERO_MEMORY(bufferInfo);
+    VkDescriptorImageInfo imageInfo;
+    VK_ZERO_MEMORY(imageInfo);
+    Common::StaticArray<VkWriteDescriptorSet, VK_MAX_PENDING_RESOURCES> writeSets;
+
+    for (uint32 i = 0; i < mPendingResources.Size(); ++i)
+    {
+        switch (mPendingResources[i].type)
         {
-        case Internal::ResourceType::Buffer:
-            descType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-            b = dynamic_cast<Buffer*>(r.resource);
+        case ShaderResourceType::UniformBuffer:
+        case ShaderResourceType::StorageBuffer:
+        {
+            // TODO volatile buffers support
+            Buffer* b = dynamic_cast<Buffer*>(mPendingResources[i].resource);
+            VK_ZERO_MEMORY(bufferInfo);
+            bufferInfo.buffer = b->mBuffer;
+            bufferInfo.range = b->mBufferSize;
+            bufferInfo.offset = 0;
             break;
-        case Internal::ResourceType::Texture:
-            descType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-            t = dynamic_cast<Texture*>(r.resource);
+        }
+        case ShaderResourceType::SampledImage:
+        case ShaderResourceType::StorageImage:
+        {
+            Texture* t = dynamic_cast<Texture*>(mPendingResources[i].resource);
+            gDevice->GetLayoutTracker().EnsureLayout(mCommandBuffer, t->GetID(), VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
+            VK_ZERO_MEMORY(imageInfo);
+            imageInfo.imageView = t->mImageView;
+            imageInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+            imageInfo.sampler = nullptr;
             break;
+        }
+        case ShaderResourceType::Sampler:
+        {
+            Sampler* s = dynamic_cast<Sampler*>(mPendingResources[i].resource);
+            VK_ZERO_MEMORY(imageInfo);
+            imageInfo.sampler = s->mSampler;
+            break;
+        }
         default:
             NFE_LOG_WARNING("Invalid resource type for pending resource bind, skipping");
             continue;
         }
 
-        VkDescriptorSetAllocateInfo allocInfo;
-        VK_ZERO_MEMORY(allocInfo);
-        allocInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
-        allocInfo.pSetLayouts = VK_NULL_HANDLE; // TODO
-        allocInfo.descriptorSetCount = 1;
-        allocInfo.descriptorPool = gDevice->GetDescriptorPool();
-        // TODO use temporary pool? might be easier to manage in case of fragmentation
-        result = vkAllocateDescriptorSets(gDevice->GetDevice(), &allocInfo, &tempSet);
-        if (result != VK_SUCCESS)
-        {
-            NFE_LOG_WARNING("Failed to allocate temporary descriptor set: %d (%s)", result, TranslateVkResultToString(result));
-            continue;
-        }
-
-        VkDescriptorBufferInfo bufferInfo;
-        VK_ZERO_MEMORY(bufferInfo);
-        VkDescriptorImageInfo imageInfo;
-        VK_ZERO_MEMORY(imageInfo);
-
-        switch (resType)
-        {
-        case Internal::ResourceType::Buffer:
-            bufferInfo.buffer = b->mBuffer;
-            bufferInfo.range = b->mBufferSize;
-            bufferInfo.offset = 0;
-            break;
-        case Internal::ResourceType::Texture:
-            gDevice->GetLayoutTracker().EnsureLayout(mCommandBuffer, t->GetID(), VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
-            imageInfo.imageView = t->mImageView;
-            imageInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
-            imageInfo.sampler = nullptr;
-            break;
-        default:
-            // won't happen
-            break;
-        }
+        uint32 setIdx = AcquireTargetDescriptorSetIdx(mPendingResources[i].stage, mPendingResources[i].type);
 
         VkWriteDescriptorSet writeSet;
         VK_ZERO_MEMORY(writeSet);
         writeSet.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-        writeSet.dstSet = tempSet;
-        writeSet.dstBinding = r.slot;
         writeSet.descriptorCount = 1;
-        writeSet.descriptorType = descType;
-        writeSet.pBufferInfo = (resType == Internal::ResourceType::Buffer ? &bufferInfo : nullptr);
-        writeSet.pImageInfo = (resType == Internal::ResourceType::Texture ? &imageInfo : nullptr);
+        writeSet.descriptorType = mPipelineState->mDescriptorSetMetadata[setIdx].type;
+        writeSet.dstSet = mTemporaryDescriptorSets[setIdx];
+        writeSet.dstBinding = mPendingResources[i].slot;
+        writeSet.pBufferInfo = (mPendingResources[i].type == ShaderResourceType::UniformBuffer ? &bufferInfo : nullptr);
+        writeSet.pImageInfo =
+            ((mPendingResources[i].type == ShaderResourceType::SampledImage) ||
+            (mPendingResources[i].type == ShaderResourceType::Sampler) ?
+            &imageInfo : nullptr);
 
-        boundSet = mBoundDescriptorSets[r.set];
-        if (boundSet != VK_NULL_HANDLE)
-        {
-            VkCopyDescriptorSet copySet;
-            VK_ZERO_MEMORY(copySet);
-            copySet.sType = VK_STRUCTURE_TYPE_COPY_DESCRIPTOR_SET;
-            copySet.srcSet = boundSet;
-            copySet.srcBinding = 0;
-            copySet.dstSet = tempSet;
-            copySet.dstBinding = 0;
-            copySet.descriptorCount = layoutSetCount;
-            vkUpdateDescriptorSets(gDevice->GetDevice(), 0, nullptr, 1, &copySet);
-        }
-
-        vkUpdateDescriptorSets(gDevice->GetDevice(), 1, &writeSet, 0, nullptr);
-/*
-        vkCmdBindDescriptorSets(mCommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS,
-                                mResourceBindingLayout->mPipelineLayout,
-                                r.set, 1, &tempSet, 0, nullptr);*/
-
-        if (tempSet)
-            mTemporaryDescriptorSets.PushBack(tempSet);
+        writeSets.EmplaceBack(writeSet);
     }
+
+    vkUpdateDescriptorSets(gDevice->GetDevice(), writeSets.Size(), writeSets.Data(), 0, nullptr);
+
+    vkCmdBindDescriptorSets(mCommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS,
+                            mPipelineState->mPipelineLayout, 0,
+                            mTemporaryDescriptorSets.Size(), mTemporaryDescriptorSets.Data(),
+                            0, nullptr);
 
     mPendingResources.Clear();
 }
@@ -531,54 +531,48 @@ CommandListPtr CommandRecorder::Finish()
 
 void CommandRecorder::BindBuffer(ShaderType stage, uint32 slot, const BufferPtr& buffer, const BufferView& view)
 {
-    NFE_UNUSED(stage);
-    NFE_UNUSED(slot);
-    NFE_UNUSED(buffer);
+    // TODO
     NFE_UNUSED(view);
+
+    Buffer* b = dynamic_cast<Buffer*>(buffer.Get());
+    NFE_ASSERT(b != nullptr, "Invalid Buffer pointer");
+    mPendingResources.EmplaceBack(b, stage, ShaderResourceType::UniformBuffer, slot);
 }
 
 void CommandRecorder::BindConstantBuffer(ShaderType stage, uint32 slot, const BufferPtr& buffer)
 {
-    NFE_UNUSED(stage);
-    NFE_UNUSED(slot);
-    NFE_UNUSED(buffer);
-
-/*
     Buffer* b = dynamic_cast<Buffer*>(buffer.Get());
-    NFE_ASSERT(b != nullptr, "Invalid volatile buffer provided");
-    NFE_ASSERT(b->mMode == ResourceAccessMode::Volatile, "Buffer is not a Volatile Buffer");
-    NFE_ASSERT(slot < VK_MAX_VOLATILE_BUFFERS, "Binding to slot %d impossible (max available slots 0-7).", slot);
+    NFE_ASSERT(b != nullptr, "Invalid Buffer pointer");
 
-    mBoundVolatileBuffers[slot] = b;
-    mRebindDynamicBuffers = true;
-
-    if (b->mVolatileDataOffset != UINT32_MAX)
+    if (b->mMode == ResourceAccessMode::Volatile)
     {
-        mBoundVolatileOffsets[slot] = b->mVolatileDataOffset;
-    }*/
+
+    }
+    else
+    {
+        mPendingResources.EmplaceBack(b, stage, ShaderResourceType::UniformBuffer, slot);
+    }
 }
 
 void CommandRecorder::BindTexture(ShaderType stage, uint32 slot, const TexturePtr& texture, const TextureView& view)
 {
-    NFE_UNUSED(stage);
-    NFE_UNUSED(slot);
-    NFE_UNUSED(texture);
+    // TODO
     NFE_UNUSED(view);
 
-/*
     EnsureOutsideRenderPass();
     Texture* t = dynamic_cast<Texture*>(texture.Get());
     NFE_ASSERT(t != nullptr, "Invalid Texture pointer");
 
     gDevice->GetLayoutTracker().EnsureLayout(mCommandBuffer, t->GetID(), VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
-    mPendingResources.EmplaceBack(t, setIndex, slotInSet);*/
+    mPendingResources.EmplaceBack(t, stage, ShaderResourceType::SampledImage, slot);
 }
 
 void CommandRecorder::BindSampler(ShaderType stage, uint32 slot, const SamplerPtr& sampler)
 {
-    NFE_UNUSED(stage);
-    NFE_UNUSED(slot);
-    NFE_UNUSED(sampler);
+    Sampler* s = dynamic_cast<Sampler*>(sampler.Get());
+    NFE_ASSERT(s != nullptr, "Invalid Sampler pointer");
+
+    mPendingResources.EmplaceBack(s, stage, ShaderResourceType::Sampler, slot);
 }
 
 void CommandRecorder::BindWritableBuffer(ShaderType stage, uint32 slot, const BufferPtr& buffer, const BufferView& view)
@@ -587,6 +581,8 @@ void CommandRecorder::BindWritableBuffer(ShaderType stage, uint32 slot, const Bu
     NFE_UNUSED(slot);
     NFE_UNUSED(buffer);
     NFE_UNUSED(view);
+
+    //mPendingResources.EmplaceBack(s, stage, ShaderResourceType::StorageBuffer, slot);
 }
 
 void CommandRecorder::BindWritableTexture(ShaderType stage, uint32 slot, const TexturePtr& texture, const TextureView& view)
@@ -595,6 +591,8 @@ void CommandRecorder::BindWritableTexture(ShaderType stage, uint32 slot, const T
     NFE_UNUSED(slot);
     NFE_UNUSED(texture);
     NFE_UNUSED(view);
+
+    //mPendingResources.EmplaceBack(s, stage, ShaderResourceType::StorageImage, slot);
 }
 
 void CommandRecorder::Clear(uint32 flags, uint32 numTargets, const uint32* slots, const Math::Vec4fU* colors, float depthValue, uint8 stencilValue)
@@ -684,11 +682,10 @@ void CommandRecorder::SetRenderTarget(const RenderTargetPtr& renderTarget)
 
 void CommandRecorder::SetPipelineState(const PipelineStatePtr& state)
 {
-    PipelineState* ps = dynamic_cast<PipelineState*>(state.Get());
-    NFE_ASSERT(ps != nullptr, "Incorrect pipeline state provided");
+    mPipelineState = dynamic_cast<PipelineState*>(state.Get());
+    NFE_ASSERT(mPipelineState != nullptr, "Incorrect pipeline state provided");
 
-    // TODO support compute bind point
-    vkCmdBindPipeline(mCommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, ps->mPipeline);
+    vkCmdBindPipeline(mCommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, mPipelineState->mPipeline);
 }
 
 void CommandRecorder::SetComputePipelineState(const ComputePipelineStatePtr& state)
@@ -757,11 +754,11 @@ void CommandRecorder::SetViewport(float left, float width, float top, float heig
 
 void CommandRecorder::Draw(uint32 vertexNum, uint32 instancesNum, uint32 vertexOffset, uint32 instanceOffset)
 {
-    if (mRebindDynamicBuffers)
+    /*if (mRebindDynamicBuffers)
     {
         RebindDynamicBuffers();
         mRebindDynamicBuffers = false;
-    }
+    }*/
 
     BindPendingResources();
     EnsureInsideRenderPass();
@@ -771,11 +768,11 @@ void CommandRecorder::Draw(uint32 vertexNum, uint32 instancesNum, uint32 vertexO
 
 void CommandRecorder::DrawIndexed(uint32 indexNum, uint32 instancesNum, uint32 indexOffset, int32 vertexOffset, uint32 instanceOffset)
 {
-    if (mRebindDynamicBuffers)
+    /*if (mRebindDynamicBuffers)
     {
         RebindDynamicBuffers();
         mRebindDynamicBuffers = false;
-    }
+    }*/
 
     BindPendingResources();
     EnsureInsideRenderPass();

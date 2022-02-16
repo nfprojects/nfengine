@@ -42,7 +42,8 @@ Shader::Shader()
     , mShaderPath()
     , mStageInfo()
     , mSpvReflectModule()
-    , mDescriptorSets()
+    //, mDescriptorSets()
+    , mDescriptorBindings()
 {
 }
 
@@ -187,13 +188,22 @@ bool Shader::Init(const ShaderDesc& desc)
     );
     CHECK_SPVREFLECTRESULT(spvResult, "Failed to create reflection of shader SPIR-V code");
 
-    uint32 setsCount = 0;
+    /*uint32 setsCount = 0;
     spvResult = spvReflectEnumerateDescriptorSets(&mSpvReflectModule, &setsCount, nullptr);
     CHECK_SPVREFLECTRESULT(spvResult, "Failed to get Descriptor Set count in shader");
 
     mDescriptorSets.Resize_SkipConstructor(setsCount);
     spvResult = spvReflectEnumerateDescriptorSets(&mSpvReflectModule, &setsCount, mDescriptorSets.Data());
-    CHECK_SPVREFLECTRESULT(spvResult, "Failed to enumerate Descriptor Sets in shader");
+    CHECK_SPVREFLECTRESULT(spvResult, "Failed to enumerate Descriptor Sets in shader");*/
+
+    uint32 bindingsCount = 0;
+    spvResult = spvReflectEnumerateDescriptorBindings(&mSpvReflectModule, &bindingsCount, nullptr);
+    CHECK_SPVREFLECTRESULT(spvResult, "Failed to get Descriptor Binding count in shader");
+
+    mDescriptorBindings.Resize_SkipConstructor(bindingsCount);
+    spvResult = spvReflectEnumerateDescriptorBindings(&mSpvReflectModule, &bindingsCount, mDescriptorBindings.Data());
+    CHECK_SPVREFLECTRESULT(spvResult, "Failed to enumerate Descriptor Bindings in shader");
+
 
     // Prepare shader stage info for later use
     // Shader Module is not created here - it will be modified when creating PSO in order to
@@ -224,24 +234,20 @@ bool Shader::Disassemble(bool html, Common::String& output)
 
 int Shader::GetResourceSlotByName(const char* name)
 {
-    for (uint32 i = 0; i < mDescriptorSets.Size(); ++i)
+    for (auto& binding: mDescriptorBindings)
     {
-        for (uint32 b = 0; b < mDescriptorSets[i]->binding_count; ++b)
+        if (binding->name != nullptr)
         {
-            SpvReflectDescriptorBinding* binding = mDescriptorSets[i]->bindings[b];
-            if (binding->name != nullptr)
-            {
-                // check binding name (handled by ex. textures, samplers)
-                if (strcmp(name, binding->name) == 0)
-                    return binding->binding;
-            }
+            // check binding name (handled by ex. textures, samplers)
+            if (strcmp(name, binding->name) == 0)
+                return binding->binding;
+        }
 
-            if (binding->type_description->type_name != nullptr)
-            {
-                // check type description name (reflected by ex. structures - uniforms)
-                if (strcmp(name, binding->type_description->type_name) == 0)
-                    return binding->binding;
-            }
+        if (binding->type_description->type_name != nullptr)
+        {
+            // check type description name (reflected by ex. structures - uniforms)
+            if (strcmp(name, binding->type_description->type_name) == 0)
+                return binding->binding;
         }
     }
 

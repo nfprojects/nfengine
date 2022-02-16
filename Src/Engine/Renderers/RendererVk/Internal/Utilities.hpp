@@ -11,6 +11,12 @@ namespace NFE {
 namespace Renderer {
 namespace Util {
 
+template <typename Enum>
+auto EnumAsInteger(Enum value)
+{
+    return static_cast<std::underlying_type<Enum>::type>(value);
+}
+
 NFE_FORCE_INLINE uint32 CommandQueueTypeToIndex(CommandQueueType type)
 {
     // Note that this DOES NOT have to mean queueFamilyIndex assigned by driver! Only an

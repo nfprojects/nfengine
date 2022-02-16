@@ -20,15 +20,37 @@ class PipelineState : public IPipelineState
 {
     friend class CommandRecorder;
 
+    struct DescriptorMetadata
+    {
+        uint32 binding;
+    };
+
+    using DescriptorBindings = Common::StaticArray<DescriptorMetadata, VK_MAX_BINDINGS_PER_SET>;
+
+    struct DescriptorSetMetadata
+    {
+        VkShaderStageFlags stage;
+        VkDescriptorType type;
+        uint32 set;
+        DescriptorBindings bindings;
+    };
+
     PipelineStateDesc mDesc;
-    Common::StaticArray<VkPipelineShaderStageCreateInfo, 5> mShaderStageDescs;
-    Common::StaticArray<VkShaderModule, 5> mShaderStages;
+    Common::StaticArray<ShaderPtr, VK_MAX_SHADER_STAGES> mShaders;
+    Common::StaticArray<DescriptorSetMetadata, VK_MAX_DESCRIPTOR_SETS> mDescriptorSetMetadata;
+    Common::StaticArray<VkPipelineShaderStageCreateInfo, VK_MAX_SHADER_STAGES> mShaderStageDescs;
+    Common::StaticArray<VkDescriptorSetLayout, VK_MAX_DESCRIPTOR_SETS> mDescriptorSetLayouts;
+    Common::StaticArray<VkDescriptorSet, VK_MAX_DESCRIPTOR_SETS> mDescriptorSets;
     VkPipelineLayout mPipelineLayout;
     VkPipeline mPipeline;
 
+    bool MapToDescriptorSet(const ShaderPtr& shader, SpvReflectDescriptorType type, uint32& set);
+    bool RemapDescriptorSets();
+    bool CreateDescriptorSets();
     VkShaderModule CreateShaderModule(const SpvReflectShaderModule& shaderSpv);
     bool PrepareShaderStage(const ShaderPtr& shader);
     bool CreatePipelineLayout();
+    bool FormShaderModules();
 
 public:
     PipelineState();

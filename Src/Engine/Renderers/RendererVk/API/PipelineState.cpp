@@ -20,7 +20,9 @@ namespace Renderer {
 PipelineState::PipelineState()
     : mDesc()
     , mShaderStageDescs()
-    , mShaderStages()
+    , mDescriptorSetLayouts()
+    , mDescriptorSets()
+    , mPipelineLayout(VK_NULL_HANDLE)
     , mPipeline(VK_NULL_HANDLE)
 {
 }
@@ -33,8 +35,125 @@ PipelineState::~PipelineState()
     if (mPipelineLayout != VK_NULL_HANDLE)
         vkDestroyPipelineLayout(gDevice->GetDevice(), mPipelineLayout, nullptr);
 
-    for (auto& s: mShaderStages)
-        vkDestroyShaderModule(gDevice->GetDevice(), s, nullptr);
+    for (auto& dsl: mDescriptorSetLayouts)
+        vkDestroyDescriptorSetLayout(gDevice->GetDevice(), dsl, nullptr);
+
+    if (!mDescriptorSets.Empty())
+        vkFreeDescriptorSets(gDevice->GetDevice(), gDevice->GetDescriptorPool(), mDescriptorSets.Size(), mDescriptorSets.Data());
+
+    for (auto& s: mShaderStageDescs)
+        vkDestroyShaderModule(gDevice->GetDevice(), s.module, nullptr);
+}
+
+bool PipelineState::MapToDescriptorSet(const ShaderPtr& shader, SpvReflectDescriptorType type, uint32& set)
+{
+    SpvReflectResult result = SPV_REFLECT_RESULT_SUCCESS;
+    bool allocatedSet = false;
+
+    Shader* s = dynamic_cast<Shader*>(shader.Get());
+    NFE_ASSERT(s != nullptr, "Invalid shader pointer");
+
+    for (auto& binding: s->mDescriptorBindings)
+    {
+        if (binding->descriptor_type == type)
+        {
+            if (!allocatedSet)
+            {
+                mDescriptorSetMetadata.EmplaceBack();
+                mDescriptorSetMetadata.Back().stage = s->mStageInfo.stage;
+                mDescriptorSetMetadata.Back().set = set;
+                mDescriptorSetMetadata.Back().type = TranslateSpvReflectDescriptorTypeToVkDescriptorType(type);
+                allocatedSet = true;
+            }
+
+            result = spvReflectChangeDescriptorBindingNumbers(
+                &s->mSpvReflectModule, binding,
+                static_cast<uint32_t>(SPV_REFLECT_BINDING_NUMBER_DONT_CHANGE),
+                set
+            );
+            CHECK_SPVREFLECTRESULT(result, "Failed to change Descriptor Binding set number");
+
+            DescriptorBindings& descs = mDescriptorSetMetadata.Back().bindings;
+            descs.EmplaceBack();
+            descs.Back().binding = binding->binding;
+        }
+    }
+
+    if (allocatedSet)
+        set++;
+
+    // TODO check if bindings are tightly packed?
+
+    // TODO check for volatile buffers
+
+    return true;
+}
+
+bool PipelineState::RemapDescriptorSets()
+{
+    /**
+     * Separate Descriptor Binding types to match HLSL:
+     *   - (c#) Constant Buffer  (SPV_REFLECT_DESCRIPTOR_TYPE_UNIFORM_BUFFER[_DYNAMIC] )
+     *   - (t#) Texture  (SPV_REFLECT_DESCRIPTOR_TYPE_SAMPLED_IMAGE)
+     *   - (s#) Sampler  (SPV_REFLECT_DESCRIPTOR_TYPE_SAMPLER)
+     *   - (u#) WritableBuffer  (SPV_REFLECT_DESCRIPTOR_TYPE_STORAGE_BUFFER)
+     *   - (u#) WritableTexture  (SPV_REFLECT_DESCRIPTOR_TYPE_STORAGE_IMAGE)
+     */
+
+    uint32 totalSets = 0;
+
+    for (auto& shader: mShaders)
+    {
+        if (!MapToDescriptorSet(shader, SPV_REFLECT_DESCRIPTOR_TYPE_UNIFORM_BUFFER, totalSets))
+            return false;
+
+        if (!MapToDescriptorSet(shader, SPV_REFLECT_DESCRIPTOR_TYPE_SAMPLED_IMAGE, totalSets))
+            return false;
+
+        if (!MapToDescriptorSet(shader, SPV_REFLECT_DESCRIPTOR_TYPE_SAMPLER, totalSets))
+            return false;
+
+        if (!MapToDescriptorSet(shader, SPV_REFLECT_DESCRIPTOR_TYPE_STORAGE_BUFFER, totalSets))
+            return false;
+
+        if (!MapToDescriptorSet(shader, SPV_REFLECT_DESCRIPTOR_TYPE_STORAGE_IMAGE, totalSets))
+            return false;
+    }
+
+    NFE_LOG_DEBUG("Remapped %d descriptor sets", totalSets);
+
+    return true;
+}
+
+bool PipelineState::CreateDescriptorSets()
+{
+    VkResult result = VK_SUCCESS;
+    VkDescriptorSetLayout descriptorSetLayout = VK_NULL_HANDLE;
+
+    for (auto& dsData: mDescriptorSetMetadata)
+    {
+        Common::DynArray<VkDescriptorSetLayoutBinding> dslBindings(dsData.bindings.Size());
+        for (uint32 i = 0; i < dslBindings.Size(); ++i)
+        {
+            dslBindings[i].binding = dsData.bindings[i].binding;
+            dslBindings[i].descriptorCount = 1;
+            dslBindings[i].descriptorType = dsData.type;
+            dslBindings[i].stageFlags = dsData.stage;
+            dslBindings[i].pImmutableSamplers = nullptr;
+        }
+
+        VkDescriptorSetLayoutCreateInfo dslInfo;
+        VK_ZERO_MEMORY(dslInfo);
+        dslInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
+        dslInfo.bindingCount = dslBindings.Size();
+        dslInfo.pBindings = dslBindings.Data();
+        result = vkCreateDescriptorSetLayout(gDevice->GetDevice(), &dslInfo, nullptr, &descriptorSetLayout);
+        CHECK_VKRESULT(result, "Failed to allocate descriptor set layout");
+
+        mDescriptorSetLayouts.EmplaceBack(descriptorSetLayout);
+    }
+
+    return true;
 }
 
 VkShaderModule PipelineState::CreateShaderModule(const SpvReflectShaderModule& shaderSpv)
@@ -60,11 +179,17 @@ bool PipelineState::CreatePipelineLayout()
 {
     VkResult result = VK_SUCCESS;
 
-    // TODO
+    if (!RemapDescriptorSets())
+        return false;
+
+    if (!CreateDescriptorSets())
+        return false;
 
     VkPipelineLayoutCreateInfo plInfo;
     VK_ZERO_MEMORY(plInfo);
     plInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
+    plInfo.setLayoutCount = mDescriptorSetLayouts.Size();
+    plInfo.pSetLayouts = mDescriptorSetLayouts.Data();
     result = vkCreatePipelineLayout(gDevice->GetDevice(), &plInfo, nullptr, &mPipelineLayout);
     CHECK_VKRESULT(result, "Failed to create Pipeline Layout");
 
@@ -84,16 +209,27 @@ bool PipelineState::PrepareShaderStage(const ShaderPtr& shader)
         return true; // quietly exit, we are skipping an optional stage
 
     Shader* s = dynamic_cast<Shader*>(shader.Get());
-    VkShaderModule shaderModule = CreateShaderModule(s->mSpvReflectModule);
-    if (shaderModule == VK_NULL_HANDLE)
-        return false;
-
-    Debugger::Instance().NameObject(reinterpret_cast<uint64_t>(shaderModule), VK_OBJECT_TYPE_SHADER_MODULE, s->mShaderPath.Str());
-
-    mShaderStages.PushBack(shaderModule);
 
     mShaderStageDescs.EmplaceBack(s->mStageInfo);
-    mShaderStageDescs.Back().module = shaderModule;
+    mShaders.PushBack(shader);
+
+    return true;
+}
+
+bool PipelineState::FormShaderModules()
+{
+    for (uint32 i = 0; i < mShaders.Size(); ++i)
+    {
+        Shader* s = dynamic_cast<Shader*>(mShaders[i].Get());
+        VkShaderModule shaderModule = CreateShaderModule(s->mSpvReflectModule);
+        if (shaderModule == VK_NULL_HANDLE)
+            return false;
+
+        Debugger::Instance().NameObject(reinterpret_cast<uint64_t>(shaderModule), VK_OBJECT_TYPE_SHADER_MODULE, s->mShaderPath.Str());
+
+        mShaderStageDescs[i].module = shaderModule;
+    }
+
     return true;
 }
 
@@ -241,9 +377,6 @@ bool PipelineState::Init(const PipelineStateDesc& desc)
         return false;
 
 
-    // TODO add resource binding layout from shader reflection analysis
-
-
     // shader stages
     if (!PrepareShaderStage(desc.vertexShader))
     {
@@ -280,6 +413,13 @@ bool PipelineState::Init(const PipelineStateDesc& desc)
     if (!CreatePipelineLayout())
     {
         NFE_LOG_ERROR("Failed to create a Pipeline Layout for this PipelineState");
+        return false;
+    }
+
+
+    if (!FormShaderModules())
+    {
+        NFE_LOG_ERROR("Failed to compile Shaders for PipelineState");
         return false;
     }
 

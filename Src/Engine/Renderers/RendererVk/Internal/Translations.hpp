@@ -21,6 +21,9 @@ const char* TranslateVkResultToString(VkResult result);
 const char* TranslateVkFormatToString(VkFormat format);
 const char* TranslateResourceAccessModeToString(ResourceAccessMode mode);
 
+// SPV-Reflect to Vulkan
+VkDescriptorType TranslateSpvReflectDescriptorTypeToVkDescriptorType(SpvReflectDescriptorType type);
+
 // NFE to Vulkan
 VkBlendFactor TranslateBlendFuncToVkBlendFactor(BlendFunc func);
 VkBlendOp TranslateBlendOpToVkBlendOp(BlendOp op);

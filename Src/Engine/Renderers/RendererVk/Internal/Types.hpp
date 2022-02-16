@@ -15,6 +15,7 @@ enum class ResourceType: uint8
     Buffer = 0,
     Texture,
     Backbuffer,
+    Sampler,
     Max
 };
 

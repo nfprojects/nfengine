@@ -7,6 +7,8 @@
 #pragma once
 
 #include "../RendererCommon/CommandRecorder.hpp"
+#include "../RendererCommon/Types.hpp"
+#include "../RendererCommon/Shader.hpp"
 
 #include "Defines.hpp"
 #include "RenderTarget.hpp"
@@ -22,24 +24,43 @@ class CommandRecorder: public ICommandRecorder
 {
     friend class Device;
 
+    // order here should match PipelineState::RemapDescriptorSets
+    enum class ShaderResourceType: uint8
+    {
+        UniformBuffer = 0,
+        SampledImage,
+        Sampler,
+        StorageBuffer,
+        StorageImage,
+    };
+
     struct TemporaryResourceBind
     {
         IResource* resource;
-        uint32 set;
+        ShaderType stage;
+        ShaderResourceType type;
         uint32 slot;
 
-        TemporaryResourceBind(IResource* r, uint32 set, uint32 slot)
+        TemporaryResourceBind(IResource* r, ShaderType stage, ShaderResourceType type, uint32 set)
             : resource(r)
-            , set(set)
-            , slot(slot)
+            , stage(stage)
+            , type(type)
+            , slot(set)
         {
         }
     };
+
+    using PendingResourcesArray = Common::StaticArray<TemporaryResourceBind, VK_MAX_PENDING_RESOURCES>;
+    using DescriptorSetArray = Common::StaticArray<VkDescriptorSet, VK_MAX_DESCRIPTOR_SETS>;
 
     // General fields
     VkCommandBuffer mCommandBuffer;
     CommandQueueType mQueueType;
     VkCommandBufferBeginInfo mCommandBufferBeginInfo;
+
+    PipelineState* mPipelineState;
+    PendingResourcesArray mPendingResources;
+    DescriptorSetArray mTemporaryDescriptorSets;
 
     // Graphics resources
     RenderTarget* mRenderTarget;
@@ -47,9 +68,6 @@ class CommandRecorder: public ICommandRecorder
     Buffer* mBoundVolatileBuffers[VK_MAX_VOLATILE_BUFFERS];
     uint32 mBoundVolatileOffsets[VK_MAX_VOLATILE_BUFFERS];
     bool mRebindDynamicBuffers;
-    VkDescriptorSet mBoundDescriptorSets[VK_MAX_BOUND_DESCRIPTOR_SETS];
-    Common::StaticArray<TemporaryResourceBind, VK_MAX_PENDING_RESOURCES> mPendingResources;
-    Common::StaticArray<VkDescriptorSet, 32> mTemporaryDescriptorSets; // TODO not 32 but the other thing you know what lmao
 
     void EnsureOutsideRenderPass();
     void EnsureInsideRenderPass();
@@ -62,6 +80,7 @@ class CommandRecorder: public ICommandRecorder
         mTemporaryDescriptorSets[slot] = set;
     }
 
+    uint32 AcquireTargetDescriptorSetIdx(ShaderType stage, ShaderResourceType type);
     void ClearDescriptorSetBindings();
     void BindPendingResources();
 

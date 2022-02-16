@@ -26,7 +26,8 @@ class Shader : public IShader
     Common::String mShaderPath;
     VkPipelineShaderStageCreateInfo mStageInfo;
     SpvReflectShaderModule mSpvReflectModule;
-    Common::DynArray<SpvReflectDescriptorSet*> mDescriptorSets;
+    //Common::DynArray<SpvReflectDescriptorSet*> mDescriptorSets;
+    Common::DynArray<SpvReflectDescriptorBinding*> mDescriptorBindings;
 
 public:
     Shader();
