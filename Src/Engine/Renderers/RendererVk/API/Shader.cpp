@@ -40,10 +40,9 @@ const Common::String SHADER_HEADER_TAIL("\0");
 Shader::Shader()
     : mType(ShaderType::Unknown)
     , mShaderPath()
-    , mShaderGlslang()
-    , mProgramGlslang()
     , mStageInfo()
     , mSpvReflectModule()
+    , mDescriptorSets()
 {
 }
 
@@ -124,73 +123,77 @@ bool Shader::Init(const ShaderDesc& desc)
     }
 
     // create and parse shader
-    mShaderGlslang = Common::MakeUniquePtr<glslang::TShader>(lang);
-    if (!mShaderGlslang)
+    Common::UniquePtr<glslang::TShader> shaderGlslang = Common::MakeUniquePtr<glslang::TShader>(lang);
+    if (!shaderGlslang)
     {
         NFE_LOG_ERROR("Memory allocation failed");
         return false;
     }
 
     // set environment
-    mShaderGlslang->setEnvInput(glslang::EShSourceHlsl, lang, glslang::EShClientVulkan, DEFAULT_VERSION);
-    mShaderGlslang->setEnvClient(glslang::EShClientVulkan, glslang::EShTargetVulkan_1_1);
-    mShaderGlslang->setEnvTarget(glslang::EShTargetSpv, glslang::EShTargetSpv_1_3);
+    shaderGlslang->setEnvInput(glslang::EShSourceHlsl, lang, glslang::EShClientVulkan, DEFAULT_VERSION);
+    shaderGlslang->setEnvClient(glslang::EShClientVulkan, glslang::EShTargetVulkan_1_1);
+    shaderGlslang->setEnvTarget(glslang::EShTargetSpv, glslang::EShTargetSpv_1_3);
 
     // input shader strings
     const char* shaderStrs[] = { shaderHead.Str(), code };
     int shaderLengths[] = { static_cast<int>(shaderHead.Length()), shaderSize };
     const char* shaderNames[] = { "RendererVk_ShaderHead", desc.path };
-    mShaderGlslang->setStringsWithLengthsAndNames(shaderStrs, shaderLengths, shaderNames, 2);
-    mShaderGlslang->setEntryPoint("main");
+    shaderGlslang->setStringsWithLengthsAndNames(shaderStrs, shaderLengths, shaderNames, 2);
+    shaderGlslang->setEntryPoint("main");
 
     // parse to glslang's AST
     ShaderIncluder includer(desc.path);
     EShMessages msg = static_cast<EShMessages>(EShMsgDefault | EShMsgVulkanRules | EShMsgReadHlsl);
-    if (!mShaderGlslang->parse(&glslang::DefaultTBuiltInResource, DEFAULT_VERSION, EProfile::ENoProfile, false, false, msg, includer))
+    if (!shaderGlslang->parse(&glslang::DefaultTBuiltInResource, DEFAULT_VERSION, EProfile::ENoProfile, false, false, msg, includer))
     {
-        NFE_LOG_ERROR("Failed to parse shader file %s:\n%s", desc.path, mShaderGlslang->getInfoLog());
+        NFE_LOG_ERROR("Failed to parse shader file %s:\n%s", desc.path, shaderGlslang->getInfoLog());
         return false;
     }
 
     // create temporary TProgram to extract an intermediate SPIR-V
-    mProgramGlslang = Common::MakeUniquePtr<glslang::TProgram>();
-    if (!mProgramGlslang)
+    Common::UniquePtr<glslang::TProgram> programGlslang = Common::MakeUniquePtr<glslang::TProgram>();
+    if (!programGlslang)
     {
         NFE_LOG_ERROR("Memory allocation failed");
         return false;
     }
 
-    mProgramGlslang->addShader(mShaderGlslang.Get());
-    if (!mProgramGlslang->link(msg))
+    programGlslang->addShader(shaderGlslang.Get());
+    if (!programGlslang->link(msg))
     {
-        NFE_LOG_ERROR("Failed to pre-link shader stage:\n%s", mProgramGlslang->getInfoLog());
+        NFE_LOG_ERROR("Failed to pre-link shader stage:\n%s", programGlslang->getInfoLog());
         return false;
     }
 
-    // TODO we should try avoiding this and use spirv-reflect instead.
-    // Problem is, glslang loses names of descriptor sets when generating SPV bytecode.
-    // Try to solve this somehow (maybe) or remove this comment if it's impossible.
-    if (!mProgramGlslang->buildReflection())
-    {
-        NFE_LOG_ERROR("Failed to build reflection for shader program");
-        return false;
-    }
-
-    glslang::TIntermediate* progInt = mProgramGlslang->getIntermediate(lang);
+    glslang::TIntermediate* progInt = programGlslang->getIntermediate(lang);
     if (!progInt)
     {
         NFE_LOG_ERROR("Unable to extract shader intermediate");
         return false;
     }
 
+    glslang::SpvOptions spvOpts;
+    VK_ZERO_MEMORY(spvOpts);
+    spvOpts.generateDebugInfo = false;
+    spvOpts.disableOptimizer = true;
+
     spv::SpvBuildLogger spvLogger;
     std::vector<uint32> shaderSpv;
-    glslang::GlslangToSpv(*progInt, shaderSpv, &spvLogger);
+    glslang::GlslangToSpv(*progInt, shaderSpv, &spvLogger, &spvOpts);
 
     SpvReflectResult spvResult = spvReflectCreateShaderModule2(
         SPV_REFLECT_MODULE_FLAG_NONE, shaderSpv.size() * sizeof(uint32), shaderSpv.data(), &mSpvReflectModule
     );
     CHECK_SPVREFLECTRESULT(spvResult, "Failed to create reflection of shader SPIR-V code");
+
+    uint32 setsCount = 0;
+    spvResult = spvReflectEnumerateDescriptorSets(&mSpvReflectModule, &setsCount, nullptr);
+    CHECK_SPVREFLECTRESULT(spvResult, "Failed to get Descriptor Set count in shader");
+
+    mDescriptorSets.Resize_SkipConstructor(setsCount);
+    spvResult = spvReflectEnumerateDescriptorSets(&mSpvReflectModule, &setsCount, mDescriptorSets.Data());
+    CHECK_SPVREFLECTRESULT(spvResult, "Failed to enumerate Descriptor Sets in shader");
 
     // Prepare shader stage info for later use
     // Shader Module is not created here - it will be modified when creating PSO in order to
@@ -221,28 +224,25 @@ bool Shader::Disassemble(bool html, Common::String& output)
 
 int Shader::GetResourceSlotByName(const char* name)
 {
-    auto ExtractBindingSetSlots = [](const glslang::TObjectReflection& o) -> int
+    for (uint32 i = 0; i < mDescriptorSets.Size(); ++i)
     {
-        // encode slot/binding pair onto a single uint
-        // 16 MSB are set slot, 16 LSB are binding slot in that set
-        const glslang::TQualifier& qualifier = o.getType()->getQualifier();
-        int result = (qualifier.layoutSet & 0xFFFF) << 16;
-        result |= (qualifier.layoutBinding & 0xFFFF);
-        return static_cast<int>(result);
-    };
+        for (uint32 b = 0; b < mDescriptorSets[i]->binding_count; ++b)
+        {
+            SpvReflectDescriptorBinding* binding = mDescriptorSets[i]->bindings[b];
+            if (binding->name != nullptr)
+            {
+                // check binding name (handled by ex. textures, samplers)
+                if (strcmp(name, binding->name) == 0)
+                    return binding->binding;
+            }
 
-    for (int i = 0; i < mProgramGlslang->getNumUniformBlocks(); ++i)
-    {
-        const glslang::TObjectReflection& obj = mProgramGlslang->getUniformBlock(i);
-        if (obj.name.compare(name) == 0)
-            return ExtractBindingSetSlots(obj);
-    }
-
-    for (int i = 0; i < mProgramGlslang->getNumUniformVariables(); ++i)
-    {
-        const glslang::TObjectReflection& obj = mProgramGlslang->getUniform(i);
-        if (obj.name.compare(name) == 0)
-            return ExtractBindingSetSlots(obj);
+            if (binding->type_description->type_name != nullptr)
+            {
+                // check type description name (reflected by ex. structures - uniforms)
+                if (strcmp(name, binding->type_description->type_name) == 0)
+                    return binding->binding;
+            }
+        }
     }
 
     return -1;

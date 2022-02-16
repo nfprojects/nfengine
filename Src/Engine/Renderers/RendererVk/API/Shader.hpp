@@ -24,10 +24,9 @@ class Shader : public IShader
 
     ShaderType mType;
     Common::String mShaderPath;
-    Common::UniquePtr<glslang::TShader> mShaderGlslang;
-    Common::UniquePtr<glslang::TProgram> mProgramGlslang;
     VkPipelineShaderStageCreateInfo mStageInfo;
     SpvReflectShaderModule mSpvReflectModule;
+    Common::DynArray<SpvReflectDescriptorSet*> mDescriptorSets;
 
 public:
     Shader();
