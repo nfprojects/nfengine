@@ -150,6 +150,10 @@ bool DepthStencilScene::CreateBasicResources(bool withDepth, bool withStencil)
     blendStateDesc.rtDescs[0].srcColorFunc = BlendFunc::SrcAlpha;
     blendStateDesc.rtDescs[0].destColorFunc = BlendFunc::OneMinusSrcAlpha;
 
+    VolatileBufferBinding vbBinding;
+    vbBinding.stage = ShaderType::Vertex;
+    vbBinding.binding = mCBufferSlot;
+
     PipelineStateDesc psd;
     psd.renderTargetFormats = { Format::R8G8B8A8_U_Norm };
     psd.vertexShader = mVertexShader;
@@ -157,6 +161,9 @@ bool DepthStencilScene::CreateBasicResources(bool withDepth, bool withStencil)
     psd.raterizerState.cullMode = CullMode::Disabled;
     psd.primitiveType = PrimitiveType::Triangles;
     psd.vertexLayout = mVertexLayout;
+    psd.volatileBufferBindingCount = 1;
+    psd.volatileBufferBindings = &vbBinding;
+
 
     if (withDepth && !withStencil)
     {

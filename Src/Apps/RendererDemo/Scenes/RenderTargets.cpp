@@ -129,11 +129,17 @@ bool RenderTargetsScene::CreateBasicResources(bool multipleRT, bool withDepthBuf
     if (!mVertexLayout)
         return false;
 
+    VolatileBufferBinding vbBinding;
+    vbBinding.stage = ShaderType::Vertex;
+    vbBinding.binding = mCBufferSlot;
+
     PipelineStateDesc pipelineStateDesc;
     pipelineStateDesc.renderTargetFormats = { Format::R8G8B8A8_U_Norm };
     pipelineStateDesc.vertexShader = mVertexShader;
     pipelineStateDesc.primitiveType = PrimitiveType::Triangles;
     pipelineStateDesc.vertexLayout = mVertexLayout;
+    pipelineStateDesc.volatileBufferBindingCount = 1;
+    pipelineStateDesc.volatileBufferBindings = &vbBinding;
     pipelineStateDesc.depthState.depthCompareFunc = CompareFunc::Less;
     pipelineStateDesc.depthState.depthWriteEnable = false;
     pipelineStateDesc.depthState.depthTestEnable = false;

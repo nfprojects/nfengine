@@ -118,6 +118,17 @@ struct DepthStateDesc
     {}
 };
 
+struct VolatileBufferBinding
+{
+    ShaderType stage;
+    uint32 binding;
+
+    VolatileBufferBinding()
+        : stage(ShaderType::Unknown)
+        , binding(UINT32_MAX)
+    {}
+};
+
 /**
  * Description of Pipeline State object.
  */
@@ -143,6 +154,10 @@ struct PipelineStateDesc
 
     // for multisampling
     uint8 numSamples = 1u;
+
+    // inform whether pipeline will use volatile buffers
+    uint32 volatileBufferBindingCount;
+    VolatileBufferBinding* volatileBufferBindings;
 
     // optional debug name
     const char* debugName = nullptr;

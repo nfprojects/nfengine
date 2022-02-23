@@ -56,6 +56,7 @@ class MultithreadedScene : public Scene
     bool CreateShaders();
     bool CreateVertexBuffer();
     bool CreateIndexBuffer();
+    bool CreatePipelineState(NFE::Renderer::ResourceAccessMode cbufferMode);
     bool CreateConstantBuffer(NFE::Renderer::ResourceAccessMode cbufferMode);
 
     // Subscenes
@@ -162,32 +163,6 @@ bool MultithreadedScene::CreateVertexBuffer()
         mCopyQueue->Signal()->Wait();
     }
 
-    VertexLayoutElement vertexLayoutElements[] =
-    {
-        { Format::R32G32B32_Float,       0, 0, false, 0 }, // position
-        { Format::R32G32_Float,          12, 0, false, 0 }, // tex-coords
-        { Format::R32G32B32A32_Float,    20, 0, false, 0 }, // color
-    };
-
-    VertexLayoutDesc vertexLayoutDesc;
-    vertexLayoutDesc.elements = vertexLayoutElements;
-    vertexLayoutDesc.numElements = 3;
-    mVertexLayout = mRendererDevice->CreateVertexLayout(vertexLayoutDesc);
-    if (!mVertexLayout)
-        return false;
-
-    PipelineStateDesc pipelineStateDesc;
-    pipelineStateDesc.renderTargetFormats = { mBackbufferFormat };
-    pipelineStateDesc.vertexShader = mVertexShader;
-    pipelineStateDesc.pixelShader = mPixelShader;
-    pipelineStateDesc.blendState.independent = false;
-    pipelineStateDesc.blendState.rtDescs[0].enable = true;
-    pipelineStateDesc.primitiveType = PrimitiveType::Triangles;
-    pipelineStateDesc.vertexLayout = mVertexLayout;
-    mPipelineState = mRendererDevice->CreatePipelineState(pipelineStateDesc);
-    if (!mPipelineState)
-        return false;
-
     return true;
 }
 
@@ -214,6 +189,46 @@ bool MultithreadedScene::CreateIndexBuffer()
         mCopyQueue->Execute(mCommandBuffer->Finish());
         mCopyQueue->Signal()->Wait();
     }
+
+    return true;
+}
+
+bool MultithreadedScene::CreatePipelineState(ResourceAccessMode cbufferMode)
+{
+    VertexLayoutElement vertexLayoutElements[] =
+    {
+        { Format::R32G32B32_Float,       0, 0, false, 0 }, // position
+        { Format::R32G32_Float,          12, 0, false, 0 }, // tex-coords
+        { Format::R32G32B32A32_Float,    20, 0, false, 0 }, // color
+    };
+
+    VolatileBufferBinding vbBinding;
+    vbBinding.stage = ShaderType::Vertex;
+    vbBinding.binding = mCBufferSlot;
+
+    VertexLayoutDesc vertexLayoutDesc;
+    vertexLayoutDesc.elements = vertexLayoutElements;
+    vertexLayoutDesc.numElements = 3;
+    mVertexLayout = mRendererDevice->CreateVertexLayout(vertexLayoutDesc);
+    if (!mVertexLayout)
+        return false;
+
+    PipelineStateDesc pipelineStateDesc;
+    pipelineStateDesc.renderTargetFormats = { mBackbufferFormat };
+    pipelineStateDesc.vertexShader = mVertexShader;
+    pipelineStateDesc.pixelShader = mPixelShader;
+    pipelineStateDesc.blendState.independent = false;
+    pipelineStateDesc.blendState.rtDescs[0].enable = true;
+    pipelineStateDesc.primitiveType = PrimitiveType::Triangles;
+    pipelineStateDesc.vertexLayout = mVertexLayout;
+    if (cbufferMode == ResourceAccessMode::Volatile)
+    {
+        pipelineStateDesc.volatileBufferBindingCount = 1;
+        pipelineStateDesc.volatileBufferBindings = &vbBinding;
+    }
+    mPipelineState = mRendererDevice->CreatePipelineState(pipelineStateDesc);
+    if (!mPipelineState)
+        return false;
 
     return true;
 }
@@ -274,6 +289,9 @@ bool MultithreadedScene::CreateSubSceneNormal(ResourceAccessMode cbufferMode, in
         return false;
 
     if (!CreateIndexBuffer())
+        return false;
+
+    if (!CreatePipelineState(cbufferMode))
         return false;
 
     if (!CreateConstantBuffer(cbufferMode))
