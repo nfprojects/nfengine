@@ -138,8 +138,9 @@ bool RenderTargetsScene::CreateBasicResources(bool multipleRT, bool withDepthBuf
     pipelineStateDesc.vertexShader = mVertexShader;
     pipelineStateDesc.primitiveType = PrimitiveType::Triangles;
     pipelineStateDesc.vertexLayout = mVertexLayout;
-    pipelineStateDesc.volatileBufferBindingCount = 1;
-    pipelineStateDesc.volatileBufferBindings = &vbBinding;
+    pipelineStateDesc.volatileBufferBindings = {
+        { ShaderType::Vertex, static_cast<NFE::uint32>(mCBufferSlot) },
+    };
     pipelineStateDesc.depthState.depthCompareFunc = CompareFunc::Less;
     pipelineStateDesc.depthState.depthWriteEnable = false;
     pipelineStateDesc.depthState.depthTestEnable = false;

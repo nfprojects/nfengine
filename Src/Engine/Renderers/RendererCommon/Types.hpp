@@ -47,6 +47,7 @@ using VertexLayoutPtr = Common::SharedPtr<IVertexLayout>;
 using FencePtr = Common::SharedPtr<IFence>;
 
 #define MAX_RENDER_TARGETS 8
+#define MAX_VOLATILE_BUFFERS 8
 #define MAX_MIPMAP_LEVELS 16
 
 // number of "graphics" shader types

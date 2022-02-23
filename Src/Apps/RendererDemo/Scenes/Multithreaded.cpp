@@ -202,10 +202,6 @@ bool MultithreadedScene::CreatePipelineState(ResourceAccessMode cbufferMode)
         { Format::R32G32B32A32_Float,    20, 0, false, 0 }, // color
     };
 
-    VolatileBufferBinding vbBinding;
-    vbBinding.stage = ShaderType::Vertex;
-    vbBinding.binding = mCBufferSlot;
-
     VertexLayoutDesc vertexLayoutDesc;
     vertexLayoutDesc.elements = vertexLayoutElements;
     vertexLayoutDesc.numElements = 3;
@@ -223,8 +219,9 @@ bool MultithreadedScene::CreatePipelineState(ResourceAccessMode cbufferMode)
     pipelineStateDesc.vertexLayout = mVertexLayout;
     if (cbufferMode == ResourceAccessMode::Volatile)
     {
-        pipelineStateDesc.volatileBufferBindingCount = 1;
-        pipelineStateDesc.volatileBufferBindings = &vbBinding;
+        pipelineStateDesc.volatileBufferBindings = {
+            { ShaderType::Vertex, static_cast<NFE::uint32>(mCBufferSlot) },
+        };
     }
     mPipelineState = mRendererDevice->CreatePipelineState(pipelineStateDesc);
     if (!mPipelineState)

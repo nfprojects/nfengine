@@ -247,8 +247,9 @@ bool BasicScene::CreatePipelineState(ResourceAccessMode cbufferMode)
     pipelineStateDesc.vertexLayout = mVertexLayout;
     if (cbufferMode == ResourceAccessMode::Volatile)
     {
-        pipelineStateDesc.volatileBufferBindingCount = 1;
-        pipelineStateDesc.volatileBufferBindings = &vbBinding;
+        pipelineStateDesc.volatileBufferBindings = {
+            { ShaderType::Vertex, static_cast<NFE::uint32>(mCBufferSlot) },
+        };
     }
     mPipelineState = mRendererDevice->CreatePipelineState(pipelineStateDesc);
     if (!mPipelineState)

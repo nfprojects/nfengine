@@ -122,11 +122,6 @@ struct VolatileBufferBinding
 {
     ShaderType stage;
     uint32 binding;
-
-    VolatileBufferBinding()
-        : stage(ShaderType::Unknown)
-        , binding(UINT32_MAX)
-    {}
 };
 
 /**
@@ -156,8 +151,7 @@ struct PipelineStateDesc
     uint8 numSamples = 1u;
 
     // inform whether pipeline will use volatile buffers
-    uint32 volatileBufferBindingCount;
-    VolatileBufferBinding* volatileBufferBindings;
+    Common::StaticArray<VolatileBufferBinding, MAX_VOLATILE_BUFFERS> volatileBufferBindings;
 
     // optional debug name
     const char* debugName = nullptr;
