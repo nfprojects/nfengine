@@ -30,13 +30,14 @@ CommandRecorder::CommandRecorder()
     : mCommandBuffer(VK_NULL_HANDLE)
     , mQueueType(CommandQueueType::Invalid)
     , mCommandBufferBeginInfo()
+    , mPipelineState(nullptr)
+    , mPendingResources()
+    , mTemporaryDescriptorSets()
     , mRenderTarget(nullptr)
     , mActiveRenderPass(false)
     , mBoundVolatileBuffers()
     , mBoundVolatileOffsets()
     , mRebindDynamicBuffers(false)
-    , mPendingResources()
-    , mTemporaryDescriptorSets()
 {
 }
 

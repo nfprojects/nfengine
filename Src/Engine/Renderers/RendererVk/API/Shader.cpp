@@ -175,7 +175,6 @@ bool Shader::Init(const ShaderDesc& desc)
     }
 
     glslang::SpvOptions spvOpts;
-    VK_ZERO_MEMORY(spvOpts);
     spvOpts.generateDebugInfo = false;
     spvOpts.disableOptimizer = true;
 
