@@ -14,6 +14,7 @@
 #include "Internal/Instance.hpp"
 #include "Internal/QueueFamilyManager.hpp"
 #include "Internal/CommandBufferManager.hpp"
+#include "Internal/DescriptorSetCache.hpp"
 #include "Internal/FenceSignaller.hpp"
 #include "Internal/RenderPassManager.hpp"
 #include "Internal/SemaphorePool.hpp"
@@ -40,12 +41,12 @@ private:
     VkPhysicalDevice mPhysicalDevice;
     VkPhysicalDeviceMemoryProperties mMemoryProperties;
     VkDevice mDevice;
-    VkDescriptorPool mDescriptorPool;
     VkSampler mDefaultSampler;
     VkPipelineCache mPipelineCache;
     Common::DynArray<VkSurfaceFormatKHR> mSupportedFormats;
     QueueFamilyManager mQueueFamilyManager;
     Common::FixedArray<CommandBufferManager, static_cast<uint32>(CommandQueueType::Max)> mCommandBufferManagers;
+    DescriptorSetCache mDescriptorSetCache;
     FenceSignaller mFenceSignaller;
     Common::UniquePtr<RenderPassManager> mRenderPassManager;
     Common::UniquePtr<RingBuffer> mRingBuffer;
@@ -78,11 +79,6 @@ public:
         return mPhysicalDevice;
     }
 
-    NFE_INLINE const VkDescriptorPool& GetDescriptorPool() const
-    {
-        return mDescriptorPool;
-    }
-
     NFE_INLINE const VkPipelineCache& GetPipelineCache() const
     {
         return mPipelineCache;
@@ -96,6 +92,11 @@ public:
     NFE_INLINE CommandBufferManager& GetCommandBufferManager(CommandQueueType type)
     {
         return mCommandBufferManagers[Util::CommandQueueTypeToIndex(type)];
+    }
+
+    NFE_INLINE DescriptorSetCache& GetDescriptorSetCache()
+    {
+        return mDescriptorSetCache;
     }
 
     NFE_INLINE FenceSignaller& GetFenceSignaller()
@@ -149,7 +150,7 @@ public:
 
     bool FinishFrame() override;
 
-    CommandListPtr CreateCommandList(CommandQueueType queueType, VkCommandBuffer cmdBuffer);
+    CommandListPtr CreateCommandList(CommandQueueType queueType, VkCommandBuffer cmdBuffer, const UsedDescriptorSetsArray& sets);
 };
 
 extern Common::UniquePtr<Device> gDevice;

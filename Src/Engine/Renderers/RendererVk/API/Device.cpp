@@ -58,10 +58,10 @@ Device::Device()
     , mPhysicalDevice(VK_NULL_HANDLE)
     , mMemoryProperties()
     , mDevice(VK_NULL_HANDLE)
-    , mDescriptorPool(VK_NULL_HANDLE)
     , mPipelineCache(VK_NULL_HANDLE)
     , mSupportedFormats()
     , mQueueFamilyManager()
+    , mDescriptorSetCache()
     , mFenceSignaller()
     , mRenderPassManager(nullptr)
     , mRingBuffer(nullptr)
@@ -81,13 +81,12 @@ Device::~Device()
     for (auto& cbm: mCommandBufferManagers)
         cbm.Release();
     mQueueFamilyManager.Release();
+    mDescriptorSetCache.Release();
 
     if (mDefaultSampler != VK_NULL_HANDLE)
         vkDestroySampler(mDevice, mDefaultSampler, nullptr);
     if (mPipelineCache != VK_NULL_HANDLE)
         vkDestroyPipelineCache(mDevice, mPipelineCache, nullptr);
-    if (mDescriptorPool != VK_NULL_HANDLE)
-        vkDestroyDescriptorPool(mDevice, mDescriptorPool, nullptr);
 
     Debugger::Instance().ReleaseDebugObjectAnnotation();
 
@@ -273,34 +272,6 @@ bool Device::Init(const DeviceInitParams* params)
         }
     }
 
-
-    // TODO resize these if we run out of space
-    // ALSO TODO move to separate manager which will resize the pool when needed
-    Common::StaticArray<VkDescriptorPoolSize, 4> descPoolSizes;
-    descPoolSizes.Resize(4);
-    descPoolSizes[0].type = VK_DESCRIPTOR_TYPE_SAMPLER;
-    descPoolSizes[0].descriptorCount = 32;
-    descPoolSizes[1].type = VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE;
-    descPoolSizes[1].descriptorCount = 256;
-    descPoolSizes[2].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-    descPoolSizes[2].descriptorCount = 256;
-    descPoolSizes[3].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC;
-    descPoolSizes[3].descriptorCount = 8;
-
-    VkDescriptorPoolCreateInfo descPoolInfo;
-    VK_ZERO_MEMORY(descPoolInfo);
-    descPoolInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
-    descPoolInfo.poolSizeCount = descPoolSizes.Size();
-    descPoolInfo.pPoolSizes = descPoolSizes.Data();
-    descPoolInfo.flags = VK_DESCRIPTOR_POOL_CREATE_FREE_DESCRIPTOR_SET_BIT;
-    for (const auto& s: descPoolSizes)
-        descPoolInfo.maxSets += s.descriptorCount;
-    result = vkCreateDescriptorPool(mDevice, &descPoolInfo, nullptr, &mDescriptorPool);
-    CHECK_VKRESULT(result, "Failed to create Descriptor Pool");
-
-    Debugger::Instance().NameObject(reinterpret_cast<uint64_t>(mDescriptorPool), VK_OBJECT_TYPE_DESCRIPTOR_POOL, "Device-DescriptorPool");
-
-
     mRenderPassManager = Common::MakeUniquePtr<RenderPassManager>(mDevice);
 
     // TODO Ring Buffer must be per command pool most probably
@@ -339,6 +310,12 @@ bool Device::Init(const DeviceInitParams* params)
 
     Debugger::Instance().NameObject(reinterpret_cast<uint64_t>(mPipelineCache), VK_OBJECT_TYPE_PIPELINE_CACHE, "Device-PipelineCache");
 
+
+    if (!mDescriptorSetCache.Init())
+    {
+        NFE_LOG_ERROR("Failed to initialize Descriptor Set Cache");
+        return false;
+    }
 
     if (!mFenceSignaller.Init())
     {
@@ -566,9 +543,9 @@ bool Device::FinishFrame()
     return true;
 }
 
-CommandListPtr Device::CreateCommandList(CommandQueueType queueType, VkCommandBuffer cmdBuffer)
+CommandListPtr Device::CreateCommandList(CommandQueueType queueType, VkCommandBuffer cmdBuffer, const UsedDescriptorSetsArray& sets)
 {
-    auto cl = Common::MakeUniquePtr<CommandList>(queueType, cmdBuffer);
+    auto cl = Common::MakeUniquePtr<CommandList>(queueType, cmdBuffer, sets);
     if (!cl)
     {
         return nullptr;

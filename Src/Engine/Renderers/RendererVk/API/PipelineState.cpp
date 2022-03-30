@@ -21,7 +21,6 @@ PipelineState::PipelineState()
     : mDesc()
     , mShaderStageDescs()
     , mDescriptorSetLayouts()
-    , mDescriptorSets()
     , mPipelineLayout(VK_NULL_HANDLE)
     , mPipeline(VK_NULL_HANDLE)
 {
@@ -37,9 +36,6 @@ PipelineState::~PipelineState()
 
     for (auto& dsl: mDescriptorSetLayouts)
         vkDestroyDescriptorSetLayout(gDevice->GetDevice(), dsl, nullptr);
-
-    if (!mDescriptorSets.Empty())
-        vkFreeDescriptorSets(gDevice->GetDevice(), gDevice->GetDescriptorPool(), mDescriptorSets.Size(), mDescriptorSets.Data());
 
     for (auto& s: mShaderStageDescs)
         vkDestroyShaderModule(gDevice->GetDevice(), s.module, nullptr);
@@ -125,7 +121,7 @@ bool PipelineState::RemapDescriptorSets()
     return true;
 }
 
-bool PipelineState::CreateDescriptorSets()
+bool PipelineState::CreateDescriptorSetLayouts()
 {
     VkResult result = VK_SUCCESS;
     VkDescriptorSetLayout descriptorSetLayout = VK_NULL_HANDLE;
@@ -182,7 +178,7 @@ bool PipelineState::CreatePipelineLayout()
     if (!RemapDescriptorSets())
         return false;
 
-    if (!CreateDescriptorSets())
+    if (!CreateDescriptorSetLayouts())
         return false;
 
     VkPipelineLayoutCreateInfo plInfo;

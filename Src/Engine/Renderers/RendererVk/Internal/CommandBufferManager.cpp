@@ -10,6 +10,9 @@
 namespace NFE {
 namespace Renderer {
 
+void DefaultOnFree() {}
+
+
 CommandBufferManager::CommandBufferManager()
     : mDevice(VK_NULL_HANDLE)
     , mCommandPool(VK_NULL_HANDLE)
@@ -17,7 +20,7 @@ CommandBufferManager::CommandBufferManager()
     , mFirstUsed(0)
     , mCurrentAvailable(0)
     , mCommandBuffers()
-    , mStates()
+    , mCBData()
     , mRegisteredQueues()
     , mQueueGuardFences()
 {
@@ -75,8 +78,8 @@ bool CommandBufferManager::Init(VkDevice device, const QueueFamilyManager& qfm, 
         }
     }
 
-    for (auto& state: mStates)
-        state = State::Available;
+    for (auto& cbData: mCBData)
+        cbData.state = State::Available;
 
     mFirstUsed = 0;
     mCurrentAvailable = 0;
@@ -88,7 +91,7 @@ VkCommandBuffer CommandBufferManager::Acquire()
 {
     NFE_SCOPED_LOCK(mLock);
 
-    while (mStates[mCurrentAvailable] != State::Available)
+    while (mCBData[mCurrentAvailable].state != State::Available)
     {
         mCurrentAvailable++;
 
@@ -99,7 +102,7 @@ VkCommandBuffer CommandBufferManager::Acquire()
     }
 
     VkCommandBuffer buffer = mCommandBuffers[mCurrentAvailable];
-    mStates[mCurrentAvailable] = State::Acquired;
+    mCBData[mCurrentAvailable].state = State::Acquired;
     mCurrentAvailable++;
     if (mCurrentAvailable == VK_COMMAND_BUFFER_POOL_SIZE)
         mCurrentAvailable = 0;
@@ -107,7 +110,7 @@ VkCommandBuffer CommandBufferManager::Acquire()
     return buffer;
 }
 
-void CommandBufferManager::Free(VkCommandBuffer buffer)
+void CommandBufferManager::Free(VkCommandBuffer buffer, OnFreeCallback onFreeCb)
 {
     NFE_SCOPED_LOCK(mLock);
 
@@ -116,10 +119,16 @@ void CommandBufferManager::Free(VkCommandBuffer buffer)
     {
         if (mCommandBuffers[i] == buffer)
         {
-            switch (mStates[i])
+            switch (mCBData[i].state)
             {
-            case State::Acquired: mStates[i] = State::AwaitingFinish; break;
-            case State::AwaitingFree: mStates[i] = State::Available; break;
+            case State::Acquired:
+                mCBData[i].state = State::AwaitingFinish;
+                mCBData[i].onFree = onFreeCb;
+                break;
+            case State::AwaitingFree:
+                onFreeCb();
+                mCBData[i].state = State::Available;
+                break;
             default:
                 NFE_ASSERT(0, "Invalid state");
             }
@@ -174,10 +183,15 @@ void CommandBufferManager::FinishFrame()
                 break;
         }
 
-        switch (mStates[i])
+        switch (mCBData[i].state)
         {
-        case State::Acquired: mStates[i] = State::AwaitingFree; break;
-        case State::AwaitingFinish: mStates[i] = State::Available; break;
+        case State::Acquired:
+            mCBData[i].state = State::AwaitingFree;
+            break;
+        case State::AwaitingFinish:
+            mCBData[i].onFree();
+            mCBData[i].state = State::Available;
+            break;
         default:
             NFE_ASSERT(0, "Invalid state");
         }

@@ -32,7 +32,7 @@ CommandRecorder::CommandRecorder()
     , mCommandBufferBeginInfo()
     , mPipelineState(nullptr)
     , mPendingResources()
-    , mTemporaryDescriptorSets()
+    , mUsedDescriptorSets()
     , mRenderTarget(nullptr)
     , mActiveRenderPass(false)
     , mBoundVolatileBuffers()
@@ -43,7 +43,6 @@ CommandRecorder::CommandRecorder()
 
 CommandRecorder::~CommandRecorder()
 {
-    ClearDescriptorSetBindings();
 }
 
 
@@ -121,14 +120,6 @@ bool CommandRecorder::WriteVolatileBuffer(Buffer* b, size_t size, const void* da
     return true;
 }
 
-void CommandRecorder::ClearDescriptorSetBindings()
-{
-    if (mTemporaryDescriptorSets.Size() > 0)
-        vkFreeDescriptorSets(gDevice->GetDevice(), gDevice->GetDescriptorPool(),
-                            mTemporaryDescriptorSets.Size(), mTemporaryDescriptorSets.Data());
-    mTemporaryDescriptorSets.Clear();
-}
-
 uint32 CommandRecorder::AcquireTargetDescriptorSetIdx(ShaderType stage, ShaderResourceType type)
 {
     VkShaderStageFlags stageFlags = TranslateShaderTypeToVkShaderStage(stage);
@@ -156,30 +147,14 @@ uint32 CommandRecorder::AcquireTargetDescriptorSetIdx(ShaderType stage, ShaderRe
 
 void CommandRecorder::BindPendingResources()
 {
-    VkResult result = VK_SUCCESS;
-
     if (mPendingResources.Empty())
         return;
 
-    // TODO make this faster:
-    //  - Create a cache/store for DS
-    //  - Create DS when cache misses, reuse existing ones if possible
-    //  - Bonus points for garbage collecting them after some time
-    mTemporaryDescriptorSets.Resize(mPipelineState->mDescriptorSetLayouts.Size());
+    mUsedDescriptorSets.EmplaceBack(
+        gDevice->GetDescriptorSetCache().AllocateDescriptorSets(mPipelineState->mDescriptorSetLayouts)
+    );
 
-    VkDescriptorSetAllocateInfo allocInfo;
-    VK_ZERO_MEMORY(allocInfo);
-    allocInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
-    allocInfo.pSetLayouts = mPipelineState->mDescriptorSetLayouts.Data();
-    allocInfo.descriptorSetCount = mPipelineState->mDescriptorSetLayouts.Size();
-    allocInfo.descriptorPool = gDevice->GetDescriptorPool();
-    // TODO use temporary pool? might be easier to manage in case of fragmentation
-    result = vkAllocateDescriptorSets(gDevice->GetDevice(), &allocInfo, mTemporaryDescriptorSets.Data());
-    if (result != VK_SUCCESS)
-    {
-        NFE_LOG_WARNING("Failed to allocate temporary descriptor sets: %d (%s)", result, TranslateVkResultToString(result));
-        return;
-    }
+    DescriptorSetCollection& sets = gDevice->GetDescriptorSetCache().GetDescriptorSets(mUsedDescriptorSets.Back());
 
     VkDescriptorBufferInfo bufferInfo;
     VK_ZERO_MEMORY(bufferInfo);
@@ -232,7 +207,7 @@ void CommandRecorder::BindPendingResources()
         writeSet.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
         writeSet.descriptorCount = 1;
         writeSet.descriptorType = mPipelineState->mDescriptorSetMetadata[setIdx].type;
-        writeSet.dstSet = mTemporaryDescriptorSets[setIdx];
+        writeSet.dstSet = sets[setIdx];
         writeSet.dstBinding = mPendingResources[i].slot;
         writeSet.pBufferInfo = (mPendingResources[i].type == ShaderResourceType::UniformBuffer ? &bufferInfo : nullptr);
         writeSet.pImageInfo =
@@ -247,7 +222,7 @@ void CommandRecorder::BindPendingResources()
 
     vkCmdBindDescriptorSets(mCommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS,
                             mPipelineState->mPipelineLayout, 0,
-                            mTemporaryDescriptorSets.Size(), mTemporaryDescriptorSets.Data(),
+                            sets.Size(), sets.Data(),
                             0, nullptr);
 
     mPendingResources.Clear();
@@ -279,7 +254,6 @@ bool CommandRecorder::Begin(CommandQueueType queueType)
     }
 
     mRenderTarget = nullptr;
-    ClearDescriptorSetBindings();
 
     // Get CommandBuffer from select queue
     mCommandBuffer = gDevice->GetCommandBufferManager(queueType).Acquire();
@@ -297,6 +271,7 @@ void CommandRecorder::CopyBuffer(const BufferPtr& src, const BufferPtr& dest, si
     NFE_UNUSED(size);
     NFE_UNUSED(srcOffset);
     NFE_UNUSED(destOffset);
+    NFE_FATAL("Not yet implemented");
 }
 
 void CommandRecorder::CopyTexture(const TexturePtr& src, const TexturePtr& dest)
@@ -304,7 +279,7 @@ void CommandRecorder::CopyTexture(const TexturePtr& src, const TexturePtr& dest)
     NFE_UNUSED(src);
     NFE_UNUSED(dest);
 
-    NFE_FATAL("Not implemented!");
+    NFE_FATAL("Not yet implemented!");
 }
 
 void CommandRecorder::CopyTexture(const TexturePtr& src, const BackbufferPtr& dest)
@@ -385,6 +360,7 @@ void CommandRecorder::CopyTextureToBuffer(const TexturePtr& src, const BufferPtr
     NFE_UNUSED(dest);
     NFE_UNUSED(texRegion);
     NFE_UNUSED(bufferOffset);
+    NFE_FATAL("Not yet implemented");
 }
 
 bool CommandRecorder::WriteBuffer(const BufferPtr& buffer, size_t offset, size_t size, const void* data)
@@ -521,9 +497,10 @@ CommandListPtr CommandRecorder::Finish()
     }
 
     // mCommandBuffer is now owned by CommandList
-    CommandListPtr cl = gDevice->CreateCommandList(mQueueType, mCommandBuffer);
+    CommandListPtr cl = gDevice->CreateCommandList(mQueueType, mCommandBuffer, mUsedDescriptorSets);
     mCommandBuffer = VK_NULL_HANDLE;
     mQueueType = CommandQueueType::Invalid;
+    mUsedDescriptorSets.Clear();
     return cl;
 }
 
@@ -582,7 +559,7 @@ void CommandRecorder::BindWritableBuffer(ShaderType stage, uint32 slot, const Bu
     NFE_UNUSED(slot);
     NFE_UNUSED(buffer);
     NFE_UNUSED(view);
-
+    NFE_FATAL("Not yet implemented");
     //mPendingResources.EmplaceBack(s, stage, ShaderResourceType::StorageBuffer, slot);
 }
 
@@ -592,7 +569,7 @@ void CommandRecorder::BindWritableTexture(ShaderType stage, uint32 slot, const T
     NFE_UNUSED(slot);
     NFE_UNUSED(texture);
     NFE_UNUSED(view);
-
+    NFE_FATAL("Not yet implemented");
     //mPendingResources.EmplaceBack(s, stage, ShaderResourceType::StorageImage, slot);
 }
 
@@ -790,6 +767,7 @@ void CommandRecorder::DispatchIndirect(const BufferPtr& indirectArgBuffer, uint3
 {
     NFE_UNUSED(indirectArgBuffer);
     NFE_UNUSED(bufferOffset);
+    NFE_FATAL("Not yet implemented");
 }
 
 
@@ -799,12 +777,14 @@ void CommandRecorder::HintTargetCommandQueueType(const BufferPtr& resource, cons
 {
     NFE_UNUSED(resource);
     NFE_UNUSED(targetType);
+    NFE_FATAL("Not yet implemented");
 }
 
 void CommandRecorder::HintTargetCommandQueueType(const TexturePtr& resource, const CommandQueueType targetType)
 {
     NFE_UNUSED(resource);
     NFE_UNUSED(targetType);
+    NFE_FATAL("Not yet implemented");
 }
 
 

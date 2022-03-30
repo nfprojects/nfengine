@@ -15,6 +15,7 @@
 #include "PipelineState.hpp"
 #include "Buffer.hpp"
 #include "Internal/RingBuffer.hpp"
+#include "Internal/DescriptorSetCache.hpp"
 
 
 namespace NFE {
@@ -51,16 +52,14 @@ class CommandRecorder: public ICommandRecorder
     };
 
     using PendingResourcesArray = Common::StaticArray<TemporaryResourceBind, VK_MAX_PENDING_RESOURCES>;
-    using DescriptorSetArray = Common::StaticArray<VkDescriptorSet, VK_MAX_DESCRIPTOR_SETS>;
 
     // General fields
     VkCommandBuffer mCommandBuffer;
     CommandQueueType mQueueType;
     VkCommandBufferBeginInfo mCommandBufferBeginInfo;
-
     PipelineState* mPipelineState;
     PendingResourcesArray mPendingResources;
-    DescriptorSetArray mTemporaryDescriptorSets;
+    UsedDescriptorSetsArray mUsedDescriptorSets;
 
     // Graphics resources
     RenderTarget* mRenderTarget;
@@ -75,13 +74,7 @@ class CommandRecorder: public ICommandRecorder
     bool WriteVolatileBuffer(Buffer* b, size_t size, const void* data);
     void RebindDynamicBuffers() const;
 
-    NFE_INLINE void StoreDescriptorSetBinding(uint32 slot, VkDescriptorSet set)
-    {
-        mTemporaryDescriptorSets[slot] = set;
-    }
-
     uint32 AcquireTargetDescriptorSetIdx(ShaderType stage, ShaderResourceType type);
-    void ClearDescriptorSetBindings();
     void BindPendingResources();
 
 public:

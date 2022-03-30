@@ -31,6 +31,7 @@ SET(NFRENDERERVK_SOURCES
     API/VertexLayout.cpp
     Internal/CommandBufferManager.cpp
     Internal/Debugger.cpp
+    Internal/DescriptorSetCache.cpp
     Internal/Extensions.cpp
     Internal/FenceSignaller.cpp
     Internal/Instance.cpp
@@ -64,6 +65,7 @@ SET(NFRENDERERVK_HEADERS
     API/VertexLayout.hpp
     Internal/CommandBufferManager.hpp
     Internal/Debugger.hpp
+    Internal/DescriptorSetCache.hpp
     Internal/Extensions.hpp
     Internal/FenceSignaller.hpp
     Internal/GetProc.hpp

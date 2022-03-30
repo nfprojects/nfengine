@@ -60,3 +60,10 @@
 #define VK_MAX_BINDINGS_PER_STAGE (5)
 #define VK_MAX_SHADER_STAGES (5)
 #define VK_MAX_DESCRIPTOR_SETS (VK_MAX_BINDINGS_PER_STAGE * VK_MAX_SHADER_STAGES)
+
+
+// RendererVk common types
+using DescriptorSetCollectionID = NFE::uint32;
+using DescriptorSetCollection = NFE::Common::StaticArray<VkDescriptorSet, VK_MAX_DESCRIPTOR_SETS>;
+using DescriptorSetLayoutCollection = NFE::Common::StaticArray<VkDescriptorSetLayout, VK_MAX_DESCRIPTOR_SETS>;
+using UsedDescriptorSetsArray = NFE::Common::StaticArray<DescriptorSetCollectionID, 32>;
