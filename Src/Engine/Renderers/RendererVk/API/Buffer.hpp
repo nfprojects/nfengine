@@ -26,7 +26,6 @@ class Buffer : public IBuffer, public IResource
     VkDeviceSize mStructureSize;
     ResourceAccessMode mMode;
 
-    uint32 mVolatileBinding;
     uint32 mVolatileDataOffset;
 
 public:

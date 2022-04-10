@@ -19,7 +19,10 @@ namespace Renderer {
 
 PipelineState::PipelineState()
     : mDesc()
+    , mShaders()
     , mShaderStageDescs()
+    , mDescriptorSetMetadata()
+    , mVolatileResourceMetadata()
     , mDescriptorSetLayouts()
     , mPipelineLayout(VK_NULL_HANDLE)
     , mPipeline(VK_NULL_HANDLE)
@@ -41,6 +44,14 @@ PipelineState::~PipelineState()
         vkDestroyShaderModule(gDevice->GetDevice(), s.module, nullptr);
 }
 
+void PipelineState::CollectVolatileResourceMetadata()
+{
+    for (const auto& vb: mDesc.volatileBufferBindings)
+    {
+        mVolatileResourceMetadata.EmplaceBack(vb.stage, vb.binding);
+    }
+}
+
 bool PipelineState::MapToDescriptorSet(const ShaderPtr& shader, SpvReflectDescriptorType type, uint32& set)
 {
     SpvReflectResult result = SPV_REFLECT_RESULT_SUCCESS;
@@ -55,10 +66,7 @@ bool PipelineState::MapToDescriptorSet(const ShaderPtr& shader, SpvReflectDescri
         {
             if (!allocatedSet)
             {
-                mDescriptorSetMetadata.EmplaceBack();
-                mDescriptorSetMetadata.Back().stage = s->mStageInfo.stage;
-                mDescriptorSetMetadata.Back().set = set;
-                mDescriptorSetMetadata.Back().type = TranslateSpvReflectDescriptorTypeToVkDescriptorType(type);
+                mDescriptorSetMetadata.EmplaceBack(s->mStageInfo.stage, set);
                 allocatedSet = true;
             }
 
@@ -70,8 +78,18 @@ bool PipelineState::MapToDescriptorSet(const ShaderPtr& shader, SpvReflectDescri
             CHECK_SPVREFLECTRESULT(result, "Failed to change Descriptor Binding set number");
 
             DescriptorBindings& descs = mDescriptorSetMetadata.Back().bindings;
-            descs.EmplaceBack();
-            descs.Back().binding = binding->binding;
+            descs.EmplaceBack(type, binding->binding);
+            if (type == SPV_REFLECT_DESCRIPTOR_TYPE_UNIFORM_BUFFER)
+            {
+                for (const VolatileBufferBinding& vbb: mDesc.volatileBufferBindings)
+                {
+                    VkShaderStageFlagBits vbbStage = TranslateShaderTypeToVkShaderStage(vbb.stage);
+                    if (vbbStage == s->mStageInfo.stage && vbb.binding == binding->binding)
+                    {
+                        descs.Back().type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC;
+                    }
+                }
+            }
         }
     }
 
@@ -79,8 +97,6 @@ bool PipelineState::MapToDescriptorSet(const ShaderPtr& shader, SpvReflectDescri
         set++;
 
     // TODO check if bindings are tightly packed?
-
-    // TODO check for volatile buffers
 
     return true;
 }
@@ -133,7 +149,7 @@ bool PipelineState::CreateDescriptorSetLayouts()
         {
             dslBindings[i].binding = dsData.bindings[i].binding;
             dslBindings[i].descriptorCount = 1;
-            dslBindings[i].descriptorType = dsData.type;
+            dslBindings[i].descriptorType = dsData.bindings[i].type;
             dslBindings[i].stageFlags = dsData.stage;
             dslBindings[i].pImmutableSamplers = nullptr;
         }
@@ -174,6 +190,8 @@ VkShaderModule PipelineState::CreateShaderModule(const SpvReflectShaderModule& s
 bool PipelineState::CreatePipelineLayout()
 {
     VkResult result = VK_SUCCESS;
+
+    CollectVolatileResourceMetadata();
 
     if (!RemapDescriptorSets())
         return false;

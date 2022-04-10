@@ -32,12 +32,12 @@ CommandRecorder::CommandRecorder()
     , mCommandBufferBeginInfo()
     , mPipelineState(nullptr)
     , mPendingResources()
+    , mPendingVolatileWrites()
     , mUsedDescriptorSets()
+    , mVolatileResources()
+    , mVolatileBufferOffsets()
     , mRenderTarget(nullptr)
     , mActiveRenderPass(false)
-    , mBoundVolatileBuffers()
-    , mBoundVolatileOffsets()
-    , mRebindDynamicBuffers(false)
 {
 }
 
@@ -104,25 +104,59 @@ bool CommandRecorder::WriteDynamicBuffer(Buffer* b, size_t offset, size_t size, 
 
 bool CommandRecorder::WriteVolatileBuffer(Buffer* b, size_t size, const void* data)
 {
-    b->mVolatileDataOffset = gDevice->GetRingBuffer()->Write(data, static_cast<uint32>(size));
-    NFE_ASSERT(b->mVolatileDataOffset != UINT32_MAX, "Failed to write data to Ring Ruffer - the Ring Buffer is full");
-
-    for (uint32 i = 0; i < VK_MAX_VOLATILE_BUFFERS; ++i)
+    uint32 offset = gDevice->GetRingBuffer()->Write(data, static_cast<uint32>(size));
+    if (offset == UINT32_MAX)
     {
-        if (b == mBoundVolatileBuffers[i])
-        {
-            mBoundVolatileOffsets[i] = b->mVolatileDataOffset;
-            mRebindDynamicBuffers = true;
-            break;
-        }
+        NFE_LOG_ERROR("Failed to write data to Ring Ruffer - the Ring Buffer is full");
+        return false;
     }
 
+    mPendingVolatileWrites.EmplaceBack(b, offset);
     return true;
+}
+
+void CommandRecorder::UpdateVolatileResources(PipelineState* oldState)
+{
+    if (oldState == nullptr)
+    {
+        mVolatileResources.Resize(mPipelineState->mVolatileResourceMetadata.Size());
+        return;
+    }
+
+    if (mPipelineState->mVolatileResourceMetadata.Empty())
+    {
+        mVolatileResources.Clear();
+        return;
+    }
+
+    VolatileResources oldResources(mVolatileResources);
+    mVolatileResources.Resize(mPipelineState->mVolatileResourceMetadata.Size());
+    for (uint32 i = 0; i < mVolatileResources.Size(); ++i)
+        mVolatileResources[i] = nullptr;
+
+    if (oldResources.Empty())
+        return;
+
+    // Copy over volatile resources from old to new collection, but only if their binding matches
+    const PipelineState::VolatileResourceMetadata& oldVRM = oldState->mVolatileResourceMetadata;
+    const PipelineState::VolatileResourceMetadata& newVRM = mPipelineState->mVolatileResourceMetadata;
+    for (uint32 oldIdx = 0; oldIdx < oldVRM.Size(); ++oldIdx)
+    {
+        for (uint32 newIdx = 0; newIdx < newVRM.Size(); ++newIdx)
+        {
+            if (oldVRM[oldIdx].stage == newVRM[newIdx].stage &&
+                oldVRM[oldIdx].binding == newVRM[newIdx].binding)
+            {
+                mVolatileResources[newIdx] = oldResources[oldIdx];
+                break;
+            }
+        }
+    }
 }
 
 uint32 CommandRecorder::AcquireTargetDescriptorSetIdx(ShaderType stage, ShaderResourceType type)
 {
-    VkShaderStageFlags stageFlags = TranslateShaderTypeToVkShaderStage(stage);
+    VkShaderStageFlagBits stageFlags = TranslateShaderTypeToVkShaderStage(stage);
     VkDescriptorType descType;
 
     switch (type)
@@ -137,24 +171,108 @@ uint32 CommandRecorder::AcquireTargetDescriptorSetIdx(ShaderType stage, ShaderRe
 
     for (uint32 i = 0; i < mPipelineState->mDescriptorSetMetadata.Size(); ++i)
     {
-        const PipelineState::DescriptorSetMetadata& metadata = mPipelineState->mDescriptorSetMetadata[i];
-        if (stageFlags == metadata.stage && descType == metadata.type)
+        const PipelineState::DescriptorSetMetadataEntry& metadata = mPipelineState->mDescriptorSetMetadata[i];
+        // strip _DYNAMIC for easier comparisons
+        VkDescriptorType metaTypeGeneral = (metadata.bindings[0].type == VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC) ?
+            VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER : metadata.bindings[0].type;
+        if (stageFlags == metadata.stage && descType == metaTypeGeneral)
             return metadata.set;
     }
 
     return UINT32_MAX;
 }
 
-void CommandRecorder::BindPendingResources()
+void CommandRecorder::InsertVolatileResource(IResource* r, VkShaderStageFlagBits stage, uint32 slot)
+{
+    NFE_ASSERT(mPipelineState != nullptr, "Pipeline State not bound");
+
+    const PipelineState::VolatileResourceMetadata& vrm = mPipelineState->mVolatileResourceMetadata;
+    NFE_ASSERT(vrm.Size() == mVolatileResources.Size(), "Volatile Resource storage size doesn't match Metadata size - is Pipeline State bound?");
+    for (uint32 i = 0; i < vrm.Size(); ++i)
+    {
+        if (vrm[i].stage == stage && vrm[i].binding == slot)
+        {
+            mVolatileResources[i] = r;
+        }
+    }
+}
+
+void CommandRecorder::SortPendingResources()
+{
+    if (mPendingResources.Size() < 2)
+        return; // no reason to sort one resource (or no resources)
+
+    // TODO replace with Common::Sort when it starts to exist
+
+    // first, sort resources by stage they occur in
+    std::sort(mPendingResources.begin(), mPendingResources.end(),
+        [](const PendingResource& a, const PendingResource& b) -> bool {
+            return a.stage < b.stage;
+        }
+    );
+
+    // next, sort resources within each stage according to their slot number
+    NFE::Common::ArrayIterator<PendingResource> stageBegin = mPendingResources.Begin();
+    NFE::Common::ArrayIterator<PendingResource> stageEnd = stageBegin;
+
+    ++stageEnd;
+    while (stageEnd != mPendingResources.End())
+    {
+        if (stageEnd->stage != stageBegin->stage)
+        {
+            std::sort(stageBegin, stageEnd,
+                [](const PendingResource& a, const PendingResource& b) -> bool {
+                    return a.slot < b.slot;
+                }
+            );
+
+            stageBegin = stageEnd;
+        }
+
+        ++stageEnd;
+    }
+}
+
+void CommandRecorder::ProcessPendingResources()
 {
     if (mPendingResources.Empty())
         return;
 
-    mUsedDescriptorSets.EmplaceBack(
-        gDevice->GetDescriptorSetCache().AllocateDescriptorSets(mPipelineState->mDescriptorSetLayouts)
-    );
+    DescriptorSetCollectionID dsID = gDevice->GetDescriptorSetCache().AllocateDescriptorSets(mPipelineState->mDescriptorSetLayouts);
+    DescriptorSetCollection& sets = gDevice->GetDescriptorSetCache().GetDescriptorSets(dsID);
 
-    DescriptorSetCollection& sets = gDevice->GetDescriptorSetCache().GetDescriptorSets(mUsedDescriptorSets.Back());
+    if (!mUsedDescriptorSets.Empty())
+    {
+        // copy sets from previously used DS - we will update over them
+        // TODO this might be a lil bit less memory intensive:
+        //  - Hold a "main version" of Descriptor Sets used by CR
+        //  - If we have pending resources, apply a "delta" and update only these sets
+        //    that require new resources bound to them.
+        //  - In BindDescriptorSets() form a new array of Sets which is a mixture of
+        //    "latest updated" sets.
+        DescriptorSetCollection& prevSets =
+            gDevice->GetDescriptorSetCache().GetDescriptorSets(mUsedDescriptorSets.Back());
+
+        Common::StaticArray<VkCopyDescriptorSet, VK_MAX_DESCRIPTOR_SETS> copySets;
+
+        for (uint32 i = 0; i < prevSets.Size(); ++i)
+        {
+            VkCopyDescriptorSet copySet;
+            VK_ZERO_MEMORY(copySet);
+            copySet.sType = VK_STRUCTURE_TYPE_COPY_DESCRIPTOR_SET;
+            copySet.descriptorCount = mPipelineState->mDescriptorSetMetadata[i].bindings.Size();
+            copySet.srcSet = sets[i];
+            copySet.srcBinding = 0;
+            copySet.dstSet = prevSets[i];
+            copySet.dstBinding = 0;
+
+            copySets.EmplaceBack(copySet);
+        }
+
+        vkUpdateDescriptorSets(gDevice->GetDevice(), 0, nullptr, copySets.Size(), copySets.Data());
+    }
+
+    mUsedDescriptorSets.EmplaceBack(dsID);
 
     Common::StaticArray<VkDescriptorBufferInfo, VK_MAX_PENDING_RESOURCES> bufferInfos;
     Common::StaticArray<VkDescriptorImageInfo, VK_MAX_PENDING_RESOURCES> imageInfos;
@@ -162,6 +280,8 @@ void CommandRecorder::BindPendingResources()
 
     for (uint32 i = 0; i < mPendingResources.Size(); ++i)
     {
+        // TODO check if types match, don't write/bind if not
+
         switch (mPendingResources[i].type)
         {
         case ShaderResourceType::UniformBuffer:
@@ -170,10 +290,13 @@ void CommandRecorder::BindPendingResources()
             bufferInfos.EmplaceBack();
             VkDescriptorBufferInfo& bufferInfo = bufferInfos.Back();
 
-            // TODO volatile buffers support
             Buffer* b = dynamic_cast<Buffer*>(mPendingResources[i].resource);
+
+            if (b->mMode == ResourceAccessMode::Volatile)
+                InsertVolatileResource(b, TranslateShaderTypeToVkShaderStage(mPendingResources[i].stage), mPendingResources[i].slot);
+
             VK_ZERO_MEMORY(bufferInfo);
-            bufferInfo.buffer = b->mBuffer;
+            bufferInfo.buffer = (b->mMode == ResourceAccessMode::Volatile) ? gDevice->GetRingBuffer()->GetVkBuffer() : b->mBuffer;
             bufferInfo.range = b->mBufferSize;
             bufferInfo.offset = 0;
             break;
@@ -213,7 +336,7 @@ void CommandRecorder::BindPendingResources()
         VK_ZERO_MEMORY(writeSet);
         writeSet.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
         writeSet.descriptorCount = 1;
-        writeSet.descriptorType = mPipelineState->mDescriptorSetMetadata[setIdx].type;
+        writeSet.descriptorType = mPipelineState->mDescriptorSetMetadata[setIdx].bindings[mPendingResources[i].slot].type;
         writeSet.dstSet = sets[setIdx];
         writeSet.dstBinding = mPendingResources[i].slot;
         writeSet.pBufferInfo =
@@ -229,12 +352,48 @@ void CommandRecorder::BindPendingResources()
 
     vkUpdateDescriptorSets(gDevice->GetDevice(), writeSets.Size(), writeSets.Data(), 0, nullptr);
 
+    mVolatileBufferOffsets.Resize(mVolatileResources.Size());
+
+    mPendingResources.Clear();
+}
+
+void CommandRecorder::ProcessVolatileOffsets()
+{
+    for (const PendingVolatileWrite& write: mPendingVolatileWrites)
+    {
+        for (uint32 i = 0; i < mVolatileResources.Size(); ++i)
+        {
+            if (mVolatileResources[i] == write.resource)
+            {
+                mVolatileBufferOffsets[i] = write.offset;
+            }
+        }
+    }
+
+    mPendingVolatileWrites.Clear();
+}
+
+void CommandRecorder::BindDescriptorSets()
+{
+    if (mUsedDescriptorSets.Empty())
+        return;
+
+    DescriptorSetCollection& sets = gDevice->GetDescriptorSetCache().GetDescriptorSets(mUsedDescriptorSets.Back());
+
     vkCmdBindDescriptorSets(mCommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS,
                             mPipelineState->mPipelineLayout, 0,
                             sets.Size(), sets.Data(),
-                            0, nullptr);
+                            mVolatileBufferOffsets.Size(), mVolatileBufferOffsets.Data());
+}
 
-    mPendingResources.Clear();
+void CommandRecorder::PreDraw()
+{
+    SortPendingResources();
+    ProcessPendingResources();
+    ProcessVolatileOffsets();
+    BindDescriptorSets();
+
+    EnsureInsideRenderPass();
 }
 
 
@@ -255,14 +414,8 @@ bool CommandRecorder::Init()
 
 bool CommandRecorder::Begin(CommandQueueType queueType)
 {
-    mRebindDynamicBuffers = false;
-    for (uint32 i = 0; i < VK_MAX_VOLATILE_BUFFERS; ++i)
-    {
-        mBoundVolatileBuffers[i] = nullptr;
-        mBoundVolatileOffsets[i] = 0;
-    }
-
     mRenderTarget = nullptr;
+    mPipelineState = nullptr;
 
     // Get CommandBuffer from select queue
     mCommandBuffer = gDevice->GetCommandBufferManager(queueType).Acquire();
@@ -531,14 +684,7 @@ void CommandRecorder::BindConstantBuffer(ShaderType stage, uint32 slot, const Bu
     Buffer* b = dynamic_cast<Buffer*>(buffer.Get());
     NFE_ASSERT(b != nullptr, "Invalid Buffer pointer");
 
-    if (b->mMode == ResourceAccessMode::Volatile)
-    {
-
-    }
-    else
-    {
-        mPendingResources.EmplaceBack(b, stage, ShaderResourceType::UniformBuffer, slot);
-    }
+    mPendingResources.EmplaceBack(b, stage, ShaderResourceType::UniformBuffer, slot);
 }
 
 void CommandRecorder::BindTexture(ShaderType stage, uint32 slot, const TexturePtr& texture, const TextureView& view)
@@ -669,10 +815,14 @@ void CommandRecorder::SetRenderTarget(const RenderTargetPtr& renderTarget)
 
 void CommandRecorder::SetPipelineState(const PipelineStatePtr& state)
 {
+    NFE_ASSERT(state, "Cannot set null pipeline state");
+
+    PipelineState* oldState = mPipelineState;
     mPipelineState = dynamic_cast<PipelineState*>(state.Get());
     NFE_ASSERT(mPipelineState != nullptr, "Incorrect pipeline state provided");
 
     vkCmdBindPipeline(mCommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, mPipelineState->mPipeline);
+    UpdateVolatileResources(oldState);
 }
 
 void CommandRecorder::SetComputePipelineState(const ComputePipelineStatePtr& state)
@@ -741,29 +891,13 @@ void CommandRecorder::SetViewport(float left, float width, float top, float heig
 
 void CommandRecorder::Draw(uint32 vertexNum, uint32 instancesNum, uint32 vertexOffset, uint32 instanceOffset)
 {
-    /*if (mRebindDynamicBuffers)
-    {
-        RebindDynamicBuffers();
-        mRebindDynamicBuffers = false;
-    }*/
-
-    BindPendingResources();
-    EnsureInsideRenderPass();
-
+    PreDraw();
     vkCmdDraw(mCommandBuffer, vertexNum, instancesNum, vertexOffset, instanceOffset);
 }
 
 void CommandRecorder::DrawIndexed(uint32 indexNum, uint32 instancesNum, uint32 indexOffset, int32 vertexOffset, uint32 instanceOffset)
 {
-    /*if (mRebindDynamicBuffers)
-    {
-        RebindDynamicBuffers();
-        mRebindDynamicBuffers = false;
-    }*/
-
-    BindPendingResources();
-    EnsureInsideRenderPass();
-
+    PreDraw();
     vkCmdDrawIndexed(mCommandBuffer, indexNum, instancesNum, indexOffset, vertexOffset, instanceOffset);
 }
 
@@ -774,9 +908,10 @@ void CommandRecorder::Dispatch(uint32 x, uint32 y, uint32 z)
 
 void CommandRecorder::DispatchIndirect(const BufferPtr& indirectArgBuffer, uint32 bufferOffset)
 {
-    NFE_UNUSED(indirectArgBuffer);
-    NFE_UNUSED(bufferOffset);
-    NFE_FATAL("Not yet implemented");
+    Buffer* b = dynamic_cast<Buffer*>(indirectArgBuffer.Get());
+    NFE_ASSERT(b != nullptr, "Incorrect Indirect Arg Buffer provided");
+
+    vkCmdDispatchIndirect(mCommandBuffer, b->mBuffer, bufferOffset);
 }
 
 

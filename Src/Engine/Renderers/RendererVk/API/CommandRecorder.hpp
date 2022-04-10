@@ -35,14 +35,14 @@ class CommandRecorder: public ICommandRecorder
         StorageImage,
     };
 
-    struct TemporaryResourceBind
+    struct PendingResource
     {
         IResource* resource;
         ShaderType stage;
         ShaderResourceType type;
         uint32 slot;
 
-        TemporaryResourceBind(IResource* r, ShaderType stage, ShaderResourceType type, uint32 set)
+        PendingResource(IResource* r, ShaderType stage, ShaderResourceType type, uint32 set)
             : resource(r)
             , stage(stage)
             , type(type)
@@ -51,7 +51,22 @@ class CommandRecorder: public ICommandRecorder
         }
     };
 
-    using PendingResourcesArray = Common::StaticArray<TemporaryResourceBind, VK_MAX_PENDING_RESOURCES>;
+    struct PendingVolatileWrite
+    {
+        IResource* resource;
+        uint32 offset;
+
+        PendingVolatileWrite(IResource* r, uint32 offset)
+            : resource(r)
+            , offset(offset)
+        {
+        }
+    };
+
+    using PendingResourcesArray = Common::StaticArray<PendingResource, VK_MAX_PENDING_RESOURCES>;
+    using PendingVolatileWrites = Common::StaticArray<PendingVolatileWrite, VK_MAX_VOLATILE_BUFFERS>;
+    using VolatileResources = Common::StaticArray<IResource*, VK_MAX_VOLATILE_BUFFERS>;
+    using VolatileOffsets = Common::StaticArray<uint32, VK_MAX_VOLATILE_BUFFERS>;
 
     // General fields
     VkCommandBuffer mCommandBuffer;
@@ -59,23 +74,29 @@ class CommandRecorder: public ICommandRecorder
     VkCommandBufferBeginInfo mCommandBufferBeginInfo;
     PipelineState* mPipelineState;
     PendingResourcesArray mPendingResources;
+    PendingVolatileWrites mPendingVolatileWrites;
     UsedDescriptorSetsArray mUsedDescriptorSets;
+    VolatileResources mVolatileResources;
+    VolatileOffsets mVolatileBufferOffsets;
 
     // Graphics resources
     RenderTarget* mRenderTarget;
     bool mActiveRenderPass;
-    Buffer* mBoundVolatileBuffers[VK_MAX_VOLATILE_BUFFERS];
-    uint32 mBoundVolatileOffsets[VK_MAX_VOLATILE_BUFFERS];
-    bool mRebindDynamicBuffers;
 
     void EnsureOutsideRenderPass();
     void EnsureInsideRenderPass();
     bool WriteDynamicBuffer(Buffer* b, size_t offset, size_t size, const void* data);
     bool WriteVolatileBuffer(Buffer* b, size_t size, const void* data);
-    void RebindDynamicBuffers() const;
+    void UpdateVolatileResources(PipelineState* oldState);
 
     uint32 AcquireTargetDescriptorSetIdx(ShaderType stage, ShaderResourceType type);
-    void BindPendingResources();
+    void InsertVolatileResource(IResource* r, VkShaderStageFlagBits stage, uint32 slot);
+    void SortPendingResources();
+    void ProcessPendingResources();
+    void ProcessVolatileOffsets();
+    void BindDescriptorSets();
+
+    void PreDraw();
 
 public:
     CommandRecorder();

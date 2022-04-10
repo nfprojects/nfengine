@@ -22,27 +22,62 @@ class PipelineState : public IPipelineState
 
     struct DescriptorMetadata
     {
+        VkDescriptorType type;
         uint32 binding;
+
+        DescriptorMetadata() = default;
+        DescriptorMetadata(SpvReflectDescriptorType type, uint32 binding)
+            : type(TranslateSpvReflectDescriptorTypeToVkDescriptorType(type))
+            , binding(binding)
+        {
+        }
     };
 
     using DescriptorBindings = Common::StaticArray<DescriptorMetadata, VK_MAX_BINDINGS_PER_SET>;
 
-    struct DescriptorSetMetadata
+    struct DescriptorSetMetadataEntry
     {
-        VkShaderStageFlags stage;
-        VkDescriptorType type;
+        VkShaderStageFlagBits stage;
         uint32 set;
         DescriptorBindings bindings;
+
+        DescriptorSetMetadataEntry() = default;
+        DescriptorSetMetadataEntry(VkShaderStageFlagBits stage, uint32 set)
+            : stage(stage)
+            , set(set)
+            , bindings()
+        {
+        }
     };
 
+    struct VolatileResourceMetadataEntry
+    {
+        VkShaderStageFlagBits stage;
+        uint32 binding;
+
+        VolatileResourceMetadataEntry() = default;
+        VolatileResourceMetadataEntry(ShaderType stage, uint32 binding)
+            : stage(TranslateShaderTypeToVkShaderStage(stage))
+            , binding(binding)
+        {
+        }
+    };
+
+    using Shaders = Common::StaticArray<ShaderPtr, VK_MAX_SHADER_STAGES>;
+    using DescriptorSetMetadata = Common::StaticArray<DescriptorSetMetadataEntry, VK_MAX_DESCRIPTOR_SETS>;
+    using ShaderStageDescs = Common::StaticArray<VkPipelineShaderStageCreateInfo, VK_MAX_SHADER_STAGES>;
+    using VolatileResourceMetadata = Common::StaticArray<VolatileResourceMetadataEntry, VK_MAX_VOLATILE_BUFFERS>;
+
     PipelineStateDesc mDesc;
-    Common::StaticArray<ShaderPtr, VK_MAX_SHADER_STAGES> mShaders;
-    Common::StaticArray<DescriptorSetMetadata, VK_MAX_DESCRIPTOR_SETS> mDescriptorSetMetadata;
-    Common::StaticArray<VkPipelineShaderStageCreateInfo, VK_MAX_SHADER_STAGES> mShaderStageDescs;
+    Shaders mShaders;
+    ShaderStageDescs mShaderStageDescs;
+    DescriptorSetMetadata mDescriptorSetMetadata;
+    VolatileResourceMetadata mVolatileResourceMetadata;
     DescriptorSetLayoutCollection mDescriptorSetLayouts;
     VkPipelineLayout mPipelineLayout;
     VkPipeline mPipeline;
 
+    void CollectVolatileResourceMetadata();
     bool MapToDescriptorSet(const ShaderPtr& shader, SpvReflectDescriptorType type, uint32& set);
     bool RemapDescriptorSets();
     bool CreateDescriptorSetLayouts();

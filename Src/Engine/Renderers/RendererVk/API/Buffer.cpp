@@ -19,7 +19,6 @@ Buffer::Buffer()
     , mBufferSize(0)
     , mStructureSize(0)
     , mMode(ResourceAccessMode::Invalid)
-    , mVolatileBinding(UINT32_MAX)
     , mVolatileDataOffset(UINT32_MAX)
 {
 }
