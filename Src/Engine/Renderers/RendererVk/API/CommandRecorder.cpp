@@ -89,7 +89,7 @@ bool CommandRecorder::WriteDynamicBuffer(Buffer* b, size_t offset, size_t size, 
         return false;
     }
 
-    // CopyBuffer has to be call outside a Render Pass
+    // CopyBuffer has to be called outside a Render Pass
     EnsureOutsideRenderPass();
 
     VkBufferCopy region;
@@ -156,10 +156,8 @@ void CommandRecorder::BindPendingResources()
 
     DescriptorSetCollection& sets = gDevice->GetDescriptorSetCache().GetDescriptorSets(mUsedDescriptorSets.Back());
 
-    VkDescriptorBufferInfo bufferInfo;
-    VK_ZERO_MEMORY(bufferInfo);
-    VkDescriptorImageInfo imageInfo;
-    VK_ZERO_MEMORY(imageInfo);
+    Common::StaticArray<VkDescriptorBufferInfo, VK_MAX_PENDING_RESOURCES> bufferInfos;
+    Common::StaticArray<VkDescriptorImageInfo, VK_MAX_PENDING_RESOURCES> imageInfos;
     Common::StaticArray<VkWriteDescriptorSet, VK_MAX_PENDING_RESOURCES> writeSets;
 
     for (uint32 i = 0; i < mPendingResources.Size(); ++i)
@@ -169,6 +167,9 @@ void CommandRecorder::BindPendingResources()
         case ShaderResourceType::UniformBuffer:
         case ShaderResourceType::StorageBuffer:
         {
+            bufferInfos.EmplaceBack();
+            VkDescriptorBufferInfo& bufferInfo = bufferInfos.Back();
+
             // TODO volatile buffers support
             Buffer* b = dynamic_cast<Buffer*>(mPendingResources[i].resource);
             VK_ZERO_MEMORY(bufferInfo);
@@ -180,6 +181,9 @@ void CommandRecorder::BindPendingResources()
         case ShaderResourceType::SampledImage:
         case ShaderResourceType::StorageImage:
         {
+            imageInfos.EmplaceBack();
+            VkDescriptorImageInfo& imageInfo = imageInfos.Back();
+
             Texture* t = dynamic_cast<Texture*>(mPendingResources[i].resource);
             gDevice->GetLayoutTracker().EnsureLayout(mCommandBuffer, t->GetID(), VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
             VK_ZERO_MEMORY(imageInfo);
@@ -190,6 +194,9 @@ void CommandRecorder::BindPendingResources()
         }
         case ShaderResourceType::Sampler:
         {
+            imageInfos.EmplaceBack();
+            VkDescriptorImageInfo& imageInfo = imageInfos.Back();
+
             Sampler* s = dynamic_cast<Sampler*>(mPendingResources[i].resource);
             VK_ZERO_MEMORY(imageInfo);
             imageInfo.sampler = s->mSampler;
@@ -209,11 +216,13 @@ void CommandRecorder::BindPendingResources()
         writeSet.descriptorType = mPipelineState->mDescriptorSetMetadata[setIdx].type;
         writeSet.dstSet = sets[setIdx];
         writeSet.dstBinding = mPendingResources[i].slot;
-        writeSet.pBufferInfo = (mPendingResources[i].type == ShaderResourceType::UniformBuffer ? &bufferInfo : nullptr);
+        writeSet.pBufferInfo =
+            (mPendingResources[i].type == ShaderResourceType::UniformBuffer ?
+            &bufferInfos.Back() : nullptr);
         writeSet.pImageInfo =
             ((mPendingResources[i].type == ShaderResourceType::SampledImage) ||
             (mPendingResources[i].type == ShaderResourceType::Sampler) ?
-            &imageInfo : nullptr);
+            &imageInfos.Back() : nullptr);
 
         writeSets.EmplaceBack(writeSet);
     }
