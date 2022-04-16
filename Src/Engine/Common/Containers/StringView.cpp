@@ -204,17 +204,7 @@ bool operator != (const StringView& lhs, const StringView& rhs)
 
 bool operator < (const StringView& lhs, const StringView& rhs)
 {
-    if (lhs.mLength < rhs.mLength)
-    {
-        return true;
-    }
-
-    if (lhs.mLength > rhs.mLength)
-    {
-        return false;
-    }
-
-    for (uint32 i = 0; i < lhs.mLength; ++i)
+    for (uint32 i = 0; i < lhs.mLength && i < rhs.mLength; ++i)
     {
         if (lhs.mData[i] < rhs.mData[i])
         {
@@ -224,6 +214,16 @@ bool operator < (const StringView& lhs, const StringView& rhs)
         {
             return false;
         }
+    }
+
+    if (lhs.mLength < rhs.mLength)
+    {
+        return true;
+    }
+
+    if (lhs.mLength > rhs.mLength)
+    {
+        return false;
     }
 
     // string are equal
@@ -237,17 +237,7 @@ bool operator > (const StringView& lhs, const StringView& rhs)
 
 bool operator <= (const StringView& lhs, const StringView& rhs)
 {
-    if (lhs.mLength < rhs.mLength)
-    {
-        return true;
-    }
-
-    if (lhs.mLength > rhs.mLength)
-    {
-        return false;
-    }
-
-    for (uint32 i = 0; i < lhs.mLength; ++i)
+    for (uint32 i = 0; i < lhs.mLength && i < rhs.mLength; ++i)
     {
         if (lhs.mData[i] < rhs.mData[i])
         {
@@ -257,6 +247,16 @@ bool operator <= (const StringView& lhs, const StringView& rhs)
         {
             return false;
         }
+    }
+
+    if (lhs.mLength < rhs.mLength)
+    {
+        return true;
+    }
+
+    if (lhs.mLength > rhs.mLength)
+    {
+        return false;
     }
 
     // string are equal

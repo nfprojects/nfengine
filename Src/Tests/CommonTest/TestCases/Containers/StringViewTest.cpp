@@ -6,6 +6,7 @@
 
 #include "PCH.hpp"
 #include "Engine/Common/Containers/String.hpp"
+#include "Engine/Common/Containers/StaticArray.hpp"
 
 
 using namespace NFE;
@@ -135,6 +136,27 @@ TEST(StringView, CompareDifferentLength)
 {
     StringView stringViewA("abcd");
     StringView stringViewB("abcde");
+
+    EXPECT_FALSE(stringViewA == stringViewB);
+    EXPECT_FALSE(stringViewB == stringViewA);
+    EXPECT_FALSE(stringViewA >= stringViewB);
+    EXPECT_TRUE(stringViewB >= stringViewA);
+    EXPECT_TRUE(stringViewA <= stringViewB);
+    EXPECT_FALSE(stringViewB <= stringViewA);
+
+    EXPECT_TRUE(stringViewA != stringViewB);
+    EXPECT_TRUE(stringViewB != stringViewA);
+    EXPECT_TRUE(stringViewA < stringViewB);
+    EXPECT_FALSE(stringViewB < stringViewA);
+    EXPECT_FALSE(stringViewA > stringViewB);
+    EXPECT_TRUE(stringViewB > stringViewA);
+}
+
+TEST(StringView, CompareLongerAThanB)
+{
+    // a is longer, however lexicographically it should still be "smaller" than b
+    StringView stringViewA("DepthStencil");
+    StringView stringViewB("Multisample");
 
     EXPECT_FALSE(stringViewA == stringViewB);
     EXPECT_FALSE(stringViewB == stringViewA);
