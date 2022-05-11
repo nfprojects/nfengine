@@ -1,6 +1,6 @@
 // simple compute shader
 
-[[vk::binding(0, 0)]]
+[[vk::binding(0)]]
 cbuffer gParams : register (b0)
 {
     uint4 OutputResolution;
@@ -9,7 +9,7 @@ cbuffer gParams : register (b0)
 
 #if FILL_INDIRECT_ARG_BUFFER == 1
 
-[[vk::binding(1, 0)]]
+[[vk::binding(0)]]
 RWBuffer<uint> gOutputIndirectArgBuffer : register(u0);
 
 [numthreads(1, 1, 1)]
@@ -28,7 +28,7 @@ void main(uint3 threadIDInGroup : SV_GroupThreadID,
 
 #else // FILL_INDIRECT_ARG_BUFFER == 0
 
-[[vk::binding(1, 0)]]
+[[vk::binding(0)]]
 RWTexture2D<unorm float4> gOutputTexture : register(u0);
 
 [numthreads(THREAD_GROUP_SIZE, THREAD_GROUP_SIZE, 1)]

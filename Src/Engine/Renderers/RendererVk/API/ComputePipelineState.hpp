@@ -1,22 +1,19 @@
 /**
  * @file
- * @author  Witek902 (witek902@gmail.com)
+ * @author  Lookey (costyrra.xl@gmail.com)
  * @brief   Declarations of Vulkan render's compute pipeline states.
  */
 
 #pragma once
 
-#include "../RendererCommon/ComputePipelineState.hpp"
+#include "BasePipelineState.hpp"
+
 
 namespace NFE {
 namespace Renderer {
 
-class ComputePipelineState : public IComputePipelineState
+class ComputePipelineState : public IComputePipelineState, public BasePipelineState
 {
-    friend class CommandRecorder;
-
-    VkPipeline mPipeline;
-
 public:
     ComputePipelineState();
     ~ComputePipelineState();

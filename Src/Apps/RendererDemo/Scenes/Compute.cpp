@@ -174,7 +174,7 @@ bool ComputeScene::CreateSubSceneIndirect()
         return false;
     }
 
-    mRWBufferSlot = mShader_Main->GetResourceSlotByName("gOutputIndirectArgBuffer");
+    mRWBufferSlot = mShader_PrepareArg->GetResourceSlotByName("gOutputIndirectArgBuffer");
     if (mRWBufferSlot < 0)
     {
         NFE_LOG_ERROR("Slot not found");

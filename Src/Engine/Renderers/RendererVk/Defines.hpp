@@ -23,6 +23,8 @@
 #include "Internal/Extensions.hpp"
 #include "Internal/Translations.hpp"
 
+#include <functional>
+
 #ifndef CHECK_VKRESULT
 #define CHECK_VKRESULT(result, errstr)                                              \
     if (result != VK_SUCCESS)                                                       \
@@ -48,7 +50,7 @@
 
 #ifndef MS_TO_NS
 #define MS_TO_NS(x) (x * 1'000'000)
-#endif // S_IN_NS
+#endif // MS_IN_NS
 
 // RendererVk limits
 #define VK_MAX_BINDINGS_PER_SET 16
@@ -57,13 +59,22 @@
 #define VK_MAX_VOLATILE_BUFFERS 8
 #define VK_SEMAPHORE_POOL_SIZE 16
 #define VK_COMMAND_BUFFER_POOL_SIZE 32
-#define VK_MAX_BINDINGS_PER_STAGE (5)
+#define VK_MAX_BINDINGS_PER_STAGE (8)
 #define VK_MAX_SHADER_STAGES (5)
 #define VK_MAX_DESCRIPTOR_SETS (VK_MAX_BINDINGS_PER_STAGE * VK_MAX_SHADER_STAGES)
 
 
+namespace NFE {
+namespace Renderer {
+
 // RendererVk common types
-using DescriptorSetCollectionID = NFE::uint32;
-using DescriptorSetCollection = NFE::Common::StaticArray<VkDescriptorSet, VK_MAX_DESCRIPTOR_SETS>;
-using DescriptorSetLayoutCollection = NFE::Common::StaticArray<VkDescriptorSetLayout, VK_MAX_DESCRIPTOR_SETS>;
-using UsedDescriptorSetsArray = NFE::Common::StaticArray<DescriptorSetCollectionID, 32>;
+using DescriptorSetCollectionID = uint32;
+using DescriptorSetCollection = Common::StaticArray<VkDescriptorSet, VK_MAX_DESCRIPTOR_SETS>;
+using DescriptorSetLayoutCollection = Common::StaticArray<VkDescriptorSetLayout, VK_MAX_DESCRIPTOR_SETS>;
+using UsedDescriptorSetsArray = Common::StaticArray<DescriptorSetCollectionID, 32>;
+
+template <typename T>
+using ForEachFunction = std::function<bool(const T&)>;
+
+} // namespace Renderer
+} // namespace NFE

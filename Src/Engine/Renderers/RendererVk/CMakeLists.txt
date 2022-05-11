@@ -15,6 +15,7 @@ SET(NFE_RENDERERVK_DIRECTORY ${NFE_RENDERERS_DIRECTORY}/RendererVk)
 SET(NFRENDERERVK_SOURCES
     PCH.cpp
     API/Backbuffer.cpp
+    API/BasePipelineState.cpp
     API/Buffer.cpp
     API/CommandList.cpp
     API/CommandQueue.cpp
@@ -48,6 +49,7 @@ SET(NFRENDERERVK_SOURCES
 SET(NFRENDERERVK_HEADERS
     Defines.hpp
     API/Backbuffer.hpp
+    API/BasePipelineState.hpp
     API/Buffer.hpp
     API/CommandList.hpp
     API/CommandQueue.hpp

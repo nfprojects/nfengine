@@ -72,7 +72,7 @@ class CommandRecorder: public ICommandRecorder
     VkCommandBuffer mCommandBuffer;
     CommandQueueType mQueueType;
     VkCommandBufferBeginInfo mCommandBufferBeginInfo;
-    PipelineState* mPipelineState;
+    BasePipelineState* mPipelineState;
     PendingResourcesArray mPendingResources;
     PendingVolatileWrites mPendingVolatileWrites;
     UsedDescriptorSetsArray mUsedDescriptorSets;
@@ -87,7 +87,7 @@ class CommandRecorder: public ICommandRecorder
     void EnsureInsideRenderPass();
     bool WriteDynamicBuffer(Buffer* b, size_t offset, size_t size, const void* data);
     bool WriteVolatileBuffer(Buffer* b, size_t size, const void* data);
-    void UpdateVolatileResources(PipelineState* oldState);
+    void UpdateVolatileResources(BasePipelineState* oldState);
 
     uint32 AcquireTargetDescriptorSetIdx(ShaderType stage, ShaderResourceType type);
     void InsertVolatileResource(IResource* r, VkShaderStageFlagBits stage, uint32 slot);
@@ -97,6 +97,7 @@ class CommandRecorder: public ICommandRecorder
     void BindDescriptorSets();
 
     void PreDraw();
+    void PreDispatch();
 
 public:
     CommandRecorder();

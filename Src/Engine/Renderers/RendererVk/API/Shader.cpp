@@ -187,14 +187,6 @@ bool Shader::Init(const ShaderDesc& desc)
     );
     CHECK_SPVREFLECTRESULT(spvResult, "Failed to create reflection of shader SPIR-V code");
 
-    /*uint32 setsCount = 0;
-    spvResult = spvReflectEnumerateDescriptorSets(&mSpvReflectModule, &setsCount, nullptr);
-    CHECK_SPVREFLECTRESULT(spvResult, "Failed to get Descriptor Set count in shader");
-
-    mDescriptorSets.Resize_SkipConstructor(setsCount);
-    spvResult = spvReflectEnumerateDescriptorSets(&mSpvReflectModule, &setsCount, mDescriptorSets.Data());
-    CHECK_SPVREFLECTRESULT(spvResult, "Failed to enumerate Descriptor Sets in shader");*/
-
     uint32 bindingsCount = 0;
     spvResult = spvReflectEnumerateDescriptorBindings(&mSpvReflectModule, &bindingsCount, nullptr);
     CHECK_SPVREFLECTRESULT(spvResult, "Failed to get Descriptor Binding count in shader");
@@ -251,6 +243,18 @@ int Shader::GetResourceSlotByName(const char* name)
     }
 
     return -1;
+}
+
+bool Shader::ChangeDescriptorSetBinding(const SpvReflectDescriptorBinding* binding, uint32 newSet)
+{
+    SpvReflectResult result = spvReflectChangeDescriptorBindingNumbers(
+        &mSpvReflectModule, binding,
+        static_cast<uint32_t>(SPV_REFLECT_BINDING_NUMBER_DONT_CHANGE),
+        newSet
+    );
+    CHECK_SPVREFLECTRESULT(result, "Failed to change Descriptor Binding set number");
+
+    return true;
 }
 
 } // namespace Renderer

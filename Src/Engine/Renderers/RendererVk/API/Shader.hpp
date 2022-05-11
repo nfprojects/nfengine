@@ -18,16 +18,15 @@ namespace Renderer {
 
 class Shader : public IShader
 {
-    friend class CommandRecorder;
-    friend class PipelineState;
-    friend class ComputePipelineState;
+public:
+    using DescriptorBindings = Common::DynArray<SpvReflectDescriptorBinding*>;
 
+private:
     ShaderType mType;
     Common::String mShaderPath;
     VkPipelineShaderStageCreateInfo mStageInfo;
     SpvReflectShaderModule mSpvReflectModule;
-    //Common::DynArray<SpvReflectDescriptorSet*> mDescriptorSets;
-    Common::DynArray<SpvReflectDescriptorBinding*> mDescriptorBindings;
+    DescriptorBindings mDescriptorBindings;
 
 public:
     Shader();
@@ -36,6 +35,39 @@ public:
 
     bool Disassemble(bool html, Common::String& output) override;
     int GetResourceSlotByName(const char* name) override;
+
+    bool ChangeDescriptorSetBinding(const SpvReflectDescriptorBinding* binding, uint32 newSe);
+
+    NFE_INLINE const Common::String& GetShaderPath() const
+    {
+        return mShaderPath;
+    }
+
+    NFE_INLINE const SpvReflectShaderModule& GetReflectShaderModule() const
+    {
+        return mSpvReflectModule;
+    }
+
+    NFE_INLINE const VkPipelineShaderStageCreateInfo& GetShaderStageInfo() const
+    {
+        return mStageInfo;
+    }
+
+    NFE_INLINE bool ForEachDescriptorBinding(ForEachFunction<SpvReflectDescriptorBinding*> f)
+    {
+        bool success = true;
+
+        for (auto& binding: mDescriptorBindings)
+        {
+            if (!f(binding))
+            {
+                success = false;
+                break;
+            }
+        }
+
+        return success;
+    }
 };
 
 } // namespace Renderer

@@ -115,22 +115,22 @@ bool CommandRecorder::WriteVolatileBuffer(Buffer* b, size_t size, const void* da
     return true;
 }
 
-void CommandRecorder::UpdateVolatileResources(PipelineState* oldState)
+void CommandRecorder::UpdateVolatileResources(BasePipelineState* oldState)
 {
     if (oldState == nullptr)
     {
-        mVolatileResources.Resize(mPipelineState->mVolatileResourceMetadata.Size());
+        mVolatileResources.Resize(mPipelineState->GetVolatileResourceCount());
         return;
     }
 
-    if (mPipelineState->mVolatileResourceMetadata.Empty())
+    if (mPipelineState->GetVolatileResourceCount() == 0)
     {
         mVolatileResources.Clear();
         return;
     }
 
     VolatileResources oldResources(mVolatileResources);
-    mVolatileResources.Resize(mPipelineState->mVolatileResourceMetadata.Size());
+    mVolatileResources.Resize(mPipelineState->GetVolatileResourceCount());
     for (uint32 i = 0; i < mVolatileResources.Size(); ++i)
         mVolatileResources[i] = nullptr;
 
@@ -138,8 +138,8 @@ void CommandRecorder::UpdateVolatileResources(PipelineState* oldState)
         return;
 
     // Copy over volatile resources from old to new collection, but only if their binding matches
-    const PipelineState::VolatileResourceMetadata& oldVRM = oldState->mVolatileResourceMetadata;
-    const PipelineState::VolatileResourceMetadata& newVRM = mPipelineState->mVolatileResourceMetadata;
+    const BasePipelineState::VolatileResourceMetadata& oldVRM = oldState->GetVolatileResources();
+    const BasePipelineState::VolatileResourceMetadata& newVRM = mPipelineState->GetVolatileResources();
     for (uint32 oldIdx = 0; oldIdx < oldVRM.Size(); ++oldIdx)
     {
         for (uint32 newIdx = 0; newIdx < newVRM.Size(); ++newIdx)
@@ -169,9 +169,9 @@ uint32 CommandRecorder::AcquireTargetDescriptorSetIdx(ShaderType stage, ShaderRe
         default: return UINT32_MAX;
     }
 
-    for (uint32 i = 0; i < mPipelineState->mDescriptorSetMetadata.Size(); ++i)
+    for (uint32 i = 0; i < mPipelineState->GetDescriptorSetCount(); ++i)
     {
-        const PipelineState::DescriptorSetMetadataEntry& metadata = mPipelineState->mDescriptorSetMetadata[i];
+        const BasePipelineState::DescriptorSetMetadataEntry& metadata = mPipelineState->GetDescriptorSet(i);
         // strip _DYNAMIC for easier comparisons
         VkDescriptorType metaTypeGeneral = (metadata.bindings[0].type == VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC) ?
             VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER : metadata.bindings[0].type;
@@ -186,11 +186,13 @@ void CommandRecorder::InsertVolatileResource(IResource* r, VkShaderStageFlagBits
 {
     NFE_ASSERT(mPipelineState != nullptr, "Pipeline State not bound");
 
-    const PipelineState::VolatileResourceMetadata& vrm = mPipelineState->mVolatileResourceMetadata;
-    NFE_ASSERT(vrm.Size() == mVolatileResources.Size(), "Volatile Resource storage size doesn't match Metadata size - is Pipeline State bound?");
-    for (uint32 i = 0; i < vrm.Size(); ++i)
+    NFE_ASSERT(mPipelineState->GetVolatileResourceCount() == mVolatileResources.Size(),
+        "Volatile Resource storage size doesn't match Metadata size - is Pipeline State bound?");
+    for (uint32 i = 0; i < mPipelineState->GetVolatileResourceCount(); ++i)
     {
-        if (vrm[i].stage == stage && vrm[i].binding == slot)
+        const BasePipelineState::VolatileResourceMetadataEntry vrm =
+            mPipelineState->GetVolatileResource(i);
+        if (vrm.stage == stage && vrm.binding == slot)
         {
             mVolatileResources[i] = r;
         }
@@ -238,7 +240,7 @@ void CommandRecorder::ProcessPendingResources()
     if (mPendingResources.Empty())
         return;
 
-    DescriptorSetCollectionID dsID = gDevice->GetDescriptorSetCache().AllocateDescriptorSets(mPipelineState->mDescriptorSetLayouts);
+    DescriptorSetCollectionID dsID = gDevice->GetDescriptorSetCache().AllocateDescriptorSets(mPipelineState->GetDescriptorSetLayouts());
     DescriptorSetCollection& sets = gDevice->GetDescriptorSetCache().GetDescriptorSets(dsID);
 
     if (!mUsedDescriptorSets.Empty())
@@ -260,7 +262,7 @@ void CommandRecorder::ProcessPendingResources()
             VkCopyDescriptorSet copySet;
             VK_ZERO_MEMORY(copySet);
             copySet.sType = VK_STRUCTURE_TYPE_COPY_DESCRIPTOR_SET;
-            copySet.descriptorCount = mPipelineState->mDescriptorSetMetadata[i].bindings.Size();
+            copySet.descriptorCount = mPipelineState->GetDescriptorSet(i).bindings.Size();
             copySet.srcSet = sets[i];
             copySet.srcBinding = 0;
             copySet.dstSet = prevSets[i];
@@ -307,11 +309,14 @@ void CommandRecorder::ProcessPendingResources()
             imageInfos.EmplaceBack();
             VkDescriptorImageInfo& imageInfo = imageInfos.Back();
 
+            VkImageLayout layout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+            if (mPendingResources[i].type == ShaderResourceType::StorageImage)
+                layout = VK_IMAGE_LAYOUT_GENERAL;
+
             Texture* t = dynamic_cast<Texture*>(mPendingResources[i].resource);
-            gDevice->GetLayoutTracker().EnsureLayout(mCommandBuffer, t->GetID(), VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
             VK_ZERO_MEMORY(imageInfo);
             imageInfo.imageView = t->mImageView;
-            imageInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+            imageInfo.imageLayout = layout;
             imageInfo.sampler = nullptr;
             break;
         }
@@ -336,15 +341,17 @@ void CommandRecorder::ProcessPendingResources()
         VK_ZERO_MEMORY(writeSet);
         writeSet.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
         writeSet.descriptorCount = 1;
-        writeSet.descriptorType = mPipelineState->mDescriptorSetMetadata[setIdx].bindings[mPendingResources[i].slot].type;
+        writeSet.descriptorType = mPipelineState->GetDescriptorType(setIdx, mPendingResources[i].slot);
         writeSet.dstSet = sets[setIdx];
         writeSet.dstBinding = mPendingResources[i].slot;
         writeSet.pBufferInfo =
-            (mPendingResources[i].type == ShaderResourceType::UniformBuffer ?
+            ((mPendingResources[i].type == ShaderResourceType::UniformBuffer) ||
+             (mPendingResources[i].type == ShaderResourceType::StorageBuffer) ?
             &bufferInfos.Back() : nullptr);
         writeSet.pImageInfo =
             ((mPendingResources[i].type == ShaderResourceType::SampledImage) ||
-            (mPendingResources[i].type == ShaderResourceType::Sampler) ?
+             (mPendingResources[i].type == ShaderResourceType::StorageImage) ||
+             (mPendingResources[i].type == ShaderResourceType::Sampler) ?
             &imageInfos.Back() : nullptr);
 
         writeSets.EmplaceBack(writeSet);
@@ -380,8 +387,8 @@ void CommandRecorder::BindDescriptorSets()
 
     DescriptorSetCollection& sets = gDevice->GetDescriptorSetCache().GetDescriptorSets(mUsedDescriptorSets.Back());
 
-    vkCmdBindDescriptorSets(mCommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS,
-                            mPipelineState->mPipelineLayout, 0,
+    vkCmdBindDescriptorSets(mCommandBuffer, mPipelineState->GetBindPoint(),
+                            mPipelineState->GetPipelineLayout(), 0,
                             sets.Size(), sets.Data(),
                             mVolatileBufferOffsets.Size(), mVolatileBufferOffsets.Data());
 }
@@ -394,6 +401,13 @@ void CommandRecorder::PreDraw()
     BindDescriptorSets();
 
     EnsureInsideRenderPass();
+}
+
+void CommandRecorder::PreDispatch()
+{
+    SortPendingResources();
+    ProcessPendingResources();
+    BindDescriptorSets();
 }
 
 
@@ -710,22 +724,24 @@ void CommandRecorder::BindSampler(ShaderType stage, uint32 slot, const SamplerPt
 
 void CommandRecorder::BindWritableBuffer(ShaderType stage, uint32 slot, const BufferPtr& buffer, const BufferView& view)
 {
-    NFE_UNUSED(stage);
-    NFE_UNUSED(slot);
-    NFE_UNUSED(buffer);
     NFE_UNUSED(view);
-    NFE_FATAL("Not yet implemented");
-    //mPendingResources.EmplaceBack(s, stage, ShaderResourceType::StorageBuffer, slot);
+
+    Buffer* b = dynamic_cast<Buffer*>(buffer.Get());
+    NFE_ASSERT(b != nullptr, "Invalid Buffer pointer");
+    mPendingResources.EmplaceBack(b, stage, ShaderResourceType::StorageBuffer, slot);
 }
 
 void CommandRecorder::BindWritableTexture(ShaderType stage, uint32 slot, const TexturePtr& texture, const TextureView& view)
 {
-    NFE_UNUSED(stage);
-    NFE_UNUSED(slot);
-    NFE_UNUSED(texture);
+    // TODO
     NFE_UNUSED(view);
-    NFE_FATAL("Not yet implemented");
-    //mPendingResources.EmplaceBack(s, stage, ShaderResourceType::StorageImage, slot);
+
+    EnsureOutsideRenderPass();
+    Texture* t = dynamic_cast<Texture*>(texture.Get());
+    NFE_ASSERT(t != nullptr, "Invalid Texture pointer");
+
+    gDevice->GetLayoutTracker().EnsureLayout(mCommandBuffer, t->GetID(), VK_IMAGE_LAYOUT_GENERAL);
+    mPendingResources.EmplaceBack(t, stage, ShaderResourceType::StorageImage, slot);
 }
 
 void CommandRecorder::Clear(uint32 flags, uint32 numTargets, const uint32* slots, const Math::Vec4fU* colors, float depthValue, uint8 stencilValue)
@@ -817,20 +833,20 @@ void CommandRecorder::SetPipelineState(const PipelineStatePtr& state)
 {
     NFE_ASSERT(state, "Cannot set null pipeline state");
 
-    PipelineState* oldState = mPipelineState;
-    mPipelineState = dynamic_cast<PipelineState*>(state.Get());
+    BasePipelineState* oldState = mPipelineState;
+    mPipelineState = dynamic_cast<BasePipelineState*>(state.Get());
     NFE_ASSERT(mPipelineState != nullptr, "Incorrect pipeline state provided");
 
-    vkCmdBindPipeline(mCommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, mPipelineState->mPipeline);
+    vkCmdBindPipeline(mCommandBuffer, mPipelineState->GetBindPoint(), mPipelineState->GetPipeline());
     UpdateVolatileResources(oldState);
 }
 
 void CommandRecorder::SetComputePipelineState(const ComputePipelineStatePtr& state)
 {
-    ComputePipelineState* cps = dynamic_cast<ComputePipelineState*>(state.Get());
-    NFE_ASSERT(cps != nullptr, "Invalid Compute Pipeline State provided");
+    mPipelineState = dynamic_cast<BasePipelineState*>(state.Get());
+    NFE_ASSERT(mPipelineState != nullptr, "Invalid Compute Pipeline State provided");
 
-    vkCmdBindPipeline(mCommandBuffer, VK_PIPELINE_BIND_POINT_COMPUTE, cps->mPipeline);
+    vkCmdBindPipeline(mCommandBuffer, mPipelineState->GetBindPoint(), mPipelineState->GetPipeline());
 }
 
 void CommandRecorder::SetScissors(int32 left, int32 top, int32 right, int32 bottom)
@@ -903,6 +919,7 @@ void CommandRecorder::DrawIndexed(uint32 indexNum, uint32 instancesNum, uint32 i
 
 void CommandRecorder::Dispatch(uint32 x, uint32 y, uint32 z)
 {
+    PreDispatch();
     vkCmdDispatch(mCommandBuffer, x, y, z);
 }
 
@@ -911,6 +928,7 @@ void CommandRecorder::DispatchIndirect(const BufferPtr& indirectArgBuffer, uint3
     Buffer* b = dynamic_cast<Buffer*>(indirectArgBuffer.Get());
     NFE_ASSERT(b != nullptr, "Incorrect Indirect Arg Buffer provided");
 
+    PreDispatch();
     vkCmdDispatchIndirect(mCommandBuffer, b->mBuffer, bufferOffset);
 }
 
