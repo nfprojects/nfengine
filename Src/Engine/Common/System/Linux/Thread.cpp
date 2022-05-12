@@ -10,6 +10,7 @@
 #include "../../Logger/Logger.hpp"
 
 #include <pthread.h>
+#include <sched.h>
 #include <sys/sysinfo.h>
 
 
@@ -198,7 +199,7 @@ uint32 Thread::GetSystemThreadsCount()
 
 void Thread::YieldCurrentThread()
 {
-    pthread_yield();
+    sched_yield();
 }
 
 void Thread::SleepCurrentThread(double seconds)
