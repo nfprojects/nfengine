@@ -94,17 +94,20 @@ bool BasePipelineState::MapToDescriptorSet(Shader* s, SpvReflectDescriptorType t
         return false;
     }
 
-    uint32 shouldBeBinding = 0;
-    for (auto& b: mDescriptorSetMetadata.Back().bindings)
+    if (!mDescriptorSetMetadata.Empty())
     {
-        if (b.binding != shouldBeBinding)
+        uint32 shouldBeBinding = 0;
+        for (auto& b: mDescriptorSetMetadata.Back().bindings)
         {
-            NFE_LOG_WARNING("Found possible hole (set:%d;binding:%d) in descriptor bindings. Descriptors should be tightly packed.",
-                set, shouldBeBinding
-            );
-        }
+            if (b.binding != shouldBeBinding)
+            {
+                NFE_LOG_WARNING("Found possible hole (set:%d;binding:%d) in descriptor bindings. Descriptors should be tightly packed.",
+                    set, shouldBeBinding
+                );
+            }
 
-        ++shouldBeBinding;
+            ++shouldBeBinding;
+        }
     }
 
     if (allocatedSet)
