@@ -33,6 +33,8 @@ class CommandRecorder: public ICommandRecorder
         Sampler,
         StorageBuffer,
         StorageImage,
+        UniformTexelBuffer,
+        StorageTexelBuffer,
     };
 
     struct PendingResource
@@ -88,6 +90,7 @@ class CommandRecorder: public ICommandRecorder
     bool WriteDynamicBuffer(Buffer* b, size_t offset, size_t size, const void* data);
     bool WriteVolatileBuffer(Buffer* b, size_t size, const void* data);
     void UpdateVolatileResources(BasePipelineState* oldState);
+    void TransferResources(BasePipelineState* state, BasePipelineState* oldState);
 
     uint32 AcquireTargetDescriptorSetIdx(ShaderType stage, ShaderResourceType type);
     void InsertVolatileResource(IResource* r, VkShaderStageFlagBits stage, uint32 slot);

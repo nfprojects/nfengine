@@ -76,5 +76,11 @@ using UsedDescriptorSetsArray = Common::StaticArray<DescriptorSetCollectionID, 3
 template <typename T>
 using ForEachFunction = std::function<bool(const T&)>;
 
+template <typename Type>
+bool HasFlag(Type v, Type f)
+{
+    return ((v & f) == f);
+}
+
 } // namespace Renderer
 } // namespace NFE

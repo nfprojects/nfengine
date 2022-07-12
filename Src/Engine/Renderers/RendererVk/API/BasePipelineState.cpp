@@ -273,6 +273,13 @@ bool BasePipelineState::FormShaderModules()
     return true;
 }
 
+bool BasePipelineState::IsCompatible(BasePipelineState* state)
+{
+
+
+    return false;
+}
+
 
 } // namespace Renderer
 } // namespace NFE

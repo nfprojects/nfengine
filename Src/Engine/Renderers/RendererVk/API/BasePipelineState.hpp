@@ -101,6 +101,8 @@ public:
     BasePipelineState(VkPipelineBindPoint bindPoint);
     virtual ~BasePipelineState();
 
+    bool IsCompatible(BasePipelineState* state);
+
     NFE_INLINE const VkPipelineBindPoint& GetBindPoint() const
     {
         return mSettings.bindPoint;

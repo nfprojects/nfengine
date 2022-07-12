@@ -359,6 +359,8 @@ VkBufferUsageFlags TranslateBufferUsageToVkBufferUsage(BufferUsageFlag type)
     // eventual "writableness" is solved in a different way
     result |= translateFlag(BufferUsageFlag::ReadonlyStruct, VK_BUFFER_USAGE_STORAGE_BUFFER_BIT);
     result |= translateFlag(BufferUsageFlag::WritableStruct, VK_BUFFER_USAGE_STORAGE_BUFFER_BIT);
+    result |= translateFlag(BufferUsageFlag::ReadonlyBuffer, VK_BUFFER_USAGE_UNIFORM_TEXEL_BUFFER_BIT);
+    result |= translateFlag(BufferUsageFlag::WritableBuffer, VK_BUFFER_USAGE_STORAGE_TEXEL_BUFFER_BIT);
 
     return result;
 }

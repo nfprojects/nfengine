@@ -191,7 +191,7 @@ bool ComputeScene::CreateSubSceneIndirect()
     bufferDesc.size = 3 * sizeof(uint32);
     bufferDesc.structSize = sizeof(uint32);
     bufferDesc.mode = ResourceAccessMode::GPUOnly;
-    bufferDesc.usage = BufferUsageFlag::WritableStruct;
+    bufferDesc.usage = BufferUsageFlag::WritableBuffer;
     mIndirectArgBuffer = mRendererDevice->CreateBuffer(bufferDesc);
     if (!mIndirectArgBuffer)
     {

@@ -22,6 +22,8 @@ enum class BufferUsageFlag : uint8
     ConstantBuffer  = NFE_FLAG(2),
     ReadonlyStruct  = NFE_FLAG(3),
     WritableStruct  = NFE_FLAG(4),
+    ReadonlyBuffer  = NFE_FLAG(5),
+    WritableBuffer  = NFE_FLAG(6),
 };
 
 DEFINE_ENUM_OPERATORS(BufferUsageFlag)

@@ -25,6 +25,8 @@ Buffer::Buffer()
 
 Buffer::~Buffer()
 {
+    if (mView != VK_NULL_HANDLE)
+        vkDestroyBufferView(gDevice->GetDevice(), mView, nullptr);
     if (mBuffer != VK_NULL_HANDLE)
         vkDestroyBuffer(gDevice->GetDevice(), mBuffer, nullptr);
     if (mBufferMemory != VK_NULL_HANDLE)
@@ -36,6 +38,7 @@ bool Buffer::Init(const BufferDesc& desc)
     VkResult result = VK_SUCCESS;
 
     mMode = desc.mode;
+    mUsage = desc.usage;
     mBufferSize = static_cast<VkDeviceSize>(desc.size);
     mStructureSize = static_cast<VkDeviceSize>(desc.structSize);
 
@@ -55,7 +58,17 @@ bool Buffer::Init(const BufferDesc& desc)
 
     // Determine base buffer usage
     bufInfo.usage = TranslateBufferUsageToVkBufferUsage(desc.usage);
-    bufInfo.usage |= VK_BUFFER_USAGE_TRANSFER_SRC_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT;
+    bufInfo.usage |= VK_BUFFER_USAGE_TRANSFER_SRC_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_INDIRECT_BUFFER_BIT;
+
+    if (((bufInfo.usage & VK_BUFFER_USAGE_STORAGE_TEXEL_BUFFER_BIT) &&
+         (bufInfo.usage & VK_BUFFER_USAGE_STORAGE_BUFFER_BIT)) ||
+        ((bufInfo.usage & VK_BUFFER_USAGE_UNIFORM_TEXEL_BUFFER_BIT) &&
+         (bufInfo.usage & VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT)))
+    {
+        NFE_LOG_ERROR("Usage combines texel and non-texel buffer flags - this is unsupported");
+        NFE_LOG_ERROR("If this should be supported, scream at me @Lookey");
+        return false;
+    }
 
     result = vkCreateBuffer(gDevice->GetDevice(), &bufInfo, nullptr, &mBuffer);
     CHECK_VKRESULT(result, "Failed to create device buffer");
@@ -96,6 +109,18 @@ bool Buffer::Init(const BufferDesc& desc)
 
     result = vkBindBufferMemory(gDevice->GetDevice(), mBuffer, mBufferMemory, 0);
     CHECK_VKRESULT(result, "Failed to bind device buffer to its memory");
+
+
+    // view
+    VkBufferViewCreateInfo viewInfo;
+    VK_ZERO_MEMORY(viewInfo);
+    viewInfo.sType = VK_STRUCTURE_TYPE_BUFFER_VIEW_CREATE_INFO;
+    viewInfo.buffer = mBuffer;
+    viewInfo.format = VK_FORMAT_R32_UINT; // TODO
+    viewInfo.offset = 0;
+    viewInfo.range = VK_WHOLE_SIZE;
+    result = vkCreateBufferView(gDevice->GetDevice(), &viewInfo, nullptr, &mView);
+    CHECK_VKRESULT(result, "Failed to create View for whole buffer");
 
 finish:
     NFE_LOG_INFO("%u-byte %s Buffer created successfully", desc.size, TranslateResourceAccessModeToString(mMode));

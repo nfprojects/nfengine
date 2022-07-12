@@ -21,10 +21,12 @@ class Buffer : public IBuffer, public IResource
     friend class ResourceBindingInstance;
 
     VkBuffer mBuffer;
+    VkBufferView mView;
     VkDeviceMemory mBufferMemory;
     VkDeviceSize mBufferSize;
     VkDeviceSize mStructureSize;
     ResourceAccessMode mMode;
+    BufferUsageFlag mUsage;
 
     uint32 mVolatileDataOffset;
 
@@ -35,6 +37,11 @@ public:
 
     void* Map(size_t size, size_t offset) override;
     void Unmap() override;
+
+    NFE_FORCE_INLINE const BufferUsageFlag GetUsage() const
+    {
+        return mUsage;
+    }
 
     const Internal::ResourceType GetType() const override
     {
