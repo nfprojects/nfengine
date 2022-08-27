@@ -155,7 +155,7 @@
       <PreprocessorDefinitions>VK_USE_PLATFORM_WIN32_KHR;RENDERERVK_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>PCH.hpp</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)Src;$(SolutionDir)Deps\glslang;$(SolutionDir)Deps;$(VULKAN_SDK)\Include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)Src;$(SolutionDir)Deps\glslang;$(SolutionDir)Deps\glslang\MachineIndependent;$(SolutionDir)Deps;$(VULKAN_SDK)\Include</AdditionalIncludeDirectories>
       <UndefinePreprocessorDefinitions>
       </UndefinePreprocessorDefinitions>
     </ClCompile>
@@ -171,7 +171,7 @@
       <PreprocessorDefinitions>VK_USE_PLATFORM_WIN32_KHR;RENDERERVK_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>PCH.hpp</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)Src;$(SolutionDir)Deps\glslang;$(SolutionDir)Deps;$(VULKAN_SDK)\Include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)Src;$(SolutionDir)Deps\glslang;$(SolutionDir)Deps\glslang\MachineIndependent;$(SolutionDir)Deps;$(VULKAN_SDK)\Include</AdditionalIncludeDirectories>
       <FloatingPointModel>Fast</FloatingPointModel>
       <FloatingPointExceptions>false</FloatingPointExceptions>
       <UndefinePreprocessorDefinitions>
@@ -191,7 +191,7 @@
       <PreprocessorDefinitions>VK_USE_PLATFORM_WIN32_KHR;RENDERERVK_EXPORTS;NFE_CONFIGURATION_FINAL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>PCH.hpp</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)Src;$(SolutionDir)Deps\glslang;$(SolutionDir)Deps;$(VULKAN_SDK)\Include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)Src;$(SolutionDir)Deps\glslang;$(SolutionDir)Deps\glslang\MachineIndependent;$(SolutionDir)Deps;$(VULKAN_SDK)\Include</AdditionalIncludeDirectories>
       <FloatingPointModel>Fast</FloatingPointModel>
       <FloatingPointExceptions>false</FloatingPointExceptions>
       <UndefinePreprocessorDefinitions>

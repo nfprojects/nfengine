@@ -275,6 +275,8 @@ bool BasePipelineState::FormShaderModules()
 
 bool BasePipelineState::IsCompatible(BasePipelineState* state)
 {
+    NFE_UNUSED(state);
+
 
 
     return false;
