@@ -1,0 +1,119 @@
+name: NFE CI
+on:
+  push:
+    branches: [ devel ]
+  pull_request:
+    branches: [ devel ]
+
+# TODO LIST:
+# * Add caching via actions/cache: https://github.com/actions/cache
+#   With that, cache Deps build output to speed up the process
+# * Fix CommonTests and restore them below per each platform
+jobs:
+  linux-build:
+    name: Linux Build
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        configs: [Debug, Release]
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+      with:
+        submodules: recursive
+    - uses: actions/setup-python@v2
+      with:
+          python-version: '3.10'
+    - name: Setup cmake
+      uses: jwlawson/actions-setup-cmake@v1.12
+      with:
+        cmake-version: '3.22.x'
+    - name: Install Vulkan SDK
+      uses: humbletim/install-vulkan-sdk@v1.1.1
+      with:
+        cache: true
+    - name: Download dependencies
+      run: sudo apt install libxcb1-dev libxcb1 libxcb-image0-dev libxcb-image0
+    - name: Update glslang sources
+      run: cd Deps/glslang && ./update_glslang_sources.py && cd ../..
+    - name: Configure
+      run: |
+        mkdir -p build
+        cd build
+        cmake .. -DCMAKE_BUILD_TYPE=${{matrix.configs}}
+    - name: Build
+      run: cmake --build build --target NFE_All -j 4
+    #- name: Test
+    #  run: ./Bin/x86_64/${{matrix.configs}}/CommonTest
+
+  windows-vs-build:
+    name: Windows Build (Visual Studio)
+    runs-on: windows-latest
+    strategy:
+      matrix:
+        configs: [Debug, Release, Final]
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+      with:
+        submodules: recursive
+    - uses: actions/setup-python@v2
+      with:
+          python-version: '3.10'
+    - name: Setup MSBuild
+      uses: microsoft/setup-msbuild@v1.0.2
+      with:
+        msbuild-architecture: x64
+        vs-version: 17.3
+    - name: Install Vulkan SDK
+      uses: humbletim/install-vulkan-sdk@v1.1.1
+      with:
+        cache: true
+    - name: Update glslang sources
+      run: |
+        cd Deps\glslang
+        python update_glslang_sources.py
+        cd ..\..
+    - name: Build Deps
+      run: python Deps\deps_builder.py --noanim
+    - name: Build
+      run: msbuild Engine.sln /property:Configuration=${{matrix.configs}}
+
+  windows-cmake-build:
+    name: Windows Build (CMake)
+    runs-on: windows-latest
+    strategy:
+      matrix:
+        configs: [Debug, Release]
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+      with:
+        submodules: recursive
+    - uses: actions/setup-python@v2
+      with:
+          python-version: '3.10'
+    - name: Setup MSBuild
+      uses: microsoft/setup-msbuild@v1.0.2
+      with:
+        vs-version: 17.3
+    - name: Setup cmake
+      uses: jwlawson/actions-setup-cmake@v1.12
+      with:
+        cmake-version: '3.22.x'
+    - name: Install Vulkan SDK
+      uses: humbletim/install-vulkan-sdk@v1.1.1
+      with:
+        cache: true
+    - name: Update glslang sources
+      run: |
+        cd Deps\glslang
+        python update_glslang_sources.py
+        cd ..\..
+    - name: Configure
+      run: |
+        mkdir build
+        cd build
+        cmake .. -A x64 -G "Visual Studio 17 2022" -DCMAKE_BUILD_TYPE=${{matrix.configs}}
+    - name: Build
+      run: cmake --build build --config ${{matrix.configs}} --target NFE_All -j 4

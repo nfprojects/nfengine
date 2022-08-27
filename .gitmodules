@@ -3,7 +3,7 @@
 	url = https://github.com/jarro2783/cxxopts.git
 [submodule "Deps/freetype2"]
 	path = Deps/freetype2
-	url = git://git.sv.nongnu.org/freetype/freetype2.git
+	url = https://gitlab.freedesktop.org/freetype/freetype.git
 [submodule "Deps/glslang"]
 	path = Deps/glslang
 	url = https://github.com/KhronosGroup/glslang.git
