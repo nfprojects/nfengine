@@ -29,8 +29,6 @@ void ReferencedResourcesList::Clear()
     textures.Clear();
     buffers.Clear();
     renderTargets.Clear();
-    bindingSetInstances.Clear();
-    bindingSetLayouts.Clear();
     pipelineStates.Clear();
     computePipelineStates.Clear();
 }
@@ -50,16 +48,6 @@ void ReferencedResourcesList::MergeWith(const ReferencedResourcesList& other)
     for (const RenderTargetPtr& rt : other.renderTargets)
     {
         renderTargets.Insert(rt);
-    }
-
-    for (const ResourceBindingInstancePtr& bsi : other.bindingSetInstances)
-    {
-        bindingSetInstances.Insert(bsi);
-    }
-
-    for (const ResourceBindingLayoutPtr& bsl : other.bindingSetLayouts)
-    {
-        bindingSetLayouts.Insert(bsl);
     }
 
     for (const PipelineStatePtr& pipelineState : other.pipelineStates)

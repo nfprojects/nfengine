@@ -22,8 +22,6 @@ struct ReferencedResourcesList
     Container<TexturePtr> textures;
     Container<BufferPtr> buffers;
     Container<RenderTargetPtr> renderTargets;
-    Container<ResourceBindingInstancePtr> bindingSetInstances;
-    Container<ResourceBindingLayoutPtr> bindingSetLayouts;
     Container<PipelineStatePtr> pipelineStates;
     Container<ComputePipelineStatePtr> computePipelineStates;
 

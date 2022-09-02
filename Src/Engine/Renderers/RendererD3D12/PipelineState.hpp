@@ -20,7 +20,6 @@ class PipelineState : public IPipelineState
     D3DPtr<ID3D12PipelineState> mPipelineState;
     D3D12_PRIMITIVE_TOPOLOGY mPrimitiveTopology;
 
-    InternalResourceBindingLayoutPtr mBindingLayout;
     InternalShaderPtr mVS;
     InternalShaderPtr mPS;
     InternalShaderPtr mGS;
@@ -37,11 +36,6 @@ public:
     NFE_INLINE ID3D12PipelineState* GetPSO() const
     {
         return mPipelineState.Get();
-    }
-
-    NFE_INLINE const InternalResourceBindingLayoutPtr& GetResBindingLayout() const
-    {
-        return mBindingLayout;
     }
 
     NFE_INLINE D3D12_PRIMITIVE_TOPOLOGY GetPrimitiveTopology() const

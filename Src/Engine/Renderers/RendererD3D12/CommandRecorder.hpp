@@ -46,13 +46,12 @@ public:
     void CopyTexture(const TexturePtr& src, const BackbufferPtr& dest) override;
 
     /// Resource binding methods
-    void BindResources(PipelineType pipelineType, uint32 slot, const ResourceBindingInstancePtr& bindingSetInstance) override;
-    void BindTexture(PipelineType pipelineType, uint32 setIndex, uint32 slotInSet, const TexturePtr& texture, const TextureView& view) override;
-    void BindWritableTexture(PipelineType pipelineType, uint32 setIndex, uint32 slotInSet, const TexturePtr& texture, const TextureView& view) override;
-    void BindBuffer(PipelineType pipelineType, uint32 setIndex, uint32 slotInSet, const BufferPtr& buffer, const BufferView& view) override;
-    void BindWritableBuffer(PipelineType pipelineType, uint32 setIndex, uint32 slotInSet, const BufferPtr& buffer, const BufferView& view) override;
-    void BindVolatileCBuffer(PipelineType pipelineType, uint32 slot, const BufferPtr& buffer) override;
-    void SetResourceBindingLayout(PipelineType pipelineType, const ResourceBindingLayoutPtr& layout) override;
+    void BindTexture(ShaderType stage, uint32 slot, const TexturePtr& texture, const TextureView& view) override;
+    void BindWritableTexture(ShaderType stage, uint32 slot, const TexturePtr& texture, const TextureView& view) override;
+    void BindBuffer(ShaderType stage, uint32 slot, const BufferPtr& buffer, const BufferView& view) override;
+    void BindWritableBuffer(ShaderType stage, uint32 slot, const BufferPtr& buffer, const BufferView& view) override;
+    void BindConstantBuffer(ShaderType stage, uint32 slot, const BufferPtr& buffer) override;
+    void BindSampler(ShaderType stage, uint32 slot, const SamplerPtr& sampler) override;
 
     /// Graphics pipeline methods
     void SetVertexBuffers(uint32 num, const BufferPtr* vertexBuffers, const uint32* strides, const uint32* offsets) override;
@@ -85,7 +84,6 @@ private:
     // TODO instead of having everything duplicated maybe keep some bit mask of what was changed?
     struct PendingDirectResourceBind
     {
-        uint32 setIndex;
         uint32 slotInSet;
         ResourceType type;
         bool shaderWritable;
@@ -103,8 +101,7 @@ private:
         };
 
         PendingDirectResourceBind()
-            : setIndex(UINT32_MAX)
-            , slotInSet(UINT32_MAX)
+            : slotInSet(UINT32_MAX)
             , type(ResourceType::Max)
         {}
     };
@@ -114,8 +111,6 @@ private:
         bool bindingLayoutChanged : 1;
         bool bindingInstancesChanged : 1;  // TODO bitmask (one bit per slot)
 
-        const ResourceBindingLayout* bindingLayout;
-        const ResourceBindingInstance* bindingInstances[NFE_RENDERER_MAX_BINDING_SETS];
         const Buffer* volatileCBuffers[NFE_RENDERER_MAX_VOLATILE_CBUFFERS];
 
         // TODO instead of groving array, use static array and bitmask
@@ -131,22 +126,14 @@ private:
 
     void ResetState();
 
-    HeapAllocator::DescriptorRange Internal_GenerateDescriptorTableOverride(ResourceBindingState& state, uint32 setIndex, const ResourceBindingInstance* bindingInstance);
-
-    void Internal_UpdateResourceBindings(PipelineType pipelineType);
-
     void Internal_UpdateGraphicsPipelineState();
-    void Internal_UpdateGraphicsResourceBindingLayout();
     void Internal_UpdateVetexAndIndexBuffers();
     void Internal_PrepareForDraw();
 
     void Internal_UpdateComputePipelineState();
-    void Internal_UpdateComputeResourceBindingLayout();
     void Internal_PrepareForDispatch();
 
     void Internal_UnsetRenderTarget();
-
-    void Internal_ReferenceBindingSetInstance(const ResourceBindingInstancePtr& bindingSetInstance);
 
     void Internal_WriteBuffer(Buffer* buffer, size_t offset, size_t size, const void* data);
     void Internal_WriteVolatileBuffer(Buffer* buffer, const void* data);

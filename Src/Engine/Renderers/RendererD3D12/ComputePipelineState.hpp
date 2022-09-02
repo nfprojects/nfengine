@@ -22,9 +22,6 @@ class ComputePipelineState : public IComputePipelineState
     // keep reference to compute shader bytecode
     InternalShaderPtr mComputeShader;
 
-    // keeps reference to root signature
-    InternalResourceBindingLayoutPtr mResBindingLayout;
-
     void Release();
 
 public:
