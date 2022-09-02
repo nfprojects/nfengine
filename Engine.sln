@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.29230.47
+# Visual Studio Version 17
+VisualStudioVersion = 17.3.32819.101
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Engine", "Engine", "{A160B4A7-4E09-4DB6-8EF9-D2E015E20AEE}"
 EndProject
@@ -182,6 +182,12 @@ Global
 		{28D2531F-9FEE-4848-B101-B8EB10858371}.Final|x64.Build.0 = Final|x64
 		{28D2531F-9FEE-4848-B101-B8EB10858371}.Release|x64.ActiveCfg = Release|x64
 		{28D2531F-9FEE-4848-B101-B8EB10858371}.Release|x64.Build.0 = Release|x64
+		{49AB8AC7-1834-4AF8-9792-59313C71C7E0}.Debug|x64.ActiveCfg = Debug|x64
+		{49AB8AC7-1834-4AF8-9792-59313C71C7E0}.Debug|x64.Build.0 = Debug|x64
+		{49AB8AC7-1834-4AF8-9792-59313C71C7E0}.Final|x64.ActiveCfg = Final|x64
+		{49AB8AC7-1834-4AF8-9792-59313C71C7E0}.Final|x64.Build.0 = Final|x64
+		{49AB8AC7-1834-4AF8-9792-59313C71C7E0}.Release|x64.ActiveCfg = Release|x64
+		{49AB8AC7-1834-4AF8-9792-59313C71C7E0}.Release|x64.Build.0 = Release|x64
 		{1A1154B8-E09A-472F-A0F0-20F530741587}.Debug|x64.ActiveCfg = Debug|x64
 		{1A1154B8-E09A-472F-A0F0-20F530741587}.Debug|x64.Build.0 = Debug|x64
 		{1A1154B8-E09A-472F-A0F0-20F530741587}.Final|x64.ActiveCfg = Final|x64
