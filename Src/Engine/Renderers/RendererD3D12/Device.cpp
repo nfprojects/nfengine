@@ -426,21 +426,6 @@ ShaderPtr Device::CreateShader(const ShaderDesc& desc)
     return CreateGenericResource<Shader, ShaderDesc>(desc);
 }
 
-ResourceBindingSetPtr Device::CreateResourceBindingSet(const ResourceBindingSetDesc& desc)
-{
-    return CreateGenericResource<ResourceBindingSet, ResourceBindingSetDesc>(desc);
-}
-
-ResourceBindingLayoutPtr Device::CreateResourceBindingLayout(const ResourceBindingLayoutDesc& desc)
-{
-    return CreateGenericResource<ResourceBindingLayout, ResourceBindingLayoutDesc>(desc);
-}
-
-ResourceBindingInstancePtr Device::CreateResourceBindingInstance(const ResourceBindingSetPtr& set)
-{
-    return CreateGenericResource<ResourceBindingInstance, ResourceBindingSetPtr>(set);
-}
-
 CommandQueuePtr Device::CreateCommandQueue(CommandQueueType type, const char* debugName)
 {
     SharedPtr<CommandQueue> queue = CreateGenericResource<CommandQueue, CommandQueueType, const char*>(type, debugName);

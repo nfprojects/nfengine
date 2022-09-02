@@ -128,9 +128,6 @@ public:
     virtual ComputePipelineStatePtr CreateComputePipelineState(const ComputePipelineStateDesc& desc) override;
     virtual SamplerPtr CreateSampler(const SamplerDesc& desc) override;
     virtual ShaderPtr CreateShader(const ShaderDesc& desc) override;
-    virtual ResourceBindingSetPtr CreateResourceBindingSet(const ResourceBindingSetDesc& desc) override;
-    virtual ResourceBindingLayoutPtr CreateResourceBindingLayout(const ResourceBindingLayoutDesc& desc) override;
-    virtual ResourceBindingInstancePtr CreateResourceBindingInstance(const ResourceBindingSetPtr& set) override;
 
     virtual CommandRecorderPtr CreateCommandRecorder() override;
     virtual CommandQueuePtr CreateCommandQueue(CommandQueueType type, const char* debugName) override;

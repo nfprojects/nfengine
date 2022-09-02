@@ -25,7 +25,6 @@ PipelineState::PipelineState()
 
 void PipelineState::Release()
 {
-    mBindingLayout.Reset();
     mVS.Reset();
     mPS.Reset();
     mGS.Reset();
@@ -36,14 +35,6 @@ void PipelineState::Release()
 bool PipelineState::Init(const PipelineStateDesc& desc)
 {
     // validate
-
-    mBindingLayout = StaticCast<ResourceBindingLayout>(desc.resBindingLayout);
-    if (!mBindingLayout)
-    {
-        NFE_LOG_ERROR("Invalid resource binding layout");
-        return false;
-    }
-
 
     // prepare D3D12 rasterizer state
     D3D12_RASTERIZER_DESC rasterizerDesc;
@@ -135,7 +126,9 @@ bool PipelineState::Init(const PipelineStateDesc& desc)
     D3D12_GRAPHICS_PIPELINE_STATE_DESC psd;
     ZeroMemory(&psd, sizeof(psd));
 
-    psd.pRootSignature = mBindingLayout->GetD3DRootSignature();
+    psd.pRootSignature = nullptr;
+    NFE_ASSERT(psd.pRootSignature, "Missing root signature");
+
     psd.VS = mVS ? mVS->GetD3D12Bytecode() : nullBytecode;
     psd.HS = mHS ? mHS->GetD3D12Bytecode() : nullBytecode;
     psd.DS = mDS ? mDS->GetD3D12Bytecode() : nullBytecode;

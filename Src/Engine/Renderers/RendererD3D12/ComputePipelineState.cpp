@@ -19,19 +19,11 @@ ComputePipelineState::ComputePipelineState()
 void ComputePipelineState::Release()
 {
     mPipelineState.Reset();
-    mResBindingLayout.Reset();
     mComputeShader.Reset();
 }
 
 bool ComputePipelineState::Init(const ComputePipelineStateDesc& desc)
 {
-    mResBindingLayout = desc.resBindingLayout;
-    if (!mResBindingLayout)
-    {
-        NFE_LOG_ERROR("Invalid resource binding layout");
-        return false;
-    }
-
     mComputeShader = Common::StaticCast<Shader>(desc.computeShader);
     if (!mComputeShader)
     {
@@ -42,8 +34,10 @@ bool ComputePipelineState::Init(const ComputePipelineStateDesc& desc)
     D3D12_COMPUTE_PIPELINE_STATE_DESC psd;
     ZeroMemory(&psd, sizeof(psd));
     psd.CS = mComputeShader->GetD3D12Bytecode();
-    psd.pRootSignature = mResBindingLayout->GetD3DRootSignature();
+    psd.pRootSignature = nullptr;
     // TODO pipeline caching
+
+    NFE_ASSERT(psd.pRootSignature, "Missing root signature");
 
     HRESULT hr;
     hr = D3D_CALL_CHECK(gDevice->GetDevice()->CreateComputePipelineState(&psd, IID_PPV_ARGS(mPipelineState.GetPtr())));
