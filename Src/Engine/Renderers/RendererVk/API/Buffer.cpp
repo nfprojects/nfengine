@@ -16,6 +16,7 @@ namespace Renderer {
 Buffer::Buffer()
     : mBuffer(VK_NULL_HANDLE)
     , mBufferMemory(VK_NULL_HANDLE)
+    , mView(VK_NULL_HANDLE)
     , mBufferSize(0)
     , mStructureSize(0)
     , mMode(ResourceAccessMode::Invalid)
@@ -111,16 +112,19 @@ bool Buffer::Init(const BufferDesc& desc)
     CHECK_VKRESULT(result, "Failed to bind device buffer to its memory");
 
 
-    // view
-    VkBufferViewCreateInfo viewInfo;
-    VK_ZERO_MEMORY(viewInfo);
-    viewInfo.sType = VK_STRUCTURE_TYPE_BUFFER_VIEW_CREATE_INFO;
-    viewInfo.buffer = mBuffer;
-    viewInfo.format = VK_FORMAT_R32_UINT; // TODO
-    viewInfo.offset = 0;
-    viewInfo.range = VK_WHOLE_SIZE;
-    result = vkCreateBufferView(gDevice->GetDevice(), &viewInfo, nullptr, &mView);
-    CHECK_VKRESULT(result, "Failed to create View for whole buffer");
+    // view - can only be created when the buffer is used as storage/uniform texel buffer
+    if (bufInfo.usage & (VK_BUFFER_USAGE_STORAGE_TEXEL_BUFFER_BIT | VK_BUFFER_USAGE_UNIFORM_TEXEL_BUFFER_BIT))
+    {
+        VkBufferViewCreateInfo viewInfo;
+        VK_ZERO_MEMORY(viewInfo);
+        viewInfo.sType = VK_STRUCTURE_TYPE_BUFFER_VIEW_CREATE_INFO;
+        viewInfo.buffer = mBuffer;
+        viewInfo.format = VK_FORMAT_R32_UINT; // TODO
+        viewInfo.offset = 0;
+        viewInfo.range = VK_WHOLE_SIZE;
+        result = vkCreateBufferView(gDevice->GetDevice(), &viewInfo, nullptr, &mView);
+        CHECK_VKRESULT(result, "Failed to create View for whole buffer");
+    }
 
 finish:
     NFE_LOG_INFO("%u-byte %s Buffer created successfully", desc.size, TranslateResourceAccessModeToString(mMode));

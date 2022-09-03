@@ -50,12 +50,12 @@ VkBool32 DebugMessenger(VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity,
     if (messageSeverity & VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT)
         NFE_LOG_DEBUG(format, type, pCallbackData->pMessageIdName, pCallbackData->pMessage);
 
-    // returning VK_FALSE here would cause Vulkan APIs to return VK_ERROR_VALIDATION_FAILED_EXT
-    // right now we don't want that, but for debugging purposes it can be changed.
-    //if (flags & VK_DEBUG_REPORT_ERROR_BIT_EXT)
+    // return VK_FALSE to cause Vulkan APIs to return ERROR_VALIDATION_FAILED_EXT
+    // only on validation errors
+    if (messageSeverity & VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT)
         return VK_TRUE;
-   // else
-       // return VK_FALSE;
+    else
+        return VK_FALSE;
 }
 
 } // namespace

@@ -21,8 +21,8 @@ class Buffer : public IBuffer, public IResource
     friend class ResourceBindingInstance;
 
     VkBuffer mBuffer;
-    VkBufferView mView;
     VkDeviceMemory mBufferMemory;
+    VkBufferView mView;
     VkDeviceSize mBufferSize;
     VkDeviceSize mStructureSize;
     ResourceAccessMode mMode;
