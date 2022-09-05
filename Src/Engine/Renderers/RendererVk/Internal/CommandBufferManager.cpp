@@ -156,23 +156,14 @@ void CommandBufferManager::FinishFrame()
     for (uint32 i = 0; i < mRegisteredQueues.Size(); ++i)
     {
         result = vkQueueSubmit(mRegisteredQueues[i], 0, nullptr, mQueueGuardFences[i]);
-        if (result != VK_SUCCESS)
-        {
-            NFE_LOG_ERROR("Failed to submit fence signal operation: %d (%s)", result, TranslateVkResultToString(result));
-        }
+        NFE_ASSERT(result == VK_SUCCESS, "Failed to submit fence signal operation: %d (%s)", result, TranslateVkResultToString(result));
     }
 
     result = vkWaitForFences(mDevice, mQueueGuardFences.Size(), mQueueGuardFences.Data(), VK_TRUE, UINT64_MAX);
-    if (result != VK_SUCCESS)
-    {
-        NFE_LOG_ERROR("Failed to wait for all queue guard fences: %d (%s)", result, TranslateVkResultToString(result));
-    }
+    NFE_ASSERT(result == VK_SUCCESS, "Failed to wait for all queue guard fences: %d (%s)", result, TranslateVkResultToString(result));
 
     result = vkResetFences(mDevice, mQueueGuardFences.Size(), mQueueGuardFences.Data());
-    if (result != VK_SUCCESS)
-    {
-        NFE_LOG_ERROR("Failed to reset queue guard fences: %d (%s)", result, TranslateVkResultToString(result));
-    }
+    NFE_ASSERT(result == VK_SUCCESS, "Failed to reset queue guard fences: %d (%s)", result, TranslateVkResultToString(result));
 
     for (uint32 i = mFirstUsed; i != mCurrentAvailable; ++i)
     {
