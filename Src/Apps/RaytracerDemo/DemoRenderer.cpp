@@ -137,9 +137,9 @@ bool DemoRenderer::Init(const Common::Window& window)
         NFE_ASSERT(mPixelShader, "Failed to create PS");
     }
 
-    mFontTextureSlot = mVertexShader->GetResourceSlotByName("texture0");
+    mFontTextureSlot = mPixelShader->GetResourceSlotByName("texture0");
     NFE_ASSERT(mFontTextureSlot >= 0, "Failed to acquire Pixel Shader texture slot");
-    mFontSamplerSlot = mVertexShader->GetResourceSlotByName("sampler0");
+    mFontSamplerSlot = mPixelShader->GetResourceSlotByName("sampler0");
     NFE_ASSERT(mFontSamplerSlot >= 0, "Failed to acquire Pixel Shader sampler slot");
 
     // sampler
@@ -340,8 +340,8 @@ void DemoRenderer::Draw(const DrawParams& params)
                 { (R + L) / (L - R),    (T + B) / (B - T),  0.5f,       1.0f },
             };
 
-            mCommandRecorder->BindConstantBuffer(ShaderType::Vertex, mCBufferSlot, mCBuffer);
             mCommandRecorder->WriteBuffer(mCBuffer, 0, 16 * 4, cbufferData);
+            mCommandRecorder->BindConstantBuffer(ShaderType::Vertex, mCBufferSlot, mCBuffer);
         }
 
         // Upload vertex/index data into a single contiguous GPU buffer
