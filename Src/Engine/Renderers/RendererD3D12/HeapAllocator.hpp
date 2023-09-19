@@ -7,6 +7,7 @@
 #pragma once
 
 #include "Common.hpp"
+#include "Descriptors.hpp"
 
 #include "Engine/Common/Containers/DynArray.hpp"
 #include "Engine/Common/System/RWLock.hpp"
@@ -18,15 +19,11 @@ namespace Renderer {
 class HeapAllocator
 {
 public:
-    struct DescriptorRange
-    {
-        uint32 offset;
-        uint32 size;
-    };
 
-    enum class Type
+    enum class Type : uint8
     {
         CbvSrvUav,
+        Sampler,
         Rtv,
         Dsv,
     };
@@ -56,23 +53,31 @@ public:
     bool Init();
     void Release();
 
-    DescriptorRange Allocate(uint32 numDescriptors);
+    DescriptorID Allocate(uint32 numDescriptors);
 
-    void Free(const DescriptorRange& range);
+    void Free(DescriptorID startDescriptor, uint32 numDescriptors);
 
     NFE_INLINE ID3D12DescriptorHeap* GetHeap() const
     {
         return mHeap.Get();
     }
 
-    NFE_INLINE const D3D12_CPU_DESCRIPTOR_HANDLE& GetCpuHandle() const
+    NFE_INLINE const D3D12_CPU_DESCRIPTOR_HANDLE GetCpuHandle(uint32 offset = 0) const
     {
-        return mCpuHandle;
+        NFE_ASSERT(offset < mSize, "Descriptor index (%u) out of heap bounds (size = %u)", offset, mSize);
+
+        D3D12_CPU_DESCRIPTOR_HANDLE handle = mCpuHandle;
+        handle.ptr += mDescriptorSize * offset;
+        return handle;
     }
 
-    NFE_INLINE const D3D12_GPU_DESCRIPTOR_HANDLE& GetGpuHandle() const
+    NFE_INLINE const D3D12_GPU_DESCRIPTOR_HANDLE GetGpuHandle(uint32 offset = 0) const
     {
-        return mGpuHandle;
+        NFE_ASSERT(offset < mSize, "Descriptor index (%u) out of heap bounds (size = %u)", offset, mSize);
+
+        D3D12_GPU_DESCRIPTOR_HANDLE handle = mGpuHandle;
+        handle.ptr += mDescriptorSize * offset;
+        return handle;
     }
 
     NFE_INLINE UINT GetDescriptorSize() const

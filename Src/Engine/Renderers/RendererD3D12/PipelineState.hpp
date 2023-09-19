@@ -8,7 +8,6 @@
 
 #include "../RendererCommon/PipelineState.hpp"
 #include "Common.hpp"
-#include "ResourceBinding.hpp"
 #include "Shader.hpp"
 
 

@@ -8,6 +8,7 @@
 
 #include "../RendererCommon/RenderTarget.hpp"
 #include "Common.hpp"
+#include "Descriptors.hpp"
 #include "Texture.hpp"
 
 #include "Engine/Common/System/Assertion.hpp"
@@ -27,11 +28,11 @@ class RenderTarget : public IRenderTarget
 
     // TODO: temporary
     Common::DynArray<Target> mTargets;
-    Common::DynArray<uint32> mRTVs;
+    Common::DynArray<DescriptorID> mRTVs;
 
     InternalTexturePtr mDepthTexture;
     uint32 mDepthTextureSubresource;
-    uint32 mDSV;
+    DescriptorID mDSV;
 
 public:
     RenderTarget();

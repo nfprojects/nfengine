@@ -157,9 +157,6 @@ bool DepthStencilScene::CreateBasicResources(bool withDepth, bool withStencil)
     psd.raterizerState.cullMode = CullMode::Disabled;
     psd.primitiveType = PrimitiveType::Triangles;
     psd.vertexLayout = mVertexLayout;
-    psd.volatileBufferBindings = {
-        { ShaderType::Vertex, static_cast<NFE::uint32>(mCBufferSlot) },
-    };
 
 
     if (withDepth && !withStencil)
@@ -262,7 +259,7 @@ bool DepthStencilScene::CreateBasicResources(bool withDepth, bool withStencil)
         mCopyQueue->Signal()->Wait();
     }
 
-    bufferDesc.mode = ResourceAccessMode::Volatile;
+    bufferDesc.mode = ResourceAccessMode::GPUOnly;
     bufferDesc.size = sizeof(VertexCBuffer);
     mConstantBuffer = mRendererDevice->CreateBuffer(bufferDesc);
     if (!mConstantBuffer)

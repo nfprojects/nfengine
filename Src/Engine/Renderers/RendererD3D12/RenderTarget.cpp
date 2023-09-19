@@ -27,12 +27,12 @@ RenderTarget::~RenderTarget()
 
     for (uint32 offset : mRTVs)
     {
-        allocator.Free({ offset, 1 });
+        allocator.Free(offset, 1);
     }
 
     HeapAllocator& dsvAllocator = gDevice->GetDsvHeapAllocator();
     if (mDSV != -1)
-        dsvAllocator.Free({ mDSV, 1 });
+        dsvAllocator.Free(mDSV, 1);
 }
 
 void RenderTarget::GetDimensions(int& width, int& height)
@@ -129,7 +129,7 @@ bool RenderTarget::Init(const RenderTargetDesc& desc)
 
         // Create a RTV
         {
-            uint32 offset = rtvAllocator.Allocate(1).offset;
+            DescriptorID offset = rtvAllocator.Allocate(1);
             if (offset == UINT32_MAX)
                 return false;
 
@@ -156,7 +156,7 @@ bool RenderTarget::Init(const RenderTargetDesc& desc)
             return false;
         }
 
-        mDSV = allocator.Allocate(1).offset;
+        mDSV = allocator.Allocate(1);
         if (mDSV == -1)
             return false;
 

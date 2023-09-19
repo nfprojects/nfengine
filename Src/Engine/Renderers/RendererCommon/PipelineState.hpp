@@ -89,7 +89,7 @@ struct DepthStateDesc
     // enable testing pixels against stencil buffer
     bool stencilEnable;
 
-    // comparison function for depth tesing
+    // comparison function for depth testing
     CompareFunc depthCompareFunc;
 
     uint8 stencilMask;
@@ -118,12 +118,6 @@ struct DepthStateDesc
     {}
 };
 
-struct VolatileBufferBinding
-{
-    ShaderType stage;
-    uint32 binding;
-};
-
 /**
  * Description of Pipeline State object.
  */
@@ -149,9 +143,6 @@ struct PipelineStateDesc
 
     // for multisampling
     uint8 numSamples = 1u;
-
-    // inform whether pipeline will use volatile buffers
-    Common::StaticArray<VolatileBufferBinding, MAX_VOLATILE_BUFFERS> volatileBufferBindings;
 
     // optional debug name
     const char* debugName = nullptr;

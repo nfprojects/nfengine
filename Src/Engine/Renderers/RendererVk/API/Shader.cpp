@@ -103,15 +103,6 @@ bool Shader::Init(const ShaderDesc& desc)
     case ShaderType::Vertex:
         lang = EShLangVertex;
         break;
-    case ShaderType::Hull:
-        lang = EShLangTessControl;
-        break;
-    case ShaderType::Domain:
-        lang = EShLangTessEvaluation;
-        break;
-    case ShaderType::Geometry:
-        lang = EShLangGeometry;
-        break;
     case ShaderType::Pixel:
         lang = EShLangFragment;
         break;

@@ -20,7 +20,6 @@ Buffer::Buffer()
     , mBufferSize(0)
     , mStructureSize(0)
     , mMode(ResourceAccessMode::Invalid)
-    , mVolatileDataOffset(UINT32_MAX)
 {
 }
 
@@ -42,10 +41,6 @@ bool Buffer::Init(const BufferDesc& desc)
     mUsage = desc.usage;
     mBufferSize = static_cast<VkDeviceSize>(desc.size);
     mStructureSize = static_cast<VkDeviceSize>(desc.structSize);
-
-    // Volatile buffers are handled via Ring Buffer - no need for Buffer allocation
-    if (desc.mode == ResourceAccessMode::Volatile)
-        goto finish;
 
     VkBufferCreateInfo bufInfo;
     VK_ZERO_MEMORY(bufInfo);
@@ -126,7 +121,6 @@ bool Buffer::Init(const BufferDesc& desc)
         CHECK_VKRESULT(result, "Failed to create View for whole buffer");
     }
 
-finish:
     NFE_LOG_INFO("%u-byte %s Buffer created successfully", desc.size, TranslateResourceAccessModeToString(mMode));
     return true;
 }

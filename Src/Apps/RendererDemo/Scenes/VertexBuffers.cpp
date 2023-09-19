@@ -280,8 +280,6 @@ VertexBuffersScene::VertexBuffersScene()
                      "Simple: Static vertex buffer (2 vertex buffers)");
     RegisterSubScene(std::bind(&VertexBuffersScene::CreateSubSceneInstancing, this, ResourceAccessMode::GPUOnly),
                      "Instancing: Dynamic vertex buffer (3 vertex buffers)");
-    RegisterSubScene(std::bind(&VertexBuffersScene::CreateSubSceneInstancing, this, ResourceAccessMode::Volatile),
-                     "Instancing: Volatile vertex buffer (3 vertex buffers)");
 }
 
 VertexBuffersScene::~VertexBuffersScene()
@@ -344,7 +342,7 @@ void VertexBuffersScene::Draw(float dt)
         mCommandBuffer->SetVertexBuffers(3, vertexBuffers, strides, offsets);
 
         // update dynamic/volatile buffer
-        if (mVertexBufferMode == ResourceAccessMode::GPUOnly || mVertexBufferMode == ResourceAccessMode::Volatile)
+        if (mVertexBufferMode == ResourceAccessMode::GPUOnly)
         {
             for (int i = 0; i < gInstancesNumber; ++i)
             {

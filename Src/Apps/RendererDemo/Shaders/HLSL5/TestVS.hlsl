@@ -13,13 +13,7 @@ struct VertexShaderOutput
 };
 
 #if (USE_CBUFFER > 0)
-#if (USE_CBUFFER == 2) // aka. if we use volatile cbuffer
-[[vk::binding(0)]]
 cbuffer TestCBuffer : register(b0)
-#else // else - use non-volatile cbuffer
-[[vk::binding(4)]]
-cbuffer TestCBuffer : register(b4)
-#endif
 {
     row_major float4x4 viewMatrix;
 };

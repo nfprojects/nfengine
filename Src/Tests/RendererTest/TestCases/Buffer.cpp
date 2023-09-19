@@ -133,15 +133,15 @@ TEST_F(BufferTest, WriteAndRead_DifferentQueue)
     recorder.Reset();
 
     gCopyCommandQueue->Execute(commandList_Upload);
-    const FencePtr fenceAfterUpload = gCopyCommandQueue->Signal();
+    const FencePtr fenceAfterUpload = gCopyCommandQueue->Signal(FenceFlag_GpuWaitable);
     ASSERT_NE(nullptr, fenceAfterUpload.Get());
 
     gMainCommandQueue->Execute(commandList_Copy, fenceAfterUpload);
-    const FencePtr fenceAfterCopy = gMainCommandQueue->Signal();
+    const FencePtr fenceAfterCopy = gMainCommandQueue->Signal(FenceFlag_CpuWaitable);
     ASSERT_NE(nullptr, fenceAfterCopy.Get());
 
     fenceAfterCopy->Wait();
-    EXPECT_TRUE(fenceAfterUpload->IsFinished());
+    EXPECT_TRUE(fenceAfterCopy->IsFinished());
 
     buffer.Reset();
 

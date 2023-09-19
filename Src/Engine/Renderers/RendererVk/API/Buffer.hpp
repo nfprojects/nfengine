@@ -28,8 +28,6 @@ class Buffer : public IBuffer, public IResource
     ResourceAccessMode mMode;
     BufferUsageFlag mUsage;
 
-    uint32 mVolatileDataOffset;
-
 public:
     Buffer();
     ~Buffer();

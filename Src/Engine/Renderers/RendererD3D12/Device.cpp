@@ -58,10 +58,12 @@ SharedPtr<Type> CreateGenericResource(const ArgTypes& ... args)
 
 
 Device::Device()
-    : mCbvSrvUavHeapStagingAllocator(HeapAllocator::Type::CbvSrvUav, 64)
-    , mCbvSrvUavHeapAllocator(HeapAllocator::Type::CbvSrvUav, 2 * 64, true)
-    , mRtvHeapAllocator(HeapAllocator::Type::Rtv, 64)
-    , mDsvHeapAllocator(HeapAllocator::Type::Dsv, 64)
+    : mCbvSrvUavHeapStagingAllocator(HeapAllocator::Type::CbvSrvUav, 1024)
+    , mCbvSrvUavHeapAllocator(HeapAllocator::Type::CbvSrvUav, 1024, true)
+    , mSamplerHeapStagingAllocator(HeapAllocator::Type::Sampler, 1024)
+    , mSamplerHeapAllocator(HeapAllocator::Type::Sampler, 1024, true)
+    , mRtvHeapAllocator(HeapAllocator::Type::Rtv, 256)
+    , mDsvHeapAllocator(HeapAllocator::Type::Dsv, 256)
     , mDebugLayerEnabled(false)
 {}
 
@@ -159,6 +161,8 @@ Device::~Device()
 
     mCbvSrvUavHeapStagingAllocator.Release();
     mCbvSrvUavHeapAllocator.Release();
+    mSamplerHeapStagingAllocator.Release();
+    mSamplerHeapAllocator.Release();
     mRtvHeapAllocator.Release();
     mDsvHeapAllocator.Release();
 
@@ -326,6 +330,18 @@ bool Device::CreateResources()
         return false;
     }
 
+    if (!mSamplerHeapStagingAllocator.Init())
+    {
+        NFE_LOG_ERROR("Failed to initialize heap allocator for samplers (non shader visible)");
+        return false;
+    }
+
+    if (!mSamplerHeapAllocator.Init())
+    {
+        NFE_LOG_ERROR("Failed to initialize heap allocator for samplers (shader visible)");
+        return false;
+    }
+
     if (!mRtvHeapAllocator.Init())
     {
         NFE_LOG_ERROR("Failed to initialize heap allocator for RTV");
@@ -344,10 +360,196 @@ bool Device::CreateResources()
         return false;
     }
 
+    if (!CreateGraphicsRootSignature())
+    {
+        NFE_LOG_ERROR("Failed to initialize graphics root signature");
+        return false;
+    }
+
+    if (!CreateComputeRootSignature())
+    {
+        NFE_LOG_ERROR("Failed to initialize compute root signature");
+        return false;
+    }
+
     if (!CreateIndirectDispatchCommandSignature())
     {
         NFE_LOG_ERROR("Failed to initialize command signature for indirect dispatch");
         return false;
+    }
+
+    return true;
+}
+
+bool Device::CreateGraphicsRootSignature()
+{
+    constexpr uint32_t NumRootParams = 7;
+
+    Common::FixedArray<D3D12_ROOT_PARAMETER, NumRootParams> rootParameters;
+
+    D3D12_DESCRIPTOR_RANGE vsCbRange = {};
+    vsCbRange.RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_CBV;
+    vsCbRange.NumDescriptors = NFE_MAX_CBUFFER_SLOTS;
+    vsCbRange.OffsetInDescriptorsFromTableStart = 0; // D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
+    rootParameters[0] = {};
+    rootParameters[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
+    rootParameters[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_VERTEX;
+    rootParameters[0].DescriptorTable.NumDescriptorRanges = 1;
+    rootParameters[0].DescriptorTable.pDescriptorRanges = &vsCbRange;
+
+    D3D12_DESCRIPTOR_RANGE vsSrvRange = {};
+    vsSrvRange.RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
+    vsSrvRange.NumDescriptors = NFE_MAX_SHADER_RESOURCE_SLOTS;
+    vsSrvRange.OffsetInDescriptorsFromTableStart = 0; //D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
+    rootParameters[1] = {};
+    rootParameters[1].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
+    rootParameters[1].ShaderVisibility = D3D12_SHADER_VISIBILITY_VERTEX;
+    rootParameters[1].DescriptorTable.NumDescriptorRanges = 1;
+    rootParameters[1].DescriptorTable.pDescriptorRanges = &vsSrvRange;
+
+    D3D12_DESCRIPTOR_RANGE psCbRange = {};
+    psCbRange.RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_CBV;
+    psCbRange.NumDescriptors = NFE_MAX_CBUFFER_SLOTS;
+    psCbRange.OffsetInDescriptorsFromTableStart = 0; //D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
+    rootParameters[2] = {};
+    rootParameters[2].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
+    rootParameters[2].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
+    rootParameters[2].DescriptorTable.NumDescriptorRanges = 1;
+    rootParameters[2].DescriptorTable.pDescriptorRanges = &psCbRange;
+
+    D3D12_DESCRIPTOR_RANGE psSrvRange = {};
+    psSrvRange.RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
+    psSrvRange.NumDescriptors = NFE_MAX_SHADER_RESOURCE_SLOTS;
+    psSrvRange.OffsetInDescriptorsFromTableStart = 0; //D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
+    rootParameters[3] = {};
+    rootParameters[3].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
+    rootParameters[3].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
+    rootParameters[3].DescriptorTable.NumDescriptorRanges = 1;
+    rootParameters[3].DescriptorTable.pDescriptorRanges = &psSrvRange;
+
+    D3D12_DESCRIPTOR_RANGE psUavRange = {};
+    psUavRange = {};
+    psUavRange.RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_UAV;
+    psUavRange.NumDescriptors = NFE_MAX_WRITABLE_SHADER_RESOURCE_SLOTS;
+    psUavRange.OffsetInDescriptorsFromTableStart = 0; //D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
+    rootParameters[4] = {};
+    rootParameters[4].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
+    rootParameters[4].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
+    rootParameters[4].DescriptorTable.NumDescriptorRanges = 1;
+    rootParameters[4].DescriptorTable.pDescriptorRanges = &psUavRange;
+
+    D3D12_DESCRIPTOR_RANGE vsSamplerRange = {};
+    vsSamplerRange.RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SAMPLER;
+    vsSamplerRange.NumDescriptors = NFE_MAX_SAMPLER_SLOTS;
+    vsSamplerRange.OffsetInDescriptorsFromTableStart = 0; //D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
+    rootParameters[5] = {};
+    rootParameters[5].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
+    rootParameters[5].ShaderVisibility = D3D12_SHADER_VISIBILITY_VERTEX;
+    rootParameters[5].DescriptorTable.NumDescriptorRanges = 1;
+    rootParameters[5].DescriptorTable.pDescriptorRanges = &vsSamplerRange;
+
+    D3D12_DESCRIPTOR_RANGE psSamplerRange = {};
+    psSamplerRange.RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SAMPLER;
+    psSamplerRange.NumDescriptors = NFE_MAX_SAMPLER_SLOTS;
+    psSamplerRange.OffsetInDescriptorsFromTableStart = 0; //D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
+    rootParameters[6] = {};
+    rootParameters[6].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
+    rootParameters[6].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
+    rootParameters[6].DescriptorTable.NumDescriptorRanges = 1;
+    rootParameters[6].DescriptorTable.pDescriptorRanges = &psSamplerRange;
+
+    D3D12_ROOT_SIGNATURE_DESC rsd = {};
+    rsd.Flags = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
+    rsd.pParameters = rootParameters.Data();
+    rsd.NumParameters = NumRootParams;
+    rsd.NumStaticSamplers = 0;
+
+    HRESULT hr;
+    D3DPtr<ID3D10Blob> rootSignature, errorsBuffer;
+    hr = D3D_CALL_CHECK(D3D12SerializeRootSignature(&rsd, D3D_ROOT_SIGNATURE_VERSION_1,
+                                                    rootSignature.GetPtr(), errorsBuffer.GetPtr()));
+    if (FAILED(hr))
+        return false;
+
+    NFE_LOG_DEBUG("Graphics root signature blob size: %u bytes\n", rootSignature->GetBufferSize());
+
+    hr = D3D_CALL_CHECK(mDevice->CreateRootSignature(
+        0, rootSignature->GetBufferPointer(), rootSignature->GetBufferSize(),
+        IID_PPV_ARGS(mGraphicsRootSignature.GetPtr())));
+
+    if (!SetDebugName(mGraphicsRootSignature.Get(), "Default Root Signature"))
+    {
+        NFE_LOG_WARNING("Failed to set debug name");
+    }
+
+    return true;
+}
+
+bool Device::CreateComputeRootSignature()
+{
+    constexpr uint32_t NumRootParams = 4;
+
+    Common::FixedArray<D3D12_ROOT_PARAMETER, NumRootParams> rootParameters;
+
+    D3D12_DESCRIPTOR_RANGE csCbRange = {};
+    csCbRange.RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_CBV;
+    csCbRange.NumDescriptors = NFE_MAX_CBUFFER_SLOTS;
+    csCbRange.OffsetInDescriptorsFromTableStart = 0; //D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
+    rootParameters[0] = {};
+    rootParameters[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
+    rootParameters[0].DescriptorTable.NumDescriptorRanges = 1;
+    rootParameters[0].DescriptorTable.pDescriptorRanges = &csCbRange;
+
+    D3D12_DESCRIPTOR_RANGE csSrvRange = {};
+    csSrvRange.RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
+    csSrvRange.NumDescriptors = NFE_MAX_SHADER_RESOURCE_SLOTS;
+    csSrvRange.OffsetInDescriptorsFromTableStart = 0; //D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
+    rootParameters[1] = {};
+    rootParameters[1].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
+    rootParameters[1].DescriptorTable.NumDescriptorRanges = 1;
+    rootParameters[1].DescriptorTable.pDescriptorRanges = &csSrvRange;
+
+    D3D12_DESCRIPTOR_RANGE csUavRange = {};
+    csUavRange = {};
+    csUavRange.RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_UAV;
+    csUavRange.NumDescriptors = NFE_MAX_WRITABLE_SHADER_RESOURCE_SLOTS;
+    csUavRange.OffsetInDescriptorsFromTableStart = 0; //D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
+    rootParameters[2] = {};
+    rootParameters[2].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
+    rootParameters[2].DescriptorTable.NumDescriptorRanges = 1;
+    rootParameters[2].DescriptorTable.pDescriptorRanges = &csUavRange;
+
+    D3D12_DESCRIPTOR_RANGE csSamplerRange = {};
+    csSamplerRange.RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SAMPLER;
+    csSamplerRange.NumDescriptors = NFE_MAX_SAMPLER_SLOTS;
+    csSamplerRange.OffsetInDescriptorsFromTableStart = 0; //D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
+    rootParameters[3] = {};
+    rootParameters[3].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
+    rootParameters[3].DescriptorTable.NumDescriptorRanges = 1;
+    rootParameters[3].DescriptorTable.pDescriptorRanges = &csSamplerRange;
+
+    D3D12_ROOT_SIGNATURE_DESC rsd = {};
+    rsd.Flags = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
+    rsd.pParameters = rootParameters.Data();
+    rsd.NumParameters = NumRootParams;
+    rsd.NumStaticSamplers = 0;
+
+    HRESULT hr;
+    D3DPtr<ID3D10Blob> rootSignature, errorsBuffer;
+    hr = D3D_CALL_CHECK(D3D12SerializeRootSignature(&rsd, D3D_ROOT_SIGNATURE_VERSION_1,
+        rootSignature.GetPtr(), errorsBuffer.GetPtr()));
+    if (FAILED(hr))
+        return false;
+
+    NFE_LOG_DEBUG("Compute root signature blob size: %u bytes\n", rootSignature->GetBufferSize());
+
+    hr = D3D_CALL_CHECK(mDevice->CreateRootSignature(
+        0, rootSignature->GetBufferPointer(), rootSignature->GetBufferSize(),
+        IID_PPV_ARGS(mComputeRootSignature.GetPtr())));
+
+    if (!SetDebugName(mComputeRootSignature.Get(), "Compute Root Signature"))
+    {
+        NFE_LOG_WARNING("Failed to set debug name");
     }
 
     return true;
@@ -645,6 +847,44 @@ bool Device::GetDeviceInfo(DeviceInfo& info)
         info.features.PushBack("SRVOnlyTiledResourceTier3=" + ToString(d3d12options5.SRVOnlyTiledResourceTier3));
         info.features.PushBack("RenderPassesTier=" + ToString(static_cast<uint32>(d3d12options5.RenderPassesTier)));
         info.features.PushBack("RaytracingTier=" + ToString(static_cast<uint32>(d3d12options5.RaytracingTier)));
+    }
+
+    D3D12_FEATURE_DATA_D3D12_OPTIONS6 d3d12options6;
+    hr = mDevice->CheckFeatureSupport(D3D12_FEATURE_D3D12_OPTIONS6, &d3d12options6, sizeof(d3d12options6));
+    if (SUCCEEDED(hr))
+    {
+        info.features.PushBack("AdditionalShadingRatesSupported=" + ToString(d3d12options6.AdditionalShadingRatesSupported));
+        info.features.PushBack("PerPrimitiveShadingRateSupportedWithViewportIndexing=" + ToString(d3d12options6.PerPrimitiveShadingRateSupportedWithViewportIndexing));
+        info.features.PushBack("VariableShadingRateTier=" + ToString(d3d12options6.VariableShadingRateTier));
+        info.features.PushBack("ShadingRateImageTileSize=" + ToString(d3d12options6.ShadingRateImageTileSize));
+        info.features.PushBack("BackgroundProcessingSupported=" + ToString(d3d12options6.BackgroundProcessingSupported));
+    }
+
+    D3D12_FEATURE_DATA_D3D12_OPTIONS7 d3d12options7;
+    hr = mDevice->CheckFeatureSupport(D3D12_FEATURE_D3D12_OPTIONS7, &d3d12options7, sizeof(d3d12options7));
+    if (SUCCEEDED(hr))
+    {
+        info.features.PushBack("MeshShaderTier=" + ToString(d3d12options7.MeshShaderTier));
+        info.features.PushBack("SamplerFeedbackTier=" + ToString(d3d12options7.SamplerFeedbackTier));
+    }
+
+    D3D12_FEATURE_DATA_D3D12_OPTIONS8 d3d12options8;
+    hr = mDevice->CheckFeatureSupport(D3D12_FEATURE_D3D12_OPTIONS8, &d3d12options8, sizeof(d3d12options8));
+    if (SUCCEEDED(hr))
+    {
+        info.features.PushBack("UnalignedBlockTexturesSupported=" + ToString(d3d12options8.UnalignedBlockTexturesSupported));
+    }
+
+    D3D12_FEATURE_DATA_D3D12_OPTIONS9 d3d12options9;
+    hr = mDevice->CheckFeatureSupport(D3D12_FEATURE_D3D12_OPTIONS9, &d3d12options9, sizeof(d3d12options9));
+    if (SUCCEEDED(hr))
+    {
+        info.features.PushBack("MeshShaderPipelineStatsSupported=" + ToString(d3d12options9.MeshShaderPipelineStatsSupported));
+        info.features.PushBack("MeshShaderSupportsFullRangeRenderTargetArrayIndex=" + ToString(d3d12options9.MeshShaderSupportsFullRangeRenderTargetArrayIndex));
+        info.features.PushBack("AtomicInt64OnTypedResourceSupported=" + ToString(d3d12options9.AtomicInt64OnTypedResourceSupported));
+        info.features.PushBack("AtomicInt64OnGroupSharedSupported=" + ToString(d3d12options9.AtomicInt64OnGroupSharedSupported));
+        info.features.PushBack("DerivativesInMeshAndAmplificationShadersSupported=" + ToString(d3d12options9.DerivativesInMeshAndAmplificationShadersSupported));
+        info.features.PushBack("WaveMMATier=" + ToString(d3d12options9.WaveMMATier));
     }
 
     return true;

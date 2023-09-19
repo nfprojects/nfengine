@@ -8,18 +8,26 @@
 
 #include "../RendererCommon/Texture.hpp"
 #include "Common.hpp"
+#include "Descriptors.hpp"
 
 namespace NFE {
 namespace Renderer {
 
 class Sampler : public ISampler
 {
-    SamplerDesc mDesc;
-
 public:
+    Sampler();
+    ~Sampler();
+
     bool Init(const SamplerDesc& desc);
 
-    void FillD3DStaticSampler(D3D12_STATIC_SAMPLER_DESC& sampler) const;
+    DescriptorID GetDescriptor() const
+    {
+        return mDescriptor;
+    }
+
+private:
+    DescriptorID mDescriptor;
 };
 
 } // namespace Renderer

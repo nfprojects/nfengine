@@ -51,9 +51,6 @@
     <ClCompile Include="Scenes\RenderTargets.cpp">
       <Filter>Source Files\Scenes</Filter>
     </ClCompile>
-    <ClCompile Include="Scenes\Tessellation.cpp">
-      <Filter>Source Files\Scenes</Filter>
-    </ClCompile>
     <ClCompile Include="Scenes\Compute.cpp">
       <Filter>Source Files\Scenes</Filter>
     </ClCompile>

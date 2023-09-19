@@ -69,8 +69,8 @@ Out-of-source CMake build is the only supported way to build the project:
 
 ```
 mkdir build; cd build
-cmake ..
-make
+cmake -DCMAKE_BUILD_TYPE=Release ..
+make -j
 ```
 
 Changing build settings is done by defining CMake variables (all are optional):

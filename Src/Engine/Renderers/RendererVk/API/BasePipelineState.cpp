@@ -40,21 +40,11 @@ BasePipelineState::~BasePipelineState()
 void BasePipelineState::InitializeSettings(const PipelineStateDesc& desc)
 {
     mSettings.useTessellation = (desc.numControlPoints > 0) && (desc.hullShader != nullptr) && (desc.domainShader != nullptr);
-
-    for (const auto& vb: desc.volatileBufferBindings)
-    {
-        mSettings.vrMetadata.EmplaceBack(vb.stage, vb.binding);
-    }
 }
 
 void BasePipelineState::InitializeSettings(const ComputePipelineStateDesc& desc)
 {
     NFE_UNUSED(desc);
-    // TODO
-    /*for (const auto& vb: desc.volatileBufferBindings)
-    {
-        mSettings.vrMetadata.EmplaceBack(vb.stage, vb.binding);
-    }*/
 }
 
 bool BasePipelineState::MapToDescriptorSet(Shader* s, SpvReflectDescriptorType type, uint32& set)
@@ -75,11 +65,12 @@ bool BasePipelineState::MapToDescriptorSet(Shader* s, SpvReflectDescriptorType t
 
             DescriptorBindings& descs = mDescriptorSetMetadata.Back().bindings;
             descs.EmplaceBack(type, binding->binding);
+            /*
             if (type == SPV_REFLECT_DESCRIPTOR_TYPE_UNIFORM_BUFFER &&
                 (binding->binding < VK_MAX_VOLATILE_BUFFERS))
             {
                 descs.Back().type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC;
-            }
+            }*/
         }
 
         return true;

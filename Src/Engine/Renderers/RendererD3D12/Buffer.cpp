@@ -21,6 +21,7 @@ Buffer::Buffer()
 
 Buffer::~Buffer()
 {
+    DeleteDescriptors();
 }
 
 bool Buffer::Init(const BufferDesc& desc)
@@ -37,19 +38,11 @@ bool Buffer::Init(const BufferDesc& desc)
     }
 
     // buffer size is required to be 256-byte aligned
-    mSize = desc.size;
+    mSize = Math::RoundUp(desc.size, 256u);
     mStructureSize = desc.structSize;
     mMode = desc.mode;
 
-    if (desc.mode == ResourceAccessMode::Volatile)
-    {
-        NFE_ASSERT(!desc.memoryBlock, "Volatile resources cannot be allocated in memory block");
-
-        // volatile buffers are handled via ring buffer
-        return true;
-    }
-
-    D3D12_RESOURCE_DESC resourceDesc;
+    D3D12_RESOURCE_DESC resourceDesc = {};
     resourceDesc.Dimension = D3D12_RESOURCE_DIMENSION_BUFFER;
     resourceDesc.Alignment = 0;
     resourceDesc.Width = GetRealSize();
@@ -91,10 +84,10 @@ bool Buffer::Init(const BufferDesc& desc)
         resourceDesc.Flags |= D3D12_RESOURCE_FLAG_DENY_SHADER_RESOURCE;
     }
 
-    if ((desc.usage & BufferUsageFlag::WritableStruct) == BufferUsageFlag::WritableStruct)
+    if ((desc.usage & BufferUsageFlag::WritableStruct) == BufferUsageFlag::WritableStruct ||
+        (desc.usage & BufferUsageFlag::WritableBuffer) == BufferUsageFlag::WritableBuffer)
     {
         NFE_ASSERT(desc.mode == ResourceAccessMode::GPUOnly, "Invalid access mode for writable buffer");
-
         resourceDesc.Flags |= D3D12_RESOURCE_FLAG_ALLOW_UNORDERED_ACCESS;
     }
 
@@ -159,6 +152,98 @@ void* Buffer::Map(size_t size, size_t offset)
 void Buffer::Unmap()
 {
     mResource->Unmap(0, NULL);
+}
+
+DescriptorID Buffer::GetDescriptor(DescriptorType type, const BufferView& view)
+{
+    // check if descriptor was already created
+    for (const auto& iter : mDescriptors)
+    {
+        if (iter.type == type && iter.view == view)
+        {
+            return iter.descriptor;
+        }
+    }
+
+    // create missing descriptor
+
+    HeapAllocator& stagingHeapAllocator = gDevice->GetCbvSrvUavHeapStagingAllocator();
+    const DescriptorID descriptorID = stagingHeapAllocator.Allocate(1);
+
+    if (descriptorID == UINT32_MAX)
+    {
+        return UINT32_MAX;
+    }
+
+    if (type == DescriptorType::CBV)
+    {
+        // TODO offset within buffer
+        D3D12_CONSTANT_BUFFER_VIEW_DESC cbvDesc = {};
+        cbvDesc.BufferLocation = mResource->GetGPUVirtualAddress();
+        cbvDesc.SizeInBytes = mSize;
+
+        gDevice->GetDevice()->CreateConstantBufferView(
+            &cbvDesc,
+            stagingHeapAllocator.GetCpuHandle(descriptorID));
+    }
+    else if (type == DescriptorType::SRV)
+    {
+        const uint32 maxElements = mSize / mStructureSize;
+        const uint32 numElements = (view.numElements == UINT32_MAX) ? maxElements : view.numElements;
+        NFE_ASSERT(view.firstElement + numElements <= maxElements, "Buffer range out of bounds");
+
+        D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
+        srvDesc.Format = DXGI_FORMAT_UNKNOWN;
+        srvDesc.ViewDimension = D3D12_SRV_DIMENSION_BUFFER;
+        srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
+        srvDesc.Buffer.FirstElement = view.firstElement;
+        srvDesc.Buffer.NumElements = numElements;
+        srvDesc.Buffer.StructureByteStride = mStructureSize; // TODO custom stride
+        srvDesc.Buffer.Flags = D3D12_BUFFER_SRV_FLAG_NONE;
+
+        gDevice->GetDevice()->CreateShaderResourceView(
+            mResource.Get(),
+            &srvDesc,
+            stagingHeapAllocator.GetCpuHandle(descriptorID));
+    }
+    else if (type == DescriptorType::UAV)
+    {
+        const uint32 maxElements = mSize / mStructureSize;
+        const uint32 numElements = (view.numElements == UINT32_MAX) ? maxElements : view.numElements;
+        NFE_ASSERT(view.firstElement + numElements <= maxElements, "Buffer range out of bounds");
+
+        D3D12_UNORDERED_ACCESS_VIEW_DESC uavDesc = {};
+        uavDesc.ViewDimension = D3D12_UAV_DIMENSION_BUFFER;
+        uavDesc.Format = DXGI_FORMAT_UNKNOWN;
+        uavDesc.Buffer.FirstElement = view.firstElement;
+        uavDesc.Buffer.NumElements = numElements;
+        uavDesc.Buffer.StructureByteStride = mStructureSize; // TODO custom stride
+        uavDesc.Buffer.Flags = D3D12_BUFFER_UAV_FLAG_NONE;
+
+        gDevice->GetDevice()->CreateUnorderedAccessView(
+            mResource.Get(),
+            nullptr,
+            &uavDesc,
+            stagingHeapAllocator.GetCpuHandle(descriptorID));
+    }
+    else
+    {
+        NFE_FATAL("Invalid descriptor type for buffer");
+        return UINT32_MAX;
+    }
+
+    mDescriptors.EmplaceBack(DescriptorInfo{ type, view, descriptorID });
+
+    return descriptorID;
+}
+
+void Buffer::DeleteDescriptors()
+{
+    for (const auto& iter : mDescriptors)
+    {
+        gDevice->GetCbvSrvUavHeapStagingAllocator().Free(iter.descriptor, 1);
+    }
+    mDescriptors.Clear();
 }
 
 } // namespace Renderer

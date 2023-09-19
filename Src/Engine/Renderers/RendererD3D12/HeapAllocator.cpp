@@ -23,6 +23,8 @@ const char* GetHeapName(HeapAllocator::Type type)
     {
     case HeapAllocator::Type::CbvSrvUav:
         return "CBV_SRV_UAV";
+    case HeapAllocator::Type::Sampler:
+        return "Sampler";
     case HeapAllocator::Type::Rtv:
         return "RTV";
     case HeapAllocator::Type::Dsv:
@@ -78,6 +80,9 @@ bool HeapAllocator::Init()
     case Type::CbvSrvUav:
         heapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
         break;
+    case Type::Sampler:
+        heapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_SAMPLER;
+        break;
     case Type::Rtv:
         heapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_RTV;
         break;
@@ -112,9 +117,11 @@ bool HeapAllocator::Init()
 
 
 
-HeapAllocator::DescriptorRange HeapAllocator::Allocate(uint32 numDescriptors)
+DescriptorID HeapAllocator::Allocate(uint32 numDescriptors)
 {
-    // TODO this allocator is extremly slow
+    NFE_ASSERT(numDescriptors > 0);
+
+    // TODO this allocator is extremely slow
 
     NFE_SCOPED_LOCK(mLock);
 
@@ -134,21 +141,21 @@ HeapAllocator::DescriptorRange HeapAllocator::Allocate(uint32 numDescriptors)
         {
             for (uint32 j = first; j < first + numDescriptors; ++j)
                 mBitmap[j] = true;
-            return { first, numDescriptors };
+            return first;
         }
     }
 
     NFE_LOG_ERROR("Descriptor heap allocation failed");
-    return { UINT32_MAX, 0 };
+    return UINT32_MAX;
 }
 
-void HeapAllocator::Free(const DescriptorRange& range)
+void HeapAllocator::Free(DescriptorID startDescriptor, uint32 numDescriptors)
 {
-    NFE_ASSERT(range.offset + range.size <= mSize, "Invalid range");
+    NFE_ASSERT(startDescriptor + numDescriptors <= mSize, "Invalid range");
 
     NFE_SCOPED_LOCK(mLock);
 
-    for (uint32 i = range.offset; i < range.offset + range.size; ++i)
+    for (uint32 i = startDescriptor; i < startDescriptor + numDescriptors; ++i)
     {
         NFE_ASSERT(mBitmap[i], "Not allocated");
         mBitmap[i] = false;

@@ -62,15 +62,6 @@ bool ShaderCompiler::Compile(const char* source, uint32 sourceSize, const char* 
     case ShaderType::Vertex:
         profileName = L"vs_6_0";
         break;
-    case ShaderType::Geometry:
-        profileName = L"gs_6_0";
-        break;
-    case ShaderType::Hull:
-        profileName = L"hs_6_0";
-        break;
-    case ShaderType::Domain:
-        profileName = L"ds_6_0";
-        break;
     case ShaderType::Pixel:
         profileName = L"ps_6_0";
         break;

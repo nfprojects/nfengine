@@ -40,7 +40,7 @@ public:
         Executing,   // after IDevice::Execute()
     };
 
-    using ReferencedDescriptorsRanges = Common::DynArray<HeapAllocator::DescriptorRange>;
+
 
     explicit InternalCommandList(uint32 id);
     InternalCommandList(InternalCommandList&&) = default;
@@ -61,7 +61,8 @@ public:
     // Get command list's state
     State GetState() const { return mState; }
     ReferencedResourcesList& GetReferencedResources() { return mReferencedResources; }
-    ReferencedDescriptorsRanges& GetReferencedDescriptorsRanges() { return mReferencedDescriptorsRanges; }
+    ReferencedDescriptorsRanges& GetReferencedCbvSrvUavDescriptorsRanges() { return mReferencedCbvSrvUavDescriptorsRanges; }
+    ReferencedDescriptorsRanges& GetReferencedSamplerDescriptorsRanges() { return mReferencedSamplerDescriptorsRanges; }
 
     // Generate a command list with injected resource barriers that has to be executed before the actual command list
     ID3D12GraphicsCommandList* GenerateResourceBarriersCommandList();
@@ -90,7 +91,8 @@ private:
     ReferencedResourcesList mReferencedResources;
 
     // temporary descriptor tables referenced by this commandlist (can be released as soon as commandlist finishes execution)
-    ReferencedDescriptorsRanges mReferencedDescriptorsRanges;
+    ReferencedDescriptorsRanges mReferencedCbvSrvUavDescriptorsRanges;
+    ReferencedDescriptorsRanges mReferencedSamplerDescriptorsRanges;
 
     ResourceStateMap mInitialResourceStates;
     ResourceStateMap mFinalResourceStates;

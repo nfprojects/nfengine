@@ -313,11 +313,8 @@ void CommandRecorder::ProcessPendingResources()
 
             Buffer* b = dynamic_cast<Buffer*>(mPendingResources[i].resource);
 
-            if (b->mMode == ResourceAccessMode::Volatile)
-                InsertVolatileResource(b, TranslateShaderTypeToVkShaderStage(mPendingResources[i].stage), mPendingResources[i].slot);
-
             VK_ZERO_MEMORY(bufferInfo);
-            bufferInfo.buffer = (b->mMode == ResourceAccessMode::Volatile) ? gDevice->GetRingBuffer()->GetVkBuffer() : b->mBuffer;
+            bufferInfo.buffer = b->mBuffer;
             bufferInfo.range = b->mBufferSize;
             bufferInfo.offset = 0;
 
@@ -585,10 +582,6 @@ bool CommandRecorder::WriteBuffer(const BufferPtr& buffer, size_t offset, size_t
         }
 
         return WriteDynamicBuffer(b, offset, size, data);
-    }
-    else if (b->mMode == ResourceAccessMode::Volatile)
-    {
-        return WriteVolatileBuffer(b, size, data);
     }
     else
     {
@@ -915,12 +908,6 @@ void CommandRecorder::SetVertexBuffers(uint32 num, const BufferPtr* vertexBuffer
         Buffer* buf = dynamic_cast<Buffer*>(vertexBuffers[i].Get());
         NFE_ASSERT(buf != nullptr, "Incorrect buffer provided at slot %d", i);
 
-        if (buf->mMode == ResourceAccessMode::Volatile)
-        {
-            buffers[i] = gDevice->GetRingBuffer()->GetVkBuffer();
-            offs[i] = static_cast<VkDeviceSize>(offsets[i]) + buf->mVolatileDataOffset;
-        }
-        else
         {
             buffers[i] = buf->mBuffer;
             offs[i] = static_cast<VkDeviceSize>(offsets[i]);

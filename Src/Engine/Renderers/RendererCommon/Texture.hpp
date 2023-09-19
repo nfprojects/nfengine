@@ -39,6 +39,13 @@ struct TextureView
     uint32 numLayers = UINT32_MAX;
 };
 
+NFE_INLINE bool operator == (const TextureView& lhs, const TextureView& rhs)
+{
+    return
+        lhs.baseMip == rhs.baseMip && lhs.baseLayer == rhs.baseLayer &&
+        lhs.numMips == rhs.numMips && lhs.numLayers == rhs.numLayers;
+}
+
 /**
  * Texture descriptor.
  */

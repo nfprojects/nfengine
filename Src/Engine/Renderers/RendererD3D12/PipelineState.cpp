@@ -10,7 +10,6 @@
 #include "Translations.hpp"
 #include "Shader.hpp"
 #include "VertexLayout.hpp"
-#include "ResourceBinding.hpp"
 #include "Engine/Common/Logger/Logger.hpp"
 
 
@@ -126,9 +125,7 @@ bool PipelineState::Init(const PipelineStateDesc& desc)
     D3D12_GRAPHICS_PIPELINE_STATE_DESC psd;
     ZeroMemory(&psd, sizeof(psd));
 
-    psd.pRootSignature = nullptr;
-    NFE_ASSERT(psd.pRootSignature, "Missing root signature");
-
+    psd.pRootSignature = gDevice->GetGraphicsRootSignature();
     psd.VS = mVS ? mVS->GetD3D12Bytecode() : nullBytecode;
     psd.HS = mHS ? mHS->GetD3D12Bytecode() : nullBytecode;
     psd.DS = mDS ? mDS->GetD3D12Bytecode() : nullBytecode;

@@ -10,7 +10,6 @@
     <ClCompile Include="ReferencedResourcesList.cpp" />
     <ClCompile Include="RendererD3D12.cpp" />
     <ClCompile Include="Resource.cpp" />
-    <ClCompile Include="ResourceBinding.cpp" />
     <ClCompile Include="ResourceStateCache.cpp" />
     <ClCompile Include="RingBuffer.cpp" />
     <ClCompile Include="PCH.cpp" />
@@ -30,6 +29,7 @@
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="VertexLayout.cpp" />
+    <ClCompile Include="DescriptorSet.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CommandRecorder.hpp" />
@@ -44,7 +44,6 @@
     <ClInclude Include="ReferencedResourcesList.hpp" />
     <ClInclude Include="RendererD3D12.hpp" />
     <ClInclude Include="Resource.hpp" />
-    <ClInclude Include="ResourceBinding.hpp" />
     <ClInclude Include="ResourceStateCache.hpp" />
     <ClInclude Include="RingBuffer.hpp" />
     <ClInclude Include="ShaderCompiler.hpp" />
@@ -63,6 +62,8 @@
     <ClInclude Include="Shader.hpp" />
     <ClInclude Include="Texture.hpp" />
     <ClInclude Include="VertexLayout.hpp" />
+    <ClInclude Include="DescriptorSet.hpp" />
+    <ClInclude Include="Descriptors.hpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="D:\DEV\EXTERNAL\DirectX-Graphics-Samples\Libraries\D3DX12\readme.md" />

@@ -47,11 +47,15 @@ using VertexLayoutPtr = Common::SharedPtr<IVertexLayout>;
 using FencePtr = Common::SharedPtr<IFence>;
 
 #define MAX_RENDER_TARGETS 8
-#define MAX_VOLATILE_BUFFERS 8
 #define MAX_MIPMAP_LEVELS 16
 
 // number of "graphics" shader types
 #define NFE_GRAPHICS_SHADER_TYPES_NUM 5
+
+#define NFE_MAX_CBUFFER_SLOTS 4
+#define NFE_MAX_SHADER_RESOURCE_SLOTS 16
+#define NFE_MAX_SAMPLER_SLOTS 8
+#define NFE_MAX_WRITABLE_SHADER_RESOURCE_SLOTS 16
 
 
 enum class CommandQueueType : uint8
@@ -210,13 +214,12 @@ enum class ShaderType : uint8
 {
     Unknown = 0xFF,
     Vertex  = 0,
-    Hull,       //< aka. "tessellation control"
-    Domain,     //< aka. "tessellation evaluation"
-    Geometry,
-    Pixel,      //< aka. "fragment"
+    Pixel,
     Compute,
     All
 };
+
+#define NFE_RENDERER_MAX_SHADER_TYPES ((uint32)ShaderType::All)
 
 /**
  * GPU resource access modes.
@@ -241,23 +244,15 @@ enum class ResourceAccessMode : uint8
     /**
      * GPU read-only resource, for example a constant buffer.
      * The content can be written by the CPU.
-     * WARNING: Memory accesses must be properly synchornized as it's not double-buffered.
+     * WARNING: Memory accesses must be properly synchronized as it's not double-buffered.
      */
     Upload,
-
-    /**
-     * GPU read-only resource, frequently written by CPU.
-     * The content can be written by the CPU. Assumes the data will be written to every frame.
-     * This mode uses no actual Resource/Buffer allocation. Instead, internal Ring Buffer is used
-     * to write data.
-     */
-    Volatile,
 
     /**
      * Readback resource, for example a screenshot texture.
      * The content can't be accessed directly by the GPU (only via Copy operations).
      * The data can be read by the CPU.
-     * WARNING: Memory accesses must be properly synchornized as it's not double-buffered.
+     * WARNING: Memory accesses must be properly synchronized as it's not double-buffered.
      */
     Readback
 };

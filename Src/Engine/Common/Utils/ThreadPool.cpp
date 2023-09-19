@@ -40,7 +40,7 @@ ThreadPool::ThreadPool()
 {
     // TODO make it configurable
     InitTasksTable(TasksCapacity);
-    SpawnWorkerThreads(Thread::GetSystemThreadsCount());
+    SpawnWorkerThreads(Math::Max(1u, Thread::GetSystemThreadsCount() - 1u));
 }
 
 ThreadPool::~ThreadPool()

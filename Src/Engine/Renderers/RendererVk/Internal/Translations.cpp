@@ -287,7 +287,6 @@ const char* TranslateResourceAccessModeToString(ResourceAccessMode mode)
     case ResourceAccessMode::Immutable: return "Immutable";
     case ResourceAccessMode::Readback: return "Readback";
     case ResourceAccessMode::Upload: return "Upload";
-    case ResourceAccessMode::Volatile: return "Volatile";
     default: return "UNKNOWN";
     }
 }
@@ -605,9 +604,6 @@ VkShaderStageFlagBits TranslateShaderTypeToVkShaderStage(ShaderType type)
     switch (type)
     {
     case ShaderType::Vertex: return VK_SHADER_STAGE_VERTEX_BIT;
-    case ShaderType::Hull: return VK_SHADER_STAGE_TESSELLATION_CONTROL_BIT;
-    case ShaderType::Domain: return VK_SHADER_STAGE_TESSELLATION_EVALUATION_BIT;
-    case ShaderType::Geometry: return VK_SHADER_STAGE_GEOMETRY_BIT;
     case ShaderType::Pixel: return VK_SHADER_STAGE_FRAGMENT_BIT;
     case ShaderType::Compute: return VK_SHADER_STAGE_COMPUTE_BIT;
     case ShaderType::All: return VK_SHADER_STAGE_ALL_GRAPHICS;

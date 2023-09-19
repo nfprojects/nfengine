@@ -172,7 +172,7 @@ bool Backbuffer::Resize(uint32 newWidth, uint32 newHeight)
     mWidth = newWidth;
     mHeight = newHeight;
 
-    NFE_LOG_ERROR("Backbuffer resized: width=%u, height=%u", newWidth, newHeight);
+    NFE_LOG_INFO("Backbuffer resized: width=%u, height=%u", newWidth, newHeight);
     return true;
 }
 
