@@ -34,7 +34,7 @@ bool ComputePipelineState::Init(const ComputePipelineStateDesc& desc)
     D3D12_COMPUTE_PIPELINE_STATE_DESC psd;
     ZeroMemory(&psd, sizeof(psd));
     psd.CS = mComputeShader->GetD3D12Bytecode();
-    psd.pRootSignature = nullptr;
+    psd.pRootSignature = gDevice->GetComputeRootSignature();
     // TODO pipeline caching
 
     NFE_ASSERT(psd.pRootSignature, "Missing root signature");

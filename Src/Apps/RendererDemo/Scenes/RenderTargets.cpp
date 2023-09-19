@@ -134,9 +134,6 @@ bool RenderTargetsScene::CreateBasicResources(bool multipleRT, bool withDepthBuf
     pipelineStateDesc.vertexShader = mVertexShader;
     pipelineStateDesc.primitiveType = PrimitiveType::Triangles;
     pipelineStateDesc.vertexLayout = mVertexLayout;
-    pipelineStateDesc.volatileBufferBindings = {
-        { ShaderType::Vertex, static_cast<NFE::uint32>(mCBufferSlot) },
-    };
     pipelineStateDesc.depthState.depthCompareFunc = CompareFunc::Less;
     pipelineStateDesc.depthState.depthWriteEnable = false;
     pipelineStateDesc.depthState.depthTestEnable = false;
@@ -224,7 +221,7 @@ bool RenderTargetsScene::CreateBasicResources(bool multipleRT, bool withDepthBuf
     if (!mIndexBuffer)
         return false;
 
-    bufferDesc.mode = ResourceAccessMode::Volatile;
+    bufferDesc.mode = ResourceAccessMode::GPUOnly;
     bufferDesc.size = sizeof(VertexCBuffer);
     bufferDesc.usage = BufferUsageFlag::ConstantBuffer;
     mConstantBuffer = mRendererDevice->CreateBuffer(bufferDesc);

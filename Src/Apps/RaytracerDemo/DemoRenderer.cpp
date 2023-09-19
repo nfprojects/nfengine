@@ -171,7 +171,7 @@ bool DemoRenderer::Init(const Common::Window& window)
     {
         BufferDesc desc;
         desc.debugName = "CBuffer";
-        desc.mode = ResourceAccessMode::Volatile;
+        desc.mode = ResourceAccessMode::GPUOnly;
         desc.size = 16 * 4;
         desc.usage = BufferUsageFlag::ConstantBuffer;
 

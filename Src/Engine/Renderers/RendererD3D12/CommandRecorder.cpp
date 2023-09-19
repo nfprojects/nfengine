@@ -25,6 +25,7 @@ CommandRecorder::CommandRecorder()
     : mCommandList(nullptr)
     , mCommandListObject(nullptr)
     , mQueueType(CommandQueueType::Invalid)
+    , mDescriptorSets{ShaderType::Vertex, ShaderType::Pixel, ShaderType::Compute}
 {
     ResetState();
 }
@@ -59,8 +60,19 @@ bool CommandRecorder::Begin(CommandQueueType queueType)
         ID3D12DescriptorHeap* heaps[] =
         {
             gDevice->GetCbvSrvUavHeapAllocator().GetHeap(),
+            gDevice->GetSamplerHeapAllocator().GetHeap(),
         };
-        mCommandList->SetDescriptorHeaps(1, heaps);
+        mCommandList->SetDescriptorHeaps(2, heaps);
+    }
+
+    if (mQueueType == CommandQueueType::Graphics)
+    {
+        mCommandList->SetGraphicsRootSignature(gDevice->GetGraphicsRootSignature());
+    }
+
+    if (mQueueType == CommandQueueType::Graphics || mQueueType == CommandQueueType::Compute)
+    {
+        mCommandList->SetComputeRootSignature(gDevice->GetComputeRootSignature());
     }
 
     ResetState();
@@ -68,24 +80,8 @@ bool CommandRecorder::Begin(CommandQueueType queueType)
     return true;
 }
 
-void CommandRecorder::ResourceBindingState::Reset()
-{
-    bindingLayoutChanged = false;
-    bindingInstancesChanged = false;
-
-    for (uint32 i = 0; i < NFE_RENDERER_MAX_VOLATILE_CBUFFERS; ++i)
-    {
-        volatileCBuffers[i] = nullptr;
-    }
-
-    pendingDirectResourceBinds.Clear();
-}
-
 void CommandRecorder::ResetState()
 {
-    mGraphicsBindingState.Reset();
-    mComputeBindingState.Reset();
-
     mCurrRenderTarget = nullptr;
     mGraphicsPipelineState = nullptr;
     mComputePipelineState = nullptr;
@@ -103,6 +99,11 @@ void CommandRecorder::ResetState()
     for (uint32 i = 0; i < NFE_RENDERER_MAX_VERTEX_BUFFERS; ++i)
     {
         mBoundVertexBuffers[i] = nullptr;
+    }
+
+    for (uint32 i = 0; i < NFE_RENDERER_MAX_SHADER_TYPES; ++i)
+    {
+        mDescriptorSets[i].Reset();
     }
 }
 
@@ -240,88 +241,74 @@ void CommandRecorder::BindTexture(ShaderType stage, uint32 slot, const TexturePt
 {
     Texture* texturePtr = static_cast<Texture*>(texture.Get());
     NFE_ASSERT(texturePtr, "Invalid texture");
+    NFE_ASSERT((uint32)stage >= (uint32)ShaderType::Vertex && (uint32)stage <= (uint32)ShaderType::Compute, "Invalid shader stage");
 
     Internal_GetReferencedResources().textures.Insert(texture);
 
-    // TODO subresource state based on view?
+    // TODO subresource state based on view
     // TODO limit shader visibility
     mResourceStateCache.EnsureResourceState(texturePtr, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE|D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE);
 
-    // TODO update resource binding state
-    NFE_UNUSED(stage);
-    NFE_UNUSED(slot);
-    NFE_UNUSED(view);
+    mDescriptorSets[(uint32)stage].SetTexture(slot, texture, view);
 }
 
 void CommandRecorder::BindWritableTexture(ShaderType stage, uint32 slot, const TexturePtr& texture, const TextureView& view)
 {
     Texture* texturePtr = static_cast<Texture*>(texture.Get());
     NFE_ASSERT(texturePtr, "Invalid texture");
+    NFE_ASSERT((uint32)stage >= (uint32)ShaderType::Pixel && (uint32)stage <= (uint32)ShaderType::Compute, "Invalid shader stage");
 
     Internal_GetReferencedResources().textures.Insert(texture);
 
     // TODO subresource state based on view
     mResourceStateCache.EnsureResourceState(texturePtr, D3D12_RESOURCE_STATE_UNORDERED_ACCESS);
 
-    // TODO update resource binding state
-    NFE_UNUSED(stage);
-    NFE_UNUSED(slot);
-    NFE_UNUSED(view);
+    mDescriptorSets[(uint32)stage].SetWritableTexture(slot, texture, view);
 }
 
 void CommandRecorder::BindBuffer(ShaderType stage, uint32 slot, const BufferPtr& buffer, const BufferView& view)
 {
     Buffer* bufferPtr = static_cast<Buffer*>(buffer.Get());
     NFE_ASSERT(bufferPtr, "Invalid buffer");
+    NFE_ASSERT((uint32)stage >= (uint32)ShaderType::Vertex && (uint32)stage <= (uint32)ShaderType::Compute, "Invalid shader stage");
 
     Internal_GetReferencedResources().buffers.Insert(buffer);
 
     // TODO limit shader visibility
     mResourceStateCache.EnsureResourceState(bufferPtr, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE | D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE);
 
-    // TODO update resource binding state
-    NFE_UNUSED(stage);
-    NFE_UNUSED(slot);
-    NFE_UNUSED(view);
+    mDescriptorSets[(uint32)stage].SetBuffer(slot, buffer, view);
 }
 
 void CommandRecorder::BindWritableBuffer(ShaderType stage, uint32 slot, const BufferPtr& buffer, const BufferView& view)
 {
     Buffer* bufferPtr = static_cast<Buffer*>(buffer.Get());
     NFE_ASSERT(bufferPtr, "Invalid buffer");
+    NFE_ASSERT((uint32)stage >= (uint32)ShaderType::Pixel && (uint32)stage <= (uint32)ShaderType::Compute, "Invalid shader stage");
 
     Internal_GetReferencedResources().buffers.Insert(buffer);
 
     mResourceStateCache.EnsureResourceState(bufferPtr, D3D12_RESOURCE_STATE_UNORDERED_ACCESS);
 
-    // TODO update resource binding state
-    NFE_UNUSED(stage);
-    NFE_UNUSED(slot);
-    NFE_UNUSED(view);
+    mDescriptorSets[(uint32)stage].SetWritableBuffer(slot, buffer, view);
 }
 
 void CommandRecorder::BindConstantBuffer(ShaderType stage, uint32 slot, const BufferPtr& buffer)
 {
-    NFE_ASSERT(slot < NFE_RENDERER_MAX_VOLATILE_CBUFFERS, "Invalid volatile buffer slot number");
+    NFE_ASSERT((uint32)stage >= (uint32)ShaderType::Vertex && (uint32)stage <= (uint32)ShaderType::Compute, "Invalid shader stage");
 
     const Buffer* bufferPtr = static_cast<Buffer*>(buffer.Get());
-    NFE_ASSERT(bufferPtr->GetMode() == ResourceAccessMode::Volatile, "Buffer mode must be volatile");
 
-    // TODO hadnle volatile and non-volatile buffers
     mResourceStateCache.EnsureResourceState(bufferPtr, D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER);
 
-    // TODO update resource binding state
-    NFE_UNUSED(stage);
-    NFE_UNUSED(slot);
+    mDescriptorSets[(uint32)stage].SetConstantBuffer(slot, buffer);
 }
 
 void CommandRecorder::BindSampler(ShaderType stage, uint32 slot, const SamplerPtr& sampler)
 {
-    NFE_UNUSED(stage);
-    NFE_UNUSED(slot);
-    NFE_UNUSED(sampler);
+    NFE_ASSERT((uint32)stage >= (uint32)ShaderType::Vertex && (uint32)stage <= (uint32)ShaderType::Compute, "Invalid shader stage");
 
-    NFE_FATAL("Not implemented");
+    mDescriptorSets[(uint32)stage].SetSampler(slot, sampler);
 }
 
 void CommandRecorder::SetRenderTarget(const RenderTargetPtr& renderTarget)
@@ -495,13 +482,6 @@ bool CommandRecorder::WriteBuffer(const BufferPtr& buffer, size_t offset, size_t
 
         Internal_WriteBuffer(bufferPtr, offset, size, data);
     }
-    else if (bufferPtr->GetMode() == ResourceAccessMode::Volatile)
-    {
-        NFE_ASSERT(offset == 0, "Offset not supported");
-        NFE_ASSERT(size == bufferPtr->GetSize(), "Size must cover the whole buffer");
-
-        Internal_WriteVolatileBuffer(bufferPtr, data);
-    }
     else
     {
         NFE_FATAL("Specified buffer can not be CPU-written");
@@ -609,7 +589,7 @@ bool CommandRecorder::WriteTexture(const TexturePtr& texture, const void* data, 
     }
 
     // compute data layout of source texture data
-    D3D12_SUBRESOURCE_FOOTPRINT subresourceFootprint;
+    D3D12_SUBRESOURCE_FOOTPRINT subresourceFootprint = {};
     subresourceFootprint.Format = TranslateFormat(texturePtr->GetFormat());
     subresourceFootprint.Width = writeWidth;
     subresourceFootprint.Height = writeHeight;
@@ -646,13 +626,13 @@ bool CommandRecorder::WriteTexture(const TexturePtr& texture, const void* data, 
     BarrierFlusher(mResourceStateCache, mCommandList)
         .EnsureResourceState(texturePtr, D3D12_RESOURCE_STATE_COPY_DEST, subresourceIndex);
 
-    D3D12_TEXTURE_COPY_LOCATION src;
+    D3D12_TEXTURE_COPY_LOCATION src = {};
     src.pResource = ringBuffer->GetD3DResource();
     src.PlacedFootprint.Footprint = subresourceFootprint;
     src.PlacedFootprint.Offset = ringBufferOffset;
     src.Type = D3D12_TEXTURE_COPY_TYPE_PLACED_FOOTPRINT;
 
-    D3D12_TEXTURE_COPY_LOCATION dest;
+    D3D12_TEXTURE_COPY_LOCATION dest = {};
     dest.pResource = texturePtr->GetD3DResource();
     dest.SubresourceIndex = subresourceIndex;
     dest.Type = D3D12_TEXTURE_COPY_TYPE_SUBRESOURCE_INDEX;
@@ -677,7 +657,7 @@ void CommandRecorder::CopyTextureToBuffer(const TexturePtr& src, const BufferPtr
     const Buffer* destBuf = dynamic_cast<const Buffer*>(dest.Get());
     NFE_ASSERT(destBuf, "Invalid 'dest' pointer");
 
-    if (destBuf->GetMode() == ResourceAccessMode::Upload || destBuf->GetMode() == ResourceAccessMode::Volatile)
+    if (destBuf->GetMode() == ResourceAccessMode::Upload)
     {
         NFE_LOG_ERROR("Can't copy texture to this kind of buffer");
         return;
@@ -731,7 +711,7 @@ void CommandRecorder::CopyTextureToBuffer(const TexturePtr& src, const BufferPtr
         .EnsureResourceState(destBuf, D3D12_RESOURCE_STATE_COPY_DEST);
 
     // compute data layout of source texture data
-    D3D12_SUBRESOURCE_FOOTPRINT subresourceFootprint;
+    D3D12_SUBRESOURCE_FOOTPRINT subresourceFootprint = {};
     subresourceFootprint.Format = TranslateFormat(srcTex->GetFormat());
     subresourceFootprint.Width = srcBox.right - srcBox.left;
     subresourceFootprint.Height = srcBox.bottom - srcBox.top;
@@ -745,13 +725,13 @@ void CommandRecorder::CopyTextureToBuffer(const TexturePtr& src, const BufferPtr
     NFE_ASSERT(bufferOffset % D3D12_TEXTURE_DATA_PLACEMENT_ALIGNMENT == 0,
         "Invalid buffer offset: %u. Must be aligned to %u", bufferOffset, D3D12_TEXTURE_DATA_PLACEMENT_ALIGNMENT);
 
-    D3D12_TEXTURE_COPY_LOCATION destLocation;
+    D3D12_TEXTURE_COPY_LOCATION destLocation = {};
     destLocation.pResource = destBuf->GetD3DResource();
     destLocation.PlacedFootprint.Footprint = subresourceFootprint;
     destLocation.PlacedFootprint.Offset = bufferOffset;
     destLocation.Type = D3D12_TEXTURE_COPY_TYPE_PLACED_FOOTPRINT;
 
-    D3D12_TEXTURE_COPY_LOCATION srcLocation;
+    D3D12_TEXTURE_COPY_LOCATION srcLocation = {};
     srcLocation.pResource = srcTex->GetD3DResource();
     srcLocation.SubresourceIndex = subresourceIndex;
     srcLocation.Type = D3D12_TEXTURE_COPY_TYPE_SUBRESOURCE_INDEX;
@@ -770,7 +750,7 @@ void CommandRecorder::CopyTexture(const TexturePtr& src, const TexturePtr& dest)
     Texture* srcTex = dynamic_cast<Texture*>(src.Get());
     NFE_ASSERT(src, "Invalid 'src' pointer");
 
-    if (srcTex->GetMode() == ResourceAccessMode::Readback || srcTex->GetMode() == ResourceAccessMode::Volatile)
+    if (srcTex->GetMode() == ResourceAccessMode::Readback)
     {
         NFE_LOG_ERROR("Can't copy from this texture");
         return;
@@ -779,12 +759,6 @@ void CommandRecorder::CopyTexture(const TexturePtr& src, const TexturePtr& dest)
     Texture* destTex = dynamic_cast<Texture*>(dest.Get());
     NFE_ASSERT(destTex, "Invalid 'dest' pointer");
 
-    if (destTex->GetMode() == ResourceAccessMode::Volatile)
-    {
-        NFE_LOG_ERROR("Can't copy to this texture");
-        return;
-    }
-
     BarrierFlusher(mResourceStateCache, mCommandList)
         .EnsureResourceState(srcTex, D3D12_RESOURCE_STATE_COPY_SOURCE)
         .EnsureResourceState(destTex, D3D12_RESOURCE_STATE_COPY_DEST);
@@ -792,12 +766,12 @@ void CommandRecorder::CopyTexture(const TexturePtr& src, const TexturePtr& dest)
     // perform copy
     if (destTex->GetMode() == ResourceAccessMode::Readback)
     {
-        D3D12_TEXTURE_COPY_LOCATION sourceLoc;
+        D3D12_TEXTURE_COPY_LOCATION sourceLoc = {};
         sourceLoc.pResource = srcTex->GetResource();
         sourceLoc.Type = D3D12_TEXTURE_COPY_TYPE_SUBRESOURCE_INDEX;
         sourceLoc.SubresourceIndex = 0;
 
-        D3D12_TEXTURE_COPY_LOCATION destLoc;
+        D3D12_TEXTURE_COPY_LOCATION destLoc = {};
         destLoc.pResource = destTex->GetResource();
         destLoc.Type = D3D12_TEXTURE_COPY_TYPE_PLACED_FOOTPRINT;
 
@@ -828,7 +802,7 @@ void CommandRecorder::CopyTexture(const TexturePtr& src, const BackbufferPtr& de
     Backbuffer* destBackbuffer = static_cast<Backbuffer*>(dest.Get());
     NFE_ASSERT(src, "Invalid 'src' pointer");
 
-    if (srcTex->GetMode() == ResourceAccessMode::Readback || srcTex->GetMode() == ResourceAccessMode::Volatile)
+    if (srcTex->GetMode() == ResourceAccessMode::Readback)
     {
         NFE_LOG_ERROR("Can't copy from this texture");
         return;
@@ -981,194 +955,18 @@ void CommandRecorder::Internal_UpdateVetexAndIndexBuffers()
     }
 }
 
-/*
-HeapAllocator::DescriptorRange CommandRecorder::Internal_GenerateDescriptorTableOverride(ResourceBindingState& state, uint32 setIndex)
-{
-    NFE_ASSERT(state.bindingLayout, "Invalid layout");
-    const uint32 numResourcesInSet = state.bindingLayout->mBindingSets[setIndex]->GetNumResources();
-
-    HeapAllocator& stagingHeapAllocator = gDevice->GetCbvSrvUavHeapStagingAllocator();
-    HeapAllocator& heapAllocator = gDevice->GetCbvSrvUavHeapAllocator();
-
-    // allocate descriptor table for the override
-    // TODO instead of using generic allocator, maybe switch to ring buffer for temporary descriptors
-    HeapAllocator::DescriptorRange descriptorRange = heapAllocator.Allocate(numResourcesInSet);
-    NFE_ASSERT(descriptorRange.offset != UINT32_MAX, "Descriptor table allocation failed");
-
-    // copy descriptors from existing binding instance
-    if (bindingInstance)
-    {
-        D3D12_CPU_DESCRIPTOR_HANDLE srcHandle = stagingHeapAllocator.GetCpuHandle();
-        srcHandle.ptr += stagingHeapAllocator.GetDescriptorSize() * static_cast<size_t>(bindingInstance->mCpuDescriptorHeapOffset);
-
-        D3D12_CPU_DESCRIPTOR_HANDLE destHandle = heapAllocator.GetCpuHandle();
-        destHandle.ptr += heapAllocator.GetDescriptorSize() * static_cast<size_t>(descriptorRange.offset);
-
-        gDevice->GetDevice()->CopyDescriptorsSimple(numResourcesInSet, destHandle, srcHandle, D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
-
-    }
-
-    // create descriptors for the overrides
-    for (const PendingDirectResourceBind& resourceBind : state.pendingDirectResourceBinds)
-    {
-        if (resourceBind.setIndex == setIndex)
-        {
-            D3D12_CPU_DESCRIPTOR_HANDLE targetDescriptor = heapAllocator.GetCpuHandle();
-            targetDescriptor.ptr += heapAllocator.GetDescriptorSize() * static_cast<size_t>(descriptorRange.offset + resourceBind.slotInSet);
-
-            if (resourceBind.type == ResourceType::Texture)
-            {
-                if (resourceBind.shaderWritable)
-                {
-                    CreateTextureUAV(resourceBind.texture, resourceBind.textureView, targetDescriptor);
-
-                    mResourceStateCache.EnsureResourceState(resourceBind.texture, D3D12_RESOURCE_STATE_UNORDERED_ACCESS);
-                }
-                else
-                {
-                    CreateTextureSRV(resourceBind.texture, resourceBind.textureView, targetDescriptor);
-
-                    // TODO limit shader visibility (based on binding layout properties)
-                    mResourceStateCache.EnsureResourceState(resourceBind.texture, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE|D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE);
-                }
-            }
-            else if(resourceBind.type == ResourceType::Buffer)
-            {
-                if (resourceBind.shaderWritable)
-                {
-                    CreateBufferUAV(resourceBind.buffer, resourceBind.bufferView, targetDescriptor);
-
-                    mResourceStateCache.EnsureResourceState(resourceBind.buffer, D3D12_RESOURCE_STATE_UNORDERED_ACCESS);
-                }
-                else
-                {
-                    CreateBufferSRV(resourceBind.buffer, resourceBind.bufferView, targetDescriptor);
-
-                    // TODO limit shader visibility (based on binding layout properties)
-                    mResourceStateCache.EnsureResourceState(resourceBind.buffer, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE|D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE);
-                }
-            }
-            else
-            {
-                NFE_FATAL("Invalid resource type");
-            }
-        }
-    }
-
-    // add to referenced list so it will be released automatically later
-    mCommandListObject->GetReferencedDescriptorsRanges().PushBack(descriptorRange);
-
-    // TODO verify if all resources in the set are bound, if not - assert, because it may crash the driver
-    // TODO ensure proper resource states (the non-overwritten ones)
-
-    return descriptorRange;
-}
-*/
-
-/*
-void CommandRecorder::Internal_UpdateResourceBindings(PipelineType pipelineType)
-{
-    ResourceBindingState& state = GetBindingState(pipelineType);
-
-    if (!state.bindingInstancesChanged && state.pendingDirectResourceBinds.Empty())
-    {
-        return;
-    }
-
-    // determine, which sets require custom descriptor table
-    uint32 directBindingSetMask = 0;
-    for (const PendingDirectResourceBind& resourceBind : state.pendingDirectResourceBinds)
-    {
-        directBindingSetMask |= 1u << resourceBind.setIndex;
-    }
-
-    for (uint32 setIndex = 0; setIndex < NFE_RENDERER_MAX_BINDING_SETS; ++setIndex)
-    {
-        const ResourceBindingInstance* instance = state.bindingInstances[setIndex];
-
-        if (1u == ((directBindingSetMask >> setIndex) & 1u))
-        {
-            HeapAllocator::DescriptorRange descriptorRange = Internal_GenerateDescriptorTableOverride(state, setIndex, instance);
-
-            HeapAllocator& allocator = gDevice->GetCbvSrvUavHeapAllocator();
-            D3D12_GPU_DESCRIPTOR_HANDLE ptr = allocator.GetGpuHandle();
-            ptr.ptr += (uint64)descriptorRange.offset * allocator.GetDescriptorSize();
-
-            if (pipelineType == PipelineType::Compute)
-            {
-                mCommandList->SetComputeRootDescriptorTable(setIndex, ptr);
-            }
-            else
-            {
-                mCommandList->SetGraphicsRootDescriptorTable(setIndex, ptr);
-            }
-
-            continue;
-        }
-
-        if (!instance)
-        {
-            continue;
-        }
-
-        // transition resources
-        // TODO pass proper subresource (based on resource view that is written to resource binding)
-        for (uint32 i = 0; i < instance->mResources.Size(); ++i)
-        {
-            const ResourceBindingInstance::Resource& resource = instance->mResources[i];
-
-            Texture* textureResource = static_cast<Texture*>(resource.texture.Get());
-            Buffer* bufferResource = static_cast<Buffer*>(resource.buffer.Get());
-
-            if (textureResource || bufferResource)
-            {
-                switch (state.bindingLayout->mBindingSets[setIndex]->mBindings[i].resourceType)
-                {
-                case ShaderResourceType::CBuffer:
-                    mResourceStateCache.EnsureResourceState(bufferResource, D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER);
-                    break;
-                case ShaderResourceType::Texture:
-                    // TODO limit shader visibility (based on binding layout properties)
-                    mResourceStateCache.EnsureResourceState(textureResource, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE|D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE);
-                    break;
-                case ShaderResourceType::StructuredBuffer:
-                    // TODO limit shader visibility (based on binding layout properties)
-                    mResourceStateCache.EnsureResourceState(bufferResource, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE|D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE);
-                    break;
-                case ShaderResourceType::WritableTexture:
-                    mResourceStateCache.EnsureResourceState(textureResource, D3D12_RESOURCE_STATE_UNORDERED_ACCESS);
-                    break;
-                case ShaderResourceType::WritableStructuredBuffer:
-                    mResourceStateCache.EnsureResourceState(bufferResource, D3D12_RESOURCE_STATE_UNORDERED_ACCESS);
-                    break;
-                }
-            }
-        }
-
-        HeapAllocator& allocator = gDevice->GetCbvSrvUavHeapAllocator();
-        D3D12_GPU_DESCRIPTOR_HANDLE ptr = allocator.GetGpuHandle();
-        ptr.ptr += (uint64)instance->mGpuDescriptorHeapOffset * allocator.GetDescriptorSize();
-
-        if (pipelineType == PipelineType::Compute)
-        {
-            mCommandList->SetComputeRootDescriptorTable(setIndex, ptr);
-        }
-        else
-        {
-            mCommandList->SetGraphicsRootDescriptorTable(setIndex, ptr);
-        }
-    }
-
-    state.bindingInstancesChanged = false;
-    state.pendingDirectResourceBinds.Clear();
-}
-*/
-
 void CommandRecorder::Internal_PrepareForDraw()
 {
     Internal_UpdateGraphicsPipelineState();
     Internal_UpdateVetexAndIndexBuffers();
-    // TODO update descriptor tables
+
+    mDescriptorSets[uint32_t(ShaderType::Vertex)].ApplyChanges(mCommandList,
+        mCommandListObject->GetReferencedCbvSrvUavDescriptorsRanges(),
+        mCommandListObject->GetReferencedSamplerDescriptorsRanges());
+
+    mDescriptorSets[uint32_t(ShaderType::Pixel)].ApplyChanges(mCommandList,
+        mCommandListObject->GetReferencedCbvSrvUavDescriptorsRanges(),
+        mCommandListObject->GetReferencedSamplerDescriptorsRanges());
 
     NFE_ASSERT(mGraphicsPipelineState, "Graphics pipeline state not set");
 
@@ -1178,7 +976,9 @@ void CommandRecorder::Internal_PrepareForDraw()
 void CommandRecorder::Internal_PrepareForDispatch()
 {
     Internal_UpdateComputePipelineState();
-    // TODO update descriptor tables
+    mDescriptorSets[uint32_t(ShaderType::Compute)].ApplyChanges(mCommandList,
+        mCommandListObject->GetReferencedCbvSrvUavDescriptorsRanges(),
+        mCommandListObject->GetReferencedSamplerDescriptorsRanges());
 
     NFE_ASSERT(mComputePipelineState, "Compute pipeline state not set");
 

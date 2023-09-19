@@ -7,6 +7,8 @@
 #pragma once
 
 #include "../RendererCommon/Texture.hpp"
+
+#include "Descriptors.hpp"
 #include "Common.hpp"
 #include "Resource.hpp"
 
@@ -22,6 +24,9 @@ public:
     Texture();
     virtual ~Texture();
     bool Init(const TextureDesc& desc);
+
+    // get or create descriptor of a texture view
+    [[nodiscard]] DescriptorID GetDescriptor(DescriptorType type, const TextureView& view);
 
     NFE_FORCE_INLINE uint32 GetRowPitch() const { return mRowPitch; }
     NFE_FORCE_INLINE uint16 GetWidth() const { return mWidth; }
@@ -48,6 +53,18 @@ protected:
     uint8 mSamplesNum : 4;
     TextureType mType;
     Format mFormat;
+
+    // TODO this wastes a lot of space...
+    // maybe introduce "default" descriptor created when buffer is created?
+    struct DescriptorInfo
+    {
+        DescriptorType type;
+        TextureView view;
+        DescriptorID descriptor = UINT32_MAX;
+    };
+    Common::DynArray<DescriptorInfo> mDescriptors;
+
+    void DeleteDescriptors();
 };
 
 using InternalTexturePtr = Common::SharedPtr<Texture>;

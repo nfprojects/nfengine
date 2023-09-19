@@ -55,6 +55,11 @@ struct BufferView
     uint32 numElements = UINT32_MAX;
 };
 
+NFE_INLINE bool operator == (const BufferView& lhs, const BufferView& rhs)
+{
+    return lhs.firstElement == rhs.firstElement && lhs.numElements == rhs.numElements;
+}
+
 /**
  * GPU data buffer.
  */

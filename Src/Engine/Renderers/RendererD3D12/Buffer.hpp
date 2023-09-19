@@ -8,9 +8,9 @@
 
 #include "../RendererCommon/Buffer.hpp"
 
+#include "Descriptors.hpp"
 #include "Resource.hpp"
 #include "Common.hpp"
-
 
 namespace NFE {
 namespace Renderer {
@@ -25,6 +25,9 @@ public:
     virtual void Unmap() override;
 
     bool Init(const BufferDesc& desc);
+
+    // get or create descriptor of a buffer view
+    [[nodiscard]] DescriptorID GetDescriptor(DescriptorType type, const BufferView& view);
 
     NFE_FORCE_INLINE ID3D12Resource* GetResource() const
     {
@@ -48,8 +51,21 @@ public:
     }
 
 private:
+
     uint32 mSize;
     uint32 mStructureSize;
+
+    // TODO this wastes a lot of space...
+    // maybe introduce "default" descriptor created when buffer is created?
+    struct DescriptorInfo
+    {
+        DescriptorType type;
+        BufferView view;
+        DescriptorID descriptor = UINT32_MAX;
+    };
+    Common::DynArray<DescriptorInfo> mDescriptors;
+
+    void DeleteDescriptors();
 };
 
 } // namespace Renderer

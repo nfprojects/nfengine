@@ -254,15 +254,6 @@ bool TranslateShaderVisibility(ShaderType shaderType, D3D12_SHADER_VISIBILITY& v
     case ShaderType::Vertex:
         visibility = D3D12_SHADER_VISIBILITY_VERTEX;
         return true;
-    case ShaderType::Hull:
-        visibility = D3D12_SHADER_VISIBILITY_HULL;
-        return true;
-    case ShaderType::Domain:
-        visibility = D3D12_SHADER_VISIBILITY_DOMAIN;
-        return true;
-    case ShaderType::Geometry:
-        visibility = D3D12_SHADER_VISIBILITY_GEOMETRY;
-        return true;
     case ShaderType::Pixel:
         visibility = D3D12_SHADER_VISIBILITY_PIXEL;
         return true;

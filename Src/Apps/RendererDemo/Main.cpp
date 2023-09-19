@@ -261,6 +261,9 @@ public:
     {
         mScenes.Clear();
 
+        mCopyQueue->Signal()->Wait();
+        mGraphicsQueue->Signal()->Wait();
+
         mCopyQueue.Reset();
         mGraphicsQueue.Reset();
 

@@ -66,6 +66,8 @@ class Device : public IDevice
     D3DPtr<ID3D12DebugDevice> mDebugDevice;
     D3DPtr<ID3D12InfoQueue> mInfoQueueD3D;
     D3DPtr<IDXGIInfoQueue> mInfoQueueDXGI;
+    D3DPtr<ID3D12RootSignature> mGraphicsRootSignature;
+    D3DPtr<ID3D12RootSignature> mComputeRootSignature;
     D3DPtr<ID3D12CommandSignature> mIndirectDispatchCommandSignature;
 
     D3D12MA::Allocator* mAllocator = nullptr;
@@ -82,6 +84,8 @@ class Device : public IDevice
 
     HeapAllocator mCbvSrvUavHeapStagingAllocator;   // CPU visible
     HeapAllocator mCbvSrvUavHeapAllocator;          // GPU visible
+    HeapAllocator mSamplerHeapStagingAllocator;     // CPU visible
+    HeapAllocator mSamplerHeapAllocator;            // GPU visible
     HeapAllocator mRtvHeapAllocator;
     HeapAllocator mDsvHeapAllocator;
 
@@ -95,6 +99,8 @@ class Device : public IDevice
     bool DetectVideoCards(int preferredId);
     bool DetectMonitors();
     bool CreateResources();
+    bool CreateGraphicsRootSignature();
+    bool CreateComputeRootSignature();
     bool CreateIndirectDispatchCommandSignature();
 
     uint32 ReleaseUnusedCommandQueues();
@@ -106,6 +112,8 @@ public:
 
     const DeviceCaps& GetCaps() const { return mCaps; }
     ID3D12Device1* GetDevice() const { return mDevice.Get(); }
+    ID3D12RootSignature* GetGraphicsRootSignature() const { return mGraphicsRootSignature.Get(); }
+    ID3D12RootSignature* GetComputeRootSignature() const { return mComputeRootSignature.Get(); }
     ID3D12CommandSignature* GetIndirectDispatchCommandSignature() const { return mIndirectDispatchCommandSignature.Get(); }
 
     virtual void* GetHandle() const override;
@@ -139,6 +147,8 @@ public:
 
     HeapAllocator& GetCbvSrvUavHeapStagingAllocator() { return mCbvSrvUavHeapStagingAllocator; }
     HeapAllocator& GetCbvSrvUavHeapAllocator() { return mCbvSrvUavHeapAllocator; }
+    HeapAllocator& GetSamplerHeapStagingAllocator() { return mSamplerHeapStagingAllocator; }
+    HeapAllocator& GetSamplerHeapAllocator() { return mSamplerHeapAllocator; }
     HeapAllocator& GetRtvHeapAllocator() { return mRtvHeapAllocator; }
     HeapAllocator& GetDsvHeapAllocator() { return mDsvHeapAllocator; }
 

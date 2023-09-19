@@ -102,14 +102,24 @@ void InternalCommandList::OnExecuted()
 
     mReferencedResources.Clear();
 
-    // release temporary descriptors
+    // release temporary CBV/SRV/UAV descriptors
     {
         HeapAllocator& heapAllocator = gDevice->GetCbvSrvUavHeapAllocator();
-        for (const HeapAllocator::DescriptorRange& range : mReferencedDescriptorsRanges)
+        for (const DescriptorRange& range : mReferencedCbvSrvUavDescriptorsRanges)
         {
-            heapAllocator.Free(range);
+            heapAllocator.Free(range.baseDescriptor, range.numDescriptors);
         }
-        mReferencedDescriptorsRanges.Clear();
+        mReferencedCbvSrvUavDescriptorsRanges.Clear();
+    }
+
+    // release temporary sampler descriptors
+    {
+        HeapAllocator& heapAllocator = gDevice->GetSamplerHeapAllocator();
+        for (const DescriptorRange& range : mReferencedSamplerDescriptorsRanges)
+        {
+            heapAllocator.Free(range.baseDescriptor, range.numDescriptors);
+        }
+        mReferencedSamplerDescriptorsRanges.Clear();
     }
 
     mState = State::Free;

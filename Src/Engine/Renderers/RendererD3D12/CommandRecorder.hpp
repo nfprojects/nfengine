@@ -1,7 +1,7 @@
 /**
  * @file
  * @author  Witek902 (witek902@gmail.com)
- * @brief   Declaration of Direct3D 12 render's command recorder.
+ * @brief   Declaration of Direct3D 12 renderer's command recorder.
  */
 
 #pragma once
@@ -9,10 +9,10 @@
 #include "../RendererCommon/CommandRecorder.hpp"
 #include "Common.hpp"
 #include "RingBuffer.hpp"
-#include "ResourceBinding.hpp"
 #include "CommandList.hpp"
 #include "ResourceStateCache.hpp"
 #include "HeapAllocator.hpp"
+#include "DescriptorSet.hpp"
 
 #include "Engine/Common/Containers/HashSet.hpp"
 #include "Engine/Common/Containers/DynArray.hpp"
@@ -21,7 +21,6 @@
 namespace NFE {
 namespace Renderer {
 
-// predeclarations
 class RenderTarget;
 class PipelineState;
 class ComputePipelineState;
@@ -81,49 +80,6 @@ public:
 
 private:
 
-    // TODO instead of having everything duplicated maybe keep some bit mask of what was changed?
-    struct PendingDirectResourceBind
-    {
-        uint32 slotInSet;
-        ResourceType type;
-        bool shaderWritable;
-
-        union
-        {
-            const Texture* texture;
-            const Buffer* buffer;
-        };
-
-        union
-        {
-            TextureView textureView;
-            BufferView bufferView;
-        };
-
-        PendingDirectResourceBind()
-            : slotInSet(UINT32_MAX)
-            , type(ResourceType::Max)
-        {}
-    };
-
-    struct ResourceBindingState
-    {
-        bool bindingLayoutChanged : 1;
-        bool bindingInstancesChanged : 1;  // TODO bitmask (one bit per slot)
-
-        const Buffer* volatileCBuffers[NFE_RENDERER_MAX_VOLATILE_CBUFFERS];
-
-        // TODO instead of groving array, use static array and bitmask
-        Common::DynArray<PendingDirectResourceBind> pendingDirectResourceBinds;
-
-        void Reset();
-    };
-
-    NFE_FORCE_INLINE ResourceBindingState& GetBindingState(PipelineType pipelineType)
-    {
-        return (pipelineType == PipelineType::Compute) ? mComputeBindingState : mGraphicsBindingState;
-    }
-
     void ResetState();
 
     void Internal_UpdateGraphicsPipelineState();
@@ -146,9 +102,6 @@ private:
 
     ResourceStateCache mResourceStateCache;
 
-    ResourceBindingState mGraphicsBindingState;
-    ResourceBindingState mComputeBindingState;
-
     const RenderTarget* mCurrRenderTarget;
     const PipelineState* mGraphicsPipelineState;
     const ComputePipelineState* mComputePipelineState;
@@ -159,6 +112,8 @@ private:
     bool mComputePipelineStateChanged : 1;
     bool mVertexBufferChanged : 1;
     bool mIndexBufferChanged : 1;
+
+    DescriptorSet mDescriptorSets[NFE_RENDERER_MAX_SHADER_TYPES];
 
     D3D12_INDEX_BUFFER_VIEW mCurrIndexBufferView;
     const Buffer* mBoundIndexBuffer;

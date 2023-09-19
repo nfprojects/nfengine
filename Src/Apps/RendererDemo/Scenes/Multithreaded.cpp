@@ -193,7 +193,7 @@ bool MultithreadedScene::CreateIndexBuffer()
     return true;
 }
 
-bool MultithreadedScene::CreatePipelineState(ResourceAccessMode cbufferMode)
+bool MultithreadedScene::CreatePipelineState(ResourceAccessMode)
 {
     VertexLayoutElement vertexLayoutElements[] =
     {
@@ -217,12 +217,6 @@ bool MultithreadedScene::CreatePipelineState(ResourceAccessMode cbufferMode)
     pipelineStateDesc.blendState.rtDescs[0].enable = true;
     pipelineStateDesc.primitiveType = PrimitiveType::Triangles;
     pipelineStateDesc.vertexLayout = mVertexLayout;
-    if (cbufferMode == ResourceAccessMode::Volatile)
-    {
-        pipelineStateDesc.volatileBufferBindings = {
-            { ShaderType::Vertex, static_cast<NFE::uint32>(mCBufferSlot) },
-        };
-    }
     mPipelineState = mRendererDevice->CreatePipelineState(pipelineStateDesc);
     if (!mPipelineState)
         return false;
@@ -230,14 +224,13 @@ bool MultithreadedScene::CreatePipelineState(ResourceAccessMode cbufferMode)
     return true;
 }
 
-bool MultithreadedScene::CreateConstantBuffer(ResourceAccessMode cbufferMode)
+bool MultithreadedScene::CreateConstantBuffer(ResourceAccessMode)
 {
     const Matrix4 rotMatrix = Matrix4::MakeRotationNormal(Vec4f(0.0f, 0.0f, 1.0f), Constants::pi<float>);
     mAngle = 0.0f;
-    mCBufferMode = cbufferMode;
 
     BufferDesc cbufferDesc;
-    cbufferDesc.mode = cbufferMode;
+    cbufferDesc.mode = ResourceAccessMode::GPUOnly;
     cbufferDesc.size = sizeof(VertexCBuffer);
     cbufferDesc.usage = BufferUsageFlag::ConstantBuffer;
     mConstantBuffer = mRendererDevice->CreateBuffer(cbufferDesc);
@@ -311,10 +304,6 @@ MultithreadedScene::MultithreadedScene()
     RegisterSubScene(std::bind(&MultithreadedScene::CreateSubSceneNormal, this, ResourceAccessMode::GPUOnly, 1), "1x1, dynamic cbuffer");
     RegisterSubScene(std::bind(&MultithreadedScene::CreateSubSceneNormal, this, ResourceAccessMode::GPUOnly, 4), "4x4, dynamic cbuffer");
     RegisterSubScene(std::bind(&MultithreadedScene::CreateSubSceneNormal, this, ResourceAccessMode::GPUOnly, 10), "10x10, dynamic cbuffer");
-
-    RegisterSubScene(std::bind(&MultithreadedScene::CreateSubSceneNormal, this, ResourceAccessMode::Volatile, 1), "1x1, volatile cbuffer");
-    RegisterSubScene(std::bind(&MultithreadedScene::CreateSubSceneNormal, this, ResourceAccessMode::Volatile, 4), "4x4, volatile cbuffer");
-    RegisterSubScene(std::bind(&MultithreadedScene::CreateSubSceneNormal, this, ResourceAccessMode::Volatile, 10), "10x10, volatile cbuffer");
 }
 
 MultithreadedScene::~MultithreadedScene()
@@ -382,7 +371,7 @@ void MultithreadedScene::DrawTask(const Common::TaskContext& ctx, int i, int j)
 
 
     const float scaleCoeff = 1.0f / static_cast<float>(mGridSize);
-    if (mConstantBuffer && (mCBufferMode == ResourceAccessMode::GPUOnly || mCBufferMode == ResourceAccessMode::Volatile))
+    if (mConstantBuffer && (mCBufferMode == ResourceAccessMode::GPUOnly))
     {
         float xOffset = 2.0f * (static_cast<float>(i) + 0.5f) * scaleCoeff - 1.0f;
         float yOffset = 2.0f * (static_cast<float>(j) + 0.5f) * scaleCoeff - 1.0f;
