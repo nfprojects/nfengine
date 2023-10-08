@@ -106,7 +106,7 @@ bool BasicScene::CreateShaders(bool useCBuffer, bool volatileCBuffer, bool useTe
     mTextureSlot = -1;
     mCBufferSlot = -1;
 
-    ShaderMacro vsMacro[] = { { "USE_CBUFFER", useCBuffer ? volatileCBuffer ? "2" : "1" : "0" } };
+    ShaderMacro vsMacro[] = { { "USE_CBUFFER", useCBuffer ? (volatileCBuffer ? "2" : "1") : "0" } };
     const Common::String vsPath = gShaderPathPrefix + "TestVS" + gShaderPathExt;
     mVertexShader = CompileShader(vsPath.Str(), ShaderType::Vertex, vsMacro, 1);
     if (!mVertexShader)
@@ -395,7 +395,7 @@ bool BasicScene::CreateSubSceneTexture(ResourceAccessMode cbufferMode, int gridS
     if (!CreateSampler())
         return false;
 
-    if (!CreateShaders(true, false, true))
+    if (!CreateShaders(true, (cbufferMode == ResourceAccessMode::Volatile), true))
         return false;
 
     if (!CreateVertexBuffer(true))
