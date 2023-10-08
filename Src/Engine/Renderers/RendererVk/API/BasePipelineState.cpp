@@ -75,15 +75,10 @@ bool BasePipelineState::MapToDescriptorSet(Shader* s, SpvReflectDescriptorType t
 
             DescriptorBindings& descs = mDescriptorSetMetadata.Back().bindings;
             descs.EmplaceBack(type, binding->binding);
-            if (type == SPV_REFLECT_DESCRIPTOR_TYPE_UNIFORM_BUFFER)
+            if (type == SPV_REFLECT_DESCRIPTOR_TYPE_UNIFORM_BUFFER &&
+                (binding->binding < VK_MAX_VOLATILE_BUFFERS))
             {
-                for (const VolatileResourceMetadataEntry& vrme: mSettings.vrMetadata)
-                {
-                    if (vrme.stage == s->GetShaderStageInfo().stage && vrme.binding == binding->binding)
-                    {
-                        descs.Back().type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC;
-                    }
-                }
+                descs.Back().type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC;
             }
         }
 
@@ -92,22 +87,6 @@ bool BasePipelineState::MapToDescriptorSet(Shader* s, SpvReflectDescriptorType t
     {
         NFE_LOG_ERROR("Failed to remap Descriptor Set numbers");
         return false;
-    }
-
-    if (!mDescriptorSetMetadata.Empty())
-    {
-        uint32 shouldBeBinding = 0;
-        for (auto& b: mDescriptorSetMetadata.Back().bindings)
-        {
-            if (b.binding != shouldBeBinding)
-            {
-                NFE_LOG_WARNING("Found possible hole (set:%d;binding:%d) in descriptor bindings. Descriptors should be tightly packed.",
-                    set, shouldBeBinding
-                );
-            }
-
-            ++shouldBeBinding;
-        }
     }
 
     if (allocatedSet)

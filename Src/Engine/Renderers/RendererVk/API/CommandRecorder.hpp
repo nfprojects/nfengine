@@ -75,6 +75,7 @@ class CommandRecorder: public ICommandRecorder
     CommandQueueType mQueueType;
     VkCommandBufferBeginInfo mCommandBufferBeginInfo;
     BasePipelineState* mPipelineState;
+    bool mPipelineInvalidated;
     PendingResourcesArray mPendingResources;
     PendingVolatileWrites mPendingVolatileWrites;
     UsedDescriptorSetsArray mUsedDescriptorSets;

@@ -69,8 +69,8 @@ bool QueueFamilyManager::PreInit(VkPhysicalDevice physicalDevice)
         NFE_LOG_DEBUG("  Count: %u", familyProps[i].queueCount);
     }
 
-    mFamilies.Resize(familyCount);
-    mCreateInfos.Resize(familyCount);
+    mFamilies.Resize(static_cast<uint32>(CommandQueueType::Max));
+    mCreateInfos.Resize(static_cast<uint32>(CommandQueueType::Max));
 
     for (uint32 i = 0; i < mFamilies.Size(); ++i)
     {
