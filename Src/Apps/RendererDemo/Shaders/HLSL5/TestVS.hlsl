@@ -13,8 +13,13 @@ struct VertexShaderOutput
 };
 
 #if (USE_CBUFFER > 0)
+#if (USE_CBUFFER == 2)
+[[vk::binding(4)]]
+cbuffer TestCBuffer : register(b4)
+#else
 [[vk::binding(0)]]
 cbuffer TestCBuffer : register(b0)
+#endif
 {
     row_major float4x4 viewMatrix;
 };

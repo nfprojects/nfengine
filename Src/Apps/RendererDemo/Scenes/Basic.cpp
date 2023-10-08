@@ -51,7 +51,7 @@ class BasicScene : public Scene
     void ReleaseSubsceneResources() override;
 
     // Resource creators for subscenes
-    bool CreateShaders(bool useCBuffer, bool useTexture);
+    bool CreateShaders(bool useCBuffer, bool volatileCBuffer, bool useTexture);
     bool CreateVertexBuffer(bool withExtraVert);
     bool CreateIndexBuffer();
     bool CreatePipelineState(NFE::Renderer::ResourceAccessMode cbufferMode);
@@ -101,12 +101,12 @@ struct PixelCBuffer
 
 /// Helper creators for the Scene
 
-bool BasicScene::CreateShaders(bool useCBuffer, bool useTexture)
+bool BasicScene::CreateShaders(bool useCBuffer, bool volatileCBuffer, bool useTexture)
 {
     mTextureSlot = -1;
     mCBufferSlot = -1;
 
-    ShaderMacro vsMacro[] = { { "USE_CBUFFER", useCBuffer ? "1" : "0" } };
+    ShaderMacro vsMacro[] = { { "USE_CBUFFER", useCBuffer ? volatileCBuffer ? "2" : "1" : "0" } };
     const Common::String vsPath = gShaderPathPrefix + "TestVS" + gShaderPathExt;
     mVertexShader = CompileShader(vsPath.Str(), ShaderType::Vertex, vsMacro, 1);
     if (!mVertexShader)
@@ -320,7 +320,7 @@ bool BasicScene::CreateSubSceneEmpty()
     if (!CreateSampler())
         return false;
 
-    return CreateShaders(false, false);
+    return CreateShaders(false, false, false);
 }
 
 // Adds vertex buffer creation
@@ -332,7 +332,7 @@ bool BasicScene::CreateSubSceneVertexBuffer()
     if (!CreateSampler())
         return false;
 
-    if (!CreateShaders(false, false))
+    if (!CreateShaders(false, false, false))
         return false;
 
     if (!CreateVertexBuffer(false))
@@ -350,7 +350,7 @@ bool BasicScene::CreateSubSceneIndexBuffer()
     if (!CreateSampler())
         return false;
 
-    if (!CreateShaders(false, false))
+    if (!CreateShaders(false, false, false))
         return false;
 
     if (!CreateVertexBuffer(true))
@@ -371,7 +371,7 @@ bool BasicScene::CreateSubSceneConstantBuffer(ResourceAccessMode cbufferMode)
     if (!CreateSampler())
         return false;
 
-    if (!CreateShaders(true, false))
+    if (!CreateShaders(true, (cbufferMode == ResourceAccessMode::Volatile), false))
         return false;
 
     if (!CreateVertexBuffer(true))
@@ -395,7 +395,7 @@ bool BasicScene::CreateSubSceneTexture(ResourceAccessMode cbufferMode, int gridS
     if (!CreateSampler())
         return false;
 
-    if (!CreateShaders(true, true))
+    if (!CreateShaders(true, false, true))
         return false;
 
     if (!CreateVertexBuffer(true))
