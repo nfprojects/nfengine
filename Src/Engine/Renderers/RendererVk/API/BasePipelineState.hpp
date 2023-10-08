@@ -135,7 +135,13 @@ public:
 
     NFE_INLINE VkDescriptorType GetDescriptorType(uint32 set, uint32 binding) const
     {
-        return mDescriptorSetMetadata[set].bindings[binding].type;
+        for (const DescriptorMetadata& b : mDescriptorSetMetadata[set].bindings)
+        {
+            if (b.binding == binding)
+                return b.type;
+        }
+
+        return VK_DESCRIPTOR_TYPE_MAX_ENUM;
     }
 
     NFE_INLINE uint32 GetDescriptorSetCount() const
