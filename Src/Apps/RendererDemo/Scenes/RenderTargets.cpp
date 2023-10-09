@@ -309,7 +309,7 @@ bool RenderTargetsScene::CreateShaders(bool multipleRT, bool withMSAA)
 {
     // Common Vertex Shader
 
-    ShaderMacro vsMacro[] = { { "USE_CBUFFER", "1" } };
+    ShaderMacro vsMacro[] = { { "USE_CBUFFER", "2" } };
     Common::String vsPath = gShaderPathPrefix + "TestVS" + gShaderPathExt;
     mVertexShader = CompileShader(vsPath.Str(), ShaderType::Vertex, vsMacro, 1);
     if (!mVertexShader)

@@ -53,7 +53,7 @@ class MultithreadedScene : public Scene
 
     // Resource creators for subscenes
     bool CreateCommandRecorders();
-    bool CreateShaders();
+    bool CreateShaders(NFE::Renderer::ResourceAccessMode cbufferMode);
     bool CreateVertexBuffer();
     bool CreateIndexBuffer();
     bool CreatePipelineState(NFE::Renderer::ResourceAccessMode cbufferMode);
@@ -112,11 +112,11 @@ bool MultithreadedScene::CreateCommandRecorders()
     return true;
 }
 
-bool MultithreadedScene::CreateShaders()
+bool MultithreadedScene::CreateShaders(ResourceAccessMode mode)
 {
     mCBufferSlot = -1;
 
-    ShaderMacro vsMacro[] = { { "USE_CBUFFER", "1" } };
+    ShaderMacro vsMacro[] = { { "USE_CBUFFER", mode == ResourceAccessMode::Volatile ? "2" : "1" } };
     const Common::String vsPath = gShaderPathPrefix + "TestVS" + gShaderPathExt;
     mVertexShader = CompileShader(vsPath.Str(), ShaderType::Vertex, vsMacro, 1);
     if (!mVertexShader)
@@ -269,7 +269,7 @@ bool MultithreadedScene::CreateSubSceneEmpty()
     if (!CreateCommandRecorders())
         return false;
 
-    return CreateShaders();
+    return CreateShaders(ResourceAccessMode::GPUOnly);
 }
 
 bool MultithreadedScene::CreateSubSceneNormal(ResourceAccessMode cbufferMode, int gridSize)
@@ -279,7 +279,7 @@ bool MultithreadedScene::CreateSubSceneNormal(ResourceAccessMode cbufferMode, in
     if (!CreateCommandRecorders())
         return false;
 
-    if (!CreateShaders())
+    if (!CreateShaders(cbufferMode))
         return false;
 
     if (!CreateVertexBuffer())
