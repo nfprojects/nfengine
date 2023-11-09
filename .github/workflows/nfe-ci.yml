@@ -6,9 +6,8 @@ on:
     branches: [ devel ]
 
 # TODO LIST:
-# * Add caching via actions/cache: https://github.com/actions/cache
-#   With that, cache Deps build output to speed up the process
 # * Fix CommonTests and restore them below per each platform
+# * Test item on the list
 jobs:
   linux-build:
     name: Linux Build
@@ -36,7 +35,14 @@ jobs:
       run: sudo apt install libxcb1-dev libxcb1 libxcb-image0-dev libxcb-image0
     - name: Update glslang sources
       run: cd Deps/glslang && ./update_glslang_sources.py && cd ../..
-    - name: Configure
+    - name: Cache build dir
+      id: cache-build-linux
+      uses: actions/cache@v3
+      with:
+        path: build
+        key: build-linux-cmake-cache
+    - if: ${{ steps.cache-build-linux.outputs.cache-hit != 'true' }}
+      name: Configure
       run: |
         mkdir -p build
         cd build
@@ -69,12 +75,20 @@ jobs:
       uses: humbletim/install-vulkan-sdk@v1.1.1
       with:
         cache: true
-    - name: Update glslang sources
+    - name: Cache Deps
+      id: cache-deps-windows-vs
+      uses: actions/cache@v3
+      with:
+        path: Deps
+        key: deps-windows-vs-cache
+    - if: ${{ steps.cache-deps-windows-vs.outputs.cache-hit != 'true' }}
+      name: Update glslang sources
       run: |
         cd Deps\glslang
         python update_glslang_sources.py
         cd ..\..
-    - name: Build Deps
+    - if: ${{ steps.cache-deps-windows-vs.outputs.cache-hit != 'true' }}
+      name: Build Deps
       run: python Deps\deps_builder.py --noanim
     - name: Build
       run: msbuild Engine.sln /property:Configuration=${{matrix.configs}}
@@ -110,7 +124,14 @@ jobs:
         cd Deps\glslang
         python update_glslang_sources.py
         cd ..\..
-    - name: Configure
+    - name: Cache build dir
+      id: cache-build-windows-cmake
+      uses: actions/cache@v3
+      with:
+        path: build
+        key: build-windows-cmake-cache
+    - if: ${{ steps.cache-build-windows-cmake.outputs.cache-hit != 'true' }}
+      name: Configure
       run: |
         mkdir build
         cd build
