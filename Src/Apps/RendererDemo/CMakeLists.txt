@@ -18,7 +18,6 @@ SET(NFRENDERERDEMO_SOURCES
     Scenes/Multithreaded.cpp
     Scenes/RenderTargets.cpp
     Scenes/Scene.cpp
-    Scenes/Tessellation.cpp
     Scenes/VertexBuffers.cpp
 )
 
