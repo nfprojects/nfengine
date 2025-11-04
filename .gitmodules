@@ -18,7 +18,7 @@
 	url = https://github.com/glennrp/libpng.git
 [submodule "Deps/libsquish"]
 	path = Deps/libsquish
-	url = https://github.com/svn2github/libsquish.git
+	url = https://github.com/oblivioncth/libsquish.git
 [submodule "Deps/tinyexr"]
 	path = Deps/tinyexr
 	url = https://github.com/syoyo/tinyexr.git
@@ -27,7 +27,7 @@
 	url = https://github.com/tinyobjloader/tinyobjloader.git
 [submodule "Deps/tracy"]
 	path = Deps/tracy
-	url = https://bitbucket.org/wolfpld/tracy.git
+	url = https://github.com/wolfpld/tracy.git
 [submodule "Deps/zlib"]
 	path = Deps/zlib
 	url = https://github.com/madler/zlib.git
