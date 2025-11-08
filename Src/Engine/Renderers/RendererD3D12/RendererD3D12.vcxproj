@@ -68,15 +68,16 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PreprocessorDefinitions>RENDERERD3D12_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeaderFile>PCH.hpp</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(SolutionDir)Src;$(SolutionDir)Deps\D3D12MemoryAllocator\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Src;$(SolutionDir)Deps\D3D12MemoryAllocator\include;$(SolutionDir)Deps\nfenginedeps\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <AdditionalDependencies>RendererCommon.lib;Common.lib;d3d12.lib;dxgi.lib;dxguid.lib;dxcompiler.lib;D3D12MAd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)Deps\nfenginedeps;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
-      <Command>COPY "$(WindowsSdkDir)redist\d3d\x64\dxcompiler.dll" "$(SolutionDir)Bin\$(Platform)\$(Configuration)\"
-COPY "$(WindowsSdkDir)redist\d3d\x64\dxil.dll" "$(SolutionDir)Bin\$(Platform)\$(Configuration)\"</Command>
+      <Command>COPY "$(SolutionDir)Deps\nfenginedeps\dxcompiler\bin\x64\dxcompiler.dll" "$(SolutionDir)Bin\$(Platform)\$(Configuration)\"
+COPY "$(SolutionDir)Deps\nfenginedeps\dxcompiler\bin\x64\dxil.dll" "$(SolutionDir)Bin\$(Platform)\$(Configuration)\"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -86,7 +87,7 @@ COPY "$(WindowsSdkDir)redist\d3d\x64\dxil.dll" "$(SolutionDir)Bin\$(Platform)\$(
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>RENDERERD3D12_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeaderFile>PCH.hpp</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(SolutionDir)Src;$(SolutionDir)Deps\D3D12MemoryAllocator\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Src;$(SolutionDir)Deps\D3D12MemoryAllocator\include;$(SolutionDir)Deps\nfenginedeps\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <FloatingPointModel>Fast</FloatingPointModel>
       <FloatingPointExceptions>false</FloatingPointExceptions>
     </ClCompile>
@@ -95,10 +96,11 @@ COPY "$(WindowsSdkDir)redist\d3d\x64\dxil.dll" "$(SolutionDir)Bin\$(Platform)\$(
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalDependencies>RendererCommon.lib;Common.lib;d3d12.lib;dxgi.lib;dxguid.lib;dxcompiler.lib;D3D12MA.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)Deps\nfenginedeps;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
-      <Command>COPY "$(WindowsSdkDir)redist\d3d\x64\dxcompiler.dll" "$(SolutionDir)Bin\$(Platform)\$(Configuration)\"
-COPY "$(WindowsSdkDir)redist\d3d\x64\dxil.dll" "$(SolutionDir)Bin\$(Platform)\$(Configuration)\"</Command>
+      <Command>COPY "$(SolutionDir)Deps\nfenginedeps\dxcompiler\bin\x64\dxcompiler.dll" "$(SolutionDir)Bin\$(Platform)\$(Configuration)\"
+COPY "$(SolutionDir)Deps\nfenginedeps\dxcompiler\bin\x64\dxil.dll" "$(SolutionDir)Bin\$(Platform)\$(Configuration)\"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Final|x64'">
@@ -108,7 +110,7 @@ COPY "$(WindowsSdkDir)redist\d3d\x64\dxil.dll" "$(SolutionDir)Bin\$(Platform)\$(
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>RENDERERD3D12_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeaderFile>PCH.hpp</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(SolutionDir)Src;$(SolutionDir)Deps\D3D12MemoryAllocator\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Src;$(SolutionDir)Deps\D3D12MemoryAllocator\include;$(SolutionDir)Deps\nfenginedeps\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <FloatingPointModel>Fast</FloatingPointModel>
       <FloatingPointExceptions>false</FloatingPointExceptions>
     </ClCompile>
@@ -117,10 +119,11 @@ COPY "$(WindowsSdkDir)redist\d3d\x64\dxil.dll" "$(SolutionDir)Bin\$(Platform)\$(
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalDependencies>RendererCommon.lib;Common.lib;d3d12.lib;dxgi.lib;dxguid.lib;dxcompiler.lib;D3D12MA.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)Deps\nfenginedeps;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
-      <Command>COPY "$(WindowsSdkDir)redist\d3d\x64\dxcompiler.dll" "$(SolutionDir)Bin\$(Platform)\$(Configuration)\"
-COPY "$(WindowsSdkDir)redist\d3d\x64\dxil.dll" "$(SolutionDir)Bin\$(Platform)\$(Configuration)\"</Command>
+      <Command>COPY "$(SolutionDir)Deps\nfenginedeps\dxcompiler\bin\x64\dxcompiler.dll" "$(SolutionDir)Bin\$(Platform)\$(Configuration)\"
+COPY "$(SolutionDir)Deps\nfenginedeps\dxcompiler\bin\x64\dxil.dll" "$(SolutionDir)Bin\$(Platform)\$(Configuration)\"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>

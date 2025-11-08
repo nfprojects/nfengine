@@ -12,7 +12,7 @@
 
 #include <d3d12.h>
 #include <dxgi1_4.h>
-#include <dxcapi.h>
+#include <dxcompiler/inc/dxcapi.h>
 #include <d3d12shader.h>
 #include <dxgidebug.h>
 

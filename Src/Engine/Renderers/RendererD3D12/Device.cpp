@@ -887,6 +887,22 @@ bool Device::GetDeviceInfo(DeviceInfo& info)
         info.features.PushBack("WaveMMATier=" + ToString(d3d12options9.WaveMMATier));
     }
 
+    D3D12_FEATURE_DATA_D3D12_OPTIONS10 d3d12options10;
+    hr = mDevice->CheckFeatureSupport(D3D12_FEATURE_D3D12_OPTIONS10, &d3d12options10, sizeof(d3d12options10));
+    if (SUCCEEDED(hr))
+    {
+        info.features.PushBack("MeshShaderPerPrimitiveShadingRateSupported=" + ToString(d3d12options10.MeshShaderPerPrimitiveShadingRateSupported));
+        info.features.PushBack("VariableRateShadingSumCombinerSupported=" + ToString(d3d12options10.VariableRateShadingSumCombinerSupported));
+    }
+
+
+    D3D12_FEATURE_DATA_D3D12_OPTIONS12 d3d12options12;
+    hr = mDevice->CheckFeatureSupport(D3D12_FEATURE_D3D12_OPTIONS12, &d3d12options12, sizeof(d3d12options12));
+    if (SUCCEEDED(hr))
+    {
+        info.features.PushBack("EnhancedBarriersSupported=" + ToString(d3d12options12.EnhancedBarriersSupported));
+    }
+
     return true;
 }
 

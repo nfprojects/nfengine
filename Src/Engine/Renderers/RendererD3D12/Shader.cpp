@@ -13,7 +13,6 @@
 #include "Engine/Common/Containers/DynArray.hpp"
 #include "Engine/Common/System/Windows/Common.hpp"
 
-
 namespace {
 
 struct D3DWideMacro

@@ -5,6 +5,8 @@
 #include <Engine/Common/Utils/StringUtils.hpp>
 #include <Engine/Common/System/Windows/Common.hpp>
 
+#pragma comment(lib, "dxcompiler/lib/x64/dxcompiler.lib")
+
 // TODO this should come from DXIL headers but they don't exist in Windows SDK
 #define DXIL_FOURCC(ch0, ch1, ch2, ch3) (                            \
   (uint32_t)(uint8_t)(ch0)        | (uint32_t)(uint8_t)(ch1) << 8  | \
@@ -60,13 +62,13 @@ bool ShaderCompiler::Compile(const char* source, uint32 sourceSize, const char* 
     switch (type)
     {
     case ShaderType::Vertex:
-        profileName = L"vs_6_0";
+        profileName = L"vs_6_5";
         break;
     case ShaderType::Pixel:
-        profileName = L"ps_6_0";
+        profileName = L"ps_6_5";
         break;
     case ShaderType::Compute:
-        profileName = L"cs_6_0";
+        profileName = L"cs_6_5";
         break;
     default:
         NFE_LOG_ERROR("Invalid shader type");
@@ -85,6 +87,7 @@ bool ShaderCompiler::Compile(const char* source, uint32 sourceSize, const char* 
 
     Common::DynArray<const wchar_t*> arguments;
     arguments.EmplaceBack(L"-Ges");
+    arguments.EmplaceBack(L"-Qembed_debug"); // embed debug symbols
 #ifdef NFE_CONFIGURATION_DEBUG
     arguments.EmplaceBack(L"-Od");
     arguments.EmplaceBack(L"-Zi");
@@ -117,7 +120,7 @@ bool ShaderCompiler::Compile(const char* source, uint32 sourceSize, const char* 
             hr = result->GetErrorBuffer(&errorBlob);
             if (SUCCEEDED(hr) && errorBlob)
             {
-                NFE_LOG_ERROR("Failed to compile shader %s: %s", sourceName, errorBlob->GetBufferPointer());
+                NFE_LOG_ERROR("Failed to compile shader %s:\n%s", sourceName, errorBlob->GetBufferPointer());
                 return false;
             }
             else
