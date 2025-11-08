@@ -198,7 +198,6 @@
     <ClInclude Include="Medium\Medium.h" />
     <ClInclude Include="Medium\PhaseFunction.h" />
     <ClInclude Include="PCH.h" />
-    <ClInclude Include="RayLib.h" />
     <ClInclude Include="Raytracer.h" />
     <ClInclude Include="Renderers\DebugRenderer.h" />
     <ClInclude Include="Renderers\LightTracer.h" />

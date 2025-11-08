@@ -272,7 +272,6 @@
     <ClInclude Include="Utils\Profiler.h">
       <Filter>Utils</Filter>
     </ClInclude>
-    <ClInclude Include="RayLib.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="PCH.cpp" />

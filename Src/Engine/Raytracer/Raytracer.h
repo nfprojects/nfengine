@@ -9,9 +9,9 @@
 
 #ifdef NFE_RAYTRACER_EXPORTS
 #define NFE_RAYTRACER_API __declspec(dllexport)
-#else // RAYLIB_EXPORTS
+#else // NFE_RAYTRACER_EXPORTS
 #define NFE_RAYTRACER_API __declspec(dllimport)
-#endif // RAYLIB_EXPORTS
+#endif // NFE_RAYTRACER_EXPORTS
 
 #else // WIN32
 

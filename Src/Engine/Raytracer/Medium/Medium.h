@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../RayLib.h"
+#include "../Raytracer.h"
 #include "../Utils/Memory.h"
 #include "../Color/RayColor.h"
 #include "../../Common/Math/Ray.hpp"
