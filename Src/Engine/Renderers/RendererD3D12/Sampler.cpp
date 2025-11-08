@@ -21,7 +21,7 @@ Sampler::~Sampler()
 {
     if (mDescriptor != UINT32_MAX)
     {
-        gDevice->GetCbvSrvUavHeapStagingAllocator().Free(mDescriptor, 1);
+        gDevice->GetSamplerHeapStagingAllocator().Free(mDescriptor, 1);
     }
 }
 
