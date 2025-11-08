@@ -72,7 +72,22 @@ bool InternalCommandList::Init(CommandQueueType queueType)
         return false;
     }
 
-    SetDebugName(mResourceBarriersCommandList.Get(), "InternalCommandList::mCommandList");
+    {
+        String debugName = "InternalCommandList::mCommandList" + String::Printf("_ID_%u", mID);
+        if (queueType == CommandQueueType::Graphics)
+        {
+            debugName += "_Graphics";
+        }
+        else if (queueType == CommandQueueType::Compute)
+        {
+            debugName += "_Compute";
+        }
+        else if (queueType == CommandQueueType::Copy)
+        {
+            debugName += "_Copy";
+        }
+        SetDebugName(mCommandList.Get(), debugName);
+    }
 
     // created D3D12 command list is in recording state by default
     mState = State::Recording;

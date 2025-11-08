@@ -417,9 +417,6 @@ BasicScene::BasicScene()
     RegisterSubScene(std::bind(&BasicScene::CreateSubSceneIndexBuffer, this), "IndexBuffer");
     RegisterSubScene(std::bind(&BasicScene::CreateSubSceneConstantBuffer, this), "CBuffer");
     RegisterSubScene(std::bind(&BasicScene::CreateSubSceneTexture, this, 1), "Texture + CBuffer");
-    //RegisterSubScene(std::bind(&BasicScene::CreateSubSceneTexture, this, ResourceAccessMode::Volatile, 1), "Texture + Volatile CBuffer");
-    //RegisterSubScene(std::bind(&BasicScene::CreateSubSceneTexture, this, ResourceAccessMode::Volatile, 5), "CBufferStress5");
-    //RegisterSubScene(std::bind(&BasicScene::CreateSubSceneTexture, this, ResourceAccessMode::Volatile, 30), "CBufferStress30");
 }
 
 BasicScene::~BasicScene()

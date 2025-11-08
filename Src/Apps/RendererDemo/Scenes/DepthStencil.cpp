@@ -362,6 +362,9 @@ void DepthStencilScene::Draw(float dt)
     BufferPtr cb = mConstantBuffer;
     VertexCBuffer cbuffer;
 
+    const Vec4fU color(0.7f, 0.8f, 0.9f, 1.0f);
+    mCommandBuffer->Clear(ClearFlagsColor, 1, nullptr, &color);
+
     if (GetCurrentSubSceneNumber() >= 2)
     {
         // clear depth-stencil buffer
@@ -376,9 +379,6 @@ void DepthStencilScene::Draw(float dt)
         mCommandBuffer->SetStencilRef(0x01);
         mCommandBuffer->DrawIndexed(2 * 3, 1, 2 * 6 * 3);
 
-        const Vec4fU color(0.7f, 0.8f, 0.9f, 1.0f);
-        mCommandBuffer->Clear(ClearFlagsColor, 1, nullptr, &color);
-
         // Step 2: draw cube reflection
         mCommandBuffer->SetPipelineState(mReflectionPipelineState);
         mCommandBuffer->DrawIndexed(2 * 6 * 3);
@@ -387,9 +387,6 @@ void DepthStencilScene::Draw(float dt)
     {
         // clear depth buffer
         mCommandBuffer->Clear(ClearFlagsDepth, 0, nullptr, nullptr, 1.0f);
-
-        const Vec4fU color(0.7f, 0.8f, 0.9f, 1.0f);
-        mCommandBuffer->Clear(ClearFlagsColor, 1, nullptr, &color);
     }
 
     // set "normal" matrix

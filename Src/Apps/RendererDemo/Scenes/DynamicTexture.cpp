@@ -66,6 +66,7 @@ bool DynamicTextureScene::CreateSubSceneSimple(bool useCopyQueue)
     textureDesc.width = WINDOW_WIDTH;
     textureDesc.height = WINDOW_HEIGHT;
     textureDesc.usage = TextureUsageFlag::RenderTarget;
+    textureDesc.debugName = "DynamicTextureScene::mTexture";
     mTexture = mRendererDevice->CreateTexture(textureDesc);
     if (!mTexture)
     {
@@ -90,7 +91,7 @@ DynamicTextureScene::DynamicTextureScene()
     : Scene("DynamicTexture")
 {
     RegisterSubScene(std::bind(&DynamicTextureScene::CreateSubSceneSimple, this, false), "Simple");
-    RegisterSubScene(std::bind(&DynamicTextureScene::CreateSubSceneSimple, this, true), "CopyQueue");
+    //RegisterSubScene(std::bind(&DynamicTextureScene::CreateSubSceneSimple, this, true), "CopyQueue");
 }
 
 DynamicTextureScene::~DynamicTextureScene()
