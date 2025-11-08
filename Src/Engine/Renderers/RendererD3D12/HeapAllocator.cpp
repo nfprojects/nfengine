@@ -106,7 +106,17 @@ bool HeapAllocator::Init()
     }
 
     mCpuHandle = mHeap->GetCPUDescriptorHandleForHeapStart();
-    mGpuHandle = mHeap->GetGPUDescriptorHandleForHeapStart();
+
+    if (mShaderVisible)
+    {
+        // GPU handle is only valid for shader visible heaps
+        mGpuHandle = mHeap->GetGPUDescriptorHandleForHeapStart();
+    }
+    else
+    {
+        mGpuHandle.ptr = 0;
+    }
+
     mDescriptorSize = gDevice->GetDevice()->GetDescriptorHandleIncrementSize(heapDesc.Type);
 
     NFE_LOG_DEBUG("%s descriptor heap (%s) handle increment: %u",

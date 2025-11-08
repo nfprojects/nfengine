@@ -1,6 +1,8 @@
 #include "PCH.hpp"
 #include "Backends.hpp"
 
+#include "Engine/Renderers/RendererD3D12/D3D12Module.hpp"
+
 #include "Engine/Common/FileSystem/FileSystem.hpp"
 #include "Engine/Common/Logger/Logger.hpp"
 

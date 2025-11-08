@@ -190,7 +190,7 @@ bool VertexBuffersScene::CreateBuffers(bool withInstanceBuffer, ResourceAccessMo
         // upload buffer data
         {
             mCommandBuffer->Begin(CommandQueueType::Copy);
-            mCommandBuffer->WriteBuffer(mPositionsVertexBuffer, 0, sizeof(InstanceData) * gInstancesNumber, mInstancesData.data());
+            mCommandBuffer->WriteBuffer(mInstanceBuffer, 0, sizeof(InstanceData) * gInstancesNumber, mInstancesData.data());
             mCopyQueue->Execute(mCommandBuffer->Finish());
             mCopyQueue->Signal()->Wait();
         }

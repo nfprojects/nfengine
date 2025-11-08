@@ -330,6 +330,7 @@ enum class FillMode : uint8
  */
 enum class CompareFunc : uint8
 {
+    None,
     Never,
     Less,
     LessEqual,

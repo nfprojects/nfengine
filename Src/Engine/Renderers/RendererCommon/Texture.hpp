@@ -137,7 +137,7 @@ struct SamplerDesc
         , maxMipmap(FLT_MAX)
         , mipmapBias(0.0f)
         , compare(false)
-        , compareFunc(CompareFunc::Pass)
+        , compareFunc(CompareFunc::None)
         , borderColor(nullptr)
         , debugName(nullptr)
     {}

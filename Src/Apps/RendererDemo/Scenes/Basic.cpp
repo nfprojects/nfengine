@@ -171,6 +171,7 @@ bool BasicScene::CreateVertexBuffer(bool withExtraVert)
     BufferDesc vbDesc;
     vbDesc.size = withExtraVert ? sizeof(vbDataExtra) : sizeof(vbData);
     vbDesc.usage = BufferUsageFlag::VertexBuffer;
+    vbDesc.debugName = "BasicScene::VertexBuffer";
     mVertexBuffer = mRendererDevice->CreateBuffer(vbDesc);
     if (!mVertexBuffer)
         return false;
@@ -199,6 +200,7 @@ bool BasicScene::CreateIndexBuffer()
     BufferDesc ibDesc;
     ibDesc.size = sizeof(ibData);
     ibDesc.usage = BufferUsageFlag::IndexBuffer;
+    ibDesc.debugName = "BasicScene::IndexBuffer";
     mIndexBuffer = mRendererDevice->CreateBuffer(ibDesc);
     if (!mIndexBuffer)
         return false;

@@ -76,7 +76,9 @@
       <AdditionalLibraryDirectories>$(SolutionDir)Deps\nfenginedeps;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
-      <Command>COPY "$(SolutionDir)Deps\nfenginedeps\dxcompiler\bin\x64\dxcompiler.dll" "$(SolutionDir)Bin\$(Platform)\$(Configuration)\"
+      <Command>COPY "$(SolutionDir)Deps\nfenginedeps\d3d12\bin\x64\D3D12Core.dll" "$(SolutionDir)Bin\$(Platform)\$(Configuration)\"
+COPY "$(SolutionDir)Deps\nfenginedeps\d3d12\bin\x64\d3d12SDKLayers.dll" "$(SolutionDir)Bin\$(Platform)\$(Configuration)\"
+COPY "$(SolutionDir)Deps\nfenginedeps\dxcompiler\bin\x64\dxcompiler.dll" "$(SolutionDir)Bin\$(Platform)\$(Configuration)\"
 COPY "$(SolutionDir)Deps\nfenginedeps\dxcompiler\bin\x64\dxil.dll" "$(SolutionDir)Bin\$(Platform)\$(Configuration)\"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
@@ -99,7 +101,9 @@ COPY "$(SolutionDir)Deps\nfenginedeps\dxcompiler\bin\x64\dxil.dll" "$(SolutionDi
       <AdditionalLibraryDirectories>$(SolutionDir)Deps\nfenginedeps;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
-      <Command>COPY "$(SolutionDir)Deps\nfenginedeps\dxcompiler\bin\x64\dxcompiler.dll" "$(SolutionDir)Bin\$(Platform)\$(Configuration)\"
+      <Command>COPY "$(SolutionDir)Deps\nfenginedeps\d3d12\bin\x64\D3D12Core.dll" "$(SolutionDir)Bin\$(Platform)\$(Configuration)\"
+COPY "$(SolutionDir)Deps\nfenginedeps\d3d12\bin\x64\d3d12SDKLayers.dll" "$(SolutionDir)Bin\$(Platform)\$(Configuration)\"
+COPY "$(SolutionDir)Deps\nfenginedeps\dxcompiler\bin\x64\dxcompiler.dll" "$(SolutionDir)Bin\$(Platform)\$(Configuration)\"
 COPY "$(SolutionDir)Deps\nfenginedeps\dxcompiler\bin\x64\dxil.dll" "$(SolutionDir)Bin\$(Platform)\$(Configuration)\"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
@@ -122,7 +126,9 @@ COPY "$(SolutionDir)Deps\nfenginedeps\dxcompiler\bin\x64\dxil.dll" "$(SolutionDi
       <AdditionalLibraryDirectories>$(SolutionDir)Deps\nfenginedeps;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
-      <Command>COPY "$(SolutionDir)Deps\nfenginedeps\dxcompiler\bin\x64\dxcompiler.dll" "$(SolutionDir)Bin\$(Platform)\$(Configuration)\"
+      <Command>COPY "$(SolutionDir)Deps\nfenginedeps\d3d12\bin\x64\D3D12Core.dll" "$(SolutionDir)Bin\$(Platform)\$(Configuration)\"
+COPY "$(SolutionDir)Deps\nfenginedeps\d3d12\bin\x64\d3d12SDKLayers.dll" "$(SolutionDir)Bin\$(Platform)\$(Configuration)\"
+COPY "$(SolutionDir)Deps\nfenginedeps\dxcompiler\bin\x64\dxcompiler.dll" "$(SolutionDir)Bin\$(Platform)\$(Configuration)\"
 COPY "$(SolutionDir)Deps\nfenginedeps\dxcompiler\bin\x64\dxil.dll" "$(SolutionDir)Bin\$(Platform)\$(Configuration)\"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
@@ -180,8 +186,8 @@ COPY "$(SolutionDir)Deps\nfenginedeps\dxcompiler\bin\x64\dxil.dll" "$(SolutionDi
     <ClInclude Include="CommandListManager.hpp" />
     <ClInclude Include="Common.hpp" />
     <ClInclude Include="ComputePipelineState.hpp" />
+    <ClInclude Include="D3D12Module.hpp" />
     <ClInclude Include="D3DPtr.hpp" />
-    <ClInclude Include="D:\DEV\EXTERNAL\DirectX-Graphics-Samples\Libraries\D3DX12\d3dx12.h" />
     <ClInclude Include="Descriptors.hpp" />
     <ClInclude Include="DescriptorSet.hpp" />
     <ClInclude Include="Device.hpp" />

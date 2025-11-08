@@ -435,12 +435,7 @@ bool CommandRecorder::WriteBuffer(const BufferPtr& buffer, size_t offset, size_t
 
     if (accessMode == ResourceAccessMode::GPUOnly || accessMode == ResourceAccessMode::Immutable)
     {
-        if (size > bufferPtr->GetSize())
-        {
-            NFE_LOG_ERROR("Trying to perform write bigger than buffer size.");
-            return false;
-        }
-
+        NFE_ASSERT(offset + size <= bufferPtr->GetSize(), "Trying to perform write bigger than buffer size");
         Internal_WriteBuffer(bufferPtr, offset, size, data);
     }
     else

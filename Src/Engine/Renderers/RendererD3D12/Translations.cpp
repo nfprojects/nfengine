@@ -16,6 +16,8 @@ D3D12_COMPARISON_FUNC TranslateComparisonFunc(CompareFunc func)
 {
     switch (func)
     {
+    case CompareFunc::None:
+        return D3D12_COMPARISON_FUNC_NONE;
     case CompareFunc::Never:
         return D3D12_COMPARISON_FUNC_NEVER;
     case CompareFunc::Less:

@@ -12,6 +12,7 @@
 
 #include "Engine/Renderers/RendererCommon/Device.hpp"
 #include "Engine/Renderers/RendererCommon/Fence.hpp"
+#include "Engine/Renderers/RendererD3D12/D3D12Module.hpp"
 
 #include "Engine/Common/System/Library.hpp"
 #include "Engine/Common/FileSystem/FileSystem.hpp"

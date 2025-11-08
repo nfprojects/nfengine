@@ -29,7 +29,6 @@
 
 #include <dxgi1_5.h>
 
-
 namespace NFE {
 namespace Renderer {
 

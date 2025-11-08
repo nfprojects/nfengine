@@ -10,7 +10,7 @@
 #define NOMINMAX
 #include <Windows.h>
 
-#include <d3d12.h>
+#include <d3d12/include/d3d12.h>
 #include <dxgi1_4.h>
 #include <dxcompiler/inc/dxcapi.h>
 #include <d3d12shader.h>
