@@ -91,7 +91,6 @@ SET(RAYTRACER_HEADERS
     PCH.h
     Config.h
     ForwardDeclarations.hpp
-    RayLib.h
     Raytracer.h
     BVH/BVH.h
     BVH/BVHBuilder.h

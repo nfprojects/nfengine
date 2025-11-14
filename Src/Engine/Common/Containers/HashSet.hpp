@@ -48,7 +48,7 @@ public:
     static constexpr uint32 RehashThresholdDenominator = 4;
 
     // iterator with read-only access
-    class ConstIterator : public std::iterator<std::forward_iterator_tag, KeyType>
+    class ConstIterator
     {
         friend class HashSet;
     public:
