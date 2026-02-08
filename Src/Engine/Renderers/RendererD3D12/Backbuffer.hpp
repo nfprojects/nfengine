@@ -65,7 +65,6 @@ private:
     // for frame synchronization
     static constexpr uint32 MaxPendingFrames = 3;
     Common::StaticArray<FencePtr, MaxPendingFrames> mPendingFramesFences;
-    FenceData mFrameFence;
 };
 
 } // namespace Renderer

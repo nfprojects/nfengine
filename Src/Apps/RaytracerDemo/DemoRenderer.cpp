@@ -210,7 +210,7 @@ bool DemoRenderer::Init(const Common::Window& window)
 void DemoRenderer::SetupFontTexture(uint32 width, uint32 height, const void* data)
 {
     TextureDesc desc;
-    desc.mode = ResourceAccessMode::Immutable;
+    desc.usage = TextureUsageFlag::ReadonlyShaderResource;
     desc.width = width;
     desc.height = height;
     desc.format = Format::R8G8B8A8_U_Norm;

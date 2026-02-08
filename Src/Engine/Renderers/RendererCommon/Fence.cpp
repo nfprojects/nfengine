@@ -18,12 +18,15 @@ IFence::~IFence() = default;
 
 void IFence::Wait()
 {
-    Waitable waitable;
+    if (!IsFinished())
     {
-        TaskBuilder builder(waitable);
-        Sync(builder);
+        Waitable waitable;
+        {
+            TaskBuilder builder(waitable);
+            Sync(builder);
+        }
+        waitable.Wait();
     }
-    waitable.Wait();
 }
 
 } // namespace Renderer

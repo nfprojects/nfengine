@@ -69,14 +69,15 @@ public:
 
     void ApplyFinalResourceStates();
 
-    void AssignFenceValue(const FenceData* fenceData, uint64 fenceValue);
+    void AssignFenceValue(const ID3D12Fence* fence, uint64 fenceValue);
 
 private:
 
     void OnExecuted();
 
-    const FenceData* mFenceData;
+    const ID3D12Fence* mFence = nullptr;
     uint64 mFenceValue;
+
     uint32 mID;
     State mState;
     CommandQueueType mQueueType;

@@ -123,8 +123,6 @@ bool Device::Init(const DeviceInitParams* params)
         }
     }
 
-    mFenceManager.Initialize();
-
     mRingBuffer = MakeUniquePtr<RingBuffer>();
     if (!mRingBuffer->Init(64 * 1024 * 1024))
     {
@@ -167,8 +165,6 @@ Device::~Device()
 
     mDXGIFactory.Reset();
     mAdapter.Reset();
-
-    mFenceManager.Uninitialize();
 
     if (mAllocator)
     {

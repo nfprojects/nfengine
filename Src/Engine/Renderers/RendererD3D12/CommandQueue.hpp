@@ -9,7 +9,8 @@
 #include "Fence.hpp"
 
 #include "../RendererCommon/CommandQueue.hpp"
-#include "../../Common/System/RWLock.hpp"
+#include "../../Common/System/Mutex.hpp"
+#include "../../Common/System/Thread.hpp"
 
 
 namespace NFE {
@@ -43,10 +44,29 @@ public:
     virtual FencePtr Signal(const FenceFlags flags = FenceFlag_CpuWaitable) override;
 
 private:
-    Common::RWLock mLock;
+
+    static constexpr uint64_t InitialFenceValue = 1;
+
+    void OnFenceCompleted(uint64_t fenceValue);
+
+    void FenceThreadFunc();
+
+    Common::Mutex mLock;
     D3DPtr<ID3D12CommandQueue> mQueue;
-    FenceData mFenceData;
     CommandQueueType mType;
+
+    // list of pending objects and fence value associated with them
+    struct PendingData
+    {
+        uint64_t fenceValue = 0;
+        Common::WeakPtr<IFence> fencePtr;
+    };
+    Common::DynArray<PendingData> mPendingData;
+
+    D3DPtr<ID3D12Fence> mFence;
+    uint64_t mFenceValue = InitialFenceValue;
+    Common::Thread mThread;
+    std::atomic<bool> mFinishThread = false;
 };
 
 CommandQueueFamily GetCommandQueueFamily(CommandQueueType type);

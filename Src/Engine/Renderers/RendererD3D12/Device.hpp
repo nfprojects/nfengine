@@ -78,8 +78,6 @@ class Device : public IDevice
     Common::DynArray<Common::WeakPtr<CommandQueue>> mCommandQueues;
     Common::RWLock mCommandQueuesLock;
 
-    FenceManager mFenceManager;
-
     Common::UniquePtr<RingBuffer> mRingBuffer;
 
     HeapAllocator mCbvSrvUavHeapStagingAllocator;   // CPU visible
@@ -142,7 +140,6 @@ public:
     virtual bool FinishFrame() override;
 
     CommandListManager* GetCommandListManager() const { return mCommandListManager.Get(); }
-    FenceManager& GetFenceManager() { return mFenceManager; }
     RingBuffer* GetRingBuffer() { return mRingBuffer.Get(); }
 
     HeapAllocator& GetCbvSrvUavHeapStagingAllocator() { return mCbvSrvUavHeapStagingAllocator; }

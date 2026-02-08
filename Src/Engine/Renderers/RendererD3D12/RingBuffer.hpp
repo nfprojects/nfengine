@@ -30,10 +30,10 @@ public:
     size_t Allocate(size_t size, size_t alignment);
 
     // should be called after a frame has been submitted
-    void FinishFrame(const FenceData* fenceData, uint64 fenceValue);
+    void FinishFrame(uint64 fenceValue);
 
     // should be called after GPU finished rendering the frame
-    void OnFenceValueCompleted(const FenceData* fenceData, uint64 fenceValue);
+    void OnFenceValueCompleted(uint64 fenceValue);
 
     NFE_INLINE void* GetCpuAddress() const
     {
@@ -64,7 +64,6 @@ private:
 
     struct PendingFence
     {
-        const FenceData* fenceData;
         uint64 fenceValue;
         size_t bufferOffset;
     };

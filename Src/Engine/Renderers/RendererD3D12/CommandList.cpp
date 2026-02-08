@@ -21,8 +21,8 @@ namespace Renderer {
 using namespace Common;
 
 InternalCommandList::InternalCommandList(uint32 id)
-    : mFenceValue(FenceData::InvalidValue)
-    , mFenceData(nullptr)
+    : mFence(nullptr)
+    , mFenceValue(UINT64_MAX)
     , mState(State::Invalid)
     , mQueueType(CommandQueueType::Invalid)
     , mID(id)
@@ -97,22 +97,20 @@ bool InternalCommandList::Init(CommandQueueType queueType)
     return true;
 }
 
-void InternalCommandList::AssignFenceValue(const FenceData* fenceData, uint64 fenceValue)
+void InternalCommandList::AssignFenceValue(const ID3D12Fence* fence, uint64 fenceValue)
 {
-    NFE_ASSERT(fenceData, "Invalid fence value");
-    NFE_ASSERT(fenceValue != FenceData::InvalidValue, "Invalid fence value");
-    NFE_ASSERT(fenceValue != FenceData::InitialValue, "Invalid fence value");
-    NFE_ASSERT(mFenceValue == FenceData::InvalidValue, "Already has fence value");
-    NFE_ASSERT(!mFenceData, "Already has fence value");
+    NFE_ASSERT(fence, "Invalid fence");
+    NFE_ASSERT(fenceValue != Fence::InvalidValue, "Invalid fence value");
+    NFE_ASSERT(mFenceValue == Fence::InvalidValue, "Already has fence value");
+    NFE_ASSERT(!mFence, "Already has fence value");
 
-    mFenceData = fenceData;
+    mFence = fence;
     mFenceValue = fenceValue;
 }
 
 void InternalCommandList::OnExecuted()
 {
-    NFE_ASSERT(mFenceValue != FenceData::InvalidValue);
-    NFE_ASSERT(mFenceValue != FenceData::InitialValue);
+    NFE_ASSERT(mFenceValue != Fence::InvalidValue);
     NFE_ASSERT(mState == State::Executing);
 
     mReferencedResources.Clear();
@@ -138,8 +136,8 @@ void InternalCommandList::OnExecuted()
     }
 
     mState = State::Free;
-    mFenceData = nullptr;
-    mFenceValue = FenceData::InvalidValue;
+    mFence = nullptr;
+    mFenceValue = Fence::InvalidValue;
 }
 
 ID3D12GraphicsCommandList* InternalCommandList::GenerateResourceBarriersCommandList()

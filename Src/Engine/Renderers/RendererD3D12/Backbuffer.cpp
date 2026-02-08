@@ -31,8 +31,6 @@ Backbuffer::~Backbuffer()
     {
         fence->Wait();
     }
-
-    mFrameFence.Release();
 }
 
 bool Backbuffer::Init(const BackbufferDesc& desc)
@@ -60,8 +58,6 @@ bool Backbuffer::Init(const BackbufferDesc& desc)
     mFormat = TranslateFormat(desc.format);
     mMode = ResourceAccessMode::GPUOnly;
     mCommandQueue = desc.commandQueue;
-
-    mFrameFence.Init();
 
     mBuffers.Resize(2); // make it configurable
 

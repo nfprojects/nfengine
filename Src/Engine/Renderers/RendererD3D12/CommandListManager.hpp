@@ -42,8 +42,8 @@ public:
      */
     void ExecuteCommandList(const CommandQueue& queue, const Common::ArrayView<ICommandList*> commandLists);
 
-    // Called by fence manager's loop when a fence value completed on GPU
-    void OnFenceValueCompleted(const FenceData* fenceData, uint64 fenceValue);
+    // Called by queue's thread when a fence value completed on GPU
+    void OnFenceValueCompleted(const ID3D12Fence* fence, uint64 fenceValue);
 
 private:
 

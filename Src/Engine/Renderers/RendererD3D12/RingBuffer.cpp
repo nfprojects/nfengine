@@ -128,21 +128,18 @@ size_t RingBuffer::Allocate(size_t size, size_t alignment)
     return INVALID_OFFSET;
 }
 
-void RingBuffer::FinishFrame(const FenceData* fenceData, uint64 fenceValue)
+void RingBuffer::FinishFrame(uint64 fenceValue)
 {
     // TODO make lockless
     NFE_SCOPED_LOCK(mLock);
 
-    const PendingFence pendingFence{ fenceData, fenceValue, mTail };
+    const PendingFence pendingFence{ fenceValue, mTail };
 
     mCompletedFrames.PushBack(pendingFence);
 }
 
-void RingBuffer::OnFenceValueCompleted(const FenceData* fenceData, uint64 fenceValue)
+void RingBuffer::OnFenceValueCompleted(uint64 fenceValue)
 {
-    // TODO command queue - handle multiple queues
-    NFE_UNUSED(fenceData);
-
     // TODO make lockless
     NFE_SCOPED_LOCK(mLock);
 

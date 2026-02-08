@@ -143,9 +143,10 @@ void CommandListManager::ExecuteCommandList(const CommandQueue& queue, const Com
     queue.GetQueue()->ExecuteCommandLists(d3dCommandListsToExecute.Size(), d3dCommandListsToExecute.Data());
 }
 
-void CommandListManager::OnFenceValueCompleted(const FenceData* fenceData, uint64 fenceValue)
+void CommandListManager::OnFenceValueCompleted(const ID3D12Fence* fence, uint64 fenceValue)
 {
-    NFE_ASSERT(fenceValue != FenceData::InvalidValue, "Invalid fence value");
+    NFE_ASSERT(fence, "Invalid fence");
+    NFE_ASSERT(fenceValue != Fence::InvalidValue, "Invalid fence value");
 
     NFE_SCOPED_LOCK(mLock);
 
@@ -156,7 +157,7 @@ void CommandListManager::OnFenceValueCompleted(const FenceData* fenceData, uint6
         {
             if (commandList->GetState() == InternalCommandList::State::Executing)
             {
-                if (commandList->mFenceData == fenceData && commandList->mFenceValue <= fenceValue)
+                if (commandList->mFence == fence && commandList->mFenceValue <= fenceValue)
                 {
                     commandList->OnExecuted();
                 }

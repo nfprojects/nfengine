@@ -46,13 +46,17 @@ D3D12_COMMAND_LIST_TYPE TranslateCommandListType(CommandQueueType type)
 CommandQueue::CommandQueue()
     : mType(CommandQueueType::Invalid)
 {
-    mFenceData.Init();
 }
 
 CommandQueue::~CommandQueue()
 {
+    mFinishThread.store(true);
+
     // wait for all commands to complete before destroying the queue
     Signal()->Wait();
+
+    // wait for the thread to finish
+    mThread.Wait();
 }
 
 bool CommandQueue::Init(CommandQueueType type, const char* debugName)
@@ -75,14 +79,21 @@ bool CommandQueue::Init(CommandQueueType type, const char* debugName)
         NFE_LOG_WARNING("Failed to set debug name of a command queue");
     }
 
-    mFenceData.SetCallback([this](uint64 completedFenceValue)
+    hr = D3D_CALL_CHECK(gDevice->GetDevice()->CreateFence(0, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(mFence.GetPtr())));
+    if (FAILED(hr))
     {
-        // tick command list manager and global ring buffer automatically when fence is completed on GPU
-        gDevice->GetCommandListManager()->OnFenceValueCompleted(&mFenceData, completedFenceValue);
-        gDevice->GetRingBuffer()->OnFenceValueCompleted(&mFenceData, completedFenceValue);
-    });
+        NFE_LOG_ERROR("Failed to create fence for %s command queue '%s'", CommandQueueTypeToStr(type), debugName);
+        return false;
+    }
 
     mType = type;
+
+    mThread.RunFunction([this]()
+    {
+        FenceThreadFunc();
+    });
+    mThread.SetName("CommandQueueThread");
+    mThread.SetPriority(ThreadPriority::AboveNormal);
 
     return true;
 }
@@ -91,9 +102,11 @@ void CommandQueue::Submit(const Common::ArrayView<ICommandList*> commandLists, c
 {
     NFE_ASSERT(mQueue, "Command queue is not initialized");
 
-    uint64 fenceValue = 0;
+    uint64_t fenceValue = 0;
     {
         NFE_SCOPED_LOCK(mLock);
+
+        fenceValue = mFenceValue;
 
         for (IFence* fence : waitFences)
         {
@@ -106,9 +119,7 @@ void CommandQueue::Submit(const Common::ArrayView<ICommandList*> commandLists, c
 
         gDevice->GetCommandListManager()->ExecuteCommandList(*this, commandLists);
 
-        fenceValue = mFenceData.Signal(mQueue.Get(), FenceFlag_CpuWaitable);
-
-        // assign fenceValue to command lists
+        // assign fence value to command lists
         for (ICommandList* commandList : commandLists)
         {
             NFE_ASSERT(commandList, "Invalid command list ptr");
@@ -117,24 +128,112 @@ void CommandQueue::Submit(const Common::ArrayView<ICommandList*> commandLists, c
             InternalCommandListPtr internalCommandList = typedCommandList->internalCommandList.Lock();
             NFE_ASSERT(internalCommandList != nullptr);
 
-            internalCommandList->AssignFenceValue(&mFenceData, fenceValue);
+            internalCommandList->AssignFenceValue(mFence.Get(), mFenceValue);
 
             typedCommandList->internalCommandList.Reset();
         }
     }
 
-    gDevice->GetRingBuffer()->FinishFrame(&mFenceData, fenceValue);
+    gDevice->GetRingBuffer()->FinishFrame(mFenceValue);
 }
 
 FencePtr CommandQueue::Signal(const FenceFlags flags)
 {
     NFE_ASSERT(mQueue, "Command queue is not initialized");
 
-    FencePtr fence;
-    mFenceData.Signal(mQueue.Get(), flags, &fence);
+    NFE_SCOPED_LOCK(mLock);
+
+    uint64_t fenceValueToSignal = mFenceValue++;
+
+    if (FAILED(D3D_CALL_CHECK(mQueue->Signal(mFence.Get(), fenceValueToSignal))))
+    {
+        NFE_LOG_ERROR("Failed to enqueue fence value update");
+        return nullptr;
+    }
+
+    FencePtr fence = MakeSharedPtr<Fence>(fenceValueToSignal, flags, mFence.Get());
+
+    PendingData pendingData;
+    pendingData.fenceValue = fenceValueToSignal;
+    pendingData.fencePtr = fence;
+    mPendingData.PushBack(pendingData);
+
     return fence;
 }
 
+void CommandQueue::OnFenceCompleted(uint64_t fenceValue)
+{
+    // tick command list manager and global ring buffer automatically when fence is completed on GPU
+    gDevice->GetCommandListManager()->OnFenceValueCompleted(mFence.Get(), fenceValue);
+    gDevice->GetRingBuffer()->OnFenceValueCompleted(fenceValue);
+
+    {
+        NFE_SCOPED_LOCK(mLock);
+
+        // find all pending fences that have been completed
+        for (uint32_t i = 0; i < mPendingData.Size(); )
+        {
+            PendingData& pendingData = mPendingData[i];
+            if (pendingData.fenceValue <= fenceValue)
+            {
+                FencePtr fencePtr = pendingData.fencePtr.Lock();
+                if (fencePtr)
+                {
+                    static_cast<Fence*>(fencePtr.Get())->OnFenceFinished();
+                }
+
+                mPendingData.Erase(mPendingData.Begin() + i);
+            }
+            else
+            {
+                ++i;
+            }
+        }
+    }
+}
+
+void CommandQueue::FenceThreadFunc()
+{
+    NFE_ASSERT(mFence, "Command queue fence is not initialized");
+
+    HANDLE fenceEvent = ::CreateEvent(nullptr, FALSE, FALSE, nullptr);
+    if (fenceEvent == INVALID_HANDLE_VALUE)
+    {
+        NFE_LOG_ERROR("Failed to create event object");
+        return;
+    }
+
+    uint64_t waitFenceValue = InitialFenceValue;
+
+    NFE_ASSERT(mQueue, "Command queue is not initialized");
+    while (true)
+    {
+        // setup wait event
+        HRESULT hr = D3D_CALL_CHECK(mFence->SetEventOnCompletion(waitFenceValue, fenceEvent));
+        if (FAILED(hr))
+        {
+            NFE_LOG_ERROR("FenceThreadFunc: Failed to setup wait event, error code: %u", hr);
+            continue;
+        }
+
+        // wait for fence to be signaled
+        const DWORD waitResult = ::WaitForSingleObject(fenceEvent, INFINITE);
+        if (waitResult != WAIT_OBJECT_0)
+        {
+            NFE_LOG_ERROR("FenceThreadFunc: WaitForSingleObject failed, error code: %u", ::GetLastError());
+            continue;
+        }
+
+        // notify about fence completion
+        OnFenceCompleted(waitFenceValue);
+
+        // move to next fence value
+        waitFenceValue++;
+
+        if (mFinishThread)
+            break;
+    }
+}
 
 } // namespace Renderer
 } // namespace NFE
