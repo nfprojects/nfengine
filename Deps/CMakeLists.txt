@@ -95,7 +95,7 @@ ENDIF(NOT NFEDEPS_LIB_DIRECTORY)
 
 # Copy outputs via a custom target
 ADD_CUSTOM_TARGET(NFEDepsPostBuild ALL
-    DEPENDS glslang glslang-default-resource-limits jpeg squish png_static zlibstatic gtest freetype
+    DEPENDS glslang glslang-default-resource-limits jpeg libsquish_squish png_static zlibstatic gtest freetype
             SPIRV-Tools miniz tinyexr tinyobjloader cxxopts
     COMMENT "Commands called post-build NFE dependencies"
 )
@@ -111,7 +111,7 @@ ELSEIF(UNIX)
 ENDIF()
 
 ADD_CUSTOM_COMMAND(TARGET NFEDepsPostBuild POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:squish> ${NFEDEPS_LIB_DIRECTORY}
+    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:libsquish_squish> ${NFEDEPS_LIB_DIRECTORY}
     COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:jpeg> ${NFEDEPS_LIB_DIRECTORY}
     COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:png_static> ${NFEDEPS_LIB_DIRECTORY}
     COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:zlibstatic> ${NFEDEPS_LIB_DIRECTORY}

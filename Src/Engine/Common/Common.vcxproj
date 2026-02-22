@@ -406,7 +406,7 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>NFCOMMON_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)Deps\;$(SolutionDir)Deps\nfenginedeps\;$(SolutionDir)Deps\build\$(Platform)\$(Configuration)\libpng\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)Deps\;$(SolutionDir)Deps\nfenginedeps\;$(SolutionDir)Deps\build\$(Platform)\$(Configuration)\libpng\;$(SolutionDir)Deps\build\$(Platform)\$(Configuration)\libsquish\lib\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeaderFile>PCH.hpp</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
@@ -419,7 +419,7 @@
       </Command>
     </PostBuildEvent>
     <PreBuildEvent>
-      <Command>python.exe "$(SolutionDir)Deps\deps_builder.py" --noanim</Command>
+      <Command>python.exe "$(SolutionDir)Deps\deps_builder.py" -v --noanim</Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -431,7 +431,7 @@
       <PreprocessorDefinitions>NFCOMMON_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <FloatingPointModel>Fast</FloatingPointModel>
       <FloatingPointExceptions>false</FloatingPointExceptions>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)Deps\;$(SolutionDir)Deps\nfenginedeps\;$(SolutionDir)Deps\build\$(Platform)\$(Configuration)\libpng\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)Deps\;$(SolutionDir)Deps\nfenginedeps\;$(SolutionDir)Deps\build\$(Platform)\$(Configuration)\libpng\;$(SolutionDir)Deps\build\$(Platform)\$(Configuration)\libsquish\lib\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeaderFile>PCH.hpp</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
@@ -458,7 +458,7 @@
       <PreprocessorDefinitions>NFCOMMON_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <FloatingPointModel>Fast</FloatingPointModel>
       <FloatingPointExceptions>false</FloatingPointExceptions>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)Deps\;$(SolutionDir)Deps\nfenginedeps\;$(SolutionDir)Deps\build\$(Platform)\Release\libpng\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)Deps\;$(SolutionDir)Deps\nfenginedeps\;$(SolutionDir)Deps\build\$(Platform)\$(Configuration)\libpng\;$(SolutionDir)Deps\build\$(Platform)\$(Configuration)\libsquish\lib\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeaderFile>PCH.hpp</PrecompiledHeaderFile>
     </ClCompile>
     <Link>

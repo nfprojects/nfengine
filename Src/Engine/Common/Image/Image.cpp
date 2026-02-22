@@ -8,7 +8,7 @@
 #include "PCH.hpp"
 #include "Image.hpp"
 #include "ImageType.hpp"
-#include "libsquish/squish.h"
+#include "libsquish/lib/include/squish/squish.h"
 
 
 namespace {
