@@ -1,14 +1,23 @@
 # @file
-# @author Lookey (costyrra.xl@gmail.com)
+# @author Lookey (lookeypl@gmail.com)
 # @brief  CMake for RendererVk
 
 MESSAGE(STATUS "Generating build files for RendererVk")
 
-MESSAGE(STATUS "RendererVk - Vulkan SDK Path: $ENV{VULKAN_SDK}")
+IF(EXISTS $ENV{VULKAN_SDK})
+    MESSAGE(STATUS "RendererVk - Vulkan SDK from env: $ENV{VULKAN_SDK}")
+ELSE(EXISTS $ENV{VULKAN_SDK})
+    IF(UNIX)
+        # attempt searching for vulkan SDK in regular path files
+        PKG_CHECK_MODULES(NFE_RENDERERVK_VULKAN_DEP REQUIRED vulkan)
+    ENDIF(UNIX)
 
-IF(NOT EXISTS $ENV{VULKAN_SDK})
-    MESSAGE(FATAL_ERROR "Path to Vulkan SDK not provided or invalid - specify it via an env variable VULKAN_SDK.")
-ENDIF(NOT EXISTS $ENV{VULKAN_SDK})
+    IF(NFE_RENDERERVK_VULKAN_DEP_FOUND)
+        MESSAGE(STATUS "RendererVk - Vulkan SDK from pkg-config: ${NFE_RENDERERVK_VULKAN_DEP_LINK_LIBRARIES}")
+    ELSE(NFE_RENDERERVK_VULKAN_DEP_FOUND)
+        MESSAGE(FATAL_ERROR "Path to Vulkan SDK not provided or invalid - specify it via an env variable VULKAN_SDK.")
+    ENDIF(NFE_RENDERERVK_VULKAN_DEP_FOUND)
+ENDIF(EXISTS $ENV{VULKAN_SDK})
 
 SET(NFE_RENDERERVK_DIRECTORY ${NFE_RENDERERS_DIRECTORY}/RendererVk)
 
@@ -144,7 +153,11 @@ ADD_DEPENDENCIES(RendererVk RendererCommon glslang glslang-default-resource-limi
 IF(WIN32)
     SET(NFRENDERERVK_VULKAN_LIB vulkan-1)
 ELSEIF(UNIX)
-    SET(NFRENDERERVK_VULKAN_LIB vulkan)
+    IF(NFE_RENDERERVK_VULKAN_DEP_FOUND)
+        SET(NFRENDERERVK_VULKAN_LIB ${NFE_RENDERERVK_VULKAN_DEP_LIBRARIES})
+    ELSE(NFE_RENDERERVK_VULKAN_DEP_FOUND)
+        SET(NFRENDERERVK_VULKAN_LIB vulkan)
+    ENDIF(NFE_RENDERERVK_VULKAN_DEP_FOUND)
 ELSE(WIN32)
     MESSAGE(FATAL_ERROR "Target platform not supported")
 ENDIF(WIN32)

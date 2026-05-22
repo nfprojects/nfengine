@@ -1,5 +1,5 @@
 # @file
-# @author Lookey (costyrra.xl@gmail.com)
+# @author Lookey (lookeypl@gmail.com)
 # @brief  CMake for Common
 
 MESSAGE(STATUS "Generating build files for Common")
@@ -400,6 +400,7 @@ TARGET_INCLUDE_DIRECTORIES(Common
     PRIVATE ${NFE_COMMON_DIRECTORY}
     PRIVATE ${NFE_BUILD_DIRECTORY}/Deps/libpng
     PRIVATE ${NFE_BUILD_DIRECTORY}/Deps/zlib
+    PRIVATE ${NFE_BUILD_DIRECTORY}/Deps/libsquish/lib/include
 )
 
 TARGET_LINK_DIRECTORIES(Common
@@ -415,7 +416,7 @@ ELSEIF(UNIX)
     SET(NFE_COMMON_SYSTEM_DEPS dl)
 ENDIF(WIN32)
 
-TARGET_LINK_LIBRARIES(Common squish jpeg png_static ${NFE_COMMON_SYSTEM_DEPS} ${NFE_COMMON_DEPS_LIBRARIES})
+TARGET_LINK_LIBRARIES(Common libsquish_squish jpeg png_static ${NFE_COMMON_SYSTEM_DEPS} ${NFE_COMMON_DEPS_LIBRARIES})
 
 SET_PROPERTY(TARGET Common PROPERTY FOLDER Src/Engine)
 NFE_SOURCE_GROUP_BY_DIR(NFCOMMON_SOURCES)
